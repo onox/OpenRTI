@@ -1,0 +1,271 @@
+
+OpenRTI
+-------
+
+An rti library with an rti1516 as well as a RTI13 interface.
+
+The key features are:
+* Easy to use.
+* C++ interface.
+* (Java interface. No coding resources allocated yet ... hint)
+* Extensible.
+* In process RTI.
+* Server tree hierarchy.
+* Delegates.
+* Shortest path is in memory without copying data.
+* Plugin like infrastructure - might extend to runtime extensibility.
+
+Platforms
+---------
+
+Everywhere!
+Seriously, if it does not work yet on your platform, please
+provide patches to make it work.
+
+Development is done currently on Linux, Win32, Solaris and HP-UX.
+
+Linux is tested on current fedora variants and centos 4 and 5.
+
+Windows is tested so far with 32 und 64 bits on XP with VS 2008.
+
+On Solaris, OpenRTI is tested with
+CC='cc -mt' CXX='CC -mt' cmake ...
+
+On HP-UX, OpenRTI is tested with
+CC='cc -Aa -mt' CXX='aCC -AA -mt' cmake ...
+
+
+Operation
+---------
+
+OpenRTI can operate in several ways:
+
+The most important one is probably the client/server scenario:
+Have one server process and some federates in several processes on
+some machines in a network.
+
+Often it would be also good to exploit some locality in an RTI. To
+get this, an OpenRTI server can operate as slave servers under a parent
+server. That means that every server in that tree seed all the federations
+in that server tree but messages are only routed to servers that need
+these messages. So having a sub server on a local subnet, traffict just
+interresting for federates connected to that slave server originating from
+federates connected to that slave server will never be sent to the
+parent server.
+
+But OpenRTI also can work without any external server running. When all
+federates are living in one program - may be in different threads, messages
+are just exchanged in that program. While this is probably the fastest
+operation mode it is also the one that is the easiest to set up.
+
+
+Protocols
+---------
+
+To select between the different modes of operation above, OpenRTI
+knows some protocols. This is the basic way of the transport used to
+communicate.
+
+thread:
+ Just use the in memory communication between threads. This
+ is the default as it does not require much setup.
+
+rti:
+ This is the preferred tcp/ip protocol variant for networked
+ communication.
+
+http: (currently just an idea)
+ This is a less efficient variant of the rti protocol for networked
+ communication. The trick is that his kind of connection uses standard
+ http headers and encapsulates the rti messages into that. It should be
+ possible to bypass firewalls with that protocol. Not yet sure if this
+ idea also helps for proxies. Note that this does not use the CONNECT
+ proxy method but really uses native http messages. Which simplifies
+ configuration a lot.
+
+pipe:
+ Uses the rti binary protocol on a named pipe. Can be used for machine
+ local communication in presence of tight packet filters.
+
+The implementation is prepared to some degree to move protocols into a
+user provided shared library that could be loaded at runtime.
+
+
+Connecting to an rti
+--------------------
+
+For rti1516 we have that string vector that is given to the ambassador
+when it is created. This vector can be used to configure the protocol
+that is used to communicate. The strings might contain key value pairs
+like <key>=<value>. Supported keys are:
+
+protocol=<p>
+  'thread' (default) use the smp, in memory connect.
+  'rti' use the tcp/ip binary protocol on some custom port
+  'http' use the http encapsulated tcp/ip binary protocol on port 80
+  'pipe' use the binary protocol on a named pipe
+  'trace' chain the communication to an other protocol and dump messages
+
+address=<a>
+  The interpretation depends on the protocol:
+  For 'thread' this is ignored.
+  For 'rti' and 'http' this contains the host:port pair.
+  port can be omitted to use the apropriate default port.
+  For 'pipe' this should contain the path to the named pipe.
+
+timeout=<t>
+  Sets initial packet timeouts for messages that happen syncronous.
+  That is mostly for create, destroy, join and resign.
+
+
+Federation execution names and URLs
+-----------------------------------
+
+For rti1516 it is easy to set the connect parameters in the string list.
+But the RTI15 layer does not have this.
+So, OpenRTI interprets federation execution names as urls:
+
+ <protocol>://<address>/<path>/<name>
+
+Where the protocol overriedes the protocol field from the string list.
+The address is the network address of the server. The path contains the
+path to the named pipe if protocol is pipe and the name is just the plain
+name of the federation execution.
+
+This method does clearly break the rti1516 standard as you can connect to the
+same federation execution by different federation execution names depending
+on your server setup. But anyway I think that this is a useful idea to address
+different servers without relying on environment variables.
+
+So, for the standard conformance question we will need some override somwhere
+in the future to disable interpretation of federation execution names as urls.
+
+
+LogicalTime
+-----------
+
+As required by newer hla standards, we know about 64 bits integer and 64 bits float
+times.
+
+The integer valued time behave as obvious.
+
+The float valued time has some special behaviour. The epsilon value is encoded as -0.
+That means if you set a logical time interval/fed time to -0 you will get +0 back.
+With this special small value of epsilon, we can handle the rundoff problems that appear
+in logical time + lookahead well. The value of logical time, lookahead and lbts are
+always consistent in the sense that logical time + lookahead == lbts.
+Also, any attempt to compare or encode a NaN valued logical time or logical time interval
+will result in an invalid time exception. This is to avoid internal problems with NaN's.
+
+
+Encoding
+--------
+
+For all this binary communication, OpenRTI always sends an initial
+connect packet and a server always answers with the same type of packet.
+This packet starts with a 12 byte fixed header containing the projects
+name 'OpenRTI\0' and the 4 byte big endian total packet size. The payload
+of that packet is a string key/value map carrying some information about
+the client. This includes the client version number, the set of
+available encodings and the clients endianess. The string based approach
+should be extensible enough to build up a backward compatible
+communication setup.
+The server then selects the best encoding that matches the client and
+may be some server configured policy like compression for example. Then
+the server responds with such a string map containing the selected
+encoding.
+All following messages are exchanged in that selected encoding.
+In the best case, this leads to optimal encoding. In the worst case we
+have a controlled channel to refuse a connection. The client can then
+abort and return with an error message to the user.
+
+The implementation is prepared to some degree to move encodings into a
+user provided shared library that could be loaded at runtime.
+
+
+Locking:
+--------
+
+OpenRTI tries to lock object as little as possible.
+The implementation assumes that each component lives in one thread. That means,
+there is no need for locking for almost all operations OpenRTI's components
+will do. The critical part is when messages are sent or received between threads.
+This always happens through some kind of a locked message queue. Once a message is
+sent to such a message queue, the sender should never touch that message again.
+Due to messages being reference counted, the last one switches the light off...
+
+There are two notable exceptins to this.
+1. The thread rti server:
+Since this rti server does not have its own thread to live in, its execution is
+guarded by a mutex that serializes sending messages to this server.
+2. The VariableLengthData:
+See next section.
+
+
+VariableLengthData Lifetime.
+----------------------------
+
+The VariableLengthData class is implemented using a reference counted
+copy/allocate on write schmeme. This means that passing these values around has
+just the cost of reference counting. In the best case and with federates living
+in the same application, the receiving federate sees exactly the same payload
+memory than the sending federate used to write into.
+For that copy on write to work no locking is required.
+
+
+Server state:
+-------------
+
+FIXME
+
+
+Publication and Subscription:
+-----------------------------
+
+This is a brief overview how publication and subscription are propagated over
+the tree.
+Publication is a simple two state value that is tracked for each connect in a
+server node. When a server node or ambassador behind a connect changes this state
+it sends an apporpiate message to the server node. The server node tracks this
+publication state for each connect. This server node is responsible to inform the
+other connects about its publication state. A server node should only inform once
+this state changes for each connect. When the server node recieves a second
+publication through a second connect, no publication state should be changed for
+connects that already know about that.
+Publication state is immediately pushed to a new server node once it is registered.
+
+Subscription is tracked similar to publication. But subscription is only sent to
+those connects that publish. That means if we get some delayed publication, all
+current subscriptions need to be sent to that server node/ambassador.
+
+
+Object Instance Management:
+---------------------------
+
+Object instance handles need to be globally managed to stay
+unique. Also Object instance handles have lifetimes beyond the
+timestamped delete instance message sent from the owner. Thus a
+federate that has an object handle in use in any sense keeps a
+reference of this object instance handle in its parent server
+node. Once all federates have dropped their references the handle is
+again free and can be reused.
+
+Together with every object instance handle the root server also
+allocates a unique object instance name. This holds also for the
+object instance name reservations, where the instance handle is
+already assigned once the name is reserved.
+
+Every server node tracks the child connects that reference an object
+instance handle. Once there are no chold connects left that reference
+an object instance handle, the server node unreferences this handle at
+its parent.
+
+The federate needs to release all the references it owns explicitly
+even on destruction. This is to help the server node with the cleanup
+since the server nodes only know which connect has a reference to a
+handle not which federate. In contrast to that, if a connection dies,
+may be due to a crashed federate, the server node will just
+unreference the connect handle at all object instance handles it
+references. This way we can guarantee a consistent cleanup even on
+faulty federates.
+

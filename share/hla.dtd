@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HLA.dtd This is version 1.0 of a DTD file to fully define the OMT in XML terms -->
+<!ELEMENT objectModel (
+               objects?,
+               interactions?, 
+               dimensions?,
+               time?, 
+               tags?,
+               synchronizations?,
+               transportations?, 
+               switches?,
+               dataTypes?,
+               notes?)>
+<!ATTLIST objectModel
+          DTDversion      CDATA    #FIXED "1516.2"
+          name            CDATA    #REQUIRED
+          nameNotes       NMTOKENS #IMPLIED
+          type            (FOM|SOM) #REQUIRED
+          typeNotes       NMTOKENS #IMPLIED
+          version         CDATA    #IMPLIED
+          versionNotes    NMTOKENS #IMPLIED
+          date            CDATA    #IMPLIED
+          dateNotes       NMTOKENS #IMPLIED
+          purpose         CDATA    #IMPLIED
+          purposeNotes    NMTOKENS #IMPLIED
+          appDomain       CDATA    #IMPLIED
+          appDomainNotes  NMTOKENS #IMPLIED
+          sponsor         CDATA    #IMPLIED
+          sponsorNotes    NMTOKENS #IMPLIED
+          pocName         CDATA    #IMPLIED
+          pocNameNotes    NMTOKENS #IMPLIED
+          pocOrg          CDATA    #IMPLIED
+          pocOrgNotes     NMTOKENS #IMPLIED
+          pocPhone        CDATA    #IMPLIED
+          pocPhoneNotes   NMTOKENS #IMPLIED
+          pocEmail        CDATA    #IMPLIED
+          pocEmailNotes   NMTOKENS #IMPLIED
+          references      CDATA    #IMPLIED 
+          referencesNotes NMTOKENS #IMPLIED 
+          other           CDATA    #IMPLIED
+          otherNotes      NMTOKENS #IMPLIED>
+
+   <!ELEMENT objects (objectClass+)>
+      <!ELEMENT objectClass (attribute*, objectClass*)>
+      <!ATTLIST objectClass
+                name           NMTOKEN  #REQUIRED
+                nameNotes      NMTOKENS #IMPLIED
+                sharing        (Publish|Subscribe|PublishSubscribe|Neither) #IMPLIED
+                sharingNotes   NMTOKENS #IMPLIED
+                semantics      CDATA    #IMPLIED 
+                semanticsNotes NMTOKENS #IMPLIED > 
+         <!ELEMENT attribute EMPTY>
+         <!ATTLIST attribute
+                   name                 NMTOKEN  #REQUIRED
+                   nameNotes            NMTOKENS #IMPLIED
+                   dataType             NMTOKEN  #IMPLIED 
+                   dataTypeNotes        NMTOKENS #IMPLIED 
+                   updateType           (Static|Periodic|Conditional|NA) #IMPLIED
+                   updateTypeNotes      NMTOKENS #IMPLIED
+                   updateCondition      CDATA    #IMPLIED
+                   updateConditionNotes NMTOKENS #IMPLIED
+                   ownership            (Divest|Acquire|DivestAcquire|NoTransfer)
+                                          #IMPLIED
+                   ownershipNotes       NMTOKENS #IMPLIED
+                   sharing              (Publish|Subscribe|PublishSubscribe|Neither)
+                                          #IMPLIED
+                   sharingNotes         NMTOKENS #IMPLIED
+                   dimensions           NMTOKENS #IMPLIED
+                   dimensionsNotes      NMTOKENS #IMPLIED
+                   transportation       NMTOKEN  #IMPLIED
+                   transportationNotes  NMTOKENS #IMPLIED
+                   order                (Receive|TimeStamp) #IMPLIED
+                   orderNotes           NMTOKENS #IMPLIED
+                   semantics            CDATA    #IMPLIED
+                   semanticsNotes       NMTOKENS #IMPLIED>
+
+   <!ELEMENT interactions (interactionClass+)>
+      <!ELEMENT interactionClass (parameter*, interactionClass*)>
+      <!ATTLIST interactionClass
+                name              NMTOKEN  #REQUIRED
+                nameNotes         NMTOKENS #IMPLIED
+                sharing           (Publish|Subscribe|PublishSubscribe|Neither) #IMPLIED
+                sharingNotes      NMTOKENS #IMPLIED
+                dimensions        NMTOKENS #IMPLIED 
+                dimensionsNotes   NMTOKENS #IMPLIED 
+                transportation    NMTOKEN  #IMPLIED
+                transportationNotes NMTOKENS #IMPLIED
+                order             (Receive|TimeStamp) #IMPLIED
+                orderNotes        NMTOKENS #IMPLIED
+                semantics         CDATA    #IMPLIED
+                semanticsNotes    NMTOKENS #IMPLIED >
+         <!ELEMENT parameter EMPTY>
+         <!ATTLIST parameter
+                   name             NMTOKEN  #REQUIRED
+                   nameNotes        NMTOKENS #IMPLIED
+                   dataType         NMTOKEN  #IMPLIED 
+                   dataTypeNotes    NMTOKENS #IMPLIED 
+                   semantics        CDATA    #IMPLIED
+                   semanticsNotes   NMTOKENS #IMPLIED >
+
+   <!ELEMENT dimensions (dimension*)>
+      <!ELEMENT dimension EMPTY>
+      <!ATTLIST dimension
+                name               NMTOKEN  #REQUIRED
+                nameNotes          NMTOKENS #IMPLIED
+                dataType           NMTOKEN  #IMPLIED
+                dataTypeNotes      NMTOKENS #IMPLIED
+                upperBound         CDATA    #IMPLIED
+                upperBoundNotes    NMTOKENS #IMPLIED
+                normalization      CDATA    #IMPLIED
+                normalizationNotes NMTOKENS #IMPLIED
+                value              CDATA    #IMPLIED
+                valueNotes         NMTOKENS #IMPLIED>
+
+   <!ELEMENT time (timeStamp?, lookahead?)>
+      <!ELEMENT timeStamp EMPTY>
+      <!ATTLIST timeStamp
+                dataType         NMTOKEN  #IMPLIED
+                dataTypeNotes    NMTOKENS #IMPLIED
+                semantics        CDATA    #IMPLIED
+                semanticsNotes   NMTOKENS #IMPLIED >
+      <!ELEMENT lookahead EMPTY>
+      <!ATTLIST lookahead
+                dataType         NMTOKEN  #IMPLIED
+                dataTypeNotes    NMTOKENS #IMPLIED
+                semantics        CDATA    #IMPLIED
+                semanticsNotes   NMTOKENS #IMPLIED >
+
+   <!ELEMENT tags (updateReflectTag?,
+                   sendReceiveTag?, 
+                   deleteRemoveTag?,
+                   divestitureRequestTag?,
+                   divestitureCompletionTag?,
+                   acquisitionRequestTag?,
+                   requestUpdateTag?)>
+      <!ELEMENT updateReflectTag EMPTY>
+      <!ATTLIST updateReflectTag
+                dataType         NMTOKEN  #REQUIRED
+                dataTypeNotes    NMTOKENS #IMPLIED
+                semantics        CDATA    #IMPLIED
+                semanticsNotes   NMTOKENS #IMPLIED >
+      <!ELEMENT sendReceiveTag EMPTY>
+      <!ATTLIST sendReceiveTag
+                dataType         NMTOKEN  #REQUIRED
+                dataTypeNotes    NMTOKENS #IMPLIED
+                semantics        CDATA    #IMPLIED
+                semanticsNotes   NMTOKENS #IMPLIED >
+      <!ELEMENT deleteRemoveTag EMPTY>
+      <!ATTLIST deleteRemoveTag
+                dataType         NMTOKEN  #REQUIRED
+                dataTypeNotes    NMTOKENS #IMPLIED
+                semantics        CDATA    #IMPLIED
+                semanticsNotes   NMTOKENS #IMPLIED >
+      <!ELEMENT divestitureRequestTag EMPTY>
+      <!ATTLIST divestitureRequestTag
+                dataType         NMTOKEN  #REQUIRED
+                dataTypeNotes    NMTOKENS #IMPLIED
+                semantics        CDATA    #IMPLIED
+                semanticsNotes   NMTOKENS #IMPLIED >
+      <!ELEMENT divestitureCompletionTag EMPTY>
+      <!ATTLIST divestitureCompletionTag
+                dataType         NMTOKEN  #REQUIRED
+                dataTypeNotes    NMTOKENS #IMPLIED
+                semantics        CDATA    #IMPLIED
+                semanticsNotes   NMTOKENS #IMPLIED >
+      <!ELEMENT acquisitionRequestTag EMPTY>
+      <!ATTLIST acquisitionRequestTag
+                dataType         NMTOKEN  #REQUIRED
+                dataTypeNotes    NMTOKENS #IMPLIED
+                semantics        CDATA    #IMPLIED
+                semanticsNotes   NMTOKENS #IMPLIED >
+      <!ELEMENT requestUpdateTag EMPTY>
+      <!ATTLIST requestUpdateTag
+                dataType         NMTOKEN  #REQUIRED
+                dataTypeNotes    NMTOKENS #IMPLIED
+                semantics        CDATA    #IMPLIED
+                semanticsNotes   NMTOKENS #IMPLIED >
+
+   <!ELEMENT synchronizations (synchronization+)>
+      <!ELEMENT synchronization EMPTY>
+      <!ATTLIST synchronization
+                label            NMTOKEN  #REQUIRED
+                labelNotes       NMTOKENS #IMPLIED
+                dataType         NMTOKEN  #IMPLIED
+                dataTypeNotes    NMTOKENS #IMPLIED
+                capability       (Register|Achieve|RegisterAchieve|NoSynch) #IMPLIED
+                capabilityNotes  NMTOKENS #IMPLIED
+                semantics        CDATA    #IMPLIED
+                semanticsNotes   NMTOKENS #IMPLIED >
+
+   <!ELEMENT transportations (transportation+)>
+      <!ELEMENT transportation EMPTY>
+      <!ATTLIST transportation
+                name             NMTOKEN  #REQUIRED
+                nameNotes        NMTOKENS #IMPLIED
+                description      CDATA    #IMPLIED
+                descriptionNotes NMTOKENS #IMPLIED>
+
+   <!ELEMENT switches EMPTY>
+   <!ATTLIST switches
+             autoProvide                       (Enabled|Disabled) #IMPLIED
+             autoProvideNotes                  NMTOKENS #IMPLIED
+             conveyRegionDesignatorSets        (Enabled|Disabled) #IMPLIED
+             conveyRegionDesignatorSetsNotes   NMTOKENS #IMPLIED
+             attributeScopeAdvisory            (Enabled|Disabled) #IMPLIED
+             attributeScopeAdvisoryNotes       NMTOKENS #IMPLIED
+             attributeRelevanceAdvisory        (Enabled|Disabled) #IMPLIED
+             attributeRelevanceAdvisoryNotes   NMTOKENS #IMPLIED
+             objectClassRelevanceAdvisory      (Enabled|Disabled) #IMPLIED
+             objectClassRelevanceAdvisoryNotes NMTOKENS #IMPLIED
+             interactionRelevanceAdvisory      (Enabled|Disabled) #IMPLIED
+             interactionRelevanceAdvisoryNotes NMTOKENS #IMPLIED
+             serviceReporting                  (Enabled|Disabled) #IMPLIED
+             serviceReportingNotes             NMTOKENS #IMPLIED>
+
+   <!ELEMENT dataTypes (basicDataRepresentations,
+                        simpleDataTypes?, 
+                        enumeratedDataTypes?, 
+                        arrayDataTypes?, 
+                        fixedRecordDataTypes?, 
+                        variantRecordDataTypes?)>
+      <!ELEMENT basicDataRepresentations (basicData+)>
+         <!ELEMENT basicData EMPTY>
+         <!ATTLIST basicData
+                   name                NMTOKEN  #REQUIRED
+                   nameNotes           NMTOKENS #IMPLIED
+                   size                CDATA    #IMPLIED 
+                   sizeNotes           NMTOKENS #IMPLIED 
+                   interpretation      CDATA    #IMPLIED
+                   interpretationNotes NMTOKENS #IMPLIED
+                   endian              (Big|Little) #IMPLIED
+                   endianNotes         NMTOKENS #IMPLIED
+                   encoding            CDATA    #IMPLIED
+                   encodingNotes       NMTOKENS #IMPLIED> 
+      <!ELEMENT simpleDataTypes (simpleData+)>
+         <!ELEMENT simpleData EMPTY>
+         <!ATTLIST simpleData
+                   name                NMTOKEN  #REQUIRED
+                   nameNotes           NMTOKENS #IMPLIED
+                   representation      NMTOKEN  #IMPLIED
+                   representationNotes NMTOKENS #IMPLIED
+                   units               CDATA    #IMPLIED
+                   unitsNotes          NMTOKENS #IMPLIED
+                   resolution          CDATA    #IMPLIED
+                   resolutionNotes     NMTOKENS #IMPLIED
+                   accuracy            CDATA    #IMPLIED
+                   accuracyNotes       NMTOKENS #IMPLIED
+                   semantics           CDATA    #IMPLIED
+                   semanticsNotes      NMTOKENS #IMPLIED>
+      <!ELEMENT enumeratedDataTypes (enumeratedData+)>
+         <!ELEMENT enumeratedData (enumerator+)>
+         <!ATTLIST enumeratedData
+                   name                NMTOKEN  #REQUIRED
+                   nameNotes           NMTOKENS #IMPLIED
+                   representation      NMTOKEN  #IMPLIED
+                   representationNotes NMTOKENS #IMPLIED
+                   semantics           CDATA    #IMPLIED
+                   semanticsNotes      NMTOKENS #IMPLIED >
+            <!ELEMENT enumerator EMPTY>
+            <!ATTLIST enumerator
+                      name             NMTOKEN  #REQUIRED
+                      nameNotes        NMTOKENS #IMPLIED
+                      values           NMTOKENS  #IMPLIED
+                      valuesNotes      NMTOKENS #IMPLIED>
+      <!ELEMENT arrayDataTypes (arrayData+)>
+         <!ELEMENT arrayData EMPTY>
+         <!ATTLIST arrayData
+                   name             NMTOKEN  #REQUIRED
+                   nameNotes        NMTOKENS #IMPLIED
+                   dataType         NMTOKEN  #IMPLIED
+                   dataTypeNotes    NMTOKENS #IMPLIED
+                   cardinality      CDATA    #IMPLIED
+                   cardinalityNotes NMTOKENS #IMPLIED
+                   encoding         CDATA    #IMPLIED
+                   encodingNotes    NMTOKENS #IMPLIED
+                   semantics        CDATA    #IMPLIED
+                   semanticsNotes   NMTOKENS #IMPLIED>
+      <!ELEMENT fixedRecordDataTypes (fixedRecordData+)>
+         <!ELEMENT fixedRecordData (field+)>
+         <!ATTLIST fixedRecordData
+                   name             NMTOKEN  #REQUIRED
+                   nameNotes        NMTOKENS #IMPLIED
+                   encoding         CDATA    #IMPLIED
+                   encodingNotes    NMTOKENS #IMPLIED
+                   semantics        CDATA    #IMPLIED
+                   semanticsNotes   NMTOKENS #IMPLIED >
+            <!ELEMENT field EMPTY>
+            <!ATTLIST field
+                      name             NMTOKEN  #REQUIRED
+                      nameNotes        NMTOKENS #IMPLIED
+                      dataType         NMTOKEN  #IMPLIED
+                      dataTypeNotes    NMTOKENS #IMPLIED
+                      semantics        CDATA    #IMPLIED
+                      semanticsNotes   NMTOKENS #IMPLIED>
+      <!ELEMENT variantRecordDataTypes (variantRecordData+)>
+         <!ELEMENT variantRecordData (alternative+)>
+         <!ATTLIST variantRecordData
+                   name              NMTOKEN  #REQUIRED
+                   nameNotes         NMTOKENS #IMPLIED
+                   discriminant      CDATA    #IMPLIED
+                   discriminantNotes NMTOKENS #IMPLIED
+                   dataType          NMTOKEN  #IMPLIED
+                   dataTypeNotes     NMTOKENS #IMPLIED
+                   encoding          CDATA    #IMPLIED
+                   encodingNotes     NMTOKENS #IMPLIED
+                   semantics         CDATA    #IMPLIED
+                   semanticsNotes    NMTOKENS #IMPLIED>
+            <!ELEMENT alternative EMPTY>
+            <!ATTLIST alternative
+                      enumerator       CDATA    #REQUIRED
+                      enumeratorNotes  NMTOKENS #IMPLIED
+                      name             NMTOKEN  #IMPLIED
+                      nameNotes        NMTOKENS #IMPLIED
+                      dataType         NMTOKEN  #IMPLIED
+                      dataTypeNotes    NMTOKENS #IMPLIED
+                      semantics        CDATA    #IMPLIED
+                      semanticsNotes   NMTOKENS #IMPLIED>
+
+   <!ELEMENT notes (note+)>
+      <!ELEMENT note EMPTY>
+      <!ATTLIST note
+                name            NMTOKEN  #REQUIRED
+                semantics       CDATA    #IMPLIED
+                semanticsNotes  NMTOKENS #IMPLIED >

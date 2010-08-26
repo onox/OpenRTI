@@ -1,0 +1,16 @@
+# The current standard fdd used for testing
+SET(RTI1516_FDD_FILE ${CMAKE_CURRENT_SOURCE_DIR}/fdd.xml)
+
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include/rti1516)
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src/OpenRTI)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/OpenRTI)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# Test directories should be listed here in sensible testing order
+ADD_SUBDIRECTORY(create)
+ADD_SUBDIRECTORY(join)
+ADD_SUBDIRECTORY(fddget)
+ADD_SUBDIRECTORY(sync)
+ADD_SUBDIRECTORY(time)
+ADD_SUBDIRECTORY(interaction)
+ADD_SUBDIRECTORY(objectinstance)

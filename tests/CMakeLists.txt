@@ -1,0 +1,4 @@
+# Just for propper recursion
+#ADD_SUBDIRECTORY(RTI13)
+ADD_SUBDIRECTORY(rti1516)
+#ADD_SUBDIRECTORY(rti1516e)

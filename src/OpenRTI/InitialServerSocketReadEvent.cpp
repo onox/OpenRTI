@@ -1,0 +1,70 @@
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2010 Mathias Froehlich
+ *
+ * This file is part of OpenRTI.
+ *
+ * OpenRTI is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * OpenRTI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with OpenRTI.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#include "InitialServerSocketReadEvent.h"
+
+#include "InitialSocketReadEvent.h"
+#include "InitialServerSocketWriteEvent.h"
+#include "MessageEncodingRegistry.h"
+#include "SocketEventDispatcher.h"
+#include "SocketStream.h"
+
+namespace OpenRTI {
+
+InitialServerSocketReadEvent::InitialServerSocketReadEvent(const SharedPtr<SocketStream>& socketStream,
+                                                           const SharedPtr<MessageServer>& messageServer) :
+  InitialSocketReadEvent(socketStream),
+  _messageServer(messageServer)
+{
+}
+
+InitialServerSocketReadEvent::~InitialServerSocketReadEvent()
+{
+}
+
+void
+InitialServerSocketReadEvent::readPacket(SocketEventDispatcher& dispatcher, NetworkBuffer& networkBuffer)
+{
+  InitialSocketReadEvent::readPacket(dispatcher, networkBuffer);
+  if (!networkBuffer.complete())
+    return;
+
+  // .. now we have the initial value map avaliable
+
+  // This is a one time action ...
+  dispatcher.erase(this);
+  // Replace this message dispatcher with the one that handles the connection
+  dispatcher.eraseSocket(this);
+
+  // Ok, now it is the servers choice to decide which encoding to use
+
+  // Helper to set up a server connect
+  StringStringListMap responseValueMap;
+  responseValueMap = MessageEncodingRegistry::instance().getBestServerEncoding(_valueMap, _messageServer->getServerOptions());
+
+  // Ok, we have now set up all we need for the encoded communication.
+  // But still we need to respond ...
+  SharedPtr<InitialServerSocketWriteEvent> initialServerWriteEvent;
+  initialServerWriteEvent = new InitialServerSocketWriteEvent(getSocket(), _messageServer);
+  initialServerWriteEvent->setValueMap(responseValueMap);
+
+  dispatcher.insert(initialServerWriteEvent.get());
+}
+
+} // namespace OpenRTI

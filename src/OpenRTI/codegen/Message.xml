@@ -1,0 +1,742 @@
+<?xml version="1.0"?>
+<!-- <!DOCTYPE apispec SYSTEM "MessageSpec.dtd"> -->
+<messagelist>
+  <!-- Everything that needs to be serialized into a whatever
+       transportation chanel is defined here. From this xml file we
+       generate the message implementation in c++ and all the serialzation
+       code into the sockets.
+    -->
+
+  <type name="CallbackModel" type="enum">
+    <enumerant name="HLA_IMMEDIATE"/>
+    <enumerant name="HLA_EVOKED"/>
+  </type>
+
+  <type name="OrderType" type="enum">
+    <enumerant name="RECEIVE"/>
+    <enumerant name="TIMESTAMP"/>
+  </type>
+  <type name="TransportationType" type="enum">
+    <enumerant name="RELIABLE"/>
+    <enumerant name="BEST_EFFORT"/>
+  </type>
+
+  <type name="SubscriptionType" type="enum">
+    <enumerant name="Unsubscribed"/>
+    <enumerant name="SubscribedPassive"/>
+    <enumerant name="SubscribedActive"/>
+  </type>
+
+  <type name="PublicationType" type="enum">
+    <enumerant name="Unpublished"/>
+    <enumerant name="Published"/>
+  </type>
+
+  <type name="ResignAction" type="enum">
+    <enumerant name="UNCONDITIONALLY_DIVEST_ATTRIBUTES"/>
+    <enumerant name="DELETE_OBJECTS"/>
+    <enumerant name="CANCEL_PENDING_OWNERSHIP_ACQUISITIONS"/>
+    <enumerant name="DELETE_OBJECTS_THEN_DIVEST"/>
+    <enumerant name="CANCEL_THEN_DELETE_THEN_DIVEST"/>
+    <enumerant name="NO_ACTION"/>
+  </type>
+
+  <type name="RestoreFailureReason" type="enum">
+    <enumerant name="RTI_UNABLE_TO_RESTORE"/>
+    <enumerant name="FEDERATE_REPORTED_FAILURE_DURING_RESTORE"/>
+    <enumerant name="FEDERATE_RESIGNED_DURING_RESTORE"/>
+    <enumerant name="RTI_DETECTED_FAILURE_DURING_RESTORE"/>
+  </type>
+
+  <type name="RestoreStatus" type="enum">
+    <enumerant name="NO_RESTORE_IN_PROGRESS"/>
+    <enumerant name="FEDERATE_RESTORE_REQUEST_PENDING"/>
+    <enumerant name="FEDERATE_WAITING_FOR_RESTORE_TO_BEGIN"/>
+    <enumerant name="FEDERATE_PREPARED_TO_RESTORE"/>
+    <enumerant name="FEDERATE_RESTORING"/>
+    <enumerant name="FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE"/>
+  </type>
+
+  <type name="SaveFailureReason" type="enum">
+    <enumerant name="RTI_UNABLE_TO_SAVE"/>
+    <enumerant name="FEDERATE_REPORTED_FAILURE_DURING_SAVE"/>
+    <enumerant name="FEDERATE_RESIGNED_DURING_SAVE"/>
+    <enumerant name="RTI_DETECTED_FAILURE_DURING_SAVE"/>
+    <enumerant name="SAVE_TIME_CANNOT_BE_HONORED"/>
+  </type>
+
+  <type name="SaveStatus" type="enum">
+    <enumerant name="NO_SAVE_IN_PROGRESS"/>
+    <enumerant name="FEDERATE_INSTRUCTED_TO_SAVE"/>
+    <enumerant name="FEDERATE_SAVING"/>
+    <enumerant name="FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE"/>
+  </type>
+
+  <type name="ServiceGroupIndicator" type="enum">
+    <enumerant name="FEDERATION_MANAGEMENT"/>
+    <enumerant name="DECLARATION_MANAGEMENT"/>
+    <enumerant name="OBJECT_MANAGEMENT"/>
+    <enumerant name="OWNERSHIP_MANAGEMENT"/>
+    <enumerant name="TIME_MANAGEMENT"/>
+    <enumerant name="DATA_DISTRIBUTION_MANAGEMENT"/>
+    <enumerant name="SUPPORT_SERVICES"/>
+  </type>
+
+  <type name="Bool" ctype="bool" encoding="Bool"/>
+  <!-- FIXME Leave that to the encoding implementation -->
+  <type name="String" ctype="std::wstring" encoding="String"/>
+  <type name="Unsigned" ctype="unsigned" encoding="UInt32"/>
+  <!-- FIXME Make that UInt64 -->
+  <type name="SizeType" ctype="size_t" encoding="SizeT"/>
+
+  <type name="FederationHandle" ctype="FederationHandle" encoding="UInt16"/>
+  <type name="FOMModuleHandle" ctype="FOMModuleHandle" encoding="UInt16"/>
+
+  <type name="AttributeHandle" ctype="AttributeHandle" encoding="UInt32"/>
+  <type name="DimensionHandle" ctype="DimensionHandle" encoding="UInt32"/>
+  <type name="ObjectClassHandle" ctype="ObjectClassHandle" encoding="UInt32"/>
+  <type name="ObjectInstanceHandle" ctype="ObjectInstanceHandle" encoding="UInt32"/>
+  <type name="InteractionClassHandle" ctype="InteractionClassHandle" encoding="UInt32"/>
+  <type name="ParameterHandle" ctype="ParameterHandle" encoding="UInt32"/>
+  <type name="FederateHandle" ctype="FederateHandle" encoding="UInt32"/>
+  <type name="SpaceHandle" ctype="SpaceHandle" encoding="UInt32"/>
+  <type name="TransportationHandle" ctype="TransportationHandle" encoding="UInt8"/>
+  <type name="OrderingHandle" ctype="OrderingHandle" encoding="UInt8"/>
+
+  <type name="MessageRetractionHandle" ctype="MessageRetractionHandle" encoding="UInt64"/>
+  <type name="RegionHandle" ctype="RegionHandle" encoding="UInt64"/>
+
+  <type name="AttributeHandleVector" type="vector" scalar="AttributeHandle"/>
+  <type name="FederateHandleSet" type="set" scalar="FederateHandle"/>
+  <type name="FederateHandleVector" type="vector" scalar="FederateHandle"/>
+  <type name="ParameterHandleVector" type="vector" scalar="ParameterHandle"/>
+  <type name="DimensionHandleVector" type="vector" scalar="DimensionHandle"/>
+  <type name="DimensionHandleSet" type="set" scalar="DimensionHandle"/>
+  <type name="ObjectInstanceHandleVector" type="vector" scalar="ObjectInstanceHandle"/>
+  <type name="FOMModuleHandleVector" type="vector" scalar="FOMModuleHandle"/>
+  <type name="FOMModuleHandleSet" type="set" scalar="FOMModuleHandle"/>
+
+  <type name="StringVector" type="vector" scalar="String"/>
+  <type name="StringSet" type="set" scalar="String"/>
+
+  <type name="VariableLengthData" ctype="VariableLengthData" encoding="VariableLengthData"/>
+
+  <type name="RangeBoundsValue" type="struct">
+    <field name="LowerBound" type="Unsigned"/>
+    <field name="UpperBound" type="Unsigned"/>
+  </type>
+  <type name="DimensionHandleRangeBoundsValuePair" type="pair" first="DimensionHandle" second="RangeBoundsValue"/>
+  <type name="RegionValue" type="vector" scalar="DimensionHandleRangeBoundsValuePair"/>
+  <type name="RegionValueList" type="vector" scalar="RegionValue"/>
+
+  <type name="InteractionClassHandleRegionValueListPair" type="pair" first="InteractionClassHandle" second="RegionValueList"/>
+  <type name="AttributeHandleRegionValueListPair" type="pair" first="AttributeHandle" second="RegionValueList"/>
+
+  <type name="AttributeState" type="struct">
+    <field name="AttributeHandle" type="AttributeHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+    <!-- <field name="AssociatedRegionSet" type="RegionValueList"/> -->
+  </type>
+  <type name="AttributeStateVector" type="vector" scalar="AttributeState"/>
+
+  <type name="ParameterValue" type="struct">
+    <field name="ParameterHandle" type="ParameterHandle"/>
+    <field name="Value" type="VariableLengthData"/>
+  </type>
+  <type name="ParameterValueVector" type="vector" scalar="ParameterValue"/>
+
+  <type name="AttributeValue" type="struct">
+    <field name="AttributeHandle" type="AttributeHandle"/>
+    <field name="Value" type="VariableLengthData"/>
+  </type>
+  <type name="AttributeValueVector" type="vector" scalar="AttributeValue"/>
+
+  <!-- For the enable time regulation request -->
+  <type name="TimeStamp" type="struct">
+    <field name="LogicalTime" type="VariableLengthData"/>
+    <field name="ZeroLookahead" type="Bool"/>
+  </type>
+
+  <!-- For the enable time regulation response data -->
+  <type name="FederateHandleTimeStampMap" type="map" key="FederateHandle" value="TimeStamp"/>
+
+  <type name="FederateHandleSaveStatusPair" type="pair" first="FederateHandle" second="SaveStatus"/>
+  <type name="FederateHandleSaveStatusPairVector" type="vector" scalar="FederateHandleSaveStatusPair"/>
+
+  <type name="FederateHandleRestoreStatusPair" type="pair" first="FederateHandle" second="RestoreStatus"/>
+  <type name="FederateHandleRestoreStatusPairVector" type="vector" scalar="FederateHandleRestoreStatusPair"/>
+
+  <type name="FederationExecutionInformation" type="struct">
+    <field name="FederationExecutionName" type="String"/>
+    <field name="LogicalTimeFactoryName" type="String"/>
+  </type>
+  <type name="FederationExecutionInformationVector" type="vector" scalar="FederationExecutionInformation"/>
+
+  <!-- Object instance handle and name reservation -->
+  <type name="ObjectInstanceHandleNamePair" type="pair" first="ObjectInstanceHandle" second="String"/>
+  <type name="ObjectInstanceHandleNamePairVector" type="vector" scalar="ObjectInstanceHandleNamePair"/>
+
+
+  <type name="CreateFederationExecutionResponseType" type="enum">
+    <enumerant name="CreateFederationExecutionResponseSuccess"/>
+    <enumerant name="CreateFederationExecutionResponseFederationExecutionAlreadyExists"/>
+    <enumerant name="CreateFederationExecutionResponseCouldNotOpenFDD"/>
+    <enumerant name="CreateFederationExecutionResponseErrorReadingFDD"/>
+    <enumerant name="CreateFederationExecutionResponseCouldNotCreateLogicalTimeFactory"/>
+    <enumerant name="CreateFederationExecutionResponseRTIinternalError"/>
+  </type>
+
+  <type name="DestroyFederationExecutionResponseType" type="enum">
+    <enumerant name="DestroyFederationExecutionResponseSuccess"/>
+    <enumerant name="DestroyFederationExecutionResponseFederatesCurrentlyJoined"/>
+    <enumerant name="DestroyFederationExecutionResponseFederationExecutionDoesNotExist"/>
+    <enumerant name="DestroyFederationExecutionResponseRTIinternalError"/>
+  </type>
+
+  <type name="JoinFederationExecutionResponseType" type="enum">
+    <enumerant name="JoinFederationExecutionResponseSuccess"/>
+    <enumerant name="JoinFederationExecutionResponseFederateNameAlreadyInUse"/>
+    <enumerant name="JoinFederationExecutionResponseFederationExecutionDoesNotExist"/>
+    <enumerant name="JoinFederationExecutionResponseSaveInProgress"/>
+    <enumerant name="JoinFederationExecutionResponseRestoreInProgress"/>
+  </type>
+
+  <type name="RegisterFederationSynchronizationPointResponseType" type="enum">
+    <enumerant name="RegisterFederationSynchronizationPointResponseSuccess"/>
+    <enumerant name="RegisterFederationSynchronizationPointResponseLabelNotUnique"/>
+    <enumerant name="RegisterFederationSynchronizationPointResponseMemberNotJoined"/>
+  </type>
+
+  <!-- Key/Value pair for configuration parameters, this is used when a federate joins -->
+  <type name="ConfigurationParameterMap" type="map" key="String" value="StringVector"/>
+
+  <!-- Data Types to send an already parsed/read fom module to the root server for
+       validation and handle allocation. -->
+  <type name="FOMStringTransportationType" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+  </type>
+  <type name="FOMStringTransportationTypeList" type="vector" scalar="FOMStringTransportationType"/>
+
+  <type name="FOMStringDimension" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="UpperBound" type="Unsigned"/>
+  </type>
+  <type name="FOMStringDimensionList" type="vector" scalar="FOMStringDimension"/>
+
+  <type name="FOMStringRoutingSpace" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="DimensionSet" type="StringSet"/>
+  </type>
+  <type name="FOMStringRoutingSpaceList" type="vector" scalar="FOMStringRoutingSpace"/>
+
+  <type name="FOMStringParameter" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+  </type>
+  <type name="FOMStringParameterList" type="vector" scalar="FOMStringParameter"/>
+
+  <type name="FOMStringInteractionClass" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="ParentName" type="String"/>
+    <field name="OrderType" type="String"/>
+    <field name="TransportationType" type="String"/>
+    <field name="RoutingSpace" type="String"/>
+    <field name="DimensionSet" type="StringSet"/>
+    <field name="ParameterList" type="FOMStringParameterList"/>
+  </type>
+  <type name="FOMStringInteractionClassList" type="vector" scalar="FOMStringInteractionClass"/>
+
+  <type name="FOMStringAttribute" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="OrderType" type="String"/>
+    <field name="TransportationType" type="String"/>
+    <field name="RoutingSpace" type="String"/>
+    <field name="DimensionSet" type="StringSet"/>
+  </type>
+  <type name="FOMStringAttributeList" type="vector" scalar="FOMStringAttribute"/>
+
+  <type name="FOMStringObjectClass" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="ParentName" type="String"/>
+    <field name="AttributeList" type="FOMStringAttributeList"/>
+  </type>
+  <type name="FOMStringObjectClassList" type="vector" scalar="FOMStringObjectClass"/>
+
+  <type name="FOMStringModule" type="struct" copyOnWrite="true">
+    <!-- <field name="Name" type="String"/> -->
+    <field name="TransportationTypeList" type="FOMStringTransportationTypeList"/>
+    <field name="DimensionList" type="FOMStringDimensionList"/>
+    <field name="RoutingSpaceList" type="FOMStringRoutingSpaceList"/>
+    <field name="InteractionClassList" type="FOMStringInteractionClassList"/>
+    <field name="ObjectClassList" type="FOMStringObjectClassList"/>
+  </type>
+  <type name="FOMStringModuleList" type="vector" scalar="FOMStringModule"/>
+
+
+  <!-- Data types to send ready to use FOM modules. -->
+  <type name="FOMTransportationType" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="TransportationType" type="TransportationType"/>
+  </type>
+  <type name="FOMTransportationTypeList" type="vector" scalar="FOMTransportationType"/>
+  <type name="FOMTransportationTypeMap" type="map" key="String" value="FOMTransportationType"/>
+
+  <type name="FOMDimension" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="DimensionHandle" type="DimensionHandle"/>
+    <field name="UpperBound" type="Unsigned"/>
+  </type>
+  <type name="FOMDimensionList" type="vector" scalar="FOMDimension"/>
+  <type name="FOMDimensionMap" type="map" key="String" value="FOMDimension"/>
+
+  <type name="FOMRoutingSpace" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="SpaceHandle" type="SpaceHandle"/>
+    <field name="DimensionHandleSet" type="DimensionHandleSet"/>
+  </type>
+  <type name="FOMRoutingSpaceList" type="vector" scalar="FOMRoutingSpace"/>
+  <type name="FOMRoutingSpaceMap" type="map" key="String" value="FOMRoutingSpace"/>
+
+  <type name="FOMParameter" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="ParameterHandle" type="ParameterHandle"/>
+  </type>
+  <type name="FOMParameterList" type="vector" scalar="FOMParameter"/>
+  <type name="FOMParameterMap" type="map" key="String" value="FOMParameter"/>
+
+  <type name="FOMInteractionClass" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="InteractionClassHandle" type="InteractionClassHandle"/>
+    <field name="ParentInteractionClassHandle" type="InteractionClassHandle"/>
+    <field name="OrderType" type="OrderType"/>
+    <field name="TransportationType" type="TransportationType"/>
+    <field name="DimensionHandleSet" type="DimensionHandleSet"/>
+    <field name="ParameterList" type="FOMParameterList"/>
+  </type>
+  <type name="FOMInteractionClassList" type="vector" scalar="FOMInteractionClass"/>
+
+  <type name="FOMAttribute" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="AttributeHandle" type="AttributeHandle"/>
+    <field name="OrderType" type="OrderType"/>
+    <field name="TransportationType" type="TransportationType"/>
+    <field name="DimensionHandleSet" type="DimensionHandleSet"/>
+  </type>
+  <type name="FOMAttributeList" type="vector" scalar="FOMAttribute"/>
+
+  <type name="FOMObjectClass" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="ObjectClassHandle" type="ObjectClassHandle"/>
+    <field name="ParentObjectClassHandle" type="ObjectClassHandle"/>
+    <field name="AttributeList" type="FOMAttributeList"/>
+  </type>
+  <type name="FOMObjectClassList" type="vector" scalar="FOMObjectClass"/>
+
+  <type name="FOMModule" type="struct" copyOnWrite="true">
+    <field name="FOMModuleHandle" type="FOMModuleHandle"/>
+    <field name="RequiredFOMModuleHandleSet" type="FOMModuleHandleSet"/>
+    <field name="TransportationTypeList" type="FOMTransportationTypeList"/>
+    <field name="DimensionList" type="FOMDimensionList"/>
+    <field name="RoutingSpaceList" type="FOMRoutingSpaceList"/>
+    <field name="InteractionClassList" type="FOMInteractionClassList"/>
+    <field name="ObjectClassList" type="FOMObjectClassList"/>
+  </type>
+  <type name="FOMModuleList" type="vector" scalar="FOMModule"/>
+
+
+  <!-- The messages -->
+
+  <!-- Create federation execution is forwarded to the root server and that one responds. -->
+  <message type="CreateFederationExecutionRequest">
+    <field name="FederationExecution" type="String"/>
+    <field name="LogicalTimeFactoryName" type="String"/>
+    <!-- The file is currently unused since we parse the file in the ambassador,
+         but if we need server side file handling the file name should be here. -->
+    <field name="FOMModuleFileList" type="StringVector"/>
+    <!-- The already parsed list of FOM modules. -->
+    <field name="FOMStringModuleList" type="FOMStringModuleList"/>
+  </message>
+  <message type="CreateFederationExecutionResponse">
+    <field name="CreateFederationExecutionResponseType" type="CreateFederationExecutionResponseType"/>
+    <field name="ExceptionString" type="String"/>
+  </message>
+
+  <!-- Destroy federation execution -->
+  <message type="DestroyFederationExecutionRequest">
+    <field name="FederationExecution" type="String"/>
+  </message>
+  <message type="DestroyFederationExecutionResponse">
+    <field name="DestroyFederationExecutionResponseType" type="DestroyFederationExecutionResponseType"/>
+  </message>
+
+  <!-- Get a list of federations -->
+  <message type="EnumerateFederationExecutionsRequest">
+  </message>
+  <message type="EnumerateFederationExecutionsResponse">
+    <field name="FederationExecutionInformationVector" type="FederationExecutionInformationVector"/>
+  </message>
+
+  <!-- Tell a child server node about a new federation -->
+  <message type="InsertFederationExecution">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederationName" type="String"/>
+    <field name="LogicalTimeFactoryName" type="String"/>
+    <!-- Maximum backward compatible string based key value map describing the rti capabilites. -->
+    <field name="ConfigurationParameterMap" type="ConfigurationParameterMap"/>
+    <!-- May be the mom?? FIXME -->
+    <field name="FOMModuleList" type="FOMModuleList"/>
+  </message>
+  <message type="EraseFederationExecution">
+    <field name="FederationHandle" type="FederationHandle"/>
+  </message>
+
+  <!-- Tell a child server node about a set of new FOM modules. This should happen on demand when it is needed. -->
+  <!-- <message type="InsertFOMModules"> -->
+  <!--   <field name="FederationHandle" type="FederationHandle"/> -->
+  <!--   <field name="FOMModule" type="FOMModule"/> -->
+  <!-- </message> -->
+  <!-- <message type="EraseFOMModules"> -->
+  <!--   <field name="FederationHandle" type="FederationHandle"/> -->
+  <!--   <field name="FOMModuleHandle" type="FOMModuleHandle"/> -->
+  <!-- </message> -->
+
+
+  <!-- Join federation execution -->
+  <message type="JoinFederationExecutionRequest">
+    <field name="FederationExecution" type="String"/>
+    <!-- The new federates type -->
+    <field name="FederateType" type="String"/>
+    <!-- The new federates unique name -->
+    <field name="FederateName" type="String"/>
+    <!-- The set of additional FOM modules -->
+    <field name="FOMStringModuleList" type="FOMStringModuleList"/>
+    <!-- Maximum backward compatible string based key value map describing the federate capabilites. -->
+    <field name="ConfigurationParameterMap" type="ConfigurationParameterMap"/>
+  </message>
+  <message type="JoinFederationExecutionResponse">
+    <!-- The federation handle to identify packets -->
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="JoinFederationExecutionResponseType" type="JoinFederationExecutionResponseType"/>
+    <field name="ExceptionString" type="String"/>
+    <!-- The new federates handle -->
+    <field name="FederateHandle" type="FederateHandle"/>
+    <!-- The new federates type -->
+    <field name="FederateType" type="String"/>
+    <!-- The new federates unique name -->
+    <field name="FederateName" type="String"/>
+    <!-- The list of required fom modules -->
+    <field name="FOMModuleHandleList" type="FOMModuleHandleVector"/>
+  </message>
+
+  <!-- Resign federation execution. The local ambassador is responsible for the policy tasks. -->
+  <message type="ResignFederationExecutionRequest">
+    <!-- The federation handle to identify packets -->
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+  </message>
+  <message type="ResignFederationExecutionResponse">
+    <!-- The federation handle to identify packets -->
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+  </message>
+
+  <!-- Notify messages for new and vanished Federates -->
+  <message type="JoinFederateNotify">
+    <!-- The federation handle to identify packets -->
+    <field name="FederationHandle" type="FederationHandle"/>
+    <!-- The new federates handle -->
+    <field name="FederateHandle" type="FederateHandle"/>
+    <!-- The new federates type -->
+    <field name="FederateType" type="String"/>
+    <!-- The new federates unique name -->
+    <field name="FederateName" type="String"/>
+  </message>
+  <message type="ResignFederateNotify">
+    <!-- The federation handle to identify packets -->
+    <field name="FederationHandle" type="FederationHandle"/>
+    <!-- The federates handle -->
+    <field name="FederateHandle" type="FederateHandle"/>
+  </message>
+  <message type="ChangeDefaultResignAction">
+    <!-- The federation handle to identify packets -->
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+    <field name="ResignAction" type="ResignAction"/>
+  </message>
+
+  <!-- Syncronisation points.
+    -->
+  <message type="RegisterFederationSynchronizationPoint">
+    <!-- The federation handle to identify packets -->
+    <field name="FederationHandle" type="FederationHandle"/>
+    <!-- The originating federates handle -->
+    <field name="FederateHandle" type="FederateHandle"/>
+    <!-- The synchronization label -->
+    <field name="Label" type="String"/>
+    <field name="Tag" type="VariableLengthData"/>
+    <!-- The Federate handles that need to be handled.
+         If empty all federates that are joined and will join are synchronized. -->
+    <field name="FederateHandleSet" type="FederateHandleSet"/>
+  </message>
+  <message type="RegisterFederationSynchronizationPointResponse">
+    <!-- The federation handle to identify packets -->
+    <field name="FederationHandle" type="FederationHandle"/>
+    <!-- The originating federates handle, do we need to have a more stable routing??? FIXME -->
+    <field name="FederateHandle" type="FederateHandle"/>
+    <!-- The synchronization label -->
+    <field name="Label" type="String"/>
+    <field name="RegisterFederationSynchronizationPointResponseType" type="RegisterFederationSynchronizationPointResponseType"/>
+  </message>
+
+  <message type="AnnounceSynchronizationPoint">
+    <!-- The federation handle to identify packets -->
+    <field name="FederationHandle" type="FederationHandle"/>
+    <!-- The synchronization label -->
+    <field name="Label" type="String"/>
+    <field name="Tag" type="VariableLengthData"/>
+    <field name="AddJoiningFederates" type="Bool"/>
+    <!-- The set of federate handles that need to be informed. Use for routing.
+         This should be also used to track the server local federate set. -->
+    <field name="FederateHandleSet" type="FederateHandleSet"/>
+  </message>
+
+  <message type="SynchronizationPointAchieved">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="Label" type="String"/>
+    <field name="FederateHandleSet" type="FederateHandleSet"/>
+  </message>
+  <message type="FederationSynchronized">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="Label" type="String"/>
+    <field name="FederateHandleSet" type="FederateHandleSet"/>
+  </message>
+
+  <!-- Time management -->
+  <message type="EnableTimeRegulationRequest">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+    <field name="TimeStamp" type="TimeStamp"/>
+  </message>
+  <message type="EnableTimeRegulationResponse">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+    <field name="RespondingFederateHandle" type="FederateHandle"/>
+    <field name="TimeStampValid" type="Bool"/>
+    <field name="TimeStamp" type="TimeStamp"/>
+  </message>
+  <message type="DisableTimeRegulationRequest">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+  </message>
+  <!-- Is sent when a federate has requested a time advance.
+       The logical time that is sent is the time advance plus the lookahead.
+       Having recieved that message means, that this federate will not send
+       timestamped messages with a timestamp before the timestamp given in
+       this message.
+  -->
+  <message type="CommitLowerBoundTimeStamp">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <!-- May be a federate handle vector already? For the optimized case where we know the representation
+         and handle collecting commits in the server tree? FIXME -->
+    <field name="FederateHandle" type="FederateHandle"/>
+    <field name="TimeStamp" type="TimeStamp"/>
+    <!-- Hmm, may be this is sufficient to flush objects when they have passed a specific number? -->
+    <!-- <field name="MessageRetractionHandle" type="MessageRetractionHandle"/> -->
+  </message>
+  <!-- Just lookback messages that never leave the ambassador -->
+  <message type="TimeConstrainedEnabled">
+    <field name="LogicalTime" type="VariableLengthData"/>
+  </message>
+  <message type="TimeRegulationEnabled">
+    <field name="LogicalTime" type="VariableLengthData"/>
+  </message>
+  <message type="TimeAdvanceGranted">
+    <field name="LogicalTime" type="VariableLengthData"/>
+  </message>
+
+  <!-- Publications are pushed into all federates. -->
+  <message type="ChangeInteractionClassPublication">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="PublicationType" type="PublicationType"/>
+    <field name="InteractionClassHandle" type="InteractionClassHandle"/>
+  </message>
+  <message type="ChangeObjectClassPublication">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="PublicationType" type="PublicationType"/>
+    <field name="ObjectClassHandle" type="ObjectClassHandle"/>
+    <field name="AttributeHandles" type="AttributeHandleVector"/>
+  </message>
+
+  <!-- Subscribtions are pushed into federates that publish the appropriate stuff. -->
+  <message type="ChangeInteractionClassSubscription">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="SubscriptionType" type="SubscriptionType"/>
+    <field name="InteractionClassHandle" type="InteractionClassHandle"/>
+    <!-- <field name="InteractionClassHandleRegionValueListPair" type="InteractionClassHandleRegionValueListPair"/> -->
+  </message>
+  <message type="ChangeObjectClassSubscription">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="SubscriptionType" type="SubscriptionType"/>
+    <field name="ObjectClassHandle" type="ObjectClassHandle"/>
+    <field name="AttributeHandles" type="AttributeHandleVector"/>
+  </message>
+
+  <!-- Ambassador internal messages. -->
+  <message type="RegistrationForObjectClass">
+    <field name="ObjectClassHandle" type="ObjectClassHandle"/>
+    <field name="Start" type="Bool"/>
+  </message>
+  <message type="TurnInteractionsOn">
+    <field name="InteractionClassHandle" type="InteractionClassHandle"/>
+    <field name="On" type="Bool"/>
+  </message>
+
+  <!-- Interaction message -->
+  <message type="Interaction">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="InteractionClassHandle" type="InteractionClassHandle"/>
+    <field name="TransportationType" type="TransportationType"/>
+    <field name="Tag" type="VariableLengthData"/>
+    <field name="ParameterValues" type="ParameterValueVector"/>
+  </message>
+  <message type="TimeStampedInteraction">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="InteractionClassHandle" type="InteractionClassHandle"/>
+    <field name="TransportationType" type="TransportationType"/>
+    <field name="Tag" type="VariableLengthData"/>
+    <field name="TimeStamp" type="VariableLengthData"/>
+    <field name="MessageRetractionHandle" type="MessageRetractionHandle"/>
+    <field name="ParameterValues" type="ParameterValueVector"/>
+  </message>
+
+  <!-- ObjectInstance handle and name management -->
+  <!-- This pair of request/response messages is used internally to allocate a
+       pool of object instance name/handle pairs in a federate. This is to make
+       the nameless registerObjectInstance call completely asyncronous.
+  -->
+  <message type="ObjectInstanceHandlesRequest">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+    <field name="Count" type="Unsigned"/>
+  </message>
+  <message type="ObjectInstanceHandlesResponse">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+    <field name="ObjectInstanceHandleNamePairVector" type="ObjectInstanceHandleNamePairVector"/>
+  </message>
+  <!-- Use this to unreference an object instance handle used by an ambassador. -->
+  <message type="ReleaseMultipleObjectInstanceNameHandlePairs">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="ObjectInstanceHandleVector" type="ObjectInstanceHandleVector"/>
+  </message>
+  <!-- ObjectInstance name management -->
+  <!-- Used for object name reservation returns a new allocated object instance handle
+       in addition to the reserved name. -->
+  <message type="ReserveObjectInstanceNameRequest">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+    <field name="Name" type="String"/>
+  </message>
+  <message type="ReserveObjectInstanceNameResponse">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+    <field name="ObjectInstanceHandleNamePair" type="ObjectInstanceHandleNamePair"/>
+    <field name="Success" type="Bool"/>
+  </message>
+  <message type="ReserveMultipleObjectInstanceNameRequest">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+    <field name="NameList" type="StringVector"/>
+  </message>
+  <message type="ReserveMultipleObjectInstanceNameResponse">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+    <field name="ObjectInstanceHandleNamePairVector" type="ObjectInstanceHandleNamePairVector"/>
+    <field name="Success" type="Bool"/>
+  </message>
+
+  <!-- Inserts an object instance handle name pair into the child server node -->
+  <!-- <message type="InsertObjectInstanceHandleNamePair"> -->
+  <!--   <field name="FederationHandle" type="FederationHandle"/> -->
+  <!--   <field name="ObjectInstanceHandleNamePair" type="ObjectInstanceHandleNamePair"/> -->
+  <!-- </message> -->
+  <!-- <message type="EraseObjectInstanceHandleNamePair"> -->
+  <!--   <field name="FederationHandle" type="FederationHandle"/> -->
+  <!--   <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/> -->
+  <!-- </message> -->
+
+  <!-- ObjectInstance messages -->
+  <!-- Injects a new ObjectInstance into the server node -->
+  <message type="InsertObjectInstance">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="ObjectClassHandle" type="ObjectClassHandle"/>
+    <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
+    <field name="Name" type="String"/>
+    <!-- Contains the owner federates for each attribute handle and may be some region associations? FIXME -->
+    <field name="AttributeStateVector" type="AttributeStateVector"/>
+  </message>
+
+  <!-- Obsolete -->
+  <message type="DeleteObjectInstance">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
+    <field name="Tag" type="VariableLengthData"/>
+  </message>
+  <message type="TimeStampedDeleteObjectInstance">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
+    <field name="Tag" type="VariableLengthData"/>
+    <field name="TimeStamp" type="VariableLengthData"/>
+    <field name="MessageRetractionHandle" type="MessageRetractionHandle"/>
+  </message>
+
+
+  <message type="LocalDeleteObjectInstance">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
+  </message>
+  <!-- Need to have a message which returns the object handle to the pool of
+       Unused object handles. And also removes the object from the routing tables.
+       We cannot do this in the delete object instance message since the timestamped
+       one mitght be revoked which means that we still need to be able to deliver
+       for that object handle, even when we have already seend the DeleteInstance
+       message. Also the delete instance message might be unreliable (?)
+       FIXME implement!!!
+  -->
+  <!-- <message type="DestroyObjectInstance"> -->
+  <!--   <field name="FederationHandle" type="FederationHandle"/> -->
+  <!--   <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/> -->
+  <!-- </message> -->
+
+  <!-- Attribute updates -->
+  <message type="AttributeUpdate">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
+    <field name="Tag" type="VariableLengthData"/>
+    <field name="TransportationType" type="TransportationType"/>
+    <field name="AttributeValues" type="AttributeValueVector"/>
+  </message>
+  <message type="TimeStampedAttributeUpdate">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
+    <field name="Tag" type="VariableLengthData"/>
+    <field name="TimeStamp" type="VariableLengthData"/>
+    <field name="MessageRetractionHandle" type="MessageRetractionHandle"/>
+    <field name="TransportationType" type="TransportationType"/>
+    <field name="AttributeValues" type="AttributeValueVector"/>
+  </message>
+
+
+  <message type="RequestAttributeUpdate">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
+    <field name="AttributeHandles" type="AttributeHandleVector"/>
+    <field name="Tag" type="VariableLengthData"/>
+  </message>
+  <message type="RequestClassAttributeUpdate">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="ObjectClassHandle" type="ObjectClassHandle"/>
+    <field name="AttributeHandles" type="AttributeHandleVector"/>
+    <field name="Tag" type="VariableLengthData"/>
+  </message>
+
+</messagelist>
