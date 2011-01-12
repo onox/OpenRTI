@@ -29,6 +29,8 @@
 
 namespace OpenRTI {
 
+#if defined(HAVE_PTHREAD_CONDATTR_SETCLOCK)
+
 // Try to find out if we can use the monotonic clock.
 // In the end it is available if wave it and if we can use it for the
 // condition variable timeout.
@@ -36,9 +38,6 @@ namespace OpenRTI {
 static bool
 checkClockId(clockid_t clockid)
 {
-#if !defined(HAVE_PTHREAD_CONDATTR_SETCLOCK)
-  return false;
-#else
   struct timespec ts;
   if (0 != clock_gettime(clockid, &ts))
     return false;
@@ -52,7 +51,6 @@ checkClockId(clockid_t clockid)
     return false;
 
   return true;
-#endif
 }
 
 static clockid_t
@@ -85,11 +83,23 @@ ClockPosix::getClockId()
   return _clockId;
 }
 
+#endif
+
 uint64_t ClockPosix::now()
 {
+#if defined(HAVE_POSIX_TIMERS)
   struct timespec ts;
+#if defined(HAVE_PTHREAD_CONDATTR_SETCLOCK)
   clock_gettime(getClockId(), &ts);
+#else
+  clock_gettime(CLOCK_REALTIME, &ts);
+#endif
   return toNSec(ts);
+#else
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  return toNSec(tv);
+#endif
 }
 
 Clock

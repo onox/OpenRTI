@@ -28,15 +28,12 @@
 #include "Export.h"
 #include "Types.h"
 
-#if defined(_POSIX_CLOCK_SELECTION)
-#define HAVE_PTHREAD_CONDATTR_SETCLOCK
+#if defined(_POSIX_TIMERS) && 0 < _POSIX_TIMERS
+#define HAVE_POSIX_TIMERS
 #endif
 
-// Sigh, centos4 has some broken configury here, only enable on new enough glibc versions
-#if defined __GLIBC__ && (__GLIBC__ <= 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 4))
-# ifdef HAVE_PTHREAD_CONDATTR_SETCLOCK
-#  undef HAVE_PTHREAD_CONDATTR_SETCLOCK
-# endif
+#if defined(_POSIX_CLOCK_SELECTION) && 0 < _POSIX_CLOCK_SELECTION
+#define HAVE_PTHREAD_CONDATTR_SETCLOCK
 #endif
 
 namespace OpenRTI {
@@ -65,10 +62,12 @@ struct OPENRTI_LOCAL ClockPosix {
 
   static uint64_t now();
 
+#if defined(HAVE_PTHREAD_CONDATTR_SETCLOCK)
   /// This should return the same than the _clock variable below.
   /// The difference is that this should be independent of the ordering of static data initializers.
   /// This function just crude tests for the required features.
   static clockid_t getClockId();
+#endif
 };
 
 } // namespace OpenRTI
