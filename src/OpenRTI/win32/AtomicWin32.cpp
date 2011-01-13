@@ -42,7 +42,11 @@ Atomic::dec()
 unsigned
 Atomic::get() const
 {
+#ifdef __MINGW32__
+  __sync_synchronize();
+#else
   MemoryBarrier();
+#endif
   return _value;
 }
 

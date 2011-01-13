@@ -17,14 +17,13 @@
  *
  */
 
-#define UNICODE 1
-
 #include "SocketAddress.h"
 
 #include <algorithm>
 #include <cstring>
 #include "Exception.h"
 #include "SocketAddressPrivateDataWin32.h"
+#include "StringUtils.h"
 
 namespace OpenRTI {
 
@@ -105,29 +104,35 @@ SocketAddress::resolve(const std::wstring& address, const std::wstring& service)
   int family = AF_UNSPEC;
   int socktype = SOCK_STREAM;
 
-  ADDRINFOW hints;
-  memset(&hints, 0, sizeof(ADDRINFOW));
+  struct addrinfo hints;
+  memset(&hints, 0, sizeof(struct addrinfo));
   hints.ai_family = family;
   hints.ai_socktype = socktype;
   hints.ai_flags = 0;
   hints.ai_protocol = 0;
 
-  ADDRINFOW *ai = 0;
-  while (int ret = GetAddrInfoW(address.c_str(), service.c_str(), &hints, &ai)) {
+  // If the address is empty, assume we are asking for a wildcard address
+  if (address.empty())
+    hints.ai_flags = AI_PASSIVE;
+
+  std::string localeAddress = ucsToLocale(address);
+  std::string localeService = ucsToLocale(service);
+  struct addrinfo *ai = 0;
+  while (int ret = ::getaddrinfo(localeAddress.c_str(), localeService.c_str(), &hints, &ai)) {
     if (ret == EAI_AGAIN)
       continue;
-    FreeAddrInfoW(ai);
+    ::freeaddrinfo(ai);
     WSACleanup();
-    throw TransportError(gai_strerrorW(ret));
+    throw TransportError(localeToUcs(gai_strerror(ret)));
   }
 
   std::list<SocketAddress> socketAddressList;
-  ADDRINFOW *res = ai;
+  struct addrinfo *res = ai;
   while (res) {
     socketAddressList.push_back(SocketAddress(new PrivateData(res->ai_addr, res->ai_addrlen)));
     res = res->ai_next;
   }
-  FreeAddrInfoW(ai);
+  ::freeaddrinfo(ai);
   WSACleanup();
 
   return socketAddressList;
