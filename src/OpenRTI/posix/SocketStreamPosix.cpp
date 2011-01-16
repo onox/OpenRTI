@@ -21,13 +21,9 @@
 
 // #define DEBUG_ASSEMBLY
 // #define DEBUG2_ASSEMBLY
-// #define DEBUG_LATENCY
 
 #ifdef OpenRTI_HAVE_ALLOCA
 #include <alloca.h>
-#endif
-#ifdef DEBUG_LATENCY
-#include <unistd.h>
 #endif
 
 #include "SocketPrivateDataPosix.h"
@@ -77,12 +73,6 @@ SocketStream::send(const NetworkBuffer& networkBuffer, bool moreToSend)
     if (sendBufferSize < bytelen)
       break;
   }
-
-#ifdef DEBUG_LATENCY
-  // The purpose is to emulate some higer latency connections.
-  // This already helped much to provoke some races more reliable ...
-  usleep(rand()%1000);
-#endif
 
   struct msghdr msg = { 0, };
   msg.msg_name = 0;

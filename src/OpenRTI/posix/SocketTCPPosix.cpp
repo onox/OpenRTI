@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2010 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2010 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -39,7 +39,7 @@ SocketTCP::connect(const SocketAddress& socketAddress)
 
   if (!socketAddress.valid())
     throw TransportError(L"Trying to connect an invalid address!");
-    
+
   int fd = ::socket(socketAddress._privateData->_addr->sa_family, SOCK_STREAM, 0);
   if (fd == -1)
     throw TransportError(errnoToUcs(errno));
@@ -49,14 +49,20 @@ SocketTCP::connect(const SocketAddress& socketAddress)
   if (flags != -1)
     fcntl(fd, F_SETFD, flags | FD_CLOEXEC);
 
-  int one = 1;
-  int ret = setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &one, sizeof(one));
+#ifdef DEBUG_LATENCY
+  // When debugging latencies, just keep the messages longer in the send
+  // queue until they are flushed by a timeout.
+  int delay = 0;
+#else
+  int delay = 1;
+#endif
+  int ret = setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &delay, sizeof(delay));
   if (ret == -1) {
     int errorNumber = errno;
     ::close(fd);
     throw TransportError(errnoToUcs(errorNumber));
   }
-    
+
   ret = ::connect(fd, socketAddress._privateData->_addr, socketAddress._privateData->_addrlen);
   if (ret == -1) {
     int errorNumber = errno;

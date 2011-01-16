@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2010 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2010 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -46,7 +46,7 @@ SocketServerTCP::bind(const SocketAddress& socketAddress)
   // This is also nice to have, but not essential
   unsigned reuseaddr = 1;
   setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(reuseaddr));
-    
+
   int ret = ::bind(fd, socketAddress._privateData->_addr, socketAddress._privateData->_addrlen);
   if (ret == -1) {
     int errorNumber = errno;
@@ -90,8 +90,14 @@ SocketServerTCP::accept()
     throw TransportError(errnoToUcs(errorNumber));
   }
 
-  int one = 1;
-  ret = setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &one, sizeof(one));
+#ifdef DEBUG_LATENCY
+  // When debugging latencies, just keep the messages longer in the send
+  // queue until they are flushed by a timeout.
+  int delay = 0;
+#else
+  int delay = 1;
+#endif
+  ret = setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &delay, sizeof(delay));
   if (ret == -1) {
     int errorNumber = errno;
     ::close(fd);

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2010 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2010 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -42,6 +42,10 @@
 #ifndef SUN_LEN
 # define SUN_LEN(ptr) ((size_t)(((struct sockaddr_un*)0)->sun_path) + std::strlen((ptr)->sun_path))
 #endif
+
+// Define if you want to provoke latencies in message delivery for testing
+// NEVER define that for production use!
+// #define DEBUG_LATENCY
 
 namespace OpenRTI {
 
