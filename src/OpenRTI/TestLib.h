@@ -194,12 +194,8 @@ public:
           _done = true;
           _numWaitingThreads = 0;
           _condition.broadcast();
-          if (_numThreads && _successCount != 1) {
-            std::wcout << "Aborting due to non unique success: successCount = " << _successCount << std::endl;
-            _successCount = 0;
-            _failCount = 0;
+          if (_numThreads && !_checkUniqueSuccess())
             return false;
-          }
           _successCount = 0;
           _failCount = 0;
         }
@@ -221,12 +217,8 @@ public:
         _done = true;
         _numWaitingThreads = 0;
         _condition.broadcast();
-        if (_successCount != 1) {
-          std::wcout << "Aborting due to non unique success: successCount = " << _successCount << std::endl;
-          _successCount = 0;
-          _failCount = 0;
+        if (!_checkUniqueSuccess())
           return false;
-        }
         _successCount = 0;
         _failCount = 0;
       } else {
@@ -253,12 +245,8 @@ public:
         _done = true;
         _numWaitingThreads = 0;
         _condition.broadcast();
-        if (_successCount != 1) {
-          _successCount = 0;
-          _failCount = 0;
-          std::wcout << "Aborting due to non unique success: successCount = " << _successCount << std::endl;
+        if (!_checkUniqueSuccess())
           return false;
-        }
         _successCount = 0;
         _failCount = 0;
       } else {
@@ -279,6 +267,16 @@ public:
     }
 
   private:
+    bool _checkUniqueSuccess()
+    {
+      if (_successCount == 1)
+        return true;
+      std::wcout << "Aborting due to non unique success: successCount = " << _successCount << std::endl;
+      _successCount = 0;
+      _failCount = 0;
+      return false;
+    }
+
     Mutex _mutex;
     Condition _condition;
     unsigned _numInitialThreads;
