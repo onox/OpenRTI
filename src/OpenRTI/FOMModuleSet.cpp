@@ -183,6 +183,7 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
       i->second._interactionClass.setName(stringModule.getName());
 
       i->second._interactionClass.setInteractionClassHandle(++_nextInteractionClassHandle);
+      i->second._interactionClass.setParentInteractionClassHandle(parentInteractionClassHandle);
 
       if (stringModule.getOrderType().empty())
         i->second._interactionClass.setOrderType(TIMESTAMP);
