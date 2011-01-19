@@ -57,6 +57,7 @@ SET(LIB_RTI1516E_SOURCES
 	RangeBounds.cpp
 	VariableLengthData.cpp
 	VariableLengthDataImplementation.h
+	Version.cpp
 	Typedefs.cpp
         HLAfloat64Interval.cpp
         HLAfloat64Time.cpp

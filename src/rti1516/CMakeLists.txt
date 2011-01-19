@@ -40,6 +40,7 @@ SET(LIB_RTI1516_SOURCES
 	RTI1516LogicalTimeFactory.cpp
 	VariableLengthData.cpp
 	VariableLengthDataImplementation.h
+	Version.cpp
 )
 
 SET(LIB_FEDTIME1516_SOURCES
