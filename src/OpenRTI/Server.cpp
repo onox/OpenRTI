@@ -66,11 +66,19 @@ Server::listenInet(const std::wstring& address, int backlog)
 
   std::list<SocketAddress> addressList = SocketAddress::resolve(hostPortPair.first, hostPortPair.second);
   // Set up a stream socket for the server connect
+  bool success = false;
   for (std::list<SocketAddress>::const_iterator i = addressList.begin(); i != addressList.end(); ++i) {
-    SharedPtr<SocketServerTCP> socket = new SocketServerTCP;
-    socket->bind(*i);
-    socket->listen(backlog);
-    _dispatcher.insert(new SocketServerAcceptEvent(socket, _messageServer));
+    try {
+      SharedPtr<SocketServerTCP> socket = new SocketServerTCP;
+      socket->bind(*i);
+      socket->listen(backlog);
+      _dispatcher.insert(new SocketServerAcceptEvent(socket, _messageServer));
+      success = true;
+    } catch (const OpenRTI::Exception& e) {
+      addressList.pop_front();
+      if (addressList.empty() && !success)
+        throw e;
+    }
   }
 }
 
