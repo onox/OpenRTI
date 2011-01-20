@@ -243,25 +243,29 @@ parseInetAddress(const std::wstring& address)
   std::wstring port(localeToUcs(OpenRTI_DEFAULT_PORT_STRING));
 
   if (!address.empty()) {
-    // Ipv6 mode
     if (address[0] == '[') {
+      // Ipv6 mode, '[address]:port'
       std::wstring::size_type pos = address.rfind(']');
-      hostname = address.substr(1, pos - 1);
-      if (pos < address.size()) {
+      if (pos == std::wstring::npos) {
+        hostname = address;
+      } else {
+        hostname = address.substr(1, pos - 1);
         pos = address.find(':', pos);
-        if (pos + 1 < address.size()) {
+        if (pos != std::wstring::npos) {
           port = address.substr(pos + 1);
         }
       }
+    } else if (2 <= std::count(address.begin(), address.end(), ':')) {
+      // Ipv6 mode 'address'
+      hostname = address;
     } else {
+      // Ipv4 mode 'address:port'
       std::wstring::size_type pos = address.rfind(':');
-      if (pos != std::wstring::npos) {
-        hostname = address.substr(0, pos);
-        if (pos + 1 < address.size()) {
-          port = address.substr(pos + 1);
-        }
-      } else {
+      if (pos == std::wstring::npos) {
         hostname = address;
+      } else {
+        hostname = address.substr(0, pos);
+        port = address.substr(pos + 1);
       }
     }
   }
