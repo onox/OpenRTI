@@ -1,4 +1,4 @@
-# -*-python-*- OpenRTI - Copyright (C) 2009-2010 Mathias Froehlich
+# -*-python-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich
 #
 # This file is part of OpenRTI.
 #
