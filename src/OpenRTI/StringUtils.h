@@ -247,7 +247,7 @@ parseInetAddress(const std::wstring& address)
       // Ipv6 mode, '[address]:port'
       std::wstring::size_type pos = address.rfind(']');
       if (pos == std::wstring::npos) {
-        hostname = address;
+        hostname = address.substr(1);
       } else {
         hostname = address.substr(1, pos - 1);
         pos = address.find(':', pos);
@@ -255,17 +255,21 @@ parseInetAddress(const std::wstring& address)
           port = address.substr(pos + 1);
         }
       }
-    } else if (2 <= std::count(address.begin(), address.end(), ':')) {
-      // Ipv6 mode 'address'
-      hostname = address;
     } else {
-      // Ipv4 mode 'address:port'
       std::wstring::size_type pos = address.rfind(':');
-      if (pos == std::wstring::npos) {
+      // this if means 'we have 2 times ":"'
+      if (pos != std::wstring::npos && pos != address.find(':')) {
+        // Ipv6 mode 'address'
         hostname = address;
       } else {
-        hostname = address.substr(0, pos);
-        port = address.substr(pos + 1);
+        // Ipv4 mode 'address:port'
+        std::wstring::size_type pos = address.rfind(':');
+        if (pos == std::wstring::npos) {
+          hostname = address;
+        } else {
+          hostname = address.substr(0, pos);
+          port = address.substr(pos + 1);
+        }
       }
     }
   }
