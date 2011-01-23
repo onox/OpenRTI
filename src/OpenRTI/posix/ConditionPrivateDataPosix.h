@@ -34,21 +34,25 @@ namespace OpenRTI {
 struct OPENRTI_LOCAL Condition::PrivateData {
   PrivateData(void)
   {
+#if defined(HAVE_PTHREAD_CONDATTR_SETCLOCK)
     pthread_condattr_t attr;
     int err = pthread_condattr_init(&attr);
     if (err != 0)
       throw ResourceError("Could not initialize Condition!");
-#if defined(HAVE_PTHREAD_CONDATTR_SETCLOCK)
     err = pthread_condattr_setclock(&attr, ClockPosix::getClockId());
     if (err != 0)
       throw ResourceError("Could not initialize Condition!");
-#endif
     err = pthread_cond_init(&_condition, &attr);
     if (err != 0)
       throw ResourceError("Could not initialize Condition!");
     err = pthread_condattr_destroy(&attr);
     if (err != 0)
       throw ResourceError("Could not initialize Condition!");
+#else
+    int err = pthread_cond_init(&_condition, NULL);
+    if (err != 0)
+      throw ResourceError("Could not initialize Condition!");
+#endif
   }
   ~PrivateData(void)
   {
