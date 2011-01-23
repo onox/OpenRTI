@@ -1833,12 +1833,15 @@ public:
     OpenRTIAssert(i != _objectInstanceHandleDataMap.end());
     i->second._connectHandleSet.erase(connectHandle);
 
+    ObjectInstance* objectInstance = getObjectInstance(i->first);
+    if (objectInstance)
+      objectInstance->removeConnect(connectHandle);
+
     if (!i->second._connectHandleSet.empty())
       return;
 
-    if (ObjectInstance* objectInstance = getObjectInstance(i->first)) {
+    if (objectInstance)
       eraseObjectInstance(objectInstance);
-    }
 
     if (_parentServerConnectHandle.valid()) {
       SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message;
