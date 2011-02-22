@@ -166,13 +166,13 @@ public:
             throw e;
         }
       }
-      throw RTIinternalError(std::wstring(L"Can not resolve address") + name);
+      throw RTIinternalError(std::wstring(L"Can not resolve address: ") + name);
     }
 
     void connectParentInetServer(const std::wstring& name, const Clock& abstime)
     {
       connectParentStreamServer(connectedTCPSocket(name), abstime);
-      _messageServer->setName(std::wstring(L"/") + name);
+      _messageServer->setServerName(L"INET leaf server");
     }
 
     void connectParentPipeServer(const std::wstring& name, const Clock& abstime)
@@ -186,15 +186,16 @@ public:
       socketStream->connect(path);
 
       connectParentStreamServer(socketStream, abstime);
-      _messageServer->setName(path);
+      _messageServer->setServerName(L"PIPE leaf server");
     }
 
     // Creates a new server thread that is connected to a parent server through the socket stream
     void connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime)
     {
       bool compress = true;
+      StringStringListMap parentOptions;
       // Negotiate with the server how to encode
-      MessageEncoderPair encodingPair = MessageEncodingRegistry::instance().negotiateEncoding(socketStream, abstime, compress);
+      MessageEncoderPair encodingPair = MessageEncodingRegistry::instance().negotiateEncoding(socketStream, abstime, compress, parentOptions);
 
       // The socket side message encoder and output message queue
       SharedPtr<MessageSocketWriteEvent> writeMessageSocketEvent = new MessageSocketWriteEvent(socketStream, encodingPair.first);
@@ -202,7 +203,7 @@ public:
       SharedPtr<AbstractMessageSender> toParentSender = writeMessageSocketEvent->getMessageSender();
 
       /// returns a sender where incomming messages should be sent to
-      SharedPtr<AbstractMessageSender> toServerSender = _messageServer->insertParentConnect(toParentSender);
+      SharedPtr<AbstractMessageSender> toServerSender = _messageServer->insertParentConnect(toParentSender, parentOptions);
       if (!toServerSender.valid())
         throw RTIinternalError(L"Could not allocate connectHandle for parent server connect");
 

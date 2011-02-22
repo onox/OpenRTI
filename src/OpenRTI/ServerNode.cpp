@@ -1908,10 +1908,10 @@ public:
   {
     FederationServerMap::const_iterator i = _federationServerMap.find(message->getFederationHandle());
     if (i == _federationServerMap.end()) {
-      Log(FederationServer, Warning) << getName() << ": Received " << message->getTypeName()
+      Log(FederationServer, Warning) << getServerPath() << ": Received " << message->getTypeName()
                                      << " for unknown federation id: " << ucsToLocale(message->getFederationHandle().toString())
                                      << "!" << std::endl;
-      throw MessageError(getName() + std::wstring(L" received ") + localeToUcs(message->getTypeName())
+      throw MessageError(getServerPath() + std::wstring(L" received ") + localeToUcs(message->getTypeName())
                          + L" for unknown federation id: " + message->getFederationHandle().toString() + L"!");
     }
     i->second->accept(connectHandle, message);
@@ -2354,8 +2354,9 @@ public:
   {
     return _serverConnectSet.insertMessageSender(messageSender);
   }
-  ConnectHandle insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender)
+  ConnectHandle insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions)
   {
+    _serverOptions->setParentOptionMap(parentOptions);
     return _serverConnectSet.insertParentMessageSender(messageSender);
   }
   void removeConnect(const ConnectHandle& connectHandle)
@@ -2407,15 +2408,10 @@ public:
   const ServerOptions& getServerOptions() const
   { return *_serverOptions; }
 
-  const std::wstring& getName() const
-  { return _name; }
-  void setName(const std::wstring& name)
-  { _name = name; }
+  const std::wstring& getServerPath() const
+  { return _serverOptions->getServerPath(); }
 
 private:
-  /// The servers name. Mostly for debugging aids
-  std::wstring _name;
-
   // Federations in a server
   // Map federation execution names and handles to federation servers.
   typedef NameHandleMap<FederationHandle, FederationServer> FederationServerMap;
@@ -2452,7 +2448,7 @@ private:
     OpenRTIAssert(i != _federationServerMap.end());
     OpenRTIAssert(!i->second->hasJoinedChildren());
 
-    Log(FederationServer, Info) << getName() << ": Destroyed federation execution in child server for \""
+    Log(FederationServer, Info) << getServerPath() << ": Destroyed federation execution in child server for \""
                                 << i->second->getName() << "\"!" << std::endl;
 
     _federationHandleAllocator.put(i->first);
@@ -2492,15 +2488,15 @@ ServerNode::~ServerNode()
 }
 
 const std::wstring&
-ServerNode::getName() const
+ServerNode::getServerName() const
 {
-  return _serverMessageDispatcher->getName();
+  return _serverMessageDispatcher->getServerOptions().getServerName();
 }
 
 void
-ServerNode::setName(const std::wstring& name)
+ServerNode::setServerName(const std::wstring& name)
 {
-  _serverMessageDispatcher->setName(name);
+  _serverMessageDispatcher->getServerOptions().setServerName(name);
 }
 
 bool
@@ -2522,9 +2518,9 @@ ServerNode::insertConnect(const SharedPtr<AbstractMessageSender>& messageSender)
 }
 
 ConnectHandle
-ServerNode::insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender)
+ServerNode::insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions)
 {
-  return _serverMessageDispatcher->insertParentConnect(messageSender);
+  return _serverMessageDispatcher->insertParentConnect(messageSender, parentOptions);
 }
 
 void

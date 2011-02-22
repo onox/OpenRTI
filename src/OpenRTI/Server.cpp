@@ -47,15 +47,15 @@ Server::~Server()
 }
 
 const std::wstring&
-Server::getName() const
+Server::getServerName() const
 {
-  return _messageServer->getName();
+  return _messageServer->getServerName();
 }
 
 void
-Server::setName(const std::wstring& name)
+Server::setServerName(const std::wstring& name)
 {
-  _messageServer->setName(name);
+  _messageServer->setServerName(name);
 }
 
 void
@@ -138,8 +138,9 @@ void
 Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime)
 {
   bool compress = true;
+  StringStringListMap parentOptions;
   // Negotiate with the server how to encode
-  MessageEncoderPair encodingPair = MessageEncodingRegistry::instance().negotiateEncoding(socketStream, abstime, compress);
+  MessageEncoderPair encodingPair = MessageEncodingRegistry::instance().negotiateEncoding(socketStream, abstime, compress, parentOptions);
 
   // The socket side message encoder and output message queue
   SharedPtr<MessageSocketWriteEvent> writeMessageSocketEvent = new MessageSocketWriteEvent(socketStream, encodingPair.first);
@@ -147,7 +148,7 @@ Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, c
   SharedPtr<AbstractMessageSender> toParentSender = writeMessageSocketEvent->getMessageSender();
 
   /// returns a sender where incomming messages should be sent to
-  SharedPtr<AbstractMessageSender> toServerSender = _messageServer->insertParentConnect(toParentSender);
+  SharedPtr<AbstractMessageSender> toServerSender = _messageServer->insertParentConnect(toParentSender, parentOptions);
   if (!toServerSender.valid())
     throw RTIinternalError(L"Could not set up parent server connect");
 

@@ -34,6 +34,53 @@ public:
     _preferCompression(true) // Default to compression for now FIXME
   { }
 
+  const std::wstring& getServerName() const
+  { return _serverName; }
+  void setServerName(const std::wstring& serverName)
+  {
+    _serverName = serverName;
+    StringStringListMap::iterator i;
+    i = _optionMap.insert(StringStringListMap::value_type(L"serverPath", StringList())).first;
+    i->second = _parentServerPath;
+    i->second.push_back(serverName);
+    _setServerPath(i->second);
+  }
+
+  void setParentOptionMap(const StringStringListMap& optionMap)
+  {
+    _optionMap = optionMap;
+    StringStringListMap::iterator i;
+    i = _optionMap.insert(StringStringListMap::value_type(L"serverPath", StringList())).first;
+    _parentServerPath = i->second;
+    i->second.push_back(_serverName);
+    _setServerPath(i->second);
+  }
+
+  const std::wstring& getServerPath() const
+  { return _serverPath; }
+private:
+  void _setServerPath(const StringList& serverPath)
+  {
+    _serverPath.clear();
+    for (StringList::const_iterator i = serverPath.begin(); i != serverPath.end(); ++i) {
+      _serverPath.append(L"/");
+      _serverPath.append(*i);
+    }
+  }
+public:
+
+  /// The servers name
+  std::wstring _serverName;
+
+  /// For pretty printing
+  std::wstring _serverPath;
+
+  /// The server path as given by the parent
+  StringList _parentServerPath;
+
+  /// What is transferred to a child server at connection setup
+  StringStringListMap _optionMap;
+
   /// Connection encoding settings
   bool _preferCompression;
   // bool _preferTightEncoding;

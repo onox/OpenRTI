@@ -48,7 +48,7 @@ public:
     _messageServer = 0;
     _connectHandle = ConnectHandle();
   }
-  
+
 private:
   SharedPtr<MessageServer> _messageServer;
   ConnectHandle _connectHandle;
@@ -73,9 +73,9 @@ MessageServer::insertConnect(const SharedPtr<AbstractMessageSender>& messageSend
 }
 
 SharedPtr<AbstractMessageSender>
-MessageServer::insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender)
+MessageServer::insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions)
 {
-  ConnectHandle connectHandle = ServerNode::insertParentConnect(messageSender);
+  ConnectHandle connectHandle = ServerNode::insertParentConnect(messageSender, parentOptions);
   if (!connectHandle.valid())
     return 0;
   return new MessageSender(this, connectHandle);

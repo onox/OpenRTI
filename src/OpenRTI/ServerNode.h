@@ -24,6 +24,7 @@
 #include "AbstractMessageSender.h"
 #include "Referenced.h"
 #include "SharedPtr.h"
+#include "StringUtils.h"
 
 namespace OpenRTI {
 
@@ -36,8 +37,8 @@ public:
   ServerNode(const SharedPtr<ServerOptions>& serverOptions);
   virtual ~ServerNode();
 
-  const std::wstring& getName() const;
-  void setName(const std::wstring& name);
+  const std::wstring& getServerName() const;
+  void setServerName(const std::wstring& name);
 
   bool isRunning() const;
 
@@ -45,7 +46,7 @@ public:
 
 protected:
   ConnectHandle insertConnect(const SharedPtr<AbstractMessageSender>& messageSender);
-  ConnectHandle insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender);
+  ConnectHandle insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions);
   void removeConnect(const ConnectHandle& connectHandle);
 
   void dispatchMessage(AbstractMessage& message, const ConnectHandle& connectHandle);

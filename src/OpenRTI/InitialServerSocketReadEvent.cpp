@@ -58,6 +58,13 @@ InitialServerSocketReadEvent::readPacket(SocketEventDispatcher& dispatcher, Netw
   StringStringListMap responseValueMap;
   responseValueMap = MessageEncodingRegistry::instance().getBestServerEncoding(_valueMap, _messageServer->getServerOptions());
 
+  StringStringListMap optionMap = _messageServer->getServerOptions()._optionMap;
+  for (StringStringListMap::iterator i = optionMap.begin(); i != optionMap.end(); ++i) {
+    if (responseValueMap.find(i->first) != responseValueMap.end())
+      continue;
+    responseValueMap.insert(*i);
+  }
+
   // Ok, we have now set up all we need for the encoded communication.
   // But still we need to respond ...
   SharedPtr<InitialServerSocketWriteEvent> initialServerWriteEvent;

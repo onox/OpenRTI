@@ -54,7 +54,7 @@ public:
   MessageEncoderPair getEncodingPair(const StringStringListMap& valueMap) const;
   static bool getUseCompression(const StringStringListMap& valueMap);
   // Helper to set up a client
-  MessageEncoderPair negotiateEncoding(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool& compress) const;
+  MessageEncoderPair negotiateEncoding(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool& compress, StringStringListMap& parentOptions) const;
   // Helper to set up a server connect
   StringStringListMap getBestServerEncoding(const StringStringListMap& valueMap, const ServerOptions& serverOptions) const;
 

@@ -63,7 +63,7 @@ MessageEncodingRegistry::getUseCompression(const StringStringListMap& valueMap)
 }
 
 MessageEncoderPair
-MessageEncodingRegistry::negotiateEncoding(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool& compress) const
+MessageEncodingRegistry::negotiateEncoding(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool& compress, StringStringListMap& parentOptions) const
 {
   SocketEventDispatcher dispatcher;
 
@@ -95,6 +95,10 @@ MessageEncodingRegistry::negotiateEncoding(const SharedPtr<SocketStream>& socket
   dispatcher.exec(abstime);
 
   compress = getUseCompression(readEvent->getValueMap());
+
+  // return the parents options map to the caller
+  parentOptions = readEvent->getValueMap();
+
   return getEncodingPair(readEvent->getValueMap());
 }
 

@@ -34,8 +34,8 @@ public:
   Server();
   ~Server();
 
-  const std::wstring& getName() const;
-  void setName(const std::wstring& name);
+  const std::wstring& getServerName() const;
+  void setServerName(const std::wstring& name);
 
   void listenInet(const std::wstring& address, int backlog);
   void listenPipe(const std::wstring& address, int backlog);
