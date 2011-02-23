@@ -262,7 +262,7 @@ public:
     ConnectServerCallback(const SharedPtr<AbstractMessageSender>& messageSender) :
       _messageSender(messageSender)
     { }
-    virtual void exec(ThreadRegistry& threadRegistry, NamedThread& thread)
+    virtual void exec(NamedThread& thread)
     {
       _messageSender = static_cast<ServerThread&>(thread).connectServer(_messageSender);
     }
@@ -286,11 +286,11 @@ public:
     DisconnectServerCallback(const SharedPtr<AbstractMessageSender>& messageSender) :
       _messageSender(messageSender)
     { }
-    virtual void exec(ThreadRegistry& threadRegistry, NamedThread& thread)
+    virtual void exec(NamedThread& thread)
     {
       bool hasChildConnects = static_cast<ServerThread&>(thread).disconnectServer(_messageSender);
       if (!hasChildConnects)
-        thread.stopThread(threadRegistry);
+        thread.stopThread();
     }
     SharedPtr<AbstractMessageSender> _messageSender;
   };

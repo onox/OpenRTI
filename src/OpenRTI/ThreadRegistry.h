@@ -52,7 +52,7 @@ public:
   class ThreadProcedureCallback : public Referenced {
   public:
     virtual ~ThreadProcedureCallback() {}
-    virtual void exec(ThreadRegistry& threadRegistry, NamedThread& thread) = 0;
+    virtual void exec(NamedThread& thread) = 0;
   };
 
   /// This one is to trigger ThreadProcedureCallbacks in the thread
@@ -114,23 +114,26 @@ public:
         // This just makes the dispatcher return from exec by setting
         // the dispatcher itself to 'done'. So when restarting exec,
         // make sure we set the dispatchers back to 'undone'.
-        _dispatcher.setDone(false);
-        _dispatcher.exec();
+        exec();
 
         // Just always when we get here, ask the parent to execute a callback.
         // In the non error case this is the only occation to get here
         registry->execCallback(*this);
       }
+
+      registry->deregisterThread(*this);
     }
 
-    void stopThread(ThreadRegistry& registry)
-    {
-      _done = true;
-      registry.deregisterThread(*this);
-    }
-
-    void wakeUp()
+    virtual void wakeUp()
     { _socketWakeupTrigger->trigger(); }
+    virtual void exec()
+    {
+      _dispatcher.setDone(false);
+      _dispatcher.exec();
+    }
+
+    void stopThread()
+    { _done = true; }
 
     const std::wstring& getName() const
     { return _name; }
@@ -204,8 +207,8 @@ public:
 
   class ThreadStopCallback : public ThreadProcedureCallback {
   public:
-    virtual void exec(ThreadRegistry& threadRegistry, NamedThread& thread)
-    { thread.stopThread(threadRegistry); }
+    virtual void exec(NamedThread& thread)
+    { thread.stopThread(); }
   };
 
   void destroyThread(const std::wstring& name)
@@ -295,7 +298,7 @@ private:
     threadProcedureCallback.swap(_threadProcedureCallback);
     if (threadProcedureCallback.valid()) {
       ScopeUnlock scopeUnlock(_registerMutex);
-      threadProcedureCallback->exec(*this, thread);
+      threadProcedureCallback->exec(thread);
     }
     _condition.signal();
   }
