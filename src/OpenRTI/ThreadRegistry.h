@@ -30,10 +30,6 @@
 #include "ScopeLock.h"
 #include "ScopeUnlock.h"
 #include "SharedPtr.h"
-#include "SocketEvent.h"
-#include "SocketEventDispatcher.h"
-#include "SocketWakeupEvent.h"
-#include "SocketWakeupTrigger.h"
 #include "Thread.h"
 #include "WeakPtr.h"
 #include "WeakReferenced.h"
@@ -55,34 +51,6 @@ public:
     virtual void exec(NamedThread& thread) = 0;
   };
 
-  /// This one is to trigger ThreadProcedureCallbacks in the thread
-  class ThreadProcedureSocketEvent : public SocketReadEvent {
-  public:
-    // Need to provide the server side message sender.
-    ThreadProcedureSocketEvent(SharedPtr<SocketWakeupEvent> socketWakeupEvent) :
-      SocketReadEvent(true),
-      _socketWakeupEvent(socketWakeupEvent)
-    { }
-
-    virtual void read(SocketEventDispatcher& dispatcher)
-    {
-      ssize_t ret = _socketWakeupEvent->read();
-      if (ret == -1) {
-        // Protocol errors in any sense lead to a closed connection
-        dispatcher.eraseSocket(this);
-        /// FIXME: need to catch this kind of error somehow in the registry
-      }
-      // This is to just break out of the exec of the sockets.
-      dispatcher.setDone(true);
-    }
-
-    virtual SocketWakeupEvent* getSocket() const
-    { return _socketWakeupEvent.get(); }
-
-  private:
-    SharedPtr<SocketWakeupEvent> _socketWakeupEvent;
-  };
-
   // The execution thread type that is managed with this registry
   // Note that we do not have any lock here.
   // From outside, all calls here are serialized by the registry.
@@ -96,10 +64,6 @@ public:
       _name(name),
       _done(false)
     {
-      _socketWakeupTrigger = new SocketWakeupTrigger;
-      // This is the socket that wakes up the select if we have a new connection
-      // or if the thread needs to stop processing.
-      _dispatcher.insert(new ThreadProcedureSocketEvent(_socketWakeupTrigger->connect()));
     }
 
     virtual void run()
@@ -124,13 +88,8 @@ public:
       registry->deregisterThread(*this);
     }
 
-    virtual void wakeUp()
-    { _socketWakeupTrigger->trigger(); }
-    virtual void exec()
-    {
-      _dispatcher.setDone(false);
-      _dispatcher.exec();
-    }
+    virtual void wakeUp() = 0;
+    virtual void exec() = 0;
 
     void stopThread()
     { _done = true; }
@@ -142,19 +101,12 @@ public:
     bool getDone() const
     { return _done; }
 
-    // The thread dispatcher we have in this thread
-    SocketEventDispatcher _dispatcher;
-
   private:
     // The parent registry
     WeakPtr<ThreadRegistry> _registry;
     // The name this thread belongs to. Think of this as a connection or federation name
     // FIXME: hmm, anyway a template with a 'key_type' and a 'thread_type' ????
     const std::wstring _name;
-
-    // This is used to notify the dispatcher when something should be changed.
-    // That is when something should be executed in the thread or when the thread should terminate.
-    SharedPtr<SocketWakeupTrigger> _socketWakeupTrigger;
 
     // Signals if we should continue
     bool _done;
