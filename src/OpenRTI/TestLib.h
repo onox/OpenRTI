@@ -114,23 +114,12 @@ private:
 
   protected:
     void setDone()
-    {
-      ScopeLock scopeLock(_mutex);
-      _server.setDone(true);
-    }
+    { _server.setDone(true); }
 
     virtual void run()
-    {
-      ScopeLock scopeLock(_mutex);
-      while (!_server.getDone()) {
-        Clock abstime = Clock::now() + Clock::fromSeconds(0.05);
-        ScopeUnlock scopeUnlock(_mutex);
-        _server.exec(abstime);
-      }
-    }
+    { _server.exec(); }
 
     Server _server;
-    Mutex _mutex;
     std::wstring _address;
   };
 
