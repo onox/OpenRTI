@@ -32,14 +32,46 @@
 #include "SocketServerTCP.h"
 #include "SocketServerAcceptEvent.h"
 #include "SocketTCP.h"
+#include "SocketWakeupEvent.h"
+#include "SocketWakeupTrigger.h"
 #include "StringUtils.h"
 #include "ZLibCallbacks.h"
 
 namespace OpenRTI {
 
+/// This one is to trigger ThreadProcedureCallbacks in the thread
+class Server::WakeupSocketEvent : public SocketReadEvent {
+public:
+  // Need to provide the server side message sender.
+  WakeupSocketEvent(SharedPtr<SocketWakeupEvent> socketWakeupEvent) :
+    SocketReadEvent(true),
+    _socketWakeupEvent(socketWakeupEvent)
+  { }
+
+  virtual void read(SocketEventDispatcher& dispatcher)
+  {
+    ssize_t ret = _socketWakeupEvent->read();
+    if (ret == -1) {
+      // Protocol errors in any sense lead to a closed connection
+      dispatcher.eraseSocket(this);
+      /// FIXME: need to catch this kind of error somehow in the registry
+    }
+    // This is to just break out of the exec of the sockets.
+    dispatcher.setDone(true);
+  }
+  
+  virtual SocketWakeupEvent* getSocket() const
+  { return _socketWakeupEvent.get(); }
+  
+private:
+  SharedPtr<SocketWakeupEvent> _socketWakeupEvent;
+};
+
 Server::Server() :
-  _messageServer(new MessageServer)
+  _messageServer(new MessageServer),
+  _socketWakeupTrigger(new SocketWakeupTrigger)
 {
+  _dispatcher.insert(new WakeupSocketEvent(_socketWakeupTrigger->connect()));
 }
 
 Server::~Server()
@@ -174,7 +206,12 @@ Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, c
 void
 Server::setDone(bool done)
 {
-  _dispatcher.setDone(done);
+  if (done) {
+    // The trigger sets the dispatcher to done to avoid races
+    _socketWakeupTrigger->trigger();
+  } else {
+    _dispatcher.setDone(false);
+  }
 }
 
 bool

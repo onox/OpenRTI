@@ -28,6 +28,7 @@ namespace OpenRTI {
 
 class Clock;
 class MessageServer;
+class SocketWakeupTrigger;
 
 class OPENRTI_API Server {
 public:
@@ -53,6 +54,8 @@ public:
   int exec(const Clock& abstime);
 
 private:
+  class WakeupSocketEvent;
+
   Server(const Server&);
   Server& operator=(const Server&);
 
@@ -61,6 +64,9 @@ private:
 
   // The socket dispatcher
   SocketEventDispatcher _dispatcher;
+
+  // This is used to wake up the dispatcher waiting in the select call.
+  SharedPtr<SocketWakeupTrigger> _socketWakeupTrigger;
 };
 
 } // namespace OpenRTI
