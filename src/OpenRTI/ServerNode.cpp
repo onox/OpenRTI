@@ -1514,6 +1514,13 @@ public:
     }
   }
 
+  template<typename M>
+  void acceptFederationMessage(const ConnectHandle& connectHandle, M* message)
+  {
+    OpenRTIAssert(_connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end());
+    accept(connectHandle, message);
+  }
+
 
   // utilities for connecthandle/federatehandle handling
 
@@ -1750,10 +1757,8 @@ public:
   void send(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessage>& message) const
   {
     ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.find(connectHandle);
-    // if (i == _connectHandleConnectDataMap.end())
-    //   return;
-    // if (!i->second._messageSender.valid())
-    //   return;
+    OpenRTIAssert(i != _connectHandleConnectDataMap.end());
+    OpenRTIAssert(i->second._messageSender.valid());
     i->second._messageSender->send(message);
   }
   void send(const FederateHandle& federateHandle, const SharedPtr<AbstractMessage>& message) const
@@ -1914,7 +1919,7 @@ public:
       throw MessageError(getServerPath() + std::wstring(L" received ") + localeToUcs(message->getTypeName())
                          + L" for unknown federation id: " + message->getFederationHandle().toString() + L"!");
     }
-    i->second->accept(connectHandle, message);
+    i->second->acceptFederationMessage(connectHandle, message);
   }
   template<typename M>
   void acceptUpstreamFederationMessage(const ConnectHandle& connectHandle, M* message)
