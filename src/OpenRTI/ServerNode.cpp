@@ -987,9 +987,10 @@ public:
               request->getAttributeStateVector().push_back(attributeState);
             }
             if (connectHandle != _parentServerConnectHandle) {
-              if (_objectInstanceHandleDataMap.find((*j)->getHandle()) == _objectInstanceHandleDataMap.end())
+              if (_objectInstanceHandleDataMap.find((*j)->getHandle()) == _objectInstanceHandleDataMap.end()) {
                 insertObjectInstanceHandle((*j)->getHandle(), (*j)->getName(), connectHandle);
-              else
+                _objectInstanceHandleAllocator.take((*j)->getHandle());
+              } else
                 referenceObjectInstanceHandle((*j)->getHandle(), connectHandle);
             }
             send(connectHandle, request);
@@ -1301,9 +1302,10 @@ public:
     for (ConnectHandleSet::iterator i = connectHandleSet.begin(); i != connectHandleSet.end(); ++i) {
       if (*i == _parentServerConnectHandle)
         continue;
-      if (_objectInstanceHandleDataMap.find(objectInstanceHandle) == _objectInstanceHandleDataMap.end())
+      if (_objectInstanceHandleDataMap.find(objectInstanceHandle) == _objectInstanceHandleDataMap.end()) {
+        _objectInstanceHandleAllocator.take(message->getObjectInstanceHandle());
         insertObjectInstanceHandle(message->getObjectInstanceHandle(), message->getName(), *i);
-      else
+      } else
         referenceObjectInstanceHandle(message->getObjectInstanceHandle(), *i);
     }
 
@@ -1820,21 +1822,28 @@ public:
   void insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::wstring& name,
                                   const ConnectHandle& connectHandle)
   {
+    OpenRTIAssert(connectHandle != _parentServerConnectHandle);
     OpenRTIAssert(_objectInstanceHandleDataMap.find(objectInstanceHandle) == _objectInstanceHandleDataMap.end());
+    OpenRTIAssert(_connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end());
+    OpenRTIAssert(!_connectHandleConnectDataMap[connectHandle]._federateHandleSet.empty());
     StringSet::iterator i = _objectInstanceNameSet.insert(name).first;
     typedef ObjectInstanceHandleDataMap::value_type value_type;
     ObjectInstanceHandleDataMap::iterator j;
     j = _objectInstanceHandleDataMap.insert(value_type(objectInstanceHandle, ObjectInstanceData(i))).first;
     j->second._connectHandleSet.insert(connectHandle);
+    // FIXME can put that into a better api with a default argument for the instance handle and a returned allocated handle for example
+    // _objectInstanceHandleAllocator.take(objectInstanceHandle);
   }
   void referenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle)
   {
+    OpenRTIAssert(connectHandle != _parentServerConnectHandle);
     ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.find(objectInstanceHandle);
     OpenRTIAssert(i != _objectInstanceHandleDataMap.end());
     i->second._connectHandleSet.insert(connectHandle);
   }
   void unreferenceObjectInstanceHandle(ObjectInstanceHandleDataMap::iterator i, const ConnectHandle& connectHandle)
   {
+    OpenRTIAssert(connectHandle != _parentServerConnectHandle);
     OpenRTIAssert(i != _objectInstanceHandleDataMap.end());
     i->second._connectHandleSet.erase(connectHandle);
 
