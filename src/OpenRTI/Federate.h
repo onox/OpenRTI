@@ -417,7 +417,7 @@ public:
       if (deleteObjects) {
         // FIXME: do not walk all! have a list of 'own objects'
         for (typename ObjectInstanceHandleMap::iterator i = _objectInstanceHandleMap.begin(); i != _objectInstanceHandleMap.end();) {
-          if (i->second._instanceAttributeVector[AttributeHandle(0)]->_isOwnedByFederate)
+          if (!i->second._instanceAttributeVector[AttributeHandle(0)]->_isOwnedByFederate)
             ++i;
           else {
             deleteObjectInstance((i++)->first, VariableLengthData("Delete on resign FIXME!"));
