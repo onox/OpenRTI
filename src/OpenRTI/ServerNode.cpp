@@ -1277,7 +1277,7 @@ public:
   {
     ObjectClass* objectClass = getObjectClass(message->getObjectClassHandle());
     if (!objectClass)
-      return;
+      throw MessageError(L"InsertObjectInstanceMessage for unknown ObjectClass.");
 
     ObjectInstanceHandle objectInstanceHandle = message->getObjectInstanceHandle();
     SharedPtr<ObjectInstance> objectInstance = new ObjectInstance(message->getName(), objectInstanceHandle, objectClass);
@@ -1323,7 +1323,7 @@ public:
   {
     ObjectInstance* objectInstance = getObjectInstance(message->getObjectInstanceHandle());
     if (!objectInstance)
-      return;
+      throw MessageError(L"DeleteObjectInstanceMessage for unknown ObjectInstance.");
 
     ObjectClass* objectClass = objectInstance->getObjectClass();
     if (!objectClass)
