@@ -92,6 +92,14 @@ public:
   {
     send(_parentServerConnectHandle, message);
   }
+  void broadcastToChildren(const SharedPtr<AbstractMessage>& message) const
+  {
+    for (MessageSenderMap::const_iterator i = _messageSenderMap.begin(); i != _messageSenderMap.end(); ++i) {
+      if (i->first == _parentServerConnectHandle)
+        continue;
+      i->second->send(message);
+    }
+  }
 
   SharedPtr<AbstractMessageSender> getMessageSender(const ConnectHandle& connectHandle) const
   {
@@ -1947,6 +1955,14 @@ public:
     acceptFederationMessage(connectHandle, message);
   }
 
+  // If the parent connect dies, tell this all children
+  void accept(const ConnectHandle& connectHandle, ConnectionLostMessage* message)
+  {
+    if (connectHandle != _serverConnectSet.getParentConnectHandle())
+      throw MessageError(std::wstring(L"Received ") + localeToUcs(message->getTypeName()) + L" through a child connect!");
+    _serverConnectSet.broadcastToChildren(message);
+  }
+
   // Create messages
   void accept(const ConnectHandle& connectHandle, CreateFederationExecutionRequestMessage* message)
   {
@@ -2386,6 +2402,9 @@ public:
     _serverConnectSet.removeMessageSender(connectHandle);
 
     if (isParent) {
+      // Notify all children about the lost connection.
+      _serverConnectSet.broadcastToChildren(new ConnectionLostMessage);
+
       // Replay messages that we forwarded to the parent server to ourself.
       // We are the parent now ...
       for (ConnectHandleMessagePairList::iterator i = _pendingMessageList.begin();

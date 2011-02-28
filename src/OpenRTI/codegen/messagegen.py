@@ -498,6 +498,7 @@ class MessageEncoding(object):
         # Currently this is common, but as the first incompatible change starts
         # override this in the encodings
         self.__opcodeMap = {
+            'ConnectionLostMessage' : 0,
             'CreateFederationExecutionRequestMessage' : 1,
             'CreateFederationExecutionResponseMessage' : 2,
             'DestroyFederationExecutionRequestMessage' : 3,

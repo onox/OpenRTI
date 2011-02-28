@@ -265,6 +265,7 @@ typedef std::vector<FOMObjectClass> FOMObjectClassList;
 class OPENRTI_API FOMModule;
 typedef std::vector<FOMModule> FOMModuleList;
 
+class ConnectionLostMessage;
 class CreateFederationExecutionRequestMessage;
 class CreateFederationExecutionResponseMessage;
 class DestroyFederationExecutionRequestMessage;
@@ -1966,6 +1967,26 @@ private:
 };
 
 typedef std::vector<FOMModule> FOMModuleList;
+
+class OPENRTI_API ConnectionLostMessage : public AbstractMessage {
+public:
+  ConnectionLostMessage();
+  virtual ~ConnectionLostMessage();
+
+  virtual const char* getTypeName() const;
+  virtual void dispatch(AbstractMessageDispatcher& dispatcher);
+  virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
+
+  void setFaultDescription(const String& value)
+  { _faultDescription = value; }
+  String& getFaultDescription()
+  { return _faultDescription; }
+  const String& getFaultDescription() const
+  { return _faultDescription; }
+
+private:
+  String _faultDescription;
+};
 
 class OPENRTI_API CreateFederationExecutionRequestMessage : public AbstractMessage {
 public:

@@ -1002,6 +1002,11 @@ public:
     }
   }
 
+  void readConnectionLostMessage(ConnectionLostMessage& value)
+  {
+    readString(value.getFaultDescription());
+  }
+
   void readCreateFederationExecutionRequestMessage(CreateFederationExecutionRequestMessage& value)
   {
     readString(value.getFederationExecution());
@@ -2006,6 +2011,11 @@ public:
     for (FOMModuleList::iterator i = value.begin(); i != value.end(); ++i) {
       readPayloadFOMModule(*i);
     }
+  }
+
+  void readPayloadConnectionLostMessage(ConnectionLostMessage& value)
+  {
+    readPayloadString(value.getFaultDescription());
   }
 
   void readPayloadCreateFederationExecutionRequestMessage(CreateFederationExecutionRequestMessage& value)

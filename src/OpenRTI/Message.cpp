@@ -28,6 +28,33 @@
 
 namespace OpenRTI {
 
+ConnectionLostMessage::ConnectionLostMessage()
+{
+}
+
+ConnectionLostMessage::~ConnectionLostMessage()
+{
+}
+
+const char*
+ConnectionLostMessage::getTypeName() const
+{
+  return "ConnectionLostMessage";
+}
+
+void
+ConnectionLostMessage::dispatch(AbstractMessageDispatcher& dispatcher)
+{
+  dispatcher.accept(*this);
+}
+
+void
+ConnectionLostMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+{
+  dispatcher.accept(*this);
+}
+
+
 CreateFederationExecutionRequestMessage::CreateFederationExecutionRequestMessage()
 {
 }

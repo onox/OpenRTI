@@ -987,6 +987,11 @@ public:
     }
   }
 
+  void writeConnectionLostMessage(const ConnectionLostMessage& value)
+  {
+    writeString(value.getFaultDescription());
+  }
+
   void writeCreateFederationExecutionRequestMessage(const CreateFederationExecutionRequestMessage& value)
   {
     writeString(value.getFederationExecution());

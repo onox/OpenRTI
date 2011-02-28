@@ -345,6 +345,11 @@
 
   <!-- The messages -->
 
+  <!-- Lost connect to parent. Send to children if this happens. -->
+  <message type="ConnectionLost">
+    <field name="FaultDescription" type="String"/>
+  </message>
+
   <!-- Create federation execution is forwarded to the root server and that one responds. -->
   <message type="CreateFederationExecutionRequest">
     <field name="FederationExecution" type="String"/>

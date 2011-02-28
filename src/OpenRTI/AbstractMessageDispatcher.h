@@ -27,6 +27,7 @@ namespace OpenRTI {
 
 class AbstractMessage;
 
+class ConnectionLostMessage;
 class CreateFederationExecutionRequestMessage;
 class CreateFederationExecutionResponseMessage;
 class DestroyFederationExecutionRequestMessage;
@@ -82,6 +83,7 @@ class OPENRTI_LOCAL AbstractMessageDispatcher {
 public:
   virtual ~AbstractMessageDispatcher() {}
 
+  virtual void accept(ConnectionLostMessage&) = 0;
   virtual void accept(CreateFederationExecutionRequestMessage&) = 0;
   virtual void accept(CreateFederationExecutionResponseMessage&) = 0;
   virtual void accept(DestroyFederationExecutionRequestMessage&) = 0;
@@ -140,6 +142,7 @@ public:
   FunctorMessageDispatcher(const T& t) : _t(t) {}
   virtual ~FunctorMessageDispatcher() {}
 
+  virtual void accept(ConnectionLostMessage& message) { _t(message); }
   virtual void accept(CreateFederationExecutionRequestMessage& message) { _t(message); }
   virtual void accept(CreateFederationExecutionResponseMessage& message) { _t(message); }
   virtual void accept(DestroyFederationExecutionRequestMessage& message) { _t(message); }
@@ -198,6 +201,7 @@ class OPENRTI_LOCAL ConstAbstractMessageDispatcher {
 public:
   virtual ~ConstAbstractMessageDispatcher() {}
 
+  virtual void accept(const ConnectionLostMessage&) = 0;
   virtual void accept(const CreateFederationExecutionRequestMessage&) = 0;
   virtual void accept(const CreateFederationExecutionResponseMessage&) = 0;
   virtual void accept(const DestroyFederationExecutionRequestMessage&) = 0;
@@ -256,6 +260,7 @@ public:
   FunctorConstMessageDispatcher(const T& t) : _t(t) {}
   virtual ~FunctorConstMessageDispatcher() {}
 
+  virtual void accept(const ConnectionLostMessage& message) { _t(message); }
   virtual void accept(const CreateFederationExecutionRequestMessage& message) { _t(message); }
   virtual void accept(const CreateFederationExecutionResponseMessage& message) { _t(message); }
   virtual void accept(const DestroyFederationExecutionRequestMessage& message) { _t(message); }
