@@ -2815,6 +2815,8 @@ protected:
   virtual void acceptInternalMessage(const AbstractMessage& message)
   { Traits::throwRTIinternalError(L"Unexpected message in internal message processing!"); }
 
+  virtual void acceptInternalMessage(const ConnectionLostMessage& message)
+  { }
   virtual void acceptInternalMessage(const JoinFederationExecutionResponseMessage& message)
   {
     _federateHandle = message.getFederateHandle();
