@@ -48,14 +48,14 @@ public:
 
     void connectParentInetServer(const std::wstring& name, const Clock& abstime)
     {
-      _server.connectParentInetServer(name, abstime);
       _server.setServerName(L"INET leaf server");
+      _server.connectParentInetServer(name, abstime);
     }
 
     void connectParentPipeServer(const std::wstring& name, const Clock& abstime)
     {
-      _server.connectParentPipeServer(name, abstime);
       _server.setServerName(L"PIPE leaf server");
+      _server.connectParentPipeServer(name, abstime);
     }
 
     SharedPtr<AbstractMessageSender> connectServer(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)

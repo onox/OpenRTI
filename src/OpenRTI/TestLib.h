@@ -89,16 +89,16 @@ private:
   public:
     void setupServer(const std::wstring& host, unsigned short port, unsigned short parentPort)
     {
+      std::wstringstream address;
+      address << host << ":" << port;
+      _address = address.str();
+      _server.setServerName(_address);
       if (parentPort) {
         std::wstringstream address;
         address << host << ":" << parentPort;
         Clock abstime = Clock::now() + Clock::fromSeconds(1);
         _server.connectParentInetServer(address.str(), abstime);
       }
-      std::wstringstream address;
-      address << host << ":" << port;
-      _address = address.str();
-      _server.setServerName(_address);
       _server.listenInet(_address, 20);
       start();
     }
