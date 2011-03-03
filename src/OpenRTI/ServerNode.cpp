@@ -178,10 +178,18 @@ public:
 /// Hmm, should that be the Federation ???
 class OPENRTI_LOCAL FederationServer : public Federation {
 public:
-  FederationServer(const std::wstring& name, const FederationHandle& handle) :
-    Federation(name, handle)
+  FederationServer(const std::wstring& name, const FederationHandle& handle, const SharedPtr<const ServerOptions>& serverOptions) :
+    Federation(name, handle),
+    _serverOptions(serverOptions)
   {
   }
+
+  /// Get the rti servers name
+  const std::wstring& getServerName() const
+  { return _serverOptions->getServerName(); }
+  /// Get the rti servers path
+  const std::wstring& getServerPath() const
+  { return _serverOptions->getServerPath(); }
 
   /// Returns true if this is a root server
   bool isRootServer() const
@@ -1800,6 +1808,9 @@ public:
     return i->second._connectHandle;
   }
 
+  /// The rti servers options
+  SharedPtr<const ServerOptions> _serverOptions;
+
   /// Synchronizatoin labels are tracked here
   typedef std::map<std::wstring, SynchronizationState> SyncronizationLabelStateMap;
   SyncronizationLabelStateMap _syncronizationLabelStateMap;
@@ -1984,7 +1995,7 @@ public:
           FederationHandle federationHandle = candidate.get();
 
           SharedPtr<FederationServer> federationServer;
-          federationServer = new FederationServer(message->getFederationExecution(), federationHandle);
+          federationServer = new FederationServer(message->getFederationExecution(), federationHandle, _serverOptions);
           federationServer->setLogicalTimeFactoryName(message->getLogicalTimeFactoryName());
 
           FOMModuleHandleSet fomModuleHandleSet;
@@ -2456,7 +2467,7 @@ private:
     OpenRTIAssert(_federationServerMap.find(name) == _federationServerMap.end());
 
     FederationHandle federationHandle = _federationHandleAllocator.get();
-    SharedPtr<FederationServer> federationServer = new FederationServer(name, federationHandle);
+    SharedPtr<FederationServer> federationServer = new FederationServer(name, federationHandle, _serverOptions);
     return _federationServerMap.insert(FederationServerMap::value_type(federationHandle, federationServer)).first;
   }
   FederationServerMap::iterator insertFederation(const std::wstring& name, const FederationHandle& federationHandle)
@@ -2466,7 +2477,7 @@ private:
     OpenRTIAssert(_federationServerMap.find(federationHandle) == _federationServerMap.end());
 
     _federationHandleAllocator.take(federationHandle);
-    SharedPtr<FederationServer> federationServer = new FederationServer(name, federationHandle);
+    SharedPtr<FederationServer> federationServer = new FederationServer(name, federationHandle, _serverOptions);
     if (!isRootServer())
       federationServer->insertParentConnect(_serverConnectSet.getParentConnectHandle(),
                                             _serverConnectSet.getMessageSender(_serverConnectSet.getParentConnectHandle()));
