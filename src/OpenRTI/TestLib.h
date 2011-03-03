@@ -47,25 +47,29 @@ public:
 
   void startServerPool(unsigned numServers, unsigned numClientsPerServers)
   {
-    if (numServers != 0) {
-      typedef std::list<unsigned short> PortList;
-      PortList portList;
+    if (numServers <= 0)
+      return;
 
-      unsigned short port = 17777; /// Just a random number
-      startServer(port, 0);
-      portList.push_back(port++);
+    typedef std::list<unsigned short> PortList;
+    PortList portList;
 
-      for (;portList.size() < numServers;) {
-        PortList parentPortList = portList;
-        for (PortList::iterator j = parentPortList.begin(); j != parentPortList.end(); ++j) {
-          for (unsigned k = 0; k < numClientsPerServers; ++k) {
-            startServer(port, *j);
-            portList.push_back(port++);
-            if (numServers <= portList.size())
-              return;
-          }
+    unsigned short port = 17777; /// Just a random number
+    startServer(port, 0);
+    portList.push_back(port);
+
+    PortList parentPortList = portList;
+    for (;portList.size() < numServers;) {
+      PortList currentPortList;
+      for (PortList::iterator j = parentPortList.begin(); j != parentPortList.end(); ++j) {
+        for (unsigned k = 0; k < numClientsPerServers; ++k) {
+          startServer(++port, *j);
+          portList.push_back(port);
+          currentPortList.push_back(port);
+          if (numServers <= portList.size())
+            return;
         }
       }
+      parentPortList.swap(currentPortList);
     }
   }
 
