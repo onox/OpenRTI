@@ -45,7 +45,7 @@ public:
   const ServerOptions& getServerOptions() const;
 
 protected:
-  ConnectHandle insertConnect(const SharedPtr<AbstractMessageSender>& messageSender);
+  ConnectHandle insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);
   ConnectHandle insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions);
   void removeConnect(const ConnectHandle& connectHandle);
 

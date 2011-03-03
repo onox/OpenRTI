@@ -63,7 +63,7 @@ MessageEncodingRegistry::getUseCompression(const StringStringListMap& valueMap)
 }
 
 MessageEncoderPair
-MessageEncodingRegistry::negotiateEncoding(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool& compress, StringStringListMap& parentOptions) const
+MessageEncodingRegistry::negotiateEncoding(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, const std::wstring& serverName, bool& compress, StringStringListMap& parentOptions) const
 {
   SocketEventDispatcher dispatcher;
 
@@ -72,6 +72,8 @@ MessageEncodingRegistry::negotiateEncoding(const SharedPtr<SocketStream>& socket
 
   // The rti version we support. This is currently fixed 1
   valueMap[L"version"].push_back(L"1");
+  // The current servers name
+  valueMap[L"serverName"].push_back(serverName);
 #ifdef OPENRTI_HAVE_ZLIB
   if (compress)
     valueMap[L"compression"].push_back(L"zlib");

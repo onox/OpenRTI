@@ -31,13 +31,15 @@ namespace OpenRTI {
 class OPENRTI_LOCAL InitialServerSocketWriteEvent : public InitialSocketWriteEvent {
 public:
   InitialServerSocketWriteEvent(const SharedPtr<SocketStream>& socketStream,
-                                const SharedPtr<MessageServer>& messageServer);
+                                const SharedPtr<MessageServer>& messageServer,
+                                const StringStringListMap& clientValueMap);
   virtual ~InitialServerSocketWriteEvent();
 
   virtual void written(SocketEventDispatcher& dispatcher);
 
 private:
   SharedPtr<MessageServer> _messageServer;
+  StringStringListMap _clientValueMap;
 };
 
 } // namespace OpenRTI

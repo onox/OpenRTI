@@ -39,7 +39,7 @@ public:
   SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender)
   {
     ScopeLock scopeLock(_mutex);
-    ConnectHandle connectHandle = ServerNode::insertConnect(messageSender);
+    ConnectHandle connectHandle = ServerNode::insertConnect(messageSender, StringStringListMap()/*FIXME*/);
     if (!connectHandle.valid())
       return 0;
     return new MessageSender(this, connectHandle);

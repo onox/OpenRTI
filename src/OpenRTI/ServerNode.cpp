@@ -54,20 +54,23 @@ public:
 
   const ConnectHandle& getParentConnectHandle() const
   { return _parentServerConnectHandle; }
-  ConnectHandle insertParentMessageSender(const SharedPtr<AbstractMessageSender>& messageSender)
+  ConnectHandle insertParentMessageSender(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions)
   {
     OpenRTIAssert(!_parentServerConnectHandle.valid());
-    _parentServerConnectHandle = insertMessageSender(messageSender);
+    _parentServerConnectHandle = insertMessageSender(messageSender, parentOptions);
     return _parentServerConnectHandle;
   }
 
-  ConnectHandle insertMessageSender(const SharedPtr<AbstractMessageSender>& messageSender)
+  ConnectHandle insertMessageSender(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
   {
     if (!messageSender.valid())
       return ConnectHandle();
     ConnectHandle connectHandle = _connectHandleAllocator.get();
     OpenRTIAssert(_messageSenderMap.find(connectHandle) == _messageSenderMap.end());
-    _messageSenderMap[connectHandle] = messageSender;
+    _messageSenderMap[connectHandle]._messageSender = messageSender;
+    StringStringListMap::const_iterator i = clientOptions.find(L"serverName");
+    if (i != clientOptions.end() && !i->second.empty())
+      _messageSenderMap[connectHandle]._name = i->second.front();
     return connectHandle;
   }
   void removeMessageSender(const ConnectHandle& connectHandle)
@@ -85,7 +88,7 @@ public:
   {
     MessageSenderMap::const_iterator i = _messageSenderMap.find(connectHandle);
     OpenRTIAssert(i != _messageSenderMap.end());
-    i->second->send(message);
+    i->second._messageSender->send(message);
   }
   /// send upstream to the parent server
   void sendToParent(const SharedPtr<AbstractMessage>& message) const
@@ -97,7 +100,7 @@ public:
     for (MessageSenderMap::const_iterator i = _messageSenderMap.begin(); i != _messageSenderMap.end(); ++i) {
       if (i->first == _parentServerConnectHandle)
         continue;
-      i->second->send(message);
+      i->second._messageSender->send(message);
     }
   }
 
@@ -105,7 +108,13 @@ public:
   {
     MessageSenderMap::const_iterator i = _messageSenderMap.find(connectHandle);
     OpenRTIAssert(i != _messageSenderMap.end());
-    return i->second;
+    return i->second._messageSender;
+  }
+  const std::wstring& getName(const ConnectHandle& connectHandle) const
+  {
+    MessageSenderMap::const_iterator i = _messageSenderMap.find(connectHandle);
+    OpenRTIAssert(i != _messageSenderMap.end());
+    return i->second._name;
   }
 
 private:
@@ -116,7 +125,12 @@ private:
 
   /// The server class has several connects.
   /// Each connect can have multiple federates attached.
-  typedef std::map<ConnectHandle, SharedPtr<AbstractMessageSender> > MessageSenderMap;
+  struct ConnectData {
+    SharedPtr<AbstractMessageSender> _messageSender;
+    std::wstring _name;
+  };
+
+  typedef std::map<ConnectHandle, ConnectData> MessageSenderMap;
   MessageSenderMap _messageSenderMap;
 
   HandleAllocator<ConnectHandle> _connectHandleAllocator;
@@ -190,6 +204,13 @@ public:
   /// Get the rti servers path
   const std::wstring& getServerPath() const
   { return _serverOptions->getServerPath(); }
+  /// Get the servers name lurking behind this connect
+  const std::wstring& getConnectName(const ConnectHandle& connectHandle) const
+  {
+    ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.find(connectHandle);
+    OpenRTIAssert(i != _connectHandleConnectDataMap.end());
+    return i->second._name;
+  }
 
   /// Returns true if this is a root server
   bool isRootServer() const
@@ -1550,7 +1571,7 @@ public:
     return !i->second._federateHandleSet.empty();
   }
 
-  void insertParentConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender)
+  void insertParentConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::wstring& name)
   {
     OpenRTIAssert(connectHandle.valid());
     OpenRTIAssert(!_parentServerConnectHandle.valid());
@@ -1558,8 +1579,9 @@ public:
     if (_connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end())
       return;
     _connectHandleConnectDataMap[connectHandle]._messageSender = messageSender;
+    _connectHandleConnectDataMap[connectHandle]._name = name;
   }
-  void insertConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender)
+  void insertConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::wstring& name)
   {
     OpenRTIAssert(connectHandle.valid());
     if (_connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end()) {
@@ -1567,11 +1589,14 @@ public:
       return;
     }
     _connectHandleConnectDataMap[connectHandle]._messageSender = messageSender;
+    _connectHandleConnectDataMap[connectHandle]._name = name;
 
     SharedPtr<InsertFederationExecutionMessage> message = new InsertFederationExecutionMessage;
     message->setFederationHandle(getHandle());
     message->setFederationName(getName());
     message->setLogicalTimeFactoryName(getLogicalTimeFactoryName());
+    // FIXME add the server options
+    
     // FIXME push them as required
     message->setFOMModuleList(getModuleList());
     messageSender->send(message);
@@ -1920,6 +1945,7 @@ public:
   // The ConnectHandle <-> connect data mappings
   struct ConnectData {
     SharedPtr<AbstractMessageSender> _messageSender;
+    std::wstring _name;
     // FIXME make this an iterator to the FederateData above
     FederateHandleSet _federateHandleSet;
     // FIXME
@@ -2184,6 +2210,7 @@ public:
     FederationServerMap::iterator i = insertFederation(message->getFederationName(), federationHandle);
     i->second->setLogicalTimeFactoryName(message->getLogicalTimeFactoryName());
     i->second->insert(message->getFOMModuleList());
+    // FIXME add the server options
   }
   // Erase a new federation from the server node
   void accept(const ConnectHandle& connectHandle, EraseFederationExecutionMessage* message)
@@ -2233,7 +2260,7 @@ public:
 
       } else {
         // Insert a new connect
-	i->second->insertConnect(connectHandle, _serverConnectSet.getMessageSender(connectHandle));
+	i->second->insertConnect(connectHandle, _serverConnectSet.getMessageSender(connectHandle), _serverConnectSet.getName(connectHandle));
         // Process the join request
         i->second->accept(connectHandle, message);
       }
@@ -2272,7 +2299,7 @@ public:
         throw MessageError(L"Received successful JoinFederationExecutionResponseMessage with an unknown federation handle!");
 
       if (requestConnectHandle.valid())
-        i->second->insertConnect(requestConnectHandle, _serverConnectSet.getMessageSender(requestConnectHandle));
+        i->second->insertConnect(requestConnectHandle, _serverConnectSet.getMessageSender(requestConnectHandle), _serverConnectSet.getName(requestConnectHandle));
       i->second->accept(connectHandle, requestConnectHandle, message);
     }
 
@@ -2391,14 +2418,14 @@ public:
     message.dispatch(dispatcher);
   }
 
-  ConnectHandle insertConnect(const SharedPtr<AbstractMessageSender>& messageSender)
+  ConnectHandle insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
   {
-    return _serverConnectSet.insertMessageSender(messageSender);
+    return _serverConnectSet.insertMessageSender(messageSender, clientOptions);
   }
   ConnectHandle insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions)
   {
     _serverOptions->setParentOptionMap(parentOptions);
-    return _serverConnectSet.insertParentMessageSender(messageSender);
+    return _serverConnectSet.insertParentMessageSender(messageSender, parentOptions);
   }
   void removeConnect(const ConnectHandle& connectHandle)
   {
@@ -2480,7 +2507,8 @@ private:
     SharedPtr<FederationServer> federationServer = new FederationServer(name, federationHandle, _serverOptions);
     if (!isRootServer())
       federationServer->insertParentConnect(_serverConnectSet.getParentConnectHandle(),
-                                            _serverConnectSet.getMessageSender(_serverConnectSet.getParentConnectHandle()));
+                                            _serverConnectSet.getMessageSender(_serverConnectSet.getParentConnectHandle()),
+                                            _serverConnectSet.getName(_serverConnectSet.getParentConnectHandle()));
     return _federationServerMap.insert(FederationServerMap::value_type(federationHandle, federationServer)).first;
   }
   void eraseFederation(const FederationHandle& federationHandle)
@@ -2556,9 +2584,9 @@ ServerNode::getServerOptions() const
 }
 
 ConnectHandle
-ServerNode::insertConnect(const SharedPtr<AbstractMessageSender>& messageSender)
+ServerNode::insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
 {
-  return _serverMessageDispatcher->insertConnect(messageSender);
+  return _serverMessageDispatcher->insertConnect(messageSender, clientOptions);
 }
 
 ConnectHandle

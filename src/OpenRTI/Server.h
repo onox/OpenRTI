@@ -23,6 +23,7 @@
 #include "Clock.h"
 #include "SocketEventDispatcher.h"
 #include "SocketTCP.h"
+#include "StringUtils.h"
 
 namespace OpenRTI {
 
@@ -48,7 +49,7 @@ public:
   void connectParentPipeServer(const std::wstring& name, const Clock& abstime);
   void connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime);
 
-  SharedPtr<AbstractMessageSender> connectServer(const SharedPtr<AbstractMessageSender>& messageSender);
+  SharedPtr<AbstractMessageSender> connectServer(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);
 
   bool isRunning() const;
 

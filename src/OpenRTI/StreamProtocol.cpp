@@ -58,8 +58,8 @@ public:
       _server.setServerName(L"PIPE leaf server");
     }
 
-    SharedPtr<AbstractMessageSender> connectServer(const SharedPtr<AbstractMessageSender>& messageSender)
-    { return _server.connectServer(messageSender); }
+    SharedPtr<AbstractMessageSender> connectServer(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
+    { return _server.connectServer(messageSender, clientOptions); }
     bool disconnectServer(const SharedPtr<AbstractMessageSender>& messageSender)
     {
       messageSender->close();
@@ -76,21 +76,23 @@ public:
   // Connect stuff
   class OPENRTI_LOCAL ConnectServerCallback : public ThreadProcedureCallback {
   public:
-    ConnectServerCallback(const SharedPtr<AbstractMessageSender>& messageSender) :
-      _messageSender(messageSender)
+    ConnectServerCallback(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions) :
+      _messageSender(messageSender),
+      _clientOptions(clientOptions)
     { }
     virtual void exec(NamedThread& thread)
     {
-      _messageSender = static_cast<ServerThread&>(thread).connectServer(_messageSender);
+      _messageSender = static_cast<ServerThread&>(thread).connectServer(_messageSender, _clientOptions);
     }
     SharedPtr<AbstractMessageSender> _messageSender;
+    StringStringListMap _clientOptions;
   };
 
   // Sync call to connect to a server
   SharedPtr<AbstractMessageSender> connectServer(const std::wstring& name, const SharedPtr<AbstractMessageSender>& fromServerQueue,
                                                  const Clock& abstime)
   {
-    SharedPtr<ConnectServerCallback> callback = new ConnectServerCallback(fromServerQueue);
+    SharedPtr<ConnectServerCallback> callback = new ConnectServerCallback(fromServerQueue, StringStringListMap() /* FIXME */);
     _abstime = abstime;
     if (!execThreadProcedure(name, callback, true))
       return 0;

@@ -275,7 +275,7 @@ Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, c
   bool compress = true;
   StringStringListMap parentOptions;
   // Negotiate with the server how to encode
-  MessageEncoderPair encodingPair = MessageEncodingRegistry::instance().negotiateEncoding(socketStream, abstime, compress, parentOptions);
+  MessageEncoderPair encodingPair = MessageEncodingRegistry::instance().negotiateEncoding(socketStream, abstime, getServerName(), compress, parentOptions);
 
   // The socket side message encoder and output message queue
   SharedPtr<MessageSocketWriteEvent> writeMessageSocketEvent = new MessageSocketWriteEvent(socketStream, encodingPair.first);
@@ -307,10 +307,10 @@ Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, c
 }
 
 SharedPtr<AbstractMessageSender>
-Server::connectServer(const SharedPtr<AbstractMessageSender>& messageSender)
+Server::connectServer(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
 {
   SharedPtr<AbstractMessageSender> serverMessageSender;
-  serverMessageSender = _messageServer->insertConnect(messageSender);
+  serverMessageSender = _messageServer->insertConnect(messageSender, clientOptions);
   if (!serverMessageSender.valid())
     return 0;
 

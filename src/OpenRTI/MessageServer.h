@@ -32,7 +32,7 @@ public:
   MessageServer(const SharedPtr<ServerOptions>& serverOptions = new ServerOptions);
   virtual ~MessageServer();
 
-  SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender);
+  SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& childOptions);
   SharedPtr<AbstractMessageSender> insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions);
 
 private:

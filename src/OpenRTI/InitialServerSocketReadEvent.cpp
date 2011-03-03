@@ -68,7 +68,7 @@ InitialServerSocketReadEvent::readPacket(SocketEventDispatcher& dispatcher, Netw
   // Ok, we have now set up all we need for the encoded communication.
   // But still we need to respond ...
   SharedPtr<InitialServerSocketWriteEvent> initialServerWriteEvent;
-  initialServerWriteEvent = new InitialServerSocketWriteEvent(getSocket(), _messageServer);
+  initialServerWriteEvent = new InitialServerSocketWriteEvent(getSocket(), _messageServer, _valueMap);
   initialServerWriteEvent->setValueMap(responseValueMap);
 
   dispatcher.insert(initialServerWriteEvent.get());
