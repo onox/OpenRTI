@@ -39,6 +39,7 @@ public:
   void setServerName(const std::wstring& serverName)
   {
     _serverName = serverName;
+    _optionMap[L"serverName"].push_back(serverName);
     StringStringListMap::iterator i;
     i = _optionMap.insert(StringStringListMap::value_type(L"serverPath", StringList())).first;
     i->second = _parentServerPath;
