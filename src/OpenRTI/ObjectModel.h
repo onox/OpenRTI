@@ -465,6 +465,14 @@ public:
     attribute->setOwnerConnectHandle(connectHandle);
   }
 
+  bool getIsPrivilegeToDeleteAttributeSubscribed() const
+  {
+    ObjectAttribute* attribute = getPrivilegeToDeleteAttribute();
+    if (!attribute)
+      return false;
+    return !attribute->_recieveingConnects.empty();
+  }
+
   // Inserts itself into the list that is usually held in the object class knowing all the object instances
   void insertToObjectClassList(ObjectInstanceList& objectInstanceList)
   {

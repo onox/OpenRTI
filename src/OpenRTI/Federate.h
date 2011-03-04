@@ -397,11 +397,9 @@ public:
     // Puh FIXME: have a concept for this in the server nodes instead of relying on that here
     try {
       for (size_t i = 0; i < _objectClassVector.size(); ++i) {
-        unpublishObjectClass(i);
         unsubscribeObjectClass(i);
       }
       for (size_t i = 0; i < _interactionClassVector.size(); ++i) {
-        unpublishInteractionClass(i);
         unsubscribeInteractionClass(i);
       }
     } catch (...) {
@@ -423,6 +421,16 @@ public:
             deleteObjectInstance((i++)->first, VariableLengthData("Delete on resign FIXME!"));
           }
         }
+      }
+    } catch (...) {
+    }
+
+    try {
+      for (size_t i = 0; i < _objectClassVector.size(); ++i) {
+        unpublishObjectClass(i);
+      }
+      for (size_t i = 0; i < _interactionClassVector.size(); ++i) {
+        unpublishInteractionClass(i);
       }
     } catch (...) {
     }
@@ -818,6 +826,18 @@ public:
       return;
 
     sendMessage(request);
+
+    OpenRTIAssert(objectClass.getEffectiveSubscriptionType() == Unsubscribed);
+
+    for (typename ObjectInstanceHandleMap::iterator i = _objectInstanceHandleMap.begin(); i != _objectInstanceHandleMap.end();) {
+      if (i->second._objectClassHandle != objectClassHandle) {
+        ++i;
+      } else if (i->second._instanceAttributeVector[AttributeHandle(0)]->_isOwnedByFederate) {
+        ++i;
+      } else {
+        eraseObjectInstance((i++)->first);
+      }
+    }
   }
 
   virtual void unsubscribeObjectClassAttributes(ObjectClassHandle objectClassHandle, const AttributeHandleSet& attributeList)
@@ -853,6 +873,18 @@ public:
       return;
 
     sendMessage(request);
+
+    if (objectClass.getEffectiveSubscriptionType() == Unsubscribed) {
+      for (typename ObjectInstanceHandleMap::iterator i = _objectInstanceHandleMap.begin(); i != _objectInstanceHandleMap.end();) {
+        if (i->second._objectClassHandle != objectClassHandle) {
+          ++i;
+        } else if (i->second._instanceAttributeVector[AttributeHandle(0)]->_isOwnedByFederate) {
+          ++i;
+        } else {
+          eraseObjectInstance((i++)->first);
+        }
+      }
+    }
   }
 
   virtual void subscribeInteractionClass(InteractionClassHandle interactionClassHandle, bool active)

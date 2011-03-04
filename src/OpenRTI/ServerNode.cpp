@@ -1064,12 +1064,6 @@ public:
         }
         for (ObjectInstanceHandleSet::const_iterator i = objectInstanceHandleSet.begin();
              i != objectInstanceHandleSet.end(); ++i) {
-          // Shall we erase these objects from the branch then???
-          SharedPtr<DeleteObjectInstanceMessage> message = new DeleteObjectInstanceMessage;
-          message->setFederationHandle(getHandle());
-          message->setObjectInstanceHandle(*i);
-          send(connectHandle, message);
-
           // if (connectHandle != _parentServerConnectHandle) {
           //   unreferenceObjectInstanceHandle(*i, connectHandle);
           // }
@@ -1315,7 +1309,11 @@ public:
       throw MessageError(L"InsertObjectInstanceMessage for unknown ObjectClass.");
 
     ObjectInstanceHandle objectInstanceHandle = message->getObjectInstanceHandle();
-    SharedPtr<ObjectInstance> objectInstance = new ObjectInstance(message->getName(), objectInstanceHandle, objectClass);
+    SharedPtr<ObjectInstance> objectInstance = getObjectInstance(objectInstanceHandle);
+    if (!objectInstance.valid()) {
+      objectInstance = new ObjectInstance(message->getName(), objectInstanceHandle, objectClass);
+      insertObjectInstance(objectInstance);
+    }
     for (size_t i = 0; i < message->getAttributeStateVector().size(); ++i) {
       ObjectAttribute* attribute = objectInstance->getAttribute(message->getAttributeStateVector()[i].getAttributeHandle());
       if (!attribute)
@@ -1325,7 +1323,6 @@ public:
       // FIXME
       attribute->_recieveingConnects.erase(connectHandle);
     }
-    insertObjectInstance(objectInstance);
 
     // FIXME Improove this with preevaluated sets:
     // std::map<FederateHandle,ConnectHandleSet> ...
@@ -1356,9 +1353,13 @@ public:
   }
   void accept(const ConnectHandle& connectHandle, DeleteObjectInstanceMessage* message)
   {
+    // If the object class is already unsubscribed, we might still get delete instance or update messages
+    // That are sent by the owner at a time the subscription was still there.
+    // So This is not an error. FIXME: if we do explicit instance removal in parent to child order we can
+    // make that am error again.
     ObjectInstance* objectInstance = getObjectInstance(message->getObjectInstanceHandle());
     if (!objectInstance)
-      throw MessageError(L"DeleteObjectInstanceMessage for unknown ObjectInstance.");
+      return;
 
     ObjectClass* objectClass = objectInstance->getObjectClass();
     if (!objectClass)
@@ -1368,10 +1369,6 @@ public:
     // OpenRTIAssert(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects.count(connectHandle) == 0);
     // send(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects, message);
     send(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects, connectHandle, message);
-    // Ok, here ... we need to unsubscribe these node that no longer need that
-
-    // currently without message retraction this is true ...
-    eraseObjectInstance(objectInstance);
   }
   void accept(const ConnectHandle& connectHandle, LocalDeleteObjectInstanceMessage* message)
   {
@@ -1602,7 +1599,7 @@ public:
     message->setFederationName(getName());
     message->setLogicalTimeFactoryName(getLogicalTimeFactoryName());
     // FIXME add the server options
-    
+
     // FIXME push them as required
     message->setFOMModuleList(getModuleList());
     messageSender->send(message);
