@@ -930,7 +930,7 @@ class MessageEncoding(object):
         for t in messageMap.getTypeList():
             messageName = t.getName()
             opcode = self.getMessageOpcode(messageName)
-            if not opcode:
+            if opcode is None:
                 continue
             sourceStream.writeline('void')
             sourceStream.writeline('encode(NetworkBuffer& networkBuffer, const {messageName}& message) const'.format(messageName = messageName))
@@ -1128,7 +1128,7 @@ class MessageEncoding(object):
         for t in messageMap.getTypeList():
             messageName = t.getName()
             opcode = self.getMessageOpcode(messageName)
-            if not opcode:
+            if opcode is None:
                 continue
             sourceStream.writeline('case {opcode}:'.format(opcode = opcode))
             sourceStream.pushIndent()
@@ -1153,7 +1153,7 @@ class MessageEncoding(object):
         for t in messageMap.getTypeList():
             messageName = t.getName()
             opcode = self.getMessageOpcode(messageName)
-            if not opcode:
+            if opcode is None:
                 continue
             sourceStream.writeline('case {opcode}:'.format(opcode = opcode))
             sourceStream.pushIndent()

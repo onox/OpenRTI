@@ -2430,6 +2430,9 @@ TightBE1MessageDecoder::decodePayload(const NetworkBuffer& networkBuffer)
   uint16_t opcode = decodeStream.readUInt16Compressed();
   PayloadDecoder payloadDecoder(networkBuffer);
   switch (opcode) {
+  case 0:
+    payloadDecoder.readPayloadConnectionLostMessage(static_cast<ConnectionLostMessage&>(*_message));
+    break;
   case 1:
     payloadDecoder.readPayloadCreateFederationExecutionRequestMessage(static_cast<CreateFederationExecutionRequestMessage&>(*_message));
     break;
@@ -2576,6 +2579,10 @@ TightBE1MessageDecoder::decodeBody(NetworkBuffer& networkBuffer)
   DecodeStream decodeStream(networkBuffer[1], networkBuffer);
   uint16_t opcode = decodeStream.readUInt16Compressed();
   switch (opcode) {
+  case 0:
+    _message = new ConnectionLostMessage;
+    decodeStream.readConnectionLostMessage(static_cast<ConnectionLostMessage&>(*_message));
+    break;
   case 1:
     _message = new CreateFederationExecutionRequestMessage;
     decodeStream.readCreateFederationExecutionRequestMessage(static_cast<CreateFederationExecutionRequestMessage&>(*_message));

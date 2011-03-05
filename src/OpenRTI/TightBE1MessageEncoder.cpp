@@ -1375,6 +1375,16 @@ public:
   }
 
   void
+  encode(NetworkBuffer& networkBuffer, const ConnectionLostMessage& message) const
+  {
+    EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
+    EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
+    encodeStream.writeUInt16Compressed(0);
+    encodeStream.writeConnectionLostMessage(message);
+    headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
+  }
+
+  void
   encode(NetworkBuffer& networkBuffer, const CreateFederationExecutionRequestMessage& message) const
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
