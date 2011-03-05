@@ -437,9 +437,16 @@ public:
            i != _reservedNameObjectInstanceHandlePairs.end(); ++i) {
         objectInstanceHandleSet.insert(i->second);
       }
+      _reservedNameObjectInstanceHandlePairs.clear();
+      for (NameObjectInstanceHandleMap::iterator i = _privateNameObjectInstanceHandlePairs.begin();
+           i != _privateNameObjectInstanceHandlePairs.end(); ++i) {
+        objectInstanceHandleSet.insert(i->second);
+      }
+      _privateNameObjectInstanceHandlePairs.clear();
       for (typename ObjectInstanceHandleMap::iterator i = _objectInstanceHandleMap.begin(); i != _objectInstanceHandleMap.end(); ++i) {
         objectInstanceHandleSet.insert(i->first);
       }
+      _objectInstanceHandleMap.clear();
       message->getObjectInstanceHandleVector().resize(objectInstanceHandleSet.size());
       std::copy(objectInstanceHandleSet.begin(), objectInstanceHandleSet.end(), message->getObjectInstanceHandleVector().begin());
       sendMessage(message);
