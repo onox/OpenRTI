@@ -67,16 +67,22 @@ public:
       return ConnectHandle();
     ConnectHandle connectHandle = _connectHandleAllocator.get();
     OpenRTIAssert(_messageSenderMap.find(connectHandle) == _messageSenderMap.end());
-    _messageSenderMap[connectHandle]._messageSender = messageSender;
-    StringStringListMap::const_iterator i = clientOptions.find(L"serverName");
-    if (i != clientOptions.end() && !i->second.empty())
-      _messageSenderMap[connectHandle]._name = i->second.front();
+    MessageSenderMap::iterator i = _messageSenderMap.insert(MessageSenderMap::value_type(connectHandle, ConnectData())).first;
+    i->second._messageSender = messageSender;
+    StringStringListMap::const_iterator j = clientOptions.find(L"serverName");
+    if (j != clientOptions.end() && !j->second.empty()) {
+      i->second._name = j->second.front();
+    } else {
+      i->second._name = connectHandle.toString();
+    }
+    Log(FederationServer, Debug2) << "Inserting connect \"" << i->second._name << "\"." << std::endl;
     return connectHandle;
   }
   void removeMessageSender(const ConnectHandle& connectHandle)
   {
     MessageSenderMap::iterator i = _messageSenderMap.find(connectHandle);
     OpenRTIAssert(i != _messageSenderMap.end());
+    Log(FederationServer, Debug2) << "Removing connect \"" << i->second._name << "\"." << std::endl;
     _messageSenderMap.erase(i);
     if (_parentServerConnectHandle == connectHandle)
       _parentServerConnectHandle = ConnectHandle();
