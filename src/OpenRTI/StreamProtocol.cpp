@@ -92,7 +92,10 @@ public:
   SharedPtr<AbstractMessageSender> connectServer(const std::wstring& name, const SharedPtr<AbstractMessageSender>& fromServerQueue,
                                                  const Clock& abstime)
   {
-    SharedPtr<ConnectServerCallback> callback = new ConnectServerCallback(fromServerQueue, StringStringListMap() /* FIXME */);
+    /* FIXME */
+    StringStringListMap valueMap;
+    valueMap[L"serverName"].push_back(L"ambassadorConnect");
+    SharedPtr<ConnectServerCallback> callback = new ConnectServerCallback(fromServerQueue, valueMap);
     _abstime = abstime;
     if (!execThreadProcedure(name, callback, true))
       return 0;
