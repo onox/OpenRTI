@@ -50,6 +50,8 @@ public:
   void setParentOptionMap(const StringStringListMap& optionMap)
   {
     _optionMap = optionMap;
+    _optionMap[L"serverName"].clear();
+    _optionMap[L"serverName"].push_back(_serverName);
     StringStringListMap::iterator i;
     i = _optionMap.insert(StringStringListMap::value_type(L"serverPath", StringList())).first;
     _parentServerPath = i->second;
