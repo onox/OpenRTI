@@ -1370,19 +1370,6 @@ public:
     // send(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects, message);
     send(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects, connectHandle, message);
   }
-  void accept(const ConnectHandle& connectHandle, LocalDeleteObjectInstanceMessage* message)
-  {
-    ObjectInstance* objectInstance = getObjectInstance(message->getObjectInstanceHandle());
-    if (!objectInstance)
-      return;
-      // throw MessageError(L"LocalDeleteObjectInstanceMessage for unknown ObjectInstance.");
-    // FIXME only propagate further, if nobody here else is interrested in this object.
-    // Which means, need to track attributes that might be no longer needed for this object
-    // May be this message should be more: 'switch of updates for object instance'
-    // Then during this messages way, propagate as long as there are any attributes to skip left.
-    ConnectHandle ownerConnectHandle = objectInstance->getOwnerConnectHandle();
-    send(ownerConnectHandle, message);
-  }
 
   void accept(const ConnectHandle& connectHandle, AttributeUpdateMessage* message)
   {
@@ -2379,8 +2366,6 @@ public:
   void accept(const ConnectHandle& connectHandle, InsertObjectInstanceMessage* message)
   { acceptFederationMessage(connectHandle, message); }
   void accept(const ConnectHandle& connectHandle, DeleteObjectInstanceMessage* message)
-  { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, LocalDeleteObjectInstanceMessage* message)
   { acceptFederationMessage(connectHandle, message); }
   void accept(const ConnectHandle& connectHandle, AttributeUpdateMessage* message)
   { acceptFederationMessage(connectHandle, message); }

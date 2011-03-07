@@ -695,10 +695,6 @@
   </message>
 
 
-  <message type="LocalDeleteObjectInstance">
-    <field name="FederationHandle" type="FederationHandle"/>
-    <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
-  </message>
   <!-- Need to have a message which returns the object handle to the pool of
        Unused object handles. And also removes the object from the routing tables.
        We cannot do this in the delete object instance message since the timestamped

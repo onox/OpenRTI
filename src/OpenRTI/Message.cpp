@@ -1270,33 +1270,6 @@ TimeStampedDeleteObjectInstanceMessage::dispatch(ConstAbstractMessageDispatcher&
 }
 
 
-LocalDeleteObjectInstanceMessage::LocalDeleteObjectInstanceMessage()
-{
-}
-
-LocalDeleteObjectInstanceMessage::~LocalDeleteObjectInstanceMessage()
-{
-}
-
-const char*
-LocalDeleteObjectInstanceMessage::getTypeName() const
-{
-  return "LocalDeleteObjectInstanceMessage";
-}
-
-void
-LocalDeleteObjectInstanceMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-LocalDeleteObjectInstanceMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
-{
-  dispatcher.accept(*this);
-}
-
-
 AttributeUpdateMessage::AttributeUpdateMessage()
 {
 }

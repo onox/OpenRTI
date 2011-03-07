@@ -1379,7 +1379,16 @@ public:
            RestoreInProgress,
            RTIinternalError)
   {
-    Traits::throwRTIinternalError();
+    typename ObjectInstanceHandleMap::iterator i = _objectInstanceHandleMap.find(objectInstanceHandle);
+    if (i == _objectInstanceHandleMap.end())
+      Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
+    for (size_t j = 0; j < i->second._instanceAttributeVector.size(); ++j) {
+      if (i->second._instanceAttributeVector[j]->_isOwnedByFederate)
+        Traits::throwFederateOwnsAttributes(objectInstanceHandle.toString());
+    }
+
+    // local delete is just like unreferencing the object instance handle
+    eraseObjectInstance(objectInstanceHandle);
   }
 
   virtual void changeAttributeTransportationType(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet,

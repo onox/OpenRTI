@@ -540,7 +540,7 @@ class MessageEncoding(object):
             'InsertObjectInstanceMessage' : 90,
             'DeleteObjectInstanceMessage' : 91,
             'TimeStampedDeleteObjectInstanceMessage' : 92,
-            'LocalDeleteObjectInstanceMessage' : 93,
+            # obsolete 'LocalDeleteObjectInstanceMessage' : 93,
             'DestroyObjectInstanceMessage' : 94,
             'AttributeUpdateMessage' : 94,
             'TimeStampedAttributeUpdateMessage' : 96,

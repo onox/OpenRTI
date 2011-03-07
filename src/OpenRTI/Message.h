@@ -311,7 +311,6 @@ class ReserveMultipleObjectInstanceNameResponseMessage;
 class InsertObjectInstanceMessage;
 class DeleteObjectInstanceMessage;
 class TimeStampedDeleteObjectInstanceMessage;
-class LocalDeleteObjectInstanceMessage;
 class AttributeUpdateMessage;
 class TimeStampedAttributeUpdateMessage;
 class RequestAttributeUpdateMessage;
@@ -3654,34 +3653,6 @@ private:
   VariableLengthData _tag;
   VariableLengthData _timeStamp;
   MessageRetractionHandle _messageRetractionHandle;
-};
-
-class OPENRTI_API LocalDeleteObjectInstanceMessage : public AbstractMessage {
-public:
-  LocalDeleteObjectInstanceMessage();
-  virtual ~LocalDeleteObjectInstanceMessage();
-
-  virtual const char* getTypeName() const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher);
-  virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
-
-  void setFederationHandle(const FederationHandle& value)
-  { _federationHandle = value; }
-  FederationHandle& getFederationHandle()
-  { return _federationHandle; }
-  const FederationHandle& getFederationHandle() const
-  { return _federationHandle; }
-
-  void setObjectInstanceHandle(const ObjectInstanceHandle& value)
-  { _objectInstanceHandle = value; }
-  ObjectInstanceHandle& getObjectInstanceHandle()
-  { return _objectInstanceHandle; }
-  const ObjectInstanceHandle& getObjectInstanceHandle() const
-  { return _objectInstanceHandle; }
-
-private:
-  FederationHandle _federationHandle;
-  ObjectInstanceHandle _objectInstanceHandle;
 };
 
 class OPENRTI_API AttributeUpdateMessage : public AbstractMessage {

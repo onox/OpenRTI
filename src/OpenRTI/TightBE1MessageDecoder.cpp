@@ -1328,12 +1328,6 @@ public:
     readMessageRetractionHandle(value.getMessageRetractionHandle());
   }
 
-  void readLocalDeleteObjectInstanceMessage(LocalDeleteObjectInstanceMessage& value)
-  {
-    readFederationHandle(value.getFederationHandle());
-    readObjectInstanceHandle(value.getObjectInstanceHandle());
-  }
-
   void readAttributeUpdateMessage(AttributeUpdateMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
@@ -2339,12 +2333,6 @@ public:
     readPayloadMessageRetractionHandle(value.getMessageRetractionHandle());
   }
 
-  void readPayloadLocalDeleteObjectInstanceMessage(LocalDeleteObjectInstanceMessage& value)
-  {
-    readPayloadFederationHandle(value.getFederationHandle());
-    readPayloadObjectInstanceHandle(value.getObjectInstanceHandle());
-  }
-
   void readPayloadAttributeUpdateMessage(AttributeUpdateMessage& value)
   {
     readPayloadFederationHandle(value.getFederationHandle());
@@ -2553,9 +2541,6 @@ TightBE1MessageDecoder::decodePayload(const NetworkBuffer& networkBuffer)
   case 92:
     payloadDecoder.readPayloadTimeStampedDeleteObjectInstanceMessage(static_cast<TimeStampedDeleteObjectInstanceMessage&>(*_message));
     break;
-  case 93:
-    payloadDecoder.readPayloadLocalDeleteObjectInstanceMessage(static_cast<LocalDeleteObjectInstanceMessage&>(*_message));
-    break;
   case 94:
     payloadDecoder.readPayloadAttributeUpdateMessage(static_cast<AttributeUpdateMessage&>(*_message));
     break;
@@ -2742,10 +2727,6 @@ TightBE1MessageDecoder::decodeBody(NetworkBuffer& networkBuffer)
   case 92:
     _message = new TimeStampedDeleteObjectInstanceMessage;
     decodeStream.readTimeStampedDeleteObjectInstanceMessage(static_cast<TimeStampedDeleteObjectInstanceMessage&>(*_message));
-    break;
-  case 93:
-    _message = new LocalDeleteObjectInstanceMessage;
-    decodeStream.readLocalDeleteObjectInstanceMessage(static_cast<LocalDeleteObjectInstanceMessage&>(*_message));
     break;
   case 94:
     _message = new AttributeUpdateMessage;

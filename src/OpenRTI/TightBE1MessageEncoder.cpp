@@ -1313,12 +1313,6 @@ public:
     writeMessageRetractionHandle(value.getMessageRetractionHandle());
   }
 
-  void writeLocalDeleteObjectInstanceMessage(const LocalDeleteObjectInstanceMessage& value)
-  {
-    writeFederationHandle(value.getFederationHandle());
-    writeObjectInstanceHandle(value.getObjectInstanceHandle());
-  }
-
   void writeAttributeUpdateMessage(const AttributeUpdateMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
@@ -1781,16 +1775,6 @@ public:
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
     encodeStream.writeUInt16Compressed(92);
     encodeStream.writeTimeStampedDeleteObjectInstanceMessage(message);
-    headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
-  }
-
-  void
-  encode(NetworkBuffer& networkBuffer, const LocalDeleteObjectInstanceMessage& message) const
-  {
-    EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
-    EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(93);
-    encodeStream.writeLocalDeleteObjectInstanceMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
 

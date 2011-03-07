@@ -73,7 +73,6 @@ class ReserveMultipleObjectInstanceNameResponseMessage;
 class InsertObjectInstanceMessage;
 class DeleteObjectInstanceMessage;
 class TimeStampedDeleteObjectInstanceMessage;
-class LocalDeleteObjectInstanceMessage;
 class AttributeUpdateMessage;
 class TimeStampedAttributeUpdateMessage;
 class RequestAttributeUpdateMessage;
@@ -129,7 +128,6 @@ public:
   virtual void accept(InsertObjectInstanceMessage&) = 0;
   virtual void accept(DeleteObjectInstanceMessage&) = 0;
   virtual void accept(TimeStampedDeleteObjectInstanceMessage&) = 0;
-  virtual void accept(LocalDeleteObjectInstanceMessage&) = 0;
   virtual void accept(AttributeUpdateMessage&) = 0;
   virtual void accept(TimeStampedAttributeUpdateMessage&) = 0;
   virtual void accept(RequestAttributeUpdateMessage&) = 0;
@@ -188,7 +186,6 @@ public:
   virtual void accept(InsertObjectInstanceMessage& message) { _t(message); }
   virtual void accept(DeleteObjectInstanceMessage& message) { _t(message); }
   virtual void accept(TimeStampedDeleteObjectInstanceMessage& message) { _t(message); }
-  virtual void accept(LocalDeleteObjectInstanceMessage& message) { _t(message); }
   virtual void accept(AttributeUpdateMessage& message) { _t(message); }
   virtual void accept(TimeStampedAttributeUpdateMessage& message) { _t(message); }
   virtual void accept(RequestAttributeUpdateMessage& message) { _t(message); }
@@ -247,7 +244,6 @@ public:
   virtual void accept(const InsertObjectInstanceMessage&) = 0;
   virtual void accept(const DeleteObjectInstanceMessage&) = 0;
   virtual void accept(const TimeStampedDeleteObjectInstanceMessage&) = 0;
-  virtual void accept(const LocalDeleteObjectInstanceMessage&) = 0;
   virtual void accept(const AttributeUpdateMessage&) = 0;
   virtual void accept(const TimeStampedAttributeUpdateMessage&) = 0;
   virtual void accept(const RequestAttributeUpdateMessage&) = 0;
@@ -306,7 +302,6 @@ public:
   virtual void accept(const InsertObjectInstanceMessage& message) { _t(message); }
   virtual void accept(const DeleteObjectInstanceMessage& message) { _t(message); }
   virtual void accept(const TimeStampedDeleteObjectInstanceMessage& message) { _t(message); }
-  virtual void accept(const LocalDeleteObjectInstanceMessage& message) { _t(message); }
   virtual void accept(const AttributeUpdateMessage& message) { _t(message); }
   virtual void accept(const TimeStampedAttributeUpdateMessage& message) { _t(message); }
   virtual void accept(const RequestAttributeUpdateMessage& message) { _t(message); }
