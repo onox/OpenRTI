@@ -71,7 +71,7 @@ MessageEncodingRegistry::negotiateEncoding(const SharedPtr<SocketStream>& socket
   StringStringListMap valueMap;
 
   // The rti version we support. This is currently fixed 1
-  valueMap[L"version"].push_back(L"1");
+  valueMap[L"version"].push_back(L"2alpha");
   // The current servers name
   valueMap[L"serverName"].push_back(serverName);
 #ifdef OPENRTI_HAVE_ZLIB
@@ -117,10 +117,10 @@ MessageEncodingRegistry::getBestServerEncoding(const StringStringListMap& valueM
     responseValueMap[L"error"].push_back(L"No version field in the connect header given.");
     return responseValueMap;
   }
-  // Currently only version "1" is supported on both sides, currently just something to be
+  // Currently only version "2alpha" is supported on both sides, currently just something to be
   // extensible so that we can change something in the future without crashing clients or servers
   // by a wrong protocol or behavior.
-  if (!contains(i->second, L"1")) {
+  if (!contains(i->second, L"2alpha")) {
     responseValueMap[L"error"].push_back(L"Client does not support version 1 of the protocol.");
     return responseValueMap;
   }
@@ -147,7 +147,7 @@ MessageEncodingRegistry::getBestServerEncoding(const StringStringListMap& valueM
   }
 
   // Survived, respond with a valid response packet
-  responseValueMap[L"version"].push_back(L"1");
+  responseValueMap[L"version"].push_back(L"2alpha");
 #ifdef OPENRTI_HAVE_ZLIB
   if (serverOptions._preferCompression && getUseCompression(valueMap)) {
     // Compression by server policy and existing client support
