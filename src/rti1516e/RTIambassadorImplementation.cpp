@@ -354,7 +354,7 @@ public:
         break;
       }
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -369,7 +369,7 @@ public:
       rti1516e::VariableLengthData rti1516Tag = rti1516e::VariableLengthDataFriend::create(tag);
       _federateAmbassador->announceSynchronizationPoint(label, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -383,7 +383,7 @@ public:
     try {
       _federateAmbassador->federationSynchronized(label, rti1516e::FederateHandleSet() /* FIXME */);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -653,7 +653,7 @@ public:
       else
         _federateAmbassador->stopRegistrationForObjectClass(rti1516Handle);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -671,7 +671,7 @@ public:
       else
         _federateAmbassador->turnInteractionsOff(rti1516Handle);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -692,7 +692,7 @@ public:
       else
         _federateAmbassador->objectInstanceNameReservationFailed(message.getObjectInstanceHandleNamePair().second);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
   virtual void objectInstanceNameReservation(const OpenRTI::ReserveMultipleObjectInstanceNameResponseMessage& message)
@@ -712,7 +712,7 @@ public:
       else
         _federateAmbassador->multipleObjectInstanceNameReservationFailed(stringSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -738,7 +738,7 @@ public:
                                                   rti1516ObjectClassHandle,
                                                   name);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -773,7 +773,7 @@ public:
                                                     rti1516TransportationType, rti1516SupplementalReflectInfo);
       }
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -823,7 +823,7 @@ public:
         }
       }
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -842,7 +842,7 @@ public:
       rti1516e::SupplementalRemoveInfo rti1516SupplementalRemoveInfo; // FIXME
       _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516e::RECEIVE, rti1516SupplementalRemoveInfo);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -874,7 +874,7 @@ public:
         }
       }
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -907,7 +907,7 @@ public:
       _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516e::RECEIVE,
                                               rti1516TransportationType, rti1516eSupplementalReceiveInfo);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -955,7 +955,7 @@ public:
         }
       }
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -978,7 +978,7 @@ public:
 
       _federateAmbassador->attributesInScope(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1001,7 +1001,7 @@ public:
 
       _federateAmbassador->attributesOutOfScope(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1027,7 +1027,7 @@ public:
 
       _federateAmbassador->provideAttributeValueUpdate(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1050,7 +1050,7 @@ public:
 
       _federateAmbassador->turnUpdatesOnForObjectInstance(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1073,7 +1073,7 @@ public:
 
       _federateAmbassador->turnUpdatesOffForObjectInstance(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1103,7 +1103,7 @@ public:
 
       _federateAmbassador->requestAttributeOwnershipAssumption(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1126,7 +1126,7 @@ public:
 
       _federateAmbassador->requestDivestitureConfirmation(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1152,7 +1152,7 @@ public:
 
       _federateAmbassador->attributeOwnershipAcquisitionNotification(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1175,7 +1175,7 @@ public:
 
       _federateAmbassador->attributeOwnershipUnavailable(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1201,7 +1201,7 @@ public:
 
       _federateAmbassador->requestAttributeOwnershipRelease(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1224,7 +1224,7 @@ public:
 
       _federateAmbassador->confirmAttributeOwnershipAcquisitionCancellation(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1252,7 +1252,7 @@ public:
                                                     rti1516AttributeHandle,
                                                     rti1516FederateHandle);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1274,7 +1274,7 @@ public:
       _federateAmbassador->attributeIsNotOwned(rti1516ObjectInstanceHandle,
                                                rti1516AttributeHandle);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1296,7 +1296,7 @@ public:
       _federateAmbassador->attributeIsOwnedByRTI(rti1516ObjectInstanceHandle,
                                                  rti1516AttributeHandle);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1316,7 +1316,7 @@ public:
     try {
       _federateAmbassador->timeRegulationEnabled(logicalTime);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1332,7 +1332,7 @@ public:
     try {
       _federateAmbassador->timeConstrainedEnabled(logicalTime);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1348,7 +1348,7 @@ public:
     try {
       _federateAmbassador->timeAdvanceGrant(logicalTime);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1367,7 +1367,7 @@ public:
       rti1516MessageRetractionHandle = rti1516e::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
       _federateAmbassador->requestRetraction(rti1516MessageRetractionHandle);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1457,7 +1457,7 @@ public:
     try {
       _federateAmbassador->connectionLost(faultDescription);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1480,7 +1480,7 @@ public:
 
       _federateAmbassador->reportFederationExecutions(federationInformations);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << ucsToLocale(e.what()) << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 

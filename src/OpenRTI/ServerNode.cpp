@@ -314,7 +314,7 @@ public:
     FederateHandle federateHandle = message->getFederateHandle();
     FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
     if (i == _federateHandleFederateDataMap.end())
-      throw MessageError(L"Recieved ResignFederationExecutionRequestMessage for invalid federate handle!");
+      throw MessageError("Recieved ResignFederationExecutionRequestMessage for invalid federate handle!");
 
     // already done so ... just waiting for the response
     if (i->second._resignPending)
@@ -381,7 +381,7 @@ public:
     OpenRTIAssert(connectHandle.valid());
     FederateHandle federateHandle = message->getFederateHandle();
     if (!federateHandle.valid())
-      throw MessageError(L"Recieved ResignFederationExecutionResponseMessage for invalid federate handle!");
+      throw MessageError("Recieved ResignFederationExecutionResponseMessage for invalid federate handle!");
 
     // Get the connect where this federate was sitting up to now
     FederateHandleFederateDataMap::const_iterator j = _federateHandleFederateDataMap.find(federateHandle);
@@ -533,7 +533,7 @@ public:
   {
     FederateHandle federateHandle = message->getFederateHandle();
     if (_federateHandleFederateDataMap.find(federateHandle) != _federateHandleFederateDataMap.end())
-      throw MessageError(L"Received JoinFederateNotify for already known federate!");
+      throw MessageError("Received JoinFederateNotify for already known federate!");
     insertFederate(connectHandle, message->getFederateType(), message->getFederateName(), federateHandle);
     broadcastToChildren(message);
   }
@@ -541,7 +541,7 @@ public:
   {
     FederateHandle federateHandle = message->getFederateHandle();
     if (_federateHandleFederateDataMap.find(federateHandle) == _federateHandleFederateDataMap.end())
-      throw MessageError(L"Received ResignFederateNotify for unknown federate!");
+      throw MessageError("Received ResignFederateNotify for unknown federate!");
     broadcastToChildren(message);
     removeFederate(federateHandle);
   }
@@ -550,7 +550,7 @@ public:
     FederateHandle federateHandle = message->getFederateHandle();
     FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
     if (i == _federateHandleFederateDataMap.end())
-      throw MessageError(L"Received ChangeDefaultResignActionMessage for unknown federate!");
+      throw MessageError("Received ChangeDefaultResignActionMessage for unknown federate!");
     i->second._defaultResignAction = message->getResignAction();
     broadcast(connectHandle, message);
   }
@@ -560,7 +560,7 @@ public:
   {
     // Labels must be ckecked by the ambassador. So what arrives here with an empty label must be some kind of error.
     if (message->getLabel().empty())
-      throw MessageError(L"Received empty label in RegisterFederationSynchronizationPointMessage!");
+      throw MessageError("Received empty label in RegisterFederationSynchronizationPointMessage!");
 
     // If we are a root server ...
     if (isRootServer()) {
@@ -627,7 +627,7 @@ public:
   void accept(const ConnectHandle& connectHandle, RegisterFederationSynchronizationPointResponseMessage* message)
   {
     if (message->getLabel().empty())
-      throw MessageError(L"Received empty label in RegisterFederationSynchronizationPointResponseMessage!");
+      throw MessageError("Received empty label in RegisterFederationSynchronizationPointResponseMessage!");
 
     send(message->getFederateHandle(), message);
   }
@@ -635,7 +635,7 @@ public:
   void accept(const ConnectHandle& connectHandle, AnnounceSynchronizationPointMessage* message)
   {
     if (message->getLabel().empty())
-      throw MessageError(L"Received empty label in AnnounceSynchronizationPointMessage!");
+      throw MessageError("Received empty label in AnnounceSynchronizationPointMessage!");
 
     SyncronizationLabelStateMap::iterator i = _syncronizationLabelStateMap.find(message->getLabel());
     if (i == _syncronizationLabelStateMap.end()) {
@@ -646,9 +646,9 @@ public:
     } else {
       // label is already there
       if (!i->second._addJoiningFederates)
-        MessageError(L"Receiving incremental synchronization point update for fixed federate handle synchronization point!");
+        MessageError("Receiving incremental synchronization point update for fixed federate handle synchronization point!");
       if (!message->getAddJoiningFederates())
-        MessageError(L"Receiving incremental synchronization point update for fixed federate handle synchronization point!");
+        MessageError("Receiving incremental synchronization point update for fixed federate handle synchronization point!");
     }
 
     // Cycle over all child connects and send announcements with the appropriate handle sets
@@ -683,7 +683,7 @@ public:
   {
     SyncronizationLabelStateMap::iterator i = _syncronizationLabelStateMap.find(message->getLabel());
     if (i == _syncronizationLabelStateMap.end())
-      throw MessageError(L"SynchronizationPointAchievedMessage for unknown label!");
+      throw MessageError("SynchronizationPointAchievedMessage for unknown label!");
 
     for (FederateHandleSet::const_iterator j = message->getFederateHandleSet().begin();
          j != message->getFederateHandleSet().end(); ++j) {
@@ -712,7 +712,7 @@ public:
   {
     SyncronizationLabelStateMap::iterator i = _syncronizationLabelStateMap.find(message->getLabel());
     if (i == _syncronizationLabelStateMap.end())
-      throw MessageError(L"FederateSynchronizedMessage for unknown label.");
+      throw MessageError("FederateSynchronizedMessage for unknown label.");
 
     // Cycle over all child connects and send announcements with the appropriate handle sets
     for (ConnectHandleConnectDataMap::const_iterator j = _connectHandleConnectDataMap.begin();
@@ -949,7 +949,7 @@ public:
   {
     InteractionClass* interactionClass = getInteractionClass(message->getInteractionClassHandle());
     if (!interactionClass)
-      throw MessageError(L"ChangeInteractionClassSubscriptionMessage for unknown InteractionClass!");
+      throw MessageError("ChangeInteractionClassSubscriptionMessage for unknown InteractionClass!");
     // Change publication type for this connect ...
     PropagationTypeConnectHandlePair propagationConnectPair;
     propagationConnectPair = interactionClass->setSubscriptionType(connectHandle, message->getSubscriptionType());
@@ -1159,7 +1159,7 @@ public:
     FederateHandle federateHandle = message->getFederateHandle();
     FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
     if (i == _federateHandleFederateDataMap.end()) {
-      throw MessageError(L"Got ObjectInstanceHandlesResponseMessage for an unknown federate!");
+      throw MessageError("Got ObjectInstanceHandlesResponseMessage for an unknown federate!");
     } else if (!i->second._connectHandle.valid() || i->second._resignPending) {
       // Can happen, may be it has resigned/is died in between but the response is already underway
       // If so, then just ignore, the upstream server needs to release them
@@ -1196,11 +1196,11 @@ public:
       FederateHandle federateHandle = message->getFederateHandle();
       FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
       if (i == _federateHandleFederateDataMap.end())
-        throw MessageError(L"Got ReserveObjectInstanceNameRequestMessage for an unknown federate!");
+        throw MessageError("Got ReserveObjectInstanceNameRequestMessage for an unknown federate!");
 
       // names starting with HLA are reserved for the RTI, a correct programmed ambassador does not request these
       if (message->getName().compare(0, 3, L"HLA") == 0)
-        throw MessageError(L"Got ReserveObjectInstanceNameRequestMessage with name starting with HLA.");
+        throw MessageError("Got ReserveObjectInstanceNameRequestMessage with name starting with HLA.");
 
       SharedPtr<ReserveObjectInstanceNameResponseMessage> response;
       response = new ReserveObjectInstanceNameResponseMessage;
@@ -1226,7 +1226,7 @@ public:
     FederateHandle federateHandle = message->getFederateHandle();
     FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
     if (i == _federateHandleFederateDataMap.end()) {
-      throw MessageError(L"Got ReserveObjectInstanceNameResponseMessage for an unknown federate!");
+      throw MessageError("Got ReserveObjectInstanceNameResponseMessage for an unknown federate!");
     } else if (!i->second._connectHandle.valid() || i->second._resignPending) {
       // Can happen, may be it has resigned/is died in between but the response is already underway
       // If so, then release the reservations.
@@ -1245,7 +1245,7 @@ public:
       FederateHandle federateHandle = message->getFederateHandle();
       FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
       if (i == _federateHandleFederateDataMap.end())
-        throw MessageError(L"Got ReserveObjectInstanceNameRequestMessage for an unknown federate!");
+        throw MessageError("Got ReserveObjectInstanceNameRequestMessage for an unknown federate!");
 
       SharedPtr<ReserveMultipleObjectInstanceNameResponseMessage> response;
       response = new ReserveMultipleObjectInstanceNameResponseMessage;
@@ -1259,7 +1259,7 @@ public:
         response->getObjectInstanceHandleNamePairVector().push_back(objectInstanceHandleNamePair);
         // names starting with HLA are reserved for the RTI
         if (i->compare(0, 3, L"HLA") == 0)
-          throw MessageError(L"ReserveObjectInstanceNameRequestMessage with name starting with HLA - that must be handled in the ambassador.");
+          throw MessageError("ReserveObjectInstanceNameRequestMessage with name starting with HLA - that must be handled in the ambassador.");
         // We do not need to check against the object names since the automatic generated object names do not collide by design
         // and the reserved names are tested here
         if (_objectInstanceNameSet.find(*i) == _objectInstanceNameSet.end())
@@ -1284,7 +1284,7 @@ public:
     FederateHandle federateHandle = message->getFederateHandle();
     FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
     if (i == _federateHandleFederateDataMap.end()) {
-      throw MessageError(L"Got ReserveMultipleObjectInstanceNameResponseMessage for an unknown federate!");
+      throw MessageError("Got ReserveMultipleObjectInstanceNameResponseMessage for an unknown federate!");
     } else if (!i->second._connectHandle.valid() || i->second._resignPending) {
       // Can happen, may be it has resigned/is died in between but the response is already underway
       // If so, then release the reservations.
@@ -1306,7 +1306,7 @@ public:
   {
     ObjectClass* objectClass = getObjectClass(message->getObjectClassHandle());
     if (!objectClass)
-      throw MessageError(L"InsertObjectInstanceMessage for unknown ObjectClass.");
+      throw MessageError("InsertObjectInstanceMessage for unknown ObjectClass.");
 
     ObjectInstanceHandle objectInstanceHandle = message->getObjectInstanceHandle();
     SharedPtr<ObjectInstance> objectInstance = getObjectInstance(objectInstanceHandle);
@@ -1363,7 +1363,7 @@ public:
 
     ObjectClass* objectClass = objectInstance->getObjectClass();
     if (!objectClass)
-      throw MessageError(L"DeleteObjectInstanceMessage for unknown ObjectClass.");
+      throw MessageError("DeleteObjectInstanceMessage for unknown ObjectClass.");
 
     // send that to all servers that have seen that object instance at some time
     // OpenRTIAssert(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects.count(connectHandle) == 0);
@@ -1506,7 +1506,7 @@ public:
     ObjectInstanceHandle objectClassHandle = message->getObjectClassHandle();
     ObjectClass* objectClass = getObjectClass(objectClassHandle);
     if (!objectClass)
-      throw MessageError(L"Received RequestClassAttributeUpdateMessage for unknown object class!");
+      throw MessageError("Received RequestClassAttributeUpdateMessage for unknown object class!");
 
     // Find the server connects that own the attributes and build up a message for those
     ConnectMessageMap connectMessageMap;
@@ -1672,7 +1672,7 @@ public:
     if (i != _connectHandleConnectDataMap.end()) {
       FederateHandleSet federateHandleSet = i->second._federateHandleSet;
       for (FederateHandleSet::iterator j = federateHandleSet.begin(); j != federateHandleSet.end(); ++j) {
-        Log(FederationServer, Info) << "Resigning federate " << ucsToLocale(j->toString()) << " because of closed connection!" << std::endl;
+        Log(FederationServer, Info) << "Resigning federate " << j->toString() << " because of closed connection!" << std::endl;
         SharedPtr<ResignFederationExecutionRequestMessage> message = new ResignFederationExecutionRequestMessage;
         message->setFederationHandle(getHandle());
         message->setFederateHandle(*j);
@@ -1958,7 +1958,7 @@ public:
     FederationServerMap::const_iterator i = _federationServerMap.find(message->getFederationHandle());
     if (i == _federationServerMap.end()) {
       Log(FederationServer, Warning) << getServerPath() << ": Received " << message->getTypeName()
-                                     << " for unknown federation id: " << ucsToLocale(message->getFederationHandle().toString())
+                                     << " for unknown federation id: " << message->getFederationHandle().toString()
                                      << "!" << std::endl;
       throw MessageError(getServerPath() + std::wstring(L" received ") + localeToUcs(message->getTypeName())
                          + L" for unknown federation id: " + message->getFederationHandle().toString() + L"!");
@@ -2024,7 +2024,7 @@ public:
           _federationServerMap.insert(FederationServerMap::value_type(federationHandle, federationServer));
 
           Log(FederationServer, Info) << "Create federation execution \""
-                                      << ucsToLocale(message->getFederationExecution()) << "\"." << std::endl;
+                                      << message->getFederationExecution() << "\"." << std::endl;
 
           // ... and respond with Success
           SharedPtr<CreateFederationExecutionResponseMessage> response;
@@ -2045,7 +2045,7 @@ public:
     // If we have an upstream connect, mark this request as pending and ask the parent server
     else {
       if (connectHandle == _serverConnectSet.getParentConnectHandle())
-        throw MessageError(L"Received CreateExecutionRequestMessage through the parent connect!");
+        throw MessageError("Received CreateExecutionRequestMessage through the parent connect!");
 
       _pendingMessageList.push_back(ConnectHandleMessagePair(connectHandle, message));
       _serverConnectSet.sendToParent(message);
@@ -2056,11 +2056,11 @@ public:
     OpenRTIAssert(connectHandle.valid());
     // Such a response must originate from the parent.
     if (connectHandle != _serverConnectSet.getParentConnectHandle())
-      throw MessageError(L"Received CreateExecutionResponseMessage through a child connect!");
+      throw MessageError("Received CreateExecutionResponseMessage through a child connect!");
 
     // need to have a connect handle to resond to
     if (_pendingMessageList.empty())
-      throw MessageError(L"No pending CreateExecutionRequestMessage but received CreateFederationExecutionResponseMessage!");
+      throw MessageError("No pending CreateExecutionRequestMessage but received CreateFederationExecutionResponseMessage!");
 
     // Report downstream to the originator
     if (_pendingMessageList.front().first.valid())
@@ -2080,7 +2080,7 @@ public:
       FederationServerMap::iterator i = _federationServerMap.find(message->getFederationExecution());
       if (i == _federationServerMap.end()) {
         Log(FederationServer, Info) << "DestroyFederationExecutionRequestMessage faild for unknown federation named \""
-                                    << ucsToLocale(message->getFederationExecution()) << "\"!" << std::endl;
+                                    << message->getFederationExecution() << "\"!" << std::endl;
         // Ok, have an inactive federation, destroy needs to fail
         SharedPtr<DestroyFederationExecutionResponseMessage> response;
         response = new DestroyFederationExecutionResponseMessage;
@@ -2091,7 +2091,7 @@ public:
         // Federates currently joined?
         if (i->second->hasJoinedFederates()) {
           Log(FederationServer, Info) << "DestroyFederationExecutionRequestMessage faild for \""
-                                      << ucsToLocale(message->getFederationExecution()) << "\", federates joined!" << std::endl;
+                                      << message->getFederationExecution() << "\", federates joined!" << std::endl;
           // federades there, so, no
           SharedPtr<DestroyFederationExecutionResponseMessage> response;
           response = new DestroyFederationExecutionResponseMessage;
@@ -2112,7 +2112,7 @@ public:
     // If we have an upstream connect, mark this request as pending and ask the parent server
     else {
       if (connectHandle == _serverConnectSet.getParentConnectHandle())
-        throw MessageError(L"Received DestroyExecutionRequestMessage through the parent connect!");
+        throw MessageError("Received DestroyExecutionRequestMessage through the parent connect!");
 
       // ... ask your father
       _pendingMessageList.push_back(ConnectHandleMessagePair(connectHandle, message));
@@ -2124,11 +2124,11 @@ public:
     OpenRTIAssert(connectHandle.valid());
     // Such a response must originate from the parent.
     if (connectHandle != _serverConnectSet.getParentConnectHandle())
-      throw MessageError(L"Received DestroyExecutionResponseMessage through a child connect!");
+      throw MessageError("Received DestroyExecutionResponseMessage through a child connect!");
 
     // need to have a connect handle to resond to
     if (_pendingMessageList.empty())
-      throw MessageError(L"No pending DestroyExecutionResponseMessage even in FederateDestroyPending state!");
+      throw MessageError("No pending DestroyExecutionResponseMessage even in FederateDestroyPending state!");
 
     // Report downstream to the originator
     if (_pendingMessageList.front().first.valid())
@@ -2157,7 +2157,7 @@ public:
     // If we have an upstream connect, mark this request as pending and ask the parent server
     else {
       if (connectHandle == _serverConnectSet.getParentConnectHandle())
-        throw MessageError(L"Received EnumerateFederationExecutionsRequestMessage through the parent connect!");
+        throw MessageError("Received EnumerateFederationExecutionsRequestMessage through the parent connect!");
 
       // ... ask your father
       _pendingMessageList.push_back(ConnectHandleMessagePair(connectHandle, message));
@@ -2169,11 +2169,11 @@ public:
     OpenRTIAssert(connectHandle.valid());
     // Such a response must originate from the parent.
     if (connectHandle != _serverConnectSet.getParentConnectHandle())
-      throw MessageError(L"Received EnumerateFederationExecutionsResponseMessage through a child connect!");
+      throw MessageError("Received EnumerateFederationExecutionsResponseMessage through a child connect!");
 
     // need to have a connect handle to resond to
     if (_pendingMessageList.empty())
-      throw MessageError(L"No pending EnumerateFederationExecutionsResponseMessage!");
+      throw MessageError("No pending EnumerateFederationExecutionsResponseMessage!");
 
     // Report downstream to the originator
     if (_pendingMessageList.front().first.valid())
@@ -2227,7 +2227,7 @@ public:
 
     // The ambassador already needs to care for that. So, if we get that here, drop the connection.
     if (message->getFederateName().compare(0, 3, L"HLA") == 0)
-      throw MessageError(L"Got JoinFederationExecutionRequestMessage with name starting with HLA.");
+      throw MessageError("Got JoinFederationExecutionRequestMessage with name starting with HLA.");
 
     // If we are a root server ...
     if (isRootServer()) {
@@ -2236,7 +2236,7 @@ public:
       if (i == _federationServerMap.end()) {
         // FederationExecutionDoesNotExist ...
         Log(FederationServer, Info) << "JoinFederationExecutionRequestMessage faild for unknown federation named \""
-                                    << ucsToLocale(message->getFederationExecution()) << "\"!" << std::endl;
+                                    << message->getFederationExecution() << "\"!" << std::endl;
         SharedPtr<JoinFederationExecutionResponseMessage> response;
         response = new JoinFederationExecutionResponseMessage;
         response->setJoinFederationExecutionResponseType(JoinFederationExecutionResponseFederationExecutionDoesNotExist);
@@ -2267,7 +2267,7 @@ public:
     OpenRTIAssert(connectHandle.valid());
     // Such a response must originate from the parent.
     if (connectHandle != _serverConnectSet.getParentConnectHandle())
-      throw MessageError(L"Received JoinFederationExecutionResponseMessage through a child connect!");
+      throw MessageError("Received JoinFederationExecutionResponseMessage through a child connect!");
 
     ConnectHandle requestConnectHandle = _pendingMessageList.front().first;
 
@@ -2281,12 +2281,12 @@ public:
 
       // Check the messages content somehow
       if (!message->getFederateHandle().valid())
-        throw MessageError(L"Received successful JoinFederationExecutionResponseMessage with an invalid federate handle!");
+        throw MessageError("Received successful JoinFederationExecutionResponseMessage with an invalid federate handle!");
       if (!message->getFederationHandle().valid())
-        throw MessageError(L"Received successful JoinFederationExecutionResponseMessage with an invalid federation handle!");
+        throw MessageError("Received successful JoinFederationExecutionResponseMessage with an invalid federation handle!");
       FederationServerMap::iterator i = _federationServerMap.find(message->getFederationHandle());
       if (i == _federationServerMap.end())
-        throw MessageError(L"Received successful JoinFederationExecutionResponseMessage with an unknown federation handle!");
+        throw MessageError("Received successful JoinFederationExecutionResponseMessage with an unknown federation handle!");
 
       if (requestConnectHandle.valid())
         i->second->insertConnect(requestConnectHandle, _serverConnectSet.getMessageSender(requestConnectHandle), _serverConnectSet.getName(requestConnectHandle));
@@ -2385,7 +2385,7 @@ public:
   { acceptFederationMessage(connectHandle, message); }
 
   void accept(const ConnectHandle&, AbstractMessage* message)
-  { throw MessageError(L"Received unexpected message???"); }
+  { throw MessageError("Received unexpected message???"); }
 
   class DispatchFunctor {
   public:
