@@ -1080,12 +1080,6 @@ public:
     readFederateHandle(value.getFederateHandle());
   }
 
-  void readResignFederationExecutionResponseMessage(ResignFederationExecutionResponseMessage& value)
-  {
-    readFederationHandle(value.getFederationHandle());
-    readFederateHandle(value.getFederateHandle());
-  }
-
   void readJoinFederateNotifyMessage(JoinFederateNotifyMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
@@ -2085,12 +2079,6 @@ public:
     readPayloadFederateHandle(value.getFederateHandle());
   }
 
-  void readPayloadResignFederationExecutionResponseMessage(ResignFederationExecutionResponseMessage& value)
-  {
-    readPayloadFederationHandle(value.getFederationHandle());
-    readPayloadFederateHandle(value.getFederateHandle());
-  }
-
   void readPayloadJoinFederateNotifyMessage(JoinFederateNotifyMessage& value)
   {
     readPayloadFederationHandle(value.getFederationHandle());
@@ -2454,9 +2442,6 @@ TightBE1MessageDecoder::decodePayload(const NetworkBuffer& networkBuffer)
   case 12:
     payloadDecoder.readPayloadResignFederationExecutionRequestMessage(static_cast<ResignFederationExecutionRequestMessage&>(*_message));
     break;
-  case 13:
-    payloadDecoder.readPayloadResignFederationExecutionResponseMessage(static_cast<ResignFederationExecutionResponseMessage&>(*_message));
-    break;
   case 14:
     payloadDecoder.readPayloadJoinFederateNotifyMessage(static_cast<JoinFederateNotifyMessage&>(*_message));
     break;
@@ -2611,10 +2596,6 @@ TightBE1MessageDecoder::decodeBody(NetworkBuffer& networkBuffer)
   case 12:
     _message = new ResignFederationExecutionRequestMessage;
     decodeStream.readResignFederationExecutionRequestMessage(static_cast<ResignFederationExecutionRequestMessage&>(*_message));
-    break;
-  case 13:
-    _message = new ResignFederationExecutionResponseMessage;
-    decodeStream.readResignFederationExecutionResponseMessage(static_cast<ResignFederationExecutionResponseMessage&>(*_message));
     break;
   case 14:
     _message = new JoinFederateNotifyMessage;

@@ -39,7 +39,6 @@ class EraseFederationExecutionMessage;
 class JoinFederationExecutionRequestMessage;
 class JoinFederationExecutionResponseMessage;
 class ResignFederationExecutionRequestMessage;
-class ResignFederationExecutionResponseMessage;
 class JoinFederateNotifyMessage;
 class ResignFederateNotifyMessage;
 class ChangeDefaultResignActionMessage;
@@ -94,7 +93,6 @@ public:
   virtual void accept(JoinFederationExecutionRequestMessage&) = 0;
   virtual void accept(JoinFederationExecutionResponseMessage&) = 0;
   virtual void accept(ResignFederationExecutionRequestMessage&) = 0;
-  virtual void accept(ResignFederationExecutionResponseMessage&) = 0;
   virtual void accept(JoinFederateNotifyMessage&) = 0;
   virtual void accept(ResignFederateNotifyMessage&) = 0;
   virtual void accept(ChangeDefaultResignActionMessage&) = 0;
@@ -152,7 +150,6 @@ public:
   virtual void accept(JoinFederationExecutionRequestMessage& message) { _t(message); }
   virtual void accept(JoinFederationExecutionResponseMessage& message) { _t(message); }
   virtual void accept(ResignFederationExecutionRequestMessage& message) { _t(message); }
-  virtual void accept(ResignFederationExecutionResponseMessage& message) { _t(message); }
   virtual void accept(JoinFederateNotifyMessage& message) { _t(message); }
   virtual void accept(ResignFederateNotifyMessage& message) { _t(message); }
   virtual void accept(ChangeDefaultResignActionMessage& message) { _t(message); }
@@ -210,7 +207,6 @@ public:
   virtual void accept(const JoinFederationExecutionRequestMessage&) = 0;
   virtual void accept(const JoinFederationExecutionResponseMessage&) = 0;
   virtual void accept(const ResignFederationExecutionRequestMessage&) = 0;
-  virtual void accept(const ResignFederationExecutionResponseMessage&) = 0;
   virtual void accept(const JoinFederateNotifyMessage&) = 0;
   virtual void accept(const ResignFederateNotifyMessage&) = 0;
   virtual void accept(const ChangeDefaultResignActionMessage&) = 0;
@@ -268,7 +264,6 @@ public:
   virtual void accept(const JoinFederationExecutionRequestMessage& message) { _t(message); }
   virtual void accept(const JoinFederationExecutionResponseMessage& message) { _t(message); }
   virtual void accept(const ResignFederationExecutionRequestMessage& message) { _t(message); }
-  virtual void accept(const ResignFederationExecutionResponseMessage& message) { _t(message); }
   virtual void accept(const JoinFederateNotifyMessage& message) { _t(message); }
   virtual void accept(const ResignFederateNotifyMessage& message) { _t(message); }
   virtual void accept(const ChangeDefaultResignActionMessage& message) { _t(message); }

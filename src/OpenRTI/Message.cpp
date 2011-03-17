@@ -352,33 +352,6 @@ ResignFederationExecutionRequestMessage::dispatch(ConstAbstractMessageDispatcher
 }
 
 
-ResignFederationExecutionResponseMessage::ResignFederationExecutionResponseMessage()
-{
-}
-
-ResignFederationExecutionResponseMessage::~ResignFederationExecutionResponseMessage()
-{
-}
-
-const char*
-ResignFederationExecutionResponseMessage::getTypeName() const
-{
-  return "ResignFederationExecutionResponseMessage";
-}
-
-void
-ResignFederationExecutionResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ResignFederationExecutionResponseMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
-{
-  dispatcher.accept(*this);
-}
-
-
 JoinFederateNotifyMessage::JoinFederateNotifyMessage()
 {
 }

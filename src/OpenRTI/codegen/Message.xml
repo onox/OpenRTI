@@ -438,11 +438,6 @@
     <field name="FederationHandle" type="FederationHandle"/>
     <field name="FederateHandle" type="FederateHandle"/>
   </message>
-  <message type="ResignFederationExecutionResponse">
-    <!-- The federation handle to identify packets -->
-    <field name="FederationHandle" type="FederationHandle"/>
-    <field name="FederateHandle" type="FederateHandle"/>
-  </message>
 
   <!-- Notify messages for new and vanished Federates -->
   <message type="JoinFederateNotify">

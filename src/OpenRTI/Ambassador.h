@@ -439,7 +439,7 @@ public:
           SharedPtr<AbstractMessage> message = _connect->receive(abstime);
           if (!message.valid())
             break;
-          if (dynamic_cast<ResignFederationExecutionResponseMessage*>(message.get()))
+          if (dynamic_cast<EraseFederationExecutionMessage*>(message.get()))
             break;
         }
         if (insertFederationMessage.valid())

@@ -1065,12 +1065,6 @@ public:
     writeFederateHandle(value.getFederateHandle());
   }
 
-  void writeResignFederationExecutionResponseMessage(const ResignFederationExecutionResponseMessage& value)
-  {
-    writeFederationHandle(value.getFederationHandle());
-    writeFederateHandle(value.getFederateHandle());
-  }
-
   void writeJoinFederateNotifyMessage(const JoinFederateNotifyMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
@@ -1485,16 +1479,6 @@ public:
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
     encodeStream.writeUInt16Compressed(12);
     encodeStream.writeResignFederationExecutionRequestMessage(message);
-    headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
-  }
-
-  void
-  encode(NetworkBuffer& networkBuffer, const ResignFederationExecutionResponseMessage& message) const
-  {
-    EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
-    EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(13);
-    encodeStream.writeResignFederationExecutionResponseMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
 

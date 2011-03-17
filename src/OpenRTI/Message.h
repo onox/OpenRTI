@@ -277,7 +277,6 @@ class EraseFederationExecutionMessage;
 class JoinFederationExecutionRequestMessage;
 class JoinFederationExecutionResponseMessage;
 class ResignFederationExecutionRequestMessage;
-class ResignFederationExecutionResponseMessage;
 class JoinFederateNotifyMessage;
 class ResignFederateNotifyMessage;
 class ChangeDefaultResignActionMessage;
@@ -2327,34 +2326,6 @@ class OPENRTI_API ResignFederationExecutionRequestMessage : public AbstractMessa
 public:
   ResignFederationExecutionRequestMessage();
   virtual ~ResignFederationExecutionRequestMessage();
-
-  virtual const char* getTypeName() const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher);
-  virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
-
-  void setFederationHandle(const FederationHandle& value)
-  { _federationHandle = value; }
-  FederationHandle& getFederationHandle()
-  { return _federationHandle; }
-  const FederationHandle& getFederationHandle() const
-  { return _federationHandle; }
-
-  void setFederateHandle(const FederateHandle& value)
-  { _federateHandle = value; }
-  FederateHandle& getFederateHandle()
-  { return _federateHandle; }
-  const FederateHandle& getFederateHandle() const
-  { return _federateHandle; }
-
-private:
-  FederationHandle _federationHandle;
-  FederateHandle _federateHandle;
-};
-
-class OPENRTI_API ResignFederationExecutionResponseMessage : public AbstractMessage {
-public:
-  ResignFederationExecutionResponseMessage();
-  virtual ~ResignFederationExecutionResponseMessage();
 
   virtual const char* getTypeName() const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);

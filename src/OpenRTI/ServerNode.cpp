@@ -357,16 +357,10 @@ public:
     if (isRootServer()) {
       // ... and respond with Success
       /// FIXME shall we get that message from the federation server???
-      SharedPtr<ResignFederationExecutionResponseMessage> response;
-      response = new ResignFederationExecutionResponseMessage;
-      response->setFederationHandle(getHandle());
-      response->setFederateHandle(federateHandle);
-      send(connectHandle, response);
-
       SharedPtr<ResignFederateNotifyMessage> notify = new ResignFederateNotifyMessage;
       notify->setFederateHandle(federateHandle);
       notify->setFederationHandle(getHandle());
-      broadcastToChildren(connectHandle, notify);
+      broadcastToChildren(notify);
 
       // Remove the federate locally
       removeFederate(federateHandle);
@@ -375,33 +369,6 @@ public:
     else {
       send(_parentServerConnectHandle, message);
     }
-  }
-  void accept(const ConnectHandle& connectHandle, ResignFederationExecutionResponseMessage* message)
-  {
-    OpenRTIAssert(connectHandle.valid());
-    FederateHandle federateHandle = message->getFederateHandle();
-    if (!federateHandle.valid())
-      throw MessageError("Recieved ResignFederationExecutionResponseMessage for invalid federate handle!");
-
-    // Get the connect where this federate was sitting up to now
-    FederateHandleFederateDataMap::const_iterator j = _federateHandleFederateDataMap.find(federateHandle);
-    ConnectHandle requestConnectHandle;
-    // Can happen when the resign was forced due to a dropped connection
-    if (j != _federateHandleFederateDataMap.end())
-      requestConnectHandle = j->second._connectHandle;
-
-    // send all children the notification about the new federate except the one that gets the response
-    SharedPtr<ResignFederateNotifyMessage> notify = new ResignFederateNotifyMessage;
-    notify->setFederateHandle(federateHandle);
-    notify->setFederationHandle(getHandle());
-    broadcastToChildren(requestConnectHandle, notify);
-
-    // Report downstream to the originator, if there is still something to report
-    if (requestConnectHandle.valid())
-      send(requestConnectHandle, message);
-
-    // Do some work locally
-    removeFederate(federateHandle);
   }
 
   void pushPublications(const ConnectHandle& connectHandle)
@@ -539,6 +506,7 @@ public:
   }
   void accept(const ConnectHandle& connectHandle, ResignFederateNotifyMessage* message)
   {
+    OpenRTIAssert(connectHandle.valid());
     FederateHandle federateHandle = message->getFederateHandle();
     if (_federateHandleFederateDataMap.find(federateHandle) == _federateHandleFederateDataMap.end())
       throw MessageError("Received ResignFederateNotify for unknown federate!");
@@ -2302,8 +2270,6 @@ public:
 
   void accept(const ConnectHandle& connectHandle, ResignFederationExecutionRequestMessage* message)
   { acceptUpstreamFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, ResignFederationExecutionResponseMessage* message)
-  { acceptDownstreamFederationMessage(connectHandle, message); }
 
   // Message to inform federates about newly joined federates
   void accept(const ConnectHandle& connectHandle, JoinFederateNotifyMessage* message)
