@@ -2418,52 +2418,52 @@ TightBE1MessageDecoder::decodePayload(const NetworkBuffer& networkBuffer)
   uint16_t opcode = decodeStream.readUInt16Compressed();
   PayloadDecoder payloadDecoder(networkBuffer);
   switch (opcode) {
-  case 0:
+  case 1:
     payloadDecoder.readPayloadConnectionLostMessage(static_cast<ConnectionLostMessage&>(*_message));
     break;
-  case 1:
+  case 2:
     payloadDecoder.readPayloadCreateFederationExecutionRequestMessage(static_cast<CreateFederationExecutionRequestMessage&>(*_message));
     break;
-  case 2:
+  case 3:
     payloadDecoder.readPayloadCreateFederationExecutionResponseMessage(static_cast<CreateFederationExecutionResponseMessage&>(*_message));
     break;
-  case 3:
+  case 4:
     payloadDecoder.readPayloadDestroyFederationExecutionRequestMessage(static_cast<DestroyFederationExecutionRequestMessage&>(*_message));
     break;
-  case 4:
+  case 5:
     payloadDecoder.readPayloadDestroyFederationExecutionResponseMessage(static_cast<DestroyFederationExecutionResponseMessage&>(*_message));
     break;
-  case 5:
+  case 6:
     payloadDecoder.readPayloadEnumerateFederationExecutionsRequestMessage(static_cast<EnumerateFederationExecutionsRequestMessage&>(*_message));
     break;
-  case 6:
+  case 7:
     payloadDecoder.readPayloadEnumerateFederationExecutionsResponseMessage(static_cast<EnumerateFederationExecutionsResponseMessage&>(*_message));
     break;
-  case 7:
+  case 8:
     payloadDecoder.readPayloadInsertFederationExecutionMessage(static_cast<InsertFederationExecutionMessage&>(*_message));
     break;
-  case 8:
+  case 9:
     payloadDecoder.readPayloadEraseFederationExecutionMessage(static_cast<EraseFederationExecutionMessage&>(*_message));
     break;
-  case 9:
+  case 10:
     payloadDecoder.readPayloadJoinFederationExecutionRequestMessage(static_cast<JoinFederationExecutionRequestMessage&>(*_message));
     break;
-  case 10:
+  case 11:
     payloadDecoder.readPayloadJoinFederationExecutionResponseMessage(static_cast<JoinFederationExecutionResponseMessage&>(*_message));
     break;
-  case 11:
+  case 12:
     payloadDecoder.readPayloadResignFederationExecutionRequestMessage(static_cast<ResignFederationExecutionRequestMessage&>(*_message));
     break;
-  case 12:
+  case 13:
     payloadDecoder.readPayloadResignFederationExecutionResponseMessage(static_cast<ResignFederationExecutionResponseMessage&>(*_message));
     break;
-  case 13:
+  case 14:
     payloadDecoder.readPayloadJoinFederateNotifyMessage(static_cast<JoinFederateNotifyMessage&>(*_message));
     break;
-  case 14:
+  case 15:
     payloadDecoder.readPayloadResignFederateNotifyMessage(static_cast<ResignFederateNotifyMessage&>(*_message));
     break;
-  case 15:
+  case 16:
     payloadDecoder.readPayloadChangeDefaultResignActionMessage(static_cast<ChangeDefaultResignActionMessage&>(*_message));
     break;
   case 30:
@@ -2564,67 +2564,67 @@ TightBE1MessageDecoder::decodeBody(NetworkBuffer& networkBuffer)
   DecodeStream decodeStream(networkBuffer[1], networkBuffer);
   uint16_t opcode = decodeStream.readUInt16Compressed();
   switch (opcode) {
-  case 0:
+  case 1:
     _message = new ConnectionLostMessage;
     decodeStream.readConnectionLostMessage(static_cast<ConnectionLostMessage&>(*_message));
     break;
-  case 1:
+  case 2:
     _message = new CreateFederationExecutionRequestMessage;
     decodeStream.readCreateFederationExecutionRequestMessage(static_cast<CreateFederationExecutionRequestMessage&>(*_message));
     break;
-  case 2:
+  case 3:
     _message = new CreateFederationExecutionResponseMessage;
     decodeStream.readCreateFederationExecutionResponseMessage(static_cast<CreateFederationExecutionResponseMessage&>(*_message));
     break;
-  case 3:
+  case 4:
     _message = new DestroyFederationExecutionRequestMessage;
     decodeStream.readDestroyFederationExecutionRequestMessage(static_cast<DestroyFederationExecutionRequestMessage&>(*_message));
     break;
-  case 4:
+  case 5:
     _message = new DestroyFederationExecutionResponseMessage;
     decodeStream.readDestroyFederationExecutionResponseMessage(static_cast<DestroyFederationExecutionResponseMessage&>(*_message));
     break;
-  case 5:
+  case 6:
     _message = new EnumerateFederationExecutionsRequestMessage;
     decodeStream.readEnumerateFederationExecutionsRequestMessage(static_cast<EnumerateFederationExecutionsRequestMessage&>(*_message));
     break;
-  case 6:
+  case 7:
     _message = new EnumerateFederationExecutionsResponseMessage;
     decodeStream.readEnumerateFederationExecutionsResponseMessage(static_cast<EnumerateFederationExecutionsResponseMessage&>(*_message));
     break;
-  case 7:
+  case 8:
     _message = new InsertFederationExecutionMessage;
     decodeStream.readInsertFederationExecutionMessage(static_cast<InsertFederationExecutionMessage&>(*_message));
     break;
-  case 8:
+  case 9:
     _message = new EraseFederationExecutionMessage;
     decodeStream.readEraseFederationExecutionMessage(static_cast<EraseFederationExecutionMessage&>(*_message));
     break;
-  case 9:
+  case 10:
     _message = new JoinFederationExecutionRequestMessage;
     decodeStream.readJoinFederationExecutionRequestMessage(static_cast<JoinFederationExecutionRequestMessage&>(*_message));
     break;
-  case 10:
+  case 11:
     _message = new JoinFederationExecutionResponseMessage;
     decodeStream.readJoinFederationExecutionResponseMessage(static_cast<JoinFederationExecutionResponseMessage&>(*_message));
     break;
-  case 11:
+  case 12:
     _message = new ResignFederationExecutionRequestMessage;
     decodeStream.readResignFederationExecutionRequestMessage(static_cast<ResignFederationExecutionRequestMessage&>(*_message));
     break;
-  case 12:
+  case 13:
     _message = new ResignFederationExecutionResponseMessage;
     decodeStream.readResignFederationExecutionResponseMessage(static_cast<ResignFederationExecutionResponseMessage&>(*_message));
     break;
-  case 13:
+  case 14:
     _message = new JoinFederateNotifyMessage;
     decodeStream.readJoinFederateNotifyMessage(static_cast<JoinFederateNotifyMessage&>(*_message));
     break;
-  case 14:
+  case 15:
     _message = new ResignFederateNotifyMessage;
     decodeStream.readResignFederateNotifyMessage(static_cast<ResignFederateNotifyMessage&>(*_message));
     break;
-  case 15:
+  case 16:
     _message = new ChangeDefaultResignActionMessage;
     decodeStream.readChangeDefaultResignActionMessage(static_cast<ChangeDefaultResignActionMessage&>(*_message));
     break;

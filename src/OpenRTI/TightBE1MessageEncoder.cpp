@@ -1373,7 +1373,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(0);
+    encodeStream.writeUInt16Compressed(1);
     encodeStream.writeConnectionLostMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1383,7 +1383,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(1);
+    encodeStream.writeUInt16Compressed(2);
     encodeStream.writeCreateFederationExecutionRequestMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1393,7 +1393,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(2);
+    encodeStream.writeUInt16Compressed(3);
     encodeStream.writeCreateFederationExecutionResponseMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1403,7 +1403,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(3);
+    encodeStream.writeUInt16Compressed(4);
     encodeStream.writeDestroyFederationExecutionRequestMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1413,7 +1413,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(4);
+    encodeStream.writeUInt16Compressed(5);
     encodeStream.writeDestroyFederationExecutionResponseMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1423,7 +1423,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(5);
+    encodeStream.writeUInt16Compressed(6);
     encodeStream.writeEnumerateFederationExecutionsRequestMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1433,7 +1433,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(6);
+    encodeStream.writeUInt16Compressed(7);
     encodeStream.writeEnumerateFederationExecutionsResponseMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1443,7 +1443,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(7);
+    encodeStream.writeUInt16Compressed(8);
     encodeStream.writeInsertFederationExecutionMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1453,7 +1453,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(8);
+    encodeStream.writeUInt16Compressed(9);
     encodeStream.writeEraseFederationExecutionMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1463,7 +1463,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(9);
+    encodeStream.writeUInt16Compressed(10);
     encodeStream.writeJoinFederationExecutionRequestMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1473,7 +1473,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(10);
+    encodeStream.writeUInt16Compressed(11);
     encodeStream.writeJoinFederationExecutionResponseMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1483,7 +1483,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(11);
+    encodeStream.writeUInt16Compressed(12);
     encodeStream.writeResignFederationExecutionRequestMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1493,7 +1493,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(12);
+    encodeStream.writeUInt16Compressed(13);
     encodeStream.writeResignFederationExecutionResponseMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1503,7 +1503,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(13);
+    encodeStream.writeUInt16Compressed(14);
     encodeStream.writeJoinFederateNotifyMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1513,7 +1513,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(14);
+    encodeStream.writeUInt16Compressed(15);
     encodeStream.writeResignFederateNotifyMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1523,7 +1523,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(15);
+    encodeStream.writeUInt16Compressed(16);
     encodeStream.writeChangeDefaultResignActionMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
