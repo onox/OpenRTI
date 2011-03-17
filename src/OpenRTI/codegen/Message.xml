@@ -456,12 +456,6 @@
     <!-- The federates handle -->
     <field name="FederateHandle" type="FederateHandle"/>
   </message>
-  <message type="ChangeDefaultResignAction">
-    <!-- The federation handle to identify packets -->
-    <field name="FederationHandle" type="FederationHandle"/>
-    <field name="FederateHandle" type="FederateHandle"/>
-    <field name="ResignAction" type="ResignAction"/>
-  </message>
 
   <!-- Syncronisation points.
     -->

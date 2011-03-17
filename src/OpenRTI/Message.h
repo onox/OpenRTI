@@ -279,7 +279,6 @@ class JoinFederationExecutionResponseMessage;
 class ResignFederationExecutionRequestMessage;
 class JoinFederateNotifyMessage;
 class ResignFederateNotifyMessage;
-class ChangeDefaultResignActionMessage;
 class RegisterFederationSynchronizationPointMessage;
 class RegisterFederationSynchronizationPointResponseMessage;
 class AnnounceSynchronizationPointMessage;
@@ -2420,42 +2419,6 @@ public:
 private:
   FederationHandle _federationHandle;
   FederateHandle _federateHandle;
-};
-
-class OPENRTI_API ChangeDefaultResignActionMessage : public AbstractMessage {
-public:
-  ChangeDefaultResignActionMessage();
-  virtual ~ChangeDefaultResignActionMessage();
-
-  virtual const char* getTypeName() const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher);
-  virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
-
-  void setFederationHandle(const FederationHandle& value)
-  { _federationHandle = value; }
-  FederationHandle& getFederationHandle()
-  { return _federationHandle; }
-  const FederationHandle& getFederationHandle() const
-  { return _federationHandle; }
-
-  void setFederateHandle(const FederateHandle& value)
-  { _federateHandle = value; }
-  FederateHandle& getFederateHandle()
-  { return _federateHandle; }
-  const FederateHandle& getFederateHandle() const
-  { return _federateHandle; }
-
-  void setResignAction(const ResignAction& value)
-  { _resignAction = value; }
-  ResignAction& getResignAction()
-  { return _resignAction; }
-  const ResignAction& getResignAction() const
-  { return _resignAction; }
-
-private:
-  FederationHandle _federationHandle;
-  FederateHandle _federateHandle;
-  ResignAction _resignAction;
 };
 
 class OPENRTI_API RegisterFederationSynchronizationPointMessage : public AbstractMessage {

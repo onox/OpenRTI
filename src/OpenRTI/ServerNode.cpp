@@ -513,15 +513,6 @@ public:
     broadcastToChildren(message);
     removeFederate(federateHandle);
   }
-  void accept(const ConnectHandle& connectHandle, ChangeDefaultResignActionMessage* message)
-  {
-    FederateHandle federateHandle = message->getFederateHandle();
-    FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
-    if (i == _federateHandleFederateDataMap.end())
-      throw MessageError("Received ChangeDefaultResignActionMessage for unknown federate!");
-    i->second._defaultResignAction = message->getResignAction();
-    broadcast(connectHandle, message);
-  }
 
   // Synchronization labels
   void accept(const ConnectHandle& connectHandle, RegisterFederationSynchronizationPointMessage* message)
@@ -1602,12 +1593,8 @@ public:
       FederateHandleFederateDataMap::iterator k = _federateHandleFederateDataMap.find(j->second->getOwnerFederateHandle());
       OpenRTIAssert(k != _federateHandleFederateDataMap.end());
 
-      // delete object instances if requested
-      ResignAction resignAction = k->second._defaultResignAction;
-      bool deleteObject = resignAction == DELETE_OBJECTS ||
-        resignAction == DELETE_OBJECTS_THEN_DIVEST || resignAction == CANCEL_THEN_DELETE_THEN_DIVEST;
       // FIXME: currently we do not have ownership management - so, if the owner dies the object needs to die too
-      deleteObject = true;
+      bool deleteObject = true;
 
       if (deleteObject) {
         objectInstanceHandleSet.insert(j->second->getHandle());
@@ -1887,13 +1874,11 @@ public:
     FederateData(const ConnectHandle& connectHandle, const StringSet::iterator& stringSetIterator) :
       _connectHandle(connectHandle),
       _stringSetIterator(stringSetIterator),
-      _defaultResignAction(CANCEL_THEN_DELETE_THEN_DIVEST),
       _resignPending(false)
     { }
     ConnectHandle _connectHandle;
     std::wstring _federateType;
     StringSet::iterator _stringSetIterator;
-    ResignAction _defaultResignAction;
     bool _resignPending;
   };
   typedef std::map<FederateHandle, FederateData> FederateHandleFederateDataMap;
@@ -2276,8 +2261,6 @@ public:
   { acceptDownstreamFederationMessage(connectHandle, message); }
   void accept(const ConnectHandle& connectHandle, ResignFederateNotifyMessage* message)
   { acceptDownstreamFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, ChangeDefaultResignActionMessage* message)
-  { acceptFederationMessage(connectHandle, message); }
 
   // Synchronization labels
   void accept(const ConnectHandle& connectHandle, RegisterFederationSynchronizationPointMessage* message)

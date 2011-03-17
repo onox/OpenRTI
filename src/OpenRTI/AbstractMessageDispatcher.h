@@ -41,7 +41,6 @@ class JoinFederationExecutionResponseMessage;
 class ResignFederationExecutionRequestMessage;
 class JoinFederateNotifyMessage;
 class ResignFederateNotifyMessage;
-class ChangeDefaultResignActionMessage;
 class RegisterFederationSynchronizationPointMessage;
 class RegisterFederationSynchronizationPointResponseMessage;
 class AnnounceSynchronizationPointMessage;
@@ -95,7 +94,6 @@ public:
   virtual void accept(ResignFederationExecutionRequestMessage&) = 0;
   virtual void accept(JoinFederateNotifyMessage&) = 0;
   virtual void accept(ResignFederateNotifyMessage&) = 0;
-  virtual void accept(ChangeDefaultResignActionMessage&) = 0;
   virtual void accept(RegisterFederationSynchronizationPointMessage&) = 0;
   virtual void accept(RegisterFederationSynchronizationPointResponseMessage&) = 0;
   virtual void accept(AnnounceSynchronizationPointMessage&) = 0;
@@ -152,7 +150,6 @@ public:
   virtual void accept(ResignFederationExecutionRequestMessage& message) { _t(message); }
   virtual void accept(JoinFederateNotifyMessage& message) { _t(message); }
   virtual void accept(ResignFederateNotifyMessage& message) { _t(message); }
-  virtual void accept(ChangeDefaultResignActionMessage& message) { _t(message); }
   virtual void accept(RegisterFederationSynchronizationPointMessage& message) { _t(message); }
   virtual void accept(RegisterFederationSynchronizationPointResponseMessage& message) { _t(message); }
   virtual void accept(AnnounceSynchronizationPointMessage& message) { _t(message); }
@@ -209,7 +206,6 @@ public:
   virtual void accept(const ResignFederationExecutionRequestMessage&) = 0;
   virtual void accept(const JoinFederateNotifyMessage&) = 0;
   virtual void accept(const ResignFederateNotifyMessage&) = 0;
-  virtual void accept(const ChangeDefaultResignActionMessage&) = 0;
   virtual void accept(const RegisterFederationSynchronizationPointMessage&) = 0;
   virtual void accept(const RegisterFederationSynchronizationPointResponseMessage&) = 0;
   virtual void accept(const AnnounceSynchronizationPointMessage&) = 0;
@@ -266,7 +262,6 @@ public:
   virtual void accept(const ResignFederationExecutionRequestMessage& message) { _t(message); }
   virtual void accept(const JoinFederateNotifyMessage& message) { _t(message); }
   virtual void accept(const ResignFederateNotifyMessage& message) { _t(message); }
-  virtual void accept(const ChangeDefaultResignActionMessage& message) { _t(message); }
   virtual void accept(const RegisterFederationSynchronizationPointMessage& message) { _t(message); }
   virtual void accept(const RegisterFederationSynchronizationPointResponseMessage& message) { _t(message); }
   virtual void accept(const AnnounceSynchronizationPointMessage& message) { _t(message); }

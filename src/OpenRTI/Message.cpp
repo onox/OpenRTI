@@ -406,33 +406,6 @@ ResignFederateNotifyMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher
 }
 
 
-ChangeDefaultResignActionMessage::ChangeDefaultResignActionMessage()
-{
-}
-
-ChangeDefaultResignActionMessage::~ChangeDefaultResignActionMessage()
-{
-}
-
-const char*
-ChangeDefaultResignActionMessage::getTypeName() const
-{
-  return "ChangeDefaultResignActionMessage";
-}
-
-void
-ChangeDefaultResignActionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ChangeDefaultResignActionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
-{
-  dispatcher.accept(*this);
-}
-
-
 RegisterFederationSynchronizationPointMessage::RegisterFederationSynchronizationPointMessage()
 {
 }

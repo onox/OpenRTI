@@ -1094,13 +1094,6 @@ public:
     readFederateHandle(value.getFederateHandle());
   }
 
-  void readChangeDefaultResignActionMessage(ChangeDefaultResignActionMessage& value)
-  {
-    readFederationHandle(value.getFederationHandle());
-    readFederateHandle(value.getFederateHandle());
-    readResignAction(value.getResignAction());
-  }
-
   void readRegisterFederationSynchronizationPointMessage(RegisterFederationSynchronizationPointMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
@@ -2093,13 +2086,6 @@ public:
     readPayloadFederateHandle(value.getFederateHandle());
   }
 
-  void readPayloadChangeDefaultResignActionMessage(ChangeDefaultResignActionMessage& value)
-  {
-    readPayloadFederationHandle(value.getFederationHandle());
-    readPayloadFederateHandle(value.getFederateHandle());
-    readPayloadResignAction(value.getResignAction());
-  }
-
   void readPayloadRegisterFederationSynchronizationPointMessage(RegisterFederationSynchronizationPointMessage& value)
   {
     readPayloadFederationHandle(value.getFederationHandle());
@@ -2448,9 +2434,6 @@ TightBE1MessageDecoder::decodePayload(const NetworkBuffer& networkBuffer)
   case 15:
     payloadDecoder.readPayloadResignFederateNotifyMessage(static_cast<ResignFederateNotifyMessage&>(*_message));
     break;
-  case 16:
-    payloadDecoder.readPayloadChangeDefaultResignActionMessage(static_cast<ChangeDefaultResignActionMessage&>(*_message));
-    break;
   case 30:
     payloadDecoder.readPayloadRegisterFederationSynchronizationPointMessage(static_cast<RegisterFederationSynchronizationPointMessage&>(*_message));
     break;
@@ -2604,10 +2587,6 @@ TightBE1MessageDecoder::decodeBody(NetworkBuffer& networkBuffer)
   case 15:
     _message = new ResignFederateNotifyMessage;
     decodeStream.readResignFederateNotifyMessage(static_cast<ResignFederateNotifyMessage&>(*_message));
-    break;
-  case 16:
-    _message = new ChangeDefaultResignActionMessage;
-    decodeStream.readChangeDefaultResignActionMessage(static_cast<ChangeDefaultResignActionMessage&>(*_message));
     break;
   case 30:
     _message = new RegisterFederationSynchronizationPointMessage;

@@ -512,7 +512,6 @@ class MessageEncoding(object):
             'ResignFederationExecutionRequestMessage' : 12,
             'JoinFederateNotifyMessage' : 14,
             'ResignFederateNotifyMessage' : 15,
-            'ChangeDefaultResignActionMessage' : 16,
             'UpdateFederationObjectModelRequestMessage' : 17,
             'RegisterFederationSynchronizationPointMessage' : 30,
             'RegisterFederationSynchronizationPointResponseMessage' : 31,

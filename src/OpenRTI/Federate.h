@@ -2324,13 +2324,6 @@ public:
       Traits::throwInvalidResignAction();
     }
     _defaultResignAction = resignAction;
-
-    SharedPtr<ChangeDefaultResignActionMessage> request;
-    request = new ChangeDefaultResignActionMessage;
-    request->setFederationHandle(getFederationHandle());
-    request->setFederateHandle(getFederateHandle());
-    request->setResignAction(resignAction);
-    sendMessage(request);
   }
 
   virtual const ObjectClassHandle& getObjectClassHandle(const std::wstring& name) const
