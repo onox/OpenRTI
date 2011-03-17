@@ -491,7 +491,6 @@ public:
   void writeAttributeState(const AttributeState& value)
   {
     writeAttributeHandle(value.getAttributeHandle());
-    writeFederateHandle(value.getFederateHandle());
   }
 
   void writeAttributeStateVector(const AttributeStateVector& value)

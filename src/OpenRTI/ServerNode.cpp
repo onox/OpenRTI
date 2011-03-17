@@ -344,15 +344,6 @@ public:
       }
     }
 
-    // FIXME?!!
-    for (ObjectInstanceMap::const_iterator j = _objectInstanceMap.begin();
-         j != _objectInstanceMap.end(); ++j) {
-      if (message->getFederateHandle() != j->second->getOwnerFederateHandle())
-        continue;
-      j->second->setOwnerFederateHandle(FederateHandle());
-      j->second->setOwnerConnectHandle(ConnectHandle());
-    }
-
     // If we are a root server ...
     if (isRootServer()) {
       // ... and respond with Success
@@ -985,7 +976,6 @@ public:
                  k != (*j)->getHandleObjectAttributeVector().end(); ++k) {
               AttributeState attributeState;
               attributeState.setAttributeHandle((*k)->getHandle());
-              attributeState.setFederateHandle((*k)->getOwnerFederateHandle());
               request->getAttributeStateVector().push_back(attributeState);
             }
             if (connectHandle != _parentServerConnectHandle) {
@@ -1277,7 +1267,6 @@ public:
       ObjectAttribute* attribute = objectInstance->getAttribute(message->getAttributeStateVector()[i].getAttributeHandle());
       if (!attribute)
         continue;
-      attribute->setOwnerFederateHandle(message->getAttributeStateVector()[i].getFederateHandle());
       attribute->setOwnerConnectHandle(connectHandle);
       // FIXME
       attribute->_recieveingConnects.erase(connectHandle);
@@ -1587,11 +1576,6 @@ public:
     for (ObjectInstanceMap::const_iterator j = getObjectInstanceMap().begin(); j != getObjectInstanceMap().end(); ++j) {
       if (j->second->getOwnerConnectHandle() != connectHandle)
         continue;
-      FederateHandle federateHandle = j->second->getOwnerFederateHandle();
-      if (!federateHandle.valid())
-        continue;
-      FederateHandleFederateDataMap::iterator k = _federateHandleFederateDataMap.find(j->second->getOwnerFederateHandle());
-      OpenRTIAssert(k != _federateHandleFederateDataMap.end());
 
       // FIXME: currently we do not have ownership management - so, if the owner dies the object needs to die too
       bool deleteObject = true;
@@ -1599,7 +1583,6 @@ public:
       if (deleteObject) {
         objectInstanceHandleSet.insert(j->second->getHandle());
       } else {
-        j->second->setOwnerFederateHandle(FederateHandle());
         j->second->setOwnerConnectHandle(ConnectHandle());
       }
     }

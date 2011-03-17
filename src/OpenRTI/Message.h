@@ -406,25 +406,15 @@ public:
   const AttributeHandle& getAttributeHandle() const
   { return _attributeHandle; }
 
-  void setFederateHandle(const FederateHandle& value)
-  { _federateHandle = value; }
-  FederateHandle& getFederateHandle()
-  { return _federateHandle; }
-  const FederateHandle& getFederateHandle() const
-  { return _federateHandle; }
-
   bool operator==(const AttributeState& rhs) const
   {
     if (getAttributeHandle() != rhs.getAttributeHandle()) return false;
-    if (getFederateHandle() != rhs.getFederateHandle()) return false;
     return true;
   }
   bool operator<(const AttributeState& rhs) const
   {
     if (getAttributeHandle() < rhs.getAttributeHandle()) return true;
     if (rhs.getAttributeHandle() < getAttributeHandle()) return false;
-    if (getFederateHandle() < rhs.getFederateHandle()) return true;
-    if (rhs.getFederateHandle() < getFederateHandle()) return false;
     return false;
   }
   bool operator!=(const AttributeState& rhs) const
@@ -437,7 +427,6 @@ public:
   { return !operator>(rhs); }
 private:
   AttributeHandle _attributeHandle;
-  FederateHandle _federateHandle;
 };
 
 typedef std::vector<AttributeState> AttributeStateVector;

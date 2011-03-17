@@ -1054,7 +1054,6 @@ public:
         continue;
       AttributeState attributeState;
       attributeState.setAttributeHandle(AttributeHandle(i));
-      attributeState.setFederateHandle(getFederateHandle());
       request->getAttributeStateVector().push_back(attributeState);
     }
     sendMessage(request);
@@ -1140,7 +1139,6 @@ public:
         continue;
       AttributeState attributeState;
       attributeState.setAttributeHandle(AttributeHandle(i));
-      attributeState.setFederateHandle(getFederateHandle());
       request->getAttributeStateVector().push_back(attributeState);
     }
     sendMessage(request);

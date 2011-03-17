@@ -134,7 +134,6 @@
 
   <type name="AttributeState" type="struct">
     <field name="AttributeHandle" type="AttributeHandle"/>
-    <field name="FederateHandle" type="FederateHandle"/>
     <!-- <field name="AssociatedRegionSet" type="RegionValueList"/> -->
   </type>
   <type name="AttributeStateVector" type="vector" scalar="AttributeState"/>

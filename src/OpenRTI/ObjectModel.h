@@ -367,12 +367,6 @@ public:
   ObjectClassAttribute* getObjectClassAttribute()
   { return _objectClassAttribute; }
 
-  /// Get the federate this attribute is owned
-  const FederateHandle& getOwnerFederateHandle() const
-  { return _ownerFederateHandle; }
-  void setOwnerFederateHandle(const FederateHandle& federateHandle)
-  { _ownerFederateHandle = federateHandle; }
-
   /// Get the ConnectHandle this attribute is owned
   const ConnectHandle& getOwnerConnectHandle() const
   { return _ownerConnectHandle; }
@@ -382,6 +376,8 @@ public:
   void removeConnect(const ConnectHandle& connectHandle)
   {
     _recieveingConnects.erase(connectHandle);
+    if (_ownerConnectHandle == connectHandle)
+      _ownerConnectHandle = ConnectHandle();
   }
   void insertConnect(const ConnectHandle& connectHandle)
   {
@@ -395,8 +391,6 @@ private:
   /// The pointer to the parent object class attribute
   ObjectClassAttribute* const _objectClassAttribute;
 
-  /// The federate this attribute is owned by
-  FederateHandle _ownerFederateHandle;
   /// The connect this attribute is owned by
   ConnectHandle _ownerConnectHandle;
 };
@@ -434,21 +428,6 @@ public:
   ObjectAttribute* getPrivilegeToDeleteAttribute() const
   { return getAttribute(AttributeHandle(0)); }
 
-  /// Return the federate that owns this object
-  FederateHandle getOwnerFederateHandle() const
-  {
-    ObjectAttribute* attribute = getPrivilegeToDeleteAttribute();
-    if (!attribute)
-      return FederateHandle();
-    return attribute->getOwnerFederateHandle();
-  }
-  void setOwnerFederateHandle(const FederateHandle& federateHandle)
-  {
-    ObjectAttribute* attribute = getPrivilegeToDeleteAttribute();
-    if (!attribute)
-      return;
-    attribute->setOwnerFederateHandle(federateHandle);
-  }
   /// Return the connect that owns this object
   ConnectHandle getOwnerConnectHandle() const
   {

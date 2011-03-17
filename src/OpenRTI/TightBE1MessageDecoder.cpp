@@ -500,7 +500,6 @@ public:
   void readAttributeState(AttributeState& value)
   {
     readAttributeHandle(value.getAttributeHandle());
-    readFederateHandle(value.getFederateHandle());
   }
 
   void readAttributeStateVector(AttributeStateVector& value)
@@ -1601,7 +1600,6 @@ public:
   void readPayloadAttributeState(AttributeState& value)
   {
     readPayloadAttributeHandle(value.getAttributeHandle());
-    readPayloadFederateHandle(value.getFederateHandle());
   }
 
   void readPayloadAttributeStateVector(AttributeStateVector& value)
