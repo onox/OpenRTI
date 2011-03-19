@@ -466,6 +466,10 @@ public:
     request->setFederateHandle(getFederateHandle());
     sendMessage(request);
 
+    SharedPtr<ShutdownFederationExecutionMessage> request2 = new ShutdownFederationExecutionMessage;
+    request2->setFederationHandle(getFederationHandle());
+    sendMessage(request2);
+
     for (;;) {
       // Skip everything that is not the resign response - don't need that anymore
       SharedPtr<AbstractMessage> message = receiveMessage(clock);
@@ -474,6 +478,10 @@ public:
       if (dynamic_cast<EraseFederationExecutionMessage*>(message.get()))
         break;
     }
+
+    SharedPtr<ReleaseFederationHandleMessage> request3 = new ReleaseFederationHandleMessage;
+    request3->setFederationHandle(getFederationHandle());
+    sendMessage(request3);
   }
 
   virtual void registerFederationSynchronizationPoint(const std::wstring& label, const VariableLengthData& tag, const FederateHandleSet& syncSet)

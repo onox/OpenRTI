@@ -35,7 +35,9 @@ class DestroyFederationExecutionResponseMessage;
 class EnumerateFederationExecutionsRequestMessage;
 class EnumerateFederationExecutionsResponseMessage;
 class InsertFederationExecutionMessage;
+class ShutdownFederationExecutionMessage;
 class EraseFederationExecutionMessage;
+class ReleaseFederationHandleMessage;
 class JoinFederationExecutionRequestMessage;
 class JoinFederationExecutionResponseMessage;
 class ResignFederationExecutionRequestMessage;
@@ -88,7 +90,9 @@ public:
   virtual void accept(EnumerateFederationExecutionsRequestMessage&) = 0;
   virtual void accept(EnumerateFederationExecutionsResponseMessage&) = 0;
   virtual void accept(InsertFederationExecutionMessage&) = 0;
+  virtual void accept(ShutdownFederationExecutionMessage&) = 0;
   virtual void accept(EraseFederationExecutionMessage&) = 0;
+  virtual void accept(ReleaseFederationHandleMessage&) = 0;
   virtual void accept(JoinFederationExecutionRequestMessage&) = 0;
   virtual void accept(JoinFederationExecutionResponseMessage&) = 0;
   virtual void accept(ResignFederationExecutionRequestMessage&) = 0;
@@ -144,7 +148,9 @@ public:
   virtual void accept(EnumerateFederationExecutionsRequestMessage& message) { _t(message); }
   virtual void accept(EnumerateFederationExecutionsResponseMessage& message) { _t(message); }
   virtual void accept(InsertFederationExecutionMessage& message) { _t(message); }
+  virtual void accept(ShutdownFederationExecutionMessage& message) { _t(message); }
   virtual void accept(EraseFederationExecutionMessage& message) { _t(message); }
+  virtual void accept(ReleaseFederationHandleMessage& message) { _t(message); }
   virtual void accept(JoinFederationExecutionRequestMessage& message) { _t(message); }
   virtual void accept(JoinFederationExecutionResponseMessage& message) { _t(message); }
   virtual void accept(ResignFederationExecutionRequestMessage& message) { _t(message); }
@@ -200,7 +206,9 @@ public:
   virtual void accept(const EnumerateFederationExecutionsRequestMessage&) = 0;
   virtual void accept(const EnumerateFederationExecutionsResponseMessage&) = 0;
   virtual void accept(const InsertFederationExecutionMessage&) = 0;
+  virtual void accept(const ShutdownFederationExecutionMessage&) = 0;
   virtual void accept(const EraseFederationExecutionMessage&) = 0;
+  virtual void accept(const ReleaseFederationHandleMessage&) = 0;
   virtual void accept(const JoinFederationExecutionRequestMessage&) = 0;
   virtual void accept(const JoinFederationExecutionResponseMessage&) = 0;
   virtual void accept(const ResignFederationExecutionRequestMessage&) = 0;
@@ -256,7 +264,9 @@ public:
   virtual void accept(const EnumerateFederationExecutionsRequestMessage& message) { _t(message); }
   virtual void accept(const EnumerateFederationExecutionsResponseMessage& message) { _t(message); }
   virtual void accept(const InsertFederationExecutionMessage& message) { _t(message); }
+  virtual void accept(const ShutdownFederationExecutionMessage& message) { _t(message); }
   virtual void accept(const EraseFederationExecutionMessage& message) { _t(message); }
+  virtual void accept(const ReleaseFederationHandleMessage& message) { _t(message); }
   virtual void accept(const JoinFederationExecutionRequestMessage& message) { _t(message); }
   virtual void accept(const JoinFederationExecutionResponseMessage& message) { _t(message); }
   virtual void accept(const ResignFederationExecutionRequestMessage& message) { _t(message); }

@@ -433,6 +433,10 @@ public:
         request->setFederationHandle(joinResponse->getFederationHandle());
         request->setFederateHandle(joinResponse->getFederateHandle());
         _connect->send(request);
+        SharedPtr<ShutdownFederationExecutionMessage> request2 = new ShutdownFederationExecutionMessage;
+        request2->setFederationHandle(joinResponse->getFederationHandle());
+        _connect->send(request2);
+
         Clock abstime = Clock::now() + Clock::fromSeconds(70);
         for (;;) {
           // Skip everything that is not the resign response - don't need that anymore
@@ -442,6 +446,11 @@ public:
           if (dynamic_cast<EraseFederationExecutionMessage*>(message.get()))
             break;
         }
+
+        SharedPtr<ReleaseFederationHandleMessage> request3 = new ReleaseFederationHandleMessage;
+        request3->setFederationHandle(joinResponse->getFederationHandle());
+        _connect->send(request3);
+
         if (insertFederationMessage.valid())
           Traits::throwCouldNotCreateLogicalTimeFactory(insertFederationMessage->getLogicalTimeFactoryName());
         else

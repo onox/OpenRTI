@@ -1033,7 +1033,17 @@ public:
     writeFOMModuleList(value.getFOMModuleList());
   }
 
+  void writeShutdownFederationExecutionMessage(const ShutdownFederationExecutionMessage& value)
+  {
+    writeFederationHandle(value.getFederationHandle());
+  }
+
   void writeEraseFederationExecutionMessage(const EraseFederationExecutionMessage& value)
+  {
+    writeFederationHandle(value.getFederationHandle());
+  }
+
+  void writeReleaseFederationHandleMessage(const ReleaseFederationHandleMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
   }
@@ -1435,12 +1445,32 @@ public:
   }
 
   void
-  encode(NetworkBuffer& networkBuffer, const EraseFederationExecutionMessage& message) const
+  encode(NetworkBuffer& networkBuffer, const ShutdownFederationExecutionMessage& message) const
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
     encodeStream.writeUInt16Compressed(9);
+    encodeStream.writeShutdownFederationExecutionMessage(message);
+    headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
+  }
+
+  void
+  encode(NetworkBuffer& networkBuffer, const EraseFederationExecutionMessage& message) const
+  {
+    EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
+    EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
+    encodeStream.writeUInt16Compressed(10);
     encodeStream.writeEraseFederationExecutionMessage(message);
+    headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
+  }
+
+  void
+  encode(NetworkBuffer& networkBuffer, const ReleaseFederationHandleMessage& message) const
+  {
+    EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
+    EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
+    encodeStream.writeUInt16Compressed(11);
+    encodeStream.writeReleaseFederationHandleMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
 
@@ -1449,7 +1479,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(10);
+    encodeStream.writeUInt16Compressed(12);
     encodeStream.writeJoinFederationExecutionRequestMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1459,7 +1489,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(11);
+    encodeStream.writeUInt16Compressed(13);
     encodeStream.writeJoinFederationExecutionResponseMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1469,7 +1499,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(12);
+    encodeStream.writeUInt16Compressed(14);
     encodeStream.writeResignFederationExecutionRequestMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1479,7 +1509,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(14);
+    encodeStream.writeUInt16Compressed(15);
     encodeStream.writeJoinFederateNotifyMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1489,7 +1519,7 @@ public:
   {
     EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
-    encodeStream.writeUInt16Compressed(15);
+    encodeStream.writeUInt16Compressed(16);
     encodeStream.writeResignFederateNotifyMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }

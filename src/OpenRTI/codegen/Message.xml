@@ -389,7 +389,22 @@
     <!-- May be the mom?? FIXME -->
     <field name="FOMModuleList" type="FOMModuleList"/>
   </message>
+  <!-- Tell a parent that we want to get rid of this federation connect.
+       If the connect is really idle at the time thie message is recieved
+       in the parent, the parent sends then an EraseFederationExecution message.
+  -->
+  <message type="ShutdownFederationExecution">
+    <field name="FederationHandle" type="FederationHandle"/>
+  </message>
+  <!-- Remove a federation execution from a child branch.
+       This message shall remove the federation name from the federation index.
+       And, if the federation does not have any child servers, release the federation handle.
+  -->
   <message type="EraseFederationExecution">
+    <field name="FederationHandle" type="FederationHandle"/>
+  </message>
+  <!-- Send this to the parent if the federation handle is no longer in use, not even for the shutdown procedure. -->
+  <message type="ReleaseFederationHandle">
     <field name="FederationHandle" type="FederationHandle"/>
   </message>
 

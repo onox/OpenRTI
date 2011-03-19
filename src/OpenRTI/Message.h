@@ -273,7 +273,9 @@ class DestroyFederationExecutionResponseMessage;
 class EnumerateFederationExecutionsRequestMessage;
 class EnumerateFederationExecutionsResponseMessage;
 class InsertFederationExecutionMessage;
+class ShutdownFederationExecutionMessage;
 class EraseFederationExecutionMessage;
+class ReleaseFederationHandleMessage;
 class JoinFederationExecutionRequestMessage;
 class JoinFederationExecutionResponseMessage;
 class ResignFederationExecutionRequestMessage;
@@ -2170,10 +2172,50 @@ private:
   FOMModuleList _fOMModuleList;
 };
 
+class OPENRTI_API ShutdownFederationExecutionMessage : public AbstractMessage {
+public:
+  ShutdownFederationExecutionMessage();
+  virtual ~ShutdownFederationExecutionMessage();
+
+  virtual const char* getTypeName() const;
+  virtual void dispatch(AbstractMessageDispatcher& dispatcher);
+  virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
+
+  void setFederationHandle(const FederationHandle& value)
+  { _federationHandle = value; }
+  FederationHandle& getFederationHandle()
+  { return _federationHandle; }
+  const FederationHandle& getFederationHandle() const
+  { return _federationHandle; }
+
+private:
+  FederationHandle _federationHandle;
+};
+
 class OPENRTI_API EraseFederationExecutionMessage : public AbstractMessage {
 public:
   EraseFederationExecutionMessage();
   virtual ~EraseFederationExecutionMessage();
+
+  virtual const char* getTypeName() const;
+  virtual void dispatch(AbstractMessageDispatcher& dispatcher);
+  virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
+
+  void setFederationHandle(const FederationHandle& value)
+  { _federationHandle = value; }
+  FederationHandle& getFederationHandle()
+  { return _federationHandle; }
+  const FederationHandle& getFederationHandle() const
+  { return _federationHandle; }
+
+private:
+  FederationHandle _federationHandle;
+};
+
+class OPENRTI_API ReleaseFederationHandleMessage : public AbstractMessage {
+public:
+  ReleaseFederationHandleMessage();
+  virtual ~ReleaseFederationHandleMessage();
 
   virtual const char* getTypeName() const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);

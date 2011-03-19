@@ -355,6 +355,10 @@ public:
 
       // Remove the federate locally
       removeFederate(federateHandle);
+
+      // Remove a connect that runs idle
+      if (!hasJoinedFederatesForConnect(connectHandle))
+        eraseFederationExecutionAtConnect(connectHandle);
     }
     // If we have an upstream connect, mark this request as pending and ask the parent server
     else {
@@ -446,10 +450,38 @@ public:
     return candidate.take();
   }
 
-  void removeFederate(const FederateHandle& federateHandle)
+  void eraseFederationExecutionAtConnect(const ConnectHandle& connectHandle)
+  {
+    for (FederateHandleFederateDataMap::const_iterator i = _federateHandleFederateDataMap.begin();
+         i != _federateHandleFederateDataMap.end(); ++i) {
+      SharedPtr<ResignFederateNotifyMessage> notify = new ResignFederateNotifyMessage;
+      notify->setFederationHandle(getHandle());
+      notify->setFederateHandle(i->first);
+      send(connectHandle, notify);
+    }
+
+    SharedPtr<EraseFederationExecutionMessage> response;
+    response = new EraseFederationExecutionMessage;
+    response->setFederationHandle(getHandle());
+    send(connectHandle, response);
+
+    setInActive(connectHandle);
+  }
+
+  void broadcastEraseFederationExecution()
+  {
+    for (ConnectHandleConnectDataMap::iterator i = _connectHandleConnectDataMap.begin();
+         i != _connectHandleConnectDataMap.end(); ++i) {
+      if (i->first == _parentServerConnectHandle)
+        continue;
+      eraseFederationExecutionAtConnect(i->first);
+    }
+  }
+
+  ConnectHandle removeFederate(const FederateHandle& federateHandle)
   {
     if (!federateHandle.valid())
-      return;
+      return ConnectHandle();
 
     // The time management stuff
     _federateHandleTimeStampMap.erase(federateHandle);
@@ -465,32 +497,24 @@ public:
     OpenRTIAssert(i != _federateHandleFederateDataMap.end());
     ConnectHandle connectHandle = i->second._connectHandle;
     ConnectHandleConnectDataMap::iterator j = _connectHandleConnectDataMap.find(connectHandle);
-    if (j != _connectHandleConnectDataMap.end()) {
+    if (j != _connectHandleConnectDataMap.end())
       j->second._federateHandleSet.erase(federateHandle);
-      // remove all child connects if there is no joined federate left
-      if (connectHandle != _parentServerConnectHandle && j->second._federateHandleSet.empty()) {
 
-        if (j->second._messageSender.valid()) {
-          SharedPtr<EraseFederationExecutionMessage> eraseMessage = new EraseFederationExecutionMessage;
-          eraseMessage->setFederationHandle(getHandle());
-          j->second._messageSender->send(eraseMessage);
-        }
-
-        // FIXME this is in effect something like removeConnect!!!
-        _connectHandleConnectDataMap.erase(j);
-      }
-    }
     _federateNameSet.erase(i->second._stringSetIterator);
     _federateHandleFederateDataMap.erase(i);
 
     // Give back the handle to the allocator
     _federateHandleAllocator.put(federateHandle);
+
+    return connectHandle;
   }
 
   void accept(const ConnectHandle& connectHandle, JoinFederateNotifyMessage* message)
   {
     FederateHandle federateHandle = message->getFederateHandle();
     if (_federateHandleFederateDataMap.find(federateHandle) != _federateHandleFederateDataMap.end())
+      // /// FIXME implement a clear for erase'?!
+      // return;
       throw MessageError("Received JoinFederateNotify for already known federate!");
     insertFederate(connectHandle, message->getFederateType(), message->getFederateName(), federateHandle);
     broadcastToChildren(message);
@@ -502,7 +526,20 @@ public:
     if (_federateHandleFederateDataMap.find(federateHandle) == _federateHandleFederateDataMap.end())
       throw MessageError("Received ResignFederateNotify for unknown federate!");
     broadcastToChildren(message);
-    removeFederate(federateHandle);
+
+    // FIXME can we simplify this and remove the federate on upstream resign?
+    ConnectHandle federateConnectHandle = removeFederate(federateHandle);
+    if (hasJoinedFederatesForConnect(federateConnectHandle))
+      return;
+    // Can happen that we ask for shotdown that is already underway
+    if (!getActive(federateConnectHandle))
+      return;
+
+    if (federateConnectHandle == _parentServerConnectHandle)
+      return;
+
+    /// FIXME do this only if a shutdown request is pending!
+    eraseFederationExecutionAtConnect(federateConnectHandle);
   }
 
   // Synchronization labels
@@ -1509,6 +1546,25 @@ public:
     return !i->second._federateHandleSet.empty();
   }
 
+  bool getActive(const ConnectHandle& connectHandle) const
+  {
+    ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.find(connectHandle);
+    if (i == _connectHandleConnectDataMap.end())
+      return false;
+    return i->second._messageSender.valid();
+  }
+  void setInActive(const ConnectHandle& connectHandle)
+  {
+    ConnectHandleConnectDataMap::iterator i = _connectHandleConnectDataMap.find(connectHandle);
+    OpenRTIAssert(i != _connectHandleConnectDataMap.end());
+    if (i->first == _parentServerConnectHandle)
+      return;
+    // FIXME which one of the following
+    OpenRTIAssert(i->second._federateHandleSet.empty());
+    // OpenRTIAssert(!hasJoinedFederatesForConnect(connectHandle));
+    i->second._messageSender.clear();
+  }
+
   void insertParentConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::wstring& name)
   {
     OpenRTIAssert(connectHandle.valid());
@@ -1522,7 +1578,8 @@ public:
   void insertConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::wstring& name)
   {
     OpenRTIAssert(connectHandle.valid());
-    if (_connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end()) {
+    if (_connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end() &&
+        _connectHandleConnectDataMap.find(connectHandle)->second._messageSender.valid()) {
       OpenRTIAssert(_connectHandleConnectDataMap.find(connectHandle)->second._messageSender == messageSender);
       return;
     }
@@ -1539,6 +1596,8 @@ public:
     message->setFOMModuleList(getModuleList());
     messageSender->send(message);
 
+    /// FIXME currently these are all flushed when an EraseFederationExecutionMessage is recieved.
+    /// FIXME Make that more explicit????
     for (FederateHandleFederateDataMap::const_iterator i = _federateHandleFederateDataMap.begin();
          i != _federateHandleFederateDataMap.end(); ++i) {
       SharedPtr<JoinFederateNotifyMessage> notify = new JoinFederateNotifyMessage;
@@ -1564,9 +1623,17 @@ public:
   // Should be called when a connection dies
   void removeConnect(const ConnectHandle& connectHandle)
   {
-    if (_parentServerConnectHandle == connectHandle)
-      _parentServerConnectHandle = ConnectHandle();
+    ConnectHandleConnectDataMap::iterator i = _connectHandleConnectDataMap.find(connectHandle);
+    if (i == _connectHandleConnectDataMap.end())
+      return;
 
+    resignConnect(connectHandle);
+    eraseConnect(connectHandle);
+  }
+
+  // Should be called when a connection dies
+  void resignConnect(const ConnectHandle& connectHandle)
+  {
     // Unsubscribe this connect
     unsubscribeConnect(connectHandle);
 
@@ -1620,20 +1687,41 @@ public:
         }
         accept(connectHandle, message.get());
       }
-
-      if (i->second._messageSender.valid()) {
-        SharedPtr<EraseFederationExecutionMessage> eraseMessage = new EraseFederationExecutionMessage;
-        eraseMessage->setFederationHandle(getHandle());
-        i->second._messageSender->send(eraseMessage);
-      }
-
-      // Finally remove what is referencing the old connect handle
-      _connectHandleConnectDataMap.erase(i);
+      i->second._federateHandleSet.clear();
     }
 
     Federation::removeConnect(connectHandle);
 
     // FIXME if the removed connection is the parent and we have a resign pending, respond as if we were the root
+  }
+
+
+  // Should be called when a connection dies,
+  // precondition is that the connect is idle
+  void eraseConnect(const ConnectHandle& connectHandle)
+  {
+    ConnectHandleConnectDataMap::iterator i = _connectHandleConnectDataMap.find(connectHandle);
+    // FIXME may be assert???
+    if (i == _connectHandleConnectDataMap.end())
+      return;
+
+    OpenRTIAssert(i->first == _parentServerConnectHandle || i->second._federateHandleSet.empty());
+
+    if (_parentServerConnectHandle == connectHandle)
+      _parentServerConnectHandle = ConnectHandle();
+
+    // Finally remove what is referencing the old connect handle
+    _connectHandleConnectDataMap.erase(i);
+  }
+
+  // Should be called when a connection dies,
+  // precondition is that the connect is idle
+  bool hasJoinedFederates(const ConnectHandle& connectHandle)
+  {
+    ConnectHandleConnectDataMap::iterator i = _connectHandleConnectDataMap.find(connectHandle);
+    if (i == _connectHandleConnectDataMap.end())
+      return false;
+    return !i->second._federateHandleSet.empty();
   }
 
   bool hasJoinedFederates() const
@@ -1642,16 +1730,31 @@ public:
     return !_federateHandleFederateDataMap.empty();
   }
 
+  /// Returns true if there is any federate joined that belongs to a child connect
   bool hasJoinedChildren() const
   {
-    for (ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.begin();
-	 i != _connectHandleConnectDataMap.end(); ++i) {
-      if (_parentServerConnectHandle.valid() && i->first == _parentServerConnectHandle)
-	continue;
-      // Ok, even the still pending resign request for invalid connect handles is treated as valid child.
+    for (FederateHandleFederateDataMap::const_iterator i = _federateHandleFederateDataMap.begin();
+         i != _federateHandleFederateDataMap.end(); ++i) {
+      if (i->second._connectHandle == _parentServerConnectHandle)
+        continue;
+      // Ok, not even the still pending resign request for invalid connect handles is treated as valid child.
+      if (i->second._resignPending)
+        continue;
       return true;
     }
     return false;
+  }
+
+  bool hasChildConnects() const
+  {
+    if (_parentServerConnectHandle.valid())
+      return 1 < _connectHandleConnectDataMap.size();
+    else
+      return !_connectHandleConnectDataMap.empty();
+  }
+  bool hasChildConnect(const ConnectHandle& connectHandle)
+  {
+    return _connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end();
   }
 
   void broadcastToChildren(const SharedPtr<AbstractMessage>& message) const
@@ -1662,6 +1765,8 @@ public:
 	continue;
       if (i->first == _parentServerConnectHandle)
 	continue;
+      if (!i->second._messageSender.valid())
+        continue;
       i->second._messageSender->send(message);
     }
   }
@@ -1676,6 +1781,8 @@ public:
 	continue;
       if (i->first == connectHandle)
 	continue;
+      if (!i->second._messageSender.valid())
+        continue;
       i->second._messageSender->send(message);
     }
   }
@@ -1722,6 +1829,8 @@ public:
 	continue;
       if (i->first == connectHandle)
 	continue;
+      if (!i->second._messageSender.valid())
+        continue;
       i->second._messageSender->send(message);
     }
   }
@@ -1729,7 +1838,9 @@ public:
   {
     ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.find(connectHandle);
     OpenRTIAssert(i != _connectHandleConnectDataMap.end());
-    OpenRTIAssert(i->second._messageSender.valid());
+    // OpenRTIAssert(i->second._messageSender.valid());
+    if (!i->second._messageSender.valid())
+      return;
     i->second._messageSender->send(message);
   }
   void send(const FederateHandle& federateHandle, const SharedPtr<AbstractMessage>& message) const
@@ -2038,7 +2149,17 @@ public:
           _serverConnectSet.send(connectHandle, response);
         } else {
           // Successful destroy
-          eraseFederation(i);
+
+          if (i->second->hasChildConnects()) {
+            // ... we are not the lower most server node that still knows that federation,
+            // so forward this to all children.
+            i->second->broadcastEraseFederationExecution();
+            eraseFederationName(i);
+          } else {
+            // ... we are the lower most server node that still knows about that federation,
+            // so just throw away the federation handle.
+            eraseFederation(i);
+          }
 
           // ... and just respond with Success
           SharedPtr<DestroyFederationExecutionResponseMessage> response;
@@ -2128,18 +2249,52 @@ public:
     if (connectHandle != _serverConnectSet.getParentConnectHandle())
       throw MessageError("Received InsertFederationExecutionMessage through a child connect!");
 
+    if (_federationServerMap.find(message->getFederationName()) != _federationServerMap.end())
+      throw MessageError("Received InsertFederationExecutionMessage for an already existing federation!");
     FederationHandle federationHandle = message->getFederationHandle();
     if (!federationHandle.valid())
       throw MessageError("Received InsertFederationExecutionMessage with invalid federation handle!");
-    if (_federationServerMap.find(federationHandle) != _federationServerMap.end())
-      throw MessageError("Received InsertFederationExecutionMessage for an already existing federation!");
-    if (_federationServerMap.find(message->getFederationName()) != _federationServerMap.end())
-      throw MessageError("Received InsertFederationExecutionMessage for an already existing federation!");
+    FederationServerMap::iterator i = _federationServerMap.find(federationHandle);
+    // FIXME: revisit, how to handle this
+    // if (i != _federationServerMap.end())
+    //   throw MessageError("Received InsertFederationExecutionMessage for an already existing federation!");
+    if (i != _federationServerMap.end()) {
+      // reinsert the already existing datastructure to get the index by name back
+      FederationServerMap::value_type v(*i);
+      _federationServerMap.insert(v);
+      return;
+    }
 
-    FederationServerMap::iterator i = insertFederation(message->getFederationName(), federationHandle);
+    i = insertFederation(message->getFederationName(), federationHandle);
     i->second->setLogicalTimeFactoryName(message->getLogicalTimeFactoryName());
     i->second->insert(message->getFOMModuleList());
     // FIXME add the server options
+  }
+  // A child server or an ambassador sends this request to be removed from the federation execution.
+  void accept(const ConnectHandle& connectHandle, ShutdownFederationExecutionMessage* message)
+  {
+    OpenRTIAssert(connectHandle.valid());
+    // Such a response must originate from the parent.
+    if (connectHandle == _serverConnectSet.getParentConnectHandle())
+      throw MessageError("Received ShutdownFederationExecutionMessage through a parent connect!");
+
+    FederationHandle federationHandle = message->getFederationHandle();
+    if (!federationHandle.valid())
+      throw MessageError("Received ShutdownFederationExecutionMessage with invalid federation handle!");
+    FederationServerMap::iterator i = _federationServerMap.find(federationHandle);
+    if (i == _federationServerMap.end())
+      throw MessageError("Received ShutdownFederationExecutionMessage for a non existing federation!");
+    if (!i->second->hasChildConnect(connectHandle))
+      throw MessageError("Received ShutdownFederationExecutionMessage for a federation not knowing this connect!");
+
+    // Check if the federation has again gained a new federate in between
+    if (i->second->hasJoinedFederatesForConnect(connectHandle))
+      return;
+    // Can happen that we ask for shotdown that is already underway
+    if (!i->second->getActive(connectHandle))
+      return;
+
+    i->second->eraseFederationExecutionAtConnect(connectHandle);
   }
   // Erase a new federation from the server node
   void accept(const ConnectHandle& connectHandle, EraseFederationExecutionMessage* message)
@@ -2152,11 +2307,63 @@ public:
     FederationHandle federationHandle = message->getFederationHandle();
     if (!federationHandle.valid())
       throw MessageError("Received EraseFederationExecutionMessage with invalid federation handle!");
-    if (_federationServerMap.find(federationHandle) == _federationServerMap.end())
+    FederationServerMap::iterator i = _federationServerMap.find(federationHandle);
+    if (i == _federationServerMap.end())
       throw MessageError("Received EraseFederationExecutionMessage for a non existing federation!");
 
-    // Find the federation and erase it
-    eraseFederation(federationHandle);
+    // Two cases ...
+    if (i->second->hasChildConnects()) {
+      // ... we are not the lower most server node that still knows that federation,
+      // so forward this to all children.
+      i->second->broadcastEraseFederationExecution();
+      eraseFederationName(i);
+    } else {
+      // ... we are the lower most server node that still knows about that federation,
+      // so respond with releasing the federation handle.
+      SharedPtr<ReleaseFederationHandleMessage> response;
+      response = new ReleaseFederationHandleMessage;
+      response->setFederationHandle(federationHandle);
+      _serverConnectSet.sendToParent(response);
+      eraseFederation(i);
+    }
+  }
+  // Erase a federation handle from the server node, this is part of the two way shutdown with a child
+  void accept(const ConnectHandle& connectHandle, ReleaseFederationHandleMessage* message)
+  {
+    OpenRTIAssert(connectHandle.valid());
+    // Such a response must originate from the parent.
+    if (connectHandle == _serverConnectSet.getParentConnectHandle())
+      throw MessageError("Received ReleaseFederationHandleMessage through a parent connect!");
+
+    FederationHandle federationHandle = message->getFederationHandle();
+    if (!federationHandle.valid())
+      throw MessageError("Received ReleaseFederationHandleMessage with invalid federation handle!");
+    FederationServerMap::iterator i = _federationServerMap.find(federationHandle);
+    if (i == _federationServerMap.end())
+      throw MessageError("Received ReleaseFederationHandleMessage for a non existing federation!");
+
+    Log(FederationServer, Info) << "ReleaseFederationHandleMessage for federation named \""
+                                << i->second->getName() << "\"!" << std::endl;
+
+    // If we are still not the last one, wait until this happens
+    // FIXME, move that into the erase connect in some way - may be with a new function
+    // FIXME See if this is a real problem
+    if (!i->second->hasChildConnect(connectHandle))
+      return;
+    if (i->second->getActive(connectHandle))
+      return;
+    i->second->eraseConnect(connectHandle);
+    if (i->second->hasChildConnects())
+      return;
+    // Only release those federations that we were asked to release
+    // FIXME better test for that ...
+    if (_federationServerMap.find(i->second->getName()) != _federationServerMap.end())
+      return;
+
+    if (isRootServer())
+      return;
+    _serverConnectSet.sendToParent(message);
+    eraseFederation(i);
   }
 
   // The Join messages
@@ -2431,6 +2638,20 @@ private:
                                             _serverConnectSet.getName(_serverConnectSet.getParentConnectHandle()));
     return _federationServerMap.insert(FederationServerMap::value_type(federationHandle, federationServer)).first;
   }
+  void eraseFederationName(const FederationHandle& federationHandle)
+  {
+    eraseFederationName(_federationServerMap.find(federationHandle));
+  }
+  void eraseFederationName(FederationServerMap::iterator i)
+  {
+    OpenRTIAssert(i != _federationServerMap.end());
+    OpenRTIAssert(!i->second->hasJoinedChildren());
+
+    Log(FederationServer, Info) << getServerPath() << ": Destroyed federation execution in child server for \""
+                                << i->second->getName() << "\"!" << std::endl;
+
+    _federationServerMap.eraseName(i);
+  }
   void eraseFederation(const FederationHandle& federationHandle)
   {
     eraseFederation(_federationServerMap.find(federationHandle));
@@ -2440,7 +2661,7 @@ private:
     OpenRTIAssert(i != _federationServerMap.end());
     OpenRTIAssert(!i->second->hasJoinedChildren());
 
-    Log(FederationServer, Info) << getServerPath() << ": Destroyed federation execution in child server for \""
+    Log(FederationServer, Info) << getServerPath() << ": Released FederationHandle in child server for \""
                                 << i->second->getName() << "\"!" << std::endl;
 
     _federationHandleAllocator.put(i->first);

@@ -86,6 +86,13 @@ public:
     _handleObjectMap.erase(i);
   }
 
+  void eraseName(iterator i)
+  {
+    typename StringIteratorMap::iterator j = _stringIteratorMap.find(i->second->getName());
+    if (j != _stringIteratorMap.end())
+      _stringIteratorMap.erase(j);
+  }
+
   iterator find(const Handle& handle)
   { return _handleObjectMap.find(handle); }
   const_iterator find(const Handle& handle) const

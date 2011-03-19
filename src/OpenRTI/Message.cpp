@@ -244,6 +244,33 @@ InsertFederationExecutionMessage::dispatch(ConstAbstractMessageDispatcher& dispa
 }
 
 
+ShutdownFederationExecutionMessage::ShutdownFederationExecutionMessage()
+{
+}
+
+ShutdownFederationExecutionMessage::~ShutdownFederationExecutionMessage()
+{
+}
+
+const char*
+ShutdownFederationExecutionMessage::getTypeName() const
+{
+  return "ShutdownFederationExecutionMessage";
+}
+
+void
+ShutdownFederationExecutionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
+{
+  dispatcher.accept(*this);
+}
+
+void
+ShutdownFederationExecutionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+{
+  dispatcher.accept(*this);
+}
+
+
 EraseFederationExecutionMessage::EraseFederationExecutionMessage()
 {
 }
@@ -266,6 +293,33 @@ EraseFederationExecutionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 
 void
 EraseFederationExecutionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+{
+  dispatcher.accept(*this);
+}
+
+
+ReleaseFederationHandleMessage::ReleaseFederationHandleMessage()
+{
+}
+
+ReleaseFederationHandleMessage::~ReleaseFederationHandleMessage()
+{
+}
+
+const char*
+ReleaseFederationHandleMessage::getTypeName() const
+{
+  return "ReleaseFederationHandleMessage";
+}
+
+void
+ReleaseFederationHandleMessage::dispatch(AbstractMessageDispatcher& dispatcher)
+{
+  dispatcher.accept(*this);
+}
+
+void
+ReleaseFederationHandleMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
