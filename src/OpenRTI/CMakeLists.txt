@@ -8,7 +8,7 @@ CHECK_INCLUDE_FILES(stdint.h OpenRTI_HAVE_STDINT_H)
 CHECK_INCLUDE_FILES(inttypes.h OpenRTI_HAVE_INTTYPES_H)
 CHECK_CXX_SOURCE_COMPILES("
 #include <alloca.h>
-int main(void)
+int main(int argc, char* argv[])
 {
   void* data = alloca(17);
   return 0;
