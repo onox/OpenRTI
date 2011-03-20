@@ -477,6 +477,40 @@ public:
         Traits::throwRTIinternalError("resignFederationExecution hit timeout!");
       if (dynamic_cast<EraseFederationExecutionMessage*>(message.get()))
         break;
+      if (InsertObjectInstanceMessage* insertMessage = dynamic_cast<InsertObjectInstanceMessage*>(message.get())) {
+        SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
+        message->setFederationHandle(getFederationHandle());
+        message->getObjectInstanceHandleVector().push_back(insertMessage->getObjectInstanceHandle());
+        sendMessage(message);
+      }
+      if (ObjectInstanceHandlesResponseMessage* reserveMessage = dynamic_cast<ObjectInstanceHandlesResponseMessage*>(message.get())) {
+        SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
+        message->setFederationHandle(getFederationHandle());
+        for (ObjectInstanceHandleNamePairVector::const_iterator k = reserveMessage->getObjectInstanceHandleNamePairVector().begin();
+             k != reserveMessage->getObjectInstanceHandleNamePairVector().end(); ++k) {
+          message->getObjectInstanceHandleVector().push_back(k->first);
+        }
+        sendMessage(message);
+      }
+      if (ReserveObjectInstanceNameResponseMessage* reserveMessage = dynamic_cast<ReserveObjectInstanceNameResponseMessage*>(message.get())) {
+        if (reserveMessage->getSuccess()) {
+          SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
+          message->setFederationHandle(getFederationHandle());
+          message->getObjectInstanceHandleVector().push_back(reserveMessage->getObjectInstanceHandleNamePair().first);
+          sendMessage(message);
+        }
+      }
+      if (ReserveMultipleObjectInstanceNameResponseMessage* reserveMessage = dynamic_cast<ReserveMultipleObjectInstanceNameResponseMessage*>(message.get())) {
+        if (reserveMessage->getSuccess()) {
+          SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
+          message->setFederationHandle(getFederationHandle());
+          for (ObjectInstanceHandleNamePairVector::const_iterator k = reserveMessage->getObjectInstanceHandleNamePairVector().begin();
+               k != reserveMessage->getObjectInstanceHandleNamePairVector().end(); ++k) {
+            message->getObjectInstanceHandleVector().push_back(k->first);
+          }
+          sendMessage(message);
+        }
+      }
     }
 
     SharedPtr<ReleaseFederationHandleMessage> request3 = new ReleaseFederationHandleMessage;

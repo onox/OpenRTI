@@ -333,17 +333,6 @@ public:
       broadcast(connectHandle, request);
     }
 
-    ConnectHandleConnectDataMap::iterator l = _connectHandleConnectDataMap.find(connectHandle);
-    if (l != _connectHandleConnectDataMap.end()) {
-      // FIXME
-      if (l->second._federateHandleSet.size() == 1 && *l->second._federateHandleSet.begin() == federateHandle) {
-        // FIXME this is in effect something like removeConnect!!!
-        for (ObjectInstanceHandleDataMap::iterator k = _objectInstanceHandleDataMap.begin(); k != _objectInstanceHandleDataMap.end();) {
-          unreferenceObjectInstanceHandle(k++, connectHandle);
-        }
-      }
-    }
-
     // If we are a root server ...
     if (isRootServer()) {
       // ... and respond with Success
@@ -1026,7 +1015,6 @@ public:
           }
         }
       } else {
-        ObjectInstanceHandleSet objectInstanceHandleSet;
         for (ObjectInstanceList::const_iterator j = objectClass->getObjectInstanceList().begin();
              j != objectClass->getObjectInstanceList().end(); ++j) {
           ObjectAttribute* objectAttribute = (*j)->getAttribute(*i);
@@ -1040,19 +1028,6 @@ public:
           // Erase the connect handle from the recieving connects
           if (objectAttribute->_recieveingConnects.erase(connectHandle) == 0)
             continue;
-
-          // FIXME: no ???
-          // FIXME unreference object instances that get unsubscribed somehow ...
-
-          if (*i == AttributeHandle(0)) {
-            objectInstanceHandleSet.insert((*j)->getHandle());
-          }
-        }
-        for (ObjectInstanceHandleSet::const_iterator i = objectInstanceHandleSet.begin();
-             i != objectInstanceHandleSet.end(); ++i) {
-          // if (connectHandle != _parentServerConnectHandle) {
-          //   unreferenceObjectInstanceHandle(*i, connectHandle);
-          // }
         }
       }
     }
@@ -1334,7 +1309,25 @@ public:
         referenceObjectInstanceHandle(message->getObjectInstanceHandle(), *i);
     }
 
-    send(connectHandleSet, message);
+    // If still unreferenced, ignore the insert and unref again in the parent
+    // this can happen if we subscribed and unsubscribed at the server before we recieved the insert that is triggered by the subscribe request.
+    if (_objectInstanceHandleDataMap.find(objectInstanceHandle) == _objectInstanceHandleDataMap.end()) {
+      OpenRTIAssert(connectHandle == _parentServerConnectHandle);
+      OpenRTIAssert(connectHandleSet.empty());
+
+      eraseObjectInstance(objectInstance);
+
+      SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message;
+      message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
+      message->setFederationHandle(getHandle());
+      message->getObjectInstanceHandleVector().push_back(objectInstanceHandle);
+
+      send(_parentServerConnectHandle, message);
+
+    } else {
+      OpenRTIAssert(!_objectInstanceHandleDataMap[objectInstanceHandle]._connectHandleSet.empty());
+      send(connectHandleSet, message);
+    }
   }
   void accept(const ConnectHandle& connectHandle, DeleteObjectInstanceMessage* message)
   {
@@ -1928,7 +1921,11 @@ public:
   {
     OpenRTIAssert(connectHandle != _parentServerConnectHandle);
     OpenRTIAssert(i != _objectInstanceHandleDataMap.end());
-    i->second._connectHandleSet.erase(connectHandle);
+    // Currently it is used in a way that requires checking and allowing unreferencing connects that are unreferenced
+    // OpenRTIAssert(i->second._connectHandleSet.find(connectHandle) != i->second._connectHandleSet.end());
+    // i->second._connectHandleSet.erase(connectHandle);
+    if (0 == i->second._connectHandleSet.erase(connectHandle))
+      return;
 
     ObjectInstance* objectInstance = getObjectInstance(i->first);
     if (objectInstance)
