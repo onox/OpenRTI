@@ -75,14 +75,14 @@ public:
     } else {
       i->second._name = connectHandle.toString();
     }
-    Log(FederationServer, Debug2) << "Inserting connect \"" << i->second._name << "\"." << std::endl;
+    Log(ServerConnect, Info) << "Inserting connect \"" << i->second._name << "\"." << std::endl;
     return connectHandle;
   }
   void removeMessageSender(const ConnectHandle& connectHandle)
   {
     MessageSenderMap::iterator i = _messageSenderMap.find(connectHandle);
     OpenRTIAssert(i != _messageSenderMap.end());
-    Log(FederationServer, Debug2) << "Removing connect \"" << i->second._name << "\"." << std::endl;
+    Log(ServerConnect, Info) << "Removing connect \"" << i->second._name << "\"." << std::endl;
     _messageSenderMap.erase(i);
     if (_parentServerConnectHandle == connectHandle)
       _parentServerConnectHandle = ConnectHandle();
@@ -1670,7 +1670,8 @@ public:
     if (i != _connectHandleConnectDataMap.end()) {
       FederateHandleSet federateHandleSet = i->second._federateHandleSet;
       for (FederateHandleSet::iterator j = federateHandleSet.begin(); j != federateHandleSet.end(); ++j) {
-        Log(FederationServer, Info) << "Resigning federate " << j->toString() << " because of closed connection!" << std::endl;
+        Log(ServerFederate, Info) << getServerPath() << ": Resigning federate " << *j
+                                  << " because of closed connection!" << std::endl;
         SharedPtr<ResignFederationExecutionRequestMessage> message = new ResignFederationExecutionRequestMessage;
         message->setFederationHandle(getHandle());
         message->setFederateHandle(*j);
@@ -1699,6 +1700,9 @@ public:
       return;
 
     OpenRTIAssert(i->first == _parentServerConnectHandle || i->second._federateHandleSet.empty());
+
+    if (_parentServerConnectHandle == connectHandle)
+      Log(ServerConnect, Error) << getServerPath() << ": Removing parent connect!" << std::endl;
 
     if (_parentServerConnectHandle == connectHandle)
       _parentServerConnectHandle = ConnectHandle();
@@ -1898,6 +1902,8 @@ public:
   void insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::wstring& name,
                                   const ConnectHandle& connectHandle)
   {
+    Log(ServerObjectInstance, Debug) << getServerPath() << ": Insert Object Instance \"" << objectInstanceHandle
+                                     << "\" referenced by connect \"" << connectHandle <<  "\"!" << std::endl;
     OpenRTIAssert(connectHandle != _parentServerConnectHandle);
     OpenRTIAssert(_objectInstanceHandleDataMap.find(objectInstanceHandle) == _objectInstanceHandleDataMap.end());
     OpenRTIAssert(_connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end());
@@ -1912,6 +1918,9 @@ public:
   }
   void referenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle)
   {
+    Log(ServerObjectInstance, Debug) << getServerPath() << ": Reference Object Instance \""
+                                     << objectInstanceHandle << "\" referenced by connect \""
+                                     << connectHandle <<  "\"!" << std::endl;
     OpenRTIAssert(connectHandle != _parentServerConnectHandle);
     ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.find(objectInstanceHandle);
     OpenRTIAssert(i != _objectInstanceHandleDataMap.end());
@@ -1919,8 +1928,11 @@ public:
   }
   void unreferenceObjectInstanceHandle(ObjectInstanceHandleDataMap::iterator i, const ConnectHandle& connectHandle)
   {
-    OpenRTIAssert(connectHandle != _parentServerConnectHandle);
     OpenRTIAssert(i != _objectInstanceHandleDataMap.end());
+    Log(ServerObjectInstance, Debug) << getServerPath() << ": Unreference Object Instance \""
+                                     << i->first << "\" referenced by connect \""
+                                     << connectHandle <<  "\"!" << std::endl;
+    OpenRTIAssert(connectHandle != _parentServerConnectHandle);
     // Currently it is used in a way that requires checking and allowing unreferencing connects that are unreferenced
     // OpenRTIAssert(i->second._connectHandleSet.find(connectHandle) != i->second._connectHandleSet.end());
     // i->second._connectHandleSet.erase(connectHandle);
@@ -1933,6 +1945,9 @@ public:
 
     if (!i->second._connectHandleSet.empty())
       return;
+
+    Log(ServerObjectInstance, Debug) << getServerPath() << ": Dropped last reference to Object Instance \""
+                                     << i->first << "\"!" << std::endl;
 
     if (objectInstance)
       eraseObjectInstance(objectInstance);
@@ -2001,8 +2016,8 @@ public:
   {
     FederationServerMap::const_iterator i = _federationServerMap.find(message->getFederationHandle());
     if (i == _federationServerMap.end()) {
-      Log(FederationServer, Warning) << getServerPath() << ": Received " << message->getTypeName()
-                                     << " for unknown federation id: " << message->getFederationHandle().toString()
+      Log(ServerFederation, Warning) << getServerPath() << ": Received " << message->getTypeName()
+                                     << " for unknown federation id: " << message->getFederationHandle()
                                      << "!" << std::endl;
       throw MessageError(getServerPath() + std::wstring(L" received ") + localeToUcs(message->getTypeName())
                          + L" for unknown federation id: " + message->getFederationHandle().toString() + L"!");
@@ -2070,7 +2085,7 @@ public:
           candidate.take();
           _federationServerMap.insert(FederationServerMap::value_type(federationHandle, federationServer));
 
-          Log(FederationServer, Info) << "Create federation execution \""
+          Log(ServerFederation, Info) << getServerPath() << ": Create federation execution \""
                                       << message->getFederationExecution() << "\"." << std::endl;
 
           // ... and respond with Success
@@ -2080,7 +2095,8 @@ public:
           _serverConnectSet.send(connectHandle, response);
 
         } catch (const Exception& e) {
-          Log(FederationServer, Info) << "Caught Exception creating federation execution \"" << e.getReason() << "\"." << std::endl;
+          Log(ServerFederation, Info) << getServerPath() << ": Caught Exception creating federation execution \""
+                                      << e.getReason() << "\"." << std::endl;
           SharedPtr<CreateFederationExecutionResponseMessage> response;
           response = new CreateFederationExecutionResponseMessage;
           response->setCreateFederationExecutionResponseType(CreateFederationExecutionResponseRTIinternalError);
@@ -2126,8 +2142,9 @@ public:
       // Check if it is there?
       FederationServerMap::iterator i = _federationServerMap.find(message->getFederationExecution());
       if (i == _federationServerMap.end()) {
-        Log(FederationServer, Info) << "DestroyFederationExecutionRequestMessage faild for unknown federation named \""
-                                    << message->getFederationExecution() << "\"!" << std::endl;
+        Log(ServerFederation, Debug) << getServerPath()
+                                     << ": DestroyFederationExecutionRequestMessage faild for unknown federation named \""
+                                     << message->getFederationExecution() << "\"!" << std::endl;
         // Ok, have an inactive federation, destroy needs to fail
         SharedPtr<DestroyFederationExecutionResponseMessage> response;
         response = new DestroyFederationExecutionResponseMessage;
@@ -2137,8 +2154,8 @@ public:
 
         // Federates currently joined?
         if (i->second->hasJoinedFederates()) {
-          Log(FederationServer, Info) << "DestroyFederationExecutionRequestMessage faild for \""
-                                      << message->getFederationExecution() << "\", federates joined!" << std::endl;
+          Log(ServerFederation, Debug) << getServerPath() << ": DestroyFederationExecutionRequestMessage faild for \""
+                                       << message->getFederationExecution() << "\", federates joined!" << std::endl;
           // federades there, so, no
           SharedPtr<DestroyFederationExecutionResponseMessage> response;
           response = new DestroyFederationExecutionResponseMessage;
@@ -2146,6 +2163,8 @@ public:
           _serverConnectSet.send(connectHandle, response);
         } else {
           // Successful destroy
+          Log(ServerFederation, Info) << getServerPath() << ": DestroyFederationExecutionRequestMessage succeeded for \""
+                                      << message->getFederationExecution() << "\"!" << std::endl;
 
           if (i->second->hasChildConnects()) {
             // ... we are not the lower most server node that still knows that federation,
@@ -2339,7 +2358,7 @@ public:
     if (i == _federationServerMap.end())
       throw MessageError("Received ReleaseFederationHandleMessage for a non existing federation!");
 
-    Log(FederationServer, Info) << "ReleaseFederationHandleMessage for federation named \""
+    Log(ServerFederation, Info) << getServerPath() << ": ReleaseFederationHandleMessage for federation named \""
                                 << i->second->getName() << "\"!" << std::endl;
 
     // If we are still not the last one, wait until this happens
@@ -2378,8 +2397,9 @@ public:
       FederationServerMap::const_iterator i = _federationServerMap.find(message->getFederationExecution());
       if (i == _federationServerMap.end()) {
         // FederationExecutionDoesNotExist ...
-        Log(FederationServer, Info) << "JoinFederationExecutionRequestMessage faild for unknown federation named \""
-                                    << message->getFederationExecution() << "\"!" << std::endl;
+        Log(ServerFederate, Info) << getServerPath()
+                                  << ": JoinFederationExecutionRequestMessage faild for unknown federation named \""
+                                  << message->getFederationExecution() << "\"!" << std::endl;
         SharedPtr<JoinFederationExecutionResponseMessage> response;
         response = new JoinFederationExecutionResponseMessage;
         response->setJoinFederationExecutionResponseType(JoinFederationExecutionResponseFederationExecutionDoesNotExist);
@@ -2533,7 +2553,11 @@ public:
     { }
     template<typename M>
     void operator()(M& message) const
-    { _serverMessageDispatcher.accept(_connectHandle, &message); }
+    {
+      Log(ServerMessage, Debug) << _serverMessageDispatcher.getServerPath()
+                                << ": Received " << message.getTypeName() << "!" << std::endl;
+      _serverMessageDispatcher.accept(_connectHandle, &message);
+    }
   private:
     ServerMessageDispatcher& _serverMessageDispatcher;
     ConnectHandle _connectHandle;
@@ -2644,7 +2668,7 @@ private:
     OpenRTIAssert(i != _federationServerMap.end());
     OpenRTIAssert(!i->second->hasJoinedChildren());
 
-    Log(FederationServer, Info) << getServerPath() << ": Destroyed federation execution in child server for \""
+    Log(ServerFederation, Info) << getServerPath() << ": Destroyed federation execution in child server for \""
                                 << i->second->getName() << "\"!" << std::endl;
 
     _federationServerMap.eraseName(i);
@@ -2658,7 +2682,7 @@ private:
     OpenRTIAssert(i != _federationServerMap.end());
     OpenRTIAssert(!i->second->hasJoinedChildren());
 
-    Log(FederationServer, Info) << getServerPath() << ": Released FederationHandle in child server for \""
+    Log(ServerFederation, Info) << getServerPath() << ": Released FederationHandle in child server for \""
                                 << i->second->getName() << "\"!" << std::endl;
 
     _federationHandleAllocator.put(i->first);

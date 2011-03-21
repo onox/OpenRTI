@@ -250,7 +250,7 @@ public:
 
       CreateFederationExecutionResponseMessage* create = dynamic_cast<CreateFederationExecutionResponseMessage*>(response.get());
       if (!create)
-        Traits::throwRTIinternalError(std::wstring(L"Received unexpected message type while talking to RTI of federation execution \"") +
+        Traits::throwRTIinternalError(std::wstring(L"Received unexpected message type \"") + localeToUcs(response->getTypeName()) + std::wstring(L"\" while talking to RTI of federation execution \"") +
                                       federationExecutionName + std::wstring(L"\"."));
 
       if (create->getCreateFederationExecutionResponseType() == CreateFederationExecutionResponseFederationExecutionAlreadyExists)
@@ -302,7 +302,7 @@ public:
           }
         } else {
           if (!destroy.valid())
-            Traits::throwRTIinternalError(std::wstring(L"Received unexpected message type while talking to RTI of federation execution \"") +
+            Traits::throwRTIinternalError(std::wstring(L"Received unexpected message type \"") + localeToUcs(response->getTypeName()) + std::wstring(L"\" while talking to RTI of federation execution \"") +
                                           federationExecutionName + std::wstring(L"\".") + localeToUcs(response->getTypeName()));
         }
       }

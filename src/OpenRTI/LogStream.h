@@ -33,7 +33,13 @@ public:
     Network              = Assert << 1,
     MessageCoding        = Network << 1,
     FederateAmbassador   = MessageCoding << 1,
-    FederationServer     = FederateAmbassador << 1,
+    ServerMessage        = FederateAmbassador << 1,
+    ServerConnect        = ServerMessage << 1,
+    ServerFederation     = ServerConnect << 1,
+    ServerFederate       = ServerFederation << 1,
+    ServerSyncronization = ServerFederate << 1,
+    ServerTime           = ServerSyncronization << 1,
+    ServerObjectInstance = ServerTime << 1,
     All                  = ~0u
   };
 

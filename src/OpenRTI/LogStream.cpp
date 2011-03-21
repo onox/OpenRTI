@@ -27,10 +27,12 @@
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
+#include <vector>
 #include "Mutex.h"
 #include "Referenced.h"
 #include "ScopeLock.h"
 #include "SharedPtr.h"
+#include "StringUtils.h"
 
 namespace OpenRTI {
 
@@ -185,9 +187,43 @@ LogStream::LogStream() :
   if (value)
     mPriority = value;
 
-  value = atou(std::getenv("OPENRTI_DEBUG_CATEGORY"));
-  if (value)
-    mCategory = value;
+  const char* env = std::getenv("OPENRTI_DEBUG_CATEGORY");
+  if (env) {
+    std::vector<std::string> categories = split(env, ", |");
+    if (!categories.empty()) {
+      mCategory = 0;
+      for (std::vector<std::string>::const_iterator i = categories.begin();
+           i != categories.end(); ++i) {
+
+        static const struct {
+          const char* name;
+          Category bit;
+        } categories[] = {
+#define CATEGORY(name) { #name, name }
+          CATEGORY(Assert),
+          CATEGORY(Network),
+          CATEGORY(MessageCoding),
+          CATEGORY(FederateAmbassador),
+          CATEGORY(ServerConnect),
+          CATEGORY(ServerFederation),
+          CATEGORY(ServerFederate),
+          CATEGORY(ServerSyncronization),
+          CATEGORY(ServerTime),
+          CATEGORY(ServerObjectInstance)
+#undef CATEGORY
+        };
+
+        for (unsigned j = 0; j < sizeof(categories)/sizeof(categories[0]); ++j) {
+          if (*i == categories[j].name)
+            mCategory |= categories[j].bit;
+        }
+      }
+    }
+    // last resort, if nothing matched
+    if (mCategory == 0) {
+      mCategory = Category(atou(env));
+    }
+  }
 }
 
 } // namespace OpenRTI

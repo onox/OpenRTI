@@ -139,7 +139,17 @@ public:                                                           \
     stream << #HandleName "(" << getHandle() << ")";              \
     return stream.str();                                          \
   }                                                               \
-};
+};                                                                \
+                                                                  \
+template<typename char_type, typename traits_type>                \
+inline                                                            \
+std::basic_ostream<char_type, traits_type>&                       \
+operator<<(std::basic_ostream<char_type, traits_type>& os,        \
+           const HandleName & handle)                             \
+{                                                                 \
+  os << #HandleName "(" << handle.getHandle() << ")";             \
+  return os;                                                      \
+}
 
 DECLARE_HANDLE_TYPE(ObjectClassHandle, uint32_t)
 DECLARE_HANDLE_TYPE(ObjectInstanceHandle, uint32_t)

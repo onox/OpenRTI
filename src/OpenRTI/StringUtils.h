@@ -205,6 +205,23 @@ inline char* newUcsToLocale(const std::wstring& ws)
   return std::strncpy(data, s.c_str(), s.size());
 }
 
+inline std::vector<std::string>
+split(const std::string& s, const char* c = ", \t\n")
+{
+  std::vector<std::string> v;
+  std::string::size_type p0 = 0;
+  std::string::size_type p = s.find_first_of(c);
+  while (p != std::string::npos) {
+    v.push_back(s.substr(p0, p));
+    p0 = s.find_first_not_of(c, p);
+    if (p0 == std::string::npos)
+      return v;
+    p = s.find_first_of(c, p0);
+  }
+  v.push_back(s.substr(p0, p));
+  return v;
+}
+
 inline std::vector<std::wstring>
 split(const std::wstring& s, const wchar_t* c = L", \t\n")
 {
