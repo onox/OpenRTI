@@ -52,11 +52,11 @@ SocketTCP::connect(const SocketAddress& socketAddress)
 #ifdef DEBUG_LATENCY
   // When debugging latencies, just keep the messages longer in the send
   // queue until they are flushed by a timeout.
-  int delay = 0;
+  int nodelay = 0;
 #else
-  int delay = 1;
+  int nodelay = 1;
 #endif
-  int ret = setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &delay, sizeof(delay));
+  int ret = setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay));
   if (ret == -1) {
     int errorNumber = errno;
     ::close(fd);
@@ -85,6 +85,31 @@ SocketTCP::connect(const SocketAddress& socketAddress)
   }
 
   _privateData->_fd = fd;
+}
+
+void
+SocketTCP::cork(bool enable)
+{
+#if defined TCP_CORK
+  int cork;
+  if (enable)
+    cork = 1;
+  else
+    cork = 0;
+  // On succes, we are done here
+  setsockopt(_privateData->_fd, IPPROTO_TCP, TCP_CORK, &cork, sizeof(cork));
+#else
+  int nodelay;
+#ifdef DEBUG_LATENCY
+  nodelay = 1;
+#else
+  if (enable)
+    nodelay = 0;
+  else
+    nodelay = 1;
+#endif
+  setsockopt(_privateData->_fd, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay));
+#endif
 }
 
 SocketTCP::SocketTCP(PrivateData* privateData) :

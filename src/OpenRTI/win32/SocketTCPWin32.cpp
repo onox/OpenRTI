@@ -44,8 +44,8 @@ SocketTCP::connect(const SocketAddress& socketAddress)
   if (fd == INVALID_SOCKET)
     throw TransportError(errnoToUcs(WSAGetLastError()));
 
-  int one = 1;
-  int ret = ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const char*)&one, sizeof(one));
+  int nodelay = 1;
+  int ret = ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const char*)&nodelay, sizeof(nodelay));
   if (ret == -1) {
     int errorNumber = WSAGetLastError();
     ::closesocket(fd);
@@ -69,6 +69,21 @@ SocketTCP::connect(const SocketAddress& socketAddress)
   }
 
   _privateData->_socket = fd;
+}
+
+void
+SocketTCP::cork(bool enable)
+{
+  int nodelay;
+#ifdef DEBUG_LATENCY
+  nodelay = 1;
+#else
+  if (enable)
+    nodelay = 0;
+  else
+    nodelay = 1;
+#endif
+  setsockopt(_privateData->_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&nodelay, sizeof(nodelay));
 }
 
 SocketTCP::SocketTCP(PrivateData* privateData) :

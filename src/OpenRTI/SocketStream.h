@@ -45,6 +45,7 @@ public:
 
   ssize_t send(const NetworkBuffer& networkBuffer, bool moreToSend);
   ssize_t recv(NetworkBuffer& networkBuffer);
+  virtual void cork(bool enable);
 
 protected:
   SocketStream(PrivateData* privateData);

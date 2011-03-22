@@ -84,18 +84,29 @@ SocketStream::send(const NetworkBuffer& networkBuffer, bool moreToSend)
 #if defined MSG_MORE
   if (moreToSend)
     flags |= MSG_MORE;
+#else
+  if (moreToSend)
+    cork(true);
 #endif
   ssize_t ret = ::sendmsg(_privateData->_fd, &msg, flags);
+  int errorNumber = errno;
+
+#if !defined MSG_MORE
+  // flush the buffer
+  if (!moreToSend)
+    cork(false);
+#endif
+
   if (ret != -1)
     return ret;
 
   // errors that just mean 'please try again' which is mapped to 'return nothing written'
-  if (errno == EWOULDBLOCK || errno == EAGAIN || errno == EINTR /* || errno == EINPROGRESS*/)
+  if (errorNumber == EWOULDBLOCK || errorNumber == EAGAIN || errorNumber == EINTR /* || errorNumber == EINPROGRESS*/)
     return 0;
 
   // Hmm, not sure if we should do so - not yet message based sockets in use
   // FIXME here in a stream socket implementation !!!
-  if (errno == EMSGSIZE)
+  if (errorNumber == EMSGSIZE)
 #if defined(__APPLE__)
     // On macos, I get spurious EMSGSIZE errors where the same call
     // works the next time it is issued. So, just treat that as EAGAIN on macos.
@@ -107,11 +118,11 @@ SocketStream::send(const NetworkBuffer& networkBuffer, bool moreToSend)
 
   // // Also not sure - currently this is an exception when the connection is just closed below us
   // // Note that this should not happen during any controlled shutdown of a client
-  // if (errno == ECONNRESET || errno == EPIPE)
+  // if (errorNumber == ECONNRESET || errorNumber == EPIPE)
   //   return -1;
 
   // All other errors are considered serious and need to be handled somewhere where this is caught
-  throw TransportError(errnoToUcs(errno));
+  throw TransportError(errnoToUcs(errorNumber));
 }
 
 ssize_t
@@ -173,6 +184,11 @@ SocketStream::recv(NetworkBuffer& networkBuffer)
 
   // All other errors are considered serious and need to be handled somewhere where this is caught
   throw TransportError(errnoToUcs(errno));
+}
+
+void
+SocketStream::cork(bool enable)
+{
 }
 
 SocketStream::SocketStream(PrivateData* privateData) :

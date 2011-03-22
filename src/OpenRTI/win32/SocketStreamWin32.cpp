@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2011 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2011 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -25,15 +25,25 @@
 namespace OpenRTI {
 
 ssize_t
-SocketStream::send(const NetworkBuffer& networkBuffer, bool)
+SocketStream::send(const NetworkBuffer& networkBuffer, bool moreToSend)
 {
   const char* data = networkBuffer.getPendingBuffer(0);
   size_t len = networkBuffer.getPendingBufferSize(0);
+
+  if (moreToSend)
+    cork(true);
+
   ssize_t ret = ::send(_privateData->_socket, data, len, 0);
+  // get the error of the send call before trying setsocketopt
+  int errorNumber = WSAGetLastError();
+
+  // flush the buffer
+  if (!moreToSend)
+    cork(false);
+
   if (ret != SOCKET_ERROR)
     return ret;
 
-  int errorNumber = WSAGetLastError();
   // errors that just mean 'please try again' which is mapped to 'return nothing written'
   if (errorNumber == WSAEINTR || errorNumber == WSAEINPROGRESS || errorNumber == WSAENOBUFS || errorNumber == WSAEWOULDBLOCK)
     return 0;
@@ -68,6 +78,11 @@ SocketStream::recv(NetworkBuffer& networkBuffer)
 
   // All other errors are considered serious and need to be handled somewhere where this is caught
   throw TransportError(errnoToUcs(errorNumber));
+}
+
+void
+SocketStream::cork(bool enable)
+{
 }
 
 SocketStream::SocketStream(PrivateData* privateData) :
