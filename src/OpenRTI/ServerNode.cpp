@@ -1985,8 +1985,11 @@ public:
   // If the parent connect dies, tell this all children
   void accept(const ConnectHandle& connectHandle, ConnectionLostMessage* message)
   {
+    // Throw away these kind of messages when they originate from a child.
+    // This can happen since a connect just sends this message on socket problems.
+    // But the socket connect does not know if it is a parent connect or not.
     if (connectHandle != _serverConnectSet.getParentConnectHandle())
-      throw MessageError(std::wstring(L"Received ") + localeToUcs(message->getTypeName()) + L" through a child connect!");
+      return;
     _serverConnectSet.broadcastToChildren(message);
   }
 
@@ -2428,9 +2431,6 @@ public:
     _serverConnectSet.removeMessageSender(connectHandle);
 
     if (isParent) {
-      // Notify all children about the lost connection.
-      _serverConnectSet.broadcastToChildren(new ConnectionLostMessage);
-
       // Replay messages that we forwarded to the parent server to ourself.
       // We are the parent now ...
       for (ConnectHandleMessagePairList::iterator i = _pendingMessageList.begin();

@@ -34,6 +34,7 @@ public:
   virtual ~MessageSocketReadEvent();
 
   virtual void readPacket(SocketEventDispatcher& dispatcher, NetworkBuffer& networkBuffer);
+  virtual void readError(const std::wstring& reason);
 
 private:
   // Messages that are received completely are sent down there

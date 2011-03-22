@@ -20,6 +20,7 @@
 #include "MessageSocketReadEvent.h"
 
 #include "AbstractMessageSender.h"
+#include "Message.h"
 #include "SocketStream.h"
 #include "StreamSocketReadEvent.h"
 
@@ -44,6 +45,14 @@ MessageSocketReadEvent::readPacket(SocketEventDispatcher& dispatcher, NetworkBuf
   SharedPtr<AbstractMessage> message = _decoder->readMessage(networkBuffer);
   if (!message.valid())
     return;
+  _messageSender->send(message);
+}
+
+void
+MessageSocketReadEvent::readError(const std::wstring& reason)
+{
+  SharedPtr<ConnectionLostMessage> message = new ConnectionLostMessage;
+  message->setFaultDescription(reason);
   _messageSender->send(message);
 }
 
