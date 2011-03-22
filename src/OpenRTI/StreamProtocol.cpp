@@ -80,7 +80,7 @@ public:
       _messageSender(messageSender),
       _clientOptions(clientOptions)
     { }
-    virtual void exec(NamedThread& thread)
+    virtual void exec(ThreadRegistry& threadRegistry, NamedThread& thread)
     {
       _messageSender = static_cast<ServerThread&>(thread).connectServer(_messageSender, _clientOptions);
     }
@@ -108,11 +108,11 @@ public:
     DisconnectServerCallback(const SharedPtr<AbstractMessageSender>& messageSender) :
       _messageSender(messageSender)
     { }
-    virtual void exec(NamedThread& thread)
+    virtual void exec(ThreadRegistry& threadRegistry, NamedThread& thread)
     {
       bool hasChildConnects = static_cast<ServerThread&>(thread).disconnectServer(_messageSender);
       if (!hasChildConnects)
-        thread.stopThread();
+        thread.stopThread(threadRegistry);
     }
     SharedPtr<AbstractMessageSender> _messageSender;
   };

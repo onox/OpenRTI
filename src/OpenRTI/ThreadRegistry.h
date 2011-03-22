@@ -48,7 +48,7 @@ public:
   class ThreadProcedureCallback : public Referenced {
   public:
     virtual ~ThreadProcedureCallback() {}
-    virtual void exec(NamedThread& thread) = 0;
+    virtual void exec(ThreadRegistry& threadRegistry, NamedThread& thread) = 0;
   };
 
   // The execution thread type that is managed with this registry
@@ -84,15 +84,16 @@ public:
         // In the non error case this is the only occation to get here
         registry->execCallback(*this);
       }
-
-      registry->deregisterThread(*this);
     }
 
     virtual void wakeUp() = 0;
     virtual void exec() = 0;
 
-    void stopThread()
-    { _done = true; }
+    void stopThread(ThreadRegistry& registry)
+    {
+      _done = true;
+      registry.deregisterThread(*this);
+    }
 
     const std::wstring& getName() const
     { return _name; }
@@ -159,8 +160,8 @@ public:
 
   class ThreadStopCallback : public ThreadProcedureCallback {
   public:
-    virtual void exec(NamedThread& thread)
-    { thread.stopThread(); }
+    virtual void exec(ThreadRegistry& threadRegistry, NamedThread& thread)
+    { thread.stopThread(threadRegistry); }
   };
 
   void destroyThread(const std::wstring& name)
@@ -250,7 +251,7 @@ private:
     threadProcedureCallback.swap(_threadProcedureCallback);
     if (threadProcedureCallback.valid()) {
       ScopeUnlock scopeUnlock(_registerMutex);
-      threadProcedureCallback->exec(thread);
+      threadProcedureCallback->exec(*this, thread);
     }
     _condition.signal();
   }
