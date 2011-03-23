@@ -2553,11 +2553,7 @@ public:
     { }
     template<typename M>
     void operator()(M& message) const
-    {
-      Log(ServerMessage, Debug) << _serverMessageDispatcher.getServerPath()
-                                << ": Received " << message.getTypeName() << "!" << std::endl;
-      _serverMessageDispatcher.accept(_connectHandle, &message);
-    }
+    { _serverMessageDispatcher.accept(_connectHandle, &message); }
   private:
     ServerMessageDispatcher& _serverMessageDispatcher;
     ConnectHandle _connectHandle;
@@ -2565,6 +2561,7 @@ public:
 
   void dispatch(AbstractMessage& message, const ConnectHandle& connectHandle)
   {
+    Log(ServerMessage, Debug3) << getServerPath() << ": Received " << message << "!" << std::endl;
     FunctorMessageDispatcher<DispatchFunctor> dispatcher(DispatchFunctor(*this, connectHandle));
     message.dispatch(dispatcher);
   }

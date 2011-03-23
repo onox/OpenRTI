@@ -52,7 +52,7 @@ public:
   {
     if (!_connect.valid())
         throw RTIinternalError(L"Trying to send message to a closed MessageSender");
-    _stream->_stream << Clock::now() << ": out: " << message->getTypeName() << std::endl;
+    _stream->_stream << Clock::now() << ": out: " << *message << std::endl;
     _connect->send(message);
   }
   virtual void close()
@@ -77,7 +77,7 @@ public:
   virtual SharedPtr<AbstractMessage> receive(const Clock& timeout)
   {
     SharedPtr<AbstractMessage> message = _connect->receive(timeout);
-    _stream->_stream << Clock::now() << ": in:  " << message->getTypeName() << std::endl;
+    _stream->_stream << Clock::now() << ": in:  " << *message << std::endl;
     return message;
   }
 

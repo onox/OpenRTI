@@ -23,8 +23,10 @@
 
 #include "Message.h"
 
+#include <ostream>
 #include "AbstractMessage.h"
 #include "AbstractMessageDispatcher.h"
+#include "StringUtils.h"
 
 namespace OpenRTI {
 
@@ -40,6 +42,12 @@ const char*
 ConnectionLostMessage::getTypeName() const
 {
   return "ConnectionLostMessage";
+}
+
+void
+ConnectionLostMessage::out(std::ostream& os) const
+{
+  os << "ConnectionLostMessage " << *this;
 }
 
 void
@@ -70,6 +78,12 @@ CreateFederationExecutionRequestMessage::getTypeName() const
 }
 
 void
+CreateFederationExecutionRequestMessage::out(std::ostream& os) const
+{
+  os << "CreateFederationExecutionRequestMessage " << *this;
+}
+
+void
 CreateFederationExecutionRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -94,6 +108,12 @@ const char*
 CreateFederationExecutionResponseMessage::getTypeName() const
 {
   return "CreateFederationExecutionResponseMessage";
+}
+
+void
+CreateFederationExecutionResponseMessage::out(std::ostream& os) const
+{
+  os << "CreateFederationExecutionResponseMessage " << *this;
 }
 
 void
@@ -124,6 +144,12 @@ DestroyFederationExecutionRequestMessage::getTypeName() const
 }
 
 void
+DestroyFederationExecutionRequestMessage::out(std::ostream& os) const
+{
+  os << "DestroyFederationExecutionRequestMessage " << *this;
+}
+
+void
 DestroyFederationExecutionRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -148,6 +174,12 @@ const char*
 DestroyFederationExecutionResponseMessage::getTypeName() const
 {
   return "DestroyFederationExecutionResponseMessage";
+}
+
+void
+DestroyFederationExecutionResponseMessage::out(std::ostream& os) const
+{
+  os << "DestroyFederationExecutionResponseMessage " << *this;
 }
 
 void
@@ -178,6 +210,12 @@ EnumerateFederationExecutionsRequestMessage::getTypeName() const
 }
 
 void
+EnumerateFederationExecutionsRequestMessage::out(std::ostream& os) const
+{
+  os << "EnumerateFederationExecutionsRequestMessage " << *this;
+}
+
+void
 EnumerateFederationExecutionsRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -202,6 +240,12 @@ const char*
 EnumerateFederationExecutionsResponseMessage::getTypeName() const
 {
   return "EnumerateFederationExecutionsResponseMessage";
+}
+
+void
+EnumerateFederationExecutionsResponseMessage::out(std::ostream& os) const
+{
+  os << "EnumerateFederationExecutionsResponseMessage " << *this;
 }
 
 void
@@ -232,6 +276,12 @@ InsertFederationExecutionMessage::getTypeName() const
 }
 
 void
+InsertFederationExecutionMessage::out(std::ostream& os) const
+{
+  os << "InsertFederationExecutionMessage " << *this;
+}
+
+void
 InsertFederationExecutionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -256,6 +306,12 @@ const char*
 ShutdownFederationExecutionMessage::getTypeName() const
 {
   return "ShutdownFederationExecutionMessage";
+}
+
+void
+ShutdownFederationExecutionMessage::out(std::ostream& os) const
+{
+  os << "ShutdownFederationExecutionMessage " << *this;
 }
 
 void
@@ -286,6 +342,12 @@ EraseFederationExecutionMessage::getTypeName() const
 }
 
 void
+EraseFederationExecutionMessage::out(std::ostream& os) const
+{
+  os << "EraseFederationExecutionMessage " << *this;
+}
+
+void
 EraseFederationExecutionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -310,6 +372,12 @@ const char*
 ReleaseFederationHandleMessage::getTypeName() const
 {
   return "ReleaseFederationHandleMessage";
+}
+
+void
+ReleaseFederationHandleMessage::out(std::ostream& os) const
+{
+  os << "ReleaseFederationHandleMessage " << *this;
 }
 
 void
@@ -340,6 +408,12 @@ JoinFederationExecutionRequestMessage::getTypeName() const
 }
 
 void
+JoinFederationExecutionRequestMessage::out(std::ostream& os) const
+{
+  os << "JoinFederationExecutionRequestMessage " << *this;
+}
+
+void
 JoinFederationExecutionRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -364,6 +438,12 @@ const char*
 JoinFederationExecutionResponseMessage::getTypeName() const
 {
   return "JoinFederationExecutionResponseMessage";
+}
+
+void
+JoinFederationExecutionResponseMessage::out(std::ostream& os) const
+{
+  os << "JoinFederationExecutionResponseMessage " << *this;
 }
 
 void
@@ -394,6 +474,12 @@ ResignFederationExecutionRequestMessage::getTypeName() const
 }
 
 void
+ResignFederationExecutionRequestMessage::out(std::ostream& os) const
+{
+  os << "ResignFederationExecutionRequestMessage " << *this;
+}
+
+void
 ResignFederationExecutionRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -418,6 +504,12 @@ const char*
 JoinFederateNotifyMessage::getTypeName() const
 {
   return "JoinFederateNotifyMessage";
+}
+
+void
+JoinFederateNotifyMessage::out(std::ostream& os) const
+{
+  os << "JoinFederateNotifyMessage " << *this;
 }
 
 void
@@ -448,6 +540,12 @@ ResignFederateNotifyMessage::getTypeName() const
 }
 
 void
+ResignFederateNotifyMessage::out(std::ostream& os) const
+{
+  os << "ResignFederateNotifyMessage " << *this;
+}
+
+void
 ResignFederateNotifyMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -472,6 +570,12 @@ const char*
 RegisterFederationSynchronizationPointMessage::getTypeName() const
 {
   return "RegisterFederationSynchronizationPointMessage";
+}
+
+void
+RegisterFederationSynchronizationPointMessage::out(std::ostream& os) const
+{
+  os << "RegisterFederationSynchronizationPointMessage " << *this;
 }
 
 void
@@ -502,6 +606,12 @@ RegisterFederationSynchronizationPointResponseMessage::getTypeName() const
 }
 
 void
+RegisterFederationSynchronizationPointResponseMessage::out(std::ostream& os) const
+{
+  os << "RegisterFederationSynchronizationPointResponseMessage " << *this;
+}
+
+void
 RegisterFederationSynchronizationPointResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -526,6 +636,12 @@ const char*
 AnnounceSynchronizationPointMessage::getTypeName() const
 {
   return "AnnounceSynchronizationPointMessage";
+}
+
+void
+AnnounceSynchronizationPointMessage::out(std::ostream& os) const
+{
+  os << "AnnounceSynchronizationPointMessage " << *this;
 }
 
 void
@@ -556,6 +672,12 @@ SynchronizationPointAchievedMessage::getTypeName() const
 }
 
 void
+SynchronizationPointAchievedMessage::out(std::ostream& os) const
+{
+  os << "SynchronizationPointAchievedMessage " << *this;
+}
+
+void
 SynchronizationPointAchievedMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -580,6 +702,12 @@ const char*
 FederationSynchronizedMessage::getTypeName() const
 {
   return "FederationSynchronizedMessage";
+}
+
+void
+FederationSynchronizedMessage::out(std::ostream& os) const
+{
+  os << "FederationSynchronizedMessage " << *this;
 }
 
 void
@@ -610,6 +738,12 @@ EnableTimeRegulationRequestMessage::getTypeName() const
 }
 
 void
+EnableTimeRegulationRequestMessage::out(std::ostream& os) const
+{
+  os << "EnableTimeRegulationRequestMessage " << *this;
+}
+
+void
 EnableTimeRegulationRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -634,6 +768,12 @@ const char*
 EnableTimeRegulationResponseMessage::getTypeName() const
 {
   return "EnableTimeRegulationResponseMessage";
+}
+
+void
+EnableTimeRegulationResponseMessage::out(std::ostream& os) const
+{
+  os << "EnableTimeRegulationResponseMessage " << *this;
 }
 
 void
@@ -664,6 +804,12 @@ DisableTimeRegulationRequestMessage::getTypeName() const
 }
 
 void
+DisableTimeRegulationRequestMessage::out(std::ostream& os) const
+{
+  os << "DisableTimeRegulationRequestMessage " << *this;
+}
+
+void
 DisableTimeRegulationRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -688,6 +834,12 @@ const char*
 CommitLowerBoundTimeStampMessage::getTypeName() const
 {
   return "CommitLowerBoundTimeStampMessage";
+}
+
+void
+CommitLowerBoundTimeStampMessage::out(std::ostream& os) const
+{
+  os << "CommitLowerBoundTimeStampMessage " << *this;
 }
 
 void
@@ -718,6 +870,12 @@ TimeConstrainedEnabledMessage::getTypeName() const
 }
 
 void
+TimeConstrainedEnabledMessage::out(std::ostream& os) const
+{
+  os << "TimeConstrainedEnabledMessage " << *this;
+}
+
+void
 TimeConstrainedEnabledMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -742,6 +900,12 @@ const char*
 TimeRegulationEnabledMessage::getTypeName() const
 {
   return "TimeRegulationEnabledMessage";
+}
+
+void
+TimeRegulationEnabledMessage::out(std::ostream& os) const
+{
+  os << "TimeRegulationEnabledMessage " << *this;
 }
 
 void
@@ -772,6 +936,12 @@ TimeAdvanceGrantedMessage::getTypeName() const
 }
 
 void
+TimeAdvanceGrantedMessage::out(std::ostream& os) const
+{
+  os << "TimeAdvanceGrantedMessage " << *this;
+}
+
+void
 TimeAdvanceGrantedMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -796,6 +966,12 @@ const char*
 ChangeInteractionClassPublicationMessage::getTypeName() const
 {
   return "ChangeInteractionClassPublicationMessage";
+}
+
+void
+ChangeInteractionClassPublicationMessage::out(std::ostream& os) const
+{
+  os << "ChangeInteractionClassPublicationMessage " << *this;
 }
 
 void
@@ -826,6 +1002,12 @@ ChangeObjectClassPublicationMessage::getTypeName() const
 }
 
 void
+ChangeObjectClassPublicationMessage::out(std::ostream& os) const
+{
+  os << "ChangeObjectClassPublicationMessage " << *this;
+}
+
+void
 ChangeObjectClassPublicationMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -850,6 +1032,12 @@ const char*
 ChangeInteractionClassSubscriptionMessage::getTypeName() const
 {
   return "ChangeInteractionClassSubscriptionMessage";
+}
+
+void
+ChangeInteractionClassSubscriptionMessage::out(std::ostream& os) const
+{
+  os << "ChangeInteractionClassSubscriptionMessage " << *this;
 }
 
 void
@@ -880,6 +1068,12 @@ ChangeObjectClassSubscriptionMessage::getTypeName() const
 }
 
 void
+ChangeObjectClassSubscriptionMessage::out(std::ostream& os) const
+{
+  os << "ChangeObjectClassSubscriptionMessage " << *this;
+}
+
+void
 ChangeObjectClassSubscriptionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -904,6 +1098,12 @@ const char*
 RegistrationForObjectClassMessage::getTypeName() const
 {
   return "RegistrationForObjectClassMessage";
+}
+
+void
+RegistrationForObjectClassMessage::out(std::ostream& os) const
+{
+  os << "RegistrationForObjectClassMessage " << *this;
 }
 
 void
@@ -934,6 +1134,12 @@ TurnInteractionsOnMessage::getTypeName() const
 }
 
 void
+TurnInteractionsOnMessage::out(std::ostream& os) const
+{
+  os << "TurnInteractionsOnMessage " << *this;
+}
+
+void
 TurnInteractionsOnMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -958,6 +1164,12 @@ const char*
 InteractionMessage::getTypeName() const
 {
   return "InteractionMessage";
+}
+
+void
+InteractionMessage::out(std::ostream& os) const
+{
+  os << "InteractionMessage " << *this;
 }
 
 void
@@ -988,6 +1200,12 @@ TimeStampedInteractionMessage::getTypeName() const
 }
 
 void
+TimeStampedInteractionMessage::out(std::ostream& os) const
+{
+  os << "TimeStampedInteractionMessage " << *this;
+}
+
+void
 TimeStampedInteractionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -1012,6 +1230,12 @@ const char*
 ObjectInstanceHandlesRequestMessage::getTypeName() const
 {
   return "ObjectInstanceHandlesRequestMessage";
+}
+
+void
+ObjectInstanceHandlesRequestMessage::out(std::ostream& os) const
+{
+  os << "ObjectInstanceHandlesRequestMessage " << *this;
 }
 
 void
@@ -1042,6 +1266,12 @@ ObjectInstanceHandlesResponseMessage::getTypeName() const
 }
 
 void
+ObjectInstanceHandlesResponseMessage::out(std::ostream& os) const
+{
+  os << "ObjectInstanceHandlesResponseMessage " << *this;
+}
+
+void
 ObjectInstanceHandlesResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -1066,6 +1296,12 @@ const char*
 ReleaseMultipleObjectInstanceNameHandlePairsMessage::getTypeName() const
 {
   return "ReleaseMultipleObjectInstanceNameHandlePairsMessage";
+}
+
+void
+ReleaseMultipleObjectInstanceNameHandlePairsMessage::out(std::ostream& os) const
+{
+  os << "ReleaseMultipleObjectInstanceNameHandlePairsMessage " << *this;
 }
 
 void
@@ -1096,6 +1332,12 @@ ReserveObjectInstanceNameRequestMessage::getTypeName() const
 }
 
 void
+ReserveObjectInstanceNameRequestMessage::out(std::ostream& os) const
+{
+  os << "ReserveObjectInstanceNameRequestMessage " << *this;
+}
+
+void
 ReserveObjectInstanceNameRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -1120,6 +1362,12 @@ const char*
 ReserveObjectInstanceNameResponseMessage::getTypeName() const
 {
   return "ReserveObjectInstanceNameResponseMessage";
+}
+
+void
+ReserveObjectInstanceNameResponseMessage::out(std::ostream& os) const
+{
+  os << "ReserveObjectInstanceNameResponseMessage " << *this;
 }
 
 void
@@ -1150,6 +1398,12 @@ ReserveMultipleObjectInstanceNameRequestMessage::getTypeName() const
 }
 
 void
+ReserveMultipleObjectInstanceNameRequestMessage::out(std::ostream& os) const
+{
+  os << "ReserveMultipleObjectInstanceNameRequestMessage " << *this;
+}
+
+void
 ReserveMultipleObjectInstanceNameRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -1174,6 +1428,12 @@ const char*
 ReserveMultipleObjectInstanceNameResponseMessage::getTypeName() const
 {
   return "ReserveMultipleObjectInstanceNameResponseMessage";
+}
+
+void
+ReserveMultipleObjectInstanceNameResponseMessage::out(std::ostream& os) const
+{
+  os << "ReserveMultipleObjectInstanceNameResponseMessage " << *this;
 }
 
 void
@@ -1204,6 +1464,12 @@ InsertObjectInstanceMessage::getTypeName() const
 }
 
 void
+InsertObjectInstanceMessage::out(std::ostream& os) const
+{
+  os << "InsertObjectInstanceMessage " << *this;
+}
+
+void
 InsertObjectInstanceMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -1228,6 +1494,12 @@ const char*
 DeleteObjectInstanceMessage::getTypeName() const
 {
   return "DeleteObjectInstanceMessage";
+}
+
+void
+DeleteObjectInstanceMessage::out(std::ostream& os) const
+{
+  os << "DeleteObjectInstanceMessage " << *this;
 }
 
 void
@@ -1258,6 +1530,12 @@ TimeStampedDeleteObjectInstanceMessage::getTypeName() const
 }
 
 void
+TimeStampedDeleteObjectInstanceMessage::out(std::ostream& os) const
+{
+  os << "TimeStampedDeleteObjectInstanceMessage " << *this;
+}
+
+void
 TimeStampedDeleteObjectInstanceMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -1282,6 +1560,12 @@ const char*
 AttributeUpdateMessage::getTypeName() const
 {
   return "AttributeUpdateMessage";
+}
+
+void
+AttributeUpdateMessage::out(std::ostream& os) const
+{
+  os << "AttributeUpdateMessage " << *this;
 }
 
 void
@@ -1312,6 +1596,12 @@ TimeStampedAttributeUpdateMessage::getTypeName() const
 }
 
 void
+TimeStampedAttributeUpdateMessage::out(std::ostream& os) const
+{
+  os << "TimeStampedAttributeUpdateMessage " << *this;
+}
+
+void
 TimeStampedAttributeUpdateMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -1339,6 +1629,12 @@ RequestAttributeUpdateMessage::getTypeName() const
 }
 
 void
+RequestAttributeUpdateMessage::out(std::ostream& os) const
+{
+  os << "RequestAttributeUpdateMessage " << *this;
+}
+
+void
 RequestAttributeUpdateMessage::dispatch(AbstractMessageDispatcher& dispatcher)
 {
   dispatcher.accept(*this);
@@ -1363,6 +1659,12 @@ const char*
 RequestClassAttributeUpdateMessage::getTypeName() const
 {
   return "RequestClassAttributeUpdateMessage";
+}
+
+void
+RequestClassAttributeUpdateMessage::out(std::ostream& os) const
+{
+  os << "RequestClassAttributeUpdateMessage " << *this;
 }
 
 void

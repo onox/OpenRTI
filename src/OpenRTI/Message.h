@@ -1962,6 +1962,7 @@ public:
   virtual ~ConnectionLostMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -1982,6 +1983,7 @@ public:
   virtual ~CreateFederationExecutionRequestMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2026,6 +2028,7 @@ public:
   virtual ~CreateFederationExecutionResponseMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2054,6 +2057,7 @@ public:
   virtual ~DestroyFederationExecutionRequestMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2074,6 +2078,7 @@ public:
   virtual ~DestroyFederationExecutionResponseMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2094,6 +2099,7 @@ public:
   virtual ~EnumerateFederationExecutionsRequestMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2106,6 +2112,7 @@ public:
   virtual ~EnumerateFederationExecutionsResponseMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2126,6 +2133,7 @@ public:
   virtual ~InsertFederationExecutionMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2178,6 +2186,7 @@ public:
   virtual ~ShutdownFederationExecutionMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2198,6 +2207,7 @@ public:
   virtual ~EraseFederationExecutionMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2218,6 +2228,7 @@ public:
   virtual ~ReleaseFederationHandleMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2238,6 +2249,7 @@ public:
   virtual ~JoinFederationExecutionRequestMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2290,6 +2302,7 @@ public:
   virtual ~JoinFederationExecutionResponseMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2358,6 +2371,7 @@ public:
   virtual ~ResignFederationExecutionRequestMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2386,6 +2400,7 @@ public:
   virtual ~JoinFederateNotifyMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2430,6 +2445,7 @@ public:
   virtual ~ResignFederateNotifyMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2458,6 +2474,7 @@ public:
   virtual ~RegisterFederationSynchronizationPointMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2510,6 +2527,7 @@ public:
   virtual ~RegisterFederationSynchronizationPointResponseMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2554,6 +2572,7 @@ public:
   virtual ~AnnounceSynchronizationPointMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2606,6 +2625,7 @@ public:
   virtual ~SynchronizationPointAchievedMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2642,6 +2662,7 @@ public:
   virtual ~FederationSynchronizedMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2678,6 +2699,7 @@ public:
   virtual ~EnableTimeRegulationRequestMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2714,6 +2736,7 @@ public:
   virtual ~EnableTimeRegulationResponseMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2766,6 +2789,7 @@ public:
   virtual ~DisableTimeRegulationRequestMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2794,6 +2818,7 @@ public:
   virtual ~CommitLowerBoundTimeStampMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2830,6 +2855,7 @@ public:
   virtual ~TimeConstrainedEnabledMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2850,6 +2876,7 @@ public:
   virtual ~TimeRegulationEnabledMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2870,6 +2897,7 @@ public:
   virtual ~TimeAdvanceGrantedMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2890,6 +2918,7 @@ public:
   virtual ~ChangeInteractionClassPublicationMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2926,6 +2955,7 @@ public:
   virtual ~ChangeObjectClassPublicationMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -2970,6 +3000,7 @@ public:
   virtual ~ChangeInteractionClassSubscriptionMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3006,6 +3037,7 @@ public:
   virtual ~ChangeObjectClassSubscriptionMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3050,6 +3082,7 @@ public:
   virtual ~RegistrationForObjectClassMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3078,6 +3111,7 @@ public:
   virtual ~TurnInteractionsOnMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3106,6 +3140,7 @@ public:
   virtual ~InteractionMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3158,6 +3193,7 @@ public:
   virtual ~TimeStampedInteractionMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3226,6 +3262,7 @@ public:
   virtual ~ObjectInstanceHandlesRequestMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3262,6 +3299,7 @@ public:
   virtual ~ObjectInstanceHandlesResponseMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3298,6 +3336,7 @@ public:
   virtual ~ReleaseMultipleObjectInstanceNameHandlePairsMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3326,6 +3365,7 @@ public:
   virtual ~ReserveObjectInstanceNameRequestMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3362,6 +3402,7 @@ public:
   virtual ~ReserveObjectInstanceNameResponseMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3406,6 +3447,7 @@ public:
   virtual ~ReserveMultipleObjectInstanceNameRequestMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3442,6 +3484,7 @@ public:
   virtual ~ReserveMultipleObjectInstanceNameResponseMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3486,6 +3529,7 @@ public:
   virtual ~InsertObjectInstanceMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3538,6 +3582,7 @@ public:
   virtual ~DeleteObjectInstanceMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3574,6 +3619,7 @@ public:
   virtual ~TimeStampedDeleteObjectInstanceMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3626,6 +3672,7 @@ public:
   virtual ~AttributeUpdateMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3678,6 +3725,7 @@ public:
   virtual ~TimeStampedAttributeUpdateMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3746,6 +3794,7 @@ public:
   virtual ~RequestAttributeUpdateMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3790,6 +3839,7 @@ public:
   virtual ~RequestClassAttributeUpdateMessage();
 
   virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
@@ -3827,6 +3877,1976 @@ private:
   AttributeHandleVector _attributeHandles;
   VariableLengthData _tag;
 };
+
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const CallbackModel& value)
+{
+  switch (value) {
+  case HLA_IMMEDIATE: os << "HLA_IMMEDIATE"; break;
+  case HLA_EVOKED: os << "HLA_EVOKED"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const OrderType& value)
+{
+  switch (value) {
+  case RECEIVE: os << "RECEIVE"; break;
+  case TIMESTAMP: os << "TIMESTAMP"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const TransportationType& value)
+{
+  switch (value) {
+  case RELIABLE: os << "RELIABLE"; break;
+  case BEST_EFFORT: os << "BEST_EFFORT"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const SubscriptionType& value)
+{
+  switch (value) {
+  case Unsubscribed: os << "Unsubscribed"; break;
+  case SubscribedPassive: os << "SubscribedPassive"; break;
+  case SubscribedActive: os << "SubscribedActive"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const PublicationType& value)
+{
+  switch (value) {
+  case Unpublished: os << "Unpublished"; break;
+  case Published: os << "Published"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ResignAction& value)
+{
+  switch (value) {
+  case UNCONDITIONALLY_DIVEST_ATTRIBUTES: os << "UNCONDITIONALLY_DIVEST_ATTRIBUTES"; break;
+  case DELETE_OBJECTS: os << "DELETE_OBJECTS"; break;
+  case CANCEL_PENDING_OWNERSHIP_ACQUISITIONS: os << "CANCEL_PENDING_OWNERSHIP_ACQUISITIONS"; break;
+  case DELETE_OBJECTS_THEN_DIVEST: os << "DELETE_OBJECTS_THEN_DIVEST"; break;
+  case CANCEL_THEN_DELETE_THEN_DIVEST: os << "CANCEL_THEN_DELETE_THEN_DIVEST"; break;
+  case NO_ACTION: os << "NO_ACTION"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RestoreFailureReason& value)
+{
+  switch (value) {
+  case RTI_UNABLE_TO_RESTORE: os << "RTI_UNABLE_TO_RESTORE"; break;
+  case FEDERATE_REPORTED_FAILURE_DURING_RESTORE: os << "FEDERATE_REPORTED_FAILURE_DURING_RESTORE"; break;
+  case FEDERATE_RESIGNED_DURING_RESTORE: os << "FEDERATE_RESIGNED_DURING_RESTORE"; break;
+  case RTI_DETECTED_FAILURE_DURING_RESTORE: os << "RTI_DETECTED_FAILURE_DURING_RESTORE"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RestoreStatus& value)
+{
+  switch (value) {
+  case NO_RESTORE_IN_PROGRESS: os << "NO_RESTORE_IN_PROGRESS"; break;
+  case FEDERATE_RESTORE_REQUEST_PENDING: os << "FEDERATE_RESTORE_REQUEST_PENDING"; break;
+  case FEDERATE_WAITING_FOR_RESTORE_TO_BEGIN: os << "FEDERATE_WAITING_FOR_RESTORE_TO_BEGIN"; break;
+  case FEDERATE_PREPARED_TO_RESTORE: os << "FEDERATE_PREPARED_TO_RESTORE"; break;
+  case FEDERATE_RESTORING: os << "FEDERATE_RESTORING"; break;
+  case FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE: os << "FEDERATE_WAITING_FOR_FEDERATION_TO_RESTORE"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const SaveFailureReason& value)
+{
+  switch (value) {
+  case RTI_UNABLE_TO_SAVE: os << "RTI_UNABLE_TO_SAVE"; break;
+  case FEDERATE_REPORTED_FAILURE_DURING_SAVE: os << "FEDERATE_REPORTED_FAILURE_DURING_SAVE"; break;
+  case FEDERATE_RESIGNED_DURING_SAVE: os << "FEDERATE_RESIGNED_DURING_SAVE"; break;
+  case RTI_DETECTED_FAILURE_DURING_SAVE: os << "RTI_DETECTED_FAILURE_DURING_SAVE"; break;
+  case SAVE_TIME_CANNOT_BE_HONORED: os << "SAVE_TIME_CANNOT_BE_HONORED"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const SaveStatus& value)
+{
+  switch (value) {
+  case NO_SAVE_IN_PROGRESS: os << "NO_SAVE_IN_PROGRESS"; break;
+  case FEDERATE_INSTRUCTED_TO_SAVE: os << "FEDERATE_INSTRUCTED_TO_SAVE"; break;
+  case FEDERATE_SAVING: os << "FEDERATE_SAVING"; break;
+  case FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE: os << "FEDERATE_WAITING_FOR_FEDERATION_TO_SAVE"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ServiceGroupIndicator& value)
+{
+  switch (value) {
+  case FEDERATION_MANAGEMENT: os << "FEDERATION_MANAGEMENT"; break;
+  case DECLARATION_MANAGEMENT: os << "DECLARATION_MANAGEMENT"; break;
+  case OBJECT_MANAGEMENT: os << "OBJECT_MANAGEMENT"; break;
+  case OWNERSHIP_MANAGEMENT: os << "OWNERSHIP_MANAGEMENT"; break;
+  case TIME_MANAGEMENT: os << "TIME_MANAGEMENT"; break;
+  case DATA_DISTRIBUTION_MANAGEMENT: os << "DATA_DISTRIBUTION_MANAGEMENT"; break;
+  case SUPPORT_SERVICES: os << "SUPPORT_SERVICES"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const AttributeHandleVector& value)
+{
+  os << "{ ";
+  AttributeHandleVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FederateHandleSet& value)
+{
+  os << "{ ";
+  FederateHandleSet::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FederateHandleVector& value)
+{
+  os << "{ ";
+  FederateHandleVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ParameterHandleVector& value)
+{
+  os << "{ ";
+  ParameterHandleVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const DimensionHandleVector& value)
+{
+  os << "{ ";
+  DimensionHandleVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const DimensionHandleSet& value)
+{
+  os << "{ ";
+  DimensionHandleSet::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ObjectInstanceHandleVector& value)
+{
+  os << "{ ";
+  ObjectInstanceHandleVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModuleHandleVector& value)
+{
+  os << "{ ";
+  FOMModuleHandleVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModuleHandleSet& value)
+{
+  os << "{ ";
+  FOMModuleHandleSet::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const StringVector& value)
+{
+  os << "{ ";
+  StringVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const StringSet& value)
+{
+  os << "{ ";
+  StringSet::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RangeBoundsValue& value)
+{
+  os << "{ ";
+  os << "lowerBound: " << value.getLowerBound();
+  os << ", ";
+  os << "upperBound: " << value.getUpperBound();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const DimensionHandleRangeBoundsValuePair& value)
+{
+  os << "{ ";
+  os << "first: " << value.first << ", ";
+  os << "second: " << value.second;
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RegionValue& value)
+{
+  os << "{ ";
+  RegionValue::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RegionValueList& value)
+{
+  os << "{ ";
+  RegionValueList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const InteractionClassHandleRegionValueListPair& value)
+{
+  os << "{ ";
+  os << "first: " << value.first << ", ";
+  os << "second: " << value.second;
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const AttributeHandleRegionValueListPair& value)
+{
+  os << "{ ";
+  os << "first: " << value.first << ", ";
+  os << "second: " << value.second;
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const AttributeState& value)
+{
+  os << "{ ";
+  os << "attributeHandle: " << value.getAttributeHandle();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const AttributeStateVector& value)
+{
+  os << "{ ";
+  AttributeStateVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ParameterValue& value)
+{
+  os << "{ ";
+  os << "parameterHandle: " << value.getParameterHandle();
+  os << ", ";
+  os << "value: " << value.getValue();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ParameterValueVector& value)
+{
+  os << "{ ";
+  ParameterValueVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const AttributeValue& value)
+{
+  os << "{ ";
+  os << "attributeHandle: " << value.getAttributeHandle();
+  os << ", ";
+  os << "value: " << value.getValue();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const AttributeValueVector& value)
+{
+  os << "{ ";
+  AttributeValueVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeStamp& value)
+{
+  os << "{ ";
+  os << "logicalTime: " << value.getLogicalTime();
+  os << ", ";
+  os << "zeroLookahead: " << value.getZeroLookahead();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FederateHandleTimeStampMap& value)
+{
+  os << "{ ";
+  FederateHandleTimeStampMap::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << i->first << ": " << i->second;
+    while (++i != value.end()) {
+      os << ", " << i->first << ": " << i->second;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FederateHandleSaveStatusPair& value)
+{
+  os << "{ ";
+  os << "first: " << value.first << ", ";
+  os << "second: " << value.second;
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FederateHandleSaveStatusPairVector& value)
+{
+  os << "{ ";
+  FederateHandleSaveStatusPairVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FederateHandleRestoreStatusPair& value)
+{
+  os << "{ ";
+  os << "first: " << value.first << ", ";
+  os << "second: " << value.second;
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FederateHandleRestoreStatusPairVector& value)
+{
+  os << "{ ";
+  FederateHandleRestoreStatusPairVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FederationExecutionInformation& value)
+{
+  os << "{ ";
+  os << "federationExecutionName: " << value.getFederationExecutionName();
+  os << ", ";
+  os << "logicalTimeFactoryName: " << value.getLogicalTimeFactoryName();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FederationExecutionInformationVector& value)
+{
+  os << "{ ";
+  FederationExecutionInformationVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ObjectInstanceHandleNamePair& value)
+{
+  os << "{ ";
+  os << "first: " << value.first << ", ";
+  os << "second: " << value.second;
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ObjectInstanceHandleNamePairVector& value)
+{
+  os << "{ ";
+  ObjectInstanceHandleNamePairVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const CreateFederationExecutionResponseType& value)
+{
+  switch (value) {
+  case CreateFederationExecutionResponseSuccess: os << "CreateFederationExecutionResponseSuccess"; break;
+  case CreateFederationExecutionResponseFederationExecutionAlreadyExists: os << "CreateFederationExecutionResponseFederationExecutionAlreadyExists"; break;
+  case CreateFederationExecutionResponseCouldNotOpenFDD: os << "CreateFederationExecutionResponseCouldNotOpenFDD"; break;
+  case CreateFederationExecutionResponseErrorReadingFDD: os << "CreateFederationExecutionResponseErrorReadingFDD"; break;
+  case CreateFederationExecutionResponseCouldNotCreateLogicalTimeFactory: os << "CreateFederationExecutionResponseCouldNotCreateLogicalTimeFactory"; break;
+  case CreateFederationExecutionResponseRTIinternalError: os << "CreateFederationExecutionResponseRTIinternalError"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const DestroyFederationExecutionResponseType& value)
+{
+  switch (value) {
+  case DestroyFederationExecutionResponseSuccess: os << "DestroyFederationExecutionResponseSuccess"; break;
+  case DestroyFederationExecutionResponseFederatesCurrentlyJoined: os << "DestroyFederationExecutionResponseFederatesCurrentlyJoined"; break;
+  case DestroyFederationExecutionResponseFederationExecutionDoesNotExist: os << "DestroyFederationExecutionResponseFederationExecutionDoesNotExist"; break;
+  case DestroyFederationExecutionResponseRTIinternalError: os << "DestroyFederationExecutionResponseRTIinternalError"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const JoinFederationExecutionResponseType& value)
+{
+  switch (value) {
+  case JoinFederationExecutionResponseSuccess: os << "JoinFederationExecutionResponseSuccess"; break;
+  case JoinFederationExecutionResponseFederateNameAlreadyInUse: os << "JoinFederationExecutionResponseFederateNameAlreadyInUse"; break;
+  case JoinFederationExecutionResponseFederationExecutionDoesNotExist: os << "JoinFederationExecutionResponseFederationExecutionDoesNotExist"; break;
+  case JoinFederationExecutionResponseSaveInProgress: os << "JoinFederationExecutionResponseSaveInProgress"; break;
+  case JoinFederationExecutionResponseRestoreInProgress: os << "JoinFederationExecutionResponseRestoreInProgress"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RegisterFederationSynchronizationPointResponseType& value)
+{
+  switch (value) {
+  case RegisterFederationSynchronizationPointResponseSuccess: os << "RegisterFederationSynchronizationPointResponseSuccess"; break;
+  case RegisterFederationSynchronizationPointResponseLabelNotUnique: os << "RegisterFederationSynchronizationPointResponseLabelNotUnique"; break;
+  case RegisterFederationSynchronizationPointResponseMemberNotJoined: os << "RegisterFederationSynchronizationPointResponseMemberNotJoined"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ConfigurationParameterMap& value)
+{
+  os << "{ ";
+  ConfigurationParameterMap::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << i->first << ": " << i->second;
+    while (++i != value.end()) {
+      os << ", " << i->first << ": " << i->second;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringTransportationType& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringTransportationTypeList& value)
+{
+  os << "{ ";
+  FOMStringTransportationTypeList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringDimension& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "upperBound: " << value.getUpperBound();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringDimensionList& value)
+{
+  os << "{ ";
+  FOMStringDimensionList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringRoutingSpace& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "dimensionSet: " << value.getDimensionSet();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringRoutingSpaceList& value)
+{
+  os << "{ ";
+  FOMStringRoutingSpaceList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringParameter& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringParameterList& value)
+{
+  os << "{ ";
+  FOMStringParameterList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringInteractionClass& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "parentName: " << value.getParentName();
+  os << ", ";
+  os << "orderType: " << value.getOrderType();
+  os << ", ";
+  os << "transportationType: " << value.getTransportationType();
+  os << ", ";
+  os << "routingSpace: " << value.getRoutingSpace();
+  os << ", ";
+  os << "dimensionSet: " << value.getDimensionSet();
+  os << ", ";
+  os << "parameterList: " << value.getParameterList();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringInteractionClassList& value)
+{
+  os << "{ ";
+  FOMStringInteractionClassList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringAttribute& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "orderType: " << value.getOrderType();
+  os << ", ";
+  os << "transportationType: " << value.getTransportationType();
+  os << ", ";
+  os << "routingSpace: " << value.getRoutingSpace();
+  os << ", ";
+  os << "dimensionSet: " << value.getDimensionSet();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringAttributeList& value)
+{
+  os << "{ ";
+  FOMStringAttributeList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringObjectClass& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "parentName: " << value.getParentName();
+  os << ", ";
+  os << "attributeList: " << value.getAttributeList();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringObjectClassList& value)
+{
+  os << "{ ";
+  FOMStringObjectClassList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringModule& value)
+{
+  os << "{ ";
+  os << "transportationTypeList: " << value.getTransportationTypeList();
+  os << ", ";
+  os << "dimensionList: " << value.getDimensionList();
+  os << ", ";
+  os << "routingSpaceList: " << value.getRoutingSpaceList();
+  os << ", ";
+  os << "interactionClassList: " << value.getInteractionClassList();
+  os << ", ";
+  os << "objectClassList: " << value.getObjectClassList();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringModuleList& value)
+{
+  os << "{ ";
+  FOMStringModuleList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMTransportationType& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "transportationType: " << value.getTransportationType();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMTransportationTypeList& value)
+{
+  os << "{ ";
+  FOMTransportationTypeList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMTransportationTypeMap& value)
+{
+  os << "{ ";
+  FOMTransportationTypeMap::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << i->first << ": " << i->second;
+    while (++i != value.end()) {
+      os << ", " << i->first << ": " << i->second;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMDimension& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "dimensionHandle: " << value.getDimensionHandle();
+  os << ", ";
+  os << "upperBound: " << value.getUpperBound();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMDimensionList& value)
+{
+  os << "{ ";
+  FOMDimensionList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMDimensionMap& value)
+{
+  os << "{ ";
+  FOMDimensionMap::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << i->first << ": " << i->second;
+    while (++i != value.end()) {
+      os << ", " << i->first << ": " << i->second;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMRoutingSpace& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "spaceHandle: " << value.getSpaceHandle();
+  os << ", ";
+  os << "dimensionHandleSet: " << value.getDimensionHandleSet();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMRoutingSpaceList& value)
+{
+  os << "{ ";
+  FOMRoutingSpaceList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMRoutingSpaceMap& value)
+{
+  os << "{ ";
+  FOMRoutingSpaceMap::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << i->first << ": " << i->second;
+    while (++i != value.end()) {
+      os << ", " << i->first << ": " << i->second;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMParameter& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "parameterHandle: " << value.getParameterHandle();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMParameterList& value)
+{
+  os << "{ ";
+  FOMParameterList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMParameterMap& value)
+{
+  os << "{ ";
+  FOMParameterMap::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << i->first << ": " << i->second;
+    while (++i != value.end()) {
+      os << ", " << i->first << ": " << i->second;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMInteractionClass& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "interactionClassHandle: " << value.getInteractionClassHandle();
+  os << ", ";
+  os << "parentInteractionClassHandle: " << value.getParentInteractionClassHandle();
+  os << ", ";
+  os << "orderType: " << value.getOrderType();
+  os << ", ";
+  os << "transportationType: " << value.getTransportationType();
+  os << ", ";
+  os << "dimensionHandleSet: " << value.getDimensionHandleSet();
+  os << ", ";
+  os << "parameterList: " << value.getParameterList();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMInteractionClassList& value)
+{
+  os << "{ ";
+  FOMInteractionClassList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMAttribute& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "attributeHandle: " << value.getAttributeHandle();
+  os << ", ";
+  os << "orderType: " << value.getOrderType();
+  os << ", ";
+  os << "transportationType: " << value.getTransportationType();
+  os << ", ";
+  os << "dimensionHandleSet: " << value.getDimensionHandleSet();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMAttributeList& value)
+{
+  os << "{ ";
+  FOMAttributeList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMObjectClass& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "objectClassHandle: " << value.getObjectClassHandle();
+  os << ", ";
+  os << "parentObjectClassHandle: " << value.getParentObjectClassHandle();
+  os << ", ";
+  os << "attributeList: " << value.getAttributeList();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMObjectClassList& value)
+{
+  os << "{ ";
+  FOMObjectClassList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModule& value)
+{
+  os << "{ ";
+  os << "fOMModuleHandle: " << value.getFOMModuleHandle();
+  os << ", ";
+  os << "requiredFOMModuleHandleSet: " << value.getRequiredFOMModuleHandleSet();
+  os << ", ";
+  os << "transportationTypeList: " << value.getTransportationTypeList();
+  os << ", ";
+  os << "dimensionList: " << value.getDimensionList();
+  os << ", ";
+  os << "routingSpaceList: " << value.getRoutingSpaceList();
+  os << ", ";
+  os << "interactionClassList: " << value.getInteractionClassList();
+  os << ", ";
+  os << "objectClassList: " << value.getObjectClassList();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModuleList& value)
+{
+  os << "{ ";
+  FOMModuleList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ConnectionLostMessage& value)
+{
+  os << "{ ";
+  os << "faultDescription: " << value.getFaultDescription();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const CreateFederationExecutionRequestMessage& value)
+{
+  os << "{ ";
+  os << "federationExecution: " << value.getFederationExecution();
+  os << ", ";
+  os << "logicalTimeFactoryName: " << value.getLogicalTimeFactoryName();
+  os << ", ";
+  os << "fOMModuleFileList: " << value.getFOMModuleFileList();
+  os << ", ";
+  os << "fOMStringModuleList: " << value.getFOMStringModuleList();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const CreateFederationExecutionResponseMessage& value)
+{
+  os << "{ ";
+  os << "createFederationExecutionResponseType: " << value.getCreateFederationExecutionResponseType();
+  os << ", ";
+  os << "exceptionString: " << value.getExceptionString();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const DestroyFederationExecutionRequestMessage& value)
+{
+  os << "{ ";
+  os << "federationExecution: " << value.getFederationExecution();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const DestroyFederationExecutionResponseMessage& value)
+{
+  os << "{ ";
+  os << "destroyFederationExecutionResponseType: " << value.getDestroyFederationExecutionResponseType();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const EnumerateFederationExecutionsRequestMessage& value)
+{
+  os << "{ ";
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const EnumerateFederationExecutionsResponseMessage& value)
+{
+  os << "{ ";
+  os << "federationExecutionInformationVector: " << value.getFederationExecutionInformationVector();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const InsertFederationExecutionMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federationName: " << value.getFederationName();
+  os << ", ";
+  os << "logicalTimeFactoryName: " << value.getLogicalTimeFactoryName();
+  os << ", ";
+  os << "configurationParameterMap: " << value.getConfigurationParameterMap();
+  os << ", ";
+  os << "fOMModuleList: " << value.getFOMModuleList();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ShutdownFederationExecutionMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const EraseFederationExecutionMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ReleaseFederationHandleMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const JoinFederationExecutionRequestMessage& value)
+{
+  os << "{ ";
+  os << "federationExecution: " << value.getFederationExecution();
+  os << ", ";
+  os << "federateType: " << value.getFederateType();
+  os << ", ";
+  os << "federateName: " << value.getFederateName();
+  os << ", ";
+  os << "fOMStringModuleList: " << value.getFOMStringModuleList();
+  os << ", ";
+  os << "configurationParameterMap: " << value.getConfigurationParameterMap();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const JoinFederationExecutionResponseMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "joinFederationExecutionResponseType: " << value.getJoinFederationExecutionResponseType();
+  os << ", ";
+  os << "exceptionString: " << value.getExceptionString();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "federateType: " << value.getFederateType();
+  os << ", ";
+  os << "federateName: " << value.getFederateName();
+  os << ", ";
+  os << "fOMModuleHandleList: " << value.getFOMModuleHandleList();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ResignFederationExecutionRequestMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const JoinFederateNotifyMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "federateType: " << value.getFederateType();
+  os << ", ";
+  os << "federateName: " << value.getFederateName();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ResignFederateNotifyMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RegisterFederationSynchronizationPointMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "label: " << value.getLabel();
+  os << ", ";
+  os << "tag: " << value.getTag();
+  os << ", ";
+  os << "federateHandleSet: " << value.getFederateHandleSet();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RegisterFederationSynchronizationPointResponseMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "label: " << value.getLabel();
+  os << ", ";
+  os << "registerFederationSynchronizationPointResponseType: " << value.getRegisterFederationSynchronizationPointResponseType();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const AnnounceSynchronizationPointMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "label: " << value.getLabel();
+  os << ", ";
+  os << "tag: " << value.getTag();
+  os << ", ";
+  os << "addJoiningFederates: " << value.getAddJoiningFederates();
+  os << ", ";
+  os << "federateHandleSet: " << value.getFederateHandleSet();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const SynchronizationPointAchievedMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "label: " << value.getLabel();
+  os << ", ";
+  os << "federateHandleSet: " << value.getFederateHandleSet();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FederationSynchronizedMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "label: " << value.getLabel();
+  os << ", ";
+  os << "federateHandleSet: " << value.getFederateHandleSet();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const EnableTimeRegulationRequestMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "timeStamp: " << value.getTimeStamp();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const EnableTimeRegulationResponseMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "respondingFederateHandle: " << value.getRespondingFederateHandle();
+  os << ", ";
+  os << "timeStampValid: " << value.getTimeStampValid();
+  os << ", ";
+  os << "timeStamp: " << value.getTimeStamp();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const DisableTimeRegulationRequestMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const CommitLowerBoundTimeStampMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "timeStamp: " << value.getTimeStamp();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeConstrainedEnabledMessage& value)
+{
+  os << "{ ";
+  os << "logicalTime: " << value.getLogicalTime();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeRegulationEnabledMessage& value)
+{
+  os << "{ ";
+  os << "logicalTime: " << value.getLogicalTime();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeAdvanceGrantedMessage& value)
+{
+  os << "{ ";
+  os << "logicalTime: " << value.getLogicalTime();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ChangeInteractionClassPublicationMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "publicationType: " << value.getPublicationType();
+  os << ", ";
+  os << "interactionClassHandle: " << value.getInteractionClassHandle();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ChangeObjectClassPublicationMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "publicationType: " << value.getPublicationType();
+  os << ", ";
+  os << "objectClassHandle: " << value.getObjectClassHandle();
+  os << ", ";
+  os << "attributeHandles: " << value.getAttributeHandles();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ChangeInteractionClassSubscriptionMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "subscriptionType: " << value.getSubscriptionType();
+  os << ", ";
+  os << "interactionClassHandle: " << value.getInteractionClassHandle();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ChangeObjectClassSubscriptionMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "subscriptionType: " << value.getSubscriptionType();
+  os << ", ";
+  os << "objectClassHandle: " << value.getObjectClassHandle();
+  os << ", ";
+  os << "attributeHandles: " << value.getAttributeHandles();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RegistrationForObjectClassMessage& value)
+{
+  os << "{ ";
+  os << "objectClassHandle: " << value.getObjectClassHandle();
+  os << ", ";
+  os << "start: " << value.getStart();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const TurnInteractionsOnMessage& value)
+{
+  os << "{ ";
+  os << "interactionClassHandle: " << value.getInteractionClassHandle();
+  os << ", ";
+  os << "on: " << value.getOn();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const InteractionMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "interactionClassHandle: " << value.getInteractionClassHandle();
+  os << ", ";
+  os << "transportationType: " << value.getTransportationType();
+  os << ", ";
+  os << "tag: " << value.getTag();
+  os << ", ";
+  os << "parameterValues: " << value.getParameterValues();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeStampedInteractionMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "interactionClassHandle: " << value.getInteractionClassHandle();
+  os << ", ";
+  os << "transportationType: " << value.getTransportationType();
+  os << ", ";
+  os << "tag: " << value.getTag();
+  os << ", ";
+  os << "timeStamp: " << value.getTimeStamp();
+  os << ", ";
+  os << "messageRetractionHandle: " << value.getMessageRetractionHandle();
+  os << ", ";
+  os << "parameterValues: " << value.getParameterValues();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ObjectInstanceHandlesRequestMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "count: " << value.getCount();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ObjectInstanceHandlesResponseMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "objectInstanceHandleNamePairVector: " << value.getObjectInstanceHandleNamePairVector();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ReleaseMultipleObjectInstanceNameHandlePairsMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "objectInstanceHandleVector: " << value.getObjectInstanceHandleVector();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ReserveObjectInstanceNameRequestMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "name: " << value.getName();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ReserveObjectInstanceNameResponseMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "objectInstanceHandleNamePair: " << value.getObjectInstanceHandleNamePair();
+  os << ", ";
+  os << "success: " << value.getSuccess();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ReserveMultipleObjectInstanceNameRequestMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "nameList: " << value.getNameList();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ReserveMultipleObjectInstanceNameResponseMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "objectInstanceHandleNamePairVector: " << value.getObjectInstanceHandleNamePairVector();
+  os << ", ";
+  os << "success: " << value.getSuccess();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const InsertObjectInstanceMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "objectClassHandle: " << value.getObjectClassHandle();
+  os << ", ";
+  os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
+  os << ", ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "attributeStateVector: " << value.getAttributeStateVector();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const DeleteObjectInstanceMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
+  os << ", ";
+  os << "tag: " << value.getTag();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeStampedDeleteObjectInstanceMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
+  os << ", ";
+  os << "tag: " << value.getTag();
+  os << ", ";
+  os << "timeStamp: " << value.getTimeStamp();
+  os << ", ";
+  os << "messageRetractionHandle: " << value.getMessageRetractionHandle();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const AttributeUpdateMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
+  os << ", ";
+  os << "tag: " << value.getTag();
+  os << ", ";
+  os << "transportationType: " << value.getTransportationType();
+  os << ", ";
+  os << "attributeValues: " << value.getAttributeValues();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeStampedAttributeUpdateMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
+  os << ", ";
+  os << "tag: " << value.getTag();
+  os << ", ";
+  os << "timeStamp: " << value.getTimeStamp();
+  os << ", ";
+  os << "messageRetractionHandle: " << value.getMessageRetractionHandle();
+  os << ", ";
+  os << "transportationType: " << value.getTransportationType();
+  os << ", ";
+  os << "attributeValues: " << value.getAttributeValues();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RequestAttributeUpdateMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
+  os << ", ";
+  os << "attributeHandles: " << value.getAttributeHandles();
+  os << ", ";
+  os << "tag: " << value.getTag();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RequestClassAttributeUpdateMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "objectClassHandle: " << value.getObjectClassHandle();
+  os << ", ";
+  os << "attributeHandles: " << value.getAttributeHandles();
+  os << ", ";
+  os << "tag: " << value.getTag();
+  os << " }";
+  return os;
+}
 
 } // namespace OpenRTI
 

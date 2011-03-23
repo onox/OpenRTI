@@ -87,6 +87,10 @@ class DataType(object):
     def writeComponent(self, component, sourceStream, messageEncoding):
         pass
 
+    def writeStreamOut(self, sourceStream):
+        pass
+
+
 ###############################################################################
 class CDataType(DataType):
     def __init__(self, name, encoding, ctype):
@@ -113,6 +117,7 @@ class CDataType(DataType):
 
     def writeComponent(self, component, sourceStream, messageEncoding):
         getattr(messageEncoding, 'writeC' + component)(self, sourceStream)
+
 
 ###############################################################################
 class EnumLabel(object):
@@ -153,6 +158,19 @@ class EnumDataType(DataType):
     def writeComponent(self, component, sourceStream, messageEncoding):
         getattr(messageEncoding, 'writeEnum' + component)(self, sourceStream)
 
+    def writeStreamOut(self, sourceStream):
+        sourceStream.writeline('template<typename char_type, typename traits_type>')
+        sourceStream.writeline('std::basic_ostream<char_type, traits_type>&')
+        sourceStream.writeline('operator<<(std::basic_ostream<char_type, traits_type>& os, const {name}& value)'.format(name = self.getName()))
+        sourceStream.writeline('{')
+        sourceStream.writeline('  switch (value) {')
+        for enum in self.__enumList:
+            sourceStream.writeline('  case {enum}: os << "{enum}"; break;'.format(enum = enum.getName()))
+        sourceStream.writeline('  }')
+        sourceStream.writeline('  return os;')
+        sourceStream.writeline('}')
+        sourceStream.writeline()
+
 
 ###############################################################################
 class VectorDataType(DataType):
@@ -174,6 +192,26 @@ class VectorDataType(DataType):
     def writeComponent(self, component, sourceStream, messageEncoding):
         getattr(messageEncoding, 'writeVector' + component)(self, sourceStream)
 
+    def writeStreamOut(self, sourceStream):
+        # FIXME, make the std::* containers with a template
+        name = self.getName();
+        sourceStream.writeline('template<typename char_type, typename traits_type>')
+        sourceStream.writeline('std::basic_ostream<char_type, traits_type>&')
+        sourceStream.writeline('operator<<(std::basic_ostream<char_type, traits_type>& os, const {name}& value)'.format(name = name))
+        sourceStream.writeline('{')
+        sourceStream.writeline('  os << "{ ";')
+        sourceStream.writeline('  {name}::const_iterator i = value.begin();'.format(name = name))
+        sourceStream.writeline('  if (i != value.end()) {')
+        sourceStream.writeline('    os << *i;')
+        sourceStream.writeline('    while (++i != value.end()) {')
+        sourceStream.writeline('      os << ", " << *i;')
+        sourceStream.writeline('    }')
+        sourceStream.writeline('  }')
+        sourceStream.writeline('  os << " }";')
+        sourceStream.writeline('  return os;')
+        sourceStream.writeline('}')
+        sourceStream.writeline()
+
 
 ###############################################################################
 class SetDataType(DataType):
@@ -194,6 +232,26 @@ class SetDataType(DataType):
 
     def writeComponent(self, component, sourceStream, messageEncoding):
         getattr(messageEncoding, 'writeSet' + component)(self, sourceStream)
+
+    def writeStreamOut(self, sourceStream):
+        # FIXME, make the std::* containers with a template
+        name = self.getName();
+        sourceStream.writeline('template<typename char_type, typename traits_type>')
+        sourceStream.writeline('std::basic_ostream<char_type, traits_type>&')
+        sourceStream.writeline('operator<<(std::basic_ostream<char_type, traits_type>& os, const {name}& value)'.format(name = name))
+        sourceStream.writeline('{')
+        sourceStream.writeline('  os << "{ ";')
+        sourceStream.writeline('  {name}::const_iterator i = value.begin();'.format(name = name))
+        sourceStream.writeline('  if (i != value.end()) {')
+        sourceStream.writeline('    os << *i;')
+        sourceStream.writeline('    while (++i != value.end()) {')
+        sourceStream.writeline('      os << ", " << *i;')
+        sourceStream.writeline('    }')
+        sourceStream.writeline('  }')
+        sourceStream.writeline('  os << " }";')
+        sourceStream.writeline('  return os;')
+        sourceStream.writeline('}')
+        sourceStream.writeline()
 
 
 ###############################################################################
@@ -221,6 +279,26 @@ class MapDataType(DataType):
     def writeComponent(self, component, sourceStream, messageEncoding):
         getattr(messageEncoding, 'writeMap' + component)(self, sourceStream)
 
+    def writeStreamOut(self, sourceStream):
+        # FIXME, make the std::* containers with a template
+        name = self.getName();
+        sourceStream.writeline('template<typename char_type, typename traits_type>')
+        sourceStream.writeline('std::basic_ostream<char_type, traits_type>&')
+        sourceStream.writeline('operator<<(std::basic_ostream<char_type, traits_type>& os, const {name}& value)'.format(name = name))
+        sourceStream.writeline('{')
+        sourceStream.writeline('  os << "{ ";')
+        sourceStream.writeline('  {name}::const_iterator i = value.begin();'.format(name = name))
+        sourceStream.writeline('  if (i != value.end()) {')
+        sourceStream.writeline('    os << i->first << ": " << i->second;')
+        sourceStream.writeline('    while (++i != value.end()) {')
+        sourceStream.writeline('      os << ", " << i->first << ": " << i->second;')
+        sourceStream.writeline('    }')
+        sourceStream.writeline('  }')
+        sourceStream.writeline('  os << " }";')
+        sourceStream.writeline('  return os;')
+        sourceStream.writeline('}')
+        sourceStream.writeline()
+
 
 ###############################################################################
 class PairDataType(DataType):
@@ -247,6 +325,19 @@ class PairDataType(DataType):
 
     def writeComponent(self, component, sourceStream, messageEncoding):
         getattr(messageEncoding, 'writePair' + component)(self, sourceStream)
+
+    def writeStreamOut(self, sourceStream):
+        sourceStream.writeline('template<typename char_type, typename traits_type>')
+        sourceStream.writeline('std::basic_ostream<char_type, traits_type>&')
+        sourceStream.writeline('operator<<(std::basic_ostream<char_type, traits_type>& os, const {name}& value)'.format(name = self.getName()))
+        sourceStream.writeline('{')
+        sourceStream.writeline('  os << "{ ";')
+        sourceStream.writeline('  os << "first: " << value.first << ", ";')
+        sourceStream.writeline('  os << "second: " << value.second;')
+        sourceStream.writeline('  os << " }";')
+        sourceStream.writeline('  return os;')
+        sourceStream.writeline('}')
+        sourceStream.writeline()
 
 
 ###############################################################################
@@ -417,6 +508,25 @@ class StructDataType(DataType):
     def writeComponent(self, component, sourceStream, messageEncoding):
         getattr(messageEncoding, 'writeStruct' + component)(self, sourceStream)
 
+    def writeStreamOut(self, sourceStream):
+        sourceStream.writeline('template<typename char_type, typename traits_type>')
+        sourceStream.writeline('std::basic_ostream<char_type, traits_type>&')
+        sourceStream.writeline('operator<<(std::basic_ostream<char_type, traits_type>& os, const {name}& value)'.format(name = self.getName()))
+        sourceStream.writeline('{')
+        sourceStream.writeline('  os << "{ ";')
+        count = 0
+        for field in self.__fieldList:
+            count = count + 1
+            lowerName = field.getLowerName()
+            upperName = field.getUpperName()
+            sourceStream.writeline('  os << "{lowerName}: " << value.get{upperName}();'.format(lowerName = lowerName, upperName = upperName))
+            if count != len(self.__fieldList):
+                sourceStream.writeline('  os << ", ";')
+        sourceStream.writeline('  os << " }";')
+        sourceStream.writeline('  return os;')
+        sourceStream.writeline('}')
+        sourceStream.writeline()
+
 
 ###############################################################################
 class MessageDataType(StructDataType):
@@ -441,6 +551,7 @@ class MessageDataType(StructDataType):
 
         sourceStream.writeline()
         sourceStream.writeline('virtual const char* getTypeName() const;')
+        sourceStream.writeline('virtual void out(std::ostream& os) const;')
         sourceStream.writeline('virtual void dispatch(AbstractMessageDispatcher& dispatcher);')
         sourceStream.writeline('virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;')
         sourceStream.writeline()
@@ -478,6 +589,13 @@ class MessageDataType(StructDataType):
         sourceStream.writeline('}')
         sourceStream.writeline()
         sourceStream.writeline('void')
+        sourceStream.writeline('{name}::out(std::ostream& os) const'.format(name = self.getName()))
+        sourceStream.writeline('{')
+        sourceStream.writeline('  os << "{name} " << *this;'.format(name = self.getName()))
+        sourceStream.writeline('}')
+        sourceStream.writeline()
+
+        sourceStream.writeline('void')
         sourceStream.writeline('{name}::dispatch(AbstractMessageDispatcher& dispatcher)'.format(name = self.getName()))
         sourceStream.writeline('{')
         sourceStream.writeline('  dispatcher.accept(*this);')
@@ -490,6 +608,7 @@ class MessageDataType(StructDataType):
         sourceStream.writeline('}')
         sourceStream.writeline()
         sourceStream.writeline()
+
 
 ###############################################################################
 class MessageEncoding(object):
@@ -1268,6 +1387,9 @@ class TypeMap(object):
         sourceStream.writeline()
         for t in self.__typeList:
             t.writeDeclaration(sourceStream)
+        sourceStream.writeline()
+        for t in self.__typeList:
+            t.writeStreamOut(sourceStream)
         sourceStream.writeline('} // namespace OpenRTI')
         sourceStream.writeline()
         sourceStream.writeline('#endif')
@@ -1277,8 +1399,10 @@ class TypeMap(object):
         sourceStream.writeline()
         sourceStream.writeline('#include "Message.h"')
         sourceStream.writeline()
+        sourceStream.writeline('#include <ostream>')
         sourceStream.writeline('#include "AbstractMessage.h"')
         sourceStream.writeline('#include "AbstractMessageDispatcher.h"')
+        sourceStream.writeline('#include "StringUtils.h"')
         sourceStream.writeline()
         sourceStream.writeline('namespace OpenRTI {')
         sourceStream.writeline()

@@ -20,6 +20,7 @@
 #ifndef OpenRTI_AbstractMessage_h
 #define OpenRTI_AbstractMessage_h
 
+#include <iosfwd>
 #include "Export.h"
 #include "Referenced.h"
 
@@ -44,6 +45,7 @@ public:
   // virtual ServiceMessage* toServiceMessage() { return 0; }
   // virtual TimeStampedMessage* toTimeStampedMessage() { return 0; }
   virtual const char* getTypeName() const = 0;
+  virtual void out(std::ostream& os) const = 0;
   virtual void dispatch(AbstractMessageDispatcher&) = 0;
   virtual void dispatch(ConstAbstractMessageDispatcher&) const = 0;
 
@@ -60,6 +62,10 @@ public:
   //   dispatch(dispatcher);
   // }
 };
+
+inline std::ostream&
+operator<<(std::ostream& os, const AbstractMessage& message)
+{ message.out(os); return os; }
 
 // Federation message, that means its destionation federation is given in the handle
 // class FederationMessage : public AbstractMessage {

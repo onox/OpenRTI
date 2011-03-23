@@ -27,6 +27,7 @@
 #include "Types.h"
 #include <algorithm>
 #include <cstring>
+#include <ostream>
 
 namespace OpenRTI {
 
@@ -891,6 +892,14 @@ private:
   size_t _size;
   size_t _offset;
 };
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const VariableLengthData& value)
+{
+  os << "{ size: " << value.size() << ", data: [...]";
+  return os;
+}
 
 } // namespace OpenRTI
 
