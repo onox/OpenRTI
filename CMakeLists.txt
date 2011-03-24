@@ -42,11 +42,18 @@ IF(SUNOS)
   ENDIF()
 ENDIF()
 
-# Use the DEBUG2 build type on linux to do stl debugging, note that this changes the abi,
-# In theory the debug build type is the one that is the right one, but since almost nobody else uses this
-# release type with these defines, we have our own here.
-SET(CMAKE_CXX_FLAGS_DEBUG2 "${CMAKE_CXX_FLAGS_DEBUG} -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -D_GLIBCXX_CONCEPT_CHECKS")
-SET(CMAKE_C_FLAGS_DEBUG2 "${CMAKE_C_FLAGS_DEBUG}")
+IF(LINUX)
+  # Use the DEBUG2 build type on linux to do stl debugging, note that this changes the abi,
+  # In theory the debug build type is the one that is the right one, but since almost nobody else uses this
+  # release type with these defines, we have our own here.
+  SET(CMAKE_CXX_FLAGS_DEBUG2 "${CMAKE_CXX_FLAGS_DEBUG} -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -D_GLIBCXX_CONCEPT_CHECKS")
+  SET(CMAKE_C_FLAGS_DEBUG2 "${CMAKE_C_FLAGS_DEBUG}")
+ENDIF()
+
+IF(MSVC)
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4290")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4290")
+ENDIF()
 
 # Change the default build type to something fast
 IF(NOT CMAKE_BUILD_TYPE)
