@@ -50,45 +50,49 @@ public:
 
   virtual ssize_t recv(SocketStream& socketStream, NetworkBuffer& networkBuffer)
   {
-    // Should be the same than the above while condition
     OpenRTIAssert(networkBuffer.getNumPendingBuffers());
 
-    if (_zstream.avail_in == 0) {
-      // Nothing in the input buffer, read something from the socket
-      _readBuffer.clear();
-      _readBuffer.addScratchBuffer().resize(64*1024);
-      ssize_t ret = socketStream.recv(_readBuffer);
-      if (ret == -1) {
-        _readBuffer[0].resize(0);
-        return -1;
+    ssize_t bytesRead = 0;
+    do { 
+      if (_zstream.avail_in == 0) {
+        // Nothing in the input buffer, read something from the socket
+        _readBuffer.clear();
+        _readBuffer.addScratchBuffer().resize(64*1024);
+        ssize_t ret = socketStream.recv(_readBuffer);
+        // Log(MessageCoding, Error) << pthread_self() << " decompress ret = " << ret << std::endl;
+        if (ret == -1) {
+          _readBuffer[0].resize(0);
+          return -1;
+        }
+        if (ret == 0) {
+          _readBuffer[0].resize(0);
+          return 0;
+        }
+        
+        // Shorten to the correct size of the read buffer
+        _readBuffer[0].resize(ret);
+        _zstream.next_in = reinterpret_cast<Bytef*>(_readBuffer[0].data());
+        _zstream.avail_in = _readBuffer[0].size();
       }
-      if (ret == 0) {
-        _readBuffer[0].resize(0);
-        return 0;
+      
+      // here we know that we really have something read
+      _zstream.next_out = reinterpret_cast<Bytef*>(networkBuffer.getPendingBuffer(0));
+      _zstream.avail_out = networkBuffer.getPendingBufferSize(0);
+      size_t avail_out = _zstream.avail_out;
+      int flush;
+      if (networkBuffer.getNumPendingBuffers() <= 1)
+        flush = Z_SYNC_FLUSH;
+      else
+        flush = Z_NO_FLUSH;
+      int ret = inflate(&_zstream, flush);
+      if (ret != Z_OK) {
+        Log(MessageCoding, Warning) << "Compression error!" << std::endl;
+        throw MessageError("Compression error!");
       }
+      bytesRead += avail_out - _zstream.avail_out;
+    } while (bytesRead == 0);
 
-      // Shorten to the correct size of the read buffer
-      _readBuffer[0].resize(ret);
-      _zstream.next_in = reinterpret_cast<Bytef*>(_readBuffer[0].data());
-      _zstream.avail_in = _readBuffer[0].size();
-    }
-
-    // here we know that we really have something read
-    _zstream.next_out = reinterpret_cast<Bytef*>(networkBuffer.getPendingBuffer(0));
-    _zstream.avail_out = networkBuffer.getPendingBufferSize(0);
-    size_t avail_out = _zstream.avail_out;
-    int flush;
-    if (networkBuffer.getNumPendingBuffers() <= 1)
-      flush = Z_SYNC_FLUSH;
-    else
-      flush = Z_NO_FLUSH;
-    int ret = inflate(&_zstream, flush);
-    if (ret != Z_OK) {
-      Log(MessageCoding, Warning) << "Compression error!" << std::endl;
-      throw MessageError("Compression error!");
-    }
-
-    return avail_out - _zstream.avail_out;
+    return bytesRead;
   }
 
 private:

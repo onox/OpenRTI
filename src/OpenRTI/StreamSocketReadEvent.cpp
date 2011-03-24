@@ -62,6 +62,7 @@ StreamSocketReadEvent::read(SocketEventDispatcher& dispatcher)
       }
 
       readPacket(dispatcher, _networkBuffer);
+      _networkBuffer.processed(0);
       if (!_networkBuffer.complete())
         continue;
 
