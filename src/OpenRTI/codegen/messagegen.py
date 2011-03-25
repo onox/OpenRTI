@@ -411,7 +411,7 @@ class StructDataType(DataType):
         return self.__parentTypeName
 
     def writeForwardDeclaration(self, sourceStream):
-        sourceStream.writeline('class OPENRTI_API {name};'.format(name = self.getName()))
+        sourceStream.writeline('class {name};'.format(name = self.getName()))
 
     def writeDeclaration(self, sourceStream):
         if self.getParentTypeName() is None:

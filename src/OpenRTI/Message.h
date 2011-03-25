@@ -139,7 +139,7 @@ typedef std::vector<String> StringVector;
 
 typedef std::set<String> StringSet;
 
-class OPENRTI_API RangeBoundsValue;
+class RangeBoundsValue;
 typedef std::pair<DimensionHandle, RangeBoundsValue> DimensionHandleRangeBoundsValuePair;
 
 typedef std::vector<DimensionHandleRangeBoundsValuePair> RegionValue;
@@ -150,16 +150,16 @@ typedef std::pair<InteractionClassHandle, RegionValueList> InteractionClassHandl
 
 typedef std::pair<AttributeHandle, RegionValueList> AttributeHandleRegionValueListPair;
 
-class OPENRTI_API AttributeState;
+class AttributeState;
 typedef std::vector<AttributeState> AttributeStateVector;
 
-class OPENRTI_API ParameterValue;
+class ParameterValue;
 typedef std::vector<ParameterValue> ParameterValueVector;
 
-class OPENRTI_API AttributeValue;
+class AttributeValue;
 typedef std::vector<AttributeValue> AttributeValueVector;
 
-class OPENRTI_API TimeStamp;
+class TimeStamp;
 typedef std::map<FederateHandle, TimeStamp> FederateHandleTimeStampMap;
 
 typedef std::pair<FederateHandle, SaveStatus> FederateHandleSaveStatusPair;
@@ -170,7 +170,7 @@ typedef std::pair<FederateHandle, RestoreStatus> FederateHandleRestoreStatusPair
 
 typedef std::vector<FederateHandleRestoreStatusPair> FederateHandleRestoreStatusPairVector;
 
-class OPENRTI_API FederationExecutionInformation;
+class FederationExecutionInformation;
 typedef std::vector<FederationExecutionInformation> FederationExecutionInformationVector;
 
 typedef std::pair<ObjectInstanceHandle, String> ObjectInstanceHandleNamePair;
@@ -209,60 +209,60 @@ enum RegisterFederationSynchronizationPointResponseType {
 
 typedef std::map<String, StringVector> ConfigurationParameterMap;
 
-class OPENRTI_API FOMStringTransportationType;
+class FOMStringTransportationType;
 typedef std::vector<FOMStringTransportationType> FOMStringTransportationTypeList;
 
-class OPENRTI_API FOMStringDimension;
+class FOMStringDimension;
 typedef std::vector<FOMStringDimension> FOMStringDimensionList;
 
-class OPENRTI_API FOMStringRoutingSpace;
+class FOMStringRoutingSpace;
 typedef std::vector<FOMStringRoutingSpace> FOMStringRoutingSpaceList;
 
-class OPENRTI_API FOMStringParameter;
+class FOMStringParameter;
 typedef std::vector<FOMStringParameter> FOMStringParameterList;
 
-class OPENRTI_API FOMStringInteractionClass;
+class FOMStringInteractionClass;
 typedef std::vector<FOMStringInteractionClass> FOMStringInteractionClassList;
 
-class OPENRTI_API FOMStringAttribute;
+class FOMStringAttribute;
 typedef std::vector<FOMStringAttribute> FOMStringAttributeList;
 
-class OPENRTI_API FOMStringObjectClass;
+class FOMStringObjectClass;
 typedef std::vector<FOMStringObjectClass> FOMStringObjectClassList;
 
-class OPENRTI_API FOMStringModule;
+class FOMStringModule;
 typedef std::vector<FOMStringModule> FOMStringModuleList;
 
-class OPENRTI_API FOMTransportationType;
+class FOMTransportationType;
 typedef std::vector<FOMTransportationType> FOMTransportationTypeList;
 
 typedef std::map<String, FOMTransportationType> FOMTransportationTypeMap;
 
-class OPENRTI_API FOMDimension;
+class FOMDimension;
 typedef std::vector<FOMDimension> FOMDimensionList;
 
 typedef std::map<String, FOMDimension> FOMDimensionMap;
 
-class OPENRTI_API FOMRoutingSpace;
+class FOMRoutingSpace;
 typedef std::vector<FOMRoutingSpace> FOMRoutingSpaceList;
 
 typedef std::map<String, FOMRoutingSpace> FOMRoutingSpaceMap;
 
-class OPENRTI_API FOMParameter;
+class FOMParameter;
 typedef std::vector<FOMParameter> FOMParameterList;
 
 typedef std::map<String, FOMParameter> FOMParameterMap;
 
-class OPENRTI_API FOMInteractionClass;
+class FOMInteractionClass;
 typedef std::vector<FOMInteractionClass> FOMInteractionClassList;
 
-class OPENRTI_API FOMAttribute;
+class FOMAttribute;
 typedef std::vector<FOMAttribute> FOMAttributeList;
 
-class OPENRTI_API FOMObjectClass;
+class FOMObjectClass;
 typedef std::vector<FOMObjectClass> FOMObjectClassList;
 
-class OPENRTI_API FOMModule;
+class FOMModule;
 typedef std::vector<FOMModule> FOMModuleList;
 
 class ConnectionLostMessage;
