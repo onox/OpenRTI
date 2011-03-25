@@ -96,7 +96,14 @@ SocketStream::send(const NetworkBuffer& networkBuffer, bool moreToSend)
   // Hmm, not sure if we should do so - not yet message based sockets in use
   // FIXME here in a stream socket implementation !!!
   if (errno == EMSGSIZE)
+#if defined(__APPLE__)
+    // On macos, I get spurious EMSGSIZE errors where the same call
+    // works the next time it is issued. So, just treat that as EAGAIN on macos.
+    // Revisit this area of code at some time.
+    return 0;
+#else
     return -1;
+#endif
 
   // // Also not sure - currently this is an exception when the connection is just closed below us
   // // Note that this should not happen during any controlled shutdown of a client
