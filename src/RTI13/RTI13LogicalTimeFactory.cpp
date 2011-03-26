@@ -311,7 +311,7 @@ RTI13LogicalTimeFactory::LogicalTime::operator<=(const RTI13LogicalTimeFactory::
 
 
 
-RTI13LogicalTimeFactory::RTI13LogicalTimeFactory(const std::wstring& name) :
+RTI13LogicalTimeFactory::RTI13LogicalTimeFactory(const std::string& name) :
   _name(name)
 {
 }
@@ -330,7 +330,7 @@ RTI13LogicalTimeFactory::operator=(const RTI13LogicalTimeFactory& logicalTimeFac
   return *this;
 }
 
-std::wstring
+std::string
 RTI13LogicalTimeFactory::getName() const
 {
   return _name;
@@ -407,14 +407,14 @@ RTI13LogicalTimeFactory::encodeLogicalTime(const RTI::FedTime& fedTime)
   return variableLengthData;
 }
 
-std::wstring
+std::string
 RTI13LogicalTimeFactory::toString(const RTI::FedTime& fedTime)
 {
   std::auto_ptr<RTI::FedTime> logicalTime(RTI::FedTimeFactory::makeZero());
   *logicalTime = fedTime;
   std::vector<char> data(logicalTime->getPrintableLength(), 0);
   logicalTime->getPrintableString(&data.front());
-  return localeToUcs(std::string(&data.front(), data.size()));
+  return localeToUtf8(std::string(&data.front(), data.size()));
 }
 
 }

@@ -36,7 +36,7 @@ SocketServerTCP::bind(const SocketAddress& socketAddress)
 {
   SOCKET fd = socket(socketAddress._privateData->_addr->sa_family, SOCK_STREAM, 0);
   if (fd == INVALID_SOCKET)
-    throw TransportError(errnoToUcs(WSAGetLastError()));
+    throw TransportError(errnoToUtf8(WSAGetLastError()));
 
   // Hmm, on win32 the SO_REUSEADDR does not just allow binding on a TIME_WAIT socket but
   // also forcably allows two sockets to bind on the same address - which is not what what we want.
@@ -48,7 +48,7 @@ SocketServerTCP::bind(const SocketAddress& socketAddress)
   if (ret == -1) {
     int errorNumber = WSAGetLastError();
     closesocket(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   _privateData->_socket = fd;
@@ -59,7 +59,7 @@ SocketServerTCP::listen(int backlog)
 {
   int ret = ::listen(_privateData->_socket, backlog);
   if (ret == -1) {
-    throw TransportError(errnoToUcs(WSAGetLastError()));
+    throw TransportError(errnoToUtf8(WSAGetLastError()));
   }
 }
 
@@ -69,7 +69,7 @@ SocketServerTCP::accept()
   SOCKET fd = ::accept(_privateData->_socket, 0, 0);
   if (fd == -1) {
     int errorNumber = WSAGetLastError();
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   // Past the connect use non blocking io, required.
@@ -78,7 +78,7 @@ SocketServerTCP::accept()
   if (ret == SOCKET_ERROR) {
     int errorNumber = WSAGetLastError();
     closesocket(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   int one = 1;
@@ -86,7 +86,7 @@ SocketServerTCP::accept()
   if (ret == -1) {
     int errorNumber = WSAGetLastError();
     closesocket(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   PrivateData* pd = new PrivateData;

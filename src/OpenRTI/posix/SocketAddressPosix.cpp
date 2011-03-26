@@ -90,7 +90,7 @@ SocketAddress::isInet6() const
 }
 
 std::list<SocketAddress>
-SocketAddress::resolve(const std::wstring& address, const std::wstring& service)
+SocketAddress::resolve(const std::string& address, const std::string& service)
 {
   // Due to problems with ipv6 on these platforms
 #if defined __sun || defined __hpux
@@ -111,14 +111,14 @@ SocketAddress::resolve(const std::wstring& address, const std::wstring& service)
   if (address.empty())
     hints.ai_flags = AI_PASSIVE;
 
-  std::string localeAddress = ucsToLocale(address);
-  std::string localeService = ucsToLocale(service);
+  std::string localeAddress = utf8ToLocale(address);
+  std::string localeService = utf8ToLocale(service);
   struct addrinfo *ai = 0;
   while (int ret = ::getaddrinfo(localeAddress.c_str(), localeService.c_str(), &hints, &ai)) {
     if (ret == EAI_AGAIN)
       continue;
     ::freeaddrinfo(ai);
-    throw TransportError(localeToUcs(gai_strerror(ret)));
+    throw TransportError(localeToUtf8(gai_strerror(ret)));
   }
 
   std::list<SocketAddress> socketAddressList;

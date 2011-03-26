@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -26,9 +26,9 @@
 
 namespace OpenRTI {
 
-inline std::wstring errnoToUcs(int errorNumber)
+inline std::string errnoToUtf8(int errorNumber)
 {
-  return localeToUcs(strerror(errorNumber));
+  return localeToUtf8(strerror(errorNumber));
 }
 
 } // namespace OpenRTI

@@ -37,8 +37,8 @@ public:
   ServerNode(const SharedPtr<ServerOptions>& serverOptions);
   virtual ~ServerNode();
 
-  const std::wstring& getServerName() const;
-  void setServerName(const std::wstring& name);
+  const std::string& getServerName() const;
+  void setServerName(const std::string& name);
 
   bool isRunning() const;
 

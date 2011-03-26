@@ -170,7 +170,7 @@ public:
 
 #define MAP_EXCEPTION(Exception, MappedException) \
   typedef MappedException Exception; \
-  static void throw ## Exception(const std::string& reason) { throw MappedException(OpenRTI::localeToUcs(reason)); } \
+  static void throw ## Exception(const std::string& reason) { throw MappedException(OpenRTI::utf8ToUcs(reason)); } \
   static void throw ## Exception(const std::wstring& reason) { throw MappedException(reason); } \
   static void throw ## Exception() { throw MappedException(std::wstring(L"/* NO COMMENT */")); }
 
@@ -274,7 +274,7 @@ public:
   using Federate<RTI1516Traits, LogicalTimeFactory>::getTimeConstrainedEnabled;
   using Federate<RTI1516Traits, LogicalTimeFactory>::getFlushQueueMode;
 
-  RTI1516Federate(const std::wstring& federateType, const std::wstring& federateName,
+  RTI1516Federate(const std::string& federateType, const std::string& federateName,
                   const FederateHandle& federateHandle, SharedPtr<AbstractConnect> connect,
                   const InsertFederationExecutionMessage& insertFederationExecution,
                   const LogicalTimeFactory& logicalTimeFactory,
@@ -284,7 +284,7 @@ public:
     _federateAmbassador(federateAmbassador)
   { }
 
-  virtual void synchronizationPointRegistrationResponse(const std::wstring& label, RegisterFederationSynchronizationPointResponseType reason)
+  virtual void synchronizationPointRegistrationResponse(const std::string& label, RegisterFederationSynchronizationPointResponseType reason)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -294,13 +294,13 @@ public:
     try {
       switch (reason) {
       case OpenRTI::RegisterFederationSynchronizationPointResponseSuccess:
-        _federateAmbassador->synchronizationPointRegistrationSucceeded(label);
+        _federateAmbassador->synchronizationPointRegistrationSucceeded(utf8ToUcs(label));
         break;
       case OpenRTI::RegisterFederationSynchronizationPointResponseLabelNotUnique:
-        _federateAmbassador->synchronizationPointRegistrationFailed(label, rti1516::SYNCHRONIZATION_POINT_LABEL_NOT_UNIQUE);
+        _federateAmbassador->synchronizationPointRegistrationFailed(utf8ToUcs(label), rti1516::SYNCHRONIZATION_POINT_LABEL_NOT_UNIQUE);
         break;
       case OpenRTI::RegisterFederationSynchronizationPointResponseMemberNotJoined:
-        _federateAmbassador->synchronizationPointRegistrationFailed(label, rti1516::SYNCHRONIZATION_SET_MEMBER_NOT_JOINED);
+        _federateAmbassador->synchronizationPointRegistrationFailed(utf8ToUcs(label), rti1516::SYNCHRONIZATION_SET_MEMBER_NOT_JOINED);
         break;
       }
     } catch (const rti1516::Exception& e) {
@@ -308,7 +308,7 @@ public:
     }
   }
 
-  virtual void announceSynchronizationPoint(const std::wstring& label, const OpenRTI::VariableLengthData& tag)
+  virtual void announceSynchronizationPoint(const std::string& label, const OpenRTI::VariableLengthData& tag)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -317,13 +317,13 @@ public:
     }
     try {
       rti1516::VariableLengthData rti1516Tag = rti1516::VariableLengthDataFriend::create(tag);
-      _federateAmbassador->announceSynchronizationPoint(label, rti1516Tag);
+      _federateAmbassador->announceSynchronizationPoint(utf8ToUcs(label), rti1516Tag);
     } catch (const rti1516::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
   }
 
-  virtual void federationSynchronized(const std::wstring& label)
+  virtual void federationSynchronized(const std::string& label)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -331,7 +331,7 @@ public:
       return;
     }
     try {
-      _federateAmbassador->federationSynchronized(label);
+      _federateAmbassador->federationSynchronized(utf8ToUcs(label));
     } catch (const rti1516::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
@@ -339,7 +339,7 @@ public:
 
   // // 4.12
   // virtual void
-  // initiateFederateSave(std::wstring const& label)
+  // initiateFederateSave(std::string const& label)
   //   throw (OpenRTI::UnableToPerformSave,
   //          OpenRTI::FederateInternalError)
   // {
@@ -355,7 +355,7 @@ public:
   // }
 
   // virtual void
-  // initiateFederateSave(const std::wstring& label,
+  // initiateFederateSave(const std::string& label,
   //                      const LogicalTime& logicalTime)
   //   throw (OpenRTI::UnableToPerformSave,
   //          OpenRTI::InvalidLogicalTime,
@@ -449,7 +449,7 @@ public:
 
   // // 4.19
   // virtual void
-  // requestFederationRestoreSucceeded(std::wstring const& label)
+  // requestFederationRestoreSucceeded(std::string const& label)
   //   throw (OpenRTI::FederateInternalError)
   // {
   //   if (!_federateAmbassador)
@@ -462,7 +462,7 @@ public:
   // }
 
   // virtual void
-  // requestFederationRestoreFailed(std::wstring const& label)
+  // requestFederationRestoreFailed(std::string const& label)
   //   throw (OpenRTI::FederateInternalError)
   // {
   //   if (!_federateAmbassador)
@@ -491,7 +491,7 @@ public:
 
   // // 4.21
   // virtual void
-  // initiateFederateRestore(std::wstring const & label,
+  // initiateFederateRestore(std::string const & label,
   //                         FederateHandle handle)
   //   throw (OpenRTI::SpecifiedSaveLabelDoesNotExist,
   //          OpenRTI::CouldNotInitiateRestore,
@@ -638,9 +638,9 @@ public:
     }
     try {
       if (message.getSuccess())
-        _federateAmbassador->objectInstanceNameReservationSucceeded(message.getObjectInstanceHandleNamePair().second);
+        _federateAmbassador->objectInstanceNameReservationSucceeded(utf8ToUcs(message.getObjectInstanceHandleNamePair().second));
       else
-        _federateAmbassador->objectInstanceNameReservationFailed(message.getObjectInstanceHandleNamePair().second);
+        _federateAmbassador->objectInstanceNameReservationFailed(utf8ToUcs(message.getObjectInstanceHandleNamePair().second));
     } catch (const rti1516::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
@@ -656,7 +656,7 @@ public:
   void
   discoverObjectInstance(ObjectInstanceHandle objectInstanceHandle,
                          ObjectClassHandle objectClassHandle,
-                         std::wstring const& name)
+                         std::string const& name)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -671,7 +671,7 @@ public:
 
       _federateAmbassador->discoverObjectInstance(rti1516ObjectInstanceHandle,
                                                   rti1516ObjectClassHandle,
-                                                  name);
+                                                  utf8ToUcs(name));
     } catch (const rti1516::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
@@ -1299,33 +1299,35 @@ class OPENRTI_LOCAL RTIambassadorImplementation::RTI1516AmbassadorInterface : pu
 public:
   RTI1516AmbassadorInterface(const std::vector<std::wstring>& args) :
     Ambassador<RTI1516Traits>(),
-    _arguments(args)
+    _forceOpaqueLogicalTime(false)
   {
-    _parameterMap[L"protocol"] = L"thread";
+    _parameterMap["protocol"] = "thread";
 
     for (unsigned i = 0; i < args.size(); ++i) {
-      std::wstring::size_type pos = args[i].find('=');
-      if (pos == std::wstring::npos)
-        continue;
-      if (args[i].size() <= pos + 1)
-        continue;
-      std::wstring key = args[i].substr(0, pos);
-      std::wstring value = args[i].substr(pos + 1);
-      _parameterMap[key] = value;
+      if (args[i] == L"force-opaque-time") {
+        _forceOpaqueLogicalTime = true;
+      } else {
+        std::wstring::size_type pos = args[i].find('=');
+        if (pos == std::wstring::npos)
+          continue;
+        if (args[i].size() <= pos + 1)
+          continue;
+        std::string key = ucsToUtf8(args[i].substr(0, pos));
+        std::string value = ucsToUtf8(args[i].substr(pos + 1));
+        _parameterMap[key] = value;
+      }
     }
-
-    _forceOpaqueLogicalTime = contains(_arguments, L"force-opaque-time");
   }
 
   virtual OpenRTI::AbstractFederate<Traits>*
-  createFederate(const std::wstring& federateType, const std::wstring& federateName,
-                 const FederateHandle& federateHandle, const std::wstring& federationName,
+  createFederate(const std::string& federateType, const std::string& federateName,
+                 const FederateHandle& federateHandle, const std::string& federationName,
                  const InsertFederationExecutionMessage& insertFederationExecution,
                  SharedPtr<AbstractConnect> connect, rti1516::FederateAmbassador* federateAmbassador)
   {
-    std::wstring logicalTimeFactoryName = insertFederationExecution.getLogicalTimeFactoryName();
+    std::string logicalTimeFactoryName = insertFederationExecution.getLogicalTimeFactoryName();
     std::auto_ptr<rti1516::LogicalTimeFactory> logicalTimeFactory;
-    logicalTimeFactory = rti1516::LogicalTimeFactoryFactory::makeLogicalTimeFactory(logicalTimeFactoryName);
+    logicalTimeFactory = rti1516::LogicalTimeFactoryFactory::makeLogicalTimeFactory(utf8ToUcs(logicalTimeFactoryName));
     if (!logicalTimeFactory.get())
       return 0;
 
@@ -1347,7 +1349,7 @@ public:
           *logicalTime = time;
           *logicalTimeInterval = interval;
           if (*logicalTime == time && *logicalTimeInterval == interval) {
-            return new RTI1516Federate<RTI1516integer64TimeFactory>(federateType, federateName, federateHandle, connect, insertFederationExecution, RTI1516integer64TimeFactory(time.implementationName()),
+            return new RTI1516Federate<RTI1516integer64TimeFactory>(federateType, federateName, federateHandle, connect, insertFederationExecution, RTI1516integer64TimeFactory(ucsToUtf8(time.implementationName())),
                                        federateAmbassador);
           }
         }
@@ -1364,7 +1366,7 @@ public:
           *logicalTime = time;
           *logicalTimeInterval = interval;
           if (*logicalTime == time && *logicalTimeInterval == interval) {
-            return new RTI1516Federate<RTI1516float64TimeFactory>(federateType, federateName, federateHandle, connect, insertFederationExecution, RTI1516float64TimeFactory(time.implementationName()),
+            return new RTI1516Federate<RTI1516float64TimeFactory>(federateType, federateName, federateHandle, connect, insertFederationExecution, RTI1516float64TimeFactory(ucsToUtf8(time.implementationName())),
                                        federateAmbassador);
           }
         }
@@ -1376,11 +1378,11 @@ public:
     return new RTI1516Federate<RTI1516LogicalTimeFactory>(federateType, federateName, federateHandle, connect, insertFederationExecution, RTI1516LogicalTimeFactory(logicalTimeFactory), federateAmbassador);
   }
 
-  void ensureConnected(const std::wstring& federationExecutionName)
+  void ensureConnected(const std::string& federationExecutionName)
   {
     // FIXME allow the local settings stuff to be a configuration file and others
     StringMap stringMap = getStringMapFromUrl(_parameterMap, federationExecutionName);
-    stringMap.erase(L"federationExecutionName");
+    stringMap.erase("federationExecutionName");
 
     if (!isConnected()) {
       // FIXME make that again configurable
@@ -1395,7 +1397,6 @@ public:
   }
 
   // The instantiation time argument list
-  std::vector<std::wstring> _arguments;
   StringMap _parameterMap;
   StringMap _connectParameters;
   bool _forceOpaqueLogicalTime;
@@ -1422,11 +1423,11 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
          rti1516::CouldNotCreateLogicalTimeFactory,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->ensureConnected(federationExecutionName);
+  _ambassadorInterface->ensureConnected(ucsToUtf8(federationExecutionName));
 
-  std::vector<std::wstring> fomModules;
-  fomModules.push_back(fullPathNameToTheFDDfile);
-  _ambassadorInterface->createFederationExecution(getFilePart(federationExecutionName), fomModules, logicalTimeImplementationName);
+  std::vector<std::string> fomModules;
+  fomModules.push_back(ucsToUtf8(fullPathNameToTheFDDfile));
+  _ambassadorInterface->createFederationExecution(getFilePart(ucsToUtf8(federationExecutionName)), fomModules, ucsToUtf8(logicalTimeImplementationName));
 }
 
 // 4.3
@@ -1436,9 +1437,9 @@ RTIambassadorImplementation::destroyFederationExecution(std::wstring const & fed
          rti1516::FederationExecutionDoesNotExist,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->ensureConnected(federationExecutionName);
+  _ambassadorInterface->ensureConnected(ucsToUtf8(federationExecutionName));
 
-  _ambassadorInterface->destroyFederationExecution(getFilePart(federationExecutionName));
+  _ambassadorInterface->destroyFederationExecution(getFilePart(ucsToUtf8(federationExecutionName)));
 }
 
 // 4.4
@@ -1453,10 +1454,11 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
          rti1516::CouldNotCreateLogicalTimeFactory,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->ensureConnected(federationExecutionName);
+  _ambassadorInterface->ensureConnected(ucsToUtf8(federationExecutionName));
 
-  FederateHandle federateHandle = _ambassadorInterface->joinFederationExecution(std::wstring(), federateType, getFilePart(federationExecutionName),
-                                                                                std::vector<std::wstring>(), &federateAmbassador);
+  FederateHandle federateHandle = _ambassadorInterface->joinFederationExecution(std::string(), ucsToUtf8(federateType),
+                                                                                getFilePart(ucsToUtf8(federationExecutionName)),
+                                                                                std::vector<std::string>(), &federateAmbassador);
   return rti1516::FederateHandleFriend::createHandle(federateHandle);
 }
 
@@ -1505,7 +1507,7 @@ RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring
          rti1516::RTIinternalError)
 {
   OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
-  _ambassadorInterface->registerFederationSynchronizationPoint(label, tag);
+  _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag);
 }
 
 void
@@ -1523,7 +1525,7 @@ RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring
   for (rti1516::FederateHandleSet::const_iterator i = rti1516FederateHandleSet.begin(); i != rti1516FederateHandleSet.end(); ++i)
     federateHandleSet.insert(rti1516::FederateHandleFriend::getOpenRTIHandle(*i));
 
-  _ambassadorInterface->registerFederationSynchronizationPoint(label, tag, federateHandleSet);
+  _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, federateHandleSet);
 }
 
 // 4.9
@@ -1535,7 +1537,7 @@ RTIambassadorImplementation::synchronizationPointAchieved(std::wstring const & l
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->synchronizationPointAchieved(label);
+  _ambassadorInterface->synchronizationPointAchieved(ucsToUtf8(label));
 }
 
 // 4.11
@@ -1546,7 +1548,7 @@ RTIambassadorImplementation::requestFederationSave(std::wstring const & label)
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->requestFederationSave(label);
+  _ambassadorInterface->requestFederationSave(ucsToUtf8(label));
 }
 
 void
@@ -1560,7 +1562,7 @@ RTIambassadorImplementation::requestFederationSave(const std::wstring& label,
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->requestFederationSave(label, rti1516LogicalTime);
+  _ambassadorInterface->requestFederationSave(ucsToUtf8(label), rti1516LogicalTime);
 }
 
 // 4.13
@@ -1613,7 +1615,7 @@ RTIambassadorImplementation::requestFederationRestore(std::wstring const & label
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->requestFederationRestore(label);
+  _ambassadorInterface->requestFederationRestore(ucsToUtf8(label));
 }
 
 // 4.22
@@ -1825,7 +1827,7 @@ RTIambassadorImplementation::reserveObjectInstanceName(std::wstring const & obje
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->reserveObjectInstanceName(objectInstanceName);
+  _ambassadorInterface->reserveObjectInstanceName(ucsToUtf8(objectInstanceName));
 }
 
 // 6.4
@@ -1856,7 +1858,7 @@ RTIambassadorImplementation::registerObjectInstance(rti1516::ObjectClassHandle r
          rti1516::RTIinternalError)
 {
   OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = _ambassadorInterface->registerObjectInstance(objectClassHandle, objectInstanceName, false);
+  OpenRTI::ObjectInstanceHandle objectInstanceHandle = _ambassadorInterface->registerObjectInstance(objectClassHandle, ucsToUtf8(objectInstanceName), false);
   return rti1516::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
 }
 
@@ -2930,7 +2932,7 @@ RTIambassadorImplementation::getObjectClassHandle(std::wstring const & name)
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle handle = _ambassadorInterface->getObjectClassHandle(name);
+  OpenRTI::ObjectClassHandle handle = _ambassadorInterface->getObjectClassHandle(ucsToUtf8(name));
   return rti1516::ObjectClassHandleFriend::createHandle(handle);
 }
 
@@ -2942,7 +2944,7 @@ RTIambassadorImplementation::getObjectClassName(rti1516::ObjectClassHandle rti15
          rti1516::RTIinternalError)
 {
   OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-  return _ambassadorInterface->getObjectClassName(objectClassHandle);
+  return utf8ToUcs(_ambassadorInterface->getObjectClassName(objectClassHandle));
 }
 
 // 10.4
@@ -2955,7 +2957,7 @@ RTIambassadorImplementation::getAttributeHandle(rti1516::ObjectClassHandle rti15
          rti1516::RTIinternalError)
 {
   OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-  OpenRTI::AttributeHandle handle = _ambassadorInterface->getAttributeHandle(objectClassHandle, attributeName);
+  OpenRTI::AttributeHandle handle = _ambassadorInterface->getAttributeHandle(objectClassHandle, ucsToUtf8(attributeName));
   return rti1516::AttributeHandleFriend::createHandle(handle);
 }
 
@@ -2971,7 +2973,7 @@ RTIambassadorImplementation::getAttributeName(rti1516::ObjectClassHandle rti1516
 {
   OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
   OpenRTI::AttributeHandle attributeHandle = rti1516::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
-  return _ambassadorInterface->getAttributeName(objectClassHandle, attributeHandle);
+  return utf8ToUcs(_ambassadorInterface->getAttributeName(objectClassHandle, attributeHandle));
 }
 
 // 10.6
@@ -2981,7 +2983,7 @@ RTIambassadorImplementation::getInteractionClassHandle(std::wstring const & name
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle handle = _ambassadorInterface->getInteractionClassHandle(name);
+  OpenRTI::InteractionClassHandle handle = _ambassadorInterface->getInteractionClassHandle(ucsToUtf8(name));
   return rti1516::InteractionClassHandleFriend::createHandle(handle);
 }
 
@@ -2993,7 +2995,7 @@ RTIambassadorImplementation::getInteractionClassName(rti1516::InteractionClassHa
          rti1516::RTIinternalError)
 {
   OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-  return _ambassadorInterface->getInteractionClassName(interactionClassHandle);
+  return utf8ToUcs(_ambassadorInterface->getInteractionClassName(interactionClassHandle));
 }
 
 // 10.8
@@ -3006,7 +3008,7 @@ RTIambassadorImplementation::getParameterHandle(rti1516::InteractionClassHandle 
          rti1516::RTIinternalError)
 {
   OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-  OpenRTI::ParameterHandle handle = _ambassadorInterface->getParameterHandle(interactionClassHandle, parameterName);
+  OpenRTI::ParameterHandle handle = _ambassadorInterface->getParameterHandle(interactionClassHandle, ucsToUtf8(parameterName));
   return rti1516::ParameterHandleFriend::createHandle(handle);
 }
 
@@ -3022,7 +3024,7 @@ RTIambassadorImplementation::getParameterName(rti1516::InteractionClassHandle rt
 {
   OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
   OpenRTI::ParameterHandle parameterHandle = rti1516::ParameterHandleFriend::getOpenRTIHandle(rti1516ParameterHandle);
-  return _ambassadorInterface->getParameterName(interactionClassHandle, parameterHandle);
+  return utf8ToUcs(_ambassadorInterface->getParameterName(interactionClassHandle, parameterHandle));
 }
 
 // 10.10
@@ -3032,7 +3034,7 @@ RTIambassadorImplementation::getObjectInstanceHandle(std::wstring const & name)
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle handle = _ambassadorInterface->getObjectInstanceHandle(name);
+  OpenRTI::ObjectInstanceHandle handle = _ambassadorInterface->getObjectInstanceHandle(ucsToUtf8(name));
   return rti1516::ObjectInstanceHandleFriend::createHandle(handle);
 }
 
@@ -3044,7 +3046,7 @@ RTIambassadorImplementation::getObjectInstanceName(rti1516::ObjectInstanceHandle
          rti1516::RTIinternalError)
 {
   OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-  return _ambassadorInterface->getObjectInstanceName(objectInstanceHandle);
+  return utf8ToUcs(_ambassadorInterface->getObjectInstanceName(objectInstanceHandle));
 }
 
 // 10.12
@@ -3054,7 +3056,7 @@ RTIambassadorImplementation::getDimensionHandle(std::wstring const & name)
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::DimensionHandle handle = _ambassadorInterface->getDimensionHandle(name);
+  OpenRTI::DimensionHandle handle = _ambassadorInterface->getDimensionHandle(ucsToUtf8(name));
   return rti1516::DimensionHandleFriend::createHandle(handle);
 }
 
@@ -3066,7 +3068,7 @@ RTIambassadorImplementation::getDimensionName(rti1516::DimensionHandle rti1516Di
          rti1516::RTIinternalError)
 {
   OpenRTI::DimensionHandle dimensionHandle = rti1516::DimensionHandleFriend::getOpenRTIHandle(rti1516DimensionHandle);
-  return _ambassadorInterface->getDimensionName(dimensionHandle);
+  return utf8ToUcs(_ambassadorInterface->getDimensionName(dimensionHandle));
 }
 
 // 10.14
@@ -3140,7 +3142,7 @@ RTIambassadorImplementation::getTransportationType(std::wstring const & transpor
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  return translate(_ambassadorInterface->getTransportationType(transportationName));
+  return translate(_ambassadorInterface->getTransportationType(ucsToUtf8(transportationName)));
 }
 
 // 10.19
@@ -3150,7 +3152,7 @@ RTIambassadorImplementation::getTransportationName(rti1516::TransportationType t
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  return _ambassadorInterface->getTransportationName(translate(transportationType));
+  return utf8ToUcs(_ambassadorInterface->getTransportationName(translate(transportationType)));
 }
 
 // 10.20
@@ -3160,7 +3162,7 @@ RTIambassadorImplementation::getOrderType(std::wstring const & orderName)
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  return translate(_ambassadorInterface->getOrderType(orderName));
+  return translate(_ambassadorInterface->getOrderType(ucsToUtf8(orderName)));
 }
 
 // 10.21
@@ -3170,7 +3172,7 @@ RTIambassadorImplementation::getOrderName(rti1516::OrderType orderType)
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  return _ambassadorInterface->getOrderName(translate(orderType));
+  return utf8ToUcs(_ambassadorInterface->getOrderName(translate(orderType)));
 }
 
 // 10.22

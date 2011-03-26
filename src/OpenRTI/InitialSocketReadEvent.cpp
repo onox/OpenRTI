@@ -40,7 +40,7 @@ public:
   {
     uint32_t i = readUInt32BE();
     while (i--) {
-      std::wstring key;
+      std::string key;
       readString(key);
       readStringList(stringStringListMap[key]);
     }
@@ -50,21 +50,20 @@ public:
   {
     uint32_t i = readUInt32BE();
     while (i--) {
-      stringList.push_back(std::wstring());
+      stringList.push_back(std::string());
       readString(stringList.back());
     }
   }
 
-  void readString(std::wstring& string)
+  void readString(std::string& utf8)
   {
     uint32_t i = readUInt32BE();
-    std::string utf8;
+    utf8.clear();
     utf8.reserve(i);
     while (i--) {
       utf8.push_back(readUInt8BE());
     }
     align(4);
-    string = utf8ToUcs(utf8);
   }
 
   void readFixedString(char* string, size_t len)
@@ -95,7 +94,7 @@ InitialSocketReadEvent::readPacket(SocketEventDispatcher& dispatcher, NetworkBuf
     {
       // When the header is here, ensure that the header is valid and look for the size
       DecodeStream decodeStream(networkBuffer[0]);
-      
+
       // Check for the correct message header
       char starter[8];
       decodeStream.readFixedString(starter, 8);
@@ -108,7 +107,7 @@ InitialSocketReadEvent::readPacket(SocketEventDispatcher& dispatcher, NetworkBuf
         Log(MessageCoding, Warning) << "Connection does not start with a valid size field in the header: Dropping connection!" << std::endl;
         throw MessageError("Connection does not start with a valid size field in the header!");
       }
-      
+
       // Add buffer space for the message body
       networkBuffer.addScratchBuffer().resize(size - 12);
     }

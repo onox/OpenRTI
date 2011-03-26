@@ -35,14 +35,14 @@ void
 SocketTCP::connect(const SocketAddress& socketAddress)
 {
   if (0 <= _privateData->_fd)
-    throw TransportError(L"Trying to connect an already open SocketTCP!");
+    throw TransportError("Trying to connect an already open SocketTCP!");
 
   if (!socketAddress.valid())
-    throw TransportError(L"Trying to connect an invalid address!");
+    throw TransportError("Trying to connect an invalid address!");
 
   int fd = ::socket(socketAddress._privateData->_addr->sa_family, SOCK_STREAM, 0);
   if (fd == -1)
-    throw TransportError(errnoToUcs(errno));
+    throw TransportError(errnoToUtf8(errno));
 
   // This is nice to have, so just try and don't bail out
   int flags = fcntl(fd, F_GETFD, 0);
@@ -60,14 +60,14 @@ SocketTCP::connect(const SocketAddress& socketAddress)
   if (ret == -1) {
     int errorNumber = errno;
     ::close(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   ret = ::connect(fd, socketAddress._privateData->_addr, socketAddress._privateData->_addrlen);
   if (ret == -1) {
     int errorNumber = errno;
     ::close(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   // Past the connect use non blocking io, required.
@@ -75,13 +75,13 @@ SocketTCP::connect(const SocketAddress& socketAddress)
   if (flags == -1) {
     int errorNumber = errno;
     ::close(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   ret = fcntl(fd, F_SETFL, flags | O_NONBLOCK);
   if (ret == -1) {
     int errorNumber = errno;
     ::close(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   _privateData->_fd = fd;

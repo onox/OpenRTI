@@ -143,7 +143,7 @@ private:
     virtual void send(const SharedPtr<AbstractMessage>& message)
     {
       if (!_socketWakeupTrigger.valid())
-        throw RTIinternalError(L"Trying to send message to a closed MessageSender");
+        throw RTIinternalError("Trying to send message to a closed MessageSender");
       _lockedMessageList->push_back(message);
       _socketWakeupTrigger->trigger();
     }
@@ -181,22 +181,22 @@ Server::~Server()
 {
 }
 
-const std::wstring&
+const std::string&
 Server::getServerName() const
 {
   return _messageServer->getServerName();
 }
 
 void
-Server::setServerName(const std::wstring& name)
+Server::setServerName(const std::string& name)
 {
   _messageServer->setServerName(name);
 }
 
 void
-Server::listenInet(const std::wstring& address, int backlog)
+Server::listenInet(const std::string& address, int backlog)
 {
-  std::pair<std::wstring, std::wstring> hostPortPair;
+  std::pair<std::string, std::string> hostPortPair;
   hostPortPair = parseInetAddress(address);
 
   std::list<SocketAddress> addressList = SocketAddress::resolve(hostPortPair.first, hostPortPair.second);
@@ -218,7 +218,7 @@ Server::listenInet(const std::wstring& address, int backlog)
 }
 
 void
-Server::listenPipe(const std::wstring& address, int backlog)
+Server::listenPipe(const std::string& address, int backlog)
 {
   SharedPtr<SocketServerPipe> socket = new SocketServerPipe();
   socket->bind(address);
@@ -227,9 +227,9 @@ Server::listenPipe(const std::wstring& address, int backlog)
 }
 
 SharedPtr<SocketTCP>
-Server::connectedTCPSocket(const std::wstring& name)
+Server::connectedTCPSocket(const std::string& name)
 {
-  std::pair<std::wstring, std::wstring> hostPortPair;
+  std::pair<std::string, std::string> hostPortPair;
   hostPortPair = parseInetAddress(name);
 
   // Note that here the may be lenghty name lookup for the connection address happens
@@ -245,19 +245,19 @@ Server::connectedTCPSocket(const std::wstring& name)
         throw e;
     }
   }
-  throw RTIinternalError(std::wstring(L"Can not resolve address") + name);
+  throw RTIinternalError(std::string("Can not resolve address") + name);
 }
 
 void
-Server::connectParentInetServer(const std::wstring& name, const Clock& abstime)
+Server::connectParentInetServer(const std::string& name, const Clock& abstime)
 {
   connectParentStreamServer(connectedTCPSocket(name), abstime);
 }
 
 void
-Server::connectParentPipeServer(const std::wstring& name, const Clock& abstime)
+Server::connectParentPipeServer(const std::string& name, const Clock& abstime)
 {
-  std::wstring path = localeToUcs(OpenRTI_DEFAULT_PIPE_PATH);
+  std::string path = OpenRTI_DEFAULT_PIPE_PATH;
   if (!name.empty())
     path = name;
 
@@ -285,7 +285,7 @@ Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, c
   /// returns a sender where incomming messages should be sent to
   SharedPtr<AbstractMessageSender> toServerSender = _messageServer->insertParentConnect(toParentSender, parentOptions);
   if (!toServerSender.valid())
-    throw RTIinternalError(L"Could not set up parent server connect");
+    throw RTIinternalError("Could not set up parent server connect");
 
   // The socket side message parser and dispatcher that fires the above on completely
   // received messages
@@ -298,7 +298,7 @@ Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, c
     writeMessageSocketEvent->setSendCallback(new ZLibSendCallback);
 #else
     Log(MessageCoding, Warning) << "Parent server negotiated zlib compression, but client does not support that!" << std::endl;
-    throw RTIinternalError(L"Parent server negotiated zlib compression, but client does not support that!");
+    throw RTIinternalError("Parent server negotiated zlib compression, but client does not support that!");
 #endif
   }
 

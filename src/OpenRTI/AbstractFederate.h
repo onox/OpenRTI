@@ -134,7 +134,7 @@ public:
   { }
 
   virtual const FederateHandle& getFederateHandle() const = 0;
-  virtual std::wstring getLogicalTimeFactoryName() const = 0;
+  virtual std::string getLogicalTimeFactoryName() const = 0;
 
   // that might move to something internal?? May be some join call doing that reservation and returning that handle?? FIXME
   virtual void requestObjectInstanceHandles(unsigned count) = 0;
@@ -147,23 +147,23 @@ public:
            FederateOwnsAttributes,
            RTIinternalError) = 0;
 
-  virtual void registerFederationSynchronizationPoint(const std::wstring& label, const VariableLengthData& tag, const FederateHandleSet& syncSet)
+  virtual void registerFederationSynchronizationPoint(const std::string& label, const VariableLengthData& tag, const FederateHandleSet& syncSet)
     throw (SaveInProgress,
            RestoreInProgress,
            RTIinternalError) = 0;
 
-  virtual void synchronizationPointAchieved(const std::wstring& label)
+  virtual void synchronizationPointAchieved(const std::string& label)
     throw (SynchronizationPointLabelNotAnnounced,
            SaveInProgress,
            RestoreInProgress,
            RTIinternalError) = 0;
 
-  virtual void requestFederationSave(const std::wstring& label)
+  virtual void requestFederationSave(const std::string& label)
     throw (SaveInProgress,
            RestoreInProgress,
            RTIinternalError) = 0;
 
-  virtual void requestFederationSave(const std::wstring& label, const NativeLogicalTime& locicalTime)
+  virtual void requestFederationSave(const std::string& label, const NativeLogicalTime& locicalTime)
     throw (LogicalTimeAlreadyPassed,
            InvalidLogicalTime,
            FederateUnableToUseTime,
@@ -190,7 +190,7 @@ public:
     throw (RestoreInProgress,
            RTIinternalError) = 0;
 
-  virtual void requestFederationRestore(const std::wstring& label)
+  virtual void requestFederationRestore(const std::string& label)
     throw (SaveInProgress,
            RestoreInProgress,
            RTIinternalError) = 0;
@@ -276,26 +276,26 @@ public:
            RestoreInProgress,
            RTIinternalError) = 0;
 
-  virtual void reserveObjectInstanceName(const std::wstring& objectInstanceName)
+  virtual void reserveObjectInstanceName(const std::string& objectInstanceName)
     throw (IllegalName,
            SaveInProgress,
            RestoreInProgress,
            RTIinternalError) = 0;
 
-  virtual void releaseObjectInstanceName(const std::wstring& objectInstanceName)
+  virtual void releaseObjectInstanceName(const std::string& objectInstanceName)
     throw (ObjectInstanceNameNotReserved,
            SaveInProgress,
            RestoreInProgress,
            RTIinternalError) = 0;
 
-  virtual void reserveMultipleObjectInstanceName(const std::set<std::wstring>& objectInstanceNameSet)
+  virtual void reserveMultipleObjectInstanceName(const std::set<std::string>& objectInstanceNameSet)
     throw (IllegalName,
            NameSetWasEmpty,
            SaveInProgress,
            RestoreInProgress,
            RTIinternalError) = 0;
 
-  virtual void releaseMultipleObjectInstanceName(const std::set<std::wstring>& objectInstanceNameSet)
+  virtual void releaseMultipleObjectInstanceName(const std::set<std::string>& objectInstanceNameSet)
     throw (ObjectInstanceNameNotReserved,
            SaveInProgress,
            RestoreInProgress,
@@ -308,7 +308,7 @@ public:
            RestoreInProgress,
            RTIinternalError) = 0;
 
-  virtual ObjectInstanceHandle registerObjectInstance(ObjectClassHandle objectClassHandle, const std::wstring& objectInstanceName,
+  virtual ObjectInstanceHandle registerObjectInstance(ObjectClassHandle objectClassHandle, const std::string& objectInstanceName,
                                                       bool allowUnreservedObjectNames)
     throw (ObjectClassNotDefined,
            ObjectClassNotPublished,
@@ -697,7 +697,7 @@ public:
   virtual ObjectInstanceHandle
   registerObjectInstanceWithRegions(ObjectClassHandle objectClassHandle,
                                     const AttributeHandleSetRegionHandleSetPairVector& attributeHandleSetRegionHandleSetPairVector,
-                                    const std::wstring& objectInstanceName)
+                                    const std::string& objectInstanceName)
     throw (ObjectClassNotDefined,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -821,57 +821,57 @@ public:
     throw (InvalidResignAction,
            RTIinternalError) = 0;
 
-  virtual const ObjectClassHandle& getObjectClassHandle(const std::wstring& name) const
+  virtual const ObjectClassHandle& getObjectClassHandle(const std::string& name) const
     throw (NameNotFound,
            RTIinternalError) = 0;
 
-  virtual const std::wstring& getObjectClassName(const ObjectClassHandle& objectClassHandle) const
+  virtual const std::string& getObjectClassName(const ObjectClassHandle& objectClassHandle) const
     throw (InvalidObjectClassHandle,
            RTIinternalError) = 0;
 
-  virtual const AttributeHandle& getAttributeHandle(const ObjectClassHandle& objectClassHandle, const std::wstring& name) const
+  virtual const AttributeHandle& getAttributeHandle(const ObjectClassHandle& objectClassHandle, const std::string& name) const
     throw (InvalidObjectClassHandle,
            NameNotFound,
            RTIinternalError) = 0;
 
-  virtual const std::wstring& getAttributeName(const ObjectClassHandle& objectClassHandle, const AttributeHandle& attributeHandle) const
+  virtual const std::string& getAttributeName(const ObjectClassHandle& objectClassHandle, const AttributeHandle& attributeHandle) const
     throw (InvalidObjectClassHandle,
            InvalidAttributeHandle,
            AttributeNotDefined,
            RTIinternalError) = 0;
 
-  virtual const InteractionClassHandle& getInteractionClassHandle(const std::wstring& name) const
+  virtual const InteractionClassHandle& getInteractionClassHandle(const std::string& name) const
     throw (NameNotFound,
            RTIinternalError) = 0;
 
-  virtual const std::wstring& getInteractionClassName(const InteractionClassHandle& interactionClassHandle) const
+  virtual const std::string& getInteractionClassName(const InteractionClassHandle& interactionClassHandle) const
     throw (InvalidInteractionClassHandle,
            RTIinternalError) = 0;
 
-  virtual const ParameterHandle& getParameterHandle(const InteractionClassHandle& interactionClassHandle, const std::wstring& name) const
+  virtual const ParameterHandle& getParameterHandle(const InteractionClassHandle& interactionClassHandle, const std::string& name) const
     throw (InvalidInteractionClassHandle,
            NameNotFound,
            RTIinternalError) = 0;
 
-  virtual const std::wstring& getParameterName(const InteractionClassHandle& interactionClassHandle, const ParameterHandle& parameterHandle) const
+  virtual const std::string& getParameterName(const InteractionClassHandle& interactionClassHandle, const ParameterHandle& parameterHandle) const
     throw (InvalidInteractionClassHandle,
            InvalidParameterHandle,
            InteractionParameterNotDefined,
            RTIinternalError) = 0;
 
-  virtual const ObjectInstanceHandle& getObjectInstanceHandle(const std::wstring& name) const
+  virtual const ObjectInstanceHandle& getObjectInstanceHandle(const std::string& name) const
     throw (ObjectInstanceNotKnown,
            RTIinternalError) = 0;
 
-  virtual const std::wstring& getObjectInstanceName(const ObjectInstanceHandle& objectInstanceHandle) const
+  virtual const std::string& getObjectInstanceName(const ObjectInstanceHandle& objectInstanceHandle) const
     throw (ObjectInstanceNotKnown,
            RTIinternalError) = 0;
 
-  virtual const DimensionHandle& getDimensionHandle(const std::wstring& name) const
+  virtual const DimensionHandle& getDimensionHandle(const std::string& name) const
     throw (NameNotFound,
            RTIinternalError) = 0;
 
-  virtual const std::wstring& getDimensionName(const DimensionHandle& dimensionHandle) const
+  virtual const std::string& getDimensionName(const DimensionHandle& dimensionHandle) const
     throw (InvalidDimensionHandle,
            RTIinternalError) = 0;
 
@@ -894,19 +894,19 @@ public:
     throw (InvalidInteractionClassHandle,
            RTIinternalError) = 0;
 
-  virtual TransportationType getTransportationType(const std::wstring& name) const
+  virtual TransportationType getTransportationType(const std::string& name) const
     throw (InvalidTransportationName,
            RTIinternalError) = 0;
 
-  virtual const std::wstring& getTransportationName(TransportationType transportationType) const
+  virtual const std::string& getTransportationName(TransportationType transportationType) const
     throw (InvalidTransportationType,
            RTIinternalError) = 0;
 
-  virtual OrderType getOrderType(const std::wstring& name) const
+  virtual OrderType getOrderType(const std::string& name) const
     throw (InvalidOrderName,
            RTIinternalError) = 0;
 
-  virtual const std::wstring& getOrderName(OrderType orderType) const
+  virtual const std::string& getOrderName(OrderType orderType) const
     throw (InvalidOrderType,
            RTIinternalError) = 0;
 

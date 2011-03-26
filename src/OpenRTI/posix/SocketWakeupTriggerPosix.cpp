@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -37,16 +37,16 @@ SocketWakeupTrigger::connect()
     return _socketWakeupEvent.get();
 
   if (_privateData->_fd != -1)
-    throw TransportError(L"SocketEventTrigger already connected but _socketWakeupEvent is zero!");
+    throw TransportError("SocketEventTrigger already connected but _socketWakeupEvent is zero!");
 
   int pipeFd[2];
   int ret = pipe(pipeFd);
   if (ret == -1) {
     int errorNumber = errno;
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   _privateData->_fd = pipeFd[1];
-  
+
   _socketWakeupEvent = new SocketWakeupEvent(new PrivateData(pipeFd[0]));
   return _socketWakeupEvent.get();
 }
@@ -62,7 +62,7 @@ SocketWakeupTrigger::trigger()
       return -1;
     if (errorNumber == EAGAIN || errorNumber == EINTR)
       return 0;
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   return 1;
 }

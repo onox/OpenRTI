@@ -154,7 +154,7 @@ class OPENRTI_LOCAL PublishSubscribe : public NameHandlePair<H> {
 public:
   typedef H Handle;
 
-  PublishSubscribe(const std::wstring& name, const Handle& handle) :
+  PublishSubscribe(const std::string& name, const Handle& handle) :
     NameHandlePair<H>(name, handle)
   { }
 
@@ -276,7 +276,7 @@ private:
 /// FIXME share them among derived object classes ??
 class OPENRTI_LOCAL ObjectClassAttribute : public PublishSubscribe<AttributeHandle> {
 public:
-  ObjectClassAttribute(const std::wstring& name, const AttributeHandle& handle) :
+  ObjectClassAttribute(const std::string& name, const AttributeHandle& handle) :
     PublishSubscribe<AttributeHandle>(name, handle)
   { }
 
@@ -284,7 +284,7 @@ public:
 
 class OPENRTI_LOCAL ObjectClass : public NameHandlePair<ObjectClassHandle> {
 public:
-  ObjectClass(const std::wstring& name, const ObjectClassHandle& handle, ObjectClass* parentObjectClass) :
+  ObjectClass(const std::string& name, const ObjectClassHandle& handle, ObjectClass* parentObjectClass) :
     NameHandlePair<ObjectClassHandle>(name, handle),
     _parentObjectClass(parentObjectClass)
   { }
@@ -360,7 +360,7 @@ public:
   { return _objectClassAttribute->getHandle(); }
 
   /// Get the attributes name
-  const std::wstring& getName() const
+  const std::string& getName() const
   { return _objectClassAttribute->getName(); }
 
   /// Get the parent ObjectClassAttribute
@@ -397,7 +397,7 @@ private:
 
 class OPENRTI_LOCAL ObjectInstance : public NameHandlePair<ObjectInstanceHandle> {
 public:
-  ObjectInstance(const std::wstring& name, const ObjectInstanceHandle& handle, ObjectClass* objectClass) :
+  ObjectInstance(const std::string& name, const ObjectInstanceHandle& handle, ObjectClass* objectClass) :
     NameHandlePair<ObjectInstanceHandle>(name, handle),
     _objectClass(objectClass)
   {
@@ -495,7 +495,7 @@ private:
 
 class OPENRTI_LOCAL InteractionClass : public PublishSubscribe<InteractionClassHandle> {
 public:
-  InteractionClass(const std::wstring& name, const InteractionClassHandle& handle, InteractionClass* parentInteractionClass) :
+  InteractionClass(const std::string& name, const InteractionClassHandle& handle, InteractionClass* parentInteractionClass) :
     PublishSubscribe<InteractionClassHandle>(name, handle),
     _parentInteractionClass(parentInteractionClass)
   { }
@@ -512,7 +512,7 @@ private:
 
 class OPENRTI_LOCAL Federation : public NameHandlePair<FederationHandle> {
 public:
-  Federation(const std::wstring& name, const FederationHandle& handle) :
+  Federation(const std::string& name, const FederationHandle& handle) :
     NameHandlePair<FederationHandle>(name, handle)
   { }
   ~Federation()
@@ -525,11 +525,11 @@ public:
 
   // The logical time factorys name.
   // Should vanish ... FIXME
-  const std::wstring& getLogicalTimeFactoryName() const
+  const std::string& getLogicalTimeFactoryName() const
   { return _logicalTimeFactoryName; }
-  void setLogicalTimeFactoryName(const std::wstring& logicalTimeFactoryName)
+  void setLogicalTimeFactoryName(const std::string& logicalTimeFactoryName)
   { _logicalTimeFactoryName = logicalTimeFactoryName; }
-  std::wstring _logicalTimeFactoryName;
+  std::string _logicalTimeFactoryName;
 
   /// Object class handling methods
   const ObjectClassVector& getObjectClassVector() const

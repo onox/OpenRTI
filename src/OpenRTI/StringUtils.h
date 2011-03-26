@@ -40,17 +40,17 @@
 
 namespace OpenRTI {
 
-typedef std::set<std::wstring> StringSet;
-typedef std::list<std::wstring> StringList;
-typedef std::vector<std::wstring> StringVector;
-typedef std::map<std::wstring, std::wstring> StringMap;
-typedef std::map<std::wstring, StringList> StringStringListMap;
+typedef std::set<std::string> StringSet;
+typedef std::list<std::string> StringList;
+typedef std::vector<std::string> StringVector;
+typedef std::map<std::string, std::string> StringMap;
+typedef std::map<std::string, StringList> StringStringListMap;
 
-inline bool contains(const StringSet& stringSet, const std::wstring& string)
+inline bool contains(const StringSet& stringSet, const std::string& string)
 { return stringSet.find(string) != stringSet.end(); }
-inline bool contains(const StringList& stringList, const std::wstring& string)
+inline bool contains(const StringList& stringList, const std::string& string)
 { return std::find(stringList.begin(), stringList.end(), string) != stringList.end(); }
-inline bool contains(const StringVector& stringVector, const std::wstring& string)
+inline bool contains(const StringVector& stringVector, const std::string& string)
 { return std::find(stringVector.begin(), stringVector.end(), string) != stringVector.end(); }
 
 /// Internationalization concept:
@@ -176,30 +176,41 @@ inline std::string ucsToLocale(const std::wstring& ucs)
   return std::string(&data.front(), n);
 }
 
-inline std::wstring toLower(const std::wstring& mixed)
+inline std::string localeToUtf8(const std::string& locale)
 {
-  std::wstring lower;
-  lower.reserve(mixed.size());
-  for (std::wstring::const_iterator i = mixed.begin(); i != mixed.end(); ++i)
-    lower.push_back(tolower(*i));
-  return lower;
+  return ucsToUtf8(localeToUcs(locale));
 }
 
-inline std::wstring asciiToUcs(const char* ascii)
+inline std::string localeToUtf8(const char* locale)
 {
-  std::wstring ucs;
+  return ucsToUtf8(localeToUcs(locale));
+}
+
+inline std::string utf8ToLocale(const std::string& utf)
+{
+  return ucsToLocale(utf8ToUcs(utf));
+}
+
+inline std::string utf8ToLocale(const char* utf)
+{
+  return ucsToLocale(utf8ToUcs(utf));
+}
+
+inline std::string asciiToUtf8(const char* ascii)
+{
+  std::string utf8;
   if (!ascii)
-    return ucs;
+    return utf8;
   size_t len = std::strlen(ascii);
-  ucs.resize(len);
-  std::copy(ascii, ascii+len, ucs.begin());
-  return ucs;
+  utf8.resize(len);
+  std::copy(ascii, ascii+len, utf8.begin());
+  return utf8;
 }
 
 /// Returns a new string as required with RTI13 interfaces
-inline char* newUcsToLocale(const std::wstring& ws)
+inline char* newUtf8ToLocale(const std::string& utf8)
 {
-  std::string s = ucsToLocale(ws);
+  std::string s = utf8ToLocale(utf8);
   char* data = new char[s.size()+1];
   data[s.size()] = 0;
   return std::strncpy(data, s.c_str(), s.size());
@@ -222,66 +233,65 @@ split(const std::string& s, const char* c = ", \t\n")
   return v;
 }
 
-inline std::vector<std::wstring>
-split(const std::wstring& s, const wchar_t* c = L", \t\n")
+inline std::vector<std::string>
+split(const char* s, const char* c = ", \t\n")
 {
-  std::vector<std::wstring> v;
-  std::wstring::size_type p0 = 0;
-  std::wstring::size_type p = s.find_first_of(c);
-  while (p != std::wstring::npos) {
-    v.push_back(s.substr(p0, p));
-    p0 = s.find_first_not_of(c, p);
-    if (p0 == std::wstring::npos)
-      return v;
-    p = s.find_first_of(c, p0);
-  }
-  v.push_back(s.substr(p0, p));
-  return v;
+  if (!s)
+    return std::vector<std::string>();
+  return split(std::string(s), c);
 }
 
-inline std::wstring
-trim(std::wstring s, const wchar_t* c = L" \t\n")
+inline std::string
+trim(std::string s, const char* c = " \t\n")
 {
-  std::wstring::size_type p = s.find_last_not_of(c);
-  if (p == std::wstring::npos)
-    return std::wstring();
+  std::string::size_type p = s.find_last_not_of(c);
+  if (p == std::string::npos)
+    return std::string();
   if (p + 1 < s.size())
     s.resize(p + 1);
   p = s.find_first_not_of(c);
-  if (0 < p && p != std::wstring::npos)
+  if (0 < p && p != std::string::npos)
     s.erase(0, p);
   return s;
 }
 
-inline std::pair<std::wstring, std::wstring>
-parseInetAddress(const std::wstring& address)
+inline std::string
+trim(const char* s, const char* c = " \t\n")
 {
-  std::wstring hostname(localeToUcs(OpenRTI_DEFAULT_HOST_STRING));
-  std::wstring port(localeToUcs(OpenRTI_DEFAULT_PORT_STRING));
+  if (!s)
+    return std::string();
+  return trim(std::string(s), c);
+}
+
+inline std::pair<std::string, std::string>
+parseInetAddress(const std::string& address)
+{
+  std::string hostname(OpenRTI_DEFAULT_HOST_STRING);
+  std::string port(OpenRTI_DEFAULT_PORT_STRING);
 
   if (!address.empty()) {
     if (address[0] == '[') {
       // Ipv6 mode, '[address]:port'
-      std::wstring::size_type pos = address.rfind(']');
-      if (pos == std::wstring::npos) {
+      std::string::size_type pos = address.rfind(']');
+      if (pos == std::string::npos) {
         hostname = address.substr(1);
       } else {
         hostname = address.substr(1, pos - 1);
         pos = address.find(':', pos);
-        if (pos != std::wstring::npos) {
+        if (pos != std::string::npos) {
           port = address.substr(pos + 1);
         }
       }
     } else {
-      std::wstring::size_type pos = address.rfind(':');
+      std::string::size_type pos = address.rfind(':');
       // this if means 'we have 2 times ":"'
-      if (pos != std::wstring::npos && pos != address.find(':')) {
+      if (pos != std::string::npos && pos != address.find(':')) {
         // Ipv6 mode 'address'
         hostname = address;
       } else {
         // Ipv4 mode 'address:port'
-        std::wstring::size_type pos = address.rfind(':');
-        if (pos == std::wstring::npos) {
+        std::string::size_type pos = address.rfind(':');
+        if (pos == std::string::npos) {
           hostname = address;
         } else {
           hostname = address.substr(0, pos);
@@ -294,42 +304,42 @@ parseInetAddress(const std::wstring& address)
   return std::make_pair(hostname, port);
 }
 
-inline std::wstring
-getFilePart(const std::wstring& path)
+inline std::string
+getFilePart(const std::string& path)
 {
-  std::wstring::size_type pos = path.rfind('/');
-  if (pos == std::wstring::npos || path.size() <= pos + 1)
+  std::string::size_type pos = path.rfind('/');
+  if (pos == std::string::npos || path.size() <= pos + 1)
     return path;
   return path.substr(pos + 1);
 }
 
-inline std::wstring
-getBasePart(const std::wstring& path)
+inline std::string
+getBasePart(const std::string& path)
 {
-  std::wstring::size_type pos = path.rfind('/');
-  if (pos == std::wstring::npos)
-    return std::wstring();
+  std::string::size_type pos = path.rfind('/');
+  if (pos == std::string::npos)
+    return std::string();
   return path.substr(0, pos);
 }
 
-inline std::pair<std::wstring, std::wstring>
-getProtocolAddressPair(const std::wstring& url)
+inline std::pair<std::string, std::string>
+getProtocolAddressPair(const std::string& url)
 {
-  std::wstring protocol;
-  std::wstring address;
+  std::string protocol;
+  std::string address;
 
   /// Seperate this into:
   /// <protocol>://<address>/...
-  std::wstring::size_type pos = url.find(L"://");
-  if (pos == std::wstring::npos)
+  std::string::size_type pos = url.find("://");
+  if (pos == std::string::npos)
     return std::make_pair(protocol, address);
 
   protocol = url.substr(0, pos);
 
-  std::wstring::size_type pos0 = pos + 3;
+  std::string::size_type pos0 = pos + 3;
   // Find the slach terminating the address field
   pos = url.find('/', pos0);
-  if (pos == std::wstring::npos)
+  if (pos == std::string::npos)
     return std::make_pair(protocol, address);
 
   address = url.substr(pos0, pos - pos0);
@@ -337,81 +347,81 @@ getProtocolAddressPair(const std::wstring& url)
 }
 
 inline StringMap
-getStringMapFromUrl(const StringMap& defaults, const std::wstring& url)
+getStringMapFromUrl(const StringMap& defaults, const std::string& url)
 {
   /// FIXME, provide some override for interpreting execution names as url
   StringMap stringMap = defaults;
   // preinitialize, for all the fallthrough paths below
-  stringMap[L"url"] = url;
-  stringMap[L"federationExecutionName"] = url;
+  stringMap["url"] = url;
+  stringMap["federationExecutionName"] = url;
 
   /// FIXME extend that!!!
 
   /// Seperate this into:
   /// <protocol>://<address>/<path>/<name>
-  std::wstring::size_type pos = url.find(L"://");
-  if (pos == std::wstring::npos)
+  std::string::size_type pos = url.find("://");
+  if (pos == std::string::npos)
     return stringMap;
 
-  std::wstring protocol = url.substr(0, pos);
+  std::string protocol = url.substr(0, pos);
 
-  std::wstring::size_type pos0 = pos + 3;
-  if (protocol == L"trace" && pos0 < url.size()) {
+  std::string::size_type pos0 = pos + 3;
+  if (protocol == "trace" && pos0 < url.size()) {
     stringMap = getStringMapFromUrl(defaults, url.substr(pos0));
-    stringMap[L"traceProtocol"] = stringMap[L"protocol"];
-    stringMap[L"protocol"] = L"trace";
+    stringMap["traceProtocol"] = stringMap["protocol"];
+    stringMap["protocol"] = "trace";
     return stringMap;
   }
 
   // Find the slach terminating the address field
   pos = url.find('/', pos0);
-  if (pos == std::wstring::npos)
+  if (pos == std::string::npos)
     return stringMap;
-  std::wstring address = url.substr(pos0, pos - pos0);
+  std::string address = url.substr(pos0, pos - pos0);
 
   pos0 = pos;
   pos = url.rfind('/');
-  if (pos == std::wstring::npos)
+  if (pos == std::string::npos)
     return stringMap;
-  std::wstring path = url.substr(pos0, pos - pos0);
+  std::string path = url.substr(pos0, pos - pos0);
   pos0 = pos + 1;
   if (url.size() <= pos0)
     return stringMap;
-  std::wstring name = url.substr(pos0);
+  std::string name = url.substr(pos0);
 
-  if (protocol  == L"rti") {
+  if (protocol  == "rti") {
     // if (!path.empty() || name.empty()) {
-    //   Traits::throwRTIinternalError(std::wstring(L"Cannot parse rti://<address>/<federationExecutionName> url \"") + url +
-    //                          std::wstring(L"\"."));
+    //   Traits::throwRTIinternalError(std::string("Cannot parse rti://<address>/<federationExecutionName> url \"") + url +
+    //                          std::string("\"."));
     // }
-    stringMap[L"protocol"] = L"rti";
-    stringMap[L"address"] = address;
-    stringMap[L"federationExecutionName"] = name;
+    stringMap["protocol"] = "rti";
+    stringMap["address"] = address;
+    stringMap["federationExecutionName"] = name;
 
-  } else if (protocol == L"http") {
+  } else if (protocol == "http") {
     // if (!path.empty() || name.empty()) {
-    //   Traits::throwRTIinternalError(std::wstring(L"Cannot parse http://<address>/<federationExecutionName> url \"") + url +
-    //                          std::wstring(L"\"."));
+    //   Traits::throwRTIinternalError(std::string("Cannot parse http://<address>/<federationExecutionName> url \"") + url +
+    //                          std::string("\"."));
     // }
-    stringMap[L"protocol"] = protocol;
-    stringMap[L"address"] = address;
-    stringMap[L"federationExecutionName"] = name;
+    stringMap["protocol"] = protocol;
+    stringMap["address"] = address;
+    stringMap["federationExecutionName"] = name;
 
-  } else if (protocol == L"pipe") {
+  } else if (protocol == "pipe") {
     // if (!address.empty() || path.empty() || name.empty()) {
-    //   Traits::throwRTIinternalError(std::wstring(L"Cannot parse pipe:///<path to pipe>/<federationExecutionName> url \"") + url +
-    //                          std::wstring(L"\"."));
+    //   Traits::throwRTIinternalError(std::string("Cannot parse pipe:///<path to pipe>/<federationExecutionName> url \"") + url +
+    //                          std::string("\"."));
     // }
-    stringMap[L"protocol"] = protocol;
-    stringMap[L"address"] = path;
-    stringMap[L"federationExecutionName"] = name;
-  } else if (protocol == L"thread") {
+    stringMap["protocol"] = protocol;
+    stringMap["address"] = path;
+    stringMap["federationExecutionName"] = name;
+  } else if (protocol == "thread") {
     // if (!address.empty() || !path.empty() || name.empty()) {
-    //   Traits::throwRTIinternalError(std::wstring(L"Cannot parse thread:///<federationExecutionName> url \"") + url +
-    //                          std::wstring(L"\"."));
+    //   Traits::throwRTIinternalError(std::string("Cannot parse thread:///<federationExecutionName> url \"") + url +
+    //                          std::string("\"."));
     // }
-    stringMap[L"protocol"] = protocol;
-    stringMap[L"federationExecutionName"] = name;
+    stringMap["protocol"] = protocol;
+    stringMap["federationExecutionName"] = name;
   }
 
   return stringMap;
@@ -420,10 +430,6 @@ getStringMapFromUrl(const StringMap& defaults, const std::wstring& url)
 inline std::ostream&
 operator<<(std::ostream& stream, const std::wstring& s)
 { return stream << ucsToLocale(s); }
-
-inline std::wostream&
-operator<<(std::wostream& stream, const std::string& s)
-{ return stream << localeToUcs(s); }
 
 } // namespace OpenRTI
 

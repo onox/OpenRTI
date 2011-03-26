@@ -41,7 +41,7 @@ public:
     ScopeLock scopeLock(_mutex);
     /* FIXME */
     StringStringListMap valueMap;
-    valueMap[L"serverName"].push_back(L"ambassadorConnect");
+    valueMap["serverName"].push_back("ambassadorConnect");
     ConnectHandle connectHandle = ServerNode::insertConnect(messageSender, valueMap);
     if (!connectHandle.valid())
       return 0;
@@ -73,7 +73,7 @@ private:
     virtual void send(const SharedPtr<AbstractMessage>& message)
     {
       if (!_threadProtocolServer.valid())
-        throw RTIinternalError(L"Trying to send message to a closed MessageSender");
+        throw RTIinternalError("Trying to send message to a closed MessageSender");
       if (!message.valid())
         return;
       _threadProtocolServer->dispatchMessageLocked(*message, _connectHandle);
@@ -128,7 +128,7 @@ ThreadProtocol::~ThreadProtocol()
 }
 
 SharedPtr<AbstractConnect>
-ThreadProtocol::connect(const std::map<std::wstring,std::wstring>&, const Clock&) const
+ThreadProtocol::connect(const std::map<std::string,std::string>&, const Clock&) const
 {
   SharedPtr<ThreadMessageQueue> outgoingQueue = new ThreadMessageQueue;
   SharedPtr<AbstractMessageSender> toAmbassador = outgoingQueue->getMessageSender();

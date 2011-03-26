@@ -268,7 +268,7 @@ public:
     value = readBoolCompressed();
   }
 
-  void readString(std::wstring& value)
+  void readString(std::string& value)
   {
     value = readStringCompressed();
   }
@@ -1417,7 +1417,7 @@ public:
   {
   }
 
-  void readPayloadString(const std::wstring& value)
+  void readPayloadString(const std::string& value)
   {
   }
 

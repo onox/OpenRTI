@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -31,23 +31,23 @@ SocketPipe::SocketPipe() :
 }
 
 void
-SocketPipe::connect(const std::wstring& file)
+SocketPipe::connect(const std::string& file)
 {
   if (0 <= _privateData->_fd)
-    throw TransportError(L"Trying to connect an already open SocketPipe!");
+    throw TransportError("Trying to connect an already open SocketPipe!");
 
   int fd = socket(AF_UNIX, SOCK_STREAM, 0);
   if (fd == -1) {
     int errorNumber = errno;
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   // This is nice to have, so just try and don't bail out
   int flags = fcntl(fd, F_GETFD, 0);
   if (flags != -1)
     fcntl(fd, F_SETFD, flags | FD_CLOEXEC);
-    
-  std::string localeFile = ucsToLocale(file);
+
+  std::string localeFile = utf8ToLocale(file);
 
   // huger than needed but sufficient in any case
   size_t len = sizeof(struct sockaddr_un) + localeFile.size();
@@ -60,7 +60,7 @@ SocketPipe::connect(const std::wstring& file)
   free(addr);
   if (ret == -1) {
     ::close(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   // Past the connect use non blocking io, required.
@@ -68,13 +68,13 @@ SocketPipe::connect(const std::wstring& file)
   if (flags == -1) {
     errorNumber = errno;
     ::close(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   ret = fcntl(fd, F_SETFL, flags | O_NONBLOCK);
   if (ret == -1) {
     errorNumber = errno;
     ::close(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   _privateData->_fd = fd;

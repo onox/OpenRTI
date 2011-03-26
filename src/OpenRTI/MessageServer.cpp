@@ -35,7 +35,7 @@ public:
   virtual void send(const SharedPtr<AbstractMessage>& message)
   {
     if (!_messageServer.valid())
-      throw RTIinternalError(L"Trying to send message to a closed MessageSender");
+      throw RTIinternalError("Trying to send message to a closed MessageSender");
     if (!message.valid())
       return;
     _messageServer->dispatchMessage(*message, _connectHandle);

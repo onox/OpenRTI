@@ -59,7 +59,7 @@ public:
   // need locking for that.
   class NamedThread : public Thread {
   public:
-    NamedThread(ThreadRegistry* registry, const std::wstring& name) :
+    NamedThread(ThreadRegistry* registry, const std::string& name) :
       _registry(registry),
       _name(name),
       _done(false)
@@ -95,7 +95,7 @@ public:
       registry.deregisterThread(*this);
     }
 
-    const std::wstring& getName() const
+    const std::string& getName() const
     { return _name; }
 
   protected:
@@ -107,13 +107,13 @@ public:
     WeakPtr<ThreadRegistry> _registry;
     // The name this thread belongs to. Think of this as a connection or federation name
     // FIXME: hmm, anyway a template with a 'key_type' and a 'thread_type' ????
-    const std::wstring _name;
+    const std::string _name;
 
     // Signals if we should continue
     bool _done;
   };
 
-  virtual SharedPtr<NamedThread> createNewThread(const std::wstring& name) = 0;
+  virtual SharedPtr<NamedThread> createNewThread(const std::string& name) = 0;
 
   // connect/disconnect must go through the top level class.
   // That means connecting and disconnecting is serialized completely in an application.
@@ -129,7 +129,7 @@ public:
   // But a may be processing federation server must not block for longer time than just making sure its internals
   // are consistent. And it must not block until some of its users has disconnected completely.
 
-  SharedPtr<NamedThread> getOrCreateThread(const std::wstring& name)
+  SharedPtr<NamedThread> getOrCreateThread(const std::string& name)
   {
     // Only one thread startup/shutdown at a time
     ScopeLock startupScopeLock(_startupMutex);
@@ -164,7 +164,7 @@ public:
     { thread.stopThread(threadRegistry); }
   };
 
-  void destroyThread(const std::wstring& name)
+  void destroyThread(const std::string& name)
   {
     // just call the rempte procedure to stop the thread
     execThreadProcedure(name, new ThreadStopCallback, false);
@@ -172,7 +172,7 @@ public:
 
   // Syncronous execute the callback in the thread.
   // return true when successful
-  bool execThreadProcedure(const std::wstring& name, SharedPtr<ThreadProcedureCallback> callback, bool create)
+  bool execThreadProcedure(const std::string& name, SharedPtr<ThreadProcedureCallback> callback, bool create)
   {
     // Fast exit and make sure that we rally have someting todo.
     if (!callback.valid())
@@ -263,7 +263,7 @@ private:
   // Mutex to protect the map and condition for started up threads
   Condition _condition;
   Mutex _registerMutex;
-  typedef std::map<std::wstring, SharedPtr<NamedThread> > ThreadMap;
+  typedef std::map<std::string, SharedPtr<NamedThread> > ThreadMap;
   ThreadMap _threadMap;
   // Is put there when we have something deregistered, so that we can wait for it
   SharedPtr<NamedThread> _stoppedThread;

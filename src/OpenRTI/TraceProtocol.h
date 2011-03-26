@@ -31,7 +31,7 @@ class Clock;
 /// Protocol root factory for something that writes out traces of the communication.
 class OPENRTI_LOCAL TraceProtocol : public AbstractProtocol {
 public:
-  virtual SharedPtr<AbstractConnect> connect(const std::map<std::wstring,std::wstring>& parameterMap, const Clock& abstime) const;
+  virtual SharedPtr<AbstractConnect> connect(const std::map<std::string,std::string>& parameterMap, const Clock& abstime) const;
 
 private:
   class MessageDispatcher;

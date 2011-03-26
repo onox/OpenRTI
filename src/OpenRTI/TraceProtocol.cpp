@@ -32,7 +32,7 @@ namespace OpenRTI {
 
 class OPENRTI_LOCAL Stream : public Referenced {
 public:
-  Stream(const std::wstring& file) : _stream(ucsToLocale(file).c_str()) {}
+  Stream(const std::string& file) : _stream(utf8ToLocale(file).c_str()) {}
   virtual ~Stream() {}
   std::ofstream _stream;
 };
@@ -51,7 +51,7 @@ public:
   virtual void send(const SharedPtr<AbstractMessage>& message)
   {
     if (!_connect.valid())
-        throw RTIinternalError(L"Trying to send message to a closed MessageSender");
+        throw RTIinternalError("Trying to send message to a closed MessageSender");
     _stream->_stream << Clock::now() << ": out: " << *message << std::endl;
     _connect->send(message);
   }
@@ -105,9 +105,9 @@ private:
 };
 
 SharedPtr<AbstractConnect>
-TraceProtocol::connect(const std::map<std::wstring,std::wstring>& parameterMap, const Clock& abstime) const
+TraceProtocol::connect(const std::map<std::string,std::string>& parameterMap, const Clock& abstime) const
 {
-  std::map<std::wstring,std::wstring>::const_iterator i = parameterMap.find(L"traceProtocol");
+  std::map<std::string,std::string>::const_iterator i = parameterMap.find("traceProtocol");
   if (i == parameterMap.end())
     return 0;
 
@@ -119,8 +119,8 @@ TraceProtocol::connect(const std::map<std::wstring,std::wstring>& parameterMap, 
   if (!connect.valid())
     return 0;
 
-  std::wstring traceFile = L"trace.txt";
-  std::map<std::wstring,std::wstring>::const_iterator j = parameterMap.find(L"traceFile");
+  std::string traceFile = "trace.txt";
+  std::map<std::string,std::string>::const_iterator j = parameterMap.find("traceFile");
   if (j != parameterMap.end())
     traceFile = j->second;
 

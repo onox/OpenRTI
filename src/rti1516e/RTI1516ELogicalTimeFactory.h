@@ -30,8 +30,9 @@
 
 #include <memory>
 
-#include "VariableLengthDataImplementation.h"
 #include "HandleImplementation.h"
+#include "StringUtils.h"
+#include "VariableLengthDataImplementation.h"
 
 namespace OpenRTI {
 
@@ -97,7 +98,7 @@ public:
 
   RTI1516ELogicalTimeFactory& operator=(const RTI1516ELogicalTimeFactory&);
 
-  std::wstring getName() const;
+  std::string getName() const;
 
   LogicalTime initialLogicalTime() const;
   LogicalTimeInterval zeroLogicalTimeInterval() const;
@@ -126,10 +127,10 @@ public:
   VariableLengthData encodeLogicalTime(const LogicalTime& logicalTime)
   { return encodeLogicalTime(getLogicalTime(logicalTime)); }
 
-  std::wstring toString(const rti1516e::LogicalTime& logicalTime)
-  { return logicalTime.toString(); }
-  std::wstring toString(const rti1516e::LogicalTimeInterval& logicalTimeInterval)
-  { return logicalTimeInterval.toString(); }
+  std::string toString(const rti1516e::LogicalTime& logicalTime)
+  { return ucsToUtf8(logicalTime.toString()); }
+  std::string toString(const rti1516e::LogicalTimeInterval& logicalTimeInterval)
+  { return ucsToUtf8(logicalTimeInterval.toString()); }
 
 private:
   SharedPtr<LogicalTimeFactoryImplementation> _implementation;

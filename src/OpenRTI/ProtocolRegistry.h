@@ -41,12 +41,12 @@ public:
   ProtocolRegistry();
   ~ProtocolRegistry();
 
-  SharedPtr<const AbstractProtocol> getProtocol(const std::wstring& name);
-  void registerProtocol(const std::wstring& name, const SharedPtr<const AbstractProtocol>& protocol);
+  SharedPtr<const AbstractProtocol> getProtocol(const std::string& name);
+  void registerProtocol(const std::string& name, const SharedPtr<const AbstractProtocol>& protocol);
 
 private:
   Mutex _mutex;
-  typedef std::map<std::wstring, SharedPtr<const AbstractProtocol> > ProtocolMap;
+  typedef std::map<std::string, SharedPtr<const AbstractProtocol> > ProtocolMap;
   ProtocolMap _protocolMap;
 };
 

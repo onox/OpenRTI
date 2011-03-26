@@ -36,7 +36,7 @@ SocketServerTCP::bind(const SocketAddress& socketAddress)
 {
   int fd = socket(socketAddress._privateData->_addr->sa_family, SOCK_STREAM, 0);
   if (fd == -1)
-    throw TransportError(errnoToUcs(errno));
+    throw TransportError(errnoToUtf8(errno));
 
   // This is nice to have, so just try and don't bail out
   int flags = fcntl(fd, F_GETFD, 0);
@@ -51,7 +51,7 @@ SocketServerTCP::bind(const SocketAddress& socketAddress)
   if (ret == -1) {
     int errorNumber = errno;
     ::close(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   _privateData->_fd = fd;
@@ -63,7 +63,7 @@ SocketServerTCP::listen(int backlog)
   int ret = ::listen(_privateData->_fd, backlog);
   if (ret == -1) {
     int errorNumber = errno;
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 }
 
@@ -73,7 +73,7 @@ SocketServerTCP::accept()
   int fd = ::accept(_privateData->_fd, 0, 0);
   if (fd == -1) {
     int errorNumber = errno;
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   // Need to have non blocking IO
@@ -81,13 +81,13 @@ SocketServerTCP::accept()
   if (flags == -1) {
     int errorNumber = errno;
     ::close(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   int ret = fcntl(fd, F_SETFL, flags | O_NONBLOCK);
   if (ret == -1) {
     int errorNumber = errno;
     ::close(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
 #ifdef DEBUG_LATENCY
@@ -101,7 +101,7 @@ SocketServerTCP::accept()
   if (ret == -1) {
     int errorNumber = errno;
     ::close(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   return new SocketTCP(new PrivateData(fd));

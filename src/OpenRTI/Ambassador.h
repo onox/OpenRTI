@@ -161,12 +161,12 @@ public:
       if (_connect.valid())
         Traits::throwAlreadyConnected();
 
-      StringMap::const_iterator i = parameterMap.find(L"protocol");
+      StringMap::const_iterator i = parameterMap.find("protocol");
       if (i == parameterMap.end())
         Traits::throwConnectionFailed("Cannot get protocol.");
       SharedPtr<const AbstractProtocol> protocol = ProtocolRegistry::instance()->getProtocol(i->second);
       if (!protocol.valid())
-        Traits::throwConnectionFailed(std::wstring(L"Unknown or unsupported protocol \"") + i->second + std::wstring(L"\"."));
+        Traits::throwConnectionFailed(std::string("Unknown or unsupported protocol \"") + i->second + std::string("\"."));
 
       // a send receive pair to create a federation
       _connect = protocol->connect(parameterMap, abstime);
@@ -205,9 +205,9 @@ public:
   bool isConnected() const
   { return _connect.valid(); }
 
-  void createFederationExecution(const std::wstring& federationExecutionName,
-                                 const std::vector<std::wstring>& fomModules,
-                                 const std::wstring& logicalTimeFactoryName)
+  void createFederationExecution(const std::string& federationExecutionName,
+                                 const std::vector<std::string>& fomModules,
+                                 const std::string& logicalTimeFactoryName)
     throw (FederationExecutionAlreadyExists,
            // InconsistentFDD,
            CouldNotOpenFDD,
@@ -221,8 +221,8 @@ public:
   {
     try {
       if (!_connect.valid())
-        Traits::throwNotConnected(std::wstring(L"Could not get connect RTI of federation execution \"") +
-                                      federationExecutionName + std::wstring(L"\"."));
+        Traits::throwNotConnected(std::string("Could not get connect RTI of federation execution \"") +
+                                      federationExecutionName + std::string("\"."));
 
       // The create request message
       SharedPtr<CreateFederationExecutionRequestMessage> request = new CreateFederationExecutionRequestMessage;
@@ -230,7 +230,7 @@ public:
       request->setLogicalTimeFactoryName(logicalTimeFactoryName);
 
       // Try to read the object model
-      for (std::vector<std::wstring>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i) {
+      for (std::vector<std::string>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i) {
         FOMStringModule module;
         readFDDFile(*i, module);
         request->getFOMStringModuleList().push_back(module);
@@ -245,13 +245,13 @@ public:
 
       // Read the response and interpret that one
       if (!response.valid())
-        Traits::throwRTIinternalError(std::wstring(L"Received no response message while talking to RTI of federation execution \"") +
-                                      federationExecutionName + std::wstring(L"\"."));
+        Traits::throwRTIinternalError(std::string("Received no response message while talking to RTI of federation execution \"") +
+                                      federationExecutionName + std::string("\"."));
 
       CreateFederationExecutionResponseMessage* create = dynamic_cast<CreateFederationExecutionResponseMessage*>(response.get());
       if (!create)
-        Traits::throwRTIinternalError(std::wstring(L"Received unexpected message type \"") + localeToUcs(response->getTypeName()) + std::wstring(L"\" while talking to RTI of federation execution \"") +
-                                      federationExecutionName + std::wstring(L"\"."));
+        Traits::throwRTIinternalError(std::string("Received unexpected message type \"") + response->getTypeName() + std::string("\" while talking to RTI of federation execution \"") +
+                                      federationExecutionName + std::string("\"."));
 
       if (create->getCreateFederationExecutionResponseType() == CreateFederationExecutionResponseFederationExecutionAlreadyExists)
         Traits::throwFederationExecutionAlreadyExists(federationExecutionName);
@@ -267,7 +267,7 @@ public:
     }
   }
 
-  void destroyFederationExecution(const std::wstring& federationExecutionName)
+  void destroyFederationExecution(const std::string& federationExecutionName)
     throw (FederatesCurrentlyJoined,
            FederationExecutionDoesNotExist,
            NotConnected,
@@ -275,8 +275,8 @@ public:
   {
     try {
       if (!_connect.valid())
-        Traits::throwNotConnected(std::wstring(L"Could not get connect RTI of federation execution \"") +
-                                  federationExecutionName + std::wstring(L"\"."));
+        Traits::throwNotConnected(std::string("Could not get connect RTI of federation execution \"") +
+                                  federationExecutionName + std::string("\"."));
 
       // The destroy request message
       SharedPtr<DestroyFederationExecutionRequestMessage> request = new DestroyFederationExecutionRequestMessage;
@@ -293,8 +293,8 @@ public:
         SharedPtr<AbstractMessage> response = _connect->receive(abstime);
         // Read the response and interpret that one
         if (!response.valid())
-          Traits::throwRTIinternalError(std::wstring(L"Received no response message while talking to RTI of federation execution \"") +
-                                        federationExecutionName + std::wstring(L"\"."));
+          Traits::throwRTIinternalError(std::string("Received no response message while talking to RTI of federation execution \"") +
+                                        federationExecutionName + std::string("\"."));
         destroy = dynamic_cast<DestroyFederationExecutionResponseMessage*>(response.get());
         if (_federate.valid()) {
           if (!destroy.valid()) {
@@ -302,8 +302,8 @@ public:
           }
         } else {
           if (!destroy.valid())
-            Traits::throwRTIinternalError(std::wstring(L"Received unexpected message type \"") + localeToUcs(response->getTypeName()) + std::wstring(L"\" while talking to RTI of federation execution \"") +
-                                          federationExecutionName + std::wstring(L"\".") + localeToUcs(response->getTypeName()));
+            Traits::throwRTIinternalError(std::string("Received unexpected message type \"") + response->getTypeName() + std::string("\" while talking to RTI of federation execution \"") +
+                                          federationExecutionName + std::string("\".") + response->getTypeName());
         }
       }
 
@@ -341,9 +341,9 @@ public:
     }
   }
 
-  FederateHandle joinFederationExecution(const std::wstring& federateName, const std::wstring& federateType,
-                                         const std::wstring& federationExecutionName,
-                                         const std::vector<std::wstring>& additionalFomModules,
+  FederateHandle joinFederationExecution(const std::string& federateName, const std::string& federateType,
+                                         const std::string& federationExecutionName,
+                                         const std::vector<std::string>& additionalFomModules,
                                          FederateAmbassador* federateAmbassador)
     throw (CouldNotCreateLogicalTimeFactory,
            FederationExecutionDoesNotExist,
@@ -363,11 +363,11 @@ public:
         Traits::throwFederateAlreadyExecutionMember();
 
       if (!_connect.valid())
-        Traits::throwNotConnected(std::wstring(L"Could not get connect RTI of federation execution \"") +
-                                  federationExecutionName + std::wstring(L"\"."));
+        Traits::throwNotConnected(std::string("Could not get connect RTI of federation execution \"") +
+                                  federationExecutionName + std::string("\"."));
 
       if (!additionalFomModules.empty())
-        Traits::throwRTIinternalError(L"Additionaly FOM modules are not implemented yet!");
+        Traits::throwRTIinternalError("Additionaly FOM modules are not implemented yet!");
 
       // The maximum abstime to try to connect
       Clock abstime = Clock::now() + Clock::fromSeconds(70);
@@ -388,14 +388,14 @@ public:
 
         // Read the response and interpret that one
         if (!response.valid())
-          Traits::throwRTIinternalError(std::wstring(L"Received no response message while talking to RTI of federation execution \"") +
-                                        federationExecutionName + std::wstring(L"\"."));
+          Traits::throwRTIinternalError(std::string("Received no response message while talking to RTI of federation execution \"") +
+                                        federationExecutionName + std::string("\"."));
 
         if (dynamic_cast<InsertFederationExecutionMessage*>(response.get())) {
           insertFederationMessage = static_cast<InsertFederationExecutionMessage*>(response.get());
           // Put that into a factory into the ambassador FIXME
           //// FIXME: instead of a connect we need to cache message filters???
-          std::wstring federateName; // FIXME
+          std::string federateName; // FIXME
           FederateHandle federateHandle; // FIXME
           _federate = createFederate(federateType, federateName, federateHandle, federationExecutionName,
                                      *insertFederationMessage, _connect, federateAmbassador);
@@ -486,7 +486,7 @@ public:
     }
   }
 
-  void registerFederationSynchronizationPoint(const std::wstring& label, const VariableLengthData& tag)
+  void registerFederationSynchronizationPoint(const std::string& label, const VariableLengthData& tag)
     throw (FederateNotExecutionMember,
            SaveInProgress,
            RestoreInProgress,
@@ -503,7 +503,7 @@ public:
     }
   }
 
-  void registerFederationSynchronizationPoint(const std::wstring& label, const VariableLengthData& tag, const FederateHandleSet& syncSet)
+  void registerFederationSynchronizationPoint(const std::string& label, const VariableLengthData& tag, const FederateHandleSet& syncSet)
     throw (FederateNotExecutionMember,
            SaveInProgress,
            RestoreInProgress,
@@ -519,7 +519,7 @@ public:
     }
   }
 
-  void synchronizationPointAchieved(const std::wstring& label)
+  void synchronizationPointAchieved(const std::string& label)
     throw (SynchronizationPointLabelNotAnnounced,
            FederateNotExecutionMember,
            SaveInProgress,
@@ -536,7 +536,7 @@ public:
     }
   }
 
-  void requestFederationSave(const std::wstring& label)
+  void requestFederationSave(const std::string& label)
     throw (FederateNotExecutionMember,
            SaveInProgress,
            RestoreInProgress,
@@ -552,7 +552,7 @@ public:
     }
   }
 
-  void requestFederationSave(const std::wstring& label, const NativeLogicalTime& locicalTime)
+  void requestFederationSave(const std::string& label, const NativeLogicalTime& locicalTime)
     throw (LogicalTimeAlreadyPassed,
            InvalidLogicalTime,
            FederateUnableToUseTime,
@@ -634,7 +634,7 @@ public:
     }
   }
 
-  void requestFederationRestore(const std::wstring& label)
+  void requestFederationRestore(const std::string& label)
     throw (FederateNotExecutionMember,
            SaveInProgress,
            RestoreInProgress,
@@ -874,7 +874,7 @@ public:
     }
   }
 
-  void reserveObjectInstanceName(const std::wstring& objectInstanceName)
+  void reserveObjectInstanceName(const std::string& objectInstanceName)
     throw (IllegalName,
            FederateNotExecutionMember,
            SaveInProgress,
@@ -891,7 +891,7 @@ public:
     }
   }
 
-  void releaseObjectInstanceName(const std::wstring& objectInstanceName)
+  void releaseObjectInstanceName(const std::string& objectInstanceName)
     throw (ObjectInstanceNameNotReserved,
            SaveInProgress,
            RestoreInProgress,
@@ -908,7 +908,7 @@ public:
     }
   }
 
-  void reserveMultipleObjectInstanceName(const std::set<std::wstring>& objectInstanceName)
+  void reserveMultipleObjectInstanceName(const std::set<std::string>& objectInstanceName)
     throw (IllegalName,
            NameSetWasEmpty,
            FederateNotExecutionMember,
@@ -926,7 +926,7 @@ public:
     }
   }
 
-  void releaseMultipleObjectInstanceName(const std::set<std::wstring>& objectInstanceNameSet)
+  void releaseMultipleObjectInstanceName(const std::set<std::string>& objectInstanceNameSet)
     throw (ObjectInstanceNameNotReserved,
            SaveInProgress,
            RestoreInProgress,
@@ -960,7 +960,7 @@ public:
     }
   }
 
-  ObjectInstanceHandle registerObjectInstance(ObjectClassHandle objectClassHandle, const std::wstring& objectInstanceName,
+  ObjectInstanceHandle registerObjectInstance(ObjectClassHandle objectClassHandle, const std::string& objectInstanceName,
                                               bool allowUnreservedObjectNames)
     throw (ObjectClassNotDefined,
            ObjectClassNotPublished,
@@ -1845,7 +1845,7 @@ public:
   ObjectInstanceHandle
   registerObjectInstanceWithRegions(ObjectClassHandle objectClassHandle,
                                     const AttributeHandleSetRegionHandleSetPairVector& attributeHandleSetRegionHandleSetPairVector,
-                                    const std::wstring& objectInstanceName)
+                                    const std::string& objectInstanceName)
     throw (ObjectClassNotDefined,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -2100,7 +2100,7 @@ public:
     }
   }
 
-  ObjectClassHandle getObjectClassHandle(const std::wstring& name)
+  ObjectClassHandle getObjectClassHandle(const std::string& name)
     throw (NameNotFound,
            FederateNotExecutionMember,
            RTIinternalError)
@@ -2114,7 +2114,7 @@ public:
     }
   }
 
-  const std::wstring& getObjectClassName(ObjectClassHandle objectClassHandle)
+  const std::string& getObjectClassName(ObjectClassHandle objectClassHandle)
     throw (InvalidObjectClassHandle,
            FederateNotExecutionMember,
            RTIinternalError)
@@ -2128,7 +2128,7 @@ public:
     }
   }
 
-  AttributeHandle getAttributeHandle(ObjectClassHandle objectClassHandle, const std::wstring& name)
+  AttributeHandle getAttributeHandle(ObjectClassHandle objectClassHandle, const std::string& name)
     throw (InvalidObjectClassHandle,
            NameNotFound,
            FederateNotExecutionMember,
@@ -2143,7 +2143,7 @@ public:
     }
   }
 
-  const std::wstring& getAttributeName(ObjectClassHandle objectClassHandle, AttributeHandle attributeHandle)
+  const std::string& getAttributeName(ObjectClassHandle objectClassHandle, AttributeHandle attributeHandle)
     throw (InvalidObjectClassHandle,
            InvalidAttributeHandle,
            AttributeNotDefined,
@@ -2159,7 +2159,7 @@ public:
     }
   }
 
-  InteractionClassHandle getInteractionClassHandle(const std::wstring& name)
+  InteractionClassHandle getInteractionClassHandle(const std::string& name)
     throw (NameNotFound,
            FederateNotExecutionMember,
            RTIinternalError)
@@ -2173,7 +2173,7 @@ public:
     }
   }
 
-  const std::wstring& getInteractionClassName(InteractionClassHandle interactionClassHandle)
+  const std::string& getInteractionClassName(InteractionClassHandle interactionClassHandle)
     throw (InvalidInteractionClassHandle,
            FederateNotExecutionMember,
            RTIinternalError)
@@ -2187,7 +2187,7 @@ public:
     }
   }
 
-  ParameterHandle getParameterHandle(InteractionClassHandle interactionClassHandle, const std::wstring& name)
+  ParameterHandle getParameterHandle(InteractionClassHandle interactionClassHandle, const std::string& name)
     throw (InvalidInteractionClassHandle,
            NameNotFound,
            FederateNotExecutionMember,
@@ -2202,7 +2202,7 @@ public:
     }
   }
 
-  const std::wstring& getParameterName(InteractionClassHandle interactionClassHandle, ParameterHandle parameterHandle)
+  const std::string& getParameterName(InteractionClassHandle interactionClassHandle, ParameterHandle parameterHandle)
     throw (InvalidInteractionClassHandle,
            InvalidParameterHandle,
            InteractionParameterNotDefined,
@@ -2218,7 +2218,7 @@ public:
     }
   }
 
-  ObjectInstanceHandle getObjectInstanceHandle(const std::wstring& name)
+  ObjectInstanceHandle getObjectInstanceHandle(const std::string& name)
     throw (ObjectInstanceNotKnown,
            FederateNotExecutionMember,
            RTIinternalError)
@@ -2232,7 +2232,7 @@ public:
     }
   }
 
-  const std::wstring& getObjectInstanceName(ObjectInstanceHandle objectInstanceHandle)
+  const std::string& getObjectInstanceName(ObjectInstanceHandle objectInstanceHandle)
     throw (ObjectInstanceNotKnown,
            FederateNotExecutionMember,
            RTIinternalError)
@@ -2246,7 +2246,7 @@ public:
     }
   }
 
-  DimensionHandle getDimensionHandle(const std::wstring& name)
+  DimensionHandle getDimensionHandle(const std::string& name)
     throw (NameNotFound,
            FederateNotExecutionMember,
            RTIinternalError)
@@ -2260,7 +2260,7 @@ public:
     }
   }
 
-  const std::wstring& getDimensionName(DimensionHandle dimensionHandle)
+  const std::string& getDimensionName(DimensionHandle dimensionHandle)
     throw (InvalidDimensionHandle,
            FederateNotExecutionMember,
            RTIinternalError)
@@ -2333,7 +2333,7 @@ public:
     }
   }
 
-  TransportationType getTransportationType(const std::wstring& name)
+  TransportationType getTransportationType(const std::string& name)
     throw (InvalidTransportationName,
            FederateNotExecutionMember,
            RTIinternalError)
@@ -2347,7 +2347,7 @@ public:
     }
   }
 
-  const std::wstring& getTransportationName(TransportationType transportationType)
+  const std::string& getTransportationName(TransportationType transportationType)
     throw (InvalidTransportationType,
            FederateNotExecutionMember,
            RTIinternalError)
@@ -2361,7 +2361,7 @@ public:
     }
   }
 
-  OrderType getOrderType(const std::wstring& name)
+  OrderType getOrderType(const std::string& name)
     throw (InvalidOrderName,
            FederateNotExecutionMember,
            RTIinternalError)
@@ -2375,7 +2375,7 @@ public:
     }
   }
 
-  std::wstring getOrderName(OrderType orderType)
+  std::string getOrderName(OrderType orderType)
     throw (InvalidOrderType,
            FederateNotExecutionMember,
            RTIinternalError)
@@ -2664,12 +2664,12 @@ public:
     }
   }
 
-  virtual AbstractFederate<Traits>* createFederate(const std::wstring& federateType, const std::wstring& federateName,
-                                                   const FederateHandle& federateHandle, const std::wstring& federationName,
+  virtual AbstractFederate<Traits>* createFederate(const std::string& federateType, const std::string& federateName,
+                                                   const FederateHandle& federateHandle, const std::string& federationName,
                                                    const InsertFederationExecutionMessage& insertFederationExecution,
                                                    SharedPtr<AbstractConnect> connect, FederateAmbassador* federateAmbassador) = 0;
 
-  virtual void connectionLost(const std::wstring& faultDescription)
+  virtual void connectionLost(const std::string& faultDescription)
     throw ()
   { }
 

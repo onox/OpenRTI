@@ -49,7 +49,7 @@ MessageSocketReadEvent::readPacket(SocketEventDispatcher& dispatcher, NetworkBuf
 }
 
 void
-MessageSocketReadEvent::readError(const std::wstring& reason)
+MessageSocketReadEvent::readError(const std::string& reason)
 {
   SharedPtr<ConnectionLostMessage> message = new ConnectionLostMessage;
   message->setFaultDescription(reason);

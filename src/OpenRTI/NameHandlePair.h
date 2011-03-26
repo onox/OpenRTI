@@ -30,18 +30,18 @@ class NameHandlePair : public Referenced {
 public:
   typedef H Handle;
 
-  NameHandlePair(const std::wstring& name, const Handle& handle) :
+  NameHandlePair(const std::string& name, const Handle& handle) :
     _name(name), _handle(handle)
   { }
 
-  const std::wstring& getName() const
+  const std::string& getName() const
   { return _name; }
 
   const Handle& getHandle() const
   { return _handle; }
 
 private:  
-  const std::wstring _name;
+  const std::string _name;
   const Handle _handle;
 };
 

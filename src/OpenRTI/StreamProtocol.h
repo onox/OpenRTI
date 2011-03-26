@@ -32,7 +32,7 @@ class OPENRTI_LOCAL StreamProtocol : public AbstractProtocol {
 public:
   StreamProtocol(SharedPtr<ServerThreadRegistry> serverThreadRegistry);
   virtual ~StreamProtocol();
-  virtual SharedPtr<AbstractConnect> connect(const std::map<std::wstring,std::wstring>& parameterMap, const Clock& abstime) const;
+  virtual SharedPtr<AbstractConnect> connect(const std::map<std::string,std::string>& parameterMap, const Clock& abstime) const;
 
 private:
   class Connect;

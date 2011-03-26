@@ -31,7 +31,7 @@ class SocketPipe : public SocketStream {
 public:
   SocketPipe();
 
-  void connect(const std::wstring& file);
+  void connect(const std::string& file);
 
 protected:
   SocketPipe(PrivateData* privateData);

@@ -33,7 +33,7 @@ SocketWakeupEvent::read()
     int errorNumber = WSAGetLastError();
     if (errorNumber == WSAEWOULDBLOCK || errorNumber == WSAEINTR || errorNumber == WSAEINPROGRESS)
       return 0;
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   
   if (ret == 0)

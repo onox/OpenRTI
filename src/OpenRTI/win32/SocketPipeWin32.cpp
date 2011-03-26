@@ -26,13 +26,13 @@ namespace OpenRTI {
 SocketPipe::SocketPipe() :
   SocketStream(new PrivateData)
 {
-  throw RTIinternalError(L"Pipes are not implemented on WIN32");
+  throw RTIinternalError("Pipes are not implemented on WIN32");
 }
 
 void
-SocketPipe::connect(const std::wstring& file)
+SocketPipe::connect(const std::string& file)
 {
-  throw RTIinternalError(L"Pipes are not implemented on WIN32");
+  throw RTIinternalError("Pipes are not implemented on WIN32");
 }
 
 SocketPipe::~SocketPipe()

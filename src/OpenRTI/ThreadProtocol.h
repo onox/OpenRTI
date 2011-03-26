@@ -30,7 +30,7 @@ public:
   ThreadProtocol();
   virtual ~ThreadProtocol();
 
-  virtual SharedPtr<AbstractConnect> connect(const std::map<std::wstring,std::wstring>&, const Clock&) const;
+  virtual SharedPtr<AbstractConnect> connect(const std::map<std::string,std::string>&, const Clock&) const;
 
 private:
   class ThreadProtocolServer;

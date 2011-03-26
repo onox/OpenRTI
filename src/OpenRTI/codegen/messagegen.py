@@ -1042,7 +1042,7 @@ class MessageEncoding(object):
         sourceStream.writeline('void')
         sourceStream.writeline('encode(NetworkBuffer& networkBuffer, const AbstractMessage& message) const')
         sourceStream.writeline('{')
-        sourceStream.writeline('  throw RTIinternalError(L"Invalid message dispatched to encoder!");')
+        sourceStream.writeline('  throw RTIinternalError("Invalid message dispatched to encoder!");')
         sourceStream.writeline('}')
         sourceStream.writeline()
 

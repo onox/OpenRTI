@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -37,7 +37,7 @@ SocketWakeupTrigger::connect()
     return _socketWakeupEvent.get();
 
   if (_privateData->_socket != SOCKET_ERROR)
-    throw TransportError(L"SocketEventTrigger already connected but _socketWakeupEvent is zero!");
+    throw TransportError("SocketEventTrigger already connected but _socketWakeupEvent is zero!");
 
   _privateData->wsaStartup();
 
@@ -45,7 +45,7 @@ SocketWakeupTrigger::connect()
   SOCKET listener = socket(AF_INET, SOCK_STREAM, 0);
   if (listener == INVALID_SOCKET) {
     int errorNumber = WSAGetLastError();
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   struct sockaddr_in addr;
@@ -59,13 +59,13 @@ SocketWakeupTrigger::connect()
   if (ret == SOCKET_ERROR) {
     int errorNumber = WSAGetLastError();
     closesocket(listener);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   ret = getsockname(listener, (struct sockaddr*)&addr, &addrlen);
   if (ret == SOCKET_ERROR) {
     int errorNumber = WSAGetLastError();
     closesocket(listener);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   // Note that this 'listen for exactly 1 connect' is the key to prevent a
@@ -73,32 +73,32 @@ SocketWakeupTrigger::connect()
   if (listen(listener, 1) == SOCKET_ERROR) {
     int errorNumber = WSAGetLastError();
     closesocket(listener);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   SOCKET pipeFd[2];
   pipeFd[0] = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
   if (pipeFd[0] == INVALID_SOCKET) {
     int errorNumber = WSAGetLastError();
     closesocket(listener);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   if (::connect(pipeFd[0], (const struct sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
     int errorNumber = WSAGetLastError();
     closesocket(pipeFd[0]);
     closesocket(listener);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   pipeFd[1] = accept(listener, NULL, NULL);
   if (pipeFd[1] == INVALID_SOCKET) {
     int errorNumber = WSAGetLastError();
     closesocket(pipeFd[0]);
     closesocket(listener);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   closesocket(listener);
 
   _privateData->_socket = pipeFd[1];
-  
+
   _socketWakeupEvent = new SocketWakeupEvent(new PrivateData(pipeFd[0]));
   return _socketWakeupEvent.get();
 }
@@ -114,7 +114,7 @@ SocketWakeupTrigger::trigger()
       return -1;
     if (errorNumber == WSAEINTR || errorNumber == WSAEINPROGRESS || errorNumber == WSAENOBUFS || errorNumber == WSAEWOULDBLOCK)
       return 0;
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   return 1;
 }

@@ -81,24 +81,24 @@ public:
     }
   }
 
-  std::wstring getAddress(unsigned i) const
+  std::string getAddress(unsigned i) const
   {
     if (_serverThreadList.empty())
-      return std::wstring();
+      return std::string();
     return _serverThreadList[i % _serverThreadList.size()]->getAddress();
   }
 
 private:
   class ServerThread : public Thread {
   public:
-    void setupServer(const std::wstring& host, unsigned short port, unsigned short parentPort)
+    void setupServer(const std::string& host, unsigned short port, unsigned short parentPort)
     {
-      std::wstringstream address;
+      std::stringstream address;
       address << host << ":" << port;
       _address = address.str();
       _server.setServerName(_address);
       if (parentPort) {
-        std::wstringstream address;
+        std::stringstream address;
         address << host << ":" << parentPort;
         Clock abstime = Clock::now() + Clock::fromSeconds(1);
         _server.connectParentInetServer(address.str(), abstime);
@@ -113,7 +113,7 @@ private:
       wait();
     }
 
-    const std::wstring& getAddress() const
+    const std::string& getAddress() const
     { return _address; }
 
   protected:
@@ -124,7 +124,7 @@ private:
     { _server.exec(); }
 
     Server _server;
-    std::wstring _address;
+    std::string _address;
   };
 
   void startServer(unsigned short& port, unsigned short parentPort)
@@ -132,7 +132,7 @@ private:
     SharedPtr<ServerThread> serverThread = new ServerThread;
     while (1) {
       try {
-        serverThread->setupServer(L"localhost", port, parentPort);
+        serverThread->setupServer("localhost", port, parentPort);
         break;
       } catch (...) {
         ++port;
@@ -261,7 +261,7 @@ public:
     {
       if (_successCount == 1)
         return true;
-      std::wcout << "Aborting due to non unique success: successCount = " << _successCount << std::endl;
+      std::cout << "Aborting due to non unique success: successCount = " << _successCount << std::endl;
       _successCount = 0;
       _failCount = 0;
       return false;
@@ -302,7 +302,7 @@ public:
         return;
 
       if ((i->first % 100) == 0)
-        std::wcout << i->first << std::endl;
+        std::cout << i->first << std::endl;
 
       _lbtsMap.erase(i);
     }
@@ -487,7 +487,7 @@ public:
       } else {
         constructorArgs._federationExecution = _federationExecution;
       }
-      constructorArgs._address = _serverPool.getAddress(i);
+      constructorArgs._address = utf8ToUcs(_serverPool.getAddress(i));
       constructorArgs._traceAmbassadors = _traceAmbassadors;
 
       SharedPtr<Ambassador> testAmbassador;
@@ -502,7 +502,7 @@ public:
     // Execute one of them in the main thread
     std::wstring federateType = constructorArgs._federateList[0];
     constructorArgs._federateType = federateType;
-    constructorArgs._address = _serverPool.getAddress(0);
+    constructorArgs._address = utf8ToUcs(_serverPool.getAddress(0));
     constructorArgs._traceAmbassadors = _traceAmbassadors;
     constructorArgs._federationExecution = _federationExecution;
 

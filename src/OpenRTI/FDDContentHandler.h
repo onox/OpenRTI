@@ -52,82 +52,82 @@ public:
   {
     if (strcmp(name, "attribute") == 0) {
       if (getCurrentMode() != ObjectClassMode)
-        throw ErrorReadingFDD(L"attribute tag outside objectClass!");
+        throw ErrorReadingFDD("attribute tag outside objectClass!");
       _modeStack.push_back(AttributeMode);
 
-      std::wstring name = trim(utf8ToUcs(atts->getValue("name")));
-      std::wstring order = trim(utf8ToUcs(atts->getValue("order")));
-      std::wstring transportation = trim(utf8ToUcs(atts->getValue("transportation")));
+      std::string name = trim(atts->getValue("name"));
+      std::string order = trim(atts->getValue("order"));
+      std::string transportation = trim(atts->getValue("transportation"));
 
       _fomStringModuleBuilder.addAttribute(name, order, transportation);
 
-      std::vector<std::wstring> dimensionList = split(utf8ToUcs(atts->getValue("dimensions")), L", \t\n");
-      for (std::vector<std::wstring>::const_iterator i = dimensionList.begin(); i != dimensionList.end(); ++i) {
-        std::wstring trimmed = trim(*i);
+      std::vector<std::string> dimensionList = split(atts->getValue("dimensions"), ", \t\n");
+      for (std::vector<std::string>::const_iterator i = dimensionList.begin(); i != dimensionList.end(); ++i) {
+        std::string trimmed = trim(*i);
         if (trimmed.empty())
           continue;
-        if (trimmed == L"NA")
+        if (trimmed == "NA")
           continue;
         _fomStringModuleBuilder.addAttributeDimension(trimmed);
       }
 
     } else if (strcmp(name, "objectClass") == 0) {
       if (getCurrentMode() != ObjectsMode && getCurrentMode() != ObjectClassMode)
-        throw ErrorReadingFDD(L"objectClass tag outside objectClass or objects!");
+        throw ErrorReadingFDD("objectClass tag outside objectClass or objects!");
       _modeStack.push_back(ObjectClassMode);
 
-      std::wstring name = trim(utf8ToUcs(atts->getValue("name")));
+      std::string name = trim(atts->getValue("name"));
       _fomStringModuleBuilder.pushObjectClassData(name);
 
     } else if (strcmp(name, "objects") == 0) {
       if (getCurrentMode() != ObjectModelMode)
-        throw ErrorReadingFDD(L"objects tag outside objectModel!");
+        throw ErrorReadingFDD("objects tag outside objectModel!");
       _modeStack.push_back(ObjectsMode);
 
     } else if (strcmp(name, "parameter") == 0) {
       if (getCurrentMode() != InteractionClassMode)
-        throw ErrorReadingFDD(L"parameter tag outside interactionClass!");
+        throw ErrorReadingFDD("parameter tag outside interactionClass!");
       _modeStack.push_back(ParameterMode);
 
-      std::wstring name = trim(utf8ToUcs(atts->getValue("name")));
+      std::string name = trim(atts->getValue("name"));
       _fomStringModuleBuilder.addParameter(name);
 
     } else if (strcmp(name, "interactionClass") == 0) {
       if (getCurrentMode() != InteractionsMode && getCurrentMode() != InteractionClassMode)
-        throw ErrorReadingFDD(L"interactionClass tag outside interactions or interactionClass!");
+        throw ErrorReadingFDD("interactionClass tag outside interactions or interactionClass!");
       _modeStack.push_back(InteractionClassMode);
 
-      std::wstring name = trim(utf8ToUcs(atts->getValue("name")));
-      std::wstring order = trim(utf8ToUcs(atts->getValue("order")));
-      std::wstring transportation = trim(utf8ToUcs(atts->getValue("transportation")));
+      std::string name = trim(atts->getValue("name"));
+      std::string order = trim(atts->getValue("order"));
+      std::string transportation = trim(atts->getValue("transportation"));
       _fomStringModuleBuilder.pushInteractionClassData(name, order, transportation);
 
-      std::vector<std::wstring> dimensionList = split(utf8ToUcs(atts->getValue("dimensions")),  L", \t\n");
-      for (std::vector<std::wstring>::const_iterator i = dimensionList.begin(); i != dimensionList.end(); ++i) {
-        std::wstring trimmed = trim(*i);
+      std::vector<std::string> dimensionList = split(atts->getValue("dimensions"),  ", \t\n");
+      for (std::vector<std::string>::const_iterator i = dimensionList.begin(); i != dimensionList.end(); ++i) {
+        std::string trimmed = trim(*i);
         if (trimmed.empty())
           continue;
-        if (trimmed == L"NA")
+        if (trimmed == "NA")
           continue;
         _fomStringModuleBuilder.addInteractionDimension(trimmed);
       }
 
     } else if (strcmp(name, "interactions") == 0) {
       if (getCurrentMode() != ObjectModelMode)
-        throw ErrorReadingFDD(L"interactions tag outside objectModel!");
+        throw ErrorReadingFDD("interactions tag outside objectModel!");
       _modeStack.push_back(InteractionsMode);
 
     } else if (strcmp(name, "dimensions") == 0) {
       if (getCurrentMode() != ObjectModelMode)
-        throw ErrorReadingFDD(L"dimensions tag outside objectModel!");
+        throw ErrorReadingFDD("dimensions tag outside objectModel!");
       _modeStack.push_back(DimensionsMode);
 
     } else if (strcmp(name, "dimension") == 0) {
       if (getCurrentMode() != DimensionsMode)
-        throw ErrorReadingFDD(L"dimension tag outside dimensions!");
+        throw ErrorReadingFDD("dimension tag outside dimensions!");
       _modeStack.push_back(DimensionMode);
 
-      std::wstring name = trim(utf8ToUcs(atts->getValue("name")));
+      std::string name = trim(atts->getValue("name"));
       std::stringstream ss(atts->getValue("upperBound"));
       Unsigned upperBound = 0;
       ss >> upperBound;
@@ -135,100 +135,100 @@ public:
 
     } else if (strcmp(name, "transportation") == 0) {
       if (getCurrentMode() != TransportationsMode)
-        throw ErrorReadingFDD(L"transportation tag outside transportations!");
+        throw ErrorReadingFDD("transportation tag outside transportations!");
       _modeStack.push_back(TransportationMode);
 
-      std::wstring name = trim(utf8ToUcs(atts->getValue("name")));
+      std::string name = trim(atts->getValue("name"));
       _fomStringModuleBuilder.addTransportationType(name);
 
     } else if (strcmp(name, "transportations") == 0) {
       if (getCurrentMode() != ObjectModelMode)
-        throw ErrorReadingFDD(L"transportations tag outside objectModel!");
+        throw ErrorReadingFDD("transportations tag outside objectModel!");
       _modeStack.push_back(TransportationsMode);
 
     } else if (strcmp(name, "basicData") == 0) {
       if (getCurrentMode() != BasicDataRepresentationsMode)
-        throw ErrorReadingFDD(L"basicData tag outside basicDataRepresentations!");
+        throw ErrorReadingFDD("basicData tag outside basicDataRepresentations!");
       _modeStack.push_back(BasicDataMode);
 
     } else if (strcmp(name, "basicDataRepresentations") == 0) {
       if (getCurrentMode() != DataTypesMode)
-        throw ErrorReadingFDD(L"basicDataRepresentations tag outside dataTypes!");
+        throw ErrorReadingFDD("basicDataRepresentations tag outside dataTypes!");
       _modeStack.push_back(BasicDataRepresentationsMode);
 
     } else if (strcmp(name, "simpleData") == 0) {
       if (getCurrentMode() != SimpleDataTypesMode)
-        throw ErrorReadingFDD(L"simpleData tag outside simpleDataTypes!");
+        throw ErrorReadingFDD("simpleData tag outside simpleDataTypes!");
       _modeStack.push_back(SimpleDataMode);
 
     } else if (strcmp(name, "simpleDataTypes") == 0) {
       if (getCurrentMode() != DataTypesMode)
-        throw ErrorReadingFDD(L"simpleDataTypes tag outside dataTypes!");
+        throw ErrorReadingFDD("simpleDataTypes tag outside dataTypes!");
       _modeStack.push_back(SimpleDataTypesMode);
 
     } else if (strcmp(name, "enumerator") == 0) {
       if (getCurrentMode() != EnumeratedDataMode)
-        throw ErrorReadingFDD(L"enumerator tag outside enumeratedData!");
+        throw ErrorReadingFDD("enumerator tag outside enumeratedData!");
       _modeStack.push_back(EnumeratorMode);
 
     } else if (strcmp(name, "enumeratedData") == 0) {
       if (getCurrentMode() != EnumeratedDataTypesMode)
-        throw ErrorReadingFDD(L"enumeratedData tag outside enumeratedDataTypes!");
+        throw ErrorReadingFDD("enumeratedData tag outside enumeratedDataTypes!");
       _modeStack.push_back(EnumeratedDataMode);
 
     } else if (strcmp(name, "enumeratedDataTypes") == 0) {
       if (getCurrentMode() != DataTypesMode)
-        throw ErrorReadingFDD(L"enumeratedDataTypes tag outside dataTypes!");
+        throw ErrorReadingFDD("enumeratedDataTypes tag outside dataTypes!");
       _modeStack.push_back(EnumeratedDataTypesMode);
 
     } else if (strcmp(name, "arrayData") == 0) {
       if (getCurrentMode() != ArrayDataTypesMode)
-        throw ErrorReadingFDD(L"arrayData tag outside arrayDataTypes!");
+        throw ErrorReadingFDD("arrayData tag outside arrayDataTypes!");
       _modeStack.push_back(ArrayDataMode);
 
     } else if (strcmp(name, "arrayDataTypes") == 0) {
       if (getCurrentMode() != DataTypesMode)
-        throw ErrorReadingFDD(L"arrayDataTypes tag outside dataTypes!");
+        throw ErrorReadingFDD("arrayDataTypes tag outside dataTypes!");
       _modeStack.push_back(ArrayDataTypesMode);
 
     } else if (strcmp(name, "field") == 0) {
       if (getCurrentMode() != FixedRecordDataMode)
-        throw ErrorReadingFDD(L"field tag outside fixedRecordData!");
+        throw ErrorReadingFDD("field tag outside fixedRecordData!");
       _modeStack.push_back(FieldMode);
 
     } else if (strcmp(name, "fixedRecordData") == 0) {
       if (getCurrentMode() != FixedRecordDataTypesMode)
-        throw ErrorReadingFDD(L"fixedRecordData tag outside fixedRecordDataTypes!");
+        throw ErrorReadingFDD("fixedRecordData tag outside fixedRecordDataTypes!");
       _modeStack.push_back(FixedRecordDataMode);
 
     } else if (strcmp(name, "fixedRecordDataTypes") == 0) {
       if (getCurrentMode() != DataTypesMode)
-        throw ErrorReadingFDD(L"fixedRecordDataTypes tag outside dataTypes!");
+        throw ErrorReadingFDD("fixedRecordDataTypes tag outside dataTypes!");
       _modeStack.push_back(FixedRecordDataTypesMode);
 
     } else if (strcmp(name, "alternative") == 0) {
       if (getCurrentMode() != VariantRecordDataMode)
-        throw ErrorReadingFDD(L"alternative tag outside variantRecordData!");
+        throw ErrorReadingFDD("alternative tag outside variantRecordData!");
       _modeStack.push_back(AlternativeDataMode);
 
     } else if (strcmp(name, "variantRecordData") == 0) {
       if (getCurrentMode() != VariantRecordDataTypesMode)
-        throw ErrorReadingFDD(L"variantRecordData tag outside variantRecordDataTypes!");
+        throw ErrorReadingFDD("variantRecordData tag outside variantRecordDataTypes!");
       _modeStack.push_back(VariantRecordDataMode);
 
     } else if (strcmp(name, "variantRecordDataTypes") == 0) {
       if (getCurrentMode() != DataTypesMode)
-        throw ErrorReadingFDD(L"variantRecordDataTypes tag outside dataTypes!");
+        throw ErrorReadingFDD("variantRecordDataTypes tag outside dataTypes!");
       _modeStack.push_back(VariantRecordDataTypesMode);
 
     } else if (strcmp(name, "dataTypes") == 0) {
       if (getCurrentMode() != ObjectModelMode)
-        throw ErrorReadingFDD(L"dataTypes tag outside objectModel!");
+        throw ErrorReadingFDD("dataTypes tag outside objectModel!");
       _modeStack.push_back(DataTypesMode);
 
     } else if (strcmp(name, "objectModel") == 0) {
       if (!_modeStack.empty())
-        throw ErrorReadingFDD(L"objectModel tag not at top level!");
+        throw ErrorReadingFDD("objectModel tag not at top level!");
       _modeStack.push_back(ObjectModelMode);
 
     } else {
@@ -338,8 +338,8 @@ public:
   {
   }
 
-  std::wstring getMessages() const
-  { return utf8ToUcs(_stream.str()); }
+  std::string getMessages() const
+  { return _stream.str(); }
 
 private:
   std::stringstream _stream;

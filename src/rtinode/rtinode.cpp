@@ -57,7 +57,7 @@ main(int argc, char* argv[])
     case 'f':
       try {
         defaultListen = false;
-        server.listenPipe(localeToUcs(options.getArgument()), 20);
+        server.listenPipe(localeToUtf8(options.getArgument()), 20);
       } catch (const Exception& e) {
         std::cerr << "Could not set up pipe server transport:" << std::endl;
         std::cerr << e.getReasonInLocale() << std::endl;
@@ -66,7 +66,7 @@ main(int argc, char* argv[])
     case 'i':
       try {
         defaultListen = false;
-        server.listenInet(localeToUcs(options.getArgument()), 20);
+        server.listenInet(localeToUtf8(options.getArgument()), 20);
       } catch (const Exception& e) {
         std::cerr << "Could not set up inet server transport:" << std::endl;
         std::cerr << e.getReasonInLocale() << std::endl;
@@ -74,7 +74,7 @@ main(int argc, char* argv[])
       break;
     case 'p':
       try {
-        server.connectParentInetServer(localeToUcs(options.getArgument()), Clock::now() + Clock::fromSeconds(75));
+        server.connectParentInetServer(localeToUtf8(options.getArgument()), Clock::now() + Clock::fromSeconds(75));
       } catch (const Exception& e) {
         std::cerr << "Could not connect parent server:" << std::endl;
         std::cerr << e.getReasonInLocale() << std::endl;
@@ -89,10 +89,10 @@ main(int argc, char* argv[])
   if (defaultListen) {
     // Try to listen on all sockets by default
     try {
-      server.listenInet(L"::", 20);
+      server.listenInet("::", 20);
     } catch (const Exception&) {
       try {
-        server.listenInet(L"0.0.0.0", 20);
+        server.listenInet("0.0.0.0", 20);
       } catch (const Exception& e) {
         std::cerr << "Could not set up default inet server transport:" << std::endl;
         std::cerr << e.getReasonInLocale() << std::endl;

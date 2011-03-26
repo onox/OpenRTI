@@ -35,35 +35,35 @@ MessageEncoderPair
 MessageEncodingRegistry::getEncodingPair(const StringStringListMap& valueMap) const
 {
   // get the enconding ...
-  StringStringListMap::const_iterator i = valueMap.find(L"encoding");
+  StringStringListMap::const_iterator i = valueMap.find("encoding");
   if (i == valueMap.end() || i->second.size() != 1) {
     // Ok, nothing expected. Try to find out if we have an error message from the server?
-    i = valueMap.find(L"error");
+    i = valueMap.find("error");
     if (i == valueMap.end() || i->second.empty())
-      throw RTIinternalError(L"No response from server!");
+      throw RTIinternalError("No response from server!");
     throw RTIinternalError(i->second.front());
   }
 
-  std::wstring encodingName = i->second.front();
-  if (encodingName == L"TightBE1")
+  std::string encodingName = i->second.front();
+  if (encodingName == "TightBE1")
     return MessageEncoderPair(new TightBE1MessageEncoder, new TightBE1MessageDecoder);
 
-  throw RTIinternalError(L"No matching encoder: Dropping connection!");
+  throw RTIinternalError("No matching encoder: Dropping connection!");
 }
 
 bool
 MessageEncodingRegistry::getUseCompression(const StringStringListMap& valueMap)
 {
-  StringStringListMap::const_iterator i = valueMap.find(L"compression");
+  StringStringListMap::const_iterator i = valueMap.find("compression");
   if (i == valueMap.end())
     return false;
   if (i->second.size() != 1)
     return false;
-  return i->second.front() == L"zlib";
+  return i->second.front() == "zlib";
 }
 
 MessageEncoderPair
-MessageEncodingRegistry::negotiateEncoding(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, const std::wstring& serverName, bool& compress, StringStringListMap& parentOptions) const
+MessageEncodingRegistry::negotiateEncoding(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, const std::string& serverName, bool& compress, StringStringListMap& parentOptions) const
 {
   SocketEventDispatcher dispatcher;
 
@@ -71,20 +71,20 @@ MessageEncodingRegistry::negotiateEncoding(const SharedPtr<SocketStream>& socket
   StringStringListMap valueMap;
 
   // The rti version we support. This is currently fixed 1
-  valueMap[L"version"].push_back(L"2alpha");
+  valueMap["version"].push_back("2alpha");
   // The current servers name
-  valueMap[L"serverName"].push_back(serverName);
+  valueMap["serverName"].push_back(serverName);
 #ifdef OPENRTI_HAVE_ZLIB
   if (compress)
-    valueMap[L"compression"].push_back(L"zlib");
+    valueMap["compression"].push_back("zlib");
   else
-    valueMap[L"compression"].push_back(L"no");
+    valueMap["compression"].push_back("no");
 #else
   // No zlib, no compression
-  valueMap[L"compression"].push_back(L"no");
+  valueMap["compression"].push_back("no");
 #endif
   // And all our encodings we can just do
-  valueMap[L"encoding"].push_back(L"TightBE1");
+  valueMap["encoding"].push_back("TightBE1");
 
   SharedPtr<InitialClientSocketWriteEvent> writeEvent = new InitialClientSocketWriteEvent(socketStream);
   writeEvent->setValueMap(valueMap);
@@ -112,28 +112,28 @@ MessageEncodingRegistry::getBestServerEncoding(const StringStringListMap& valueM
   // Given the clients values in value map, choose something sensible.
   // Here we might want to have something configurable to prefer something over the other??
   StringStringListMap::const_iterator i;
-  i = valueMap.find(L"version");
+  i = valueMap.find("version");
   if (i == valueMap.end()) {
-    responseValueMap[L"error"].push_back(L"No version field in the connect header given.");
+    responseValueMap["error"].push_back("No version field in the connect header given.");
     return responseValueMap;
   }
   // Currently only version "2alpha" is supported on both sides, currently just something to be
   // extensible so that we can change something in the future without crashing clients or servers
   // by a wrong protocol or behavior.
-  if (!contains(i->second, L"2alpha")) {
-    responseValueMap[L"error"].push_back(L"Client does not support version 1 of the protocol.");
+  if (!contains(i->second, "2alpha")) {
+    responseValueMap["error"].push_back("Client does not support version 1 of the protocol.");
     return responseValueMap;
   }
 
   // Check the encodings
-  i = valueMap.find(L"encoding");
+  i = valueMap.find("encoding");
   if (i == valueMap.end() || i->second.empty()) {
-    responseValueMap[L"error"].push_back(L"Client advertises no encoding!");
+    responseValueMap["error"].push_back("Client advertises no encoding!");
     return responseValueMap;
   }
   // collect some possible encodings
   StringList encoding;
-  encoding.push_back(L"TightBE1");
+  encoding.push_back("TightBE1");
   // Throw out again what does not match with the client
   for (StringList::iterator j = encoding.begin(); j != encoding.end();) {
     if (contains(i->second, *j))
@@ -142,25 +142,25 @@ MessageEncodingRegistry::getBestServerEncoding(const StringStringListMap& valueM
       j = encoding.erase(j);
   }
   if (encoding.empty()) {
-    responseValueMap[L"error"].push_back(L"Client and server have no common encoding!");
+    responseValueMap["error"].push_back("Client and server have no common encoding!");
     return responseValueMap;
   }
 
   // Survived, respond with a valid response packet
-  responseValueMap[L"version"].push_back(L"2alpha");
+  responseValueMap["version"].push_back("2alpha");
 #ifdef OPENRTI_HAVE_ZLIB
   if (serverOptions._preferCompression && getUseCompression(valueMap)) {
     // Compression by server policy and existing client support
-    responseValueMap[L"compression"].push_back(L"zlib");
+    responseValueMap["compression"].push_back("zlib");
   } else {
     // No compression by server policy or missing client support
-    responseValueMap[L"compression"].push_back(L"no");
+    responseValueMap["compression"].push_back("no");
   }
 #else
   // No zlib, no compression
-  responseValueMap[L"compression"].push_back(L"no");
+  responseValueMap["compression"].push_back("no");
 #endif
-  responseValueMap[L"encoding"].push_back(encoding.front());
+  responseValueMap["encoding"].push_back(encoding.front());
 
   return responseValueMap;
 }

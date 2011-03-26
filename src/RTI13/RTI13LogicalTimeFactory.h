@@ -85,13 +85,13 @@ public:
     SharedPtr<FedTimeImplementation> _implementation;
   };
 
-  RTI13LogicalTimeFactory(const std::wstring& name);
+  RTI13LogicalTimeFactory(const std::string& name);
   RTI13LogicalTimeFactory(const RTI13LogicalTimeFactory&);
   ~RTI13LogicalTimeFactory();
 
   RTI13LogicalTimeFactory& operator=(const RTI13LogicalTimeFactory&);
 
-  std::wstring getName() const;
+  std::string getName() const;
 
   LogicalTime initialLogicalTime() const;
   LogicalTimeInterval zeroLogicalTimeInterval() const;
@@ -112,10 +112,10 @@ public:
   VariableLengthData encodeLogicalTime(const LogicalTime& logicalTime)
   { return encodeLogicalTime(getLogicalTime(logicalTime)); }
 
-  std::wstring toString(const RTI::FedTime& fedTime);
+  std::string toString(const RTI::FedTime& fedTime);
 
 private:
-  std::wstring _name;
+  std::string _name;
 };
 
 }

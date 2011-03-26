@@ -32,7 +32,7 @@ class OPENRTI_LOCAL ServerThreadRegistry : public ThreadRegistry {
 public:
   class OPENRTI_LOCAL ServerThread : public NamedThread {
   public:
-    ServerThread(ThreadRegistry* registry, const std::wstring& name) :
+    ServerThread(ThreadRegistry* registry, const std::string& name) :
       NamedThread(registry, name)
     { }
 
@@ -46,15 +46,15 @@ public:
       _server.exec();
     }
 
-    void connectParentInetServer(const std::wstring& name, const Clock& abstime)
+    void connectParentInetServer(const std::string& name, const Clock& abstime)
     {
-      _server.setServerName(L"INET leaf server");
+      _server.setServerName("INET leaf server");
       _server.connectParentInetServer(name, abstime);
     }
 
-    void connectParentPipeServer(const std::wstring& name, const Clock& abstime)
+    void connectParentPipeServer(const std::string& name, const Clock& abstime)
     {
-      _server.setServerName(L"PIPE leaf server");
+      _server.setServerName("PIPE leaf server");
       _server.connectParentPipeServer(name, abstime);
     }
 
@@ -89,12 +89,12 @@ public:
   };
 
   // Sync call to connect to a server
-  SharedPtr<AbstractMessageSender> connectServer(const std::wstring& name, const SharedPtr<AbstractMessageSender>& fromServerQueue,
+  SharedPtr<AbstractMessageSender> connectServer(const std::string& name, const SharedPtr<AbstractMessageSender>& fromServerQueue,
                                                  const Clock& abstime)
   {
     /* FIXME */
     StringStringListMap valueMap;
-    valueMap[L"serverName"].push_back(L"ambassadorConnect");
+    valueMap["serverName"].push_back("ambassadorConnect");
     SharedPtr<ConnectServerCallback> callback = new ConnectServerCallback(fromServerQueue, valueMap);
     _abstime = abstime;
     if (!execThreadProcedure(name, callback, true))
@@ -118,7 +118,7 @@ public:
   };
 
   // Sync call to connect to a server
-  void disconnectServer(const std::wstring& name, SharedPtr<AbstractMessageSender> toServerQueue)
+  void disconnectServer(const std::string& name, SharedPtr<AbstractMessageSender> toServerQueue)
   {
     execThreadProcedure(name, new DisconnectServerCallback(toServerQueue), false);
   }
@@ -132,7 +132,7 @@ protected:
 class OPENRTI_LOCAL InetServerThreadRegistry : public ServerThreadRegistry {
 public:
   // Factory to create new threads
-  virtual SharedPtr<NamedThread> createNewThread(const std::wstring& name)
+  virtual SharedPtr<NamedThread> createNewThread(const std::string& name)
   {
     SharedPtr<ServerThread> serverThread = new ServerThread(this, name);
     serverThread->connectParentInetServer(name, _abstime);
@@ -143,7 +143,7 @@ public:
 class OPENRTI_LOCAL PipeServerThreadRegistry : public ServerThreadRegistry {
 public:
   // Factory to create new threads
-  virtual SharedPtr<NamedThread> createNewThread(const std::wstring& name)
+  virtual SharedPtr<NamedThread> createNewThread(const std::string& name)
   {
     SharedPtr<ServerThread> serverThread = new ServerThread(this, name);
     serverThread->connectParentPipeServer(name, _abstime);
@@ -157,7 +157,7 @@ class OPENRTI_LOCAL StreamProtocol::Connect : public AbstractConnect {
   Connect(const SharedPtr<AbstractMessageSender>& messageSender,
           const SharedPtr<AbstractMessageReceiver>& messageReceiver,
           const SharedPtr<ServerThreadRegistry>& serverThreadRegistry,
-          const std::wstring& serverThreadKey) :
+          const std::string& serverThreadKey) :
     _messageSender(messageSender),
     _messageReceiver(messageReceiver),
     _serverThreadRegistry(serverThreadRegistry),
@@ -176,7 +176,7 @@ class OPENRTI_LOCAL StreamProtocol::Connect : public AbstractConnect {
   SharedPtr<AbstractMessageSender> _messageSender;
   SharedPtr<AbstractMessageReceiver> _messageReceiver;
   SharedPtr<ServerThreadRegistry> _serverThreadRegistry;
-  std::wstring _serverThreadKey;
+  std::string _serverThreadKey;
 };
 
 StreamProtocol::StreamProtocol(SharedPtr<ServerThreadRegistry> serverThreadRegistry) :
@@ -190,10 +190,10 @@ StreamProtocol::~StreamProtocol()
 }
 
 SharedPtr<AbstractConnect>
-StreamProtocol::connect(const std::map<std::wstring,std::wstring>& parameterMap, const Clock& abstime) const
+StreamProtocol::connect(const std::map<std::string,std::string>& parameterMap, const Clock& abstime) const
 {
-  std::wstring serverThreadKey;
-  std::map<std::wstring,std::wstring>::const_iterator i = parameterMap.find(L"address");
+  std::string serverThreadKey;
+  std::map<std::string,std::string>::const_iterator i = parameterMap.find("address");
   if (i != parameterMap.end())
     serverThreadKey = i->second;
 

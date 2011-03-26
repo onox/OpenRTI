@@ -34,7 +34,7 @@ class NameHandleMap {
 public:
   typedef H Handle;
   typedef std::map<Handle, SharedPtr<T> > HandleObjectMap;
-  typedef std::map<std::wstring, typename HandleObjectMap::iterator> StringIteratorMap;
+  typedef std::map<std::string, typename HandleObjectMap::iterator> StringIteratorMap;
   typedef typename HandleObjectMap::size_type size_type;
   typedef typename HandleObjectMap::value_type value_type;
   typedef typename HandleObjectMap::iterator iterator;
@@ -98,14 +98,14 @@ public:
   const_iterator find(const Handle& handle) const
   { return _handleObjectMap.find(handle); }
 
-  iterator find(const std::wstring& name)
+  iterator find(const std::string& name)
   {
     typename StringIteratorMap::const_iterator i = _stringIteratorMap.find(name);
     if (i == _stringIteratorMap.end())
       return _handleObjectMap.end();
     return i->second;
   }
-  const_iterator find(const std::wstring& name) const
+  const_iterator find(const std::string& name) const
   {
     typename StringIteratorMap::const_iterator i = _stringIteratorMap.find(name);
     if (i == _stringIteratorMap.end())
@@ -120,7 +120,7 @@ public:
       return 0;
     return i->second.get();
   }
-  Handle getHandle(const std::wstring& name) const
+  Handle getHandle(const std::string& name) const
   {
     typename StringIteratorMap::const_iterator i = _stringIteratorMap.find(name);
     if (i == _stringIteratorMap.end())
@@ -129,7 +129,7 @@ public:
   }
   bool exists(const Handle& handle) const
   { return _handleObjectMap.find(handle) != _handleObjectMap.end(); }
-  bool exists(const std::wstring& name) const
+  bool exists(const std::string& name) const
   {
     return _stringIteratorMap.find(name) != _stringIteratorMap.end();
   }

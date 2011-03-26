@@ -35,58 +35,58 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
   typedef std::map<FOMStringModule, FOMModuleHandle> FOMStringModuleFOMModuleHandleMap;
   typedef std::map<FOMModuleHandle, FOMModule> FOMModuleHandleFOMModuleMap;
 
-  typedef std::map<std::wstring, TransportationType> NameTransportationTypeMap;
-  typedef std::map<std::wstring, OrderType> NameOrderTypeMap;
-  typedef std::map<std::wstring, DimensionHandle> NameDimensionHandleMap;
+  typedef std::map<std::string, TransportationType> NameTransportationTypeMap;
+  typedef std::map<std::string, OrderType> NameOrderTypeMap;
+  typedef std::map<std::string, DimensionHandle> NameDimensionHandleMap;
   struct InteractionData {
     FOMInteractionClass _interactionClass;
     // The next free parameter handle to allocate for a derived class
     ParameterHandle _nextParameterHandle;
   };
-  typedef std::map<std::wstring, InteractionData> NameInteractionDataMap;
+  typedef std::map<std::string, InteractionData> NameInteractionDataMap;
 
   struct ObjectData {
     FOMObjectClass _objectClass;
     // The next free attribute handle to allocate for a derived class
     AttributeHandle _nextAttributeHandle;
   };
-  typedef std::map<std::wstring, ObjectData> NameObjectDataMap;
+  typedef std::map<std::string, ObjectData> NameObjectDataMap;
 
-  OrderType getOrderType(const std::wstring& name) const
+  OrderType getOrderType(const std::string& name) const
   {
-    if (name == L"TimeStamp")
+    if (name == "TimeStamp")
       return TIMESTAMP;
-    else if (name == L"timestamp")
+    else if (name == "timestamp")
       return TIMESTAMP;
-    else if (name == L"Receive")
+    else if (name == "Receive")
       return RECEIVE;
-    else if (name == L"receive")
+    else if (name == "receive")
       return RECEIVE;
     else
-      throw ErrorReadingFDD(std::wstring(L"Unknown order type \"") + name + L"\".");
+      throw ErrorReadingFDD(std::string("Unknown order type \"") + name + "\".");
   }
 
   bool insertTransportationType(const FOMStringTransportationType& stringModule)
   {
     if (_nameTransportationTypeMap.find(stringModule.getName()) != _nameTransportationTypeMap.end())
       return false;
-    if (stringModule.getName() == L"HLAreliable")
+    if (stringModule.getName() == "HLAreliable")
       _nameTransportationTypeMap[stringModule.getName()] = RELIABLE;
-    else if (stringModule.getName() == L"reliable")
+    else if (stringModule.getName() == "reliable")
       _nameTransportationTypeMap[stringModule.getName()] = RELIABLE;
-    else if (stringModule.getName() == L"HLAbestEffort")
+    else if (stringModule.getName() == "HLAbestEffort")
       _nameTransportationTypeMap[stringModule.getName()] = BEST_EFFORT;
-    else if (stringModule.getName() == L"best_effort")
+    else if (stringModule.getName() == "best_effort")
       _nameTransportationTypeMap[stringModule.getName()] = BEST_EFFORT;
     else
-      throw ErrorReadingFDD(std::wstring(L"Unsupported transportation type \"") + stringModule.getName() + L"\".");
+      throw ErrorReadingFDD(std::string("Unsupported transportation type \"") + stringModule.getName() + "\".");
     return true;
   }
-  TransportationType getTransportationType(const std::wstring& name) const
+  TransportationType getTransportationType(const std::string& name) const
   {
     NameTransportationTypeMap::const_iterator i = _nameTransportationTypeMap.find(name);
     if (i == _nameTransportationTypeMap.end())
-      throw ErrorReadingFDD(std::wstring(L"Unknown transportation type \"") + name + L"\".");
+      throw ErrorReadingFDD(std::string("Unknown transportation type \"") + name + "\".");
     return i->second;
   }
 
@@ -98,11 +98,11 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
     _nameDimensionHandleMap[stringModule.getName()] = ++_nextDimensionHandle;
     return true;
   }
-  DimensionHandle getDimensionHandle(const std::wstring& name) const
+  DimensionHandle getDimensionHandle(const std::string& name) const
   {
     NameDimensionHandleMap::const_iterator i = _nameDimensionHandleMap.find(name);
     if (i == _nameDimensionHandleMap.end())
-      throw ErrorReadingFDD(std::wstring(L"Unknown dimension \"") + name + L"\".");
+      throw ErrorReadingFDD(std::string("Unknown dimension \"") + name + "\".");
     return i->second;
   }
 
@@ -133,7 +133,7 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
       NameInteractionDataMap::iterator i = _nameInteractionDataMap.find(stringModule.getParentName());
       // FIXME nore an internal error??
       if (i == _nameInteractionDataMap.end())
-        throw ErrorReadingFDD(std::wstring(L"Unknown parent object class \"") + stringModule.getParentName() + L"\".");
+        throw ErrorReadingFDD(std::string("Unknown parent object class \"") + stringModule.getParentName() + "\".");
       nextParameterHandle = i->second._nextParameterHandle;
       parentInteractionClassHandle = i->second._interactionClass.getInteractionClassHandle();
     }
@@ -150,23 +150,23 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
       if (!stringModule.getOrderType().empty()) {
         OrderType orderType = getOrderType(stringModule.getOrderType());
         if (orderType != i->second._interactionClass.getOrderType())
-          throw ErrorReadingFDD(std::wstring(L"Incompatible InteractionClass \"") + stringModule.getName()
-                                + L"\": OrderType does not match.");
+          throw ErrorReadingFDD(std::string("Incompatible InteractionClass \"") + stringModule.getName()
+                                + "\": OrderType does not match.");
       }
 
       if (!stringModule.getTransportationType().empty()) {
         TransportationType transportationType = getTransportationType(stringModule.getTransportationType());
         if (transportationType != i->second._interactionClass.getTransportationType())
-          throw ErrorReadingFDD(std::wstring(L"Incompatible InteractionClass \"") + stringModule.getName()
-                                + L"\": TransportationType does not match.");
+          throw ErrorReadingFDD(std::string("Incompatible InteractionClass \"") + stringModule.getName()
+                                + "\": TransportationType does not match.");
       }
 
       if (!stringModule.getDimensionSet().empty()) {
         DimensionHandleSet dimensionHandles;
         resolveDimensionHandles(dimensionHandles, stringModule.getDimensionSet());
         if (i->second._interactionClass.getDimensionHandleSet() != dimensionHandles)
-          throw ErrorReadingFDD(std::wstring(L"Incompatible InteractionClass \"") + stringModule.getName()
-                                + L"\": Dimension handle set does not match.");
+          throw ErrorReadingFDD(std::string("Incompatible InteractionClass \"") + stringModule.getName()
+                                + "\": Dimension handle set does not match.");
       }
 
       // Check if either the parameter list is empty or identical
@@ -174,8 +174,8 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
         FOMParameterList parameterList;
         insertParameterList(parameterList, stringModule.getParameterList(), nextParameterHandle);
         if (parameterList != i->second._interactionClass.getParameterList())
-          throw ErrorReadingFDD(std::wstring(L"Incompatible InteractionClass \"") + stringModule.getName()
-                                + L"\": Parameter list does not match.");
+          throw ErrorReadingFDD(std::string("Incompatible InteractionClass \"") + stringModule.getName()
+                                + "\": Parameter list does not match.");
       }
     } else {
       i = _nameInteractionDataMap.insert(NameInteractionDataMap::value_type(stringModule.getName(), InteractionData())).first;
@@ -245,7 +245,7 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
       NameObjectDataMap::iterator i = _nameObjectDataMap.find(stringModule.getParentName());
       // FIXME nore an internal error??
       if (i == _nameObjectDataMap.end())
-        throw ErrorReadingFDD(std::wstring(L"Unknown parent object class \"") + stringModule.getParentName() + L"\".");
+        throw ErrorReadingFDD(std::string("Unknown parent object class \"") + stringModule.getParentName() + "\".");
       nextAttributeHandle = i->second._nextAttributeHandle;
       parentObjectClassHandle = i->second._objectClass.getObjectClassHandle();
     }
@@ -264,8 +264,8 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
         FOMAttributeList attributeList;
         insertAttributeList(attributeList, stringModule.getAttributeList(), nextAttributeHandle);
         if (attributeList != i->second._objectClass.getAttributeList())
-          throw ErrorReadingFDD(std::wstring(L"Incompatible ObjectClass \"") + stringModule.getName()
-                                + L"\": Attribute list does not match.");
+          throw ErrorReadingFDD(std::string("Incompatible ObjectClass \"") + stringModule.getName()
+                                + "\": Attribute list does not match.");
       }
     } else {
       i = _nameObjectDataMap.insert(NameObjectDataMap::value_type(stringModule.getName(), ObjectData())).first;

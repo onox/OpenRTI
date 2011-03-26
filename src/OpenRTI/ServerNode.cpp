@@ -69,7 +69,7 @@ public:
     OpenRTIAssert(_messageSenderMap.find(connectHandle) == _messageSenderMap.end());
     MessageSenderMap::iterator i = _messageSenderMap.insert(MessageSenderMap::value_type(connectHandle, ConnectData())).first;
     i->second._messageSender = messageSender;
-    StringStringListMap::const_iterator j = clientOptions.find(L"serverName");
+    StringStringListMap::const_iterator j = clientOptions.find("serverName");
     if (j != clientOptions.end() && !j->second.empty()) {
       i->second._name = j->second.front();
     } else {
@@ -116,7 +116,7 @@ public:
     OpenRTIAssert(i != _messageSenderMap.end());
     return i->second._messageSender;
   }
-  const std::wstring& getName(const ConnectHandle& connectHandle) const
+  const std::string& getName(const ConnectHandle& connectHandle) const
   {
     MessageSenderMap::const_iterator i = _messageSenderMap.find(connectHandle);
     OpenRTIAssert(i != _messageSenderMap.end());
@@ -133,7 +133,7 @@ private:
   /// Each connect can have multiple federates attached.
   struct ConnectData {
     SharedPtr<AbstractMessageSender> _messageSender;
-    std::wstring _name;
+    std::string _name;
   };
 
   typedef std::map<ConnectHandle, ConnectData> MessageSenderMap;
@@ -198,20 +198,20 @@ public:
 /// Hmm, should that be the Federation ???
 class OPENRTI_LOCAL FederationServer : public Federation {
 public:
-  FederationServer(const std::wstring& name, const FederationHandle& handle, const SharedPtr<const ServerOptions>& serverOptions) :
+  FederationServer(const std::string& name, const FederationHandle& handle, const SharedPtr<const ServerOptions>& serverOptions) :
     Federation(name, handle),
     _serverOptions(serverOptions)
   {
   }
 
   /// Get the rti servers name
-  const std::wstring& getServerName() const
+  const std::string& getServerName() const
   { return _serverOptions->getServerName(); }
   /// Get the rti servers path
-  const std::wstring& getServerPath() const
+  const std::string& getServerPath() const
   { return _serverOptions->getServerPath(); }
   /// Get the servers name lurking behind this connect
-  const std::wstring& getConnectName(const ConnectHandle& connectHandle) const
+  const std::string& getConnectName(const ConnectHandle& connectHandle) const
   {
     ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.find(connectHandle);
     OpenRTIAssert(i != _connectHandleConnectDataMap.end());
@@ -222,7 +222,7 @@ public:
   bool isRootServer() const
   { return !_parentServerConnectHandle.valid(); }
 
-  bool isFederateNameInUse(const std::wstring& name) const
+  bool isFederateNameInUse(const std::string& name) const
   { return _federateNameSet.find(name) != _federateNameSet.end(); }
 
   void accept(const ConnectHandle& connectHandle, JoinFederationExecutionRequestMessage* message)
@@ -241,7 +241,7 @@ public:
     FederateHandle federateHandle = insertFederate(connectHandle, message->getFederateType(), message->getFederateName());
     OpenRTIAssert(federateHandle.valid());
     // FIXME
-    std::wstring federateName = *(_federateHandleFederateDataMap.find(federateHandle)->second._stringSetIterator);
+    std::string federateName = *(_federateHandleFederateDataMap.find(federateHandle)->second._stringSetIterator);
 
     /// FIXME shall we get that message from the federation server???
     response->setFederationHandle(getHandle());
@@ -404,14 +404,14 @@ public:
     }
   }
 
-  FederateHandle insertFederate(const ConnectHandle& connectHandle, const std::wstring& federateType,
-                                std::wstring federateName, const FederateHandle& federateHandle = FederateHandle())
+  FederateHandle insertFederate(const ConnectHandle& connectHandle, const std::string& federateType,
+                                std::string federateName, const FederateHandle& federateHandle = FederateHandle())
   {
     // Either we allocate a new federate, then the connect must still be alive
     // or we insert an already died federate and just keep everything in order for a currect the resing request sequence
     OpenRTIAssert(connectHandle.valid() || federateHandle.valid());
     OpenRTIAssert(federateName.empty() || _federateNameSet.find(federateName) == _federateNameSet.end());
-    // OpenRTIAssert(!federateHandle.valid() || federateName.compare(0, 3, L"HLA") == 0);
+    // OpenRTIAssert(!federateHandle.valid() || federateName.compare(0, 3, "HLA") == 0);
 
     FederateHandleAllocator::Candidate candidate(_federateHandleAllocator, federateHandle);
 
@@ -419,7 +419,7 @@ public:
 
     // generate a unique name if there is none given
     if (federateName.empty()) {
-      std::wstringstream ss;
+      std::stringstream ss;
       ss << "HLAfederate" << candidate.get().getHandle();
       federateName = ss.str();
     }
@@ -1104,8 +1104,8 @@ public:
       FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
       while (count--) {
         ObjectInstanceHandle objectInstanceHandle = _objectInstanceHandleAllocator.get();
-        std::wstringstream stream;
-        stream << L"HLAobjectInstance" << objectInstanceHandle.getHandle();
+        std::stringstream stream;
+        stream << "HLAobjectInstance" << objectInstanceHandle.getHandle();
         ObjectInstanceHandleNamePair objectInstanceHandleNamePair(objectInstanceHandle, stream.str());
         insertObjectInstanceHandle(objectInstanceHandleNamePair.first, objectInstanceHandleNamePair.second, connectHandle);
         response->getObjectInstanceHandleNamePairVector().push_back(objectInstanceHandleNamePair);
@@ -1160,7 +1160,7 @@ public:
         throw MessageError("Got ReserveObjectInstanceNameRequestMessage for an unknown federate!");
 
       // names starting with HLA are reserved for the RTI, a correct programmed ambassador does not request these
-      if (message->getName().compare(0, 3, L"HLA") == 0)
+      if (message->getName().compare(0, 3, "HLA") == 0)
         throw MessageError("Got ReserveObjectInstanceNameRequestMessage with name starting with HLA.");
 
       SharedPtr<ReserveObjectInstanceNameResponseMessage> response;
@@ -1219,7 +1219,7 @@ public:
         objectInstanceHandleNamePair.second = *i;
         response->getObjectInstanceHandleNamePairVector().push_back(objectInstanceHandleNamePair);
         // names starting with HLA are reserved for the RTI
-        if (i->compare(0, 3, L"HLA") == 0)
+        if (i->compare(0, 3, "HLA") == 0)
           throw MessageError("ReserveObjectInstanceNameRequestMessage with name starting with HLA - that must be handled in the ambassador.");
         // We do not need to check against the object names since the automatic generated object names do not collide by design
         // and the reserved names are tested here
@@ -1558,7 +1558,7 @@ public:
     i->second._messageSender.clear();
   }
 
-  void insertParentConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::wstring& name)
+  void insertParentConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name)
   {
     OpenRTIAssert(connectHandle.valid());
     OpenRTIAssert(!_parentServerConnectHandle.valid());
@@ -1568,7 +1568,7 @@ public:
     _connectHandleConnectDataMap[connectHandle]._messageSender = messageSender;
     _connectHandleConnectDataMap[connectHandle]._name = name;
   }
-  void insertConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::wstring& name)
+  void insertConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name)
   {
     OpenRTIAssert(connectHandle.valid());
     if (_connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end() &&
@@ -1873,7 +1873,7 @@ public:
   SharedPtr<const ServerOptions> _serverOptions;
 
   /// Synchronizatoin labels are tracked here
-  typedef std::map<std::wstring, SynchronizationState> SyncronizationLabelStateMap;
+  typedef std::map<std::string, SynchronizationState> SyncronizationLabelStateMap;
   SyncronizationLabelStateMap _syncronizationLabelStateMap;
 
   /// Contains the committed timestamps, we will need them for a join response
@@ -1899,7 +1899,7 @@ public:
   ObjectInstanceHandleDataMap _objectInstanceHandleDataMap;
   StringSet _objectInstanceNameSet;
 
-  void insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::wstring& name,
+  void insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::string& name,
                                   const ConnectHandle& connectHandle)
   {
     Log(ServerObjectInstance, Debug) << getServerPath() << ": Insert Object Instance \"" << objectInstanceHandle
@@ -1983,7 +1983,7 @@ public:
       _resignPending(false)
     { }
     ConnectHandle _connectHandle;
-    std::wstring _federateType;
+    std::string _federateType;
     StringSet::iterator _stringSetIterator;
     bool _resignPending;
   };
@@ -1994,7 +1994,7 @@ public:
   // The ConnectHandle <-> connect data mappings
   struct ConnectData {
     SharedPtr<AbstractMessageSender> _messageSender;
-    std::wstring _name;
+    std::string _name;
     // FIXME make this an iterator to the FederateData above
     FederateHandleSet _federateHandleSet;
     // FIXME
@@ -2019,8 +2019,8 @@ public:
       Log(ServerFederation, Warning) << getServerPath() << ": Received " << message->getTypeName()
                                      << " for unknown federation id: " << message->getFederationHandle()
                                      << "!" << std::endl;
-      throw MessageError(getServerPath() + std::wstring(L" received ") + localeToUcs(message->getTypeName())
-                         + L" for unknown federation id: " + message->getFederationHandle().toString() + L"!");
+      throw MessageError(getServerPath() + std::string(" received ") + message->getTypeName()
+                         + " for unknown federation id: " + message->getFederationHandle().toString() + "!");
     }
     i->second->acceptFederationMessage(connectHandle, message);
   }
@@ -2029,7 +2029,7 @@ public:
   {
     OpenRTIAssert(connectHandle.valid());
     if (connectHandle == _serverConnectSet.getParentConnectHandle())
-      throw MessageError(std::wstring(L"Received ") + localeToUcs(message->getTypeName()) + L" through the parent connect!");
+      throw MessageError(std::string("Received ") + message->getTypeName() + " through the parent connect!");
     acceptFederationMessage(connectHandle, message);
   }
   template<typename M>
@@ -2037,7 +2037,7 @@ public:
   {
     OpenRTIAssert(connectHandle.valid());
     if (connectHandle != _serverConnectSet.getParentConnectHandle())
-      throw MessageError(std::wstring(L"Received ") + localeToUcs(message->getTypeName()) + L" through a child connect!");
+      throw MessageError(std::string("Received ") + message->getTypeName() + " through a child connect!");
     acceptFederationMessage(connectHandle, message);
   }
 
@@ -2388,7 +2388,7 @@ public:
     OpenRTIAssert(connectHandle.valid());
 
     // The ambassador already needs to care for that. So, if we get that here, drop the connection.
-    if (message->getFederateName().compare(0, 3, L"HLA") == 0)
+    if (message->getFederateName().compare(0, 3, "HLA") == 0)
       throw MessageError("Got JoinFederationExecutionRequestMessage with name starting with HLA.");
 
     // If we are a root server ...
@@ -2624,7 +2624,7 @@ public:
   const ServerOptions& getServerOptions() const
   { return *_serverOptions; }
 
-  const std::wstring& getServerPath() const
+  const std::string& getServerPath() const
   { return _serverOptions->getServerPath(); }
 
 private:
@@ -2633,7 +2633,7 @@ private:
   typedef NameHandleMap<FederationHandle, FederationServer> FederationServerMap;
   FederationServerMap _federationServerMap;
 
-  FederationServerMap::iterator insertFederation(const std::wstring& name)
+  FederationServerMap::iterator insertFederation(const std::string& name)
   {
     OpenRTIAssert(isRootServer());
     OpenRTIAssert(_federationServerMap.find(name) == _federationServerMap.end());
@@ -2642,7 +2642,7 @@ private:
     SharedPtr<FederationServer> federationServer = new FederationServer(name, federationHandle, _serverOptions);
     return _federationServerMap.insert(FederationServerMap::value_type(federationHandle, federationServer)).first;
   }
-  FederationServerMap::iterator insertFederation(const std::wstring& name, const FederationHandle& federationHandle)
+  FederationServerMap::iterator insertFederation(const std::string& name, const FederationHandle& federationHandle)
   {
     OpenRTIAssert(federationHandle.valid());
     OpenRTIAssert(_federationServerMap.find(name) == _federationServerMap.end());
@@ -2718,14 +2718,14 @@ ServerNode::~ServerNode()
 {
 }
 
-const std::wstring&
+const std::string&
 ServerNode::getServerName() const
 {
   return _serverMessageDispatcher->getServerOptions().getServerName();
 }
 
 void
-ServerNode::setServerName(const std::wstring& name)
+ServerNode::setServerName(const std::string& name)
 {
   _serverMessageDispatcher->getServerOptions().setServerName(name);
 }

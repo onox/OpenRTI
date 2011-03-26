@@ -82,7 +82,7 @@ SocketPacket::send(const SocketAddress& socketAddress, const NetworkBuffer& netw
   // //   return -1;
 
   // // All other errors are considered serious and need to be handled somewhere where this is caught
-  // throw TransportError(errnoToUcs(errno));
+  // throw TransportError(errnoToUtf8(errno));
 }
 
 ssize_t
@@ -137,7 +137,7 @@ SocketPacket::recv(SocketAddress& socketAddress, NetworkBuffer& networkBuffer, b
   //   return -1;
 
   // // All other errors are considered serious and need to be handled somewhere where this is caught
-  // throw TransportError(errnoToUcs(errno));
+  // throw TransportError(errnoToUtf8(errno));
 }
 
 SocketPacket::SocketPacket(PrivateData* privateData) :

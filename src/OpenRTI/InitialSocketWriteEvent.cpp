@@ -50,9 +50,8 @@ public:
       writeString(*i);
   }
 
-  void writeString(const std::wstring& string)
+  void writeString(const std::string& utf8)
   {
-    std::string utf8 = ucsToUtf8(string);
     writeUInt32BE(utf8.size());
     for (std::string::const_iterator i = utf8.begin(); i != utf8.end(); ++i)
       writeUInt8BE(*i);

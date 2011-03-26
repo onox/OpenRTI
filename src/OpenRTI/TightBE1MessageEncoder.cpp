@@ -268,7 +268,7 @@ public:
     writeBoolCompressed(value);
   }
 
-  void writeString(const std::wstring& value)
+  void writeString(const std::string& value)
   {
     writeStringCompressed(value);
   }
@@ -1361,7 +1361,7 @@ public:
   void
   encode(NetworkBuffer& networkBuffer, const AbstractMessage& message) const
   {
-    throw RTIinternalError(L"Invalid message dispatched to encoder!");
+    throw RTIinternalError("Invalid message dispatched to encoder!");
   }
 
   void

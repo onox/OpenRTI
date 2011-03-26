@@ -45,23 +45,24 @@ public:
 
   Type getType() const throw()
   { return _type; }
-  const std::wstring& getReason() const throw()
+  const std::string& getReason() const throw()
   { return _reason; }
   std::string getReasonInLocale() const;
 
 protected:
   Exception(Type type = RTIinternalError, const char* reason = 0);
+  Exception(Type type, const std::string& reason);
   Exception(Type type, const std::wstring& reason);
 
 private:
   Type _type;
-  std::wstring _reason;
+  std::string _reason;
 };
 
 class OPENRTI_API RTIinternalError : public Exception {
 public:
   RTIinternalError(const char* reason = 0);
-  RTIinternalError(const std::wstring& reason);
+  RTIinternalError(const std::string& reason);
   RTIinternalError(const char* file, unsigned line, const char* reason = 0);
   virtual ~RTIinternalError();
 
@@ -79,6 +80,7 @@ private:
 class OPENRTI_API name : public Exception { \
 public: \
   name(const char* reason = 0) : Exception(Exception:: name, reason) { }  \
+  name(const std::string& reason) : Exception(Exception:: name, reason) { } \
   name(const std::wstring& reason) : Exception(Exception:: name, reason) { } \
 };
 

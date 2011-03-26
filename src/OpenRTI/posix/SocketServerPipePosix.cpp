@@ -31,12 +31,12 @@ SocketServerPipe::SocketServerPipe() :
 }
 
 void
-SocketServerPipe::bind(const std::wstring& file)
+SocketServerPipe::bind(const std::string& file)
 {
   int fd = socket(AF_UNIX, SOCK_STREAM, 0);
   if (fd == -1) {
     int errorNumber = errno;
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   // This is nice to have, so just try and don't bail out
@@ -44,7 +44,7 @@ SocketServerPipe::bind(const std::wstring& file)
   if (flags != -1)
     fcntl(fd, F_SETFD, flags | FD_CLOEXEC);
 
-  std::string localeFile = ucsToLocale(file);
+  std::string localeFile = utf8ToLocale(file);
 
   // huger than needed but sufficient
   size_t len = sizeof(struct sockaddr_un) + localeFile.size();
@@ -68,17 +68,17 @@ SocketServerPipe::bind(const std::wstring& file)
       free(addr);
       if (ret == -1) {
         ::close(fd);
-        throw TransportError(errnoToUcs(errorNumber));
+        throw TransportError(errnoToUtf8(errorNumber));
       }
     } catch (const Exception& e) {
       // If we cannot connect to that server, we assume that it is not alive anymore and at least try
       // to get rid of the file
-      if (-1 == unlink(ucsToLocale(file).c_str())) {
+      if (-1 == unlink(localeFile.c_str())) {
         // If that file still persists, bail out
         free(addr);
         if (ret == -1) {
           ::close(fd);
-          throw TransportError(errnoToUcs(errorNumber));
+          throw TransportError(errnoToUtf8(errorNumber));
         }
       }
       // If we could remove the file, we have a real next chance to bind
@@ -96,7 +96,7 @@ SocketServerPipe::listen(int backlog)
   int ret = ::listen(_privateData->_fd, backlog);
   if (ret == -1) {
     int errorNumber = errno;
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 }
 
@@ -106,7 +106,7 @@ SocketServerPipe::accept()
   int fd = ::accept(_privateData->_fd, 0, 0);
   if (fd == -1) {
     int errorNumber = errno;
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   // Need to have non blocking IO
@@ -114,13 +114,13 @@ SocketServerPipe::accept()
   if (flags == -1) {
     int errorNumber = errno;
     ::close(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   int ret = fcntl(fd, F_SETFL, flags | O_NONBLOCK);
   if (ret == -1) {
     int errorNumber = errno;
     ::close(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   return new SocketPipe(new PrivateData(fd));

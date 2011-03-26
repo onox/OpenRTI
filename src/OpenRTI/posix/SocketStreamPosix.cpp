@@ -122,7 +122,7 @@ SocketStream::send(const NetworkBuffer& networkBuffer, bool moreToSend)
   //   return -1;
 
   // All other errors are considered serious and need to be handled somewhere where this is caught
-  throw TransportError(errnoToUcs(errorNumber));
+  throw TransportError(errnoToUtf8(errorNumber));
 }
 
 ssize_t
@@ -183,7 +183,7 @@ SocketStream::recv(NetworkBuffer& networkBuffer)
     return -1;
 
   // All other errors are considered serious and need to be handled somewhere where this is caught
-  throw TransportError(errnoToUcs(errno));
+  throw TransportError(errnoToUtf8(errno));
 }
 
 void

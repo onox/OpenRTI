@@ -39,7 +39,7 @@ public:
   void seek(size_t offset)
   {
     if (_variableLengthData.size() < offset)
-      throw RTIinternalError(L"Seeking beyond the end of the packet");
+      throw RTIinternalError("Seeking beyond the end of the packet");
     _offset = offset;
   }
 
@@ -55,7 +55,7 @@ public:
     size_t offset = _offset;
     _offset += 1;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getUInt8LE(offset);
   }
   uint8_t readUInt8BE()
@@ -63,7 +63,7 @@ public:
     size_t offset = _offset;
     _offset += 1;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getUInt8BE(offset);
   }
   uint8_t readAlignedUInt8LE()
@@ -71,7 +71,7 @@ public:
     size_t offset = _offset;
     _offset += 1;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedUInt8LE(offset);
   }
   uint8_t readAlignedUInt8BE()
@@ -79,7 +79,7 @@ public:
     size_t offset = _offset;
     _offset += 1;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedUInt8BE(offset);
   }
 
@@ -88,7 +88,7 @@ public:
     size_t offset = _offset;
     _offset += 1;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getInt8LE(offset);
   }
   int8_t readInt8BE()
@@ -96,7 +96,7 @@ public:
     size_t offset = _offset;
     _offset += 1;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getInt8BE(offset);
   }
   int8_t readAlignedInt8LE()
@@ -104,7 +104,7 @@ public:
     size_t offset = _offset;
     _offset += 1;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedInt8LE(offset);
   }
   int8_t readAlignedInt8BE()
@@ -112,7 +112,7 @@ public:
     size_t offset = _offset;
     _offset += 1;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedInt8BE(offset);
   }
 
@@ -122,7 +122,7 @@ public:
     size_t offset = _offset;
     _offset += 2;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getUInt16LE(offset);
   }
   uint16_t readUInt16BE()
@@ -130,7 +130,7 @@ public:
     size_t offset = _offset;
     _offset += 2;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getUInt16BE(offset);
   }
   uint16_t readAlignedUInt16LE()
@@ -138,7 +138,7 @@ public:
     size_t offset = _offset;
     _offset += 2;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedUInt16LE(offset);
   }
   uint16_t readAlignedUInt16BE()
@@ -146,7 +146,7 @@ public:
     size_t offset = _offset;
     _offset += 2;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedUInt16BE(offset);
   }
 
@@ -155,7 +155,7 @@ public:
     size_t offset = _offset;
     _offset += 2;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getInt16LE(offset);
   }
   int16_t readInt16BE()
@@ -163,7 +163,7 @@ public:
     size_t offset = _offset;
     _offset += 2;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getInt16BE(offset);
   }
   int16_t readAlignedInt16LE()
@@ -171,7 +171,7 @@ public:
     size_t offset = _offset;
     _offset += 2;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedInt16LE(offset);
   }
   int16_t readAlignedInt16BE()
@@ -179,7 +179,7 @@ public:
     size_t offset = _offset;
     _offset += 2;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedInt16BE(offset);
   }
 
@@ -189,7 +189,7 @@ public:
     size_t offset = _offset;
     _offset += 4;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getUInt32LE(offset);
   }
   uint32_t readUInt32BE()
@@ -197,7 +197,7 @@ public:
     size_t offset = _offset;
     _offset += 4;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getUInt32BE(offset);
   }
   uint32_t readAlignedUInt32LE()
@@ -205,7 +205,7 @@ public:
     size_t offset = _offset;
     _offset += 4;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedUInt32LE(offset);
   }
   uint32_t readAlignedUInt32BE()
@@ -213,7 +213,7 @@ public:
     size_t offset = _offset;
     _offset += 4;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedUInt32BE(offset);
   }
 
@@ -222,7 +222,7 @@ public:
     size_t offset = _offset;
     _offset += 4;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getInt32LE(offset);
   }
   int32_t readInt32BE()
@@ -230,7 +230,7 @@ public:
     size_t offset = _offset;
     _offset += 4;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getInt32BE(offset);
   }
   int32_t readAlignedInt32LE()
@@ -238,7 +238,7 @@ public:
     size_t offset = _offset;
     _offset += 4;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedInt32LE(offset);
   }
   int32_t readAlignedInt32BE()
@@ -246,7 +246,7 @@ public:
     size_t offset = _offset;
     _offset += 4;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedInt32BE(offset);
   }
 
@@ -256,7 +256,7 @@ public:
     size_t offset = _offset;
     _offset += 8;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getUInt64LE(offset);
   }
   uint64_t readUInt64BE()
@@ -264,7 +264,7 @@ public:
     size_t offset = _offset;
     _offset += 8;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getUInt64BE(offset);
   }
   uint64_t readAlignedUInt64LE()
@@ -272,7 +272,7 @@ public:
     size_t offset = _offset;
     _offset += 8;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedUInt64LE(offset);
   }
   uint64_t readAlignedUInt64BE()
@@ -280,7 +280,7 @@ public:
     size_t offset = _offset;
     _offset += 8;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedUInt64BE(offset);
   }
 
@@ -289,7 +289,7 @@ public:
     size_t offset = _offset;
     _offset += 8;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getInt64LE(offset);
   }
   int64_t readInt64BE()
@@ -297,7 +297,7 @@ public:
     size_t offset = _offset;
     _offset += 8;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getInt64BE(offset);
   }
   int64_t readAlignedInt64LE()
@@ -305,7 +305,7 @@ public:
     size_t offset = _offset;
     _offset += 8;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedInt64LE(offset);
   }
   int64_t readAlignedInt64BE()
@@ -313,7 +313,7 @@ public:
     size_t offset = _offset;
     _offset += 8;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     return _variableLengthData.getAlignedInt64BE(offset);
   }
 
@@ -354,23 +354,20 @@ public:
   {
     uint64_t value = readUInt64Compressed();
     if (std::numeric_limits<size_t>::max() < value)
-      throw ResourceError(L"Size error: data size is too huge for this machine!");
+      throw ResourceError("Size error: data size is too huge for this machine!");
     return size_t(value);
   }
-  wchar_t readWCharCompressed()
-  {
-    uint32_t value = readUInt32Compressed();
-    if (uint64_t(std::numeric_limits<wchar_t>::max()) < value)
-      return wchar_t(0xfffd);
-    return wchar_t(value);
-  }
+  char readChar()
+  { return readUInt8BE(); }
+  char readCharCompressed()
+  { return readUInt8BE(); }
 
   void readData(VariableLengthData& d, size_t size)
   {
     size_t offset = _offset;
     _offset += size;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     d = VariableLengthData(_variableLengthData, offset, size);
   }
 
@@ -379,36 +376,36 @@ public:
     size_t offset = _offset;
     _offset += size;
     if (_variableLengthData.size() < _offset)
-      throw RTIinternalError(L"Reading beyond the end of the packet");
+      throw RTIinternalError("Reading beyond the end of the packet");
     if (size)
       std::memcpy(data, _variableLengthData.data(offset), size);
   }
 
 
 
-  // FIXME Move the below into the encoding implementaiotns?
+  // FIXME Move the below into the encoding implementations?
 
-  void readString(std::wstring& s)
+  void readString(std::string& s)
   {
     uint32_t i = readUInt32BE();
     s.resize(0);
     s.reserve(i);
     for (; i != 0; --i)
-      s.push_back(readWCharCompressed());
+      s.push_back(readChar());
   }
 
-  void readStringCompressed(std::wstring& s)
+  void readStringCompressed(std::string& s)
   {
     size_t i = readSizeTCompressed();
     s.resize(0);
     s.reserve(i);
     for (; i != 0; --i)
-      s.push_back(readWCharCompressed());
+      s.push_back(readChar());
   }
 
-  std::wstring readStringCompressed()
+  std::string readStringCompressed()
   {
-    std::wstring s;
+    std::string s;
     readStringCompressed(s);
     return s;
   }

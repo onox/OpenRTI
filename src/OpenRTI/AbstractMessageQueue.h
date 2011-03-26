@@ -64,7 +64,7 @@ private:
     virtual void send(const SharedPtr<AbstractMessage>& message)
     {
       if (!_messageQueue.valid())
-        throw RTIinternalError(L"Trying to send message to a closed MessageSender");
+        throw RTIinternalError("Trying to send message to a closed MessageSender");
       _messageQueue->append(message);
     }
     virtual void close()

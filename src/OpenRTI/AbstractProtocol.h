@@ -33,7 +33,7 @@ public:
   virtual ~AbstractProtocol()
   { }
 
-  virtual SharedPtr<AbstractConnect> connect(const std::map<std::wstring,std::wstring>& parameterMap, const Clock& abstime) const = 0;
+  virtual SharedPtr<AbstractConnect> connect(const std::map<std::string,std::string>& parameterMap, const Clock& abstime) const = 0;
 };
 
 } // namespace OpenRTI

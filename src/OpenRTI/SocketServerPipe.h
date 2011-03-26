@@ -30,7 +30,7 @@ class SocketServerPipe : public SocketServer {
 public:
   SocketServerPipe();
 
-  void bind(const std::wstring& file);
+  void bind(const std::string& file);
   void listen(int backlog = 20);
 
   virtual SocketPipe* accept();

@@ -41,7 +41,7 @@ public:
 
   // When the whole packet has arrived, this is called with the header in the first buffer and the body in the second
   virtual void readPacket(SocketEventDispatcher& dispatcher, NetworkBuffer& networkBuffer) = 0;
-  virtual void readError(const std::wstring& reason);
+  virtual void readError(const std::string& reason);
 
   class OPENRTI_LOCAL ReceiveCallback : public Referenced {
   public:

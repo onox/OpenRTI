@@ -359,25 +359,27 @@ public:
 
   void writeSizeTCompressed(size_t value)
   { writeTemplateCompressed(value); }
-  void writeWCharCompressed(wchar_t value)
-  { writeTemplateCompressed(value); }
+  void writeCharCompressed(char value)
+  { writeUInt8BE(value); }
+  void writeChar(char value)
+  { writeUInt8BE(value); }
 
   void writeBoolCompressed(bool value)
   { writeBool(value); }
 
   /// FIXME may be this is already policy from the generated code??
-  void writeString(const std::wstring& s)
+  void writeString(const std::string& s)
   {
     writeUInt32BE(uint32_t(s.size()));
-    for (std::wstring::size_type i = 0; i < s.size(); ++i)
-      writeUInt32BE(s[i]);
+    for (std::string::size_type i = 0; i < s.size(); ++i)
+      writeChar(s[i]);
   }
 
-  void writeStringCompressed(const std::wstring& s)
+  void writeStringCompressed(const std::string& s)
   {
     writeSizeTCompressed(s.size());
-    for (std::wstring::size_type i = 0; i < s.size(); ++i)
-      writeWCharCompressed(s[i]);
+    for (std::string::size_type i = 0; i < s.size(); ++i)
+      writeChar(s[i]);
   }
 
   void writeData(const VariableLengthData& d)

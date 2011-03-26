@@ -20,17 +20,18 @@
 #include "ErrnoWin32.h"
 
 #include <windows.h>
+#include "StringUtils.h"
 
 namespace OpenRTI {
 
-std::wstring errnoToUcs(int errorNumber)
+std::string errnoToUtf8(int errorNumber)
 {
   LPWSTR lpMsgBuf;
   FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
                 NULL, errorNumber, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR)&lpMsgBuf, 0, NULL);
   std::wstring s(lpMsgBuf);
   LocalFree(lpMsgBuf);
-  return s;
+  return ucsToUtf8(s);
 }
 
 } // namespace OpenRTI

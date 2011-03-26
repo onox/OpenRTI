@@ -41,11 +41,11 @@ public:
   typedef int64_t LogicalTime;
   typedef int64_t LogicalTimeInterval;
 
-  RTI1516integer64TimeFactory(const std::wstring& name) :
+  RTI1516integer64TimeFactory(const std::string& name) :
     _name(name)
   { }
 
-  const std::wstring& getName() const
+  const std::string& getName() const
   { return _name; }
 
   LogicalTime initialLogicalTime() const
@@ -87,13 +87,13 @@ public:
   VariableLengthData encodeLogicalTime(const LogicalTime& logicalTime)
   { return encodeLogicalTime(getLogicalTime(logicalTime)); }
 
-  std::wstring toString(const rti1516::LogicalTime& logicalTime)
-  { return logicalTime.toString(); }
-  std::wstring toString(const rti1516::LogicalTimeInterval& logicalTimeInterval)
-  { return logicalTimeInterval.toString(); }
+  std::string toString(const rti1516::LogicalTime& logicalTime)
+  { return ucsToUtf8(logicalTime.toString()); }
+  std::string toString(const rti1516::LogicalTimeInterval& logicalTimeInterval)
+  { return ucsToUtf8(logicalTimeInterval.toString()); }
 
 private:
-  std::wstring _name;
+  std::string _name;
   HLAinteger64Time _integer64Time;
   HLAinteger64Interval _integer64Interval;
 };

@@ -33,29 +33,29 @@ namespace OpenRTI {
 class OPENRTI_LOCAL FOMStringModuleBuilder {
 public:
 
-  void addTransportationType(const std::wstring& name)
+  void addTransportationType(const std::string& name)
   {
     if (!_transportationTypeNames.insert(name).second)
-      throw ErrorReadingFDD(std::wstring(L"Duplicate transportation type name \"") + name + L"\".");
+      throw ErrorReadingFDD(std::string("Duplicate transportation type name \"") + name + "\".");
     _module.getTransportationTypeList().push_back(FOMStringTransportationType());
     _module.getTransportationTypeList().back().setName(name);
   }
 
-  void addDimension(const std::wstring& name, Unsigned upperBound)
+  void addDimension(const std::string& name, Unsigned upperBound)
   {
     if (!_dimensionNames.insert(name).second)
-      throw ErrorReadingFDD(std::wstring(L"Duplicate dimension name \"") + name + L"\".");
+      throw ErrorReadingFDD(std::string("Duplicate dimension name \"") + name + "\".");
     _module.getDimensionList().push_back(FOMStringDimension());
     _module.getDimensionList().back().setName(name);
     _module.getDimensionList().back().setUpperBound(upperBound);
   }
 
-  void pushObjectClassData(const std::wstring& name)
+  void pushObjectClassData(const std::string& name)
   {
     if (name.empty())
-      throw ErrorReadingFDD(L"Empty object class name is not allowed.");
+      throw ErrorReadingFDD("Empty object class name is not allowed.");
     if (!_objectClassNames.insert(name).second)
-      throw ErrorReadingFDD(std::wstring(L"Duplicate object class name \"") + name + L"\".");
+      throw ErrorReadingFDD(std::string("Duplicate object class name \"") + name + "\".");
 
     if (_objectClassIndexStack.empty()) {
       _objectClassIndexStack.push_back(0);
@@ -83,14 +83,14 @@ public:
     return _module.getObjectClassList()[_objectClassIndexStack.back()];
   }
 
-  void addAttribute(const std::wstring& name, const std::wstring& orderType, const std::wstring& transportationType)
+  void addAttribute(const std::string& name, const std::string& orderType, const std::string& transportationType)
   {
     if (name.empty())
-      throw ErrorReadingFDD(L"Empty attribute name is not allowed.");
+      throw ErrorReadingFDD("Empty attribute name is not allowed.");
     if (_objectClassIndexStack.empty())
-      throw ErrorReadingFDD(L"No current object class.");
+      throw ErrorReadingFDD("No current object class.");
     if (!_attributeNameStack.back().insert(name).second)
-      throw ErrorReadingFDD(std::wstring(L"Duplicate object class attribute name \"") + name + L"\"");
+      throw ErrorReadingFDD(std::string("Duplicate object class attribute name \"") + name + "\"");
 
     getCurrentObjectClass().getAttributeList().push_back(FOMStringAttribute());
     getCurrentObjectClass().getAttributeList().back().setName(name);
@@ -98,16 +98,16 @@ public:
     getCurrentObjectClass().getAttributeList().back().setTransportationType(transportationType);
   }
 
-  void addAttributeDimension(const std::wstring& name)
+  void addAttributeDimension(const std::string& name)
   {
     if (name.empty())
-      throw ErrorReadingFDD(L"Empty dimension name is not allowed.");
+      throw ErrorReadingFDD("Empty dimension name is not allowed.");
     if (_objectClassIndexStack.empty())
-      throw ErrorReadingFDD(L"No current object class.");
+      throw ErrorReadingFDD("No current object class.");
     if (getCurrentObjectClass().getAttributeList().empty())
-      throw ErrorReadingFDD(L"No current attribute.");
+      throw ErrorReadingFDD("No current attribute.");
     if (!getCurrentObjectClass().getAttributeList().back().getDimensionSet().insert(name).second) {
-      std::wstringstream ss;
+      std::stringstream ss;
       ss << "Duplicate dimension \"" << name << "\" while processing attribute \""
          << getCurrentObjectClass().getAttributeList().back().getName() << "\" for ObjectClass \""
          << getCurrentObjectClass().getName() << "\"";
@@ -115,12 +115,12 @@ public:
     }
   }
 
-  void pushInteractionClassData(const std::wstring& name, const std::wstring& orderType, const std::wstring& transportationType)
+  void pushInteractionClassData(const std::string& name, const std::string& orderType, const std::string& transportationType)
   {
     if (name.empty())
-      throw ErrorReadingFDD(L"Empty object class name is not allowed.");
+      throw ErrorReadingFDD("Empty object class name is not allowed.");
     if (!_interactionClassNames.insert(name).second)
-      throw ErrorReadingFDD(std::wstring(L"Duplicate object class name \"") + name + L"\".");
+      throw ErrorReadingFDD(std::string("Duplicate object class name \"") + name + "\".");
 
     if (_interactionClassIndexStack.empty()) {
       _interactionClassIndexStack.push_back(0);
@@ -150,28 +150,28 @@ public:
     return _module.getInteractionClassList()[_interactionClassIndexStack.back()];
   }
 
-  void addInteractionDimension(const std::wstring& name)
+  void addInteractionDimension(const std::string& name)
   {
     if (name.empty())
-      throw ErrorReadingFDD(L"Empty dimension name is not allowed.");
+      throw ErrorReadingFDD("Empty dimension name is not allowed.");
     if (_interactionClassIndexStack.empty())
-      throw ErrorReadingFDD(L"No current interaction class.");
+      throw ErrorReadingFDD("No current interaction class.");
     if (!getCurrentInteractionClass().getDimensionSet().insert(name).second) {
-      std::wstringstream ss;
+      std::stringstream ss;
       ss << "Duplicate dimension \"" << name << "\" while processing InteractionClass \""
          << getCurrentInteractionClass().getName() << "\"";
       throw ErrorReadingFDD(ss.str());
     }
   }
 
-  void addParameter(const std::wstring& name)
+  void addParameter(const std::string& name)
   {
     if (name.empty())
-      throw ErrorReadingFDD(L"Empty parameter name is not allowed.");
+      throw ErrorReadingFDD("Empty parameter name is not allowed.");
     if (_interactionClassIndexStack.empty())
-      throw ErrorReadingFDD(L"No current interaction class.");
+      throw ErrorReadingFDD("No current interaction class.");
     if (!_parameterNameStack.back().insert(name).second)
-      throw ErrorReadingFDD(std::wstring(L"Duplicate interaction class parameter name \"") + name + L"\"");
+      throw ErrorReadingFDD(std::string("Duplicate interaction class parameter name \"") + name + "\"");
     getCurrentInteractionClass().getParameterList().push_back(FOMStringParameter());
     getCurrentInteractionClass().getParameterList().back().setName(name);
   }

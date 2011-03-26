@@ -41,11 +41,11 @@ public:
   typedef double LogicalTime;
   typedef double LogicalTimeInterval;
 
-  RTI1516Efloat64TimeFactory(const std::wstring& name) :
+  RTI1516Efloat64TimeFactory(const std::string& name) :
     _name(name)
   { }
 
-  const std::wstring& getName() const
+  const std::string& getName() const
   { return _name; }
 
   LogicalTime initialLogicalTime() const
@@ -87,13 +87,13 @@ public:
   VariableLengthData encodeLogicalTime(const LogicalTime& logicalTime)
   { return encodeLogicalTime(getLogicalTime(logicalTime)); }
 
-  std::wstring toString(const rti1516e::LogicalTime& logicalTime)
-  { return logicalTime.toString(); }
-  std::wstring toString(const rti1516e::LogicalTimeInterval& logicalTimeInterval)
-  { return logicalTimeInterval.toString(); }
+  std::string toString(const rti1516e::LogicalTime& logicalTime)
+  { return ucsToUtf8(logicalTime.toString()); }
+  std::string toString(const rti1516e::LogicalTimeInterval& logicalTimeInterval)
+  { return ucsToUtf8(logicalTimeInterval.toString()); }
 
 private:
-  std::wstring _name;
+  std::string _name;
   rti1516e::HLAfloat64Time _float64Time;
   rti1516e::HLAfloat64Interval _float64Interval;
 };

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -49,7 +49,7 @@ public:
     // Try that several times. Ensure correct cleanup
     unsigned n = 99;
     for (unsigned i = 0; i < n; ++i) {
-      
+
       // create, should work
       try {
         ambassador->createFederationExecution(getFederationExecution(), getFddFile());
@@ -69,7 +69,7 @@ public:
         std::wcout << L"Unknown Exception!" << std::endl;
         return false;
       }
-      
+
       // destroy, must work
       try {
         ambassador->destroyFederationExecution(getFederationExecution());
@@ -90,7 +90,7 @@ public:
         return false;
       }
     }
-    
+
     return true;
   }
 };

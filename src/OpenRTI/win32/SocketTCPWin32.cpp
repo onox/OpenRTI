@@ -35,28 +35,28 @@ void
 SocketTCP::connect(const SocketAddress& socketAddress)
 {
   if (_privateData->_socket != INVALID_SOCKET)
-    throw TransportError(L"Trying to connect an already open SocketTCP!");
+    throw TransportError("Trying to connect an already open SocketTCP!");
 
   if (!socketAddress.valid())
-    throw TransportError(L"Trying to connect an invalid address!");
+    throw TransportError("Trying to connect an invalid address!");
 
   SOCKET fd = ::socket(socketAddress._privateData->_addr->sa_family, SOCK_STREAM, IPPROTO_TCP);
   if (fd == INVALID_SOCKET)
-    throw TransportError(errnoToUcs(WSAGetLastError()));
+    throw TransportError(errnoToUtf8(WSAGetLastError()));
 
   int nodelay = 1;
   int ret = ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const char*)&nodelay, sizeof(nodelay));
   if (ret == -1) {
     int errorNumber = WSAGetLastError();
     ::closesocket(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   ret = ::connect(fd, socketAddress._privateData->_addr, socketAddress._privateData->_addrlen);
   if (ret == SOCKET_ERROR) {
     int errorNumber = WSAGetLastError();
     ::closesocket(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   // Past the connect use non blocking io, required.
@@ -65,7 +65,7 @@ SocketTCP::connect(const SocketAddress& socketAddress)
   if (ret == SOCKET_ERROR) {
     int errorNumber = WSAGetLastError();
     ::closesocket(fd);
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
 
   _privateData->_socket = fd;

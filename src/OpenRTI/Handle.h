@@ -133,9 +133,9 @@ public:                                                           \
     Handle<Type>(handle)                                          \
   { }                                                             \
                                                                   \
-  std::wstring toString() const                                   \
+  std::string toString() const                                    \
   {                                                               \
-    std::wstringstream stream;                                    \
+    std::stringstream stream;                                     \
     stream << #HandleName "(" << getHandle() << ")";              \
     return stream.str();                                          \
   }                                                               \
@@ -187,9 +187,9 @@ public:
   uint32_t getSerial() const
   { return uint32_t(getHandle() & 0xffffffff); }
 
-  std::wstring toString() const
+  std::string toString() const
   {
-    std::wstringstream stream;
+    std::stringstream stream;
     stream << "MessageRetractionHandle(" << getFederateHandle().getHandle() << "," << getSerial() << ")";
     return stream.str();
   }
@@ -216,9 +216,9 @@ public:
   LocalRegionHandle getLocalRegionHandle() const
   { return LocalRegionHandle(uint32_t(getHandle() & 0xffffffff)); }
 
-  std::wstring toString() const
+  std::string toString() const
   {
-    std::wstringstream stream;
+    std::stringstream stream;
     stream << "RegionHandle(" << getFederateHandle().getHandle() << "," << getLocalRegionHandle().getHandle() << ")";
     return stream.str();
   }

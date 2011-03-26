@@ -28,10 +28,10 @@
 namespace OpenRTI {
 
 bool
-readFDDFile(const std::wstring& fullPathNameToTheFDDfile, FOMStringModule& module)
+readFDDFile(const std::string& fullPathNameToTheFDDfile, FOMStringModule& module)
 {
   // Make sure we can read the fdd file
-  std::ifstream fddStream(ucsToLocale(fullPathNameToTheFDDfile).c_str());
+  std::ifstream fddStream(utf8ToLocale(fullPathNameToTheFDDfile).c_str());
   if (!fddStream.is_open())
     throw CouldNotOpenFDD(fullPathNameToTheFDDfile);
 
@@ -47,7 +47,7 @@ readFDDFile(const std::wstring& fullPathNameToTheFDDfile, FOMStringModule& modul
 
   reader->parse(fddStream);
 
-  std::wstring errorMessage = errorHandler->getMessages();
+  std::string errorMessage = errorHandler->getMessages();
   if (!errorMessage.empty())
     throw ErrorReadingFDD(errorMessage);
 

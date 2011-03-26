@@ -91,14 +91,14 @@ SocketAddress::isInet6() const
 }
 
 std::list<SocketAddress>
-SocketAddress::resolve(const std::wstring& address, const std::wstring& service)
+SocketAddress::resolve(const std::string& address, const std::string& service)
 {
   WSADATA wsaData;
   if (WSAStartup(MAKEWORD(2, 2), &wsaData))
-    throw TransportError(L"Could not initialize windows sockets!");
+    throw TransportError("Could not initialize windows sockets!");
   if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2) {
     WSACleanup();
-    throw TransportError(L"Could not initialize windows sockets 2.2!");
+    throw TransportError("Could not initialize windows sockets 2.2!");
   }
 
   int family = AF_UNSPEC;
@@ -115,15 +115,15 @@ SocketAddress::resolve(const std::wstring& address, const std::wstring& service)
   if (address.empty())
     hints.ai_flags = AI_PASSIVE;
 
-  std::string localeAddress = ucsToLocale(address);
-  std::string localeService = ucsToLocale(service);
+  std::string localeAddress = utf8ToLocale(address);
+  std::string localeService = utf8ToLocale(service);
   struct addrinfo *ai = 0;
   while (int ret = ::getaddrinfo(localeAddress.c_str(), localeService.c_str(), &hints, &ai)) {
     if (ret == EAI_AGAIN)
       continue;
     ::freeaddrinfo(ai);
     WSACleanup();
-    throw TransportError(localeToUcs(gai_strerror(ret)));
+    throw TransportError(localeToUtf8(gai_strerror(ret)));
   }
 
   std::list<SocketAddress> socketAddressList;

@@ -34,14 +34,14 @@ public:
     _preferCompression(true) // Default to compression for now FIXME
   { }
 
-  const std::wstring& getServerName() const
+  const std::string& getServerName() const
   { return _serverName; }
-  void setServerName(const std::wstring& serverName)
+  void setServerName(const std::string& serverName)
   {
     _serverName = serverName;
-    _optionMap[L"serverName"].push_back(serverName);
+    _optionMap["serverName"].push_back(serverName);
     StringStringListMap::iterator i;
-    i = _optionMap.insert(StringStringListMap::value_type(L"serverPath", StringList())).first;
+    i = _optionMap.insert(StringStringListMap::value_type("serverPath", StringList())).first;
     i->second = _parentServerPath;
     i->second.push_back(serverName);
     _setServerPath(i->second);
@@ -50,33 +50,33 @@ public:
   void setParentOptionMap(const StringStringListMap& optionMap)
   {
     _optionMap = optionMap;
-    _optionMap[L"serverName"].clear();
-    _optionMap[L"serverName"].push_back(_serverName);
+    _optionMap["serverName"].clear();
+    _optionMap["serverName"].push_back(_serverName);
     StringStringListMap::iterator i;
-    i = _optionMap.insert(StringStringListMap::value_type(L"serverPath", StringList())).first;
+    i = _optionMap.insert(StringStringListMap::value_type("serverPath", StringList())).first;
     _parentServerPath = i->second;
     i->second.push_back(_serverName);
     _setServerPath(i->second);
   }
 
-  const std::wstring& getServerPath() const
+  const std::string& getServerPath() const
   { return _serverPath; }
 private:
   void _setServerPath(const StringList& serverPath)
   {
     _serverPath.clear();
     for (StringList::const_iterator i = serverPath.begin(); i != serverPath.end(); ++i) {
-      _serverPath.append(L"/");
+      _serverPath.append("/");
       _serverPath.append(*i);
     }
   }
 public:
 
   /// The servers name
-  std::wstring _serverName;
+  std::string _serverName;
 
   /// For pretty printing
-  std::wstring _serverPath;
+  std::string _serverPath;
 
   /// The server path as given by the parent
   StringList _parentServerPath;

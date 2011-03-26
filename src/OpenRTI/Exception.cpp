@@ -30,14 +30,21 @@ namespace OpenRTI {
 
 Exception::Exception(Type type, const char* reason) :
   _type(type),
-  _reason(asciiToUcs(reason))
+  _reason(asciiToUtf8(reason))
+{
+  Log(Assert, Info) << "Fired exception: type = " << type << ", reason = " << _reason << std::endl;
+}
+
+Exception::Exception(Type type, const std::string& reason) :
+  _type(type),
+  _reason(reason)
 {
   Log(Assert, Info) << "Fired exception: type = " << type << ", reason = " << _reason << std::endl;
 }
 
 Exception::Exception(Type type, const std::wstring& reason) :
-  _type(RTIinternalError),
-  _reason(reason)
+  _type(type),
+  _reason(ucsToUtf8(reason))
 {
   Log(Assert, Info) << "Fired exception: type = " << type << ", reason = " << _reason << std::endl;
 }
@@ -49,7 +56,7 @@ Exception::~Exception()
 std::string
 Exception::getReasonInLocale() const
 {
-  return ucsToLocale(_reason);
+  return utf8ToLocale(_reason);
 }
 
 
@@ -58,13 +65,13 @@ RTIinternalError::RTIinternalError(const char* reason) :
 {
 }
 
-RTIinternalError::RTIinternalError(const std::wstring& reason) :
+RTIinternalError::RTIinternalError(const std::string& reason) :
   Exception(Exception::RTIinternalError, reason)
 {
 }
 
 RTIinternalError::RTIinternalError(const char* file, unsigned line, const char* reason) :
-  Exception(Exception::RTIinternalError, utf8ToUcs(buildAssertMessage(file, line, reason)))
+  Exception(Exception::RTIinternalError, buildAssertMessage(file, line, reason))
 {
 }
 

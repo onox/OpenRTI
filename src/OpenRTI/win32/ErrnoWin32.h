@@ -24,7 +24,7 @@
 
 namespace OpenRTI {
 
-std::wstring errnoToUcs(int errorNumber);
+std::string errnoToUtf8(int errorNumber);
 
 } // namespace OpenRTI
 

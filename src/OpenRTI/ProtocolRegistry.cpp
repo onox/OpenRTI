@@ -42,21 +42,21 @@ ProtocolRegistry::instance()
 ProtocolRegistry::ProtocolRegistry()
 {
   /// A process local rti providing this service by thread communication
-  registerProtocol(L"thread", new ThreadProtocol);
+  registerProtocol("thread", new ThreadProtocol);
 
   /// A machine local rti transfering through named pipes.
-  registerProtocol(L"pipe", new PipeProtocol);
+  registerProtocol("pipe", new PipeProtocol);
 
   /// A tcp based protocol, allowing communication by the internet
-  registerProtocol(L"rti", new InetProtocol);
+  registerProtocol("rti", new InetProtocol);
 
   /// A tcp based protocol, using http requests for happy firewalls
-  // registerProtocol(L"http", new HttpProtocol);
+  // registerProtocol("http", new HttpProtocol);
 
   /// Aims to dump all the communication routed through that protocol
   /// into a file or something. The messages as such are passed to
   /// an other protocol.
-  registerProtocol(L"trace", new TraceProtocol);
+  registerProtocol("trace", new TraceProtocol);
 }
 
 ProtocolRegistry::~ProtocolRegistry()
@@ -64,7 +64,7 @@ ProtocolRegistry::~ProtocolRegistry()
 }
 
 SharedPtr<const AbstractProtocol>
-ProtocolRegistry::getProtocol(const std::wstring& name)
+ProtocolRegistry::getProtocol(const std::string& name)
 {
   /// May be have some hardcoded protocols??
   /// The threaded one, the tcp plain one, a http variant???
@@ -76,7 +76,7 @@ ProtocolRegistry::getProtocol(const std::wstring& name)
 }
 
 void
-ProtocolRegistry::registerProtocol(const std::wstring& name, const SharedPtr<const AbstractProtocol>& protocol)
+ProtocolRegistry::registerProtocol(const std::string& name, const SharedPtr<const AbstractProtocol>& protocol)
 {
   ScopeLock scopeLock(_mutex);
   if (_protocolMap.find(name) != _protocolMap.end())

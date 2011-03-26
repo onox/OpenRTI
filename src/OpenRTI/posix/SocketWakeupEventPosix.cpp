@@ -33,7 +33,7 @@ SocketWakeupEvent::read()
     int errorNumber = errno;
     if (errorNumber == EAGAIN || errorNumber == EINTR)
       return 0;
-    throw TransportError(errnoToUcs(errorNumber));
+    throw TransportError(errnoToUtf8(errorNumber));
   }
   
   if (ret == 0)

@@ -62,10 +62,10 @@ struct OPENRTI_LOCAL Socket::PrivateData {
       return;
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData))
-      throw TransportError(L"Could not initialize windows sockets!");
+      throw TransportError("Could not initialize windows sockets!");
     if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2) {
       WSACleanup();
-      throw TransportError(L"Could not initialize windows sockets 2.2!");
+      throw TransportError("Could not initialize windows sockets 2.2!");
     }
     _wsaStartupCalled = true;
   }

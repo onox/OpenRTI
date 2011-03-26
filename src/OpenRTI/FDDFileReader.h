@@ -29,7 +29,7 @@ namespace OpenRTI {
 class FOMStringModule;
 
 OPENRTI_API bool
-readFDDFile(const std::wstring& fullPathNameToTheFDDfile, FOMStringModule& module);
+readFDDFile(const std::string& fullPathNameToTheFDDfile, FOMStringModule& module);
 
 } // namespace OpenRTI
 

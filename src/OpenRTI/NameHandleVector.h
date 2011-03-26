@@ -35,7 +35,7 @@ class NameHandleVector {
 public:
   typedef H Handle;
   typedef std::vector<SharedPtr<T> > ObjectVector;
-  typedef std::map<std::wstring, Handle> StringHandleMap;
+  typedef std::map<std::string, Handle> StringHandleMap;
   typedef typename ObjectVector::size_type size_type;
   typedef typename ObjectVector::value_type value_type;
   typedef typename ObjectVector::iterator iterator;
@@ -93,7 +93,7 @@ public:
     return i;
   }
 
-  iterator find(const std::wstring& name)
+  iterator find(const std::string& name)
   {
     typename StringHandleMap::const_iterator i = _stringHandleMap.find(name);
     if (i == _stringHandleMap.end())
@@ -102,7 +102,7 @@ public:
     std::advance(j, i->second);
     return j;
   }
-  const_iterator find(const std::wstring& name) const
+  const_iterator find(const std::string& name) const
   {
     typename StringHandleMap::const_iterator i = _stringHandleMap.find(name);
     if (i == _stringHandleMap.end())
@@ -121,7 +121,7 @@ public:
     std::advance(i, index);
     return i->get();
   }
-  Handle getHandle(const std::wstring& name) const
+  Handle getHandle(const std::string& name) const
   {
     typename StringHandleMap::const_iterator i = _stringHandleMap.find(name);
     if (i == _stringHandleMap.end())
@@ -135,7 +135,7 @@ public:
       return false;
     return _objectVector[index].valid();
   }
-  bool exists(const std::wstring& name) const
+  bool exists(const std::string& name) const
   { return _stringHandleMap.find(name) != _stringHandleMap.end(); }
 
 private:

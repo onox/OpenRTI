@@ -34,7 +34,7 @@ public:
   virtual void send(const SharedPtr<AbstractMessage>& message)
   {
     if (!_socketEvent->getSocket()->isOpen())
-      throw RTIinternalError(L"Trying to send message to a closed MessageSender");
+      throw RTIinternalError("Trying to send message to a closed MessageSender");
     _socketEvent->sendToSocket(message);
   }
   virtual void close()

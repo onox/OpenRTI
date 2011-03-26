@@ -37,16 +37,16 @@ public:
   Server();
   ~Server();
 
-  const std::wstring& getServerName() const;
-  void setServerName(const std::wstring& name);
+  const std::string& getServerName() const;
+  void setServerName(const std::string& name);
 
-  void listenInet(const std::wstring& address, int backlog);
-  void listenPipe(const std::wstring& address, int backlog);
+  void listenInet(const std::string& address, int backlog);
+  void listenPipe(const std::string& address, int backlog);
 
-  SharedPtr<SocketTCP> connectedTCPSocket(const std::wstring& name);
+  SharedPtr<SocketTCP> connectedTCPSocket(const std::string& name);
 
-  void connectParentInetServer(const std::wstring& name, const Clock& abstime);
-  void connectParentPipeServer(const std::wstring& name, const Clock& abstime);
+  void connectParentInetServer(const std::string& name, const Clock& abstime);
+  void connectParentPipeServer(const std::string& name, const Clock& abstime);
   void connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime);
 
   SharedPtr<AbstractMessageSender> connectServer(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);

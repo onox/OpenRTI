@@ -111,7 +111,7 @@ enum ServiceGroupIndicator {
 
 typedef bool Bool;
 
-typedef std::wstring String;
+typedef std::string String;
 
 typedef unsigned Unsigned;
 
@@ -318,7 +318,7 @@ class RequestClassAttributeUpdateMessage;
 
 typedef bool Bool;
 
-typedef std::wstring String;
+typedef std::string String;
 
 typedef unsigned Unsigned;
 

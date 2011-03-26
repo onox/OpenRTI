@@ -134,18 +134,18 @@ public:
   typedef typename AbstractFederate<T>::TimeRegulationIsNotEnabled TimeRegulationIsNotEnabled;
   typedef typename AbstractFederate<T>::UnsupportedCallbackModel UnsupportedCallbackModel;
 
-  typedef std::map<std::wstring, InteractionClassHandle> NameInteractionClassHandleMap;
-  typedef std::map<std::wstring, ParameterHandle> NameParameterHandleMap;
-  typedef std::map<std::wstring, ObjectClassHandle> NameObjectClassHandleMap;
-  typedef std::map<std::wstring, ObjectInstanceHandle> NameObjectInstanceHandleMap;
-  typedef std::map<std::wstring, AttributeHandle> NameAttributeHandleMap;
-  typedef std::map<std::wstring, DimensionHandle> NameDimensionHandleMap;
+  typedef std::map<std::string, InteractionClassHandle> NameInteractionClassHandleMap;
+  typedef std::map<std::string, ParameterHandle> NameParameterHandleMap;
+  typedef std::map<std::string, ObjectClassHandle> NameObjectClassHandleMap;
+  typedef std::map<std::string, ObjectInstanceHandle> NameObjectInstanceHandleMap;
+  typedef std::map<std::string, AttributeHandle> NameAttributeHandleMap;
+  typedef std::map<std::string, DimensionHandle> NameDimensionHandleMap;
 
-  typedef std::map<std::wstring, TransportationType> NameTransportationTypeMap;
-  typedef std::map<TransportationType, std::wstring> TransportationTypeNameMap;
+  typedef std::map<std::string, TransportationType> NameTransportationTypeMap;
+  typedef std::map<TransportationType, std::string> TransportationTypeNameMap;
 
-  typedef std::map<std::wstring, OrderType> NameOrderTypeMap;
-  typedef std::map<OrderType, std::wstring> OrderTypeNameMap;
+  typedef std::map<std::string, OrderType> NameOrderTypeMap;
+  typedef std::map<OrderType, std::string> OrderTypeNameMap;
 
   // Is used to map the available dimension handles to integer indices.
   // Internally, regions are only accessed by these indices.
@@ -162,7 +162,7 @@ public:
       _subscriptionType(Unsubscribed),
       _publicationType(Unpublished)
     { }
-    std::wstring _name;
+    std::string _name;
     OrderType _orderType;
     TransportationType _transportationType;
     DimensionHandleSet _dimensionHandleSet; // Make that vanish in favour of the below
@@ -186,10 +186,10 @@ public:
   };
 
   struct OPENRTI_LOCAL Dimension : public Referenced {
-    Dimension(const std::wstring& name, unsigned long upperBound) :
+    Dimension(const std::string& name, unsigned long upperBound) :
       _name(name), _upperBound(upperBound)
     { }
-    const std::wstring _name;
+    const std::string _name;
     const unsigned long _upperBound;
   };
   typedef std::vector<SharedPtr<Dimension> > DimensionVector;
@@ -205,14 +205,14 @@ public:
   typedef std::map<RegionHandle, RegionData> RegionHandleRegionDataMap;
 
   struct OPENRTI_LOCAL Parameter : public Referenced {
-    Parameter(const std::wstring& name) :
+    Parameter(const std::string& name) :
       _name(name)
     { }
-    const std::wstring _name;
+    const std::string _name;
   };
   typedef std::vector<SharedPtr<Parameter> > ParameterVector;
   struct OPENRTI_LOCAL InteractionClass : public PublishSubscribe {
-    std::wstring _fqnName;
+    std::string _fqnName;
     InteractionClassHandle _parentInteractionClassHandle;
     ParameterVector _parameterVector;
     NameParameterHandleMap _nameParameterHandleMap;
@@ -227,8 +227,8 @@ public:
   typedef std::vector<SharedPtr<Attribute> > AttributeVector;
   struct OPENRTI_LOCAL ObjectClass : public Referenced {
     ObjectClass() : _subscriptionType(Unsubscribed), _publicationType(Unpublished) { }
-    std::wstring _name;
-    std::wstring _fqnName;
+    std::string _name;
+    std::string _fqnName;
     ObjectClassHandle _parentObjectClassHandle;
     AttributeVector _attributeVector;
     NameAttributeHandleMap _nameAttributeHandleMap;
@@ -326,7 +326,7 @@ public:
   };
   typedef std::map<ObjectInstanceHandle, ObjectInstance> ObjectInstanceHandleMap;
 
-  Federate(const std::wstring& federateType, const std::wstring& federateName,
+  Federate(const std::string& federateType, const std::string& federateName,
            const FederateHandle& federateHandle, SharedPtr<AbstractConnect> connect,
            const InsertFederationExecutionMessage& insertFederationExecution,
            const LogicalTimeFactory& logicalTimeFactory) :
@@ -366,16 +366,16 @@ public:
   virtual ~Federate()
   { }
 
-  const std::wstring& getFederateType() const
+  const std::string& getFederateType() const
   { return _federateType; }
-  const std::wstring& getFederateName() const
+  const std::string& getFederateName() const
   { return _federateName; }
   const FederateHandle& getFederateHandle() const
   { return _federateHandle; }
   const FederationHandle& getFederationHandle() const
   { return _federationHandle; }
 
-  virtual std::wstring getLogicalTimeFactoryName() const
+  virtual std::string getLogicalTimeFactoryName() const
   { return _logicalTimeFactory.getName(); }
 
   // that might move to something internal??
@@ -518,7 +518,7 @@ public:
     sendMessage(request3);
   }
 
-  virtual void registerFederationSynchronizationPoint(const std::wstring& label, const VariableLengthData& tag, const FederateHandleSet& syncSet)
+  virtual void registerFederationSynchronizationPoint(const std::string& label, const VariableLengthData& tag, const FederateHandleSet& syncSet)
     throw (SaveInProgress,
            RestoreInProgress,
            RTIinternalError)
@@ -534,7 +534,7 @@ public:
     sendMessage(message);
   }
 
-  virtual void synchronizationPointAchieved(const std::wstring& label)
+  virtual void synchronizationPointAchieved(const std::string& label)
     throw (SynchronizationPointLabelNotAnnounced,
            SaveInProgress,
            RestoreInProgress,
@@ -552,21 +552,21 @@ public:
     sendMessage(message);
   }
 
-  virtual void requestFederationSave(const std::wstring& label)
+  virtual void requestFederationSave(const std::string& label)
     throw (SaveInProgress,
            RestoreInProgress,
            RTIinternalError)
   {
-    Traits::throwRTIinternalError(L"Save/Restore not implemented!");
+    Traits::throwRTIinternalError("Save/Restore not implemented!");
   }
 
-  virtual void requestFederationSave(const std::wstring& label, const NativeLogicalTime& logicalTime)
+  virtual void requestFederationSave(const std::string& label, const NativeLogicalTime& logicalTime)
     throw (FederateUnableToUseTime,
            SaveInProgress,
            RestoreInProgress,
            RTIinternalError)
   {
-    Traits::throwRTIinternalError(L"Save/Restore not implemented!");
+    Traits::throwRTIinternalError("Save/Restore not implemented!");
   }
 
   virtual void federateSaveBegun()
@@ -574,7 +574,7 @@ public:
            RestoreInProgress,
            RTIinternalError)
   {
-    Traits::throwRTIinternalError(L"Save/Restore not implemented!");
+    Traits::throwRTIinternalError("Save/Restore not implemented!");
   }
 
   virtual void federateSaveComplete()
@@ -582,7 +582,7 @@ public:
            RestoreInProgress,
            RTIinternalError)
   {
-    Traits::throwRTIinternalError(L"Save/Restore not implemented!");
+    Traits::throwRTIinternalError("Save/Restore not implemented!");
   }
 
   virtual void federateSaveNotComplete()
@@ -590,22 +590,22 @@ public:
            RestoreInProgress,
            RTIinternalError)
   {
-    Traits::throwRTIinternalError(L"Save/Restore not implemented!");
+    Traits::throwRTIinternalError("Save/Restore not implemented!");
   }
 
   virtual void queryFederationSaveStatus()
     throw (RestoreInProgress,
            RTIinternalError)
   {
-    Traits::throwRTIinternalError(L"Save/Restore not implemented!");
+    Traits::throwRTIinternalError("Save/Restore not implemented!");
   }
 
-  virtual void requestFederationRestore(const std::wstring& label)
+  virtual void requestFederationRestore(const std::string& label)
     throw (SaveInProgress,
            RestoreInProgress,
            RTIinternalError)
   {
-    Traits::throwRTIinternalError(L"Save/Restore not implemented!");
+    Traits::throwRTIinternalError("Save/Restore not implemented!");
   }
 
   virtual void federateRestoreComplete()
@@ -613,7 +613,7 @@ public:
            SaveInProgress,
            RTIinternalError)
   {
-    Traits::throwRTIinternalError(L"Save/Restore not implemented!");
+    Traits::throwRTIinternalError("Save/Restore not implemented!");
   }
 
   virtual void federateRestoreNotComplete()
@@ -621,14 +621,14 @@ public:
            SaveInProgress,
            RTIinternalError)
   {
-    Traits::throwRTIinternalError(L"Save/Restore not implemented!");
+    Traits::throwRTIinternalError("Save/Restore not implemented!");
   }
 
   virtual void queryFederationRestoreStatus()
     throw (SaveInProgress,
            RTIinternalError)
   {
-    Traits::throwRTIinternalError(L"Save/Restore not implemented!");
+    Traits::throwRTIinternalError("Save/Restore not implemented!");
   }
 
   virtual void publishObjectClassAttributes(ObjectClassHandle objectClassHandle, const AttributeHandleSet& attributeList)
@@ -978,7 +978,7 @@ public:
     sendMessage(request);
   }
 
-  virtual void reserveObjectInstanceName(const std::wstring& objectInstanceName)
+  virtual void reserveObjectInstanceName(const std::string& objectInstanceName)
     throw (IllegalName,
            SaveInProgress,
            RestoreInProgress,
@@ -986,7 +986,7 @@ public:
   {
     if (objectInstanceName.empty())
       Traits::throwIllegalName("Empty object hames are not allowed!");
-    if (objectInstanceName.compare(0, 3, L"HLA") == 0)
+    if (objectInstanceName.compare(0, 3, "HLA") == 0)
       Traits::throwIllegalName("Object instance names starting with \"HLA\" are reserved for the RTI.");
 
     SharedPtr<ReserveObjectInstanceNameRequestMessage> request;
@@ -998,7 +998,7 @@ public:
     sendMessage(request);
   }
 
-  virtual void releaseObjectInstanceName(const std::wstring& objectInstanceName)
+  virtual void releaseObjectInstanceName(const std::string& objectInstanceName)
     throw (ObjectInstanceNameNotReserved,
            SaveInProgress,
            RestoreInProgress,
@@ -1019,7 +1019,7 @@ public:
     sendMessage(response);
   }
 
-  virtual void reserveMultipleObjectInstanceName(const std::set<std::wstring>& objectInstanceNameSet)
+  virtual void reserveMultipleObjectInstanceName(const std::set<std::string>& objectInstanceNameSet)
     throw (IllegalName,
            NameSetWasEmpty,
            SaveInProgress,
@@ -1031,10 +1031,10 @@ public:
     SharedPtr<ReserveMultipleObjectInstanceNameRequestMessage> request;
     request = new ReserveMultipleObjectInstanceNameRequestMessage;
     request->getNameList().reserve(objectInstanceNameSet.size());
-    for (std::set<std::wstring>::const_iterator i = objectInstanceNameSet.begin(); i != objectInstanceNameSet.end(); ++i) {
+    for (std::set<std::string>::const_iterator i = objectInstanceNameSet.begin(); i != objectInstanceNameSet.end(); ++i) {
       if (i->empty())
         Traits::throwIllegalName("Empty object hames are not allowed!");
-      if (i->compare(0, 3, L"HLA") == 0)
+      if (i->compare(0, 3, "HLA") == 0)
         Traits::throwIllegalName("Object instance names starting with \"HLA\" are reserved for the RTI.");
       request->getNameList().push_back(*i);
     }
@@ -1044,13 +1044,13 @@ public:
     sendMessage(request);
   }
 
-  virtual void releaseMultipleObjectInstanceName(const std::set<std::wstring>& objectInstanceNameSet)
+  virtual void releaseMultipleObjectInstanceName(const std::set<std::string>& objectInstanceNameSet)
     throw (ObjectInstanceNameNotReserved,
            SaveInProgress,
            RestoreInProgress,
            RTIinternalError)
   {
-    for (std::set<std::wstring>::const_iterator i = objectInstanceNameSet.begin(); i != objectInstanceNameSet.end(); ++i) {
+    for (std::set<std::string>::const_iterator i = objectInstanceNameSet.begin(); i != objectInstanceNameSet.end(); ++i) {
       if (_reservedNameObjectInstanceHandlePairs.find(*i) == _reservedNameObjectInstanceHandlePairs.end())
         Traits::throwObjectInstanceNameNotReserved(*i);
     }
@@ -1058,7 +1058,7 @@ public:
     SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> response = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
     response->setFederationHandle(getFederationHandle());
     response->getObjectInstanceHandleVector().reserve(objectInstanceNameSet.size());
-    for (std::set<std::wstring>::const_iterator i = objectInstanceNameSet.begin(); i != objectInstanceNameSet.end(); ++i) {
+    for (std::set<std::string>::const_iterator i = objectInstanceNameSet.begin(); i != objectInstanceNameSet.end(); ++i) {
       NameObjectInstanceHandleMap::iterator j = _reservedNameObjectInstanceHandlePairs.find(*i);
       response->getObjectInstanceHandleVector().push_back(j->second);
       _reservedNameObjectInstanceHandlePairs.erase(j);
@@ -1103,7 +1103,7 @@ public:
     return handleNamePair.first;
   }
 
-  virtual ObjectInstanceHandle registerObjectInstance(ObjectClassHandle objectClassHandle, const std::wstring& objectInstanceName,
+  virtual ObjectInstanceHandle registerObjectInstance(ObjectClassHandle objectClassHandle, const std::string& objectInstanceName,
                                                       bool allowUnreservedObjectNames)
     throw (ObjectClassNotDefined,
            ObjectClassNotPublished,
@@ -1156,7 +1156,7 @@ public:
           if (dispatchInternal(timeout))
             continue;
           if (timeout < Clock::now())
-            Traits::throwRTIinternalError(L"Timeout while waiting for object name response handles.");
+            Traits::throwRTIinternalError("Timeout while waiting for object name response handles.");
         } while (!_syncronousReservationHandleNamePair.second.empty());
         // Get the object instance handle that is delivered with the name reservation.
         objectInstanceHandle = _syncronousReservationHandleNamePair.first;
@@ -2192,7 +2192,7 @@ public:
   virtual ObjectInstanceHandle
   registerObjectInstanceWithRegions(ObjectClassHandle objectClassHandle,
                                     const AttributeHandleSetRegionHandleSetPairVector& attributeHandleSetRegionHandleSetPairVector,
-                                    const std::wstring& objectInstanceName)
+                                    const std::string& objectInstanceName)
     throw (ObjectClassNotDefined,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -2366,7 +2366,7 @@ public:
     _defaultResignAction = resignAction;
   }
 
-  virtual const ObjectClassHandle& getObjectClassHandle(const std::wstring& name) const
+  virtual const ObjectClassHandle& getObjectClassHandle(const std::string& name) const
     throw (NameNotFound, RTIinternalError)
   {
     typename NameObjectClassHandleMap::const_iterator i = _nameObjectClassHandleMap.find(name);
@@ -2375,7 +2375,7 @@ public:
     return i->second;
   }
 
-  virtual const std::wstring& getObjectClassName(const ObjectClassHandle& objectClassHandle) const
+  virtual const std::string& getObjectClassName(const ObjectClassHandle& objectClassHandle) const
     throw (InvalidObjectClassHandle,
            RTIinternalError)
   {
@@ -2384,7 +2384,7 @@ public:
     return getObjectClass(objectClassHandle)._name;
   }
 
-  virtual const AttributeHandle& getAttributeHandle(const ObjectClassHandle& objectClassHandle, const std::wstring& name) const
+  virtual const AttributeHandle& getAttributeHandle(const ObjectClassHandle& objectClassHandle, const std::string& name) const
     throw (InvalidObjectClassHandle,
            NameNotFound,
            RTIinternalError)
@@ -2398,7 +2398,7 @@ public:
     return i->second;
   }
 
-  virtual const std::wstring& getAttributeName(const ObjectClassHandle& objectClassHandle, const AttributeHandle& attributeHandle) const
+  virtual const std::string& getAttributeName(const ObjectClassHandle& objectClassHandle, const AttributeHandle& attributeHandle) const
     throw (InvalidObjectClassHandle,
            InvalidAttributeHandle,
            AttributeNotDefined,
@@ -2412,7 +2412,7 @@ public:
     return objectClass._attributeVector[attributeHandle.getHandle()]->_name;
   }
 
-  virtual const InteractionClassHandle& getInteractionClassHandle(const std::wstring& name) const
+  virtual const InteractionClassHandle& getInteractionClassHandle(const std::string& name) const
     throw (NameNotFound,
            RTIinternalError)
   {
@@ -2422,7 +2422,7 @@ public:
     return i->second;
   }
 
-  virtual const std::wstring& getInteractionClassName(const InteractionClassHandle& interactionClassHandle) const
+  virtual const std::string& getInteractionClassName(const InteractionClassHandle& interactionClassHandle) const
     throw (InvalidInteractionClassHandle,
            RTIinternalError)
   {
@@ -2431,7 +2431,7 @@ public:
     return getInteractionClass(interactionClassHandle)._name;
   }
 
-  virtual const ParameterHandle& getParameterHandle(const InteractionClassHandle& interactionClassHandle, const std::wstring& name) const
+  virtual const ParameterHandle& getParameterHandle(const InteractionClassHandle& interactionClassHandle, const std::string& name) const
     throw (InvalidInteractionClassHandle,
            NameNotFound,
            RTIinternalError)
@@ -2445,7 +2445,7 @@ public:
     return i->second;
   }
 
-  virtual const std::wstring& getParameterName(const InteractionClassHandle& interactionClassHandle, const ParameterHandle& parameterHandle) const
+  virtual const std::string& getParameterName(const InteractionClassHandle& interactionClassHandle, const ParameterHandle& parameterHandle) const
     throw (InvalidInteractionClassHandle,
            InvalidParameterHandle,
            InteractionParameterNotDefined,
@@ -2459,7 +2459,7 @@ public:
     return interactionClass._parameterVector[parameterHandle.getHandle()]->_name;
   }
 
-  virtual const ObjectInstanceHandle& getObjectInstanceHandle(const std::wstring& name) const
+  virtual const ObjectInstanceHandle& getObjectInstanceHandle(const std::string& name) const
     throw (ObjectInstanceNotKnown,
            RTIinternalError)
   {
@@ -2469,7 +2469,7 @@ public:
     return i->second;
   }
 
-  virtual const std::wstring& getObjectInstanceName(const ObjectInstanceHandle& objectInstanceHandle) const
+  virtual const std::string& getObjectInstanceName(const ObjectInstanceHandle& objectInstanceHandle) const
     throw (ObjectInstanceNotKnown,
            RTIinternalError)
   {
@@ -2479,7 +2479,7 @@ public:
     return i->second._nameObjectInstanceHandleMapIterator->first;
   }
 
-  virtual const DimensionHandle& getDimensionHandle(const std::wstring& name) const
+  virtual const DimensionHandle& getDimensionHandle(const std::string& name) const
     throw (NameNotFound,
            RTIinternalError)
   {
@@ -2489,7 +2489,7 @@ public:
     return i->second;
   }
 
-  virtual const std::wstring& getDimensionName(const DimensionHandle& dimensionHandle) const
+  virtual const std::string& getDimensionName(const DimensionHandle& dimensionHandle) const
     throw (InvalidDimensionHandle,
            RTIinternalError)
   {
@@ -2545,7 +2545,7 @@ public:
     return getInteractionClass(interactionClassHandle)._dimensionHandleSet;
   }
 
-  virtual TransportationType getTransportationType(const std::wstring& name) const
+  virtual TransportationType getTransportationType(const std::string& name) const
     throw (InvalidTransportationName,
            RTIinternalError)
   {
@@ -2555,7 +2555,7 @@ public:
     return i->second;
   }
 
-  virtual const std::wstring& getTransportationName(TransportationType transportationType) const
+  virtual const std::string& getTransportationName(TransportationType transportationType) const
     throw (InvalidTransportationType,
            RTIinternalError)
   {
@@ -2565,7 +2565,7 @@ public:
     return i->second;
   }
 
-  virtual OrderType getOrderType(const std::wstring& name) const
+  virtual OrderType getOrderType(const std::string& name) const
     throw (InvalidOrderName,
            RTIinternalError)
   {
@@ -2575,7 +2575,7 @@ public:
     return i->second;
   }
 
-  virtual const std::wstring& getOrderName(OrderType orderType) const
+  virtual const std::string& getOrderName(OrderType orderType) const
     throw (InvalidOrderType,
            RTIinternalError)
   {
@@ -2818,7 +2818,7 @@ protected:
         if (dispatchInternal(timeout))
           continue;
         if (timeout < Clock::now())
-          Traits::throwRTIinternalError(L"Timeout while waiting for free object handles.");
+          Traits::throwRTIinternalError("Timeout while waiting for free object handles.");
       }
     }
 
@@ -2894,7 +2894,7 @@ protected:
 protected:
   // The default fallback implementation
   virtual void acceptInternalMessage(const AbstractMessage& message)
-  { Traits::throwRTIinternalError(L"Unexpected message in internal message processing!"); }
+  { Traits::throwRTIinternalError("Unexpected message in internal message processing!"); }
 
   virtual void acceptInternalMessage(const ConnectionLostMessage& message)
   { }
@@ -3351,7 +3351,7 @@ protected:
 
   // The default fallback implementations
   void acceptCallbackMessage(const AbstractMessage& message)
-  { Traits::throwRTIinternalError(L"Unexpected message in callback message processing!"); }
+  { Traits::throwRTIinternalError("Unexpected message in callback message processing!"); }
 
   // These are called when callback messages are processed
   virtual void acceptCallbackMessage(const RegisterFederationSynchronizationPointResponseMessage& message)
@@ -3513,11 +3513,11 @@ protected:
   }
 
   // The callback into the binding concrete implementation.
-  virtual void synchronizationPointRegistrationResponse(const std::wstring& label, RegisterFederationSynchronizationPointResponseType reason)
+  virtual void synchronizationPointRegistrationResponse(const std::string& label, RegisterFederationSynchronizationPointResponseType reason)
     throw () = 0;
-  virtual void announceSynchronizationPoint(const std::wstring& label, const VariableLengthData& tag)
+  virtual void announceSynchronizationPoint(const std::string& label, const VariableLengthData& tag)
     throw () = 0;
-  virtual void federationSynchronized(const std::wstring& label)
+  virtual void federationSynchronized(const std::string& label)
     throw () = 0;
 
   virtual void registrationForObjectClass(ObjectClassHandle objectClassHandle, bool start)
@@ -3533,7 +3533,7 @@ protected:
 
   // 6.5
   virtual void discoverObjectInstance(ObjectInstanceHandle objectInstanceHandle, ObjectClassHandle objectClassHandle,
-                                      const std::wstring& objectInstanceName)
+                                      const std::string& objectInstanceName)
     throw () = 0;
 
 
@@ -3649,7 +3649,7 @@ protected:
   bool isValidObjectInstance(const ObjectInstanceHandle& objectInstanceHandle) const
   { return _objectInstanceHandleMap.find(objectInstanceHandle) != _objectInstanceHandleMap.end(); }
 
-  void insertObjectInstance(ObjectInstanceHandle objectInstanceHandle, const std::wstring& name, ObjectClassHandle objectClassHandle, bool owned)
+  void insertObjectInstance(ObjectInstanceHandle objectInstanceHandle, const std::string& name, ObjectClassHandle objectClassHandle, bool owned)
   {
     typename NameObjectInstanceHandleMap::iterator i;
     i = _nameObjectInstanceHandleMap.insert(typename NameObjectInstanceHandleMap::value_type(name, objectInstanceHandle)).first;
@@ -3690,14 +3690,14 @@ protected:
     sendMessage(message);
   }
 
-  void insertOrderType(const std::wstring& name, OrderType orderType)
+  void insertOrderType(const std::string& name, OrderType orderType)
   {
     OpenRTIAssert(_nameOrderTypeMap.find(name) == _nameOrderTypeMap.end());
     OpenRTIAssert(_orderTypeNameMap.find(orderType) == _orderTypeNameMap.end());
     _nameOrderTypeMap[name] = orderType;
     _orderTypeNameMap[orderType] = name;
   }
-  void insertTransportationType(const std::wstring& name, TransportationType transportationType)
+  void insertTransportationType(const std::string& name, TransportationType transportationType)
   {
     OpenRTIAssert(_nameTransportationTypeMap.find(name) == _nameTransportationTypeMap.end());
     OpenRTIAssert(_transportationTypeNameMap.find(transportationType) == _transportationTypeNameMap.end());
@@ -3705,7 +3705,7 @@ protected:
     _transportationTypeNameMap[transportationType] = name;
   }
   // Insert a new dimension into the local object model
-  void insertDimension(const std::wstring& name, const DimensionHandle& dimensionHandle, Unsigned upperBound)
+  void insertDimension(const std::string& name, const DimensionHandle& dimensionHandle, Unsigned upperBound)
   {
     OpenRTIAssert(_nameDimensionHandleMap.find(name) == _nameDimensionHandleMap.end());
     size_t index = dimensionHandle.getHandle();
@@ -3714,7 +3714,7 @@ protected:
     _dimensionVector[index] = new Dimension(name, upperBound);
     _nameDimensionHandleMap[name] = dimensionHandle;
   }
-  void insertRoutingSpace(const std::wstring& name, const SpaceHandle& spaceHandle, const DimensionHandleSet& dimensionHandles)
+  void insertRoutingSpace(const std::string& name, const SpaceHandle& spaceHandle, const DimensionHandleSet& dimensionHandles)
   {
     // FIXME implement for the HLA13 stuff, when the parser is there :)
   }
@@ -3727,12 +3727,12 @@ protected:
 
     InteractionClassHandle parentHandle = module.getParentInteractionClassHandle();
 
-    std::wstring parentFQN;
+    std::string parentFQN;
     if (parentHandle.valid()) {
-      parentFQN = getInteractionClass(parentHandle)._fqnName + L".";
+      parentFQN = getInteractionClass(parentHandle)._fqnName + ".";
     }
 
-    std::wstring fqn = parentFQN + module.getName();
+    std::string fqn = parentFQN + module.getName();
     _nameInteractionClassHandleMap[module.getName()] = module.getInteractionClassHandle();
     _nameInteractionClassHandleMap[fqn] = module.getInteractionClassHandle();
     fqn.push_back('.');
@@ -3765,12 +3765,12 @@ protected:
 
     ObjectClassHandle parentHandle = module.getParentObjectClassHandle();
 
-    std::wstring parentFQN;
+    std::string parentFQN;
     if (parentHandle.valid()) {
-      parentFQN = getObjectClass(parentHandle)._fqnName + L".";
+      parentFQN = getObjectClass(parentHandle)._fqnName + ".";
     }
 
-    std::wstring fqn = parentFQN + module.getName();
+    std::string fqn = parentFQN + module.getName();
     _nameObjectClassHandleMap[module.getName()] = module.getObjectClassHandle();
     _nameObjectClassHandleMap[fqn] = module.getObjectClassHandle();
     fqn.push_back('.');
@@ -3825,8 +3825,8 @@ private:
   // The connect to our next server
   SharedPtr<AbstractConnect> _federationConnect;
 
-  std::wstring _federateType;
-  std::wstring _federateName;
+  std::string _federateType;
+  std::string _federateName;
   FederateHandle _federateHandle;
   FederationHandle _federationHandle;
 

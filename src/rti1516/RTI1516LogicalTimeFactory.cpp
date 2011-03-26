@@ -36,7 +36,7 @@ public:
   LogicalTimeFactoryImplementation(std::auto_ptr<rti1516::LogicalTimeFactory> logicalTimeFactory);
   ~LogicalTimeFactoryImplementation();
 
-  std::wstring getName() const;
+  std::string getName() const;
   LogicalTimeImplementation* initialLogicalTime() const;
   LogicalTimeImplementation* decodeLogicalTime(const VariableLengthData& variableLengthData) const;
   LogicalTimeIntervalImplementation* zeroLogicalTimeInterval() const;
@@ -219,10 +219,10 @@ RTI1516LogicalTimeFactory::LogicalTimeFactoryImplementation::~LogicalTimeFactory
 {
 }
 
-std::wstring
+std::string
 RTI1516LogicalTimeFactory::LogicalTimeFactoryImplementation::getName() const
 {
-  return _logicalTimeFactory->makeLogicalTime()->implementationName();
+  return ucsToUtf8(_logicalTimeFactory->makeLogicalTime()->implementationName());
 }
 
 RTI1516LogicalTimeFactory::LogicalTimeImplementation*
@@ -485,7 +485,7 @@ RTI1516LogicalTimeFactory::operator=(const RTI1516LogicalTimeFactory& logicalTim
   return *this;
 }
 
-std::wstring
+std::string
 RTI1516LogicalTimeFactory::getName() const
 {
   return _implementation->getName();
