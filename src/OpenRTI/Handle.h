@@ -84,6 +84,13 @@ public:
   bool operator!=(const Handle& handle) const
   { return _handle != handle._handle; }
 
+  std::string getReservedName(const char* prefix) const
+  {
+    std::stringstream ss;
+    ss << prefix << _handle;
+    return ss.str();
+  }
+
   unsigned getEncodedLength() const
   { return 8; }
 

@@ -418,11 +418,8 @@ public:
     OpenRTIAssert(_federateHandleFederateDataMap.find(candidate.get()) == _federateHandleFederateDataMap.end());
 
     // generate a unique name if there is none given
-    if (federateName.empty()) {
-      std::stringstream ss;
-      ss << "HLAfederate" << candidate.get().getHandle();
-      federateName = ss.str();
-    }
+    if (federateName.empty())
+      federateName = candidate.get().getReservedName("HLAfederate");
     OpenRTIAssert(_federateNameSet.find(federateName) == _federateNameSet.end());
 
     // Register that we reach this federate through this connect
@@ -1104,9 +1101,7 @@ public:
       FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
       while (count--) {
         ObjectInstanceHandle objectInstanceHandle = _objectInstanceHandleAllocator.get();
-        std::stringstream stream;
-        stream << "HLAobjectInstance" << objectInstanceHandle.getHandle();
-        ObjectInstanceHandleNamePair objectInstanceHandleNamePair(objectInstanceHandle, stream.str());
+        ObjectInstanceHandleNamePair objectInstanceHandleNamePair(objectInstanceHandle, objectInstanceHandle.getReservedName("HLAobjectInstance"));
         insertObjectInstanceHandle(objectInstanceHandleNamePair.first, objectInstanceHandleNamePair.second, connectHandle);
         response->getObjectInstanceHandleNamePairVector().push_back(objectInstanceHandleNamePair);
       }
