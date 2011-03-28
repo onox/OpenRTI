@@ -713,7 +713,7 @@ PyObject_GetAttributeHandleValueMap(rti1516::AttributeHandleValueMap& attributeH
       return false;
     }
     rti1516::AttributeHandle attributeHandle;
-    if (!PyObject_GetAttributeHandle(attributeHandle, item)) {
+    if (!PyObject_GetAttributeHandle(attributeHandle, key)) {
       Py_DecRef(key);
       Py_DecRef(item);
       Py_DecRef(iterator);
@@ -779,7 +779,7 @@ PyObject_GetParameterHandleValueMap(rti1516::ParameterHandleValueMap& parameterH
       return false;
     }
     rti1516::ParameterHandle parameterHandle;
-    if (!PyObject_GetParameterHandle(parameterHandle, item)) {
+    if (!PyObject_GetParameterHandle(parameterHandle, key)) {
       Py_DecRef(key);
       Py_DecRef(item);
       Py_DecRef(iterator);
@@ -799,6 +799,50 @@ PyObject_GetParameterHandleValueMap(rti1516::ParameterHandleValueMap& parameterH
       return false;
     }
     Py_DecRef(value);
+  }
+  Py_DecRef(iterator);
+  return true;
+}
+
+static bool
+PyObject_GetAttributeHandleSetRegionHandleSetPairVector(rti1516::AttributeHandleSetRegionHandleSetPairVector& attributeHandleSetRegionHandleSetPairVector, PyObject* o)
+{
+  PyObject* iterator = PyObject_GetIter(o);
+  if (!iterator)
+    return false;
+  while (PyObject* item = PyIter_Next(iterator)) {
+    PyObject* attribute = PySequence_GetItem(item, 0);
+    if (!attribute) {
+      Py_DecRef(item);
+      Py_DecRef(iterator);
+      return false;
+    }
+    rti1516::AttributeHandleSet attributeHandleSet;
+    if (!PyObject_GetAttributeHandleSet(attributeHandleSet, attribute)) {
+      Py_DecRef(attribute);
+      Py_DecRef(item);
+      Py_DecRef(iterator);
+      return false;
+    }
+    Py_DecRef(attribute);
+
+    PyObject* region = PySequence_GetItem(item, 1);
+    Py_DecRef(item);
+    if (!region) {
+      Py_DecRef(iterator);
+      return false;
+    }
+    rti1516::RegionHandleSet regionHandleSet;
+    if (!PyObject_GetRegionHandleSet(regionHandleSet, region)) {
+      Py_DecRef(region);
+      Py_DecRef(iterator);
+      return false;
+    }
+    Py_DecRef(region);
+
+    attributeHandleSetRegionHandleSetPairVector.resize(attributeHandleSetRegionHandleSetPairVector.size() + 1);
+    attributeHandleSetRegionHandleSetPairVector.back().first.swap(attributeHandleSet);
+    attributeHandleSetRegionHandleSetPairVector.back().second.swap(regionHandleSet);
   }
   Py_DecRef(iterator);
   return true;
@@ -2394,6 +2438,61 @@ struct PyRTIambassadorObject {
   std::wstring _logicaltimeFactoryName;
 };
 
+static std::wstring
+validateLogicalTimeFactory(const std::wstring& implementationName)
+{
+  std::auto_ptr<rti1516::LogicalTimeFactory> logicalTimeFactory(rti1516::LogicalTimeFactoryFactory::makeLogicalTimeFactory(implementationName));
+  if (!logicalTimeFactory.get())
+    return std::wstring();
+
+  std::auto_ptr<rti1516::LogicalTime> logicalTime(logicalTimeFactory->makeLogicalTime());
+  if (!logicalTime.get())
+    return std::wstring();
+
+  return logicalTime->implementationName();
+}
+
+static PyObject *
+PyRTIambassador_setLogicalTimeFactory(PyRTIambassadorObject *self, PyObject *args)
+{
+  PyObject *arg1 = 0;
+  if (!PyArg_UnpackTuple(args, "setLogicalTimeFactory", 1, 1, &arg1))
+    return 0;
+
+  std::wstring logicalTimeImplementationName;
+  if (!PyObject_GetString(logicalTimeImplementationName, arg1)) {
+    PyErr_SetString(PyExc_TypeError, "logicalTimeImplementationName needs to be a string!");
+    return 0;
+  }
+
+  // Validate the time factory
+  logicalTimeImplementationName = validateLogicalTimeFactory(logicalTimeImplementationName);
+  if (logicalTimeImplementationName.empty()) {
+    PyErr_SetString(PyRTI1516CouldNotCreateLogicalTimeFactory.get(), "Given logicalTimeImplementationName does not yield a C++ factory!");
+    return 0;
+  }
+
+  if (logicalTimeImplementationName != L"HLAfloat64Time" &&
+      logicalTimeImplementationName != L"HLAinteger64Time") {
+    PyErr_SetString(PyRTI1516CouldNotCreateLogicalTimeFactory.get(), "Unsupported logicalTimeImplementationName!");
+    return 0;
+  }
+
+  self->_logicaltimeFactoryName = logicalTimeImplementationName;
+
+  Py_IncRef(Py_None);
+  return Py_None;
+}
+
+static PyObject *
+PyRTIambassador_getLogicalTimeFactory(PyRTIambassadorObject *self, PyObject *args)
+{
+  if (!PyArg_UnpackTuple(args, "getLogicalTimeFactory", 0, 0))
+    return 0;
+
+  return PyObject_NewString(self->_logicaltimeFactoryName);
+}
+
 static PyObject *
 PyRTIambassador_createFederationExecution(PyRTIambassadorObject *self, PyObject *args)
 {
@@ -2414,15 +2513,34 @@ PyRTIambassador_createFederationExecution(PyRTIambassadorObject *self, PyObject 
   }
 
   std::wstring logicalTimeImplementationName;
-  if (arg3 && !PyObject_GetString(logicalTimeImplementationName, arg3)) {
-    PyErr_SetString(PyExc_TypeError, "logicalTimeImplementationName needs to be a string!");
-    return 0;
+  if (arg3) {
+    if (!PyObject_GetString(logicalTimeImplementationName, arg3)) {
+      PyErr_SetString(PyExc_TypeError, "logicalTimeImplementationName needs to be a string!");
+      return 0;
+    }
+
+    logicalTimeImplementationName = validateLogicalTimeFactory(logicalTimeImplementationName);
+    if (logicalTimeImplementationName.empty()) {
+      PyErr_SetString(PyRTI1516CouldNotCreateLogicalTimeFactory.get(), "Given logicalTimeImplementationName does not yield a C++ factory!");
+      return 0;
+    }
+
+    if (logicalTimeImplementationName != L"HLAfloat64Time" &&
+        logicalTimeImplementationName != L"HLAinteger64Time") {
+      PyErr_SetString(PyRTI1516CouldNotCreateLogicalTimeFactory.get(), "Unsupported logicalTimeImplementationName!");
+      return 0;
+    }
+  } else {
+    if (self->_logicaltimeFactoryName.empty())
+      logicalTimeImplementationName = validateLogicalTimeFactory(logicalTimeImplementationName);
+    else
+      logicalTimeImplementationName = self->_logicaltimeFactoryName;
   }
 
   try {
 
-    self->_logicaltimeFactoryName = logicalTimeImplementationName;
     self->ob_value->createFederationExecution(federationExecutionName, fullPathNameToTheFDDfile, logicalTimeImplementationName);
+    self->_logicaltimeFactoryName = logicalTimeImplementationName;
 
     Py_IncRef(Py_None);
     return Py_None;
@@ -3159,7 +3277,7 @@ PyRTIambassador_registerObjectInstance(PyRTIambassadorObject *self, PyObject *ar
 
   std::wstring objectInstanceName;
   if (arg2 && !PyObject_GetString(objectInstanceName, arg2)) {
-    PyErr_SetString(PyExc_TypeError, "First argument needs to be a string!");
+    PyErr_SetString(PyExc_TypeError, "Second argument needs to be a string!");
     return 0;
   }
 
@@ -4387,211 +4505,482 @@ PyRTIambassador_changeInteractionOrderType(PyRTIambassadorObject *self, PyObject
   CATCH_C_EXCEPTION(RTIinternalError)
 }
 
-//     //////////////////////////////////
-//     // Data Distribution Management //
-//     //////////////////////////////////
+static PyObject *
+PyRTIambassador_createRegion(PyRTIambassadorObject *self, PyObject *args)
+{
+  PyObject *arg1 = 0;
+  if (!PyArg_UnpackTuple(args, "createRegion", 1, 1, &arg1))
+    return 0;
 
-//     // 9.2
-//     virtual RegionHandle createRegion
-//     (DimensionHandleSet const & theDimensions)
-//       throw (InvalidDimensionHandle,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+  rti1516::DimensionHandleSet dimensionHandleSet;
+  if (!PyObject_GetDimensionHandleSet(dimensionHandleSet, arg1)) {
+    PyErr_SetString(PyExc_TypeError, "First Argument needs to be a DimensionHandleSet!");
+    return 0;
+  }
 
-//     // 9.3
-//     virtual void commitRegionModifications
-//     (RegionHandleSet const & theRegionHandleSet)
-//       throw (InvalidRegion,
-//              RegionNotCreatedByThisFederate,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+  try {
 
-//     // 9.4
-//     virtual void deleteRegion
-//     (RegionHandle theRegion)
-//       throw (InvalidRegion,
-//              RegionNotCreatedByThisFederate,
-//              RegionInUseForUpdateOrSubscription,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+    rti1516::RegionHandle regionHandle;
+    regionHandle = self->ob_value->createRegion(dimensionHandleSet);
 
-//     // 9.5
-//     virtual ObjectInstanceHandle registerObjectInstanceWithRegions
-//     (ObjectClassHandle theClass,
-//      AttributeHandleSetRegionHandleSetPairVector const &
-//      theAttributeHandleSetRegionHandleSetPairVector)
-//       throw (ObjectClassNotDefined,
-//              ObjectClassNotPublished,
-//              AttributeNotDefined,
-//              AttributeNotPublished,
-//              InvalidRegion,
-//              RegionNotCreatedByThisFederate,
-//              InvalidRegionContext,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+    return PyObject_NewRegionHandle(regionHandle);
+  }
+  CATCH_C_EXCEPTION(InvalidDimensionHandle)
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
+}
 
-//     virtual ObjectInstanceHandle registerObjectInstanceWithRegions
-//     (ObjectClassHandle theClass,
-//      AttributeHandleSetRegionHandleSetPairVector const &
-//      theAttributeHandleSetRegionHandleSetPairVector,
-//      std::wstring const & theObjectInstanceName)
-//       throw (ObjectClassNotDefined,
-//              ObjectClassNotPublished,
-//              AttributeNotDefined,
-//              AttributeNotPublished,
-//              InvalidRegion,
-//              RegionNotCreatedByThisFederate,
-//              InvalidRegionContext,
-//              ObjectInstanceNameNotReserved,
-//              ObjectInstanceNameInUse,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+static PyObject *
+PyRTIambassador_commitRegionModifications(PyRTIambassadorObject *self, PyObject *args)
+{
+  PyObject *arg1 = 0;
+  if (!PyArg_UnpackTuple(args, "commitRegionModifications", 1, 1, &arg1))
+    return 0;
 
-//     // 9.6
-//     virtual void associateRegionsForUpdates
-//     (ObjectInstanceHandle theObject,
-//      AttributeHandleSetRegionHandleSetPairVector const &
-//      theAttributeHandleSetRegionHandleSetPairVector)
-//       throw (ObjectInstanceNotKnown,
-//              AttributeNotDefined,
-//              InvalidRegion,
-//              RegionNotCreatedByThisFederate,
-//              InvalidRegionContext,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+  rti1516::RegionHandleSet regionHandleSet;
+  if (!PyObject_GetRegionHandleSet(regionHandleSet, arg1)) {
+    PyErr_SetString(PyExc_TypeError, "First Argument needs to be a RegionHandleSet!");
+    return 0;
+  }
 
-//     // 9.7
-//     virtual void unassociateRegionsForUpdates
-//     (ObjectInstanceHandle theObject,
-//      AttributeHandleSetRegionHandleSetPairVector const &
-//      theAttributeHandleSetRegionHandleSetPairVector)
-//       throw (ObjectInstanceNotKnown,
-//              AttributeNotDefined,
-//              InvalidRegion,
-//              RegionNotCreatedByThisFederate,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+  try {
 
-//     // 9.8
-//     virtual void subscribeObjectClassAttributesWithRegions
-//     (ObjectClassHandle theClass,
-//      AttributeHandleSetRegionHandleSetPairVector const &
-//      theAttributeHandleSetRegionHandleSetPairVector,
-//      bool active = true)
-//       throw (ObjectClassNotDefined,
-//              AttributeNotDefined,
-//              InvalidRegion,
-//              RegionNotCreatedByThisFederate,
-//              InvalidRegionContext,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+    self->ob_value->commitRegionModifications(regionHandleSet);
 
-//     // 9.9
-//     virtual void unsubscribeObjectClassAttributesWithRegions
-//     (ObjectClassHandle theClass,
-//      AttributeHandleSetRegionHandleSetPairVector const &
-//      theAttributeHandleSetRegionHandleSetPairVector)
-//       throw (ObjectClassNotDefined,
-//              AttributeNotDefined,
-//              InvalidRegion,
-//              RegionNotCreatedByThisFederate,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+    Py_IncRef(Py_None);
+    return Py_None;
+  }
+  CATCH_C_EXCEPTION(InvalidRegion)
+  CATCH_C_EXCEPTION(RegionNotCreatedByThisFederate)
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
+}
 
-//     // 9.10
-//     virtual void subscribeInteractionClassWithRegions
-//     (InteractionClassHandle theClass,
-//      RegionHandleSet const & theRegionHandleSet,
-//      bool active = true)
-//       throw (InteractionClassNotDefined,
-//              InvalidRegion,
-//              RegionNotCreatedByThisFederate,
-//              InvalidRegionContext,
-//              FederateServiceInvocationsAreBeingReportedViaMOM,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+static PyObject *
+PyRTIambassador_deleteRegion(PyRTIambassadorObject *self, PyObject *args)
+{
+  PyObject *arg1 = 0;
+  if (!PyArg_UnpackTuple(args, "deleteRegion", 1, 1, &arg1))
+    return 0;
 
-//     // 9.11
-//     virtual void unsubscribeInteractionClassWithRegions
-//     (InteractionClassHandle theClass,
-//      RegionHandleSet const & theRegionHandleSet)
-//       throw (InteractionClassNotDefined,
-//              InvalidRegion,
-//              RegionNotCreatedByThisFederate,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+  rti1516::RegionHandle regionHandle;
+  if (!PyObject_GetRegionHandle(regionHandle, arg1)) {
+    PyErr_SetString(PyExc_TypeError, "First Argument needs to be a RegionHandle!");
+    return 0;
+  }
 
-//     // 9.12
-//     virtual void sendInteractionWithRegions
-//     (InteractionClassHandle theInteraction,
-//      ParameterHandleValueMap const & theParameterValues,
-//      RegionHandleSet const & theRegionHandleSet,
-//      VariableLengthData const & theUserSuppliedTag)
-//       throw (InteractionClassNotDefined,
-//              InteractionClassNotPublished,
-//              InteractionParameterNotDefined,
-//              InvalidRegion,
-//              RegionNotCreatedByThisFederate,
-//              InvalidRegionContext,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+  try {
 
-//     virtual MessageRetractionHandle sendInteractionWithRegions
-//     (InteractionClassHandle theInteraction,
-//      ParameterHandleValueMap const & theParameterValues,
-//      RegionHandleSet const & theRegionHandleSet,
-//      VariableLengthData const & theUserSuppliedTag,
-//      LogicalTime const & theTime)
-//       throw (InteractionClassNotDefined,
-//              InteractionClassNotPublished,
-//              InteractionParameterNotDefined,
-//              InvalidRegion,
-//              RegionNotCreatedByThisFederate,
-//              InvalidRegionContext,
-//              InvalidLogicalTime,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+    self->ob_value->deleteRegion(regionHandle);
 
-//     // 9.13
-//     virtual void requestAttributeValueUpdateWithRegions
-//     (ObjectClassHandle theClass,
-//      AttributeHandleSetRegionHandleSetPairVector const & theSet,
-//      VariableLengthData const & theUserSuppliedTag)
-//       throw (ObjectClassNotDefined,
-//              AttributeNotDefined,
-//              InvalidRegion,
-//              RegionNotCreatedByThisFederate,
-//              InvalidRegionContext,
-//              FederateNotExecutionMember,
-//              SaveInProgress,
-//              RestoreInProgress,
-//              RTIinternalError) = 0;
+    Py_IncRef(Py_None);
+    return Py_None;
+  }
+  CATCH_C_EXCEPTION(InvalidRegion)
+  CATCH_C_EXCEPTION(RegionNotCreatedByThisFederate)
+  CATCH_C_EXCEPTION(RegionInUseForUpdateOrSubscription)
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
+}
+
+static PyObject *
+PyRTIambassador_registerObjectInstanceWithRegions(PyRTIambassadorObject *self, PyObject *args)
+{
+  PyObject *arg1 = 0, *arg2 = 0, *arg3;
+  if (!PyArg_UnpackTuple(args, "registerObjectInstanceWithRegions", 2, 3, &arg1, &arg2, &arg3))
+    return 0;
+
+  rti1516::ObjectClassHandle objectClassHandle;
+  if (!PyObject_GetObjectClassHandle(objectClassHandle, arg1)) {
+    PyErr_SetString(PyExc_TypeError, "First Argument needs to be an ObjectClassHandle!");
+    return 0;
+  }
+
+  rti1516::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
+  if (!PyObject_GetAttributeHandleSetRegionHandleSetPairVector(attributeHandleSetRegionHandleSetPairVector, arg2)) {
+    PyErr_SetString(PyExc_TypeError, "Second argument needs to be an AttributeHandleSetRegionHandleSetPairVector!");
+    return 0;
+  }
+
+  std::wstring objectInstanceName;
+  if (arg3 && !PyObject_GetString(objectInstanceName, arg3)) {
+    PyErr_SetString(PyExc_TypeError, "Third argument needs to be a string!");
+    return 0;
+  }
+
+  try {
+
+    rti1516::ObjectInstanceHandle objectInstanceHandle;
+    objectInstanceHandle = self->ob_value->registerObjectInstanceWithRegions(objectClassHandle, attributeHandleSetRegionHandleSetPairVector, objectInstanceName);
+
+    return PyObject_NewObjectInstanceHandle(objectInstanceHandle);
+  }
+  CATCH_C_EXCEPTION(ObjectClassNotDefined)
+  CATCH_C_EXCEPTION(ObjectClassNotPublished)
+  CATCH_C_EXCEPTION(AttributeNotDefined)
+  CATCH_C_EXCEPTION(AttributeNotPublished)
+  CATCH_C_EXCEPTION(InvalidRegion)
+  CATCH_C_EXCEPTION(RegionNotCreatedByThisFederate)
+  CATCH_C_EXCEPTION(InvalidRegionContext)
+  CATCH_C_EXCEPTION(ObjectInstanceNameNotReserved)
+  CATCH_C_EXCEPTION(ObjectInstanceNameInUse)
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
+}
+
+static PyObject *
+PyRTIambassador_associateRegionsForUpdates(PyRTIambassadorObject *self, PyObject *args)
+{
+  PyObject *arg1 = 0, *arg2 = 0;
+  if (!PyArg_UnpackTuple(args, "associateRegionsForUpdates", 2, 2, &arg1, &arg2))
+    return 0;
+
+  rti1516::ObjectInstanceHandle objectInstanceHandle;
+  if (!PyObject_GetObjectInstanceHandle(objectInstanceHandle, arg1)) {
+    PyErr_SetString(PyExc_TypeError, "First Argument needs to be an ObjectInstanceHandle!");
+    return 0;
+  }
+
+  rti1516::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
+  if (!PyObject_GetAttributeHandleSetRegionHandleSetPairVector(attributeHandleSetRegionHandleSetPairVector, arg2)) {
+    PyErr_SetString(PyExc_TypeError, "Second argument needs to be an AttributeHandleSetRegionHandleSetPairVector!");
+    return 0;
+  }
+
+  try {
+
+    self->ob_value->associateRegionsForUpdates(objectInstanceHandle, attributeHandleSetRegionHandleSetPairVector);
+
+    Py_IncRef(Py_None);
+    return Py_None;
+  }
+  CATCH_C_EXCEPTION(ObjectInstanceNotKnown)
+  CATCH_C_EXCEPTION(AttributeNotDefined)
+  CATCH_C_EXCEPTION(InvalidRegion)
+  CATCH_C_EXCEPTION(RegionNotCreatedByThisFederate)
+  CATCH_C_EXCEPTION(InvalidRegionContext)
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
+}
+
+static PyObject *
+PyRTIambassador_unassociateRegionsForUpdates(PyRTIambassadorObject *self, PyObject *args)
+{
+  PyObject *arg1 = 0, *arg2 = 0;
+  if (!PyArg_UnpackTuple(args, "unassociateRegionsForUpdates", 2, 2, &arg1, &arg2))
+    return 0;
+
+  rti1516::ObjectInstanceHandle objectInstanceHandle;
+  if (!PyObject_GetObjectInstanceHandle(objectInstanceHandle, arg1)) {
+    PyErr_SetString(PyExc_TypeError, "First Argument needs to be an ObjectInstanceHandle!");
+    return 0;
+  }
+
+  rti1516::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
+  if (!PyObject_GetAttributeHandleSetRegionHandleSetPairVector(attributeHandleSetRegionHandleSetPairVector, arg2)) {
+    PyErr_SetString(PyExc_TypeError, "Second argument needs to be an AttributeHandleSetRegionHandleSetPairVector!");
+    return 0;
+  }
+
+  try {
+
+    self->ob_value->unassociateRegionsForUpdates(objectInstanceHandle, attributeHandleSetRegionHandleSetPairVector);
+
+    Py_IncRef(Py_None);
+    return Py_None;
+  }
+  CATCH_C_EXCEPTION(ObjectInstanceNotKnown)
+  CATCH_C_EXCEPTION(AttributeNotDefined)
+  CATCH_C_EXCEPTION(InvalidRegion)
+  CATCH_C_EXCEPTION(RegionNotCreatedByThisFederate)
+  CATCH_C_EXCEPTION(InvalidRegionContext)
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
+}
+
+static PyObject *
+PyRTIambassador_subscribeObjectClassAttributesWithRegions(PyRTIambassadorObject *self, PyObject *args)
+{
+  PyObject *arg1 = 0, *arg2 = 0, *arg3 = 0;
+  if (!PyArg_UnpackTuple(args, "subscribeObjectClassAttributesWithRegions", 2, 3, &arg1, &arg2, &arg3))
+    return 0;
+
+  rti1516::ObjectClassHandle objectClassHandle;
+  if (!PyObject_GetObjectClassHandle(objectClassHandle, arg1)) {
+    PyErr_SetString(PyExc_TypeError, "First Argument needs to be an ObjectClassHandle!");
+    return 0;
+  }
+
+  rti1516::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
+  if (!PyObject_GetAttributeHandleSetRegionHandleSetPairVector(attributeHandleSetRegionHandleSetPairVector, arg2)) {
+    PyErr_SetString(PyExc_TypeError, "Second argument needs to be an AttributeHandleSetRegionHandleSetPairVector!");
+    return 0;
+  }
+
+  bool active = true;
+  if (arg3) {
+    int t = PyObject_IsTrue(arg3);
+    if (t == -1) {
+      PyErr_SetString(PyExc_TypeError, "Third argument needs to be a bool!");
+      return 0;
+    }
+    active = (t == 1);
+  }
+
+  try {
+
+    self->ob_value->subscribeObjectClassAttributesWithRegions(objectClassHandle, attributeHandleSetRegionHandleSetPairVector, active);
+
+    Py_IncRef(Py_None);
+    return Py_None;
+  }
+  CATCH_C_EXCEPTION(ObjectClassNotDefined)
+  CATCH_C_EXCEPTION(AttributeNotDefined)
+  CATCH_C_EXCEPTION(InvalidRegion)
+  CATCH_C_EXCEPTION(RegionNotCreatedByThisFederate)
+  CATCH_C_EXCEPTION(InvalidRegionContext)
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
+}
+
+static PyObject *
+PyRTIambassador_unsubscribeObjectClassAttributesWithRegions(PyRTIambassadorObject *self, PyObject *args)
+{
+  PyObject *arg1 = 0, *arg2 = 0;
+  if (!PyArg_UnpackTuple(args, "unsubscribeObjectClassAttributesWithRegions", 2, 2, &arg1, &arg2))
+    return 0;
+
+  rti1516::ObjectClassHandle objectClassHandle;
+  if (!PyObject_GetObjectClassHandle(objectClassHandle, arg1)) {
+    PyErr_SetString(PyExc_TypeError, "First Argument needs to be an ObjectClassHandle!");
+    return 0;
+  }
+
+  rti1516::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
+  if (!PyObject_GetAttributeHandleSetRegionHandleSetPairVector(attributeHandleSetRegionHandleSetPairVector, arg2)) {
+    PyErr_SetString(PyExc_TypeError, "Second argument needs to be an AttributeHandleSetRegionHandleSetPairVector!");
+    return 0;
+  }
+
+  try {
+
+    self->ob_value->unsubscribeObjectClassAttributesWithRegions(objectClassHandle, attributeHandleSetRegionHandleSetPairVector);
+
+    Py_IncRef(Py_None);
+    return Py_None;
+  }
+  CATCH_C_EXCEPTION(ObjectClassNotDefined)
+  CATCH_C_EXCEPTION(AttributeNotDefined)
+  CATCH_C_EXCEPTION(InvalidRegion)
+  CATCH_C_EXCEPTION(RegionNotCreatedByThisFederate)
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
+}
+
+static PyObject *
+PyRTIambassador_subscribeInteractionClassWithRegions(PyRTIambassadorObject *self, PyObject *args)
+{
+  PyObject *arg1 = 0, *arg2 = 0, *arg3 = 0;
+  if (!PyArg_UnpackTuple(args, "subscribeInteractionClassAttributesWithRegions", 2, 3, &arg1, &arg2, &arg3))
+    return 0;
+
+  rti1516::InteractionClassHandle interactionClassHandle;
+  if (!PyObject_GetInteractionClassHandle(interactionClassHandle, arg1)) {
+    PyErr_SetString(PyExc_TypeError, "First Argument needs to be an InteractionClassHandle!");
+    return 0;
+  }
+
+  rti1516::RegionHandleSet regionHandleSet;
+  if (!PyObject_GetRegionHandleSet(regionHandleSet, arg2)) {
+    PyErr_SetString(PyExc_TypeError, "Second argument needs to be a RegionHandleSet!");
+    return 0;
+  }
+
+  bool active = true;
+  if (arg3) {
+    int t = PyObject_IsTrue(arg3);
+    if (t == -1) {
+      PyErr_SetString(PyExc_TypeError, "Third argument needs to be a bool!");
+      return 0;
+    }
+    active = (t == 1);
+  }
+
+  try {
+
+    self->ob_value->subscribeInteractionClassWithRegions(interactionClassHandle, regionHandleSet, active);
+
+    Py_IncRef(Py_None);
+    return Py_None;
+  }
+  CATCH_C_EXCEPTION(InteractionClassNotDefined)
+  CATCH_C_EXCEPTION(InvalidRegion)
+  CATCH_C_EXCEPTION(RegionNotCreatedByThisFederate)
+  CATCH_C_EXCEPTION(InvalidRegionContext)
+  CATCH_C_EXCEPTION(FederateServiceInvocationsAreBeingReportedViaMOM)
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
+}
+
+static PyObject *
+PyRTIambassador_unsubscribeInteractionClassWithRegions(PyRTIambassadorObject *self, PyObject *args)
+{
+  PyObject *arg1 = 0, *arg2 = 0;
+  if (!PyArg_UnpackTuple(args, "unsubscribeInteractionClassAttributesWithRegions", 2, 2, &arg1, &arg2))
+    return 0;
+
+  rti1516::InteractionClassHandle interactionClassHandle;
+  if (!PyObject_GetInteractionClassHandle(interactionClassHandle, arg1)) {
+    PyErr_SetString(PyExc_TypeError, "First Argument needs to be an InteractionClassHandle!");
+    return 0;
+  }
+
+  rti1516::RegionHandleSet regionHandleSet;
+  if (!PyObject_GetRegionHandleSet(regionHandleSet, arg2)) {
+    PyErr_SetString(PyExc_TypeError, "Second argument needs to be a RegionHandleSet!");
+    return 0;
+  }
+
+  try {
+
+    self->ob_value->unsubscribeInteractionClassWithRegions(interactionClassHandle, regionHandleSet);
+
+    Py_IncRef(Py_None);
+    return Py_None;
+  }
+  CATCH_C_EXCEPTION(InteractionClassNotDefined)
+  CATCH_C_EXCEPTION(InvalidRegion)
+  CATCH_C_EXCEPTION(RegionNotCreatedByThisFederate)
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
+}
+
+static PyObject *
+PyRTIambassador_sendInteractionWithRegions(PyRTIambassadorObject *self, PyObject *args)
+{
+  PyObject *arg1 = 0, *arg2 = 0, *arg3 = 0, *arg4 = 0, *arg5 = 0;
+  if (!PyArg_UnpackTuple(args, "sendInteractionWithRegions", 4, 5, &arg1, &arg2, &arg3, &arg4, &arg5))
+    return 0;
+
+  rti1516::InteractionClassHandle interactionClassHandle;
+  if (!PyObject_GetInteractionClassHandle(interactionClassHandle, arg1)) {
+    PyErr_SetString(PyExc_TypeError, "First Argument needs to be an InteractionClassHandle!");
+    return 0;
+  }
+
+  rti1516::ParameterHandleValueMap parameterHandleValueMap;
+  if (!PyObject_GetParameterHandleValueMap(parameterHandleValueMap, arg2)) {
+    PyErr_SetString(PyExc_TypeError, "Second argument needs to be an ParameterHandleValueMap!");
+    return 0;
+  }
+
+  rti1516::RegionHandleSet regionHandleSet;
+  if (!PyObject_GetRegionHandleSet(regionHandleSet, arg3)) {
+    PyErr_SetString(PyExc_TypeError, "Third argument needs to be a RegionHandleSet!");
+    return 0;
+  }
+
+  rti1516::VariableLengthData tag;
+  if (!PyObject_GetVariableLengthData(tag, arg4)) {
+    PyErr_SetString(PyExc_TypeError, "Fourth argument needs to be a bytearray!");
+    return 0;
+  }
+
+  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  if (arg5 && !PyObject_GetLogicalTime(logicalTime, arg5, self->_logicaltimeFactoryName)) {
+    PyErr_SetString(PyExc_TypeError, "Fifth argument needs to be a LogicalTime!");
+    return 0;
+  }
+
+  try {
+
+    if (logicalTime.get()) {
+      rti1516::MessageRetractionHandle messageRetractionHandle;
+      messageRetractionHandle = self->ob_value->sendInteractionWithRegions(interactionClassHandle, parameterHandleValueMap, regionHandleSet, tag, *logicalTime);
+
+      return PyObject_NewMessageRetractionHandle(messageRetractionHandle);
+    } else {
+      self->ob_value->sendInteractionWithRegions(interactionClassHandle, parameterHandleValueMap, regionHandleSet, tag);
+
+      Py_IncRef(Py_None);
+      return Py_None;
+    }
+  }
+  CATCH_C_EXCEPTION(InteractionClassNotPublished)
+  CATCH_C_EXCEPTION(InteractionClassNotDefined)
+  CATCH_C_EXCEPTION(InteractionParameterNotDefined)
+  CATCH_C_EXCEPTION(InvalidLogicalTime)
+  CATCH_C_EXCEPTION(InvalidRegion)
+  CATCH_C_EXCEPTION(RegionNotCreatedByThisFederate)
+  CATCH_C_EXCEPTION(InvalidRegionContext)
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
+}
+
+static PyObject *
+PyRTIambassador_requestAttributeValueUpdateWithRegions(PyRTIambassadorObject *self, PyObject *args)
+{
+  PyObject *arg1 = 0, *arg2 = 0, *arg3 = 0;
+  if (!PyArg_UnpackTuple(args, "requestAttributeValueUpdateWithRegions", 3, 3, &arg1, &arg2, &arg3))
+    return 0;
+
+  rti1516::ObjectClassHandle objectClassHandle;
+  if (!PyObject_GetObjectClassHandle(objectClassHandle, arg1)) {
+    PyErr_SetString(PyExc_TypeError, "First Argument needs to be an ObjectClassHandle!");
+    return 0;
+  }
+
+  rti1516::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
+  if (!PyObject_GetAttributeHandleSetRegionHandleSetPairVector(attributeHandleSetRegionHandleSetPairVector, arg2)) {
+    PyErr_SetString(PyExc_TypeError, "Second argument needs to be an AttributeHandleSetRegionHandleSetPairVector!");
+    return 0;
+  }
+
+  rti1516::VariableLengthData tag;
+  if (!PyObject_GetVariableLengthData(tag, arg3)) {
+    PyErr_SetString(PyExc_TypeError, "Third argument needs to be a bytearray!");
+    return 0;
+  }
+
+  try {
+
+    self->ob_value->requestAttributeValueUpdateWithRegions(objectClassHandle, attributeHandleSetRegionHandleSetPairVector, tag);
+
+    Py_IncRef(Py_None);
+    return Py_None;
+  }
+  CATCH_C_EXCEPTION(ObjectClassNotDefined)
+  CATCH_C_EXCEPTION(AttributeNotDefined)
+  CATCH_C_EXCEPTION(InvalidRegion)
+  CATCH_C_EXCEPTION(RegionNotCreatedByThisFederate)
+  CATCH_C_EXCEPTION(InvalidRegionContext)
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
+}
 
 
 static PyObject *
@@ -5632,6 +6021,11 @@ PyRTIambassador_decodeRegionHandle(PyRTIambassadorObject *self, PyObject *args)
 
 static PyMethodDef PyRTIambassador_methods[] =
 {
+  // Two methods not mentioned in the standard, but to make automatic conversion to python values work
+  {"setLogicalTimeFactory", (PyCFunction)PyRTIambassador_setLogicalTimeFactory, METH_VARARGS, ""},
+  {"getLogicalTimeFactory", (PyCFunction)PyRTIambassador_getLogicalTimeFactory, METH_VARARGS, ""},
+
+  // The set of methods as found in the rti1516 standard
   {"createFederationExecution", (PyCFunction)PyRTIambassador_createFederationExecution, METH_VARARGS, ""},
   {"destroyFederationExecution", (PyCFunction)PyRTIambassador_destroyFederationExecution, METH_VARARGS, ""},
   {"joinFederationExecution", (PyCFunction)PyRTIambassador_joinFederationExecution, METH_VARARGS, ""},
@@ -5695,7 +6089,18 @@ static PyMethodDef PyRTIambassador_methods[] =
   {"retract", (PyCFunction)PyRTIambassador_retract, METH_VARARGS, ""},
   {"changeAttributeOrderType", (PyCFunction)PyRTIambassador_changeAttributeOrderType, METH_VARARGS, ""},
   {"changeInteractionOrderType", (PyCFunction)PyRTIambassador_changeInteractionOrderType, METH_VARARGS, ""},
-
+  {"createRegion", (PyCFunction)PyRTIambassador_createRegion, METH_VARARGS, ""},
+  {"commitRegionModifications", (PyCFunction)PyRTIambassador_commitRegionModifications, METH_VARARGS, ""},
+  {"deleteRegion", (PyCFunction)PyRTIambassador_deleteRegion, METH_VARARGS, ""},
+  {"registerObjectInstanceWithRegions", (PyCFunction)PyRTIambassador_registerObjectInstanceWithRegions, METH_VARARGS, ""},
+  {"associateRegionsForUpdates", (PyCFunction)PyRTIambassador_associateRegionsForUpdates, METH_VARARGS, ""},
+  {"unassociateRegionsForUpdates", (PyCFunction)PyRTIambassador_unassociateRegionsForUpdates, METH_VARARGS, ""},
+  {"subscribeObjectClassAttributesWithRegions", (PyCFunction)PyRTIambassador_subscribeObjectClassAttributesWithRegions, METH_VARARGS, ""},
+  {"unsubscribeObjectClassAttributesWithRegions", (PyCFunction)PyRTIambassador_unsubscribeObjectClassAttributesWithRegions, METH_VARARGS, ""},
+  {"subscribeInteractionClassWithRegions", (PyCFunction)PyRTIambassador_subscribeInteractionClassWithRegions, METH_VARARGS, ""},
+  {"unsubscribeInteractionClassWithRegions", (PyCFunction)PyRTIambassador_unsubscribeInteractionClassWithRegions, METH_VARARGS, ""},
+  {"sendInteractionWithRegions", (PyCFunction)PyRTIambassador_sendInteractionWithRegions, METH_VARARGS, ""},
+  {"requestAttributeValueUpdateWithRegions", (PyCFunction)PyRTIambassador_requestAttributeValueUpdateWithRegions, METH_VARARGS, ""},
   {"getObjectClassHandle", (PyCFunction)PyRTIambassador_getObjectClassHandle, METH_VARARGS, ""},
   {"getObjectClassName", (PyCFunction)PyRTIambassador_getObjectClassName, METH_VARARGS, ""},
   {"getAttributeHandle", (PyCFunction)PyRTIambassador_getAttributeHandle, METH_VARARGS, ""},

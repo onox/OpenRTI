@@ -945,6 +945,12 @@ class Ambassador(object):
         self.__rtiAmbassador = None
         self.__federate = None
 
+    def setLogicalTimeFactory(self, name):
+        self.__rtiAmbassador.setLogicalTimeFactory(name)
+
+    def getLogicalTimeFactory(self):
+        return self.__rtiAmbassador.getLogicalTimeFactory()
+
     def createFederationExecution(self, federationExecution, fom):
         self.__rtiAmbassador.createFederationExecution(federationExecution, fom)
 
