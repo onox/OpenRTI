@@ -1131,10 +1131,22 @@ public:
   }
   void accept(const ConnectHandle& connectHandle, ReleaseMultipleObjectInstanceNameHandlePairsMessage* message)
   {
+    SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> releaseMessage;
     for (ObjectInstanceHandleVector::const_iterator j = message->getObjectInstanceHandleVector().begin();
          j != message->getObjectInstanceHandleVector().end(); ++j) {
-      unreferenceObjectInstanceHandle(*j, connectHandle);
+      if (!unreferenceObjectInstanceHandle(*j, connectHandle))
+        continue;
+      if (!_parentServerConnectHandle.valid())
+        continue;
+      if (!releaseMessage.valid()) {
+        releaseMessage = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
+        releaseMessage->setFederationHandle(getHandle());
+        releaseMessage->getObjectInstanceHandleVector().reserve(message->getObjectInstanceHandleVector().size());
+      }
+      releaseMessage->getObjectInstanceHandleVector().push_back(*j);
     }
+    if (releaseMessage.valid())
+      send(_parentServerConnectHandle, releaseMessage);
   }
 
   // ObjectInstance name management
@@ -1648,14 +1660,25 @@ public:
       request->setFederationHandle(getHandle());
       request->setObjectInstanceHandle(*j);
       accept(connectHandle, request.get());
-      if (connectHandle != _parentServerConnectHandle)
-        unreferenceObjectInstanceHandle(*j, connectHandle);
     }
 
     if (connectHandle != _parentServerConnectHandle) {
+      SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> releaseMessage;
       for (ObjectInstanceHandleDataMap::iterator j = _objectInstanceHandleDataMap.begin(); j != _objectInstanceHandleDataMap.end();) {
-        unreferenceObjectInstanceHandle(j++, connectHandle);
+        ObjectInstanceHandle objectInstanceHandle = j->first;
+        if (!unreferenceObjectInstanceHandle(j++, connectHandle))
+          continue;
+        if (!_parentServerConnectHandle.valid())
+          continue;
+        if (!releaseMessage.valid()) {
+          releaseMessage = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
+          releaseMessage->setFederationHandle(getHandle());
+          releaseMessage->getObjectInstanceHandleVector().reserve(_objectInstanceHandleDataMap.size());
+        }
+        releaseMessage->getObjectInstanceHandleVector().push_back(objectInstanceHandle);
       }
+      if (releaseMessage.valid())
+        send(_parentServerConnectHandle, releaseMessage);
     }
 
     // Unpublish this connect
@@ -1921,7 +1944,7 @@ public:
     OpenRTIAssert(i != _objectInstanceHandleDataMap.end());
     i->second._connectHandleSet.insert(connectHandle);
   }
-  void unreferenceObjectInstanceHandle(ObjectInstanceHandleDataMap::iterator i, const ConnectHandle& connectHandle)
+  bool unreferenceObjectInstanceHandle(ObjectInstanceHandleDataMap::iterator i, const ConnectHandle& connectHandle)
   {
     OpenRTIAssert(i != _objectInstanceHandleDataMap.end());
     Log(ServerObjectInstance, Debug) << getServerPath() << ": Unreference Object Instance \""
@@ -1932,14 +1955,14 @@ public:
     // OpenRTIAssert(i->second._connectHandleSet.find(connectHandle) != i->second._connectHandleSet.end());
     // i->second._connectHandleSet.erase(connectHandle);
     if (0 == i->second._connectHandleSet.erase(connectHandle))
-      return;
+      return false;
 
     ObjectInstance* objectInstance = getObjectInstance(i->first);
     if (objectInstance)
       objectInstance->removeConnect(connectHandle);
 
     if (!i->second._connectHandleSet.empty())
-      return;
+      return false;
 
     Log(ServerObjectInstance, Debug) << getServerPath() << ": Dropped last reference to Object Instance \""
                                      << i->first << "\"!" << std::endl;
@@ -1947,22 +1970,15 @@ public:
     if (objectInstance)
       eraseObjectInstance(objectInstance);
 
-    if (_parentServerConnectHandle.valid()) {
-      SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message;
-      message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
-      message->setFederationHandle(getHandle());
-      message->getObjectInstanceHandleVector().push_back(i->first);
-      send(_parentServerConnectHandle, message);
-    }
-
     _objectInstanceHandleAllocator.put(i->first);
-
     _objectInstanceNameSet.erase(i->second._stringSetIterator);
     _objectInstanceHandleDataMap.erase(i);
+
+    return true;
   }
-  void unreferenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle)
+  bool unreferenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle)
   {
-    unreferenceObjectInstanceHandle(_objectInstanceHandleDataMap.find(objectInstanceHandle), connectHandle);
+    return unreferenceObjectInstanceHandle(_objectInstanceHandleDataMap.find(objectInstanceHandle), connectHandle);
   }
 
   ConnectHandle _parentServerConnectHandle;
