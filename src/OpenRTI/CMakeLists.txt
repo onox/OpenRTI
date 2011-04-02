@@ -137,9 +137,9 @@ SET(OpenRTI_SOURCES
   MessageServer.cpp
   MessageSocketReadEvent.cpp
   MessageSocketWriteEvent.cpp
-  ObjectClass.cpp
   Options.cpp
   ServerNode.cpp
+  ServerObjectModel.cpp
   StreamSocketReadEvent.cpp
   StreamSocketWriteEvent.cpp
   ProtocolRegistry.cpp

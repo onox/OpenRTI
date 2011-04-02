@@ -17,7 +17,7 @@
  *
  */
 
-#include "ObjectModel.h"
+#include "ServerObjectModel.h"
 
 namespace OpenRTI {
 
@@ -36,7 +36,7 @@ ObjectClass::eraseObjectInstance(ObjectInstance* objectInstance)
 }
 
 void
-Federation::insert(const FOMModuleList& moduleList)
+ServerObjectModel::insert(const FOMModuleList& moduleList)
 {
   for (FOMModuleList::const_iterator i = moduleList.begin(); i != moduleList.end(); ++i) {
     insert(*i);
@@ -46,7 +46,7 @@ Federation::insert(const FOMModuleList& moduleList)
 }
 
 void
-Federation::insert(const FOMModule& module)
+ServerObjectModel::insert(const FOMModule& module)
 {
   for (FOMInteractionClassList::const_iterator i = module.getInteractionClassList().begin();
        i != module.getInteractionClassList().end(); ++i) {
@@ -59,7 +59,7 @@ Federation::insert(const FOMModule& module)
 }
 
 void
-Federation::insertInteractionClass(const FOMInteractionClass& module, const InteractionClassHandle& parentHandle)
+ServerObjectModel::insertInteractionClass(const FOMInteractionClass& module, const InteractionClassHandle& parentHandle)
 {
   if (getInteractionClass(module.getInteractionClassHandle())) {
     OpenRTIAssert(module.getParameterList().empty());
@@ -74,7 +74,7 @@ Federation::insertInteractionClass(const FOMInteractionClass& module, const Inte
 }
 
 void
-Federation::insertObjectClass(const FOMObjectClass& module, const ObjectClassHandle& parentHandle)
+ServerObjectModel::insertObjectClass(const FOMObjectClass& module, const ObjectClassHandle& parentHandle)
 {
   if (getObjectClass(module.getObjectClassHandle())) {
     OpenRTIAssert(module.getAttributeList().empty());
