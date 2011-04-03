@@ -166,22 +166,33 @@ public:
 
     OpenRTIAssert(isRootServer());
 
+    // The ambassador needs to handle this already
+    if (message->getFederateName().compare(0, 3, "HLA") == 0)
+      throw MessageError("Got JoinFederationExecutionRequestMessage with name starting with HLA.");
+
+    if (isFederateNameInUse(message->getFederateName())) {
+      SharedPtr<JoinFederationExecutionResponseMessage> response;
+      response = new JoinFederationExecutionResponseMessage;
+      response->setJoinFederationExecutionResponseType(JoinFederationExecutionResponseFederateNameAlreadyInUse);
+      send(connectHandle, response);
+      return;
+    }
+
     // Respond with Success
     SharedPtr<JoinFederationExecutionResponseMessage> response;
     response = new JoinFederationExecutionResponseMessage;
     response->setJoinFederationExecutionResponseType(JoinFederationExecutionResponseSuccess);
 
     // ... insert a new federate ...
-    FederateHandle federateHandle = insertFederate(connectHandle, message->getFederateType(), message->getFederateName());
-    OpenRTIAssert(federateHandle.valid());
-    // FIXME
-    std::string federateName = *(_federateHandleFederateDataMap.find(federateHandle)->second._stringSetIterator);
+    FederateHandleFederateDataMap::iterator i;
+    i = insertFederate(connectHandle, message->getFederateName());
+    i->second._federateType = message->getFederateType();
 
     /// FIXME shall we get that message from the federation server???
     response->setFederationHandle(getHandle());
     response->setFederateType(message->getFederateType());
-    response->setFederateName(federateName);
-    response->setFederateHandle(federateHandle);
+    response->setFederateName(*i->second._stringSetIterator);
+    response->setFederateHandle(i->first);
     send(connectHandle, response);
 
     // send all children the notification about the new federate except the one that gets the join response
@@ -189,25 +200,25 @@ public:
     notify->setFederationHandle(response->getFederationHandle());
     notify->setFederateHandle(response->getFederateHandle());
     notify->setFederateType(response->getFederateType());
-    notify->setFederateName(federateName);
+    notify->setFederateName(*i->second._stringSetIterator);
     broadcastToChildren(connectHandle, notify);
 
     // For those sync request that are automatically extended to new federates, send the announcement
-    for (SyncronizationLabelStateMap::iterator i = _syncronizationLabelStateMap.begin();
-         i != _syncronizationLabelStateMap.end(); ++i) {
+    for (SyncronizationLabelStateMap::iterator j = _syncronizationLabelStateMap.begin();
+         j != _syncronizationLabelStateMap.end(); ++j) {
       // only those with an auto expanding federate set
-      if (!i->second._addJoiningFederates)
+      if (!j->second._addJoiningFederates)
         continue;
 
-      i->second.insert(federateHandle);
+      j->second.insert(i->first);
 
       SharedPtr<AnnounceSynchronizationPointMessage> announce;
       announce = new AnnounceSynchronizationPointMessage;
       announce->setFederationHandle(getHandle());
-      announce->setLabel(i->first);
-      announce->setTag(i->second.getTag());
-      announce->getFederateHandleSet().insert(federateHandle);
-      announce->setAddJoiningFederates(i->second._addJoiningFederates);
+      announce->setLabel(j->first);
+      announce->setTag(j->second.getTag());
+      announce->getFederateHandleSet().insert(i->first);
+      announce->setAddJoiningFederates(j->second._addJoiningFederates);
       broadcastToChildren(announce);
     }
   }
@@ -218,7 +229,9 @@ public:
     FederateHandle federateHandle = message->getFederateHandle();
     OpenRTIAssert(federateHandle.valid());
 
-    insertFederate(requestConnectHandle, message->getFederateType(), message->getFederateName(), federateHandle);
+    FederateHandleFederateDataMap::iterator i;
+    i = insertFederate(requestConnectHandle, message->getFederateName(), federateHandle);
+    i->second._federateType = message->getFederateType();
 
     if (requestConnectHandle.valid()) {
       // The requesting server needs to know about us, just forward here
@@ -277,7 +290,7 @@ public:
       broadcastToChildren(notify);
 
       // Remove the federate locally
-      removeFederate(federateHandle);
+      eraseFederate(federateHandle);
 
       // Remove a connect that runs idle
       if (!hasJoinedFederatesForConnect(connectHandle))
@@ -373,7 +386,9 @@ public:
       // /// FIXME implement a clear for erase'?!
       // return;
       throw MessageError("Received JoinFederateNotify for already known federate!");
-    insertFederate(connectHandle, message->getFederateType(), message->getFederateName(), federateHandle);
+    FederateHandleFederateDataMap::iterator i;
+    i = insertFederate(connectHandle, message->getFederateName(), federateHandle);
+    i->second._federateType = message->getFederateType();
     broadcastToChildren(message);
   }
   void accept(const ConnectHandle& connectHandle, ResignFederateNotifyMessage* message)
@@ -385,7 +400,9 @@ public:
     broadcastToChildren(message);
 
     // FIXME can we simplify this and remove the federate on upstream resign?
-    ConnectHandle federateConnectHandle = removeFederate(federateHandle);
+    FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
+    ConnectHandle federateConnectHandle = i->second._connectHandle;
+    eraseFederate(i);
     if (hasJoinedFederatesForConnect(federateConnectHandle))
       return;
     // Can happen that we ask for shotdown that is already underway

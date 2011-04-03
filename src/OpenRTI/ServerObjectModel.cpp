@@ -109,6 +109,77 @@ ServerObjectModel::insertObjectClass(const FOMObjectClass& module, const ObjectC
 }
 
 
+
+ServerObjectModel::FederateHandleFederateDataMap::iterator
+ServerObjectModel::insertFederate(const ConnectHandle& connectHandle, const std::string& federateName,
+                                  const FederateHandle& federateHandleCandidate)
+{
+  // Either we allocate a new federate, then the connect must still be alive
+  // or we insert an already died federate and just keep everything in order for a currect the resing request sequence
+  OpenRTIAssert(connectHandle.valid() || federateHandleCandidate.valid());
+  OpenRTIAssert(federateName.empty() || _federateNameSet.find(federateName) == _federateNameSet.end());
+  // OpenRTIAssert(!federateHandleCandidate.valid() || federateName.compare(0, 3, "HLA") == 0);
+
+  FederateHandle federateHandle = _federateHandleAllocator.getOrTake(federateHandleCandidate);
+  OpenRTIAssert(_federateHandleFederateDataMap.find(federateHandle) == _federateHandleFederateDataMap.end());
+
+  // Register that we reach this federate through this connect
+  StringSet::iterator stringSetIterator;
+  // generate a unique name if there is none given
+  if (federateName.empty()) {
+    std::string reservedName = federateHandle.getReservedName("HLAfederate");
+    OpenRTIAssert(!isFederateNameInUse(reservedName));
+    stringSetIterator = _federateNameSet.insert(reservedName).first;
+  } else {
+    OpenRTIAssert(!isFederateNameInUse(federateName));
+    stringSetIterator = _federateNameSet.insert(federateName).first;
+  }
+  FederateHandleFederateDataMap::iterator i;
+  i = _federateHandleFederateDataMap.insert(FederateHandleFederateDataMap::value_type(federateHandle, FederateData(connectHandle, stringSetIterator))).first;
+  ConnectHandleConnectDataMap::iterator j = _connectHandleConnectDataMap.find(connectHandle);
+  if (j != _connectHandleConnectDataMap.end()) {
+    j->second._federateHandleSet.insert(federateHandle);
+  } else {
+    i->second._resignPending = true;
+  }
+
+  return i;
+}
+
+void
+ServerObjectModel::eraseFederate(ServerObjectModel::FederateHandleFederateDataMap::iterator i)
+{
+  OpenRTIAssert(i != _federateHandleFederateDataMap.end());
+
+  // The time management stuff
+  _federateHandleTimeStampMap.erase(i->first);
+
+  // Remove from syncronization state
+  // FIXME: complete syncronization states if this is the last they wait for.
+  // FIXME: have a list of labels that this federate participates - so avoid traversing all
+  for (SyncronizationLabelStateMap::iterator j = _syncronizationLabelStateMap.begin();
+       j != _syncronizationLabelStateMap.end(); ++j) {
+    j->second.removeFederate(i->first);
+  }
+
+  // Remove from connects
+  ConnectHandleConnectDataMap::iterator k = _connectHandleConnectDataMap.find(i->second._connectHandle);
+  if (k != _connectHandleConnectDataMap.end())
+    k->second._federateHandleSet.erase(i->first);
+
+  // Give back the handle to the allocator
+  _federateHandleAllocator.put(i->first);
+  // Erase from the indices
+  _federateNameSet.erase(i->second._stringSetIterator);
+  _federateHandleFederateDataMap.erase(i);
+}
+
+void
+ServerObjectModel::eraseFederate(const FederateHandle& federateHandle)
+{
+  eraseFederate(_federateHandleFederateDataMap.find(federateHandle));
+}
+
 std::pair<ServerObjectModel::ConnectHandleConnectDataMap::iterator, bool>
 ServerObjectModel::insertParentConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name)
 {

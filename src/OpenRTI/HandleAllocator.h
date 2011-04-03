@@ -98,6 +98,14 @@ public:
     return handle;
   }
 
+  Handle getOrTake(const Handle& handle)
+  {
+    if (!handle.valid())
+      return get();
+    take(handle);
+    return handle;
+  }
+
   void put(const Handle& handle)
   {
     if (!handle.valid())

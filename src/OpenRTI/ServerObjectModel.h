@@ -655,6 +655,10 @@ public:
   struct ConnectData;
   typedef std::map<ConnectHandle, ConnectData> ConnectHandleConnectDataMap;
 
+  struct FederateData;
+  typedef std::map<FederateHandle, FederateData> FederateHandleFederateDataMap;
+
+
   ServerObjectModel(const std::string& name, const FederationHandle& handle) :
     Federation(name, handle)
   {
@@ -712,96 +716,7 @@ public:
   ObjectInstanceHandleDataMap _objectInstanceHandleDataMap;
   StringSet _objectInstanceNameSet;
 
-  ConnectHandle _parentServerConnectHandle;
 
-  /// The pool of federate handles that the server has available.
-  FederateHandleAllocator _federateHandleAllocator;
-
-  // The FederateHandle <-> federate data mappings
-  struct FederateData {
-    FederateData(const ConnectHandle& connectHandle, const StringSet::iterator& stringSetIterator) :
-      _connectHandle(connectHandle),
-      _stringSetIterator(stringSetIterator),
-      _resignPending(false)
-    { }
-    ConnectHandle _connectHandle;
-    std::string _federateType;
-    StringSet::iterator _stringSetIterator;
-    bool _resignPending;
-  };
-  typedef std::map<FederateHandle, FederateData> FederateHandleFederateDataMap;
-  FederateHandleFederateDataMap _federateHandleFederateDataMap;
-  StringSet _federateNameSet;
-
-  /// Returns true if this is a root server
-  bool isRootServer() const
-  { return !_parentServerConnectHandle.valid(); }
-
-  bool isFederateNameInUse(const std::string& name) const
-  { return _federateNameSet.find(name) != _federateNameSet.end(); }
-
-  FederateHandle insertFederate(const ConnectHandle& connectHandle, const std::string& federateType,
-                                std::string federateName, const FederateHandle& federateHandle = FederateHandle())
-  {
-    // Either we allocate a new federate, then the connect must still be alive
-    // or we insert an already died federate and just keep everything in order for a currect the resing request sequence
-    OpenRTIAssert(connectHandle.valid() || federateHandle.valid());
-    OpenRTIAssert(federateName.empty() || _federateNameSet.find(federateName) == _federateNameSet.end());
-    // OpenRTIAssert(!federateHandle.valid() || federateName.compare(0, 3, "HLA") == 0);
-
-    FederateHandleAllocator::Candidate candidate(_federateHandleAllocator, federateHandle);
-
-    OpenRTIAssert(_federateHandleFederateDataMap.find(candidate.get()) == _federateHandleFederateDataMap.end());
-
-    // generate a unique name if there is none given
-    if (federateName.empty())
-      federateName = candidate.get().getReservedName("HLAfederate");
-    OpenRTIAssert(_federateNameSet.find(federateName) == _federateNameSet.end());
-
-    // Register that we reach this federate through this connect
-    StringSet::iterator stringSetIterator = _federateNameSet.insert(federateName).first;
-    FederateHandleFederateDataMap::iterator i;
-    i = _federateHandleFederateDataMap.insert(FederateHandleFederateDataMap::value_type(candidate.get(), FederateData(connectHandle, stringSetIterator))).first;
-    if (connectHandle.valid()) {
-      _connectHandleConnectDataMap[connectHandle]._federateHandleSet.insert(candidate.get());
-    } else {
-      i->second._resignPending = true;
-    }
-    i->second._federateType = federateType;
-
-    return candidate.take();
-  }
-
-  ConnectHandle removeFederate(const FederateHandle& federateHandle)
-  {
-    if (!federateHandle.valid())
-      return ConnectHandle();
-
-    // The time management stuff
-    _federateHandleTimeStampMap.erase(federateHandle);
-
-    // Remove from syncronization state
-    for (SyncronizationLabelStateMap::iterator k = _syncronizationLabelStateMap.begin();
-         k != _syncronizationLabelStateMap.end(); ++k) {
-      k->second.removeFederate(federateHandle);
-    }
-
-    // Remove from connects
-    FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
-    OpenRTIAssert(i != _federateHandleFederateDataMap.end());
-    ConnectHandle connectHandle = i->second._connectHandle;
-    ConnectHandleConnectDataMap::iterator j = _connectHandleConnectDataMap.find(connectHandle);
-    if (j != _connectHandleConnectDataMap.end())
-      j->second._federateHandleSet.erase(federateHandle);
-
-    _federateNameSet.erase(i->second._stringSetIterator);
-    _federateHandleFederateDataMap.erase(i);
-
-    // Give back the handle to the allocator
-    _federateHandleAllocator.put(federateHandle);
-
-    return connectHandle;
-  }
 
 
   // utilities for connecthandle/federatehandle handling
@@ -1080,6 +995,47 @@ public:
 
 
 
+
+
+  bool isFederateNameInUse(const std::string& name) const
+  { return _federateNameSet.find(name) != _federateNameSet.end(); }
+
+  /// Insert a new federate, return an iterator to the struct FederateData
+  FederateHandleFederateDataMap::iterator
+  insertFederate(const ConnectHandle& connectHandle, const std::string& federateName,
+                 const FederateHandle& federateHandleCandidate = FederateHandle());
+  /// Erase the given federate
+  void eraseFederate(FederateHandleFederateDataMap::iterator i);
+  void eraseFederate(const FederateHandle& federateHandle);
+
+
+  // The FederateHandle <-> federate data mappings
+  struct OPENRTI_LOCAL FederateData {
+    FederateData(const ConnectHandle& connectHandle, const StringSet::iterator& stringSetIterator) :
+      _connectHandle(connectHandle),
+      _stringSetIterator(stringSetIterator),
+      _resignPending(false)
+    { }
+    ConnectHandle _connectHandle;
+    std::string _federateType;
+    StringSet::iterator _stringSetIterator;
+    bool _resignPending;
+  };
+  FederateHandleAllocator _federateHandleAllocator;
+  FederateHandleFederateDataMap _federateHandleFederateDataMap;
+  StringSet _federateNameSet;
+
+
+  /// Returns true if this is a root server
+  bool isRootServer() const
+  { return !_parentServerConnectHandle.valid(); }
+  /// Returns true if this is the parents server connect
+  bool isParentConnect(const ConnectHandle& connectHandle) const
+  { return connectHandle.valid() && connectHandle == _parentServerConnectHandle; }
+  /// Returns true if this is a valid child server connect
+  bool isChildConnect(const ConnectHandle& connectHandle) const
+  { return connectHandle.valid() && connectHandle != _parentServerConnectHandle; }
+
   /// Insert the parent connect into the object model
   std::pair<ConnectHandleConnectDataMap::iterator, bool>
   insertParentConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name);
@@ -1091,14 +1047,14 @@ public:
   void eraseConnect(ConnectHandleConnectDataMap::iterator i);
   void eraseConnect(const ConnectHandle& connectHandle);
 
-
   // The ConnectHandle <-> connect data mappings
-  struct ConnectData {
+  struct OPENRTI_LOCAL ConnectData {
     SharedPtr<AbstractMessageSender> _messageSender;
     std::string _name;
     // FIXME make this an iterator to the FederateData above
     FederateHandleSet _federateHandleSet;
   };
+  ConnectHandle _parentServerConnectHandle;
   ConnectHandleConnectDataMap _connectHandleConnectDataMap;
 };
 
