@@ -652,6 +652,9 @@ public:
 /// FederationServerObjectModel ???
 class OPENRTI_LOCAL ServerObjectModel : public Federation {
 public:
+  struct ConnectData;
+  typedef std::map<ConnectHandle, ConnectData> ConnectHandleConnectDataMap;
+
   ServerObjectModel(const std::string& name, const FederationHandle& handle) :
     Federation(name, handle)
   {
@@ -729,18 +732,6 @@ public:
   typedef std::map<FederateHandle, FederateData> FederateHandleFederateDataMap;
   FederateHandleFederateDataMap _federateHandleFederateDataMap;
   StringSet _federateNameSet;
-
-  // The ConnectHandle <-> connect data mappings
-  struct ConnectData {
-    SharedPtr<AbstractMessageSender> _messageSender;
-    std::string _name;
-    // FIXME make this an iterator to the FederateData above
-    FederateHandleSet _federateHandleSet;
-    // FIXME
-    // ObjectInstanceHandleSet _ownedObjectInstanceHandleSet;
-  };
-  typedef std::map<ConnectHandle, ConnectData> ConnectHandleConnectDataMap;
-  ConnectHandleConnectDataMap _connectHandleConnectDataMap;
 
   /// Returns true if this is a root server
   bool isRootServer() const
@@ -840,49 +831,6 @@ public:
     OpenRTIAssert(i->second._federateHandleSet.empty());
     // OpenRTIAssert(!hasJoinedFederatesForConnect(connectHandle));
     i->second._messageSender.clear();
-  }
-
-  void insertParentConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name)
-  {
-    OpenRTIAssert(connectHandle.valid());
-    OpenRTIAssert(!_parentServerConnectHandle.valid());
-    _parentServerConnectHandle = connectHandle;
-    if (_connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end())
-      return;
-    _connectHandleConnectDataMap[connectHandle]._messageSender = messageSender;
-    _connectHandleConnectDataMap[connectHandle]._name = name;
-  }
-  void insertConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name)
-  {
-    OpenRTIAssert(connectHandle.valid());
-    if (_connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end() &&
-        _connectHandleConnectDataMap.find(connectHandle)->second._messageSender.valid()) {
-      OpenRTIAssert(_connectHandleConnectDataMap.find(connectHandle)->second._messageSender == messageSender);
-      return;
-    }
-    _connectHandleConnectDataMap[connectHandle]._messageSender = messageSender;
-    _connectHandleConnectDataMap[connectHandle]._name = name;
-  }
-
-  // Should be called when a connection dies,
-  // precondition is that the connect is idle
-  void eraseConnect(const ConnectHandle& connectHandle)
-  {
-    ConnectHandleConnectDataMap::iterator i = _connectHandleConnectDataMap.find(connectHandle);
-    // FIXME may be assert???
-    if (i == _connectHandleConnectDataMap.end())
-      return;
-
-    OpenRTIAssert(i->first == _parentServerConnectHandle || i->second._federateHandleSet.empty());
-
-    if (_parentServerConnectHandle == connectHandle)
-      Log(ServerConnect, Error) << getServerPath() << ": Removing parent connect!" << std::endl;
-
-    if (_parentServerConnectHandle == connectHandle)
-      _parentServerConnectHandle = ConnectHandle();
-
-    // Finally remove what is referencing the old connect handle
-    _connectHandleConnectDataMap.erase(i);
   }
 
   // Should be called when a connection dies,
@@ -1126,6 +1074,32 @@ public:
 
   /// The object instances
   ObjectInstanceMap _objectInstanceMap;
+
+
+
+
+
+
+  /// Insert the parent connect into the object model
+  std::pair<ConnectHandleConnectDataMap::iterator, bool>
+  insertParentConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name);
+  /// Insert a new connect into the object model
+  std::pair<ConnectHandleConnectDataMap::iterator, bool>
+  insertConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name);
+  /// Erase a connect from the object model.
+  /// Precondition is that the connect is already idle
+  void eraseConnect(ConnectHandleConnectDataMap::iterator i);
+  void eraseConnect(const ConnectHandle& connectHandle);
+
+
+  // The ConnectHandle <-> connect data mappings
+  struct ConnectData {
+    SharedPtr<AbstractMessageSender> _messageSender;
+    std::string _name;
+    // FIXME make this an iterator to the FederateData above
+    FederateHandleSet _federateHandleSet;
+  };
+  ConnectHandleConnectDataMap _connectHandleConnectDataMap;
 };
 
 } // namespace OpenRTI

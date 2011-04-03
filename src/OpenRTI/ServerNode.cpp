@@ -1409,16 +1409,10 @@ public:
 
   void insertConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name)
   {
-    OpenRTIAssert(connectHandle.valid());
-    if (_connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end() &&
-        _connectHandleConnectDataMap.find(connectHandle)->second._messageSender.valid()) {
-      OpenRTIAssert(_connectHandleConnectDataMap.find(connectHandle)->second._messageSender == messageSender);
+    std::pair<ConnectHandleConnectDataMap::iterator, bool> iteratorBoolPair;
+    iteratorBoolPair = ServerObjectModel::insertConnect(connectHandle, messageSender, name);
+    if (!iteratorBoolPair.second)
       return;
-    }
-    _connectHandleConnectDataMap[connectHandle]._messageSender = messageSender;
-    _connectHandleConnectDataMap[connectHandle]._name = name;
-    // FIXME the above is roughly aequivalent to, but is able to return from this routine ...
-    // ServerObjectModel::insertConnect(connectHandle, messageSender, name);
 
     SharedPtr<InsertFederationExecutionMessage> message = new InsertFederationExecutionMessage;
     message->setFederationHandle(getHandle());

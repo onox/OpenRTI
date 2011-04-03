@@ -108,4 +108,51 @@ ServerObjectModel::insertObjectClass(const FOMObjectClass& module, const ObjectC
   }
 }
 
+
+std::pair<ServerObjectModel::ConnectHandleConnectDataMap::iterator, bool>
+ServerObjectModel::insertParentConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name)
+{
+  OpenRTIAssert(!_parentServerConnectHandle.valid());
+  _parentServerConnectHandle = connectHandle;
+  return insertConnect(connectHandle, messageSender, name);
+}
+
+std::pair<ServerObjectModel::ConnectHandleConnectDataMap::iterator, bool>
+ServerObjectModel::insertConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name)
+{
+  OpenRTIAssert(connectHandle.valid());
+  OpenRTIAssert(messageSender.valid());
+
+  std::pair<ConnectHandleConnectDataMap::iterator, bool> iteratorBoolPair;
+  iteratorBoolPair = _connectHandleConnectDataMap.insert(ConnectHandleConnectDataMap::value_type(connectHandle, ConnectData()));
+  if (!iteratorBoolPair.second && iteratorBoolPair.first->second._messageSender.valid()) {
+    OpenRTIAssert(iteratorBoolPair.first->second._messageSender == messageSender);
+    return std::make_pair(iteratorBoolPair.first, false);
+  }
+  iteratorBoolPair.first->second._messageSender = messageSender;
+  iteratorBoolPair.first->second._name = name;
+  return std::make_pair(iteratorBoolPair.first, true);
+}
+
+void
+ServerObjectModel::eraseConnect(ServerObjectModel::ConnectHandleConnectDataMap::iterator i)
+{
+  OpenRTIAssert(i != _connectHandleConnectDataMap.end());
+  OpenRTIAssert(i->first == _parentServerConnectHandle || i->second._federateHandleSet.empty());
+
+  if (_parentServerConnectHandle == i->first) {
+    Log(ServerConnect, Error) << getServerPath() << ": Removing parent connect!" << std::endl;
+    _parentServerConnectHandle = ConnectHandle();
+  }
+
+  // Finally remove what is referencing the old connect handle
+  _connectHandleConnectDataMap.erase(i);
+}
+
+void
+ServerObjectModel::eraseConnect(const ConnectHandle& connectHandle)
+{
+  eraseConnect(_connectHandleConnectDataMap.find(connectHandle));
+}
+
 }
