@@ -658,6 +658,8 @@ public:
   struct FederateData;
   typedef std::map<FederateHandle, FederateData> FederateHandleFederateDataMap;
 
+  struct ObjectInstanceData;
+  typedef std::map<ObjectInstanceHandle, ObjectInstanceData> ObjectInstanceHandleDataMap;
 
   ServerObjectModel(const std::string& name, const FederationHandle& handle) :
     Federation(name, handle)
@@ -696,25 +698,6 @@ public:
   /// Contains the committed timestamps, we will need them for a join response
   FederateHandleTimeStampMap _federateHandleTimeStampMap;
 
-  /// track object instance handles
-  ObjectInstanceHandleAllocator _objectInstanceHandleAllocator;
-
-  // Ok, this is not held in the ObjectInstance ??!! the problem is that this is just the
-  // knowledge about the object handle and name. Not yet any object class is known.
-  // Hmm, may be we should be able to create object instances without object class instead??
-  struct ObjectInstanceData {
-    ObjectInstanceData() {}
-    ObjectInstanceData(const StringSet::iterator& stringSetIterator) : _stringSetIterator(stringSetIterator) {}
-    // The child connect handles that reference this object instance handle
-    ConnectHandleSet _connectHandleSet;
-    // Hmm, this is the other possibility
-    // SharedPtr<ObjectInstance> _objectInstance;
-    // FIXME collapse that with the name/handle resources above
-    StringSet::iterator _stringSetIterator;
-  };
-  typedef std::map<ObjectInstanceHandle, ObjectInstanceData> ObjectInstanceHandleDataMap;
-  ObjectInstanceHandleDataMap _objectInstanceHandleDataMap;
-  StringSet _objectInstanceNameSet;
 
 
 
@@ -748,16 +731,6 @@ public:
     i->second._messageSender.clear();
   }
 
-  // Should be called when a connection dies,
-  // precondition is that the connect is idle
-  bool hasJoinedFederates(const ConnectHandle& connectHandle)
-  {
-    ConnectHandleConnectDataMap::iterator i = _connectHandleConnectDataMap.find(connectHandle);
-    if (i == _connectHandleConnectDataMap.end())
-      return false;
-    return !i->second._federateHandleSet.empty();
-  }
-
   bool hasJoinedFederates() const
   {
     OpenRTIAssert(_federateHandleFederateDataMap.empty() == (!_federateHandleAllocator.used()));
@@ -789,92 +762,6 @@ public:
   bool hasChildConnect(const ConnectHandle& connectHandle)
   {
     return _connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end();
-  }
-
-  bool isChildFederate(const FederateHandle& federateHandle) const
-  {
-    FederateHandleFederateDataMap::const_iterator i;
-    i = _federateHandleFederateDataMap.find(federateHandle);
-    if (i == _federateHandleFederateDataMap.end())
-      return false;
-    if (i->second._connectHandle == _parentServerConnectHandle)
-      return false;
-    return true;
-  }
-
-  ConnectHandle getConnectHandle(const FederateHandle& federateHandle) const
-  {
-    FederateHandleFederateDataMap::const_iterator i = _federateHandleFederateDataMap.find(federateHandle);
-    if (i == _federateHandleFederateDataMap.end())
-      return ConnectHandle();
-    return i->second._connectHandle;
-  }
-
-  bool isObjectNameInUse(const std::string& name) const
-  { return _objectInstanceNameSet.find(name) != _objectInstanceNameSet.end(); }
-
-  void insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::string& name,
-                                  const ConnectHandle& connectHandle)
-  {
-    Log(ServerObjectInstance, Debug) << getServerPath() << ": Insert Object Instance \"" << objectInstanceHandle
-                                     << "\" referenced by connect \"" << connectHandle <<  "\"!" << std::endl;
-    OpenRTIAssert(connectHandle != _parentServerConnectHandle);
-    OpenRTIAssert(_objectInstanceHandleDataMap.find(objectInstanceHandle) == _objectInstanceHandleDataMap.end());
-    OpenRTIAssert(_connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end());
-    OpenRTIAssert(!_connectHandleConnectDataMap[connectHandle]._federateHandleSet.empty());
-    StringSet::iterator i = _objectInstanceNameSet.insert(name).first;
-    typedef ObjectInstanceHandleDataMap::value_type value_type;
-    ObjectInstanceHandleDataMap::iterator j;
-    j = _objectInstanceHandleDataMap.insert(value_type(objectInstanceHandle, ObjectInstanceData(i))).first;
-    j->second._connectHandleSet.insert(connectHandle);
-    // FIXME can put that into a better api with a default argument for the instance handle and a returned allocated handle for example
-    // _objectInstanceHandleAllocator.take(objectInstanceHandle);
-  }
-  void referenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle)
-  {
-    Log(ServerObjectInstance, Debug) << getServerPath() << ": Reference Object Instance \""
-                                     << objectInstanceHandle << "\" referenced by connect \""
-                                     << connectHandle <<  "\"!" << std::endl;
-    OpenRTIAssert(connectHandle != _parentServerConnectHandle);
-    ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.find(objectInstanceHandle);
-    OpenRTIAssert(i != _objectInstanceHandleDataMap.end());
-    i->second._connectHandleSet.insert(connectHandle);
-  }
-  bool unreferenceObjectInstanceHandle(ObjectInstanceHandleDataMap::iterator i, const ConnectHandle& connectHandle)
-  {
-    OpenRTIAssert(i != _objectInstanceHandleDataMap.end());
-    Log(ServerObjectInstance, Debug) << getServerPath() << ": Unreference Object Instance \""
-                                     << i->first << "\" referenced by connect \""
-                                     << connectHandle <<  "\"!" << std::endl;
-    OpenRTIAssert(connectHandle != _parentServerConnectHandle);
-    // Currently it is used in a way that requires checking and allowing unreferencing connects that are unreferenced
-    // OpenRTIAssert(i->second._connectHandleSet.find(connectHandle) != i->second._connectHandleSet.end());
-    // i->second._connectHandleSet.erase(connectHandle);
-    if (0 == i->second._connectHandleSet.erase(connectHandle))
-      return false;
-
-    ObjectInstance* objectInstance = getObjectInstance(i->first);
-    if (objectInstance)
-      objectInstance->removeConnect(connectHandle);
-
-    if (!i->second._connectHandleSet.empty())
-      return false;
-
-    Log(ServerObjectInstance, Debug) << getServerPath() << ": Dropped last reference to Object Instance \""
-                                     << i->first << "\"!" << std::endl;
-
-    if (objectInstance)
-      eraseObjectInstance(objectInstance);
-
-    _objectInstanceHandleAllocator.put(i->first);
-    _objectInstanceNameSet.erase(i->second._stringSetIterator);
-    _objectInstanceHandleDataMap.erase(i);
-
-    return true;
-  }
-  bool unreferenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle)
-  {
-    return unreferenceObjectInstanceHandle(_objectInstanceHandleDataMap.find(objectInstanceHandle), connectHandle);
   }
 
   /// Object class handling methods
@@ -992,8 +879,41 @@ public:
 
 
 
+  bool isObjectNameInUse(const std::string& name) const
+  { return _objectInstanceNameSet.find(name) != _objectInstanceNameSet.end(); }
+
+  ObjectInstanceHandleDataMap::iterator
+  insertObjectInstanceHandle();
+  ObjectInstanceHandleDataMap::iterator
+  insertObjectInstanceHandle(const std::string& objectInstanceName);
+  ObjectInstanceHandleDataMap::iterator
+  insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::string& objectInstanceName);
+  ObjectInstanceHandleDataMap::iterator
+  _insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::string& objectInstanceName);
+
+  void referenceObjectInstanceHandle(ObjectInstanceHandleDataMap::iterator i, const ConnectHandle& connectHandle);
+  void referenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle);
+
+  bool unreferenceObjectInstanceHandle(ObjectInstanceHandleDataMap::iterator i, const ConnectHandle& connectHandle);
+  bool unreferenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle);
 
 
+  // Ok, this is not held in the ObjectInstance ??!! the problem is that this is just the
+  // knowledge about the object handle and name. Not yet any object class is known.
+  // Hmm, may be we should be able to create object instances without object class instead??
+  struct ObjectInstanceData {
+    ObjectInstanceData(const StringSet::iterator& stringSetIterator) : _stringSetIterator(stringSetIterator) {}
+    // Points to the string set name entry for this object instance
+    StringSet::iterator _stringSetIterator;
+    // Returns the object instance's name
+    const std::string& getName() const { return *_stringSetIterator; }
+    // The child connect handles that reference this object instance handle
+    ConnectHandleSet _connectHandleSet;
+  };
+  /// track object instance handles
+  ObjectInstanceHandleAllocator _objectInstanceHandleAllocator;
+  ObjectInstanceHandleDataMap _objectInstanceHandleDataMap;
+  StringSet _objectInstanceNameSet;
 
 
 
@@ -1003,7 +923,9 @@ public:
   /// Insert a new federate, return an iterator to the struct FederateData
   FederateHandleFederateDataMap::iterator
   insertFederate(const ConnectHandle& connectHandle, const std::string& federateName,
-                 const FederateHandle& federateHandleCandidate = FederateHandle());
+                 const FederateHandle& federateHandle);
+  FederateHandleFederateDataMap::iterator
+  insertFederate(const ConnectHandle& connectHandle, const std::string& federateName);
   /// Erase the given federate
   void eraseFederate(FederateHandleFederateDataMap::iterator i);
   void eraseFederate(const FederateHandle& federateHandle);
@@ -1019,6 +941,8 @@ public:
     ConnectHandle _connectHandle;
     std::string _federateType;
     StringSet::iterator _stringSetIterator;
+    // Returns the federates's name
+    const std::string& getName() const { return *_stringSetIterator; }
     bool _resignPending;
   };
   FederateHandleAllocator _federateHandleAllocator;

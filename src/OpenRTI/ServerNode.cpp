@@ -191,7 +191,7 @@ public:
     /// FIXME shall we get that message from the federation server???
     response->setFederationHandle(getHandle());
     response->setFederateType(message->getFederateType());
-    response->setFederateName(*i->second._stringSetIterator);
+    response->setFederateName(i->second.getName());
     response->setFederateHandle(i->first);
     send(connectHandle, response);
 
@@ -200,7 +200,7 @@ public:
     notify->setFederationHandle(response->getFederationHandle());
     notify->setFederateHandle(response->getFederateHandle());
     notify->setFederateType(response->getFederateType());
-    notify->setFederateName(*i->second._stringSetIterator);
+    notify->setFederateName(i->second.getName());
     broadcastToChildren(connectHandle, notify);
 
     // For those sync request that are automatically extended to new federates, send the announcement
@@ -890,11 +890,11 @@ public:
               request->getAttributeStateVector().push_back(attributeState);
             }
             if (connectHandle != _parentServerConnectHandle) {
-              if (_objectInstanceHandleDataMap.find((*j)->getHandle()) == _objectInstanceHandleDataMap.end()) {
-                insertObjectInstanceHandle((*j)->getHandle(), (*j)->getName(), connectHandle);
-                _objectInstanceHandleAllocator.take((*j)->getHandle());
-              } else
-                referenceObjectInstanceHandle((*j)->getHandle(), connectHandle);
+              ObjectInstanceHandleDataMap::iterator k;
+              k = _objectInstanceHandleDataMap.find((*j)->getHandle());
+              if (k == _objectInstanceHandleDataMap.end())
+                k = insertObjectInstanceHandle((*j)->getHandle(), (*j)->getName());
+              referenceObjectInstanceHandle(k, connectHandle);
             }
             send(connectHandle, request);
           }
@@ -988,10 +988,10 @@ public:
       response->getObjectInstanceHandleNamePairVector().reserve(count);
       FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
       while (count--) {
-        ObjectInstanceHandle objectInstanceHandle = _objectInstanceHandleAllocator.get();
-        ObjectInstanceHandleNamePair objectInstanceHandleNamePair(objectInstanceHandle, objectInstanceHandle.getReservedName("HLAobjectInstance"));
-        insertObjectInstanceHandle(objectInstanceHandleNamePair.first, objectInstanceHandleNamePair.second, connectHandle);
-        response->getObjectInstanceHandleNamePairVector().push_back(objectInstanceHandleNamePair);
+        ObjectInstanceHandleDataMap::iterator i;
+        i = insertObjectInstanceHandle();
+        referenceObjectInstanceHandle(i, connectHandle);
+        response->getObjectInstanceHandleNamePairVector().push_back(ObjectInstanceHandleNamePair(i->first, i->second.getName()));
       }
       send(connectHandle, response);
     } else {
@@ -1010,8 +1010,9 @@ public:
     } else {
       for (ObjectInstanceHandleNamePairVector::const_iterator k = message->getObjectInstanceHandleNamePairVector().begin();
            k != message->getObjectInstanceHandleNamePairVector().end(); ++k) {
-        _objectInstanceHandleAllocator.take(k->first);
-        insertObjectInstanceHandle(k->first, k->second, i->second._connectHandle);
+        ObjectInstanceHandleDataMap::iterator l;
+        l = insertObjectInstanceHandle(k->first, k->second);
+        referenceObjectInstanceHandle(l, i->second._connectHandle);
       }
 
       send(i->second._connectHandle, message);
@@ -1063,9 +1064,10 @@ public:
       response->setFederationHandle(message->getFederationHandle());
       response->setFederateHandle(message->getFederateHandle());
       if (!isObjectNameInUse(message->getName())) {
-        ObjectInstanceHandleNamePair objectInstanceHandleNamePair(_objectInstanceHandleAllocator.get(), message->getName());
-        insertObjectInstanceHandle(objectInstanceHandleNamePair.first, objectInstanceHandleNamePair.second, connectHandle);
-        response->setObjectInstanceHandleNamePair(objectInstanceHandleNamePair);
+        ObjectInstanceHandleDataMap::iterator i;
+        i = insertObjectInstanceHandle(message->getName());
+        referenceObjectInstanceHandle(i, connectHandle);
+        response->setObjectInstanceHandleNamePair(ObjectInstanceHandleNamePair(i->first, i->second.getName()));
         response->setSuccess(true);
       } else {
         ObjectInstanceHandleNamePair objectInstanceHandleNamePair(ObjectInstanceHandle(), message->getName());
@@ -1088,9 +1090,10 @@ public:
       // If so, then release the reservations.
     } else {
       if (message->getSuccess()) {
-        insertObjectInstanceHandle(message->getObjectInstanceHandleNamePair().first,
-                                   message->getObjectInstanceHandleNamePair().second, i->second._connectHandle);
-        _objectInstanceHandleAllocator.take(message->getObjectInstanceHandleNamePair().first);
+        ObjectInstanceHandleDataMap::iterator k;
+        k = insertObjectInstanceHandle(message->getObjectInstanceHandleNamePair().first,
+                                       message->getObjectInstanceHandleNamePair().second);
+        referenceObjectInstanceHandle(k, i->second._connectHandle);
       }
       send(i->second._connectHandle, message);
     }
@@ -1124,8 +1127,10 @@ public:
       if (response->getSuccess()) {
         for (ObjectInstanceHandleNamePairVector::iterator j = response->getObjectInstanceHandleNamePairVector().begin();
              j != response->getObjectInstanceHandleNamePairVector().end(); ++j) {
-          j->first = _objectInstanceHandleAllocator.get();
-          insertObjectInstanceHandle(j->first, j->second, connectHandle);
+          ObjectInstanceHandleDataMap::iterator k;
+          k = insertObjectInstanceHandle(j->second);
+          referenceObjectInstanceHandle(k, connectHandle);
+          j->first = k->first;
         }
       }
       send(message->getFederateHandle(), response);
@@ -1146,8 +1151,9 @@ public:
       if (message->getSuccess()) {
         for (ObjectInstanceHandleNamePairVector::const_iterator k = message->getObjectInstanceHandleNamePairVector().begin();
              k != message->getObjectInstanceHandleNamePairVector().end(); ++k) {
-          insertObjectInstanceHandle(k->first, k->second, i->second._connectHandle);
-          _objectInstanceHandleAllocator.take(k->first);
+          ObjectInstanceHandleDataMap::iterator l;
+          l = insertObjectInstanceHandle(k->first, k->second);
+          referenceObjectInstanceHandle(l, i->second._connectHandle);
         }
       }
       send(i->second._connectHandle, message);
@@ -1192,19 +1198,18 @@ public:
     connectHandleSet.erase(connectHandle);
     objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects = connectHandleSet;
 
-    for (ConnectHandleSet::iterator i = connectHandleSet.begin(); i != connectHandleSet.end(); ++i) {
-      if (*i == _parentServerConnectHandle)
+    ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.find(objectInstanceHandle);
+    for (ConnectHandleSet::iterator j = connectHandleSet.begin(); j != connectHandleSet.end(); ++j) {
+      if (*j == _parentServerConnectHandle)
         continue;
-      if (_objectInstanceHandleDataMap.find(objectInstanceHandle) == _objectInstanceHandleDataMap.end()) {
-        _objectInstanceHandleAllocator.take(message->getObjectInstanceHandle());
-        insertObjectInstanceHandle(message->getObjectInstanceHandle(), message->getName(), *i);
-      } else
-        referenceObjectInstanceHandle(message->getObjectInstanceHandle(), *i);
+      if (i == _objectInstanceHandleDataMap.end())
+        i = insertObjectInstanceHandle(message->getObjectInstanceHandle(), message->getName());
+      referenceObjectInstanceHandle(i, *j);
     }
 
     // If still unreferenced, ignore the insert and unref again in the parent
     // this can happen if we subscribed and unsubscribed at the server before we recieved the insert that is triggered by the subscribe request.
-    if (_objectInstanceHandleDataMap.find(objectInstanceHandle) == _objectInstanceHandleDataMap.end()) {
+    if (i == _objectInstanceHandleDataMap.end()) {
       OpenRTIAssert(connectHandle == _parentServerConnectHandle);
       OpenRTIAssert(connectHandleSet.empty());
 
@@ -1218,7 +1223,7 @@ public:
       send(_parentServerConnectHandle, message);
 
     } else {
-      OpenRTIAssert(!_objectInstanceHandleDataMap[objectInstanceHandle]._connectHandleSet.empty());
+      OpenRTIAssert(!i->second._connectHandleSet.empty());
       send(connectHandleSet, message);
     }
   }
@@ -1449,7 +1454,7 @@ public:
       notify->setFederationHandle(getHandle());
       notify->setFederateHandle(i->first);
       notify->setFederateType(i->second._federateType);
-      notify->setFederateName(*(i->second._stringSetIterator));
+      notify->setFederateName(i->second.getName());
       messageSender->send(notify);
     }
 
