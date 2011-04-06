@@ -1164,46 +1164,34 @@ public:
   // Object instance messages
   void accept(const ConnectHandle& connectHandle, InsertObjectInstanceMessage* message)
   {
-    ObjectClass* objectClass = getObjectClass(message->getObjectClassHandle());
+    ObjectInstanceHandle objectInstanceHandle = message->getObjectInstanceHandle();
+    ObjectClassHandle objectClassHandle = message->getObjectClassHandle();
+
+    ObjectClass* objectClass = getObjectClass(objectClassHandle);
     if (!objectClass)
       throw MessageError("InsertObjectInstanceMessage for unknown ObjectClass.");
-
-    ObjectInstanceHandle objectInstanceHandle = message->getObjectInstanceHandle();
-    SharedPtr<ObjectInstance> objectInstance = getObjectInstance(objectInstanceHandle);
-    if (!objectInstance.valid()) {
-      objectInstance = new ObjectInstance(message->getName(), objectInstanceHandle, objectClass);
-      insertObjectInstance(objectInstance);
-    }
-    for (size_t i = 0; i < message->getAttributeStateVector().size(); ++i) {
-      ObjectAttribute* attribute = objectInstance->getAttribute(message->getAttributeStateVector()[i].getAttributeHandle());
-      if (!attribute)
-        continue;
-      attribute->setOwnerConnectHandle(connectHandle);
-      // FIXME
-      attribute->_recieveingConnects.erase(connectHandle);
-    }
 
     // FIXME Improove this with preevaluated sets:
     // std::map<FederateHandle,ConnectHandleSet> ...
     // or may be to reduce the N in O(log(N))
     // std::map<ConnectHandle,ConnectHandleSet> ...
     ConnectHandleSet connectHandleSet;
-    while (objectClass) {
-      ObjectClassAttribute* attribute = objectClass->getPrivilegeToDeleteAttribute();
+    ObjectClass* parentObjectClass = objectClass;
+    while (parentObjectClass) {
+      ObjectClassAttribute* attribute = parentObjectClass->getPrivilegeToDeleteAttribute();
       if (attribute && attribute->getSubscriptionType() != Unsubscribed) {
         connectHandleSet.insert(attribute->getSubscribedConnectHandleSet().begin(), attribute->getSubscribedConnectHandleSet().end());
       }
-      objectClass = objectClass->getParentObjectClass();
+      parentObjectClass = parentObjectClass->getParentObjectClass();
     }
     connectHandleSet.erase(connectHandle);
-    objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects = connectHandleSet;
 
     ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.find(objectInstanceHandle);
     for (ConnectHandleSet::iterator j = connectHandleSet.begin(); j != connectHandleSet.end(); ++j) {
       if (*j == _parentServerConnectHandle)
         continue;
       if (i == _objectInstanceHandleDataMap.end())
-        i = insertObjectInstanceHandle(message->getObjectInstanceHandle(), message->getName());
+        i = insertObjectInstanceHandle(objectInstanceHandle, message->getName());
       referenceObjectInstanceHandle(i, *j);
     }
 
@@ -1212,8 +1200,6 @@ public:
     if (i == _objectInstanceHandleDataMap.end()) {
       OpenRTIAssert(connectHandle == _parentServerConnectHandle);
       OpenRTIAssert(connectHandleSet.empty());
-
-      eraseObjectInstance(objectInstance);
 
       SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message;
       message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
@@ -1224,6 +1210,22 @@ public:
 
     } else {
       OpenRTIAssert(!i->second._connectHandleSet.empty());
+
+      SharedPtr<ObjectInstance> objectInstance = getObjectInstance(objectInstanceHandle);
+      if (!objectInstance.valid()) {
+        objectInstance = new ObjectInstance(message->getName(), objectInstanceHandle, objectClass);
+        insertObjectInstance(objectInstance);
+      }
+      objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects = connectHandleSet;
+      for (size_t i = 0; i < message->getAttributeStateVector().size(); ++i) {
+        ObjectAttribute* attribute = objectInstance->getAttribute(message->getAttributeStateVector()[i].getAttributeHandle());
+        if (!attribute)
+          continue;
+        attribute->setOwnerConnectHandle(connectHandle);
+        // FIXME
+        attribute->_recieveingConnects.erase(connectHandle);
+      }
+
       send(connectHandleSet, message);
     }
   }
@@ -1490,17 +1492,20 @@ public:
     // FIXME avoid this loop over all objects
     // FIXME avoid precollecting these in the object handle set
     ObjectInstanceHandleSet objectInstanceHandleSet;
-    for (ObjectInstanceMap::const_iterator j = getObjectInstanceMap().begin(); j != getObjectInstanceMap().end(); ++j) {
-      if (j->second->getOwnerConnectHandle() != connectHandle)
+    for (ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.begin();
+         i != _objectInstanceHandleDataMap.end(); ++i) {
+      if (!i->second._objectInstance.valid())
+        continue;
+      if (i->second._objectInstance->getOwnerConnectHandle() != connectHandle)
         continue;
 
       // FIXME: currently we do not have ownership management - so, if the owner dies the object needs to die too
       bool deleteObject = true;
 
       if (deleteObject) {
-        objectInstanceHandleSet.insert(j->second->getHandle());
+        objectInstanceHandleSet.insert(i->first);
       } else {
-        j->second->setOwnerConnectHandle(ConnectHandle());
+        i->second._objectInstance->setOwnerConnectHandle(ConnectHandle());
       }
     }
     for (ObjectInstanceHandleSet::iterator j = objectInstanceHandleSet.begin();

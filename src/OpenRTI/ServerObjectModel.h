@@ -60,8 +60,6 @@ typedef NameHandleVector<ObjectClassHandle, ObjectClass> ObjectClassVector;
 typedef NameHandleVector<AttributeHandle, ObjectClassAttribute> ObjectClassAttributeVector;
 typedef NameHandleVector<InteractionClassHandle, InteractionClass> InteractionClassVector;
 
-typedef NameHandleMap<ObjectInstanceHandle, ObjectInstance> ObjectInstanceMap;
-
 // Helper return type for some publish/subscribe stuff.
 // Define outside the template class to avoid having different types of this per template
 enum PropagationType {
@@ -668,7 +666,6 @@ public:
   ~ServerObjectModel()
   {
     // The members would be cleaned up in any case, this is to enforce some order in destruction
-    _objectInstanceMap.clear();
     _objectClassVector.clear();
     _interactionClassVector.clear();
   }
@@ -799,11 +796,6 @@ public:
   { return _interactionClassVector.getObject(interactionClassHandle); }
 
 
-  /// ObjectInstance handling classes
-  const ObjectInstanceMap& getObjectInstanceMap() const
-  { return _objectInstanceMap; }
-  ObjectInstanceMap& getObjectInstanceMap()
-  { return _objectInstanceMap; }
   void insertObjectInstance(const SharedPtr<ObjectInstance>& objectInstance)
   {
     OpenRTIAssert(objectInstance.valid());
@@ -811,14 +803,13 @@ public:
     ObjectInstanceHandle objectInstanceHandle = objectInstance->getHandle();
     OpenRTIAssert(objectInstanceHandle.valid());
 
-    OpenRTIAssert(!_objectInstanceMap.exists(objectInstanceHandle));
-    OpenRTIAssert(!_objectInstanceMap.exists(objectInstance->getName()));
-
     ObjectClass* objectClass = objectInstance->getObjectClass();
     OpenRTIAssert(objectClass);
-
-    _objectInstanceMap.insert(ObjectInstanceMap::value_type(objectInstanceHandle, objectInstance));
     objectClass->insertObjectInstance(objectInstance.get());
+
+    ObjectInstanceHandleDataMap::iterator j = _objectInstanceHandleDataMap.find(objectInstanceHandle);
+    OpenRTIAssert(j != _objectInstanceHandleDataMap.end());
+    j->second._objectInstance = objectInstance;
   }
   void eraseObjectInstance(const SharedPtr<ObjectInstance>& objectInstance)
   {
@@ -828,25 +819,25 @@ public:
     objectClass->eraseObjectInstance(objectInstance.get());
 
     ObjectInstanceHandle objectInstanceHandle = objectInstance->getHandle();
-    ObjectInstanceMap::iterator i = _objectInstanceMap.find(objectInstanceHandle);
-
-    OpenRTIAssert(i != _objectInstanceMap.end());
-
-    _objectInstanceMap.erase(i);
+    ObjectInstanceHandleDataMap::iterator j = _objectInstanceHandleDataMap.find(objectInstanceHandle);
+    OpenRTIAssert(j != _objectInstanceHandleDataMap.end());
+    j->second._objectInstance = 0;
   }
   ObjectInstance* getObjectInstance(const ObjectInstanceHandle& objectInstanceHandle)
   {
-    ObjectInstanceMap::const_iterator i = _objectInstanceMap.find(objectInstanceHandle);
-    if (i == _objectInstanceMap.end())
+    ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.find(objectInstanceHandle);
+    if (i == _objectInstanceHandleDataMap.end())
       return 0;
-    return i->second.get();
+    return i->second._objectInstance.get();
   }
 
   void removeConnect(const ConnectHandle& connectHandle)
   {
-    for (ObjectInstanceMap::const_iterator i = _objectInstanceMap.begin();
-         i != _objectInstanceMap.end(); ++i) {
-      i->second->removeConnect(connectHandle);
+    for (ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.begin();
+         i != _objectInstanceHandleDataMap.end(); ++i) {
+      if (!i->second._objectInstance.valid())
+        continue;
+      i->second._objectInstance->removeConnect(connectHandle);
     }
     for (ObjectClassVector::const_iterator i = _objectClassVector.begin();
          i != _objectClassVector.end(); ++i) {
@@ -874,8 +865,6 @@ public:
   /// The interactions in the current object model
   InteractionClassVector _interactionClassVector;
 
-  /// The object instances
-  ObjectInstanceMap _objectInstanceMap;
 
 
 
@@ -909,6 +898,8 @@ public:
     const std::string& getName() const { return *_stringSetIterator; }
     // The child connect handles that reference this object instance handle
     ConnectHandleSet _connectHandleSet;
+    // FIXME Temporary ...
+    SharedPtr<ObjectInstance> _objectInstance;
   };
   /// track object instance handles
   ObjectInstanceHandleAllocator _objectInstanceHandleAllocator;
