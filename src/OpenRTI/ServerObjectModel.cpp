@@ -143,6 +143,7 @@ ServerObjectModel::_insertObjectInstanceHandle(const ObjectInstanceHandle& objec
   ObjectInstanceHandleDataMap::iterator i;
   typedef ObjectInstanceHandleDataMap::value_type value_type;
   i = _objectInstanceHandleDataMap.insert(value_type(objectInstanceHandle, ObjectInstanceData(stringSetIterator))).first;
+  i->second._objectInstance = new ObjectInstance(i->second.getName(), objectInstanceHandle);
   return i;
 }
 
@@ -177,9 +178,8 @@ ServerObjectModel::unreferenceObjectInstanceHandle(ObjectInstanceHandleDataMap::
   if (0 == i->second._connectHandleSet.erase(connectHandle))
     return false;
 
-  ObjectInstance* objectInstance = getObjectInstance(i->first);
-  if (objectInstance)
-    objectInstance->removeConnect(connectHandle);
+  if (i->second._objectInstance.valid())
+    i->second._objectInstance->removeConnect(connectHandle);
 
   if (!i->second._connectHandleSet.empty())
     return false;
@@ -187,8 +187,11 @@ ServerObjectModel::unreferenceObjectInstanceHandle(ObjectInstanceHandleDataMap::
   Log(ServerObjectInstance, Debug) << getServerPath() << ": Dropped last reference to Object Instance \""
                                    << i->first << "\"!" << std::endl;
 
-  if (objectInstance)
-    eraseObjectInstance(objectInstance);
+  if (i->second._objectInstance.valid()) {
+    ObjectClass* objectClass = i->second._objectInstance->getObjectClass();
+    if (objectClass)
+      objectClass->eraseObjectInstance(i->second._objectInstance.get());
+  }
 
   _objectInstanceHandleAllocator.put(i->first);
   _objectInstanceNameSet.erase(i->second._stringSetIterator);

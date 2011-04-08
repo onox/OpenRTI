@@ -46,7 +46,6 @@
 
 namespace OpenRTI {
 
-class Federation;
 class ObjectClass;
 class ObjectClassAttribute;
 class ObjectInstance;
@@ -378,9 +377,6 @@ public:
     if (_ownerConnectHandle == connectHandle)
       _ownerConnectHandle = ConnectHandle();
   }
-  void insertConnect(const ConnectHandle& connectHandle)
-  {
-  }
 
   // Because of attribute ownership, it is clear for an object attribute where the update
   // stems from, so just have a set of connect handles that want to recieve the updates
@@ -396,10 +392,17 @@ private:
 
 class OPENRTI_LOCAL ObjectInstance : public NameHandlePair<ObjectInstanceHandle> {
 public:
-  ObjectInstance(const std::string& name, const ObjectInstanceHandle& handle, ObjectClass* objectClass) :
+  ObjectInstance(const std::string& name, const ObjectInstanceHandle& handle) :
     NameHandlePair<ObjectInstanceHandle>(name, handle),
-    _objectClass(objectClass)
+    _objectClass(0)
   {
+  }
+
+  void setObjectClass(ObjectClass* objectClass)
+  {
+    if (_objectClass)
+      return;
+    _objectClass = objectClass;
     const ObjectClassAttributeVector& objectClassAttributeVector = objectClass->getObjectClassAttributeVector();
     for (ObjectClassAttributeVector::const_iterator i = objectClassAttributeVector.begin();
          i != objectClassAttributeVector.end(); ++i) {
@@ -471,17 +474,9 @@ public:
     }
   }
 
-  void insertConnect(const ConnectHandle& connectHandle)
-  {
-    HandleObjectAttributeVector::const_iterator i;
-    for (i = _handleObjectAttributeVector.begin(); i != _handleObjectAttributeVector.end(); ++i) {
-      (*i)->insertConnect(connectHandle);
-    }
-  }
-
 private:
   /// The pointer to the object class this object is an instance of, cannot be zero
-  ObjectClass* const _objectClass;
+  ObjectClass* _objectClass;
   // We store the position in the list of objects of this type in the object class,
   // this way erasing an object is also O(1).
   ObjectInstanceList::iterator _objectInstanceListIterator;
@@ -764,8 +759,6 @@ public:
   /// Object class handling methods
   const ObjectClassVector& getObjectClassVector() const
   { return _objectClassVector; }
-  ObjectClassVector& getObjectClassVector()
-  { return _objectClassVector; }
   void insertObjectClass(const SharedPtr<ObjectClass>& objectClass)
   {
     OpenRTIAssert(objectClass.valid());
@@ -781,8 +774,6 @@ public:
   /// Interaction class handling methods
   const InteractionClassVector& getInteractionClassVector() const
   { return _interactionClassVector; }
-  InteractionClassVector& getInteractionClassVector()
-  { return _interactionClassVector; }
   void insertInteractionClass(const SharedPtr<InteractionClass>& interactionClass)
   {
     OpenRTIAssert(interactionClass.valid());
@@ -796,33 +787,6 @@ public:
   { return _interactionClassVector.getObject(interactionClassHandle); }
 
 
-  void insertObjectInstance(const SharedPtr<ObjectInstance>& objectInstance)
-  {
-    OpenRTIAssert(objectInstance.valid());
-
-    ObjectInstanceHandle objectInstanceHandle = objectInstance->getHandle();
-    OpenRTIAssert(objectInstanceHandle.valid());
-
-    ObjectClass* objectClass = objectInstance->getObjectClass();
-    OpenRTIAssert(objectClass);
-    objectClass->insertObjectInstance(objectInstance.get());
-
-    ObjectInstanceHandleDataMap::iterator j = _objectInstanceHandleDataMap.find(objectInstanceHandle);
-    OpenRTIAssert(j != _objectInstanceHandleDataMap.end());
-    j->second._objectInstance = objectInstance;
-  }
-  void eraseObjectInstance(const SharedPtr<ObjectInstance>& objectInstance)
-  {
-    OpenRTIAssert(objectInstance.valid());
-
-    ObjectClass* objectClass = objectInstance->getObjectClass();
-    objectClass->eraseObjectInstance(objectInstance.get());
-
-    ObjectInstanceHandle objectInstanceHandle = objectInstance->getHandle();
-    ObjectInstanceHandleDataMap::iterator j = _objectInstanceHandleDataMap.find(objectInstanceHandle);
-    OpenRTIAssert(j != _objectInstanceHandleDataMap.end());
-    j->second._objectInstance = 0;
-  }
   ObjectInstance* getObjectInstance(const ObjectInstanceHandle& objectInstanceHandle)
   {
     ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.find(objectInstanceHandle);
@@ -885,6 +849,16 @@ public:
 
   bool unreferenceObjectInstanceHandle(ObjectInstanceHandleDataMap::iterator i, const ConnectHandle& connectHandle);
   bool unreferenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle);
+
+  void setObjectClass(ObjectInstanceHandleDataMap::iterator i, const ObjectClassHandle& objectClassHandle)
+  {
+    if (i->second._objectInstance->getObjectClass())
+      return;
+    ObjectClass* objectClass = getObjectClass(objectClassHandle);
+    OpenRTIAssert(objectClass);
+    i->second._objectInstance->setObjectClass(objectClass);
+    objectClass->insertObjectInstance(i->second._objectInstance.get());
+  }
 
 
   // Ok, this is not held in the ObjectInstance ??!! the problem is that this is just the

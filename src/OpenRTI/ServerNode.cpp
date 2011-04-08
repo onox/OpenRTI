@@ -1211,14 +1211,11 @@ public:
     } else {
       OpenRTIAssert(!i->second._connectHandleSet.empty());
 
-      SharedPtr<ObjectInstance> objectInstance = getObjectInstance(objectInstanceHandle);
-      if (!objectInstance.valid()) {
-        objectInstance = new ObjectInstance(message->getName(), objectInstanceHandle, objectClass);
-        insertObjectInstance(objectInstance);
-      }
-      objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects = connectHandleSet;
-      for (size_t i = 0; i < message->getAttributeStateVector().size(); ++i) {
-        ObjectAttribute* attribute = objectInstance->getAttribute(message->getAttributeStateVector()[i].getAttributeHandle());
+      setObjectClass(i, objectClassHandle);
+
+      i->second._objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects = connectHandleSet;
+      for (size_t j = 0; j < message->getAttributeStateVector().size(); ++j) {
+        ObjectAttribute* attribute = i->second._objectInstance->getAttribute(message->getAttributeStateVector()[j].getAttributeHandle());
         if (!attribute)
           continue;
         attribute->setOwnerConnectHandle(connectHandle);
