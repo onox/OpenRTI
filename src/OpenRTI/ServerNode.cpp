@@ -186,12 +186,12 @@ public:
     // ... insert a new federate ...
     FederateHandleFederateDataMap::iterator i;
     i = insertFederate(connectHandle, message->getFederateName());
-    i->second._federateType = message->getFederateType();
+    i->second->_federateType = message->getFederateType();
 
     /// FIXME shall we get that message from the federation server???
     response->setFederationHandle(getHandle());
     response->setFederateType(message->getFederateType());
-    response->setFederateName(i->second.getName());
+    response->setFederateName(i->second->getName());
     response->setFederateHandle(i->first);
     send(connectHandle, response);
 
@@ -200,7 +200,7 @@ public:
     notify->setFederationHandle(response->getFederationHandle());
     notify->setFederateHandle(response->getFederateHandle());
     notify->setFederateType(response->getFederateType());
-    notify->setFederateName(i->second.getName());
+    notify->setFederateName(i->second->getName());
     broadcastToChildren(connectHandle, notify);
 
     // For those sync request that are automatically extended to new federates, send the announcement
@@ -231,7 +231,7 @@ public:
 
     FederateHandleFederateDataMap::iterator i;
     i = insertFederate(requestConnectHandle, message->getFederateName(), federateHandle);
-    i->second._federateType = message->getFederateType();
+    i->second->_federateType = message->getFederateType();
 
     if (requestConnectHandle.valid()) {
       // The requesting server needs to know about us, just forward here
@@ -264,11 +264,11 @@ public:
       throw MessageError("Recieved ResignFederationExecutionRequestMessage for invalid federate handle!");
 
     // already done so ... just waiting for the response
-    if (i->second._resignPending)
+    if (i->second->_resignPending)
       return;
 
     // We need to skip resource allocations in the future
-    i->second._resignPending = true;
+    i->second->_resignPending = true;
 
     // remove from time management
     FederateHandleTimeStampMap::iterator k = _federateHandleTimeStampMap.find(federateHandle);
@@ -388,7 +388,7 @@ public:
       throw MessageError("Received JoinFederateNotify for already known federate!");
     FederateHandleFederateDataMap::iterator i;
     i = insertFederate(connectHandle, message->getFederateName(), federateHandle);
-    i->second._federateType = message->getFederateType();
+    i->second->_federateType = message->getFederateType();
     broadcastToChildren(message);
   }
   void accept(const ConnectHandle& connectHandle, ResignFederateNotifyMessage* message)
@@ -401,7 +401,7 @@ public:
 
     // FIXME can we simplify this and remove the federate on upstream resign?
     FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
-    ConnectHandle federateConnectHandle = i->second._connectHandle;
+    ConnectHandle federateConnectHandle = i->second->_connectHandle;
     eraseFederate(i);
     if (hasJoinedFederatesForConnect(federateConnectHandle))
       return;
@@ -463,7 +463,7 @@ public:
           continue;
         // Build the intersection of the federate handles in the message and the ones in the connect.
         FederateHandleSet federateHandleSet;
-        std::set_intersection(j->second._federateHandleSet.begin(), j->second._federateHandleSet.end(),
+        std::set_intersection(j->second->_federateHandleSet.begin(), j->second->_federateHandleSet.end(),
                               i->second._waitFederates.begin(), i->second._waitFederates.end(),
                               std::inserter(federateHandleSet, federateHandleSet.end()));
         if (federateHandleSet.empty())
@@ -522,7 +522,7 @@ public:
 
       // Build the intersection of the federate handles in the message and the ones in the connect.
       FederateHandleSet federateHandleSet;
-      std::set_intersection(j->second._federateHandleSet.begin(), j->second._federateHandleSet.end(),
+      std::set_intersection(j->second->_federateHandleSet.begin(), j->second->_federateHandleSet.end(),
                             message->getFederateHandleSet().begin(), message->getFederateHandleSet().end(),
                             std::inserter(federateHandleSet, federateHandleSet.end()));
       if (federateHandleSet.empty())
@@ -585,7 +585,7 @@ public:
 
       // Build the intersection of the federate handles in the message and the ones in the connect.
       FederateHandleSet federateHandleSet;
-      std::set_intersection(j->second._federateHandleSet.begin(), j->second._federateHandleSet.end(),
+      std::set_intersection(j->second->_federateHandleSet.begin(), j->second->_federateHandleSet.end(),
                             message->getFederateHandleSet().begin(), message->getFederateHandleSet().end(),
                             std::inserter(federateHandleSet, federateHandleSet.end()));
       if (federateHandleSet.empty())
@@ -991,7 +991,7 @@ public:
         ObjectInstanceHandleDataMap::iterator i;
         i = insertObjectInstanceHandle();
         referenceObjectInstanceHandle(i, connectHandle);
-        response->getObjectInstanceHandleNamePairVector().push_back(ObjectInstanceHandleNamePair(i->first, i->second.getName()));
+        response->getObjectInstanceHandleNamePairVector().push_back(ObjectInstanceHandleNamePair(i->first, i->second->getName()));
       }
       send(connectHandle, response);
     } else {
@@ -1004,7 +1004,7 @@ public:
     FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
     if (i == _federateHandleFederateDataMap.end()) {
       throw MessageError("Got ObjectInstanceHandlesResponseMessage for an unknown federate!");
-    } else if (!i->second._connectHandle.valid() || i->second._resignPending) {
+    } else if (!i->second->_connectHandle.valid() || i->second->_resignPending) {
       // Can happen, may be it has resigned/is died in between but the response is already underway
       // If so, then just ignore, the upstream server needs to release them
     } else {
@@ -1012,10 +1012,10 @@ public:
            k != message->getObjectInstanceHandleNamePairVector().end(); ++k) {
         ObjectInstanceHandleDataMap::iterator l;
         l = insertObjectInstanceHandle(k->first, k->second);
-        referenceObjectInstanceHandle(l, i->second._connectHandle);
+        referenceObjectInstanceHandle(l, i->second->_connectHandle);
       }
 
-      send(i->second._connectHandle, message);
+      send(i->second->_connectHandle, message);
     }
   }
   void accept(const ConnectHandle& connectHandle, ReleaseMultipleObjectInstanceNameHandlePairsMessage* message)
@@ -1067,7 +1067,7 @@ public:
         ObjectInstanceHandleDataMap::iterator i;
         i = insertObjectInstanceHandle(message->getName());
         referenceObjectInstanceHandle(i, connectHandle);
-        response->setObjectInstanceHandleNamePair(ObjectInstanceHandleNamePair(i->first, i->second.getName()));
+        response->setObjectInstanceHandleNamePair(ObjectInstanceHandleNamePair(i->first, i->second->getName()));
         response->setSuccess(true);
       } else {
         ObjectInstanceHandleNamePair objectInstanceHandleNamePair(ObjectInstanceHandle(), message->getName());
@@ -1085,7 +1085,7 @@ public:
     FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
     if (i == _federateHandleFederateDataMap.end()) {
       throw MessageError("Got ReserveObjectInstanceNameResponseMessage for an unknown federate!");
-    } else if (!i->second._connectHandle.valid() || i->second._resignPending) {
+    } else if (!i->second->_connectHandle.valid() || i->second->_resignPending) {
       // Can happen, may be it has resigned/is died in between but the response is already underway
       // If so, then release the reservations.
     } else {
@@ -1093,9 +1093,9 @@ public:
         ObjectInstanceHandleDataMap::iterator k;
         k = insertObjectInstanceHandle(message->getObjectInstanceHandleNamePair().first,
                                        message->getObjectInstanceHandleNamePair().second);
-        referenceObjectInstanceHandle(k, i->second._connectHandle);
+        referenceObjectInstanceHandle(k, i->second->_connectHandle);
       }
-      send(i->second._connectHandle, message);
+      send(i->second->_connectHandle, message);
     }
   }
   void accept(const ConnectHandle& connectHandle, ReserveMultipleObjectInstanceNameRequestMessage* message)
@@ -1144,7 +1144,7 @@ public:
     FederateHandleFederateDataMap::iterator i = _federateHandleFederateDataMap.find(federateHandle);
     if (i == _federateHandleFederateDataMap.end()) {
       throw MessageError("Got ReserveMultipleObjectInstanceNameResponseMessage for an unknown federate!");
-    } else if (!i->second._connectHandle.valid() || i->second._resignPending) {
+    } else if (!i->second->_connectHandle.valid() || i->second->_resignPending) {
       // Can happen, may be it has resigned/is died in between but the response is already underway
       // If so, then release the reservations.
     } else {
@@ -1153,10 +1153,10 @@ public:
              k != message->getObjectInstanceHandleNamePairVector().end(); ++k) {
           ObjectInstanceHandleDataMap::iterator l;
           l = insertObjectInstanceHandle(k->first, k->second);
-          referenceObjectInstanceHandle(l, i->second._connectHandle);
+          referenceObjectInstanceHandle(l, i->second->_connectHandle);
         }
       }
-      send(i->second._connectHandle, message);
+      send(i->second->_connectHandle, message);
     }
   }
 
@@ -1209,13 +1209,13 @@ public:
       send(_parentServerConnectHandle, message);
 
     } else {
-      OpenRTIAssert(!i->second._connectHandleSet.empty());
+      OpenRTIAssert(!i->second->_connectHandleSet.empty());
 
       setObjectClass(i, objectClassHandle);
 
-      i->second._objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects = connectHandleSet;
+      i->second->_objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects = connectHandleSet;
       for (size_t j = 0; j < message->getAttributeStateVector().size(); ++j) {
-        ObjectAttribute* attribute = i->second._objectInstance->getAttribute(message->getAttributeStateVector()[j].getAttributeHandle());
+        ObjectAttribute* attribute = i->second->_objectInstance->getAttribute(message->getAttributeStateVector()[j].getAttributeHandle());
         if (!attribute)
           continue;
         attribute->setOwnerConnectHandle(connectHandle);
@@ -1452,8 +1452,8 @@ public:
       SharedPtr<JoinFederateNotifyMessage> notify = new JoinFederateNotifyMessage;
       notify->setFederationHandle(getHandle());
       notify->setFederateHandle(i->first);
-      notify->setFederateType(i->second._federateType);
-      notify->setFederateName(i->second.getName());
+      notify->setFederateType(i->second->_federateType);
+      notify->setFederateName(i->second->getName());
       messageSender->send(notify);
     }
 
@@ -1491,9 +1491,9 @@ public:
     ObjectInstanceHandleSet objectInstanceHandleSet;
     for (ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.begin();
          i != _objectInstanceHandleDataMap.end(); ++i) {
-      if (!i->second._objectInstance.valid())
+      if (!i->second->_objectInstance.valid())
         continue;
-      if (i->second._objectInstance->getOwnerConnectHandle() != connectHandle)
+      if (i->second->_objectInstance->getOwnerConnectHandle() != connectHandle)
         continue;
 
       // FIXME: currently we do not have ownership management - so, if the owner dies the object needs to die too
@@ -1502,7 +1502,7 @@ public:
       if (deleteObject) {
         objectInstanceHandleSet.insert(i->first);
       } else {
-        i->second._objectInstance->setOwnerConnectHandle(ConnectHandle());
+        i->second->_objectInstance->setOwnerConnectHandle(ConnectHandle());
       }
     }
     for (ObjectInstanceHandleSet::iterator j = objectInstanceHandleSet.begin();
@@ -1538,7 +1538,7 @@ public:
 
     ConnectHandleConnectDataMap::iterator i = _connectHandleConnectDataMap.find(connectHandle);
     if (i != _connectHandleConnectDataMap.end()) {
-      FederateHandleSet federateHandleSet = i->second._federateHandleSet;
+      FederateHandleSet federateHandleSet = i->second->_federateHandleSet;
       for (FederateHandleSet::iterator j = federateHandleSet.begin(); j != federateHandleSet.end(); ++j) {
         Log(ServerFederate, Info) << getServerPath() << ": Resigning federate " << *j
                                   << " because of closed connection!" << std::endl;
@@ -1547,11 +1547,11 @@ public:
         message->setFederateHandle(*j);
         FederateHandleFederateDataMap::iterator k = _federateHandleFederateDataMap.find(*j);
         if (k != _federateHandleFederateDataMap.end()) {
-          k->second._connectHandle = ConnectHandle();
+          k->second->_connectHandle = ConnectHandle();
         }
         accept(connectHandle, message.get());
       }
-      i->second._federateHandleSet.clear();
+      i->second->_federateHandleSet.clear();
     }
 
     ServerObjectModel::removeConnect(connectHandle);
@@ -1568,9 +1568,9 @@ public:
 	continue;
       if (i->first == _parentServerConnectHandle)
 	continue;
-      if (!i->second._messageSender.valid())
+      if (!i->second->_messageSender.valid())
         continue;
-      i->second._messageSender->send(message);
+      i->second->_messageSender->send(message);
     }
   }
 
@@ -1584,9 +1584,9 @@ public:
 	continue;
       if (i->first == connectHandle)
 	continue;
-      if (!i->second._messageSender.valid())
+      if (!i->second->_messageSender.valid())
         continue;
-      i->second._messageSender->send(message);
+      i->second->_messageSender->send(message);
     }
   }
 
@@ -1597,11 +1597,11 @@ public:
       FederateHandleFederateDataMap::const_iterator j = _federateHandleFederateDataMap.find(*i);
       if (j == _federateHandleFederateDataMap.end())
         continue;
-      if (!j->second._connectHandle.valid())
+      if (!j->second->_connectHandle.valid())
         continue;
-      if (j->second._connectHandle == _parentServerConnectHandle)
+      if (j->second->_connectHandle == _parentServerConnectHandle)
         continue;
-      broadcastSet.insert(j->second._connectHandle);
+      broadcastSet.insert(j->second->_connectHandle);
     }
     send(broadcastSet, message);
   }
@@ -1632,28 +1632,28 @@ public:
 	continue;
       if (i->first == connectHandle)
 	continue;
-      if (!i->second._messageSender.valid())
+      if (!i->second->_messageSender.valid())
         continue;
-      i->second._messageSender->send(message);
+      i->second->_messageSender->send(message);
     }
   }
   void send(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessage>& message) const
   {
     ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.find(connectHandle);
     OpenRTIAssert(i != _connectHandleConnectDataMap.end());
-    // OpenRTIAssert(i->second._messageSender.valid());
-    if (!i->second._messageSender.valid())
+    // OpenRTIAssert(i->second->_messageSender.valid());
+    if (!i->second->_messageSender.valid())
       return;
-    i->second._messageSender->send(message);
+    i->second->_messageSender->send(message);
   }
   void send(const FederateHandle& federateHandle, const SharedPtr<AbstractMessage>& message) const
   {
     FederateHandleFederateDataMap::const_iterator i = _federateHandleFederateDataMap.find(federateHandle);
     if (i == _federateHandleFederateDataMap.end())
       return;
-    if (!i->second._connectHandle.valid())
+    if (!i->second->_connectHandle.valid())
       return;
-    send(i->second._connectHandle, message);
+    send(i->second->_connectHandle, message);
   }
 
   /// The rti servers options

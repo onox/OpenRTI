@@ -142,8 +142,9 @@ ServerObjectModel::_insertObjectInstanceHandle(const ObjectInstanceHandle& objec
   StringSet::iterator stringSetIterator = _objectInstanceNameSet.insert(objectInstanceName).first;
   ObjectInstanceHandleDataMap::iterator i;
   typedef ObjectInstanceHandleDataMap::value_type value_type;
-  i = _objectInstanceHandleDataMap.insert(value_type(objectInstanceHandle, ObjectInstanceData(stringSetIterator))).first;
-  i->second._objectInstance = new ObjectInstance(i->second.getName(), objectInstanceHandle);
+  i = _objectInstanceHandleDataMap.insert(value_type(objectInstanceHandle, 0)).first;
+  i->second = new ObjectInstanceData(i, stringSetIterator);
+  i->second->_objectInstance = new ObjectInstance(i->second->getName(), objectInstanceHandle);
   return i;
 }
 
@@ -155,7 +156,7 @@ ServerObjectModel::referenceObjectInstanceHandle(ObjectInstanceHandleDataMap::it
   Log(ServerObjectInstance, Debug) << getServerPath() << ": Reference Object Instance \""
                                    << i->first << "\" referenced by connect \""
                                    << connectHandle <<  "\"!" << std::endl;
-  i->second._connectHandleSet.insert(connectHandle);
+  i->second->_connectHandleSet.insert(connectHandle);
 }
 
 void
@@ -173,28 +174,28 @@ ServerObjectModel::unreferenceObjectInstanceHandle(ObjectInstanceHandleDataMap::
                                    << connectHandle <<  "\"!" << std::endl;
   OpenRTIAssert(connectHandle != _parentServerConnectHandle);
   // Currently it is used in a way that requires checking and allowing unreferencing connects that are unreferenced
-  // OpenRTIAssert(i->second._connectHandleSet.find(connectHandle) != i->second._connectHandleSet.end());
-  // i->second._connectHandleSet.erase(connectHandle);
-  if (0 == i->second._connectHandleSet.erase(connectHandle))
+  // OpenRTIAssert(i->second->_connectHandleSet.find(connectHandle) != i->second->_connectHandleSet.end());
+  // i->second->_connectHandleSet.erase(connectHandle);
+  if (0 == i->second->_connectHandleSet.erase(connectHandle))
     return false;
 
-  if (i->second._objectInstance.valid())
-    i->second._objectInstance->removeConnect(connectHandle);
+  if (i->second->_objectInstance.valid())
+    i->second->_objectInstance->removeConnect(connectHandle);
 
-  if (!i->second._connectHandleSet.empty())
+  if (!i->second->_connectHandleSet.empty())
     return false;
 
   Log(ServerObjectInstance, Debug) << getServerPath() << ": Dropped last reference to Object Instance \""
                                    << i->first << "\"!" << std::endl;
 
-  if (i->second._objectInstance.valid()) {
-    ObjectClass* objectClass = i->second._objectInstance->getObjectClass();
+  if (i->second->_objectInstance.valid()) {
+    ObjectClass* objectClass = i->second->_objectInstance->getObjectClass();
     if (objectClass)
-      objectClass->eraseObjectInstance(i->second._objectInstance.get());
+      objectClass->eraseObjectInstance(i->second->_objectInstance.get());
   }
 
   _objectInstanceHandleAllocator.put(i->first);
-  _objectInstanceNameSet.erase(i->second._stringSetIterator);
+  _objectInstanceNameSet.erase(i->second->_stringSetIterator);
   _objectInstanceHandleDataMap.erase(i);
 
   return true;
@@ -222,12 +223,14 @@ ServerObjectModel::insertFederate(const ConnectHandle& connectHandle, const std:
   stringSetIterator = _federateNameSet.insert(federateName).first;
   FederateHandleFederateDataMap::iterator i;
   typedef FederateHandleFederateDataMap::value_type value_type;
-  i = _federateHandleFederateDataMap.insert(value_type(federateHandle, FederateData(connectHandle, stringSetIterator))).first;
+  i = _federateHandleFederateDataMap.insert(value_type(federateHandle, 0)).first;
+  i->second = new FederateData(i, stringSetIterator);
+  i->second->_connectHandle = connectHandle;
   ConnectHandleConnectDataMap::iterator j = _connectHandleConnectDataMap.find(connectHandle);
   if (j != _connectHandleConnectDataMap.end()) {
-    j->second._federateHandleSet.insert(federateHandle);
+    j->second->_federateHandleSet.insert(federateHandle);
   } else {
-    i->second._resignPending = true;
+    i->second->_resignPending = true;
   }
 
   return i;
@@ -264,14 +267,14 @@ ServerObjectModel::eraseFederate(ServerObjectModel::FederateHandleFederateDataMa
   }
 
   // Remove from connects
-  ConnectHandleConnectDataMap::iterator k = _connectHandleConnectDataMap.find(i->second._connectHandle);
+  ConnectHandleConnectDataMap::iterator k = _connectHandleConnectDataMap.find(i->second->_connectHandle);
   if (k != _connectHandleConnectDataMap.end())
-    k->second._federateHandleSet.erase(i->first);
+    k->second->_federateHandleSet.erase(i->first);
 
   // Give back the handle to the allocator
   _federateHandleAllocator.put(i->first);
   // Erase from the indices
-  _federateNameSet.erase(i->second._stringSetIterator);
+  _federateNameSet.erase(i->second->_stringSetIterator);
   _federateHandleFederateDataMap.erase(i);
 }
 
@@ -297,13 +300,14 @@ ServerObjectModel::insertConnect(const ConnectHandle& connectHandle, const Share
 
   std::pair<ConnectHandleConnectDataMap::iterator, bool> iteratorBoolPair;
   typedef ConnectHandleConnectDataMap::value_type value_type;
-  iteratorBoolPair = _connectHandleConnectDataMap.insert(value_type(connectHandle, ConnectData()));
-  if (!iteratorBoolPair.second && iteratorBoolPair.first->second._messageSender.valid()) {
-    OpenRTIAssert(iteratorBoolPair.first->second._messageSender == messageSender);
+  iteratorBoolPair = _connectHandleConnectDataMap.insert(value_type(connectHandle, 0));
+  if (!iteratorBoolPair.second && iteratorBoolPair.first->second->_messageSender.valid()) {
+    OpenRTIAssert(iteratorBoolPair.first->second->_messageSender == messageSender);
     return std::make_pair(iteratorBoolPair.first, false);
   }
-  iteratorBoolPair.first->second._messageSender = messageSender;
-  iteratorBoolPair.first->second._name = name;
+  iteratorBoolPair.first->second = new ConnectData(iteratorBoolPair.first);
+  iteratorBoolPair.first->second->_messageSender = messageSender;
+  iteratorBoolPair.first->second->_name = name;
   return std::make_pair(iteratorBoolPair.first, true);
 }
 
@@ -311,7 +315,7 @@ void
 ServerObjectModel::eraseConnect(ServerObjectModel::ConnectHandleConnectDataMap::iterator i)
 {
   OpenRTIAssert(i != _connectHandleConnectDataMap.end());
-  OpenRTIAssert(i->first == _parentServerConnectHandle || i->second._federateHandleSet.empty());
+  OpenRTIAssert(i->first == _parentServerConnectHandle || i->second->_federateHandleSet.empty());
 
   if (_parentServerConnectHandle == i->first) {
     Log(ServerConnect, Error) << getServerPath() << ": Removing parent connect!" << std::endl;

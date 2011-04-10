@@ -646,13 +646,13 @@ public:
 class OPENRTI_LOCAL ServerObjectModel : public Federation {
 public:
   struct ConnectData;
-  typedef std::map<ConnectHandle, ConnectData> ConnectHandleConnectDataMap;
+  typedef std::map<ConnectHandle, SharedPtr<ConnectData> > ConnectHandleConnectDataMap;
 
   struct FederateData;
-  typedef std::map<FederateHandle, FederateData> FederateHandleFederateDataMap;
+  typedef std::map<FederateHandle, SharedPtr<FederateData> > FederateHandleFederateDataMap;
 
   struct ObjectInstanceData;
-  typedef std::map<ObjectInstanceHandle, ObjectInstanceData> ObjectInstanceHandleDataMap;
+  typedef std::map<ObjectInstanceHandle, SharedPtr<ObjectInstanceData> > ObjectInstanceHandleDataMap;
 
   ServerObjectModel(const std::string& name, const FederationHandle& handle) :
     Federation(name, handle)
@@ -680,7 +680,7 @@ public:
   {
     ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.find(connectHandle);
     OpenRTIAssert(i != _connectHandleConnectDataMap.end());
-    return i->second._name;
+    return i->second->_name;
   }
 
   /// Synchronizatoin labels are tracked here
@@ -701,7 +701,7 @@ public:
     ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.find(connectHandle);
     if (i == _connectHandleConnectDataMap.end())
       return false;
-    return !i->second._federateHandleSet.empty();
+    return !i->second->_federateHandleSet.empty();
   }
 
   bool getActive(const ConnectHandle& connectHandle) const
@@ -709,7 +709,7 @@ public:
     ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.find(connectHandle);
     if (i == _connectHandleConnectDataMap.end())
       return false;
-    return i->second._messageSender.valid();
+    return i->second->_messageSender.valid();
   }
   void setInActive(const ConnectHandle& connectHandle)
   {
@@ -718,9 +718,9 @@ public:
     if (i->first == _parentServerConnectHandle)
       return;
     // FIXME which one of the following
-    OpenRTIAssert(i->second._federateHandleSet.empty());
+    OpenRTIAssert(i->second->_federateHandleSet.empty());
     // OpenRTIAssert(!hasJoinedFederatesForConnect(connectHandle));
-    i->second._messageSender.clear();
+    i->second->_messageSender.clear();
   }
 
   bool hasJoinedFederates() const
@@ -734,10 +734,10 @@ public:
   {
     for (FederateHandleFederateDataMap::const_iterator i = _federateHandleFederateDataMap.begin();
          i != _federateHandleFederateDataMap.end(); ++i) {
-      if (i->second._connectHandle == _parentServerConnectHandle)
+      if (i->second->_connectHandle == _parentServerConnectHandle)
         continue;
       // Ok, not even the still pending resign request for invalid connect handles is treated as valid child.
-      if (i->second._resignPending)
+      if (i->second->_resignPending)
         continue;
       return true;
     }
@@ -792,16 +792,16 @@ public:
     ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.find(objectInstanceHandle);
     if (i == _objectInstanceHandleDataMap.end())
       return 0;
-    return i->second._objectInstance.get();
+    return i->second->_objectInstance.get();
   }
 
   void removeConnect(const ConnectHandle& connectHandle)
   {
     for (ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.begin();
          i != _objectInstanceHandleDataMap.end(); ++i) {
-      if (!i->second._objectInstance.valid())
+      if (!i->second->_objectInstance.valid())
         continue;
-      i->second._objectInstance->removeConnect(connectHandle);
+      i->second->_objectInstance->removeConnect(connectHandle);
     }
     for (ObjectClassVector::const_iterator i = _objectClassVector.begin();
          i != _objectClassVector.end(); ++i) {
@@ -852,20 +852,28 @@ public:
 
   void setObjectClass(ObjectInstanceHandleDataMap::iterator i, const ObjectClassHandle& objectClassHandle)
   {
-    if (i->second._objectInstance->getObjectClass())
+    if (i->second->_objectInstance->getObjectClass())
       return;
     ObjectClass* objectClass = getObjectClass(objectClassHandle);
     OpenRTIAssert(objectClass);
-    i->second._objectInstance->setObjectClass(objectClass);
-    objectClass->insertObjectInstance(i->second._objectInstance.get());
+    i->second->_objectInstance->setObjectClass(objectClass);
+    objectClass->insertObjectInstance(i->second->_objectInstance.get());
   }
 
 
   // Ok, this is not held in the ObjectInstance ??!! the problem is that this is just the
   // knowledge about the object handle and name. Not yet any object class is known.
   // Hmm, may be we should be able to create object instances without object class instead??
-  struct ObjectInstanceData {
-    ObjectInstanceData(const StringSet::iterator& stringSetIterator) : _stringSetIterator(stringSetIterator) {}
+  struct ObjectInstanceData : public Referenced {
+    ObjectInstanceData(const ObjectInstanceHandleDataMap::iterator& objectInstanceHandleDataMapIterator,
+                       const StringSet::iterator& stringSetIterator) :
+      _objectInstanceHandleDataMapIterator(objectInstanceHandleDataMapIterator),
+      _stringSetIterator(stringSetIterator)
+    { }
+    // Points back to the index object instance by handle map
+    ObjectInstanceHandleDataMap::iterator _objectInstanceHandleDataMapIterator;
+    // Returns the object instance's handle
+    const ObjectInstanceHandle& getHandle() const { return _objectInstanceHandleDataMapIterator->first; }
     // Points to the string set name entry for this object instance
     StringSet::iterator _stringSetIterator;
     // Returns the object instance's name
@@ -897,17 +905,19 @@ public:
 
 
   // The FederateHandle <-> federate data mappings
-  struct OPENRTI_LOCAL FederateData {
-    FederateData(const ConnectHandle& connectHandle, const StringSet::iterator& stringSetIterator) :
-      _connectHandle(connectHandle),
+  struct OPENRTI_LOCAL FederateData : public Referenced {
+    FederateData(const FederateHandleFederateDataMap::iterator& federateHandleFederateDataMapIterator,
+                 const StringSet::iterator& stringSetIterator) :
+      _federateHandleFederateDataMapIterator(federateHandleFederateDataMapIterator),
       _stringSetIterator(stringSetIterator),
       _resignPending(false)
     { }
-    ConnectHandle _connectHandle;
-    std::string _federateType;
+    FederateHandleFederateDataMap::iterator _federateHandleFederateDataMapIterator;
     StringSet::iterator _stringSetIterator;
     // Returns the federates's name
     const std::string& getName() const { return *_stringSetIterator; }
+    std::string _federateType;
+    ConnectHandle _connectHandle;
     bool _resignPending;
   };
   FederateHandleAllocator _federateHandleAllocator;
@@ -937,7 +947,11 @@ public:
   void eraseConnect(const ConnectHandle& connectHandle);
 
   // The ConnectHandle <-> connect data mappings
-  struct OPENRTI_LOCAL ConnectData {
+  struct OPENRTI_LOCAL ConnectData : public Referenced {
+    ConnectData(const ConnectHandleConnectDataMap::iterator& connectHandleConnectDataMapIterator) :
+      _connectHandleConnectDataMapIterator(connectHandleConnectDataMapIterator)
+    { }
+    ConnectHandleConnectDataMap::iterator _connectHandleConnectDataMapIterator;
     SharedPtr<AbstractMessageSender> _messageSender;
     std::string _name;
     // FIXME make this an iterator to the FederateData above
