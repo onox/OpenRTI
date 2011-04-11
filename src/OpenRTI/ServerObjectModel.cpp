@@ -22,14 +22,14 @@
 namespace OpenRTI {
 
 void
-ObjectClass::insertObjectInstance(ObjectInstance* objectInstance)
+ServerObjectModel::ObjectClass::insertObjectInstance(ObjectInstance* objectInstance)
 {
   OpenRTIAssert(objectInstance);
   objectInstance->insertToObjectClassList(_objectInstanceList);
 }
 
 void
-ObjectClass::eraseObjectInstance(ObjectInstance* objectInstance)
+ServerObjectModel::ObjectClass::eraseObjectInstance(ObjectInstance* objectInstance)
 {
   OpenRTIAssert(objectInstance);
   objectInstance->eraseFromObjectClassList(_objectInstanceList);
