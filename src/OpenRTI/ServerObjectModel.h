@@ -67,11 +67,11 @@ public:
   struct ConnectData;
   typedef std::map<ConnectHandle, SharedPtr<ConnectData> > ConnectHandleConnectDataMap;
 
-  struct FederateData;
-  typedef std::map<FederateHandle, SharedPtr<FederateData> > FederateHandleFederateDataMap;
+  struct Federate;
+  typedef std::map<FederateHandle, SharedPtr<Federate> > FederateHandleFederateMap;
 
-  struct ObjectInstanceData;
-  typedef std::map<ObjectInstanceHandle, SharedPtr<ObjectInstanceData> > ObjectInstanceHandleDataMap;
+  class ObjectInstance;
+  typedef std::map<ObjectInstanceHandle, SharedPtr<ObjectInstance> > ObjectInstanceHandleObjectInstanceMap;
 
   ServerObjectModel(const std::string& name, const FederationHandle& handle) :
     NameHandlePair<FederationHandle>(name, handle)
@@ -444,103 +444,6 @@ public:
     ConnectHandle _ownerConnectHandle;
   };
 
-  class OPENRTI_LOCAL ObjectInstance : public NameHandlePair<ObjectInstanceHandle> {
-  public:
-    ObjectInstance(const std::string& name, const ObjectInstanceHandle& handle) :
-      NameHandlePair<ObjectInstanceHandle>(name, handle),
-      _objectClass(0)
-      {
-      }
-
-    void setObjectClass(ObjectClass* objectClass)
-    {
-      if (_objectClass)
-        return;
-      _objectClass = objectClass;
-      const ObjectClassAttributeVector& objectClassAttributeVector = objectClass->getObjectClassAttributeVector();
-      for (ObjectClassAttributeVector::const_iterator i = objectClassAttributeVector.begin();
-           i != objectClassAttributeVector.end(); ++i) {
-        SharedPtr<ObjectAttribute> objectAttribute = new ObjectAttribute(i->get());
-        OpenRTIAssert(_handleObjectAttributeVector.size() == objectAttribute->getHandle());
-        _handleObjectAttributeVector.push_back(objectAttribute);
-      }
-    }
-
-    /// Get the parent ObjectClass
-    ObjectClass* getObjectClass()
-    { return _objectClass; }
-
-    /// Get the set of ObjectAttribute pointers
-    const HandleObjectAttributeVector& getHandleObjectAttributeVector() const
-    { return _handleObjectAttributeVector; }
-
-    ObjectAttribute* getAttribute(const AttributeHandle& attributeHandle) const
-    {
-      HandleObjectAttributeVector::size_type index = attributeHandle;
-      if (_handleObjectAttributeVector.size() <= index)
-        return 0;
-      return _handleObjectAttributeVector[index].get();
-    }
-    ObjectAttribute* getPrivilegeToDeleteAttribute() const
-    { return getAttribute(AttributeHandle(0)); }
-
-    /// Return the connect that owns this object
-    ConnectHandle getOwnerConnectHandle() const
-    {
-      ObjectAttribute* attribute = getPrivilegeToDeleteAttribute();
-      if (!attribute)
-        return ConnectHandle();
-      return attribute->getOwnerConnectHandle();
-    }
-    void setOwnerConnectHandle(const ConnectHandle& connectHandle)
-    {
-      ObjectAttribute* attribute = getPrivilegeToDeleteAttribute();
-      if (!attribute)
-        return;
-      attribute->setOwnerConnectHandle(connectHandle);
-    }
-
-    bool getIsPrivilegeToDeleteAttributeSubscribed() const
-    {
-      ObjectAttribute* attribute = getPrivilegeToDeleteAttribute();
-      if (!attribute)
-        return false;
-      return !attribute->_recieveingConnects.empty();
-    }
-
-    // Inserts itself into the list that is usually held in the object class knowing all the object instances
-    void insertToObjectClassList(ObjectInstanceList& objectInstanceList)
-    {
-      _objectInstanceListIterator = objectInstanceList.insert(objectInstanceList.begin(), this);
-    }
-    // Removes itself from the list that is usually held in the object class knowing all the object instances
-    void eraseFromObjectClassList(ObjectInstanceList& objectInstanceList)
-    {
-      objectInstanceList.erase(_objectInstanceListIterator);
-      _objectInstanceListIterator = objectInstanceList.end();
-    }
-
-    void removeConnect(const ConnectHandle& connectHandle)
-    {
-      HandleObjectAttributeVector::const_iterator i;
-      for (i = _handleObjectAttributeVector.begin(); i != _handleObjectAttributeVector.end(); ++i) {
-        (*i)->removeConnect(connectHandle);
-      }
-    }
-
-  private:
-    /// The pointer to the object class this object is an instance of, can be zero
-    ObjectClass* _objectClass;
-    // We store the position in the list of objects of this type in the object class,
-    // this way erasing an object is also O(1).
-    ObjectInstanceList::iterator _objectInstanceListIterator;
-    // FIXME: also store the federation wide object by handle map iterator
-    // ObjectInstanceList::iterator _objectInstanceListIterator;
-
-    /// The set of instance attributes of this object
-    HandleObjectAttributeVector _handleObjectAttributeVector;
-  };
-
   class OPENRTI_LOCAL InteractionClass : public PublishSubscribe<InteractionClassHandle> {
   public:
     InteractionClass(const std::string& name, const InteractionClassHandle& handle, InteractionClass* parentInteractionClass) :
@@ -716,15 +619,15 @@ public:
 
   bool hasJoinedFederates() const
   {
-    OpenRTIAssert(_federateHandleFederateDataMap.empty() == (!_federateHandleAllocator.used()));
-    return !_federateHandleFederateDataMap.empty();
+    OpenRTIAssert(_federateHandleFederateMap.empty() == (!_federateHandleAllocator.used()));
+    return !_federateHandleFederateMap.empty();
   }
 
   /// Returns true if there is any federate joined that belongs to a child connect
   bool hasJoinedChildren() const
   {
-    for (FederateHandleFederateDataMap::const_iterator i = _federateHandleFederateDataMap.begin();
-         i != _federateHandleFederateDataMap.end(); ++i) {
+    for (FederateHandleFederateMap::const_iterator i = _federateHandleFederateMap.begin();
+         i != _federateHandleFederateMap.end(); ++i) {
       if (i->second->_connectHandle == _parentServerConnectHandle)
         continue;
       // Ok, not even the still pending resign request for invalid connect handles is treated as valid child.
@@ -780,19 +683,17 @@ public:
 
   ObjectInstance* getObjectInstance(const ObjectInstanceHandle& objectInstanceHandle)
   {
-    ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.find(objectInstanceHandle);
-    if (i == _objectInstanceHandleDataMap.end())
+    ObjectInstanceHandleObjectInstanceMap::iterator i = _objectInstanceHandleObjectInstanceMap.find(objectInstanceHandle);
+    if (i == _objectInstanceHandleObjectInstanceMap.end())
       return 0;
-    return i->second->_objectInstance.get();
+    return i->second.get();
   }
 
   void removeConnect(const ConnectHandle& connectHandle)
   {
-    for (ObjectInstanceHandleDataMap::iterator i = _objectInstanceHandleDataMap.begin();
-         i != _objectInstanceHandleDataMap.end(); ++i) {
-      if (!i->second->_objectInstance.valid())
-        continue;
-      i->second->_objectInstance->removeConnect(connectHandle);
+    for (ObjectInstanceHandleObjectInstanceMap::iterator i = _objectInstanceHandleObjectInstanceMap.begin();
+         i != _objectInstanceHandleObjectInstanceMap.end(); ++i) {
+      i->second->removeConnect(connectHandle);
     }
     for (ObjectClassVector::const_iterator i = _objectClassVector.begin();
          i != _objectClassVector.end(); ++i) {
@@ -826,57 +727,143 @@ public:
   bool isObjectNameInUse(const std::string& name) const
   { return _objectInstanceNameSet.find(name) != _objectInstanceNameSet.end(); }
 
-  ObjectInstanceHandleDataMap::iterator
+  ObjectInstanceHandleObjectInstanceMap::iterator
   insertObjectInstanceHandle();
-  ObjectInstanceHandleDataMap::iterator
+  ObjectInstanceHandleObjectInstanceMap::iterator
   insertObjectInstanceHandle(const std::string& objectInstanceName);
-  ObjectInstanceHandleDataMap::iterator
+  ObjectInstanceHandleObjectInstanceMap::iterator
   insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::string& objectInstanceName);
-  ObjectInstanceHandleDataMap::iterator
+  ObjectInstanceHandleObjectInstanceMap::iterator
   _insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::string& objectInstanceName);
 
-  void referenceObjectInstanceHandle(ObjectInstanceHandleDataMap::iterator i, const ConnectHandle& connectHandle);
+  void referenceObjectInstanceHandle(ObjectInstanceHandleObjectInstanceMap::iterator i, const ConnectHandle& connectHandle);
   void referenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle);
 
-  bool unreferenceObjectInstanceHandle(ObjectInstanceHandleDataMap::iterator i, const ConnectHandle& connectHandle);
+  bool unreferenceObjectInstanceHandle(ObjectInstanceHandleObjectInstanceMap::iterator i, const ConnectHandle& connectHandle);
   bool unreferenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle);
 
-  void setObjectClass(ObjectInstanceHandleDataMap::iterator i, const ObjectClassHandle& objectClassHandle)
+  void setObjectClass(ObjectInstanceHandleObjectInstanceMap::iterator i, const ObjectClassHandle& objectClassHandle)
   {
-    if (i->second->_objectInstance->getObjectClass())
+    if (i->second->getObjectClass())
       return;
     ObjectClass* objectClass = getObjectClass(objectClassHandle);
     OpenRTIAssert(objectClass);
-    i->second->_objectInstance->setObjectClass(objectClass);
-    objectClass->insertObjectInstance(i->second->_objectInstance.get());
+    i->second->setObjectClass(objectClass);
+    objectClass->insertObjectInstance(i->second.get());
   }
 
+  class OPENRTI_LOCAL ObjectInstance : public NameHandlePair<ObjectInstanceHandle> {
+  public:
+    ObjectInstance(const ObjectInstanceHandleObjectInstanceMap::iterator& objectInstanceHandleObjectInstanceMapIterator,
+                   const StringSet::iterator& stringSetIterator) :
+      NameHandlePair<ObjectInstanceHandle>(*stringSetIterator, objectInstanceHandleObjectInstanceMapIterator->first),
+      _objectInstanceHandleObjectInstanceMapIterator(objectInstanceHandleObjectInstanceMapIterator),
+      _stringSetIterator(stringSetIterator),
+      _objectClass(0)
+    {
+    }
 
-  // Ok, this is not held in the ObjectInstance ??!! the problem is that this is just the
-  // knowledge about the object handle and name. Not yet any object class is known.
-  // Hmm, may be we should be able to create object instances without object class instead??
-  struct ObjectInstanceData : public Referenced {
-    ObjectInstanceData(const ObjectInstanceHandleDataMap::iterator& objectInstanceHandleDataMapIterator,
-                       const StringSet::iterator& stringSetIterator) :
-      _objectInstanceHandleDataMapIterator(objectInstanceHandleDataMapIterator),
-      _stringSetIterator(stringSetIterator)
-    { }
+    void setObjectClass(ObjectClass* objectClass)
+    {
+      if (_objectClass)
+        return;
+      _objectClass = objectClass;
+      const ObjectClassAttributeVector& objectClassAttributeVector = objectClass->getObjectClassAttributeVector();
+      for (ObjectClassAttributeVector::const_iterator i = objectClassAttributeVector.begin();
+           i != objectClassAttributeVector.end(); ++i) {
+        SharedPtr<ObjectAttribute> objectAttribute = new ObjectAttribute(i->get());
+        OpenRTIAssert(_handleObjectAttributeVector.size() == objectAttribute->getHandle());
+        _handleObjectAttributeVector.push_back(objectAttribute);
+      }
+    }
+
+    /// Get the parent ObjectClass
+    ObjectClass* getObjectClass()
+    { return _objectClass; }
+
+    /// Get the set of ObjectAttribute pointers
+    const HandleObjectAttributeVector& getHandleObjectAttributeVector() const
+    { return _handleObjectAttributeVector; }
+
+    ObjectAttribute* getAttribute(const AttributeHandle& attributeHandle) const
+    {
+      HandleObjectAttributeVector::size_type index = attributeHandle;
+      if (_handleObjectAttributeVector.size() <= index)
+        return 0;
+      return _handleObjectAttributeVector[index].get();
+    }
+    ObjectAttribute* getPrivilegeToDeleteAttribute() const
+    { return getAttribute(AttributeHandle(0)); }
+
+    /// Return the connect that owns this object
+    ConnectHandle getOwnerConnectHandle() const
+    {
+      ObjectAttribute* attribute = getPrivilegeToDeleteAttribute();
+      if (!attribute)
+        return ConnectHandle();
+      return attribute->getOwnerConnectHandle();
+    }
+    void setOwnerConnectHandle(const ConnectHandle& connectHandle)
+    {
+      ObjectAttribute* attribute = getPrivilegeToDeleteAttribute();
+      if (!attribute)
+        return;
+      attribute->setOwnerConnectHandle(connectHandle);
+    }
+
+    bool getIsPrivilegeToDeleteAttributeSubscribed() const
+    {
+      ObjectAttribute* attribute = getPrivilegeToDeleteAttribute();
+      if (!attribute)
+        return false;
+      return !attribute->_recieveingConnects.empty();
+    }
+
+    void removeConnect(const ConnectHandle& connectHandle)
+    {
+      // FIXME make that an assert at some time
+      // OpenRTIAssert(_connectHandleSet.find(connectHandle) == _connectHandleSet.end());
+      HandleObjectAttributeVector::const_iterator i;
+      for (i = _handleObjectAttributeVector.begin(); i != _handleObjectAttributeVector.end(); ++i) {
+        (*i)->removeConnect(connectHandle);
+      }
+    }
+
+    // Inserts itself into the list that is usually held in the object class knowing all the object instances
+    void insertToObjectClassList(ObjectInstanceList& objectInstanceList)
+    {
+      _objectInstanceListIterator = objectInstanceList.insert(objectInstanceList.begin(), this);
+    }
+    // Removes itself from the list that is usually held in the object class knowing all the object instances
+    void eraseFromObjectClassList(ObjectInstanceList& objectInstanceList)
+    {
+      objectInstanceList.erase(_objectInstanceListIterator);
+      _objectInstanceListIterator = objectInstanceList.end();
+    }
+
     // Points back to the index object instance by handle map
-    ObjectInstanceHandleDataMap::iterator _objectInstanceHandleDataMapIterator;
-    // Returns the object instance's handle
-    const ObjectInstanceHandle& getHandle() const { return _objectInstanceHandleDataMapIterator->first; }
+    ObjectInstanceHandleObjectInstanceMap::iterator _objectInstanceHandleObjectInstanceMapIterator;
     // Points to the string set name entry for this object instance
     StringSet::iterator _stringSetIterator;
-    // Returns the object instance's name
-    const std::string& getName() const { return *_stringSetIterator; }
     // The child connect handles that reference this object instance handle
     ConnectHandleSet _connectHandleSet;
-    // FIXME Temporary ...
-    SharedPtr<ObjectInstance> _objectInstance;
+
+  private:
+    // We store the position in the list of objects of this type in the object class,
+    // this way erasing an object is also O(1).
+    ObjectInstanceList::iterator _objectInstanceListIterator;
+    // FIXME: also store the federation wide object by handle map iterator
+    // ObjectInstanceList::iterator _objectInstanceListIterator;
+
+    /// The pointer to the object class this object is an instance of, can be zero
+    ObjectClass* _objectClass;
+
+    /// The set of instance attributes of this object
+    HandleObjectAttributeVector _handleObjectAttributeVector;
   };
   /// track object instance handles
   ObjectInstanceHandleAllocator _objectInstanceHandleAllocator;
-  ObjectInstanceHandleDataMap _objectInstanceHandleDataMap;
+  ObjectInstanceHandleObjectInstanceMap _objectInstanceHandleObjectInstanceMap;
   StringSet _objectInstanceNameSet;
 
 
@@ -884,26 +871,26 @@ public:
   bool isFederateNameInUse(const std::string& name) const
   { return _federateNameSet.find(name) != _federateNameSet.end(); }
 
-  /// Insert a new federate, return an iterator to the struct FederateData
-  FederateHandleFederateDataMap::iterator
+  /// Insert a new federate, return an iterator to the struct Federate
+  FederateHandleFederateMap::iterator
   insertFederate(const ConnectHandle& connectHandle, const std::string& federateName,
                  const FederateHandle& federateHandle);
-  FederateHandleFederateDataMap::iterator
+  FederateHandleFederateMap::iterator
   insertFederate(const ConnectHandle& connectHandle, const std::string& federateName);
   /// Erase the given federate
-  void eraseFederate(FederateHandleFederateDataMap::iterator i);
+  void eraseFederate(FederateHandleFederateMap::iterator i);
   void eraseFederate(const FederateHandle& federateHandle);
 
 
   // The FederateHandle <-> federate data mappings
-  struct OPENRTI_LOCAL FederateData : public Referenced {
-    FederateData(const FederateHandleFederateDataMap::iterator& federateHandleFederateDataMapIterator,
+  struct OPENRTI_LOCAL Federate : public Referenced {
+    Federate(const FederateHandleFederateMap::iterator& federateHandleFederateMapIterator,
                  const StringSet::iterator& stringSetIterator) :
-      _federateHandleFederateDataMapIterator(federateHandleFederateDataMapIterator),
+      _federateHandleFederateMapIterator(federateHandleFederateMapIterator),
       _stringSetIterator(stringSetIterator),
       _resignPending(false)
     { }
-    FederateHandleFederateDataMap::iterator _federateHandleFederateDataMapIterator;
+    FederateHandleFederateMap::iterator _federateHandleFederateMapIterator;
     StringSet::iterator _stringSetIterator;
     // Returns the federates's name
     const std::string& getName() const { return *_stringSetIterator; }
@@ -912,7 +899,7 @@ public:
     bool _resignPending;
   };
   FederateHandleAllocator _federateHandleAllocator;
-  FederateHandleFederateDataMap _federateHandleFederateDataMap;
+  FederateHandleFederateMap _federateHandleFederateMap;
   StringSet _federateNameSet;
 
 
@@ -945,7 +932,7 @@ public:
     ConnectHandleConnectDataMap::iterator _connectHandleConnectDataMapIterator;
     SharedPtr<AbstractMessageSender> _messageSender;
     std::string _name;
-    // FIXME make this an iterator to the FederateData above
+    // FIXME make this an iterator to the Federate above
     FederateHandleSet _federateHandleSet;
   };
   ConnectHandle _parentServerConnectHandle;
