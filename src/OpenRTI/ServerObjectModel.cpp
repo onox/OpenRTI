@@ -155,7 +155,7 @@ ServerObjectModel::referenceObjectInstanceHandle(ObjectInstanceHandleObjectInsta
   Log(ServerObjectInstance, Debug) << getServerPath() << ": Reference Object Instance \""
                                    << i->first << "\" referenced by connect \""
                                    << connectHandle <<  "\"!" << std::endl;
-  i->second->_connectHandleSet.insert(connectHandle);
+  i->second->referenceObjectInstanceHandle(connectHandle);
 }
 
 void
@@ -172,23 +172,11 @@ ServerObjectModel::unreferenceObjectInstanceHandle(ObjectInstanceHandleObjectIns
                                    << i->first << "\" referenced by connect \""
                                    << connectHandle <<  "\"!" << std::endl;
   OpenRTIAssert(connectHandle != _parentServerConnectHandle);
-  // Currently it is used in a way that requires checking and allowing unreferencing connects that are unreferenced
-  // OpenRTIAssert(i->second->_connectHandleSet.find(connectHandle) != i->second->_connectHandleSet.end());
-  // i->second->_connectHandleSet.erase(connectHandle);
-  if (0 == i->second->_connectHandleSet.erase(connectHandle))
-    return false;
-
-  i->second->removeConnect(connectHandle);
-
-  if (!i->second->_connectHandleSet.empty())
+  if (!i->second->unreferenceObjectInstanceHandle(connectHandle))
     return false;
 
   Log(ServerObjectInstance, Debug) << getServerPath() << ": Dropped last reference to Object Instance \""
                                    << i->first << "\"!" << std::endl;
-
-  ObjectClass* objectClass = i->second->getObjectClass();
-  if (objectClass)
-    objectClass->eraseObjectInstance(i->second.get());
 
   _objectInstanceHandleAllocator.put(i->first);
   _objectInstanceNameSet.erase(i->second->_stringSetIterator);
@@ -201,6 +189,15 @@ bool
 ServerObjectModel::unreferenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle)
 {
   return unreferenceObjectInstanceHandle(_objectInstanceHandleObjectInstanceMap.find(objectInstanceHandle), connectHandle);
+}
+
+ServerObjectModel::ObjectInstance*
+ServerObjectModel::getObjectInstance(const ObjectInstanceHandle& objectInstanceHandle)
+{
+  ObjectInstanceHandleObjectInstanceMap::iterator i = _objectInstanceHandleObjectInstanceMap.find(objectInstanceHandle);
+  if (i == _objectInstanceHandleObjectInstanceMap.end())
+    return 0;
+  return i->second.get();
 }
 
 ServerObjectModel::FederateHandleFederateMap::iterator

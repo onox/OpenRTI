@@ -24,6 +24,7 @@
 #include "Message.h"
 #include "AbstractMessageSender.h"
 #include "LogStream.h"
+#include "NameHandleMap.h"
 #include "ServerObjectModel.h"
 #include "ServerOptions.h"
 
@@ -1211,7 +1212,7 @@ public:
     } else {
       OpenRTIAssert(!i->second->_connectHandleSet.empty());
 
-      setObjectClass(i, objectClassHandle);
+      i->second->setObjectClass(objectClass);
 
       i->second->getPrivilegeToDeleteAttribute()->_recieveingConnects = connectHandleSet;
       for (size_t j = 0; j < message->getAttributeStateVector().size(); ++j) {

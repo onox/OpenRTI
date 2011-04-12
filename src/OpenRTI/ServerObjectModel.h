@@ -33,9 +33,7 @@
 #include "Handle.h"
 #include "HandleAllocator.h"
 #include "Message.h"
-#include "NameHandleMap.h"
 #include "NameHandlePair.h"
-#include "NameHandleVector.h"
 #include "Referenced.h"
 #include "RegionSet.h"
 #include "SharedPtr.h"
@@ -51,27 +49,27 @@ namespace OpenRTI {
 class OPENRTI_LOCAL ServerObjectModel : public NameHandlePair<FederationHandle> {
 public:
 
-  class ObjectClass;
-  class ObjectClassAttribute;
-  class ObjectInstance;
-  class ObjectAttribute;
-  class InteractionClass;
-
-  typedef std::list<ObjectInstance*> ObjectInstanceList;
-  typedef std::vector<SharedPtr<ObjectAttribute> > HandleObjectAttributeVector;
-
-  typedef NameHandleVector<ObjectClassHandle, ObjectClass> ObjectClassVector;
-  typedef NameHandleVector<AttributeHandle, ObjectClassAttribute> ObjectClassAttributeVector;
-  typedef NameHandleVector<InteractionClassHandle, InteractionClass> InteractionClassVector;
-
-  struct ConnectData;
-  typedef std::map<ConnectHandle, SharedPtr<ConnectData> > ConnectHandleConnectDataMap;
-
+  struct ObjectClass;
+  struct ObjectClassAttribute;
+  struct ObjectInstance;
+  struct ObjectAttribute;
+  struct InteractionClass;
   struct Federate;
-  typedef std::map<FederateHandle, SharedPtr<Federate> > FederateHandleFederateMap;
+  struct ConnectData;
 
-  class ObjectInstance;
+  typedef std::vector<SharedPtr<ObjectClass> > ObjectClassVector;
+  typedef std::vector<SharedPtr<ObjectClassAttribute> > ObjectClassAttributeVector;
+  typedef std::vector<SharedPtr<InteractionClass> > InteractionClassVector;
+  typedef std::vector<SharedPtr<ObjectAttribute> > HandleObjectAttributeVector;
+  typedef std::map<ConnectHandle, SharedPtr<ConnectData> > ConnectHandleConnectDataMap;
+  typedef std::map<FederateHandle, SharedPtr<Federate> > FederateHandleFederateMap;
   typedef std::map<ObjectInstanceHandle, SharedPtr<ObjectInstance> > ObjectInstanceHandleObjectInstanceMap;
+
+  typedef std::list<ObjectClass*> ObjectClassList;
+  typedef std::list<ObjectInstance*> ObjectInstanceList;
+  typedef std::list<InteractionClass*> InteractionClassList;
+  typedef std::list<Federate*> FederateList;
+
 
   ServerObjectModel(const std::string& name, const FederationHandle& handle) :
     NameHandlePair<FederationHandle>(name, handle)
@@ -79,9 +77,13 @@ public:
   }
   ~ServerObjectModel()
   {
+    // FIXME assert that this is empty
+    _objectInstanceHandleObjectInstanceMap.clear();
     // The members would be cleaned up in any case, this is to enforce some order in destruction
-    _objectClassVector.clear();
-    _interactionClassVector.clear();
+    while (!_objectClassVector.empty())
+      _objectClassVector.pop_back();
+    while (!_interactionClassVector.empty())
+      _interactionClassVector.pop_back();
   }
 
   /// Get the rti servers name
@@ -202,7 +204,7 @@ public:
   };
 
   template<typename H>
-    class OPENRTI_LOCAL PublishSubscribe : public NameHandlePair<H> {
+  class OPENRTI_LOCAL PublishSubscribe : public NameHandlePair<H> {
   public:
     typedef H Handle;
 
@@ -326,20 +328,26 @@ public:
   };
 
   /// FIXME share them among derived object classes ??
-  class OPENRTI_LOCAL ObjectClassAttribute : public PublishSubscribe<AttributeHandle> {
-  public:
+  struct OPENRTI_LOCAL ObjectClassAttribute : public PublishSubscribe<AttributeHandle> {
     ObjectClassAttribute(const std::string& name, const AttributeHandle& handle) :
       PublishSubscribe<AttributeHandle>(name, handle)
     { }
 
   };
 
-  class OPENRTI_LOCAL ObjectClass : public NameHandlePair<ObjectClassHandle> {
-  public:
+  struct OPENRTI_LOCAL ObjectClass : public NameHandlePair<ObjectClassHandle> {
     ObjectClass(const std::string& name, const ObjectClassHandle& handle, ObjectClass* parentObjectClass) :
       NameHandlePair<ObjectClassHandle>(name, handle),
       _parentObjectClass(parentObjectClass)
-      { }
+    {
+      if (_parentObjectClass)
+        _childObjectClassListIterator = _parentObjectClass->_childObjectClassList.insert(_parentObjectClass->_childObjectClassList.begin(), this);
+    }
+    ~ObjectClass()
+    {
+      if (_parentObjectClass)
+        _parentObjectClass->_childObjectClassList.erase(_childObjectClassListIterator);
+    }
 
     /// Get the parent ObjectClass
     ObjectClass* getParentObjectClass() const
@@ -355,13 +363,19 @@ public:
       OpenRTIAssert(objectClassAttribute.valid());
       AttributeHandle attributeHandle = objectClassAttribute->getHandle();
       OpenRTIAssert(attributeHandle.valid());
-      OpenRTIAssert(!_objectClassAttributeVector.exists(attributeHandle));
-      _objectClassAttributeVector.insert(objectClassAttribute);
+      if (_objectClassAttributeVector.size() <= attributeHandle.getHandle())
+        _objectClassAttributeVector.resize(attributeHandle.getHandle() + 1);
+      OpenRTIAssert(!_objectClassAttributeVector[attributeHandle.getHandle()].valid());
+      _objectClassAttributeVector[attributeHandle.getHandle()] = objectClassAttribute;
     }
     ObjectClassAttribute* getAttribute(const AttributeHandle& attributeHandle) const
-    { return _objectClassAttributeVector.getObject(attributeHandle); }
+    {
+      if (_objectClassAttributeVector.size() <= attributeHandle.getHandle())
+        return 0;
+      return _objectClassAttributeVector[attributeHandle.getHandle()].get();
+    }
     ObjectClassAttribute* getPrivilegeToDeleteAttribute() const
-    { return _objectClassAttributeVector.getObject(AttributeHandle(0)); }
+    { return getAttribute(AttributeHandle(0)); }
 
     /// Get the set of object instances of this object class type
     const ObjectInstanceList& getObjectInstanceList() const
@@ -378,9 +392,17 @@ public:
         (*i)->removeConnect(connectHandle);
     }
 
+    const ObjectClassList& getChildObjectClassList() const
+    { return _childObjectClassList; }
+
   private:
     /// The pointer to the parent object class, may be 0
     ObjectClass* const _parentObjectClass;
+
+    /// The list of child object classes
+    ObjectClassList _childObjectClassList;
+    /// The iterator into the parents _childObjectClassList for O(1) removal
+    ObjectClassList::iterator _childObjectClassListIterator;
 
     /// The set of class attributes of this object class type
     ObjectClassAttributeVector _objectClassAttributeVector;
@@ -392,20 +414,19 @@ public:
     ObjectInstanceList _objectInstanceList;
   };
 
-  class OPENRTI_LOCAL ObjectAttribute : public Referenced {
-  public:
+  struct OPENRTI_LOCAL ObjectAttribute : public Referenced {
     ObjectAttribute(ObjectClassAttribute* objectClassAttribute) :
       _objectClassAttribute(objectClassAttribute)
     {
       // FIXME exclude the owner connect handle
       _recieveingConnects = _objectClassAttribute->getSubscribedConnectHandleSet();
     }
-    ObjectAttribute(ObjectClassAttribute* objectClassAttribute, const RegionSet& regionSet) :
-      _objectClassAttribute(objectClassAttribute)
-    {
-      // FIXME exclude the owner connect handle
-      _objectClassAttribute->getSubscribedAndIntersectingConnectHandleSet(_recieveingConnects, regionSet);
-    }
+    // ObjectAttribute(ObjectClassAttribute* objectClassAttribute, const RegionSet& regionSet) :
+    //   _objectClassAttribute(objectClassAttribute)
+    // {
+    //   // FIXME exclude the owner connect handle
+    //   _objectClassAttribute->getSubscribedAndIntersectingConnectHandleSet(_recieveingConnects, regionSet);
+    // }
 
     /// Get the attributes handle
     AttributeHandle getHandle() const
@@ -444,20 +465,35 @@ public:
     ConnectHandle _ownerConnectHandle;
   };
 
-  class OPENRTI_LOCAL InteractionClass : public PublishSubscribe<InteractionClassHandle> {
-  public:
+  struct OPENRTI_LOCAL InteractionClass : public PublishSubscribe<InteractionClassHandle> {
     InteractionClass(const std::string& name, const InteractionClassHandle& handle, InteractionClass* parentInteractionClass) :
       PublishSubscribe<InteractionClassHandle>(name, handle),
       _parentInteractionClass(parentInteractionClass)
-      { }
+    {
+      if (_parentInteractionClass)
+        _childInteractionClassListIterator = _parentInteractionClass->_childInteractionClassList.insert(_parentInteractionClass->_childInteractionClassList.begin(), this);
+    }
+    ~InteractionClass()
+    {
+      if (_parentInteractionClass)
+        _parentInteractionClass->_childInteractionClassList.erase(_childInteractionClassListIterator);
+    }
 
     /// Get the parent InteractionClass
     InteractionClass* getParentInteractionClass() const
     { return _parentInteractionClass; }
 
+    const InteractionClassList& getChildInteractionClassList() const
+    { return _childInteractionClassList; }
+
   private:
     /// The pointer to the parent interaction class, may be 0
     InteractionClass* const _parentInteractionClass;
+
+    /// The list of child interaction classes
+    InteractionClassList _childInteractionClassList;
+    /// The iterator into the parents _childInteractionClassList for O(1) removal
+    InteractionClassList::iterator _childInteractionClassListIterator;
   };
 
 
@@ -658,12 +694,17 @@ public:
     OpenRTIAssert(objectClass.valid());
     ObjectClassHandle objectClassHandle = objectClass->getHandle();
     OpenRTIAssert(objectClassHandle.valid());
-    OpenRTIAssert(!_objectClassVector.exists(objectClassHandle));
-    OpenRTIAssert(!_objectClassVector.exists(objectClass->getName()));
-    _objectClassVector.insert(objectClass);
+    if (_objectClassVector.size() <= objectClassHandle.getHandle())
+      _objectClassVector.resize(objectClassHandle.getHandle() + 1);
+    OpenRTIAssert(!_objectClassVector[objectClassHandle.getHandle()].valid());
+    _objectClassVector[objectClassHandle.getHandle()] = objectClass;
   }
   ObjectClass* getObjectClass(const ObjectClassHandle& objectClassHandle)
-  { return _objectClassVector.getObject(objectClassHandle); }
+  {
+    if (_objectClassVector.size() <= objectClassHandle.getHandle())
+      return 0;
+    return _objectClassVector[objectClassHandle.getHandle()].get();
+  }
 
   /// Interaction class handling methods
   const InteractionClassVector& getInteractionClassVector() const
@@ -673,20 +714,16 @@ public:
     OpenRTIAssert(interactionClass.valid());
     InteractionClassHandle interactionClassHandle = interactionClass->getHandle();
     OpenRTIAssert(interactionClassHandle.valid());
-    OpenRTIAssert(!_interactionClassVector.exists(interactionClassHandle));
-    OpenRTIAssert(!_interactionClassVector.exists(interactionClass->getName()));
-    _interactionClassVector.insert(interactionClass);
+    if (_interactionClassVector.size() <= interactionClassHandle.getHandle())
+      _interactionClassVector.resize(interactionClassHandle.getHandle() + 1);
+    OpenRTIAssert(!_interactionClassVector[interactionClassHandle.getHandle()].valid());
+    _interactionClassVector[interactionClassHandle.getHandle()] = interactionClass;
   }
   InteractionClass* getInteractionClass(const InteractionClassHandle& interactionClassHandle)
-  { return _interactionClassVector.getObject(interactionClassHandle); }
-
-
-  ObjectInstance* getObjectInstance(const ObjectInstanceHandle& objectInstanceHandle)
   {
-    ObjectInstanceHandleObjectInstanceMap::iterator i = _objectInstanceHandleObjectInstanceMap.find(objectInstanceHandle);
-    if (i == _objectInstanceHandleObjectInstanceMap.end())
+    if (_interactionClassVector.size() <= interactionClassHandle.getHandle())
       return 0;
-    return i->second.get();
+    return _interactionClassVector[interactionClassHandle.getHandle()].get();
   }
 
   void removeConnect(const ConnectHandle& connectHandle)
@@ -742,18 +779,9 @@ public:
   bool unreferenceObjectInstanceHandle(ObjectInstanceHandleObjectInstanceMap::iterator i, const ConnectHandle& connectHandle);
   bool unreferenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle);
 
-  void setObjectClass(ObjectInstanceHandleObjectInstanceMap::iterator i, const ObjectClassHandle& objectClassHandle)
-  {
-    if (i->second->getObjectClass())
-      return;
-    ObjectClass* objectClass = getObjectClass(objectClassHandle);
-    OpenRTIAssert(objectClass);
-    i->second->setObjectClass(objectClass);
-    objectClass->insertObjectInstance(i->second.get());
-  }
+  ObjectInstance* getObjectInstance(const ObjectInstanceHandle& objectInstanceHandle);
 
-  class OPENRTI_LOCAL ObjectInstance : public NameHandlePair<ObjectInstanceHandle> {
-  public:
+  struct OPENRTI_LOCAL ObjectInstance : public NameHandlePair<ObjectInstanceHandle> {
     ObjectInstance(const ObjectInstanceHandleObjectInstanceMap::iterator& objectInstanceHandleObjectInstanceMapIterator,
                    const StringSet::iterator& stringSetIterator) :
       NameHandlePair<ObjectInstanceHandle>(*stringSetIterator, objectInstanceHandleObjectInstanceMapIterator->first),
@@ -765,9 +793,12 @@ public:
 
     void setObjectClass(ObjectClass* objectClass)
     {
-      if (_objectClass)
+      if (_objectClass) {
+        OpenRTIAssert(objectClass == _objectClass);
         return;
+      }
       _objectClass = objectClass;
+      _objectClass->insertObjectInstance(this);
       const ObjectClassAttributeVector& objectClassAttributeVector = objectClass->getObjectClassAttributeVector();
       for (ObjectClassAttributeVector::const_iterator i = objectClassAttributeVector.begin();
            i != objectClassAttributeVector.end(); ++i) {
@@ -811,14 +842,6 @@ public:
       attribute->setOwnerConnectHandle(connectHandle);
     }
 
-    bool getIsPrivilegeToDeleteAttributeSubscribed() const
-    {
-      ObjectAttribute* attribute = getPrivilegeToDeleteAttribute();
-      if (!attribute)
-        return false;
-      return !attribute->_recieveingConnects.empty();
-    }
-
     void removeConnect(const ConnectHandle& connectHandle)
     {
       // FIXME make that an assert at some time
@@ -839,6 +862,30 @@ public:
     {
       objectInstanceList.erase(_objectInstanceListIterator);
       _objectInstanceListIterator = objectInstanceList.end();
+    }
+
+    void referenceObjectInstanceHandle(const ConnectHandle& connectHandle)
+    {
+      _connectHandleSet.insert(connectHandle);
+    }
+    bool unreferenceObjectInstanceHandle(const ConnectHandle& connectHandle)
+    {
+      // Currently it is used in a way that requires checking and allowing unreferencing connects that are unreferenced
+      // OpenRTIAssert(_connectHandleSet.find(connectHandle) != _connectHandleSet.end());
+      // _connectHandleSet.erase(connectHandle);
+      if (0 == _connectHandleSet.erase(connectHandle))
+        return false;
+
+      removeConnect(connectHandle);
+
+      if (!_connectHandleSet.empty())
+        return false;
+
+      /// FIXME may be move into destructor??
+      if (_objectClass)
+        _objectClass->eraseObjectInstance(this);
+
+      return true;
     }
 
     // Points back to the index object instance by handle map
@@ -885,7 +932,7 @@ public:
   // The FederateHandle <-> federate data mappings
   struct OPENRTI_LOCAL Federate : public Referenced {
     Federate(const FederateHandleFederateMap::iterator& federateHandleFederateMapIterator,
-                 const StringSet::iterator& stringSetIterator) :
+             const StringSet::iterator& stringSetIterator) :
       _federateHandleFederateMapIterator(federateHandleFederateMapIterator),
       _stringSetIterator(stringSetIterator),
       _resignPending(false)
