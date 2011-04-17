@@ -815,6 +815,8 @@ public:
     // Change publication type for this connect ...
     PropagationTypeConnectHandlePair propagationConnectPair;
     propagationConnectPair = interactionClass->setSubscriptionType(connectHandle, message->getSubscriptionType());
+    // Update the receiving connect handle set
+    interactionClass->updateCumulativeSubscription(connectHandle);
     // ... and propagate further if required.
     switch (propagationConnectPair.first) {
     case PropagateBroadcast:
@@ -835,6 +837,7 @@ public:
     if (!objectClass)
       return;
 
+    ObjectInstanceList objectInstanceList;
     std::map<ConnectHandle, AttributeHandleVector> sendAttributeHandlesMap;
     for (std::vector<AttributeHandle>::const_iterator i = message->getAttributeHandles().begin();
          i != message->getAttributeHandles().end(); ++i) {
@@ -860,62 +863,7 @@ public:
         break;
       }
 
-      if (message->getSubscriptionType() != Unsubscribed) {
-        for (ObjectInstanceList::const_iterator j = objectClass->getObjectInstanceList().begin();
-             j != objectClass->getObjectInstanceList().end(); ++j) {
-          ObjectAttribute* objectAttribute = (*j)->getAttribute(*i);
-          if (!objectAttribute) // FIXME: is this an error??
-            continue;
-
-          // Don't add the owner to the list of connect handles that recieve this attribute
-          if (objectAttribute->getOwnerConnectHandle() == connectHandle)
-            continue;
-
-          // Insert the connect handle into the recieving connects
-          if (!objectAttribute->_recieveingConnects.insert(connectHandle).second)
-            continue;
-
-          if (*i == AttributeHandle(0)) {
-            // And in case of the attribute to delete, tell about those objects
-            // FIXME: not always, let the object know if it is already pushed into this connect ...
-            SharedPtr<InsertObjectInstanceMessage> request = new InsertObjectInstanceMessage;
-            request->setFederationHandle(getHandle());
-            request->setObjectInstanceHandle((*j)->getHandle());
-            request->setObjectClassHandle((*j)->getObjectClass()->getHandle());
-            request->setName((*j)->getName());
-            request->getAttributeStateVector().reserve((*j)->getHandleObjectAttributeVector().size());
-            for (HandleObjectAttributeVector::const_iterator k = (*j)->getHandleObjectAttributeVector().begin();
-                 k != (*j)->getHandleObjectAttributeVector().end(); ++k) {
-              AttributeState attributeState;
-              attributeState.setAttributeHandle((*k)->getHandle());
-              request->getAttributeStateVector().push_back(attributeState);
-            }
-            if (connectHandle != _parentServerConnectHandle) {
-              ObjectInstanceHandleObjectInstanceMap::iterator k;
-              k = _objectInstanceHandleObjectInstanceMap.find((*j)->getHandle());
-              if (k == _objectInstanceHandleObjectInstanceMap.end())
-                k = insertObjectInstanceHandle((*j)->getHandle(), (*j)->getName());
-              referenceObjectInstanceHandle(k, connectHandle);
-            }
-            send(connectHandle, request);
-          }
-        }
-      } else {
-        for (ObjectInstanceList::const_iterator j = objectClass->getObjectInstanceList().begin();
-             j != objectClass->getObjectInstanceList().end(); ++j) {
-          ObjectAttribute* objectAttribute = (*j)->getAttribute(*i);
-          if (!objectAttribute) // FIXME: is this an error??
-            continue;
-
-          // Don't add the owner to the list of connect handles that recieve this attribute
-          if (objectAttribute->getOwnerConnectHandle() == connectHandle)
-            continue;
-
-          // Erase the connect handle from the recieving connects
-          if (objectAttribute->_recieveingConnects.erase(connectHandle) == 0)
-            continue;
-        }
-      }
+      objectClass->updateCumulativeSubscription(connectHandle, *i, objectInstanceList);
     }
 
     // Now propagate the subscription change further
@@ -928,6 +876,32 @@ public:
       request->getAttributeHandles().swap(i->second);
       request->setSubscriptionType(message->getSubscriptionType());
       send(i->first, request);
+    }
+
+    // Insert all object instances that are now new to this connect
+    if (message->getSubscriptionType() != Unsubscribed) {
+      for (ObjectInstanceList::const_iterator j = objectInstanceList.begin(); j != objectInstanceList.end(); ++j) {
+        SharedPtr<InsertObjectInstanceMessage> request = new InsertObjectInstanceMessage;
+        request->setFederationHandle(getHandle());
+        request->setObjectInstanceHandle((*j)->getHandle());
+        request->setObjectClassHandle((*j)->getObjectClass()->getHandle());
+        request->setName((*j)->getName());
+        request->getAttributeStateVector().reserve((*j)->getHandleObjectAttributeVector().size());
+        for (HandleObjectAttributeVector::const_iterator k = (*j)->getHandleObjectAttributeVector().begin();
+             k != (*j)->getHandleObjectAttributeVector().end(); ++k) {
+          AttributeState attributeState;
+          attributeState.setAttributeHandle((*k)->getHandle());
+          request->getAttributeStateVector().push_back(attributeState);
+        }
+        if (connectHandle != _parentServerConnectHandle) {
+          ObjectInstanceHandleObjectInstanceMap::iterator k;
+          k = _objectInstanceHandleObjectInstanceMap.find((*j)->getHandle());
+          if (k == _objectInstanceHandleObjectInstanceMap.end())
+            k = insertObjectInstanceHandle((*j)->getHandle(), (*j)->getName());
+          referenceObjectInstanceHandle(k, connectHandle);
+        }
+        send(connectHandle, request);
+      }
     }
   }
   void unsubscribeConnect(const ConnectHandle& connectHandle)
@@ -1167,40 +1141,31 @@ public:
   {
     ObjectInstanceHandle objectInstanceHandle = message->getObjectInstanceHandle();
     ObjectClassHandle objectClassHandle = message->getObjectClassHandle();
-
     ObjectClass* objectClass = getObjectClass(objectClassHandle);
     if (!objectClass)
       throw MessageError("InsertObjectInstanceMessage for unknown ObjectClass.");
 
     // FIXME Improove this with preevaluated sets:
-    // std::map<FederateHandle,ConnectHandleSet> ...
-    // or may be to reduce the N in O(log(N))
     // std::map<ConnectHandle,ConnectHandleSet> ...
-    ConnectHandleSet connectHandleSet;
-    ObjectClass* parentObjectClass = objectClass;
-    while (parentObjectClass) {
-      ObjectClassAttribute* attribute = parentObjectClass->getPrivilegeToDeleteAttribute();
-      if (attribute && attribute->getSubscriptionType() != Unsubscribed) {
-        connectHandleSet.insert(attribute->getSubscribedConnectHandleSet().begin(), attribute->getSubscribedConnectHandleSet().end());
-      }
-      parentObjectClass = parentObjectClass->getParentObjectClass();
-    }
-    connectHandleSet.erase(connectHandle);
-
     ObjectInstanceHandleObjectInstanceMap::iterator i = _objectInstanceHandleObjectInstanceMap.find(objectInstanceHandle);
-    for (ConnectHandleSet::iterator j = connectHandleSet.begin(); j != connectHandleSet.end(); ++j) {
-      if (*j == _parentServerConnectHandle)
-        continue;
-      if (i == _objectInstanceHandleObjectInstanceMap.end())
-        i = insertObjectInstanceHandle(objectInstanceHandle, message->getName());
-      referenceObjectInstanceHandle(i, *j);
+    ObjectClassAttribute* privilegeToDeleteAttribute = objectClass->getPrivilegeToDeleteAttribute();
+    if (privilegeToDeleteAttribute) {
+      for (ConnectHandleSet::iterator j = privilegeToDeleteAttribute->_cumulativeSubscribedConnectHandleSet.begin();
+           j != privilegeToDeleteAttribute->_cumulativeSubscribedConnectHandleSet.end(); ++j) {
+        if (*j == _parentServerConnectHandle)
+          continue;
+        if (*j == connectHandle)
+          continue;
+        if (i == _objectInstanceHandleObjectInstanceMap.end())
+          i = insertObjectInstanceHandle(objectInstanceHandle, message->getName());
+        referenceObjectInstanceHandle(i, *j);
+      }
     }
 
     // If still unreferenced, ignore the insert and unref again in the parent
     // this can happen if we subscribed and unsubscribed at the server before we recieved the insert that is triggered by the subscribe request.
     if (i == _objectInstanceHandleObjectInstanceMap.end()) {
       OpenRTIAssert(connectHandle == _parentServerConnectHandle);
-      OpenRTIAssert(connectHandleSet.empty());
 
       SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message;
       message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
@@ -1213,18 +1178,12 @@ public:
       OpenRTIAssert(!i->second->_connectHandleSet.empty());
 
       i->second->setObjectClass(objectClass);
-
-      i->second->getPrivilegeToDeleteAttribute()->_recieveingConnects = connectHandleSet;
       for (size_t j = 0; j < message->getAttributeStateVector().size(); ++j) {
         ObjectAttribute* attribute = i->second->getAttribute(message->getAttributeStateVector()[j].getAttributeHandle());
-        if (!attribute)
-          continue;
         attribute->setOwnerConnectHandle(connectHandle);
-        // FIXME
-        attribute->_recieveingConnects.erase(connectHandle);
       }
 
-      send(connectHandleSet, message);
+      send(i->second->getPrivilegeToDeleteAttribute()->_recieveingConnects, message);
     }
   }
   void accept(const ConnectHandle& connectHandle, DeleteObjectInstanceMessage* message)
@@ -1237,14 +1196,9 @@ public:
     if (!objectInstance)
       return;
 
-    ObjectClass* objectClass = objectInstance->getObjectClass();
-    if (!objectClass)
-      throw MessageError("DeleteObjectInstanceMessage for unknown ObjectClass.");
-
     // send that to all servers that have seen that object instance at some time
-    // OpenRTIAssert(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects.count(connectHandle) == 0);
-    // send(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects, message);
-    send(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects, connectHandle, message);
+    OpenRTIAssert(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects.count(connectHandle) == 0);
+    send(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects, message);
   }
 
   void accept(const ConnectHandle& connectHandle, AttributeUpdateMessage* message)
@@ -1329,7 +1283,7 @@ public:
     if (!interactionClass)
       return;
     // Send to all subscribed connects except the originating one
-    send(interactionClass->getSubscribedConnectHandleSet(), connectHandle, message);
+    send(interactionClass->_cumulativeSubscribedConnectHandleSet, connectHandle, message);
   }
   void accept(const ConnectHandle& connectHandle, TimeStampedInteractionMessage* message)
   {
@@ -1338,7 +1292,7 @@ public:
     if (!interactionClass)
       return;
     // Send to all subscribed connects except the originating one
-    send(interactionClass->getSubscribedConnectHandleSet(), connectHandle, message);
+    send(interactionClass->_cumulativeSubscribedConnectHandleSet, connectHandle, message);
   }
 
   void accept(const ConnectHandle& connectHandle, RequestAttributeUpdateMessage* message)

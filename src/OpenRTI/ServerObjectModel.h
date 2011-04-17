@@ -316,6 +316,20 @@ public:
     //   RegionHandleSet _regionHandleSet;
     // };
 
+    // returns true if something changed
+    bool updateCumulativeSubscribedConnectHandleSet(const ConnectHandle& connectHandle, bool subscribe)
+    {
+      if (subscribe) {
+        return _cumulativeSubscribedConnectHandleSet.insert(connectHandle).second;
+      } else {
+        return 0 != _cumulativeSubscribedConnectHandleSet.erase(connectHandle);
+      }
+    }
+
+    /// The cumulative set of connects that subscribe to this.
+    /// Cumulative in the sense that also subscriptions to base classes are included here.
+    ConnectHandleSet _cumulativeSubscribedConnectHandleSet;
+
   private:
     // All the connects that publish this
     BroadcastConnectHandleSet _publishedConnects;
@@ -395,6 +409,58 @@ public:
     const ObjectClassList& getChildObjectClassList() const
     { return _childObjectClassList; }
 
+    /// since we might end in different depths for different attributes, this is done per attribute
+    void updateCumulativeSubscription(const ConnectHandle& connectHandle, const AttributeHandle& attributeHandle,
+                                      ObjectInstanceList& objectInstanceList)
+    {
+      bool parentSubscribed = false;
+      if (_parentObjectClass &&
+          attributeHandle.getHandle() < _parentObjectClass->_objectClassAttributeVector.size() &&
+          0 != _parentObjectClass->_objectClassAttributeVector[attributeHandle.getHandle()]->_cumulativeSubscribedConnectHandleSet.count(connectHandle))
+        parentSubscribed = true;
+
+      _updateCumulativeSubscription(connectHandle, attributeHandle, parentSubscribed, objectInstanceList);
+    }
+    void _updateCumulativeSubscription(const ConnectHandle& connectHandle, const AttributeHandle& attributeHandle,
+                                       bool subscribe /*Replace with regionset or something*/, ObjectInstanceList& objectInstanceList)
+    {
+      ObjectClassAttribute*  objectClassAttribute = getAttribute(attributeHandle);
+      subscribe |= (Unsubscribed != objectClassAttribute->getSubscriptionType(connectHandle));
+      if (!objectClassAttribute->updateCumulativeSubscribedConnectHandleSet(connectHandle, subscribe))
+        return;
+      // Update the receiving connect handle set
+      for (ObjectClassList::const_iterator i = _childObjectClassList.begin(); i != _childObjectClassList.end(); ++i) {
+        (*i)->_updateCumulativeSubscription(connectHandle, attributeHandle, subscribe, objectInstanceList);
+      }
+      /// FIXME: need to walk the objects and see how the routing for the object changes
+      /// FIXME: store the object instances that are yet unknown to a connect and store these to propagate them into the connect
+      /// Hmm, here is the first good use case for a visitor
+      for (ObjectInstanceList::const_iterator i = _objectInstanceList.begin(); i != _objectInstanceList.end(); ++i) {
+        ObjectAttribute* objectAttribute = (*i)->getAttribute(attributeHandle);
+        if (!objectAttribute) // FIXME: is this an error??
+          continue;
+
+        // Don't add the owner to the list of connect handles that recieve this attribute
+        if (objectAttribute->getOwnerConnectHandle() == connectHandle)
+          continue;
+
+        if (subscribe) {
+          // Insert the connect handle into the recieving connects
+          if (!objectAttribute->_recieveingConnects.insert(connectHandle).second)
+            continue;
+
+          // Note that we need to insert this object instance into this connect
+          if (attributeHandle == AttributeHandle(0))
+            objectInstanceList.push_back(*i);
+
+        } else {
+          // Erase the connect handle from the recieving connects
+          if (objectAttribute->_recieveingConnects.erase(connectHandle) == 0)
+            continue;
+        }
+      }
+    }
+
   private:
     /// The pointer to the parent object class, may be 0
     ObjectClass* const _parentObjectClass;
@@ -419,7 +485,7 @@ public:
       _objectClassAttribute(objectClassAttribute)
     {
       // FIXME exclude the owner connect handle
-      _recieveingConnects = _objectClassAttribute->getSubscribedConnectHandleSet();
+      _recieveingConnects = _objectClassAttribute->_cumulativeSubscribedConnectHandleSet;
     }
     // ObjectAttribute(ObjectClassAttribute* objectClassAttribute, const RegionSet& regionSet) :
     //   _objectClassAttribute(objectClassAttribute)
@@ -444,7 +510,10 @@ public:
     const ConnectHandle& getOwnerConnectHandle() const
     { return _ownerConnectHandle; }
     void setOwnerConnectHandle(const ConnectHandle& connectHandle)
-    { _ownerConnectHandle = connectHandle; }
+    {
+      _recieveingConnects.erase(connectHandle);
+      _ownerConnectHandle = connectHandle;
+    }
 
     void removeConnect(const ConnectHandle& connectHandle)
     {
@@ -485,6 +554,26 @@ public:
 
     const InteractionClassList& getChildInteractionClassList() const
     { return _childInteractionClassList; }
+
+    void updateCumulativeSubscription(const ConnectHandle& connectHandle)
+    {
+      bool parentSubscribed = false;
+      if (_parentInteractionClass &&
+          0 != _parentInteractionClass->_cumulativeSubscribedConnectHandleSet.count(connectHandle))
+        parentSubscribed = true;
+
+      _updateCumulativeSubscription(connectHandle, parentSubscribed);
+    }
+    void _updateCumulativeSubscription(const ConnectHandle& connectHandle, bool subscribe /*Replace with regionset or something*/)
+    {
+      subscribe |= (Unsubscribed != getSubscriptionType(connectHandle));
+      if (!updateCumulativeSubscribedConnectHandleSet(connectHandle, subscribe))
+        return;
+      // Update the receiving connect handle set
+      for (InteractionClassList::const_iterator i = _childInteractionClassList.begin(); i != _childInteractionClassList.end(); ++i) {
+        (*i)->_updateCumulativeSubscription(connectHandle, subscribe);
+      }
+    }
 
   private:
     /// The pointer to the parent interaction class, may be 0
