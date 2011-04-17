@@ -806,7 +806,7 @@ public:
 
   // 6.9
   virtual void
-  receiveInteraction(const OpenRTI::InteractionMessage& message)
+  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const InteractionMessage& message)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -815,11 +815,15 @@ public:
     }
     try {
       rti1516::InteractionClassHandle rti1516InteractionClassHandle;
-      rti1516InteractionClassHandle = rti1516::InteractionClassHandleFriend::createHandle(message.getInteractionClassHandle());
+      rti1516InteractionClassHandle = rti1516::InteractionClassHandleFriend::createHandle(interactionClassHandle);
 
+      const typename Federate<RTI1516Traits, LogicalTimeFactory>::InteractionClass& interactionClass
+        = Federate<RTI1516Traits, LogicalTimeFactory>::getInteractionClass(interactionClassHandle);
       rti1516::ParameterHandleValueMap rti1516ParameterValues;
       for (std::vector<OpenRTI::ParameterValue>::const_iterator i = message.getParameterValues().begin();
            i != message.getParameterValues().end(); ++i) {
+        if (!interactionClass.isValidParameter(i->getParameterHandle()))
+          continue;
         rti1516ParameterValues[rti1516::ParameterHandleFriend::createHandle(i->getParameterHandle())]
           = rti1516::VariableLengthDataFriend::create(i->getValue());
       }
@@ -836,7 +840,7 @@ public:
   }
 
   virtual void
-  receiveInteraction(const OpenRTI::TimeStampedInteractionMessage& message, const rti1516::LogicalTime& logicalTime)
+  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const TimeStampedInteractionMessage& message, const rti1516::LogicalTime& logicalTime)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -845,11 +849,15 @@ public:
     }
     try {
       rti1516::InteractionClassHandle rti1516InteractionClassHandle;
-      rti1516InteractionClassHandle = rti1516::InteractionClassHandleFriend::createHandle(message.getInteractionClassHandle());
+      rti1516InteractionClassHandle = rti1516::InteractionClassHandleFriend::createHandle(interactionClassHandle);
 
+      const typename Federate<RTI1516Traits, LogicalTimeFactory>::InteractionClass& interactionClass
+        = Federate<RTI1516Traits, LogicalTimeFactory>::getInteractionClass(interactionClassHandle);
       rti1516::ParameterHandleValueMap rti1516ParameterValues;
       for (std::vector<OpenRTI::ParameterValue>::const_iterator i = message.getParameterValues().begin();
            i != message.getParameterValues().end(); ++i) {
+        if (!interactionClass.isValidParameter(i->getParameterHandle()))
+          continue;
         rti1516ParameterValues[rti1516::ParameterHandleFriend::createHandle(i->getParameterHandle())]
           = rti1516::VariableLengthDataFriend::create(i->getValue());
       }

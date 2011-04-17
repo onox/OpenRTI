@@ -3451,9 +3451,14 @@ protected:
     if (!isValidInteractionClass(interactionClassHandle))
       return;
     // Subscriptions can race against sending them to this federate
-    if (Unsubscribed == getInteractionClass(interactionClassHandle).getSubscriptionType())
-      return;
-    receiveInteraction(message);
+    // FIXME: store the effective next interaction class that is subscribed for all interaction classes.
+    // This would avoid this loop
+    while (Unsubscribed == getInteractionClass(interactionClassHandle).getSubscriptionType()) {
+      interactionClassHandle = getInteractionClass(interactionClassHandle)._parentInteractionClassHandle;
+      if (!isValidInteractionClass(interactionClassHandle))
+        return;
+    }
+    receiveInteraction(interactionClassHandle, message);
   }
   virtual void acceptCallbackMessage(const TimeStampedInteractionMessage& message)
   {
@@ -3461,9 +3466,15 @@ protected:
     if (!isValidInteractionClass(interactionClassHandle))
       return;
     // Subscriptions can race against sending them to this federate
-    if (Unsubscribed == getInteractionClass(interactionClassHandle).getSubscriptionType())
-      return;
-    receiveInteraction(message, _logicalTimeFactory.getLogicalTime(_logicalTimeFactory.decodeLogicalTime(message.getTimeStamp())));
+    // FIXME: store the effective next interaction class that is subscribed for all interaction classes.
+    // This would avoid this loop
+    while (Unsubscribed == getInteractionClass(interactionClassHandle).getSubscriptionType()) {
+      interactionClassHandle = getInteractionClass(interactionClassHandle)._parentInteractionClassHandle;
+      if (!isValidInteractionClass(interactionClassHandle))
+        return;
+    }
+    receiveInteraction(interactionClassHandle, message,
+                       _logicalTimeFactory.getLogicalTime(_logicalTimeFactory.decodeLogicalTime(message.getTimeStamp())));
   }
 
   virtual void acceptCallbackMessage(const TimeConstrainedEnabledMessage& message)
@@ -3552,10 +3563,10 @@ protected:
     throw () = 0;
 
   // 6.9
-  virtual void receiveInteraction(const InteractionMessage& message)
+  virtual void receiveInteraction(const InteractionClassHandle& interactionClassHandle, const InteractionMessage& message)
     throw () = 0;
 
-  virtual void receiveInteraction(const TimeStampedInteractionMessage& message, const NativeLogicalTime& logicalTime)
+  virtual void receiveInteraction(const InteractionClassHandle& interactionClassHandle, const TimeStampedInteractionMessage& message, const NativeLogicalTime& logicalTime)
     throw () = 0;
 
   // 6.15

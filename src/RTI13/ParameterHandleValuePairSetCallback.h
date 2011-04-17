@@ -27,8 +27,7 @@
 
 class OPENRTI_LOCAL ParameterHandleValuePairSetCallback : public RTI::ParameterHandleValuePairSet {
 public:
-  ParameterHandleValuePairSetCallback(const std::vector<OpenRTI::ParameterValue>& parameterValues,
-                                      RTI::TransportType transportType, RTI::OrderType orderType, RTI::Region* region);
+  ParameterHandleValuePairSetCallback(RTI::TransportType transportType, RTI::OrderType orderType, RTI::Region* region);
   virtual ~ParameterHandleValuePairSetCallback();
 
   virtual RTI::ULong size() const;
@@ -58,6 +57,10 @@ public:
   virtual RTI::ULong start() const;
   virtual RTI::ULong valid(RTI::ULong i) const;
   virtual RTI::ULong next(RTI::ULong i) const;
+
+  // Accessor used to build up the value
+  std::vector<OpenRTI::ParameterValue>& getParameterValues()
+  { return _parameterValues; }
 
 private:
   mutable std::vector<OpenRTI::ParameterValue> _parameterValues;

@@ -674,7 +674,7 @@ public:
 
   // 6.9
   virtual void
-  receiveInteraction(const OpenRTI::InteractionMessage& message)
+  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const OpenRTI::InteractionMessage& message)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -682,19 +682,27 @@ public:
       return;
     }
     try {
-      RTI::InteractionClassHandle interactionClassHandle = rti13Handle(message.getInteractionClassHandle());
+      const InteractionClass& interactionClass = getInteractionClass(interactionClassHandle);
+      RTI::InteractionClassHandle rti13InteractionClassHandle = rti13Handle(interactionClassHandle);
       RTI::TransportType transportType = rti13TransportType(message.getTransportationType());
       RTI::OrderType orderType = rti13OrderType(OpenRTI::RECEIVE);
       // FIXME no regions so far
-      ParameterHandleValuePairSetCallback parameterHandleArray(message.getParameterValues(), transportType, orderType, 0);
-      _federateAmbassador->receiveInteraction(interactionClassHandle, parameterHandleArray, rti13Tag(message.getTag()));
+      ParameterHandleValuePairSetCallback parameterHandleArray(transportType, orderType, 0);
+      parameterHandleArray.getParameterValues().reserve(message.getParameterValues().size());
+      for (std::vector<OpenRTI::ParameterValue>::const_iterator i = message.getParameterValues().begin();
+           i != message.getParameterValues().end(); ++i) {
+        if (!interactionClass.isValidParameter(i->getParameterHandle()))
+          continue;
+        parameterHandleArray.getParameterValues().push_back(*i);
+      }
+      _federateAmbassador->receiveInteraction(rti13InteractionClassHandle, parameterHandleArray, rti13Tag(message.getTag()));
     } catch (const RTI::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an RTI exception in callback: " << e._reason << std::endl;
     }
   }
 
   virtual void
-  receiveInteraction(const OpenRTI::TimeStampedInteractionMessage& message, const RTI::FedTime& logicalTime)
+    receiveInteraction(const InteractionClassHandle& interactionClassHandle, const OpenRTI::TimeStampedInteractionMessage& message, const RTI::FedTime& logicalTime)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -702,13 +710,21 @@ public:
       return;
     }
     try {
-      RTI::InteractionClassHandle interactionClassHandle = rti13Handle(message.getInteractionClassHandle());
+      const InteractionClass& interactionClass = getInteractionClass(interactionClassHandle);
+      RTI::InteractionClassHandle rti13InteractionClassHandle = rti13Handle(interactionClassHandle);
       RTI::TransportType transportType = rti13TransportType(message.getTransportationType());
       RTI::OrderType orderType = rti13OrderType(OpenRTI::TIMESTAMP);
       RTI::EventRetractionHandle eventRetractionHandle = rti13MessageRetractionHandle(message.getMessageRetractionHandle());
       // FIXME no regions so far
-      ParameterHandleValuePairSetCallback parameterHandleArray(message.getParameterValues(), transportType, orderType, 0);
-      _federateAmbassador->receiveInteraction(interactionClassHandle, parameterHandleArray, logicalTime,
+      ParameterHandleValuePairSetCallback parameterHandleArray(transportType, orderType, 0);
+      parameterHandleArray.getParameterValues().reserve(message.getParameterValues().size());
+      for (std::vector<OpenRTI::ParameterValue>::const_iterator i = message.getParameterValues().begin();
+           i != message.getParameterValues().end(); ++i) {
+        if (!interactionClass.isValidParameter(i->getParameterHandle()))
+          continue;
+        parameterHandleArray.getParameterValues().push_back(*i);
+      }
+      _federateAmbassador->receiveInteraction(rti13InteractionClassHandle, parameterHandleArray, logicalTime,
                                               rti13Tag(message.getTag()), eventRetractionHandle);
     } catch (const RTI::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an RTI exception in callback: " << e._reason << std::endl;

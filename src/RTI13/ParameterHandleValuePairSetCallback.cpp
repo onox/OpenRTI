@@ -19,10 +19,8 @@
 
 #include "ParameterHandleValuePairSetCallback.h"
 
-ParameterHandleValuePairSetCallback::ParameterHandleValuePairSetCallback(const std::vector<OpenRTI::ParameterValue>& parameterValues,
-                                                                         RTI::TransportType transportType, RTI::OrderType orderType,
+ParameterHandleValuePairSetCallback::ParameterHandleValuePairSetCallback(RTI::TransportType transportType, RTI::OrderType orderType,
                                                                          RTI::Region* region) :
-  _parameterValues(parameterValues),
   _transportType(transportType),
   _orderType(orderType),
   _region(region)
