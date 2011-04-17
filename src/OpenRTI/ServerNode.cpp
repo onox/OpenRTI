@@ -185,15 +185,15 @@ public:
     response->setJoinFederationExecutionResponseType(JoinFederationExecutionResponseSuccess);
 
     // ... insert a new federate ...
-    FederateHandleFederateMap::iterator i;
-    i = insertFederate(connectHandle, message->getFederateName());
-    i->second->_federateType = message->getFederateType();
+    Federate* federate = insertFederate(connectHandle, message->getFederateName());
+    OpenRTIAssert(federate);
+    federate->_federateType = message->getFederateType();
 
     /// FIXME shall we get that message from the federation server???
     response->setFederationHandle(getHandle());
     response->setFederateType(message->getFederateType());
-    response->setFederateName(i->second->getName());
-    response->setFederateHandle(i->first);
+    response->setFederateName(federate->getName());
+    response->setFederateHandle(federate->getHandle());
     send(connectHandle, response);
 
     // send all children the notification about the new federate except the one that gets the join response
@@ -201,7 +201,7 @@ public:
     notify->setFederationHandle(response->getFederationHandle());
     notify->setFederateHandle(response->getFederateHandle());
     notify->setFederateType(response->getFederateType());
-    notify->setFederateName(i->second->getName());
+    notify->setFederateName(federate->getName());
     broadcastToChildren(connectHandle, notify);
 
     // For those sync request that are automatically extended to new federates, send the announcement
@@ -211,14 +211,14 @@ public:
       if (!j->second._addJoiningFederates)
         continue;
 
-      j->second.insert(i->first);
+      j->second.insert(federate->getHandle());
 
       SharedPtr<AnnounceSynchronizationPointMessage> announce;
       announce = new AnnounceSynchronizationPointMessage;
       announce->setFederationHandle(getHandle());
       announce->setLabel(j->first);
       announce->setTag(j->second.getTag());
-      announce->getFederateHandleSet().insert(i->first);
+      announce->getFederateHandleSet().insert(federate->getHandle());
       announce->setAddJoiningFederates(j->second._addJoiningFederates);
       broadcastToChildren(announce);
     }
@@ -230,9 +230,9 @@ public:
     FederateHandle federateHandle = message->getFederateHandle();
     OpenRTIAssert(federateHandle.valid());
 
-    FederateHandleFederateMap::iterator i;
-    i = insertFederate(requestConnectHandle, message->getFederateName(), federateHandle);
-    i->second->_federateType = message->getFederateType();
+    Federate* federate = insertFederate(requestConnectHandle, message->getFederateName(), federateHandle);
+    OpenRTIAssert(federate);
+    federate->_federateType = message->getFederateType();
 
     if (requestConnectHandle.valid()) {
       // The requesting server needs to know about us, just forward here
@@ -387,9 +387,9 @@ public:
       // /// FIXME implement a clear for erase'?!
       // return;
       throw MessageError("Received JoinFederateNotify for already known federate!");
-    FederateHandleFederateMap::iterator i;
-    i = insertFederate(connectHandle, message->getFederateName(), federateHandle);
-    i->second->_federateType = message->getFederateType();
+    Federate* federate = insertFederate(connectHandle, message->getFederateName(), federateHandle);
+    OpenRTIAssert(federate);
+    federate->_federateType = message->getFederateType();
     broadcastToChildren(message);
   }
   void accept(const ConnectHandle& connectHandle, ResignFederateNotifyMessage* message)
@@ -1383,12 +1383,25 @@ public:
 
   // utilities for connecthandle/federatehandle handling
 
+  void insertParentConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name)
+  {
+    ConnectData* connectData = ServerObjectModel::getOrInsertParentConnect(connectHandle);
+    OpenRTIAssert(connectData);
+    OpenRTIAssert(!connectData->_messageSender.valid());
+    connectData->_messageSender = messageSender;
+    connectData->_name = name;
+  }
   void insertConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name)
   {
-    std::pair<ConnectHandleConnectDataMap::iterator, bool> iteratorBoolPair;
-    iteratorBoolPair = ServerObjectModel::insertConnect(connectHandle, messageSender, name);
-    if (!iteratorBoolPair.second)
+    ConnectData* connectData = ServerObjectModel::getOrInsertConnect(connectHandle);
+    OpenRTIAssert(connectData);
+    if (connectData->_messageSender.valid()) {
+      OpenRTIAssert(connectData->_messageSender == messageSender);
       return;
+    }
+
+    connectData->_messageSender = messageSender;
+    connectData->_name = name;
 
     SharedPtr<InsertFederationExecutionMessage> message = new InsertFederationExecutionMessage;
     message->setFederationHandle(getHandle());
@@ -2260,10 +2273,10 @@ private:
 
     _federationHandleAllocator.take(federationHandle);
     SharedPtr<FederationServer> federationServer = new FederationServer(name, federationHandle, _serverOptions);
-    if (!isRootServer())
-      federationServer->insertParentConnect(_serverConnectSet.getParentConnectHandle(),
-                                            _serverConnectSet.getMessageSender(_serverConnectSet.getParentConnectHandle()),
-                                            _serverConnectSet.getName(_serverConnectSet.getParentConnectHandle()));
+    OpenRTIAssert(!isRootServer());
+    federationServer->insertParentConnect(_serverConnectSet.getParentConnectHandle(),
+                                          _serverConnectSet.getMessageSender(_serverConnectSet.getParentConnectHandle()),
+                                          _serverConnectSet.getName(_serverConnectSet.getParentConnectHandle()));
     return _federationServerMap.insert(FederationServerMap::value_type(federationHandle, federationServer)).first;
   }
   void eraseFederationName(const FederationHandle& federationHandle)

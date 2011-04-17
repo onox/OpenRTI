@@ -200,7 +200,16 @@ ServerObjectModel::getObjectInstance(const ObjectInstanceHandle& objectInstanceH
   return i->second.get();
 }
 
-ServerObjectModel::FederateHandleFederateMap::iterator
+ServerObjectModel::Federate*
+ServerObjectModel::getFederate(const FederateHandle& federateHandle)
+{
+  FederateHandleFederateMap::iterator i = _federateHandleFederateMap.find(federateHandle);
+  if (i == _federateHandleFederateMap.end())
+    return 0;
+  return i->second.get();
+}
+
+ServerObjectModel::Federate*
 ServerObjectModel::insertFederate(const ConnectHandle& connectHandle, const std::string& federateName,
                                   const FederateHandle& federateHandle)
 {
@@ -226,10 +235,10 @@ ServerObjectModel::insertFederate(const ConnectHandle& connectHandle, const std:
     i->second->_resignPending = true;
   }
 
-  return i;
+  return i->second.get();
 }
 
-ServerObjectModel::FederateHandleFederateMap::iterator
+ServerObjectModel::Federate*
 ServerObjectModel::insertFederate(const ConnectHandle& connectHandle, const std::string& federateName)
 {
   FederateHandle federateHandle = _federateHandleAllocator.get();
@@ -277,31 +286,43 @@ ServerObjectModel::eraseFederate(const FederateHandle& federateHandle)
   eraseFederate(_federateHandleFederateMap.find(federateHandle));
 }
 
-std::pair<ServerObjectModel::ConnectHandleConnectDataMap::iterator, bool>
-ServerObjectModel::insertParentConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name)
+void
+ServerObjectModel::eraseFederate(Federate* federate)
+{
+  OpenRTIAssert(federate);
+  eraseFederate(federate->_federateHandleFederateMapIterator);
+}
+
+ServerObjectModel::ConnectData*
+ServerObjectModel::getConnect(const ConnectHandle& connectHandle)
+{
+  ConnectHandleConnectDataMap::iterator i = _connectHandleConnectDataMap.find(connectHandle);
+  if (i == _connectHandleConnectDataMap.end())
+    return 0;
+  return i->second.get();
+}
+
+ServerObjectModel::ConnectData*
+ServerObjectModel::getOrInsertParentConnect(const ConnectHandle& connectHandle)
 {
   OpenRTIAssert(!_parentServerConnectHandle.valid());
   _parentServerConnectHandle = connectHandle;
-  return insertConnect(connectHandle, messageSender, name);
+  return getOrInsertConnect(connectHandle);
 }
 
-std::pair<ServerObjectModel::ConnectHandleConnectDataMap::iterator, bool>
-ServerObjectModel::insertConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name)
+ServerObjectModel::ConnectData*
+ServerObjectModel::getOrInsertConnect(const ConnectHandle& connectHandle)
 {
   OpenRTIAssert(connectHandle.valid());
-  OpenRTIAssert(messageSender.valid());
-
   std::pair<ConnectHandleConnectDataMap::iterator, bool> iteratorBoolPair;
   typedef ConnectHandleConnectDataMap::value_type value_type;
   iteratorBoolPair = _connectHandleConnectDataMap.insert(value_type(connectHandle, 0));
-  if (!iteratorBoolPair.second && iteratorBoolPair.first->second->_messageSender.valid()) {
-    OpenRTIAssert(iteratorBoolPair.first->second->_messageSender == messageSender);
-    return std::make_pair(iteratorBoolPair.first, false);
+  if (!iteratorBoolPair.second) {
+    OpenRTIAssert(iteratorBoolPair.first->second.valid());
+    return iteratorBoolPair.first->second.get();
   }
   iteratorBoolPair.first->second = new ConnectData(iteratorBoolPair.first);
-  iteratorBoolPair.first->second->_messageSender = messageSender;
-  iteratorBoolPair.first->second->_name = name;
-  return std::make_pair(iteratorBoolPair.first, true);
+  return iteratorBoolPair.first->second.get();
 }
 
 void
@@ -323,6 +344,13 @@ void
 ServerObjectModel::eraseConnect(const ConnectHandle& connectHandle)
 {
   eraseConnect(_connectHandleConnectDataMap.find(connectHandle));
+}
+
+void
+ServerObjectModel::eraseConnect(ConnectData* connectData)
+{
+  OpenRTIAssert(connectData);
+  eraseConnect(connectData->_connectHandleConnectDataMapIterator);
 }
 
 }

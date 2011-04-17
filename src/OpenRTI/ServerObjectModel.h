@@ -1007,15 +1007,18 @@ public:
   bool isFederateNameInUse(const std::string& name) const
   { return _federateNameSet.find(name) != _federateNameSet.end(); }
 
+  /// get the federate for the given federateHandle
+  Federate* getFederate(const FederateHandle& federateHandle);
   /// Insert a new federate, return an iterator to the struct Federate
-  FederateHandleFederateMap::iterator
+  Federate*
   insertFederate(const ConnectHandle& connectHandle, const std::string& federateName,
                  const FederateHandle& federateHandle);
-  FederateHandleFederateMap::iterator
+  Federate*
   insertFederate(const ConnectHandle& connectHandle, const std::string& federateName);
   /// Erase the given federate
   void eraseFederate(FederateHandleFederateMap::iterator i);
   void eraseFederate(const FederateHandle& federateHandle);
+  void eraseFederate(Federate* federate);
 
 
   // The FederateHandle <-> federate data mappings
@@ -1028,6 +1031,7 @@ public:
     { }
     FederateHandleFederateMap::iterator _federateHandleFederateMapIterator;
     StringSet::iterator _stringSetIterator;
+    const FederateHandle& getHandle() const { return _federateHandleFederateMapIterator->first; }
     // Returns the federates's name
     const std::string& getName() const { return *_stringSetIterator; }
     std::string _federateType;
@@ -1049,16 +1053,17 @@ public:
   bool isChildConnect(const ConnectHandle& connectHandle) const
   { return connectHandle.valid() && connectHandle != _parentServerConnectHandle; }
 
+  /// Get the connect data for the given connectHandle
+  ConnectData* getConnect(const ConnectHandle& connectHandle);
   /// Insert the parent connect into the object model
-  std::pair<ConnectHandleConnectDataMap::iterator, bool>
-  insertParentConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name);
+  ConnectData* getOrInsertParentConnect(const ConnectHandle& connectHandle);
   /// Insert a new connect into the object model
-  std::pair<ConnectHandleConnectDataMap::iterator, bool>
-  insertConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name);
+  ConnectData* getOrInsertConnect(const ConnectHandle& connectHandle);
   /// Erase a connect from the object model.
   /// Precondition is that the connect is already idle
   void eraseConnect(ConnectHandleConnectDataMap::iterator i);
   void eraseConnect(const ConnectHandle& connectHandle);
+  void eraseConnect(ConnectData* connectData);
 
   // The ConnectHandle <-> connect data mappings
   struct OPENRTI_LOCAL ConnectData : public Referenced {
