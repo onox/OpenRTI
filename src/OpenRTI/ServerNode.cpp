@@ -894,11 +894,10 @@ public:
           request->getAttributeStateVector().push_back(attributeState);
         }
         if (connectHandle != _parentServerConnectHandle) {
-          ObjectInstanceHandleObjectInstanceMap::iterator k;
-          k = _objectInstanceHandleObjectInstanceMap.find((*j)->getHandle());
-          if (k == _objectInstanceHandleObjectInstanceMap.end())
-            k = insertObjectInstanceHandle((*j)->getHandle(), (*j)->getName());
-          referenceObjectInstanceHandle(k, connectHandle);
+          ObjectInstance* objectInstance = getObjectInstance((*j)->getHandle());
+          if (!objectInstance)
+            objectInstance = insertObjectInstanceHandle((*j)->getHandle(), (*j)->getName());
+          objectInstance->referenceObjectInstanceHandle(connectHandle);
         }
         send(connectHandle, request);
       }
@@ -963,10 +962,9 @@ public:
       response->getObjectInstanceHandleNamePairVector().reserve(count);
       FederateHandleFederateMap::iterator i = _federateHandleFederateMap.find(federateHandle);
       while (count--) {
-        ObjectInstanceHandleObjectInstanceMap::iterator i;
-        i = insertObjectInstanceHandle();
-        referenceObjectInstanceHandle(i, connectHandle);
-        response->getObjectInstanceHandleNamePairVector().push_back(ObjectInstanceHandleNamePair(i->first, i->second->getName()));
+        ObjectInstance* objectInstance = insertObjectInstanceHandle();
+        objectInstance->referenceObjectInstanceHandle(connectHandle);
+        response->getObjectInstanceHandleNamePairVector().push_back(ObjectInstanceHandleNamePair(objectInstance->getHandle(), objectInstance->getName()));
       }
       send(connectHandle, response);
     } else {
@@ -985,9 +983,8 @@ public:
     } else {
       for (ObjectInstanceHandleNamePairVector::const_iterator k = message->getObjectInstanceHandleNamePairVector().begin();
            k != message->getObjectInstanceHandleNamePairVector().end(); ++k) {
-        ObjectInstanceHandleObjectInstanceMap::iterator l;
-        l = insertObjectInstanceHandle(k->first, k->second);
-        referenceObjectInstanceHandle(l, i->second->_connectHandle);
+        ObjectInstance* objectInstance = insertObjectInstanceHandle(k->first, k->second);
+        objectInstance->referenceObjectInstanceHandle(i->second->_connectHandle);
       }
 
       send(i->second->_connectHandle, message);
@@ -1039,10 +1036,9 @@ public:
       response->setFederationHandle(message->getFederationHandle());
       response->setFederateHandle(message->getFederateHandle());
       if (!isObjectNameInUse(message->getName())) {
-        ObjectInstanceHandleObjectInstanceMap::iterator i;
-        i = insertObjectInstanceHandle(message->getName());
-        referenceObjectInstanceHandle(i, connectHandle);
-        response->setObjectInstanceHandleNamePair(ObjectInstanceHandleNamePair(i->first, i->second->getName()));
+        ObjectInstance* objectInstance = insertObjectInstanceHandle(message->getName());
+        objectInstance->referenceObjectInstanceHandle(connectHandle);
+        response->setObjectInstanceHandleNamePair(ObjectInstanceHandleNamePair(objectInstance->getHandle(), objectInstance->getName()));
         response->setSuccess(true);
       } else {
         ObjectInstanceHandleNamePair objectInstanceHandleNamePair(ObjectInstanceHandle(), message->getName());
@@ -1065,10 +1061,9 @@ public:
       // If so, then release the reservations.
     } else {
       if (message->getSuccess()) {
-        ObjectInstanceHandleObjectInstanceMap::iterator k;
-        k = insertObjectInstanceHandle(message->getObjectInstanceHandleNamePair().first,
-                                       message->getObjectInstanceHandleNamePair().second);
-        referenceObjectInstanceHandle(k, i->second->_connectHandle);
+        ObjectInstance* objectInstance = insertObjectInstanceHandle(message->getObjectInstanceHandleNamePair().first,
+                                                                    message->getObjectInstanceHandleNamePair().second);
+        objectInstance->referenceObjectInstanceHandle(i->second->_connectHandle);
       }
       send(i->second->_connectHandle, message);
     }
@@ -1102,10 +1097,9 @@ public:
       if (response->getSuccess()) {
         for (ObjectInstanceHandleNamePairVector::iterator j = response->getObjectInstanceHandleNamePairVector().begin();
              j != response->getObjectInstanceHandleNamePairVector().end(); ++j) {
-          ObjectInstanceHandleObjectInstanceMap::iterator k;
-          k = insertObjectInstanceHandle(j->second);
-          referenceObjectInstanceHandle(k, connectHandle);
-          j->first = k->first;
+          ObjectInstance* objectInstance = insertObjectInstanceHandle(j->second);
+          objectInstance->referenceObjectInstanceHandle(connectHandle);
+          j->first = objectInstance->getHandle();
         }
       }
       send(message->getFederateHandle(), response);
@@ -1126,9 +1120,8 @@ public:
       if (message->getSuccess()) {
         for (ObjectInstanceHandleNamePairVector::const_iterator k = message->getObjectInstanceHandleNamePairVector().begin();
              k != message->getObjectInstanceHandleNamePairVector().end(); ++k) {
-          ObjectInstanceHandleObjectInstanceMap::iterator l;
-          l = insertObjectInstanceHandle(k->first, k->second);
-          referenceObjectInstanceHandle(l, i->second->_connectHandle);
+          ObjectInstance* objectInstance = insertObjectInstanceHandle(k->first, k->second);
+          objectInstance->referenceObjectInstanceHandle(i->second->_connectHandle);
         }
       }
       send(i->second->_connectHandle, message);
@@ -1147,7 +1140,7 @@ public:
 
     // FIXME Improove this with preevaluated sets:
     // std::map<ConnectHandle,ConnectHandleSet> ...
-    ObjectInstanceHandleObjectInstanceMap::iterator i = _objectInstanceHandleObjectInstanceMap.find(objectInstanceHandle);
+    ObjectInstance* objectInstance = getObjectInstance(objectInstanceHandle);
     ObjectClassAttribute* privilegeToDeleteAttribute = objectClass->getPrivilegeToDeleteAttribute();
     if (privilegeToDeleteAttribute) {
       for (ConnectHandleSet::iterator j = privilegeToDeleteAttribute->_cumulativeSubscribedConnectHandleSet.begin();
@@ -1156,15 +1149,15 @@ public:
           continue;
         if (*j == connectHandle)
           continue;
-        if (i == _objectInstanceHandleObjectInstanceMap.end())
-          i = insertObjectInstanceHandle(objectInstanceHandle, message->getName());
-        referenceObjectInstanceHandle(i, *j);
+        if (!objectInstance)
+          objectInstance = insertObjectInstanceHandle(objectInstanceHandle, message->getName());
+        objectInstance->referenceObjectInstanceHandle(*j);
       }
     }
 
     // If still unreferenced, ignore the insert and unref again in the parent
     // this can happen if we subscribed and unsubscribed at the server before we recieved the insert that is triggered by the subscribe request.
-    if (i == _objectInstanceHandleObjectInstanceMap.end()) {
+    if (!objectInstance) {
       OpenRTIAssert(connectHandle == _parentServerConnectHandle);
 
       SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message;
@@ -1175,15 +1168,15 @@ public:
       send(_parentServerConnectHandle, message);
 
     } else {
-      OpenRTIAssert(!i->second->_connectHandleSet.empty());
+      OpenRTIAssert(!objectInstance->_connectHandleSet.empty());
 
-      i->second->setObjectClass(objectClass);
+      objectInstance->setObjectClass(objectClass);
       for (size_t j = 0; j < message->getAttributeStateVector().size(); ++j) {
-        ObjectAttribute* attribute = i->second->getAttribute(message->getAttributeStateVector()[j].getAttributeHandle());
+        ObjectAttribute* attribute = objectInstance->getAttribute(message->getAttributeStateVector()[j].getAttributeHandle());
         attribute->setOwnerConnectHandle(connectHandle);
       }
 
-      send(i->second->getPrivilegeToDeleteAttribute()->_recieveingConnects, message);
+      send(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects, message);
     }
   }
   void accept(const ConnectHandle& connectHandle, DeleteObjectInstanceMessage* message)

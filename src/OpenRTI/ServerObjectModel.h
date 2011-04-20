@@ -853,22 +853,19 @@ public:
   bool isObjectNameInUse(const std::string& name) const
   { return _objectInstanceNameSet.find(name) != _objectInstanceNameSet.end(); }
 
-  ObjectInstanceHandleObjectInstanceMap::iterator
-  insertObjectInstanceHandle();
-  ObjectInstanceHandleObjectInstanceMap::iterator
-  insertObjectInstanceHandle(const std::string& objectInstanceName);
-  ObjectInstanceHandleObjectInstanceMap::iterator
-  insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::string& objectInstanceName);
-  ObjectInstanceHandleObjectInstanceMap::iterator
-  _insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::string& objectInstanceName);
+  ObjectInstance* getObjectInstance(const ObjectInstanceHandle& objectInstanceHandle);
 
-  void referenceObjectInstanceHandle(ObjectInstanceHandleObjectInstanceMap::iterator i, const ConnectHandle& connectHandle);
-  void referenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle);
+  ObjectInstance*
+  insertObjectInstanceHandle();
+  ObjectInstance*
+  insertObjectInstanceHandle(const std::string& objectInstanceName);
+  ObjectInstance*
+  insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::string& objectInstanceName);
+  ObjectInstance*
+  _insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::string& objectInstanceName);
 
   bool unreferenceObjectInstanceHandle(ObjectInstanceHandleObjectInstanceMap::iterator i, const ConnectHandle& connectHandle);
   bool unreferenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle);
-
-  ObjectInstance* getObjectInstance(const ObjectInstanceHandle& objectInstanceHandle);
 
   struct OPENRTI_LOCAL ObjectInstance : public NameHandlePair<ObjectInstanceHandle> {
     ObjectInstance(const ObjectInstanceHandleObjectInstanceMap::iterator& objectInstanceHandleObjectInstanceMapIterator,

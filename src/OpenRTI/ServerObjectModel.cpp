@@ -109,7 +109,16 @@ ServerObjectModel::insertObjectClass(const FOMObjectClass& module, const ObjectC
 }
 
 
-ServerObjectModel::ObjectInstanceHandleObjectInstanceMap::iterator
+ServerObjectModel::ObjectInstance*
+ServerObjectModel::getObjectInstance(const ObjectInstanceHandle& objectInstanceHandle)
+{
+  ObjectInstanceHandleObjectInstanceMap::iterator i = _objectInstanceHandleObjectInstanceMap.find(objectInstanceHandle);
+  if (i == _objectInstanceHandleObjectInstanceMap.end())
+    return 0;
+  return i->second.get();
+}
+
+ServerObjectModel::ObjectInstance*
 ServerObjectModel::insertObjectInstanceHandle()
 {
   ObjectInstanceHandle objectInstanceHandle = _objectInstanceHandleAllocator.get();
@@ -117,21 +126,21 @@ ServerObjectModel::insertObjectInstanceHandle()
   return _insertObjectInstanceHandle(objectInstanceHandle, reservedName);
 }
 
-ServerObjectModel::ObjectInstanceHandleObjectInstanceMap::iterator
+ServerObjectModel::ObjectInstance*
 ServerObjectModel::insertObjectInstanceHandle(const std::string& objectInstanceName)
 {
   ObjectInstanceHandle objectInstanceHandle = _objectInstanceHandleAllocator.get();
   return _insertObjectInstanceHandle(objectInstanceHandle, objectInstanceName);
 }
 
-ServerObjectModel::ObjectInstanceHandleObjectInstanceMap::iterator
+ServerObjectModel::ObjectInstance*
 ServerObjectModel::insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::string& objectInstanceName)
 {
   _objectInstanceHandleAllocator.take(objectInstanceHandle);
   return _insertObjectInstanceHandle(objectInstanceHandle, objectInstanceName);
 }
 
-ServerObjectModel::ObjectInstanceHandleObjectInstanceMap::iterator
+ServerObjectModel::ObjectInstance*
 ServerObjectModel::_insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::string& objectInstanceName)
 {
   Log(ServerObjectInstance, Debug) << getServerPath() << ": Insert Object Instance \""
@@ -144,24 +153,7 @@ ServerObjectModel::_insertObjectInstanceHandle(const ObjectInstanceHandle& objec
   typedef ObjectInstanceHandleObjectInstanceMap::value_type value_type;
   i = _objectInstanceHandleObjectInstanceMap.insert(value_type(objectInstanceHandle, 0)).first;
   i->second = new ObjectInstance(i, stringSetIterator);
-  return i;
-}
-
-void
-ServerObjectModel::referenceObjectInstanceHandle(ObjectInstanceHandleObjectInstanceMap::iterator i, const ConnectHandle& connectHandle)
-{
-  OpenRTIAssert(i != _objectInstanceHandleObjectInstanceMap.end());
-  OpenRTIAssert(connectHandle != _parentServerConnectHandle);
-  Log(ServerObjectInstance, Debug) << getServerPath() << ": Reference Object Instance \""
-                                   << i->first << "\" referenced by connect \""
-                                   << connectHandle <<  "\"!" << std::endl;
-  i->second->referenceObjectInstanceHandle(connectHandle);
-}
-
-void
-ServerObjectModel::referenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle)
-{
-  referenceObjectInstanceHandle(_objectInstanceHandleObjectInstanceMap.find(objectInstanceHandle), connectHandle);
+  return i->second.get();
 }
 
 bool
@@ -189,15 +181,6 @@ bool
 ServerObjectModel::unreferenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle)
 {
   return unreferenceObjectInstanceHandle(_objectInstanceHandleObjectInstanceMap.find(objectInstanceHandle), connectHandle);
-}
-
-ServerObjectModel::ObjectInstance*
-ServerObjectModel::getObjectInstance(const ObjectInstanceHandle& objectInstanceHandle)
-{
-  ObjectInstanceHandleObjectInstanceMap::iterator i = _objectInstanceHandleObjectInstanceMap.find(objectInstanceHandle);
-  if (i == _objectInstanceHandleObjectInstanceMap.end())
-    return 0;
-  return i->second.get();
 }
 
 ServerObjectModel::Federate*
