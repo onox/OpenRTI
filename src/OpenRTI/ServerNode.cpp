@@ -476,7 +476,7 @@ public:
         announce->setLabel(message->getLabel());
         announce->setTag(i->second._tag);
         announce->setAddJoiningFederates(i->second._addJoiningFederates);
-        announce->setFederateHandleSet(federateHandleSet);
+        announce->getFederateHandleSet().swap(federateHandleSet);
         send(j->first, announce);
       }
     }
@@ -537,7 +537,7 @@ public:
       announce->setLabel(message->getLabel());
       announce->setTag(message->getTag());
       announce->setAddJoiningFederates(message->getAddJoiningFederates());
-      announce->setFederateHandleSet(federateHandleSet);
+      announce->getFederateHandleSet().swap(federateHandleSet);
       send(j->first, announce);
     }
   }
@@ -596,7 +596,7 @@ public:
       synchronized = new FederationSynchronizedMessage;
       synchronized->setFederationHandle(getHandle());
       synchronized->setLabel(message->getLabel());
-      synchronized->setFederateHandleSet(federateHandleSet);
+      synchronized->getFederateHandleSet().swap(federateHandleSet);
       send(j->first, synchronized);
     }
     _syncronizationLabelStateMap.erase(i);
