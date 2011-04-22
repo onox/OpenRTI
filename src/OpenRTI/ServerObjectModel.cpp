@@ -210,10 +210,11 @@ ServerObjectModel::insertFederate(const ConnectHandle& connectHandle, const std:
   typedef FederateHandleFederateMap::value_type value_type;
   i = _federateHandleFederateMap.insert(value_type(federateHandle, 0)).first;
   i->second = new Federate(i, stringSetIterator);
-  i->second->_connectHandle = connectHandle;
+  // i->second->_connectHandle = connectHandle;
   ConnectHandleConnectDataMap::iterator j = _connectHandleConnectDataMap.find(connectHandle);
   if (j != _connectHandleConnectDataMap.end()) {
-    j->second->_federateHandleSet.insert(federateHandle);
+    i->second->_connect = j->second.get();
+    i->second->_federateListIterator = j->second->_federateList.insert(j->second->_federateList.begin(), i->second.get());
   } else {
     i->second->_resignPending = true;
   }
@@ -252,9 +253,9 @@ ServerObjectModel::eraseFederate(ServerObjectModel::FederateHandleFederateMap::i
   }
 
   // Remove from connects
-  ConnectHandleConnectDataMap::iterator k = _connectHandleConnectDataMap.find(i->second->_connectHandle);
-  if (k != _connectHandleConnectDataMap.end())
-    k->second->_federateHandleSet.erase(i->first);
+  ConnectData* connect = i->second->_connect;
+  if (connect)
+    connect->eraseFederate(i->second.get());
 
   // Give back the handle to the allocator
   _federateHandleAllocator.put(i->first);
@@ -312,7 +313,7 @@ void
 ServerObjectModel::eraseConnect(ServerObjectModel::ConnectHandleConnectDataMap::iterator i)
 {
   OpenRTIAssert(i != _connectHandleConnectDataMap.end());
-  OpenRTIAssert(i->first == _parentServerConnectHandle || i->second->_federateHandleSet.empty());
+  OpenRTIAssert(i->first == _parentServerConnectHandle || i->second->_federateList.empty());
 
   if (_parentServerConnectHandle == i->first) {
     Log(ServerConnect, Error) << getServerPath() << ": Removing parent connect!" << std::endl;

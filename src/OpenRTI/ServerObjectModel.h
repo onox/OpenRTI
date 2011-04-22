@@ -720,7 +720,7 @@ public:
     ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.find(connectHandle);
     if (i == _connectHandleConnectDataMap.end())
       return false;
-    return !i->second->_federateHandleSet.empty();
+    return !i->second->_federateList.empty();
   }
 
   bool getActive(const ConnectHandle& connectHandle) const
@@ -737,7 +737,7 @@ public:
     if (i->first == _parentServerConnectHandle)
       return;
     // FIXME which one of the following
-    OpenRTIAssert(i->second->_federateHandleSet.empty());
+    OpenRTIAssert(i->second->_federateList.empty());
     // OpenRTIAssert(!hasJoinedFederatesForConnect(connectHandle));
     i->second->_messageSender.clear();
   }
@@ -753,7 +753,7 @@ public:
   {
     for (FederateHandleFederateMap::const_iterator i = _federateHandleFederateMap.begin();
          i != _federateHandleFederateMap.end(); ++i) {
-      if (i->second->_connectHandle == _parentServerConnectHandle)
+      if (i->second->getConnectHandle() == _parentServerConnectHandle)
         continue;
       // Ok, not even the still pending resign request for invalid connect handles is treated as valid child.
       if (i->second->_resignPending)
@@ -1024,6 +1024,7 @@ public:
              const StringSet::iterator& stringSetIterator) :
       _federateHandleFederateMapIterator(federateHandleFederateMapIterator),
       _stringSetIterator(stringSetIterator),
+      _connect(0),
       _resignPending(false)
     { }
     FederateHandleFederateMap::iterator _federateHandleFederateMapIterator;
@@ -1032,7 +1033,14 @@ public:
     // Returns the federates's name
     const std::string& getName() const { return *_stringSetIterator; }
     std::string _federateType;
-    ConnectHandle _connectHandle;
+    ConnectData* _connect;
+    FederateList::iterator _federateListIterator;
+    ConnectHandle getConnectHandle() const
+    {
+      if (!_connect)
+        return ConnectHandle();
+      return _connect->getHandle();
+    }
     bool _resignPending;
   };
   FederateHandleAllocator _federateHandleAllocator;
@@ -1069,9 +1077,27 @@ public:
     { }
     ConnectHandleConnectDataMap::iterator _connectHandleConnectDataMapIterator;
     SharedPtr<AbstractMessageSender> _messageSender;
+    const ConnectHandle& getHandle() const { return _connectHandleConnectDataMapIterator->first; }
     std::string _name;
-    // FIXME make this an iterator to the Federate above
-    FederateHandleSet _federateHandleSet;
+    FederateList _federateList;
+    void send(const SharedPtr<AbstractMessage>& message)
+    {
+      if (!_messageSender.valid())
+        return;
+      _messageSender->send(message);
+    }
+
+    void eraseFederate(Federate* federate)
+    {
+      OpenRTIAssert(federate);
+      ConnectData* connect = federate->_connect;
+      if (!connect)
+        return;
+      OpenRTIAssert(connect == this);
+      // Remove from connects
+      connect->_federateList.erase(federate->_federateListIterator);
+      federate->_connect = 0;
+    }
   };
   ConnectHandle _parentServerConnectHandle;
   ConnectHandleConnectDataMap _connectHandleConnectDataMap;
