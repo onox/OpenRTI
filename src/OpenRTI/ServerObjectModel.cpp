@@ -39,49 +39,63 @@ void
 ServerObjectModel::insert(const FOMModuleList& moduleList)
 {
   for (FOMModuleList::const_iterator i = moduleList.begin(); i != moduleList.end(); ++i) {
-    insert(*i);
+    insertFomModule(*i);
   }
 
   _fomModuleSet.insertModuleList(moduleList);
 }
 
-void
-ServerObjectModel::insert(const FOMModule& module)
+bool
+ServerObjectModel::insertFomModule(const FOMModule& fomModule)
 {
-  for (FOMInteractionClassList::const_iterator i = module.getInteractionClassList().begin();
-       i != module.getInteractionClassList().end(); ++i) {
-    insertInteractionClass(*i, i->getParentInteractionClassHandle());
+  /// FIXME: make sure this one does not collide, and if so roll back ...
+  for (FOMInteractionClassList::const_iterator i = fomModule.getInteractionClassList().begin();
+       i != fomModule.getInteractionClassList().end(); ++i) {
+    insertInteractionClass(*i);
   }
-  for (FOMObjectClassList::const_iterator i = module.getObjectClassList().begin();
-       i != module.getObjectClassList().end(); ++i) {
-    insertObjectClass(*i, i->getParentObjectClassHandle());
+  for (FOMObjectClassList::const_iterator i = fomModule.getObjectClassList().begin();
+       i != fomModule.getObjectClassList().end(); ++i) {
+    insertObjectClass(*i);
   }
+  return true;
 }
 
 void
-ServerObjectModel::insertInteractionClass(const FOMInteractionClass& module, const InteractionClassHandle& parentHandle)
+ServerObjectModel::insertInteractionClass(const FOMInteractionClass& module)
 {
   if (getInteractionClass(module.getInteractionClassHandle())) {
     OpenRTIAssert(module.getParameterList().empty());
   } else {
-    InteractionClass* parentInteractionClass = getInteractionClass(parentHandle);
+    InteractionClass* parentInteractionClass = getInteractionClass(module.getParentInteractionClassHandle());
+
+    InteractionClassHandle interactionClassHandle = module.getInteractionClassHandle();
+    OpenRTIAssert(interactionClassHandle.valid());
+
     SharedPtr<InteractionClass> interactionClass;
-    interactionClass = new InteractionClass(module.getName(), module.getInteractionClassHandle(), parentInteractionClass);
+    interactionClass = new InteractionClass(module.getName(), interactionClassHandle, parentInteractionClass);
     // FIXME, this???
     // <field name="DimensionHandleSet" type="DimensionHandleSet"/>
-    insertInteractionClass(interactionClass);
+
+    if (_interactionClassVector.size() <= interactionClassHandle.getHandle())
+      _interactionClassVector.resize(interactionClassHandle.getHandle() + 1);
+
+    _interactionClassVector[interactionClassHandle.getHandle()] = interactionClass;
   }
 }
 
 void
-ServerObjectModel::insertObjectClass(const FOMObjectClass& module, const ObjectClassHandle& parentHandle)
+ServerObjectModel::insertObjectClass(const FOMObjectClass& module)
 {
   if (getObjectClass(module.getObjectClassHandle())) {
     OpenRTIAssert(module.getAttributeList().empty());
   } else {
-    ObjectClass* parentObjectClass = getObjectClass(parentHandle);
+    ObjectClass* parentObjectClass = getObjectClass(module.getParentObjectClassHandle());
+
+    ObjectClassHandle objectClassHandle = module.getObjectClassHandle();
+    OpenRTIAssert(objectClassHandle.valid());
+
     SharedPtr<ObjectClass> objectClass;
-    objectClass = new ObjectClass(module.getName(), module.getObjectClassHandle(), parentObjectClass);
+    objectClass = new ObjectClass(module.getName(), objectClassHandle, parentObjectClass);
 
     if (parentObjectClass) {
       for (ObjectClassAttributeVector::const_iterator i = parentObjectClass->getObjectClassAttributeVector().begin();
@@ -104,7 +118,11 @@ ServerObjectModel::insertObjectClass(const FOMObjectClass& module, const ObjectC
       // <field name="DimensionHandleSet" type="DimensionHandleSet"/>
       objectClass->insertObjectClassAttribute(attribute);
     }
-    insertObjectClass(objectClass);
+
+    if (_objectClassVector.size() <= objectClassHandle.getHandle())
+      _objectClassVector.resize(objectClassHandle.getHandle() + 1);
+
+    _objectClassVector[objectClassHandle.getHandle()] = objectClass;
   }
 }
 

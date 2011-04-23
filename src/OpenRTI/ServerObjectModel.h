@@ -778,16 +778,6 @@ public:
   /// Object class handling methods
   const ObjectClassVector& getObjectClassVector() const
   { return _objectClassVector; }
-  void insertObjectClass(const SharedPtr<ObjectClass>& objectClass)
-  {
-    OpenRTIAssert(objectClass.valid());
-    ObjectClassHandle objectClassHandle = objectClass->getHandle();
-    OpenRTIAssert(objectClassHandle.valid());
-    if (_objectClassVector.size() <= objectClassHandle.getHandle())
-      _objectClassVector.resize(objectClassHandle.getHandle() + 1);
-    OpenRTIAssert(!_objectClassVector[objectClassHandle.getHandle()].valid());
-    _objectClassVector[objectClassHandle.getHandle()] = objectClass;
-  }
   ObjectClass* getObjectClass(const ObjectClassHandle& objectClassHandle)
   {
     if (_objectClassVector.size() <= objectClassHandle.getHandle())
@@ -798,16 +788,6 @@ public:
   /// Interaction class handling methods
   const InteractionClassVector& getInteractionClassVector() const
   { return _interactionClassVector; }
-  void insertInteractionClass(const SharedPtr<InteractionClass>& interactionClass)
-  {
-    OpenRTIAssert(interactionClass.valid());
-    InteractionClassHandle interactionClassHandle = interactionClass->getHandle();
-    OpenRTIAssert(interactionClassHandle.valid());
-    if (_interactionClassVector.size() <= interactionClassHandle.getHandle())
-      _interactionClassVector.resize(interactionClassHandle.getHandle() + 1);
-    OpenRTIAssert(!_interactionClassVector[interactionClassHandle.getHandle()].valid());
-    _interactionClassVector[interactionClassHandle.getHandle()] = interactionClass;
-  }
   InteractionClass* getInteractionClass(const InteractionClassHandle& interactionClassHandle)
   {
     if (_interactionClassVector.size() <= interactionClassHandle.getHandle())
@@ -837,9 +817,10 @@ public:
 
   FOMModuleSet _fomModuleSet;
 
-  void insert(const FOMModule& module);
-  void insertInteractionClass(const FOMInteractionClass& interactionClass, const InteractionClassHandle& parentHandle);
-  void insertObjectClass(const FOMObjectClass& objectClass, const ObjectClassHandle& parentHandle);
+  // Insert a given fom module, must be compatible
+  bool insertFomModule(const FOMModule& fomModule);
+  void insertInteractionClass(const FOMInteractionClass& interactionClass);
+  void insertObjectClass(const FOMObjectClass& objectClass);
 
   /// The object classes in the current object model
   ObjectClassVector _objectClassVector;
