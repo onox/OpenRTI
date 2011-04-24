@@ -831,6 +831,55 @@ public:
 
 
 
+
+
+
+
+  struct ObjectInstanceConnect;
+  typedef std::map<ConnectHandle, SharedPtr<ObjectInstanceConnect> > ConnectHandleObjectInstanceConnectMap;
+  typedef std::list<ObjectInstanceConnect*> ObjectInstanceConnectList;
+
+  // Per Connect object instance data.
+  struct OPENRTI_LOCAL ObjectInstanceConnect : public Referenced {
+    ObjectInstanceConnect(const ConnectHandleObjectInstanceConnectMap::iterator& iterator,
+                          ObjectInstance* objectInstance, ConnectData* connect) :
+      _connectHandleObjectInstanceConnectMapIterator(iterator),
+      _objectInstance(objectInstance),
+      _connect(connect)
+    { }
+
+    ObjectInstance* getObjectInstance()
+    { return _objectInstance; }
+    ConnectData* getConnect()
+    { return _connect; }
+
+    const ConnectHandleObjectInstanceConnectMap::iterator& getConnectHandleObjectInstanceConnectMapIterator() const
+    { return _connectHandleObjectInstanceConnectMapIterator; }
+
+    void insertToObjectInstanceConnectList(ObjectInstanceConnectList& objectInstanceConnectList)
+    {
+      _objectInstanceConnectListIterator = objectInstanceConnectList.insert(objectInstanceConnectList.begin(), this);
+    }
+    void eraseFromObjectInstanceConnectList(ObjectInstanceConnectList& objectInstanceConnectList)
+    {
+      objectInstanceConnectList.erase(_objectInstanceConnectListIterator);
+      _objectInstanceConnectListIterator = objectInstanceConnectList.end();
+    }
+
+  private:
+    /// iterator into the primary index in the ObjectInstance, here for O(1) removal
+    ConnectHandleObjectInstanceConnectMap::iterator _connectHandleObjectInstanceConnectMapIterator;
+    /// iterator into the list of these objects in the connect, here for O(1) removal
+    ObjectInstanceConnectList::iterator _objectInstanceConnectListIterator;
+    /// The original ObjectInstance this belongs to
+    ObjectInstance* _objectInstance;
+    /// The original Connect this belongs to
+    ConnectData* _connect;
+  };
+
+
+
+
   bool isObjectNameInUse(const std::string& name) const
   { return _objectInstanceNameSet.find(name) != _objectInstanceNameSet.end(); }
 
@@ -845,8 +894,7 @@ public:
   ObjectInstance*
   _insertObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const std::string& objectInstanceName);
 
-  bool unreferenceObjectInstanceHandle(ObjectInstanceHandleObjectInstanceMap::iterator i, const ConnectHandle& connectHandle);
-  bool unreferenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle);
+  void eraseObjectInstanceHandle(ObjectInstance* objectInstance);
 
   struct OPENRTI_LOCAL ObjectInstance : public NameHandlePair<ObjectInstanceHandle> {
     ObjectInstance(const ObjectInstanceHandleObjectInstanceMap::iterator& objectInstanceHandleObjectInstanceMapIterator,
@@ -931,43 +979,21 @@ public:
       _objectInstanceListIterator = objectInstanceList.end();
     }
 
-    void referenceObjectInstanceHandle(const ConnectHandle& connectHandle)
-    {
-      _connectHandleSet.insert(connectHandle);
-    }
-    bool unreferenceObjectInstanceHandle(const ConnectHandle& connectHandle)
-    {
-      // Currently it is used in a way that requires checking and allowing unreferencing connects that are unreferenced
-      // OpenRTIAssert(_connectHandleSet.find(connectHandle) != _connectHandleSet.end());
-      // _connectHandleSet.erase(connectHandle);
-      if (0 == _connectHandleSet.erase(connectHandle))
-        return false;
-
-      removeConnect(connectHandle);
-
-      if (!_connectHandleSet.empty())
-        return false;
-
-      /// FIXME may be move into destructor??
-      if (_objectClass)
-        _objectClass->eraseObjectInstance(this);
-
-      return true;
-    }
+    ObjectInstanceConnect* referenceObjectInstance(ConnectData* connect);
+    bool unreferenceObjectInstance(ConnectData* connect);
+    bool unreferenceObjectInstance(ObjectInstanceConnect* objectInstanceConnect);
 
     // Points back to the index object instance by handle map
     ObjectInstanceHandleObjectInstanceMap::iterator _objectInstanceHandleObjectInstanceMapIterator;
     // Points to the string set name entry for this object instance
     StringSet::iterator _stringSetIterator;
-    // The child connect handles that reference this object instance handle
-    ConnectHandleSet _connectHandleSet;
+
+    ConnectHandleObjectInstanceConnectMap _connectHandleObjectInstanceConnectMap;
 
   private:
     // We store the position in the list of objects of this type in the object class,
     // this way erasing an object is also O(1).
     ObjectInstanceList::iterator _objectInstanceListIterator;
-    // FIXME: also store the federation wide object by handle map iterator
-    // ObjectInstanceList::iterator _objectInstanceListIterator;
 
     /// The pointer to the object class this object is an instance of, can be zero
     ObjectClass* _objectClass;
@@ -1079,6 +1105,15 @@ public:
       connect->_federateList.erase(federate->_federateListIterator);
       federate->_connect = 0;
     }
+
+    void insertObjectInstance(ObjectInstanceConnect& objectInstanceConnect)
+    { objectInstanceConnect.insertToObjectInstanceConnectList(_objectInstanceConnectList); }
+    void eraseObjectInstance(ObjectInstanceConnect& objectInstanceConnect)
+    { objectInstanceConnect.eraseFromObjectInstanceConnectList(_objectInstanceConnectList); }
+
+  // private:
+    /// ObjectInstances that are known/referenced by this connect
+    ObjectInstanceConnectList _objectInstanceConnectList;
   };
   ConnectHandle _parentServerConnectHandle;
   ConnectHandleConnectDataMap _connectHandleConnectDataMap;

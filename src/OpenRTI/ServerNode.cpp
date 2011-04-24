@@ -846,6 +846,9 @@ public:
     if (!objectClass)
       return;
 
+    ConnectData* connect = getConnect(connectHandle);
+    OpenRTIAssert(connect);
+
     ObjectInstanceList objectInstanceList;
     std::map<ConnectHandle, AttributeHandleVector> sendAttributeHandlesMap;
     for (std::vector<AttributeHandle>::const_iterator i = message->getAttributeHandles().begin();
@@ -906,9 +909,9 @@ public:
           ObjectInstance* objectInstance = getObjectInstance((*j)->getHandle());
           if (!objectInstance)
             objectInstance = insertObjectInstanceHandle((*j)->getHandle(), (*j)->getName());
-          objectInstance->referenceObjectInstanceHandle(connectHandle);
+          objectInstance->referenceObjectInstance(connect);
         }
-        send(connectHandle, request);
+        connect->send(request);
       }
     }
   }
@@ -960,6 +963,8 @@ public:
   void accept(const ConnectHandle& connectHandle, ObjectInstanceHandlesRequestMessage* message)
   {
     if (isRootServer()) {
+      ConnectData* connect = getConnect(connectHandle);
+
       // Provide some object instance handles to a federate.
       // This is to be completely asyncronous in the registerObjectInstance call.
       SharedPtr<ObjectInstanceHandlesResponseMessage> response;
@@ -972,10 +977,10 @@ public:
       FederateHandleFederateMap::iterator i = _federateHandleFederateMap.find(federateHandle);
       while (count--) {
         ObjectInstance* objectInstance = insertObjectInstanceHandle();
-        objectInstance->referenceObjectInstanceHandle(connectHandle);
+        objectInstance->referenceObjectInstance(connect);
         response->getObjectInstanceHandleNamePairVector().push_back(ObjectInstanceHandleNamePair(objectInstance->getHandle(), objectInstance->getName()));
       }
-      send(connectHandle, response);
+      connect->send(response);
     } else {
       send(_parentServerConnectHandle, message);
     }
@@ -983,12 +988,12 @@ public:
   void accept(const ConnectHandle& connectHandle, ObjectInstanceHandlesResponseMessage* message)
   {
     FederateHandle federateHandle = message->getFederateHandle();
-    FederateHandleFederateMap::iterator i = _federateHandleFederateMap.find(federateHandle);
-    if (i == _federateHandleFederateMap.end())
+    Federate* federate = getFederate(federateHandle);
+    if (!federate)
       throw MessageError("Got ObjectInstanceHandlesResponseMessage for an unknown federate!");
 
-    ConnectData* federateConnect = i->second->_connect;
-    if (!federateConnect || i->second->_resignPending) {
+    ConnectData* federateConnect = federate->_connect;
+    if (!federateConnect || federate->_resignPending) {
       // Can happen, may be it has resigned/is died in between but the response is already underway
       // If so, then just ignore, the upstream server needs to release them
     } else {
@@ -996,7 +1001,7 @@ public:
       for (ObjectInstanceHandleNamePairVector::const_iterator k = message->getObjectInstanceHandleNamePairVector().begin();
            k != message->getObjectInstanceHandleNamePairVector().end(); ++k) {
         ObjectInstance* objectInstance = insertObjectInstanceHandle(k->first, k->second);
-        objectInstance->referenceObjectInstanceHandle(federateConnectHandle);
+        objectInstance->referenceObjectInstance(federateConnect);
       }
 
       federateConnect->send(message);
@@ -1004,11 +1009,18 @@ public:
   }
   void accept(const ConnectHandle& connectHandle, ReleaseMultipleObjectInstanceNameHandlePairsMessage* message)
   {
+    ConnectData* connect = getConnect(connectHandle);
+    OpenRTIAssert(connect);
+
     SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> releaseMessage;
-    for (ObjectInstanceHandleVector::const_iterator j = message->getObjectInstanceHandleVector().begin();
-         j != message->getObjectInstanceHandleVector().end(); ++j) {
-      if (!unreferenceObjectInstanceHandle(*j, connectHandle))
+    for (ObjectInstanceHandleVector::const_iterator i = message->getObjectInstanceHandleVector().begin();
+         i != message->getObjectInstanceHandleVector().end(); ++i) {
+      ObjectInstance* objectInstance = getObjectInstance(*i);
+      if (!objectInstance)
+        throw MessageError("Got ReleaseMultipleObjectInstanceNameHandlePairsMessage for an unknown object instance!");
+      if (!objectInstance->unreferenceObjectInstance(connect))
         continue;
+      eraseObjectInstanceHandle(objectInstance);
       if (!_parentServerConnectHandle.valid())
         continue;
       if (!releaseMessage.valid()) {
@@ -1016,7 +1028,7 @@ public:
         releaseMessage->setFederationHandle(getHandle());
         releaseMessage->getObjectInstanceHandleVector().reserve(message->getObjectInstanceHandleVector().size());
       }
-      releaseMessage->getObjectInstanceHandleVector().push_back(*j);
+      releaseMessage->getObjectInstanceHandleVector().push_back(*i);
     }
     if (releaseMessage.valid())
       send(_parentServerConnectHandle, releaseMessage);
@@ -1033,23 +1045,25 @@ public:
   // Once the root is no longer reachable, it is sufficient to know what is here and below ...
   void accept(const ConnectHandle& connectHandle, ReserveObjectInstanceNameRequestMessage* message)
   {
-    if (isRootServer()) {
-      FederateHandle federateHandle = message->getFederateHandle();
-      FederateHandleFederateMap::iterator i = _federateHandleFederateMap.find(federateHandle);
-      if (i == _federateHandleFederateMap.end())
-        throw MessageError("Got ReserveObjectInstanceNameRequestMessage for an unknown federate!");
+    FederateHandle federateHandle = message->getFederateHandle();
+    Federate* federate = getFederate(federateHandle);
+    if (!federate)
+      throw MessageError("Got ReserveObjectInstanceNameRequestMessage for an unknown federate!");
+    // names starting with HLA are reserved for the RTI, a correct programmed ambassador does not request these
+    if (message->getName().compare(0, 3, "HLA") == 0)
+      throw MessageError("Got ReserveObjectInstanceNameRequestMessage with name starting with HLA.");
 
-      // names starting with HLA are reserved for the RTI, a correct programmed ambassador does not request these
-      if (message->getName().compare(0, 3, "HLA") == 0)
-        throw MessageError("Got ReserveObjectInstanceNameRequestMessage with name starting with HLA.");
+    if (isRootServer()) {
+      ConnectData* connect = federate->_connect;
+      OpenRTIAssert(connect);
 
       SharedPtr<ReserveObjectInstanceNameResponseMessage> response;
       response = new ReserveObjectInstanceNameResponseMessage;
-      response->setFederationHandle(message->getFederationHandle());
-      response->setFederateHandle(message->getFederateHandle());
+      response->setFederationHandle(getHandle());
+      response->setFederateHandle(federateHandle);
       if (!isObjectNameInUse(message->getName())) {
         ObjectInstance* objectInstance = insertObjectInstanceHandle(message->getName());
-        objectInstance->referenceObjectInstanceHandle(connectHandle);
+        objectInstance->referenceObjectInstance(connect);
         response->setObjectInstanceHandleNamePair(ObjectInstanceHandleNamePair(objectInstance->getHandle(), objectInstance->getName()));
         response->setSuccess(true);
       } else {
@@ -1057,7 +1071,7 @@ public:
         response->setObjectInstanceHandleNamePair(objectInstanceHandleNamePair);
         response->setSuccess(false);
       }
-      send(message->getFederateHandle(), response);
+      connect->send(response);
     } else {
       send(_parentServerConnectHandle, message);
     }
@@ -1065,30 +1079,38 @@ public:
   void accept(const ConnectHandle& connectHandle, ReserveObjectInstanceNameResponseMessage* message)
   {
     FederateHandle federateHandle = message->getFederateHandle();
-    FederateHandleFederateMap::iterator i = _federateHandleFederateMap.find(federateHandle);
-    if (i == _federateHandleFederateMap.end())
+    Federate* federate = getFederate(federateHandle);
+    if (!federate)
       throw MessageError("Got ReserveObjectInstanceNameResponseMessage for an unknown federate!");
 
-    ConnectData* federateConnect = i->second->_connect;
-    if (!federateConnect || i->second->_resignPending) {
+    ConnectData* federateConnect = federate->_connect;
+    if (!federateConnect || federate->_resignPending) {
       // Can happen, may be it has resigned/is died in between but the response is already underway
       // If so, then release the reservations.
     } else {
       if (message->getSuccess()) {
         ObjectInstance* objectInstance = insertObjectInstanceHandle(message->getObjectInstanceHandleNamePair().first,
                                                                     message->getObjectInstanceHandleNamePair().second);
-        objectInstance->referenceObjectInstanceHandle(federateConnect->getHandle());
+        objectInstance->referenceObjectInstance(federateConnect);
       }
       federateConnect->send(message);
     }
   }
   void accept(const ConnectHandle& connectHandle, ReserveMultipleObjectInstanceNameRequestMessage* message)
   {
+    FederateHandle federateHandle = message->getFederateHandle();
+    Federate* federate = getFederate(federateHandle);
+    if (!federate)
+      throw MessageError("Got ReserveMultipleObjectInstanceNameRequestMessage for an unknown federate!");
+    // names starting with HLA are reserved for the RTI, a correct programmed ambassador does not request these
+    for (StringVector::const_iterator i = message->getNameList().begin(); i != message->getNameList().end(); ++i) {
+      if (i->compare(0, 3, "HLA") == 0)
+        throw MessageError("ReserveMultipleObjectInstanceNameRequestMessage with name starting with HLA.");
+    }
+
     if (isRootServer()) {
-      FederateHandle federateHandle = message->getFederateHandle();
-      FederateHandleFederateMap::iterator i = _federateHandleFederateMap.find(federateHandle);
-      if (i == _federateHandleFederateMap.end())
-        throw MessageError("Got ReserveObjectInstanceNameRequestMessage for an unknown federate!");
+      ConnectData* connect = federate->_connect;
+      OpenRTIAssert(connect);
 
       SharedPtr<ReserveMultipleObjectInstanceNameResponseMessage> response;
       response = new ReserveMultipleObjectInstanceNameResponseMessage;
@@ -1100,9 +1122,6 @@ public:
         ObjectInstanceHandleNamePair objectInstanceHandleNamePair;
         objectInstanceHandleNamePair.second = *i;
         response->getObjectInstanceHandleNamePairVector().push_back(objectInstanceHandleNamePair);
-        // names starting with HLA are reserved for the RTI
-        if (i->compare(0, 3, "HLA") == 0)
-          throw MessageError("ReserveObjectInstanceNameRequestMessage with name starting with HLA - that must be handled in the ambassador.");
         if (!isObjectNameInUse(*i))
           continue;
         response->setSuccess(false);
@@ -1112,11 +1131,11 @@ public:
         for (ObjectInstanceHandleNamePairVector::iterator j = response->getObjectInstanceHandleNamePairVector().begin();
              j != response->getObjectInstanceHandleNamePairVector().end(); ++j) {
           ObjectInstance* objectInstance = insertObjectInstanceHandle(j->second);
-          objectInstance->referenceObjectInstanceHandle(connectHandle);
+          objectInstance->referenceObjectInstance(connect);
           j->first = objectInstance->getHandle();
         }
       }
-      send(message->getFederateHandle(), response);
+      connect->send(response);
     } else {
       send(_parentServerConnectHandle, message);
     }
@@ -1124,22 +1143,20 @@ public:
   void accept(const ConnectHandle& connectHandle, ReserveMultipleObjectInstanceNameResponseMessage* message)
   {
     FederateHandle federateHandle = message->getFederateHandle();
-    FederateHandleFederateMap::iterator i = _federateHandleFederateMap.find(federateHandle);
-    if (i == _federateHandleFederateMap.end())
+    Federate* federate = getFederate(federateHandle);
+    if (!federate)
       throw MessageError("Got ReserveMultipleObjectInstanceNameResponseMessage for an unknown federate!");
 
-    ConnectData* federateConnect = i->second->_connect;
-    if (!federateConnect || i->second->_resignPending) {
+    ConnectData* federateConnect = federate->_connect;
+    if (!federateConnect || federate->_resignPending) {
       // Can happen, may be it has resigned/is died in between but the response is already underway
       // If so, then release the reservations.
     } else {
       if (message->getSuccess()) {
-        ConnectHandle federateConnectHandle = federateConnect->getHandle();
-
         for (ObjectInstanceHandleNamePairVector::const_iterator k = message->getObjectInstanceHandleNamePairVector().begin();
              k != message->getObjectInstanceHandleNamePairVector().end(); ++k) {
           ObjectInstance* objectInstance = insertObjectInstanceHandle(k->first, k->second);
-          objectInstance->referenceObjectInstanceHandle(federateConnectHandle);
+          objectInstance->referenceObjectInstance(federateConnect);
         }
       }
 
@@ -1170,7 +1187,7 @@ public:
           continue;
         if (!objectInstance)
           objectInstance = insertObjectInstanceHandle(objectInstanceHandle, message->getName());
-        objectInstance->referenceObjectInstanceHandle(*j);
+        objectInstance->referenceObjectInstance(getConnect(*j));
       }
     }
 
@@ -1187,7 +1204,7 @@ public:
       send(_parentServerConnectHandle, message);
 
     } else {
-      OpenRTIAssert(!objectInstance->_connectHandleSet.empty());
+      OpenRTIAssert(!objectInstance->_connectHandleObjectInstanceConnectMap.empty());
 
       objectInstance->setObjectClass(objectClass);
       for (size_t j = 0; j < message->getAttributeStateVector().size(); ++j) {
@@ -1463,6 +1480,9 @@ public:
   // Should be called when a connection dies
   void resignConnect(const ConnectHandle& connectHandle)
   {
+    ConnectData* connect = getConnect(connectHandle);
+    OpenRTIAssert(connect);
+
     // Unsubscribe this connect
     unsubscribeConnect(connectHandle);
 
@@ -1494,11 +1514,14 @@ public:
 
     if (connectHandle != _parentServerConnectHandle) {
       SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> releaseMessage;
-      for (ObjectInstanceHandleObjectInstanceMap::iterator j = _objectInstanceHandleObjectInstanceMap.begin();
-           j != _objectInstanceHandleObjectInstanceMap.end();) {
-        ObjectInstanceHandle objectInstanceHandle = j->first;
-        if (!unreferenceObjectInstanceHandle(j++, connectHandle))
+      for (ObjectInstanceConnectList::iterator j = connect->_objectInstanceConnectList.begin();
+           j != connect->_objectInstanceConnectList.end();) {
+        ObjectInstanceConnect* objectInstanceConnect = *(j++);
+        ObjectInstance* objectInstance = objectInstanceConnect->getObjectInstance();
+        if (!objectInstance->unreferenceObjectInstance(objectInstanceConnect))
           continue;
+        ObjectInstanceHandle objectInstanceHandle = objectInstance->getHandle();
+        eraseObjectInstanceHandle(objectInstance);
         if (!_parentServerConnectHandle.valid())
           continue;
         if (!releaseMessage.valid()) {
@@ -1510,6 +1533,7 @@ public:
       }
       if (releaseMessage.valid())
         send(_parentServerConnectHandle, releaseMessage);
+      OpenRTIAssert(connect->_objectInstanceConnectList.empty());
     }
 
     // Unpublish this connect

@@ -35,6 +35,57 @@ ServerObjectModel::ObjectClass::eraseObjectInstance(ObjectInstance* objectInstan
   objectInstance->eraseFromObjectClassList(_objectInstanceList);
 }
 
+ServerObjectModel::ObjectInstanceConnect*
+ServerObjectModel::ObjectInstance::referenceObjectInstance(ConnectData* connect)
+{
+  OpenRTIAssert(connect);
+  ConnectHandle connectHandle = connect->getHandle();
+  OpenRTIAssert(connectHandle.valid());
+
+  typedef ConnectHandleObjectInstanceConnectMap::value_type value_type;
+  ConnectHandleObjectInstanceConnectMap::iterator i;
+  // FIXME make that assert at some time
+  // OpenRTIAssert(_connectHandleObjectInstanceConnectMap.find(connectHandle) == _connectHandleObjectInstanceConnectMap.end());
+  i = _connectHandleObjectInstanceConnectMap.insert(value_type(connectHandle, 0)).first;
+  if (i->second.get())
+    return i->second.get();
+  i->second = new ObjectInstanceConnect(i, this, connect);
+  connect->insertObjectInstance(*(i->second));
+
+  return i->second.get();
+}
+
+bool
+ServerObjectModel::ObjectInstance::unreferenceObjectInstance(ConnectData* connect)
+{
+  OpenRTIAssert(connect);
+  ConnectHandle connectHandle = connect->getHandle();
+  OpenRTIAssert(connectHandle.valid());
+
+  ConnectHandleObjectInstanceConnectMap::iterator i;
+  i = _connectHandleObjectInstanceConnectMap.find(connectHandle);
+  OpenRTIAssert(i != _connectHandleObjectInstanceConnectMap.end());
+
+  return unreferenceObjectInstance(i->second.get());
+}
+
+bool
+ServerObjectModel::ObjectInstance::unreferenceObjectInstance(ObjectInstanceConnect* objectInstanceConnect)
+{
+  OpenRTIAssert(objectInstanceConnect);
+  ConnectData* connect = objectInstanceConnect->getConnect();
+  OpenRTIAssert(connect);
+
+  ConnectHandleObjectInstanceConnectMap::iterator connectHandleObjectInstanceConnectMapIterator;
+  connectHandleObjectInstanceConnectMapIterator = objectInstanceConnect->getConnectHandleObjectInstanceConnectMapIterator();
+  OpenRTIAssert(connectHandleObjectInstanceConnectMapIterator != _connectHandleObjectInstanceConnectMap.end());
+
+  connect->eraseObjectInstance(*objectInstanceConnect);
+  _connectHandleObjectInstanceConnectMap.erase(connectHandleObjectInstanceConnectMapIterator);
+
+  return _connectHandleObjectInstanceConnectMap.empty();
+}
+
 void
 ServerObjectModel::insert(const FOMModuleList& moduleList)
 {
@@ -174,31 +225,23 @@ ServerObjectModel::_insertObjectInstanceHandle(const ObjectInstanceHandle& objec
   return i->second.get();
 }
 
-bool
-ServerObjectModel::unreferenceObjectInstanceHandle(ObjectInstanceHandleObjectInstanceMap::iterator i, const ConnectHandle& connectHandle)
+void
+ServerObjectModel::eraseObjectInstanceHandle(ObjectInstance* objectInstance)
 {
+  OpenRTIAssert(objectInstance);
+  ObjectInstanceHandleObjectInstanceMap::iterator i;
+  i = objectInstance->_objectInstanceHandleObjectInstanceMapIterator;
   OpenRTIAssert(i != _objectInstanceHandleObjectInstanceMap.end());
-  Log(ServerObjectInstance, Debug) << getServerPath() << ": Unreference Object Instance \""
-                                   << i->first << "\" referenced by connect \""
-                                   << connectHandle <<  "\"!" << std::endl;
-  OpenRTIAssert(connectHandle != _parentServerConnectHandle);
-  if (!i->second->unreferenceObjectInstanceHandle(connectHandle))
-    return false;
+  objectInstance->_objectInstanceHandleObjectInstanceMapIterator = _objectInstanceHandleObjectInstanceMap.end();
 
-  Log(ServerObjectInstance, Debug) << getServerPath() << ": Dropped last reference to Object Instance \""
-                                   << i->first << "\"!" << std::endl;
+  /// FIXME may be move into ObjectInstance' destructor??
+  ObjectClass* objectClass = objectInstance->getObjectClass();
+  if (objectClass)
+    objectClass->eraseObjectInstance(objectInstance);
 
-  _objectInstanceHandleAllocator.put(i->first);
-  _objectInstanceNameSet.erase(i->second->_stringSetIterator);
+  _objectInstanceHandleAllocator.put(objectInstance->getHandle());
+  _objectInstanceNameSet.erase(objectInstance->_stringSetIterator);
   _objectInstanceHandleObjectInstanceMap.erase(i);
-
-  return true;
-}
-
-bool
-ServerObjectModel::unreferenceObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle, const ConnectHandle& connectHandle)
-{
-  return unreferenceObjectInstanceHandle(_objectInstanceHandleObjectInstanceMap.find(objectInstanceHandle), connectHandle);
 }
 
 ServerObjectModel::Federate*
