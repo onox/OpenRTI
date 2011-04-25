@@ -830,8 +830,49 @@ public:
 
 
 
+  struct Region;
+  typedef std::map<RegionHandle, SharedPtr<Region> > RegionHandleRegionMap;
+  typedef std::list<Region*> RegionList;
 
+  Region* getRegion(const RegionHandle& regionHandle);
+  Region* insertRegion(const RegionHandle& regionHandle);
+  void eraseRegion(Region* region);
+  void eraseRegion(const RegionHandle& regionHandle);
 
+  struct OPENRTI_LOCAL Region : public Referenced {
+    Region(const RegionHandleRegionMap::iterator& regionHandleRegionMapIterator) :
+      _regionHandleRegionMapIterator(regionHandleRegionMapIterator),
+      _connect(0)
+    { }
+    const RegionHandle& getHandle() const { return _regionHandleRegionMapIterator->first; }
+    const RegionHandleRegionMap::iterator& getRegionHandleRegionMapIterator() const { return _regionHandleRegionMapIterator; }
+
+    ConnectData* getConnect() { return _connect; }
+
+    RegionValue _regionValue;
+    ConnectData* _connect;
+    DimensionHandleSet _dimensionHandleSet;
+
+    void insertToRegionList(RegionList& regionList)
+    {
+      _regionListIterator = regionList.insert(regionList.begin(), this);
+    }
+    void eraseFromRegionList(RegionList& regionList)
+    {
+      regionList.erase(_regionListIterator);
+      _regionListIterator = regionList.end();
+    }
+
+  private:
+    const RegionHandleRegionMap::iterator _regionHandleRegionMapIterator;
+
+    RegionList::iterator _regionListIterator;
+
+    // originating connect???
+    // recieving connectset???
+  };
+
+  RegionHandleRegionMap _regionHandleRegionMap;
 
 
 
@@ -1111,9 +1152,23 @@ public:
     void eraseObjectInstance(ObjectInstanceConnect& objectInstanceConnect)
     { objectInstanceConnect.eraseFromObjectInstanceConnectList(_objectInstanceConnectList); }
 
+    void insertRegion(Region& region)
+    {
+      region.insertToRegionList(_ownedRegions);
+      region._connect = this;
+    }
+    void eraseRegion(Region& region)
+    {
+      region._connect = 0;
+      region.eraseFromRegionList(_ownedRegions);
+    }
+
   // private:
     /// ObjectInstances that are known/referenced by this connect
     ObjectInstanceConnectList _objectInstanceConnectList;
+
+    /// List of regions that are owned by this connect
+    RegionList _ownedRegions;
   };
   ConnectHandle _parentServerConnectHandle;
   ConnectHandleConnectDataMap _connectHandleConnectDataMap;

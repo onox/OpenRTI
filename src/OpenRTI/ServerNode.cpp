@@ -653,6 +653,49 @@ public:
     broadcast(connectHandle, message);
   }
 
+  // Regions
+  void accept(const ConnectHandle& connectHandle, InsertRegionMessage* message)
+  {
+    ConnectData* connect = getConnect(connectHandle);
+    OpenRTIAssert(connect);
+
+    for (RegionHandleDimensionHandleSetPairVector::const_iterator i = message->getRegionHandleDimensionHandleSetPairVector().begin();
+         i != message->getRegionHandleDimensionHandleSetPairVector().end(); ++i) {
+      Region* region = insertRegion(i->first);
+      connect->insertRegion(*region);
+      region->_dimensionHandleSet = i->second;
+    }
+
+    broadcast(connectHandle, message);
+  }
+  void accept(const ConnectHandle& connectHandle, CommitRegionMessage* message)
+  {
+    ConnectData* connect = getConnect(connectHandle);
+    OpenRTIAssert(connect);
+
+    for (RegionHandleRegionValuePairVector::const_iterator i = message->getRegionHandleRegionValuePairVector().begin();
+         i != message->getRegionHandleRegionValuePairVector().end(); ++i) {
+      Region* region = getRegion(i->first);
+      if (!region)
+        continue;
+      region->_regionValue = i->second;
+    }
+
+    broadcast(connectHandle, message);
+  }
+  void accept(const ConnectHandle& connectHandle, EraseRegionMessage* message)
+  {
+    ConnectData* connect = getConnect(connectHandle);
+    OpenRTIAssert(connect);
+
+    for (RegionHandleVector::const_iterator i = message->getRegionHandleVector().begin();
+         i != message->getRegionHandleVector().end(); ++i) {
+      eraseRegion(*i);
+    }
+
+    broadcast(connectHandle, message);
+  }
+
   // (un)publish messages for interactions
   void accept(const ConnectHandle& connectHandle, ChangeInteractionClassPublicationMessage* message)
   {
@@ -1464,6 +1507,24 @@ public:
     }
 
     pushPublications(connectHandle);
+
+    if (!_regionHandleRegionMap.empty()) {
+      SharedPtr<InsertRegionMessage> insertRegionMessage;
+      insertRegionMessage = new InsertRegionMessage;
+      insertRegionMessage->setFederationHandle(getHandle());
+      insertRegionMessage->getRegionHandleDimensionHandleSetPairVector().reserve(_regionHandleRegionMap.size());
+      SharedPtr<CommitRegionMessage> commitRegionMessage;
+      commitRegionMessage = new CommitRegionMessage;
+      commitRegionMessage->setFederationHandle(getHandle());
+      commitRegionMessage->getRegionHandleRegionValuePairVector().reserve(_regionHandleRegionMap.size());
+      for (RegionHandleRegionMap::const_iterator i = _regionHandleRegionMap.begin();
+           i != _regionHandleRegionMap.end(); ++i) {
+        insertRegionMessage->getRegionHandleDimensionHandleSetPairVector().push_back(RegionHandleDimensionHandleSetPair(i->first, i->second->_dimensionHandleSet));
+        commitRegionMessage->getRegionHandleRegionValuePairVector().push_back(RegionHandleRegionValuePair(i->first, i->second->_regionValue));
+      }
+      messageSender->send(insertRegionMessage);
+      messageSender->send(commitRegionMessage);
+    }
   }
 
   // Should be called when a connection dies
@@ -1538,6 +1599,23 @@ public:
 
     // Unpublish this connect
     unpublishConnect(connectHandle);
+
+    {
+      SharedPtr<EraseRegionMessage> eraseRegionMessage;
+      for (RegionList::iterator j = connect->_ownedRegions.begin();
+           j != connect->_ownedRegions.end(); ++j) {
+        RegionHandle regionHandle = (*j)->getHandle();
+        if (!eraseRegionMessage.valid()) {
+          eraseRegionMessage = new EraseRegionMessage;
+          eraseRegionMessage->setFederationHandle(getHandle());
+          eraseRegionMessage->getRegionHandleVector().reserve(_regionHandleRegionMap.size());
+        }
+        eraseRegionMessage->getRegionHandleVector().push_back(regionHandle);
+      }
+      if (eraseRegionMessage.valid())
+        accept(connectHandle, eraseRegionMessage.get());
+      OpenRTIAssert(connect->_objectInstanceConnectList.empty());
+    }
 
     ConnectHandleConnectDataMap::iterator i = _connectHandleConnectDataMap.find(connectHandle);
     if (i != _connectHandleConnectDataMap.end()) {
@@ -2142,6 +2220,14 @@ public:
   void accept(const ConnectHandle& connectHandle, DisableTimeRegulationRequestMessage* message)
   { acceptFederationMessage(connectHandle, message); }
   void accept(const ConnectHandle& connectHandle, CommitLowerBoundTimeStampMessage* message)
+  { acceptFederationMessage(connectHandle, message); }
+
+  // Regions
+  void accept(const ConnectHandle& connectHandle, InsertRegionMessage* message)
+  { acceptFederationMessage(connectHandle, message); }
+  void accept(const ConnectHandle& connectHandle, CommitRegionMessage* message)
+  { acceptFederationMessage(connectHandle, message); }
+  void accept(const ConnectHandle& connectHandle, EraseRegionMessage* message)
   { acceptFederationMessage(connectHandle, message); }
 
   // Publications

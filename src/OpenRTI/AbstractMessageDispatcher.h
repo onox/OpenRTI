@@ -55,6 +55,9 @@ class CommitLowerBoundTimeStampMessage;
 class TimeConstrainedEnabledMessage;
 class TimeRegulationEnabledMessage;
 class TimeAdvanceGrantedMessage;
+class InsertRegionMessage;
+class CommitRegionMessage;
+class EraseRegionMessage;
 class ChangeInteractionClassPublicationMessage;
 class ChangeObjectClassPublicationMessage;
 class ChangeInteractionClassSubscriptionMessage;
@@ -110,6 +113,9 @@ public:
   virtual void accept(TimeConstrainedEnabledMessage&) = 0;
   virtual void accept(TimeRegulationEnabledMessage&) = 0;
   virtual void accept(TimeAdvanceGrantedMessage&) = 0;
+  virtual void accept(InsertRegionMessage&) = 0;
+  virtual void accept(CommitRegionMessage&) = 0;
+  virtual void accept(EraseRegionMessage&) = 0;
   virtual void accept(ChangeInteractionClassPublicationMessage&) = 0;
   virtual void accept(ChangeObjectClassPublicationMessage&) = 0;
   virtual void accept(ChangeInteractionClassSubscriptionMessage&) = 0;
@@ -168,6 +174,9 @@ public:
   virtual void accept(TimeConstrainedEnabledMessage& message) { _t(message); }
   virtual void accept(TimeRegulationEnabledMessage& message) { _t(message); }
   virtual void accept(TimeAdvanceGrantedMessage& message) { _t(message); }
+  virtual void accept(InsertRegionMessage& message) { _t(message); }
+  virtual void accept(CommitRegionMessage& message) { _t(message); }
+  virtual void accept(EraseRegionMessage& message) { _t(message); }
   virtual void accept(ChangeInteractionClassPublicationMessage& message) { _t(message); }
   virtual void accept(ChangeObjectClassPublicationMessage& message) { _t(message); }
   virtual void accept(ChangeInteractionClassSubscriptionMessage& message) { _t(message); }
@@ -226,6 +235,9 @@ public:
   virtual void accept(const TimeConstrainedEnabledMessage&) = 0;
   virtual void accept(const TimeRegulationEnabledMessage&) = 0;
   virtual void accept(const TimeAdvanceGrantedMessage&) = 0;
+  virtual void accept(const InsertRegionMessage&) = 0;
+  virtual void accept(const CommitRegionMessage&) = 0;
+  virtual void accept(const EraseRegionMessage&) = 0;
   virtual void accept(const ChangeInteractionClassPublicationMessage&) = 0;
   virtual void accept(const ChangeObjectClassPublicationMessage&) = 0;
   virtual void accept(const ChangeInteractionClassSubscriptionMessage&) = 0;
@@ -284,6 +296,9 @@ public:
   virtual void accept(const TimeConstrainedEnabledMessage& message) { _t(message); }
   virtual void accept(const TimeRegulationEnabledMessage& message) { _t(message); }
   virtual void accept(const TimeAdvanceGrantedMessage& message) { _t(message); }
+  virtual void accept(const InsertRegionMessage& message) { _t(message); }
+  virtual void accept(const CommitRegionMessage& message) { _t(message); }
+  virtual void accept(const EraseRegionMessage& message) { _t(message); }
   virtual void accept(const ChangeInteractionClassPublicationMessage& message) { _t(message); }
   virtual void accept(const ChangeObjectClassPublicationMessage& message) { _t(message); }
   virtual void accept(const ChangeInteractionClassSubscriptionMessage& message) { _t(message); }

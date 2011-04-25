@@ -131,6 +131,8 @@ typedef std::set<DimensionHandle> DimensionHandleSet;
 
 typedef std::vector<ObjectInstanceHandle> ObjectInstanceHandleVector;
 
+typedef std::vector<RegionHandle> RegionHandleVector;
+
 typedef std::vector<FOMModuleHandle> FOMModuleHandleVector;
 
 typedef std::set<FOMModuleHandle> FOMModuleHandleSet;
@@ -145,6 +147,18 @@ typedef std::pair<DimensionHandle, RangeBoundsValue> DimensionHandleRangeBoundsV
 typedef std::vector<DimensionHandleRangeBoundsValuePair> RegionValue;
 
 typedef std::vector<RegionValue> RegionValueList;
+
+typedef std::pair<RegionHandle, DimensionHandleSet> RegionHandleDimensionHandleSetPair;
+
+typedef std::vector<RegionHandleDimensionHandleSetPair> RegionHandleDimensionHandleSetPairVector;
+
+typedef std::pair<RegionHandle, SpaceHandle> RegionHandleSpaceHandlePair;
+
+typedef std::vector<RegionHandleSpaceHandlePair> RegionHandleSpaceHandlePairVector;
+
+typedef std::pair<RegionHandle, RegionValue> RegionHandleRegionValuePair;
+
+typedef std::vector<RegionHandleRegionValuePair> RegionHandleRegionValuePairVector;
 
 typedef std::pair<InteractionClassHandle, RegionValueList> InteractionClassHandleRegionValueListPair;
 
@@ -293,6 +307,9 @@ class CommitLowerBoundTimeStampMessage;
 class TimeConstrainedEnabledMessage;
 class TimeRegulationEnabledMessage;
 class TimeAdvanceGrantedMessage;
+class InsertRegionMessage;
+class CommitRegionMessage;
+class EraseRegionMessage;
 class ChangeInteractionClassPublicationMessage;
 class ChangeObjectClassPublicationMessage;
 class ChangeInteractionClassSubscriptionMessage;
@@ -337,6 +354,8 @@ typedef std::vector<DimensionHandle> DimensionHandleVector;
 typedef std::set<DimensionHandle> DimensionHandleSet;
 
 typedef std::vector<ObjectInstanceHandle> ObjectInstanceHandleVector;
+
+typedef std::vector<RegionHandle> RegionHandleVector;
 
 typedef std::vector<FOMModuleHandle> FOMModuleHandleVector;
 
@@ -394,6 +413,18 @@ typedef std::pair<DimensionHandle, RangeBoundsValue> DimensionHandleRangeBoundsV
 typedef std::vector<DimensionHandleRangeBoundsValuePair> RegionValue;
 
 typedef std::vector<RegionValue> RegionValueList;
+
+typedef std::pair<RegionHandle, DimensionHandleSet> RegionHandleDimensionHandleSetPair;
+
+typedef std::vector<RegionHandleDimensionHandleSetPair> RegionHandleDimensionHandleSetPairVector;
+
+typedef std::pair<RegionHandle, SpaceHandle> RegionHandleSpaceHandlePair;
+
+typedef std::vector<RegionHandleSpaceHandlePair> RegionHandleSpaceHandlePairVector;
+
+typedef std::pair<RegionHandle, RegionValue> RegionHandleRegionValuePair;
+
+typedef std::vector<RegionHandleRegionValuePair> RegionHandleRegionValuePairVector;
 
 typedef std::pair<InteractionClassHandle, RegionValueList> InteractionClassHandleRegionValueListPair;
 
@@ -2912,6 +2943,93 @@ private:
   VariableLengthData _logicalTime;
 };
 
+class OPENRTI_API InsertRegionMessage : public AbstractMessage {
+public:
+  InsertRegionMessage();
+  virtual ~InsertRegionMessage();
+
+  virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
+  virtual void dispatch(AbstractMessageDispatcher& dispatcher);
+  virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
+
+  void setFederationHandle(const FederationHandle& value)
+  { _federationHandle = value; }
+  FederationHandle& getFederationHandle()
+  { return _federationHandle; }
+  const FederationHandle& getFederationHandle() const
+  { return _federationHandle; }
+
+  void setRegionHandleDimensionHandleSetPairVector(const RegionHandleDimensionHandleSetPairVector& value)
+  { _regionHandleDimensionHandleSetPairVector = value; }
+  RegionHandleDimensionHandleSetPairVector& getRegionHandleDimensionHandleSetPairVector()
+  { return _regionHandleDimensionHandleSetPairVector; }
+  const RegionHandleDimensionHandleSetPairVector& getRegionHandleDimensionHandleSetPairVector() const
+  { return _regionHandleDimensionHandleSetPairVector; }
+
+private:
+  FederationHandle _federationHandle;
+  RegionHandleDimensionHandleSetPairVector _regionHandleDimensionHandleSetPairVector;
+};
+
+class OPENRTI_API CommitRegionMessage : public AbstractMessage {
+public:
+  CommitRegionMessage();
+  virtual ~CommitRegionMessage();
+
+  virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
+  virtual void dispatch(AbstractMessageDispatcher& dispatcher);
+  virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
+
+  void setFederationHandle(const FederationHandle& value)
+  { _federationHandle = value; }
+  FederationHandle& getFederationHandle()
+  { return _federationHandle; }
+  const FederationHandle& getFederationHandle() const
+  { return _federationHandle; }
+
+  void setRegionHandleRegionValuePairVector(const RegionHandleRegionValuePairVector& value)
+  { _regionHandleRegionValuePairVector = value; }
+  RegionHandleRegionValuePairVector& getRegionHandleRegionValuePairVector()
+  { return _regionHandleRegionValuePairVector; }
+  const RegionHandleRegionValuePairVector& getRegionHandleRegionValuePairVector() const
+  { return _regionHandleRegionValuePairVector; }
+
+private:
+  FederationHandle _federationHandle;
+  RegionHandleRegionValuePairVector _regionHandleRegionValuePairVector;
+};
+
+class OPENRTI_API EraseRegionMessage : public AbstractMessage {
+public:
+  EraseRegionMessage();
+  virtual ~EraseRegionMessage();
+
+  virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
+  virtual void dispatch(AbstractMessageDispatcher& dispatcher);
+  virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
+
+  void setFederationHandle(const FederationHandle& value)
+  { _federationHandle = value; }
+  FederationHandle& getFederationHandle()
+  { return _federationHandle; }
+  const FederationHandle& getFederationHandle() const
+  { return _federationHandle; }
+
+  void setRegionHandleVector(const RegionHandleVector& value)
+  { _regionHandleVector = value; }
+  RegionHandleVector& getRegionHandleVector()
+  { return _regionHandleVector; }
+  const RegionHandleVector& getRegionHandleVector() const
+  { return _regionHandleVector; }
+
+private:
+  FederationHandle _federationHandle;
+  RegionHandleVector _regionHandleVector;
+};
+
 class OPENRTI_API ChangeInteractionClassPublicationMessage : public AbstractMessage {
 public:
   ChangeInteractionClassPublicationMessage();
@@ -4135,6 +4253,22 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const ObjectInstanceH
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RegionHandleVector& value)
+{
+  os << "{ ";
+  RegionHandleVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModuleHandleVector& value)
 {
   os << "{ ";
@@ -4242,6 +4376,87 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const RegionValueList
 {
   os << "{ ";
   RegionValueList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RegionHandleDimensionHandleSetPair& value)
+{
+  os << "{ ";
+  os << "first: " << value.first << ", ";
+  os << "second: " << value.second;
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RegionHandleDimensionHandleSetPairVector& value)
+{
+  os << "{ ";
+  RegionHandleDimensionHandleSetPairVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RegionHandleSpaceHandlePair& value)
+{
+  os << "{ ";
+  os << "first: " << value.first << ", ";
+  os << "second: " << value.second;
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RegionHandleSpaceHandlePairVector& value)
+{
+  os << "{ ";
+  RegionHandleSpaceHandlePairVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RegionHandleRegionValuePair& value)
+{
+  os << "{ ";
+  os << "first: " << value.first << ", ";
+  os << "second: " << value.second;
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const RegionHandleRegionValuePairVector& value)
+{
+  os << "{ ";
+  RegionHandleRegionValuePairVector::const_iterator i = value.begin();
   if (i != value.end()) {
     os << *i;
     while (++i != value.end()) {
@@ -5498,6 +5713,42 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeAdvanceGran
 {
   os << "{ ";
   os << "logicalTime: " << value.getLogicalTime();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const InsertRegionMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "regionHandleDimensionHandleSetPairVector: " << value.getRegionHandleDimensionHandleSetPairVector();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const CommitRegionMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "regionHandleRegionValuePairVector: " << value.getRegionHandleRegionValuePairVector();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const EraseRegionMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "regionHandleVector: " << value.getRegionHandleVector();
   os << " }";
   return os;
 }

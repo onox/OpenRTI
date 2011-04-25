@@ -954,6 +954,105 @@ TimeAdvanceGrantedMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) 
 }
 
 
+InsertRegionMessage::InsertRegionMessage()
+{
+}
+
+InsertRegionMessage::~InsertRegionMessage()
+{
+}
+
+const char*
+InsertRegionMessage::getTypeName() const
+{
+  return "InsertRegionMessage";
+}
+
+void
+InsertRegionMessage::out(std::ostream& os) const
+{
+  os << "InsertRegionMessage " << *this;
+}
+
+void
+InsertRegionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
+{
+  dispatcher.accept(*this);
+}
+
+void
+InsertRegionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+{
+  dispatcher.accept(*this);
+}
+
+
+CommitRegionMessage::CommitRegionMessage()
+{
+}
+
+CommitRegionMessage::~CommitRegionMessage()
+{
+}
+
+const char*
+CommitRegionMessage::getTypeName() const
+{
+  return "CommitRegionMessage";
+}
+
+void
+CommitRegionMessage::out(std::ostream& os) const
+{
+  os << "CommitRegionMessage " << *this;
+}
+
+void
+CommitRegionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
+{
+  dispatcher.accept(*this);
+}
+
+void
+CommitRegionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+{
+  dispatcher.accept(*this);
+}
+
+
+EraseRegionMessage::EraseRegionMessage()
+{
+}
+
+EraseRegionMessage::~EraseRegionMessage()
+{
+}
+
+const char*
+EraseRegionMessage::getTypeName() const
+{
+  return "EraseRegionMessage";
+}
+
+void
+EraseRegionMessage::out(std::ostream& os) const
+{
+  os << "EraseRegionMessage " << *this;
+}
+
+void
+EraseRegionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
+{
+  dispatcher.accept(*this);
+}
+
+void
+EraseRegionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+{
+  dispatcher.accept(*this);
+}
+
+
 ChangeInteractionClassPublicationMessage::ChangeInteractionClassPublicationMessage()
 {
 }

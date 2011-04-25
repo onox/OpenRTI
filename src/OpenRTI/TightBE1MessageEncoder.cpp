@@ -409,6 +409,14 @@ public:
     }
   }
 
+  void writeRegionHandleVector(const RegionHandleVector& value)
+  {
+    writeSizeTCompressed(value.size());
+    for (RegionHandleVector::const_iterator i = value.begin(); i != value.end(); ++i) {
+      writeRegionHandle(*i);
+    }
+  }
+
   void writeFOMModuleHandleVector(const FOMModuleHandleVector& value)
   {
     writeSizeTCompressed(value.size());
@@ -473,6 +481,48 @@ public:
     writeSizeTCompressed(value.size());
     for (RegionValueList::const_iterator i = value.begin(); i != value.end(); ++i) {
       writeRegionValue(*i);
+    }
+  }
+
+  void writeRegionHandleDimensionHandleSetPair(const RegionHandleDimensionHandleSetPair& value)
+  {
+    writeRegionHandle(value.first);
+    writeDimensionHandleSet(value.second);
+  }
+
+  void writeRegionHandleDimensionHandleSetPairVector(const RegionHandleDimensionHandleSetPairVector& value)
+  {
+    writeSizeTCompressed(value.size());
+    for (RegionHandleDimensionHandleSetPairVector::const_iterator i = value.begin(); i != value.end(); ++i) {
+      writeRegionHandleDimensionHandleSetPair(*i);
+    }
+  }
+
+  void writeRegionHandleSpaceHandlePair(const RegionHandleSpaceHandlePair& value)
+  {
+    writeRegionHandle(value.first);
+    writeSpaceHandle(value.second);
+  }
+
+  void writeRegionHandleSpaceHandlePairVector(const RegionHandleSpaceHandlePairVector& value)
+  {
+    writeSizeTCompressed(value.size());
+    for (RegionHandleSpaceHandlePairVector::const_iterator i = value.begin(); i != value.end(); ++i) {
+      writeRegionHandleSpaceHandlePair(*i);
+    }
+  }
+
+  void writeRegionHandleRegionValuePair(const RegionHandleRegionValuePair& value)
+  {
+    writeRegionHandle(value.first);
+    writeRegionValue(value.second);
+  }
+
+  void writeRegionHandleRegionValuePairVector(const RegionHandleRegionValuePairVector& value)
+  {
+    writeSizeTCompressed(value.size());
+    for (RegionHandleRegionValuePairVector::const_iterator i = value.begin(); i != value.end(); ++i) {
+      writeRegionHandleRegionValuePair(*i);
     }
   }
 
@@ -1172,6 +1222,24 @@ public:
     writeVariableLengthData(value.getLogicalTime());
   }
 
+  void writeInsertRegionMessage(const InsertRegionMessage& value)
+  {
+    writeFederationHandle(value.getFederationHandle());
+    writeRegionHandleDimensionHandleSetPairVector(value.getRegionHandleDimensionHandleSetPairVector());
+  }
+
+  void writeCommitRegionMessage(const CommitRegionMessage& value)
+  {
+    writeFederationHandle(value.getFederationHandle());
+    writeRegionHandleRegionValuePairVector(value.getRegionHandleRegionValuePairVector());
+  }
+
+  void writeEraseRegionMessage(const EraseRegionMessage& value)
+  {
+    writeFederationHandle(value.getFederationHandle());
+    writeRegionHandleVector(value.getRegionHandleVector());
+  }
+
   void writeChangeInteractionClassPublicationMessage(const ChangeInteractionClassPublicationMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
@@ -1611,6 +1679,36 @@ public:
     EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
     encodeStream.writeUInt16Compressed(43);
     encodeStream.writeCommitLowerBoundTimeStampMessage(message);
+    headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
+  }
+
+  void
+  encode(NetworkBuffer& networkBuffer, const InsertRegionMessage& message) const
+  {
+    EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
+    EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
+    encodeStream.writeUInt16Compressed(44);
+    encodeStream.writeInsertRegionMessage(message);
+    headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
+  }
+
+  void
+  encode(NetworkBuffer& networkBuffer, const CommitRegionMessage& message) const
+  {
+    EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
+    EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
+    encodeStream.writeUInt16Compressed(45);
+    encodeStream.writeCommitRegionMessage(message);
+    headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
+  }
+
+  void
+  encode(NetworkBuffer& networkBuffer, const EraseRegionMessage& message) const
+  {
+    EncodeDataStream headerStream(networkBuffer.addScratchBuffer());
+    EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);
+    encodeStream.writeUInt16Compressed(46);
+    encodeStream.writeEraseRegionMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
 

@@ -461,6 +461,21 @@ public:
     } catch (...) {
     }
 
+    SharedPtr<EraseRegionMessage> eraseRegionRequest;
+    for (typename RegionHandleRegionDataMap::iterator i = _regionHandleRegionDataMap.begin();
+         i != _regionHandleRegionDataMap.end(); ++i) {
+      if (i->first.getFederateHandle() != getFederateHandle())
+        continue;
+      if (!eraseRegionRequest.valid()) {
+        eraseRegionRequest = new EraseRegionMessage;
+        eraseRegionRequest->setFederationHandle(getFederationHandle());
+        eraseRegionRequest->getRegionHandleVector().reserve(_regionHandleRegionDataMap.size());
+      }
+      eraseRegionRequest->getRegionHandleVector().push_back(i->first);
+    }
+    if (eraseRegionRequest.valid())
+      sendMessage(eraseRegionRequest);
+
     SharedPtr<ResignFederationExecutionRequestMessage> request = new ResignFederationExecutionRequestMessage;
     request->setFederationHandle(getFederationHandle());
     request->setFederateHandle(getFederateHandle());
@@ -2126,6 +2141,15 @@ public:
     }
     RegionHandle regionHandle(getFederateHandle(), _localRegionHandleAllocator.get());
     _regionHandleRegionDataMap[regionHandle]._dimensionHandleSet = dimensionHandleSet;
+
+    SharedPtr<InsertRegionMessage> request = new InsertRegionMessage;
+    request->setFederationHandle(getFederationHandle());
+    RegionHandleDimensionHandleSetPairVector value(1);
+    value[0].first = regionHandle;
+    value[0].second = dimensionHandleSet;
+    request->getRegionHandleDimensionHandleSetPairVector().swap(value);
+    sendMessage(request);
+
     return regionHandle;
   }
 
@@ -2169,6 +2193,13 @@ public:
     _regionHandleRegionDataMap.erase(i);
     LocalRegionHandle localRegionHandle = regionHandle.getLocalRegionHandle();
     _localRegionHandleAllocator.put(localRegionHandle);
+
+    SharedPtr<EraseRegionMessage> request = new EraseRegionMessage;
+    request->setFederationHandle(getFederationHandle());
+    RegionHandleVector value(1);
+    value[0] = regionHandle;
+    request->getRegionHandleVector().swap(value);
+    sendMessage(request);
   }
 
   virtual ObjectInstanceHandle
@@ -2928,6 +2959,34 @@ protected:
   { queueCallback(message); }
   virtual void acceptInternalMessage(const FederationSynchronizedMessage& message)
   { queueCallback(message); }
+
+  virtual void acceptInternalMessage(const InsertRegionMessage& message)
+  {
+    for (RegionHandleDimensionHandleSetPairVector::const_iterator i = message.getRegionHandleDimensionHandleSetPairVector().begin();
+         i != message.getRegionHandleDimensionHandleSetPairVector().end(); ++i) {
+      _regionHandleRegionDataMap[i->first]._dimensionHandleSet = i->second;
+    }
+  }
+  virtual void acceptInternalMessage(const CommitRegionMessage& message)
+  {
+    for (RegionHandleRegionValuePairVector::const_iterator i = message.getRegionHandleRegionValuePairVector().begin();
+         i != message.getRegionHandleRegionValuePairVector().end(); ++i) {
+      typename RegionHandleRegionDataMap::iterator j = _regionHandleRegionDataMap.find(i->first);
+      OpenRTIAssert(j != _regionHandleRegionDataMap.end());
+      for (RegionValue::const_iterator k = i->second.begin(); k != i->second.end(); ++k) {
+        Region region;
+        region.setRangeBounds(k->first, RangeBounds(k->second.getLowerBound(), k->second.getUpperBound()));
+        j->second._region.swap(region);
+      }
+    }
+  }
+  virtual void acceptInternalMessage(const EraseRegionMessage& message)
+  {
+    for (RegionHandleVector::const_iterator i = message.getRegionHandleVector().begin();
+         i != message.getRegionHandleVector().end(); ++i) {
+      _regionHandleRegionDataMap.erase(*i);
+    }
+  }
 
   virtual void acceptInternalMessage(const ChangeInteractionClassPublicationMessage& message)
   { }

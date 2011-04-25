@@ -113,6 +113,7 @@
   <type name="DimensionHandleVector" type="vector" scalar="DimensionHandle"/>
   <type name="DimensionHandleSet" type="set" scalar="DimensionHandle"/>
   <type name="ObjectInstanceHandleVector" type="vector" scalar="ObjectInstanceHandle"/>
+  <type name="RegionHandleVector" type="vector" scalar="RegionHandle"/>
   <type name="FOMModuleHandleVector" type="vector" scalar="FOMModuleHandle"/>
   <type name="FOMModuleHandleSet" type="set" scalar="FOMModuleHandle"/>
 
@@ -128,6 +129,15 @@
   <type name="DimensionHandleRangeBoundsValuePair" type="pair" first="DimensionHandle" second="RangeBoundsValue"/>
   <type name="RegionValue" type="vector" scalar="DimensionHandleRangeBoundsValuePair"/>
   <type name="RegionValueList" type="vector" scalar="RegionValue"/>
+
+  <type name="RegionHandleDimensionHandleSetPair" type="pair" first="RegionHandle" second="DimensionHandleSet"/>
+  <type name="RegionHandleDimensionHandleSetPairVector" type="vector" scalar="RegionHandleDimensionHandleSetPair"/>
+
+  <type name="RegionHandleSpaceHandlePair" type="pair" first="RegionHandle" second="SpaceHandle"/>
+  <type name="RegionHandleSpaceHandlePairVector" type="vector" scalar="RegionHandleSpaceHandlePair"/>
+
+  <type name="RegionHandleRegionValuePair" type="pair" first="RegionHandle" second="RegionValue"/>
+  <type name="RegionHandleRegionValuePairVector" type="vector" scalar="RegionHandleRegionValuePair"/>
 
   <type name="InteractionClassHandleRegionValueListPair" type="pair" first="InteractionClassHandle" second="RegionValueList"/>
   <type name="AttributeHandleRegionValueListPair" type="pair" first="AttributeHandle" second="RegionValueList"/>
@@ -559,6 +569,23 @@
   </message>
   <message type="TimeAdvanceGranted">
     <field name="LogicalTime" type="VariableLengthData"/>
+  </message>
+
+  <!-- Region modification -->
+  <message type="InsertRegion">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <!-- FIXME associate routing spaces for each dimension handle set under the hood ??? -->
+    <!-- In case of real hla1.3 regions, a routingspace might be associated -->
+    <!-- <field name="RegionHandleSpaceHandlePairVector" type="RegionHandleSpaceHandlePairVector"/> -->
+    <field name="RegionHandleDimensionHandleSetPairVector" type="RegionHandleDimensionHandleSetPairVector"/>
+  </message>
+  <message type="CommitRegion">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="RegionHandleRegionValuePairVector" type="RegionHandleRegionValuePairVector"/>
+  </message>
+  <message type="EraseRegion">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="RegionHandleVector" type="RegionHandleVector"/>
   </message>
 
   <!-- Publications are pushed into all federates. -->

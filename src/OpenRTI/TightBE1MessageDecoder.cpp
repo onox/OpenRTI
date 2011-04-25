@@ -413,6 +413,14 @@ public:
     }
   }
 
+  void readRegionHandleVector(RegionHandleVector& value)
+  {
+    value.resize(readSizeTCompressed());
+    for (RegionHandleVector::iterator i = value.begin(); i != value.end(); ++i) {
+      readRegionHandle(*i);
+    }
+  }
+
   void readFOMModuleHandleVector(FOMModuleHandleVector& value)
   {
     value.resize(readSizeTCompressed());
@@ -482,6 +490,48 @@ public:
     value.resize(readSizeTCompressed());
     for (RegionValueList::iterator i = value.begin(); i != value.end(); ++i) {
       readRegionValue(*i);
+    }
+  }
+
+  void readRegionHandleDimensionHandleSetPair(RegionHandleDimensionHandleSetPair& value)
+  {
+    readRegionHandle(value.first);
+    readDimensionHandleSet(value.second);
+  }
+
+  void readRegionHandleDimensionHandleSetPairVector(RegionHandleDimensionHandleSetPairVector& value)
+  {
+    value.resize(readSizeTCompressed());
+    for (RegionHandleDimensionHandleSetPairVector::iterator i = value.begin(); i != value.end(); ++i) {
+      readRegionHandleDimensionHandleSetPair(*i);
+    }
+  }
+
+  void readRegionHandleSpaceHandlePair(RegionHandleSpaceHandlePair& value)
+  {
+    readRegionHandle(value.first);
+    readSpaceHandle(value.second);
+  }
+
+  void readRegionHandleSpaceHandlePairVector(RegionHandleSpaceHandlePairVector& value)
+  {
+    value.resize(readSizeTCompressed());
+    for (RegionHandleSpaceHandlePairVector::iterator i = value.begin(); i != value.end(); ++i) {
+      readRegionHandleSpaceHandlePair(*i);
+    }
+  }
+
+  void readRegionHandleRegionValuePair(RegionHandleRegionValuePair& value)
+  {
+    readRegionHandle(value.first);
+    readRegionValue(value.second);
+  }
+
+  void readRegionHandleRegionValuePairVector(RegionHandleRegionValuePairVector& value)
+  {
+    value.resize(readSizeTCompressed());
+    for (RegionHandleRegionValuePairVector::iterator i = value.begin(); i != value.end(); ++i) {
+      readRegionHandleRegionValuePair(*i);
     }
   }
 
@@ -1187,6 +1237,24 @@ public:
     readVariableLengthData(value.getLogicalTime());
   }
 
+  void readInsertRegionMessage(InsertRegionMessage& value)
+  {
+    readFederationHandle(value.getFederationHandle());
+    readRegionHandleDimensionHandleSetPairVector(value.getRegionHandleDimensionHandleSetPairVector());
+  }
+
+  void readCommitRegionMessage(CommitRegionMessage& value)
+  {
+    readFederationHandle(value.getFederationHandle());
+    readRegionHandleRegionValuePairVector(value.getRegionHandleRegionValuePairVector());
+  }
+
+  void readEraseRegionMessage(EraseRegionMessage& value)
+  {
+    readFederationHandle(value.getFederationHandle());
+    readRegionHandleVector(value.getRegionHandleVector());
+  }
+
   void readChangeInteractionClassPublicationMessage(ChangeInteractionClassPublicationMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
@@ -1534,6 +1602,13 @@ public:
     }
   }
 
+  void readPayloadRegionHandleVector(RegionHandleVector& value)
+  {
+    for (RegionHandleVector::iterator i = value.begin(); i != value.end(); ++i) {
+      readPayloadRegionHandle(*i);
+    }
+  }
+
   void readPayloadFOMModuleHandleVector(FOMModuleHandleVector& value)
   {
     for (FOMModuleHandleVector::iterator i = value.begin(); i != value.end(); ++i) {
@@ -1592,6 +1667,45 @@ public:
   {
     for (RegionValueList::iterator i = value.begin(); i != value.end(); ++i) {
       readPayloadRegionValue(*i);
+    }
+  }
+
+  void readPayloadRegionHandleDimensionHandleSetPair(RegionHandleDimensionHandleSetPair& value)
+  {
+    readPayloadRegionHandle(value.first);
+    readPayloadDimensionHandleSet(value.second);
+  }
+
+  void readPayloadRegionHandleDimensionHandleSetPairVector(RegionHandleDimensionHandleSetPairVector& value)
+  {
+    for (RegionHandleDimensionHandleSetPairVector::iterator i = value.begin(); i != value.end(); ++i) {
+      readPayloadRegionHandleDimensionHandleSetPair(*i);
+    }
+  }
+
+  void readPayloadRegionHandleSpaceHandlePair(RegionHandleSpaceHandlePair& value)
+  {
+    readPayloadRegionHandle(value.first);
+    readPayloadSpaceHandle(value.second);
+  }
+
+  void readPayloadRegionHandleSpaceHandlePairVector(RegionHandleSpaceHandlePairVector& value)
+  {
+    for (RegionHandleSpaceHandlePairVector::iterator i = value.begin(); i != value.end(); ++i) {
+      readPayloadRegionHandleSpaceHandlePair(*i);
+    }
+  }
+
+  void readPayloadRegionHandleRegionValuePair(RegionHandleRegionValuePair& value)
+  {
+    readPayloadRegionHandle(value.first);
+    readPayloadRegionValue(value.second);
+  }
+
+  void readPayloadRegionHandleRegionValuePairVector(RegionHandleRegionValuePairVector& value)
+  {
+    for (RegionHandleRegionValuePairVector::iterator i = value.begin(); i != value.end(); ++i) {
+      readPayloadRegionHandleRegionValuePair(*i);
     }
   }
 
@@ -2188,6 +2302,24 @@ public:
     readPayloadVariableLengthData(value.getLogicalTime());
   }
 
+  void readPayloadInsertRegionMessage(InsertRegionMessage& value)
+  {
+    readPayloadFederationHandle(value.getFederationHandle());
+    readPayloadRegionHandleDimensionHandleSetPairVector(value.getRegionHandleDimensionHandleSetPairVector());
+  }
+
+  void readPayloadCommitRegionMessage(CommitRegionMessage& value)
+  {
+    readPayloadFederationHandle(value.getFederationHandle());
+    readPayloadRegionHandleRegionValuePairVector(value.getRegionHandleRegionValuePairVector());
+  }
+
+  void readPayloadEraseRegionMessage(EraseRegionMessage& value)
+  {
+    readPayloadFederationHandle(value.getFederationHandle());
+    readPayloadRegionHandleVector(value.getRegionHandleVector());
+  }
+
   void readPayloadChangeInteractionClassPublicationMessage(ChangeInteractionClassPublicationMessage& value)
   {
     readPayloadFederationHandle(value.getFederationHandle());
@@ -2485,6 +2617,15 @@ TightBE1MessageDecoder::decodePayload(const NetworkBuffer& networkBuffer)
   case 43:
     payloadDecoder.readPayloadCommitLowerBoundTimeStampMessage(static_cast<CommitLowerBoundTimeStampMessage&>(*_message));
     break;
+  case 44:
+    payloadDecoder.readPayloadInsertRegionMessage(static_cast<InsertRegionMessage&>(*_message));
+    break;
+  case 45:
+    payloadDecoder.readPayloadCommitRegionMessage(static_cast<CommitRegionMessage&>(*_message));
+    break;
+  case 46:
+    payloadDecoder.readPayloadEraseRegionMessage(static_cast<EraseRegionMessage&>(*_message));
+    break;
   case 50:
     payloadDecoder.readPayloadChangeInteractionClassPublicationMessage(static_cast<ChangeInteractionClassPublicationMessage&>(*_message));
     break;
@@ -2655,6 +2796,18 @@ TightBE1MessageDecoder::decodeBody(NetworkBuffer& networkBuffer)
   case 43:
     _message = new CommitLowerBoundTimeStampMessage;
     decodeStream.readCommitLowerBoundTimeStampMessage(static_cast<CommitLowerBoundTimeStampMessage&>(*_message));
+    break;
+  case 44:
+    _message = new InsertRegionMessage;
+    decodeStream.readInsertRegionMessage(static_cast<InsertRegionMessage&>(*_message));
+    break;
+  case 45:
+    _message = new CommitRegionMessage;
+    decodeStream.readCommitRegionMessage(static_cast<CommitRegionMessage&>(*_message));
+    break;
+  case 46:
+    _message = new EraseRegionMessage;
+    decodeStream.readEraseRegionMessage(static_cast<EraseRegionMessage&>(*_message));
     break;
   case 50:
     _message = new ChangeInteractionClassPublicationMessage;

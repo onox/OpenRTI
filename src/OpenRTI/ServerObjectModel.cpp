@@ -177,6 +177,48 @@ ServerObjectModel::insertObjectClass(const FOMObjectClass& module)
   }
 }
 
+ServerObjectModel::Region*
+ServerObjectModel::getRegion(const RegionHandle& regionHandle)
+{
+  RegionHandleRegionMap::iterator i;
+  i = _regionHandleRegionMap.find(regionHandle);
+  if (i == _regionHandleRegionMap.end())
+    return 0;
+  return i->second.get();
+}
+
+ServerObjectModel::Region*
+ServerObjectModel::insertRegion(const RegionHandle& regionHandle)
+{
+  typedef RegionHandleRegionMap::value_type value_type;
+  RegionHandleRegionMap::iterator i;
+  i = _regionHandleRegionMap.insert(value_type(regionHandle, 0)).first;
+  OpenRTIAssert(!i->second.valid());
+  i->second = new Region(i);
+  return i->second.get();
+}
+
+void
+ServerObjectModel::eraseRegion(Region* region)
+{
+  OpenRTIAssert(region);
+  OpenRTIAssert(!region->getConnect());
+  _regionHandleRegionMap.erase(region->getRegionHandleRegionMapIterator());
+}
+
+void
+ServerObjectModel::eraseRegion(const RegionHandle& regionHandle)
+{
+  Region* region = getRegion(regionHandle);
+  if (!region)
+    return;
+
+  ConnectData* connect = region->getConnect();
+  if (connect)
+    connect->eraseRegion(*region);
+
+  eraseRegion(region);
+}
 
 ServerObjectModel::ObjectInstance*
 ServerObjectModel::getObjectInstance(const ObjectInstanceHandle& objectInstanceHandle)
