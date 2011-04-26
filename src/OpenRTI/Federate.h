@@ -2768,7 +2768,7 @@ public:
       Traits::throwRegionDoesNotContainSpecifiedDimension();
     if (!_dimensionVector[dimensionHandle.getHandle()].valid())
       Traits::throwRegionDoesNotContainSpecifiedDimension();
-    if (_dimensionVector[dimensionHandle]->_upperBound < rangeBounds.getUpper())
+    if (_dimensionVector[dimensionHandle]->_upperBound < rangeBounds.getUpperBound())
       Traits::throwInvalidRangeBound();
 
     i->second._region.setRangeBounds(dimensionHandle, rangeBounds);
@@ -2975,7 +2975,7 @@ protected:
       OpenRTIAssert(j != _regionHandleRegionDataMap.end());
       for (RegionValue::const_iterator k = i->second.begin(); k != i->second.end(); ++k) {
         Region region;
-        region.setRangeBounds(k->first, RangeBounds(k->second.getLowerBound(), k->second.getUpperBound()));
+        region.setRangeBounds(k->first, k->second);
         j->second._region.swap(region);
       }
     }

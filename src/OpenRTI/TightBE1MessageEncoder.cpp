@@ -273,7 +273,7 @@ public:
     writeStringCompressed(value);
   }
 
-  void writeUnsigned(const unsigned& value)
+  void writeUnsigned(const uint32_t& value)
   {
     writeUInt32Compressed(value);
   }

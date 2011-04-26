@@ -38,7 +38,7 @@ public:
   Region(const RegionValue& regionValue)
   {
     for (RegionValue::const_iterator i = regionValue.begin(); i != regionValue.end(); ++i) {
-      RangeBounds rangeBounds(i->second.getLowerBound(), i->second.getUpperBound());
+      RangeBounds rangeBounds(i->second);
       if (rangeBounds.whole())
         continue;
       _dimensionHandleRangeBoundsMap[i->first] = rangeBounds;
@@ -52,10 +52,7 @@ public:
     regionValue.reserve(_dimensionHandleRangeBoundsMap.size());
     for (DimensionHandleRangeBoundsMap::const_iterator i = _dimensionHandleRangeBoundsMap.begin();
          i != _dimensionHandleRangeBoundsMap.end(); ++i) {
-      RangeBoundsValue rangeBoundsValue;
-      rangeBoundsValue.setLowerBound(i->second.getLower());
-      rangeBoundsValue.setUpperBound(i->second.getUpper());
-      regionValue.push_back(RegionValue::value_type(i->first, rangeBoundsValue));
+      regionValue.push_back(RegionValue::value_type(i->first, i->second));
     }
   }
 

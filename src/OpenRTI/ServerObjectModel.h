@@ -844,14 +844,15 @@ public:
       _regionHandleRegionMapIterator(regionHandleRegionMapIterator),
       _connect(0)
     { }
-    const RegionHandle& getHandle() const { return _regionHandleRegionMapIterator->first; }
-    const RegionHandleRegionMap::iterator& getRegionHandleRegionMapIterator() const { return _regionHandleRegionMapIterator; }
+    const RegionHandle& getHandle() const
+    { return _regionHandleRegionMapIterator->first; }
+    const RegionHandleRegionMap::iterator& getRegionHandleRegionMapIterator() const
+    { return _regionHandleRegionMapIterator; }
 
-    ConnectData* getConnect() { return _connect; }
-
-    RegionValue _regionValue;
-    ConnectData* _connect;
-    DimensionHandleSet _dimensionHandleSet;
+    ConnectData* getConnect()
+    { return _connect; }
+    void setConnect(ConnectData* connect)
+    { _connect = connect; }
 
     void insertToRegionList(RegionList& regionList)
     {
@@ -863,8 +864,12 @@ public:
       _regionListIterator = regionList.end();
     }
 
+    RegionValue _regionValue;
+    DimensionHandleSet _dimensionHandleSet;
+
   private:
     const RegionHandleRegionMap::iterator _regionHandleRegionMapIterator;
+    ConnectData* _connect;
 
     RegionList::iterator _regionListIterator;
 
@@ -1154,12 +1159,14 @@ public:
 
     void insertRegion(Region& region)
     {
+      OpenRTIAssert(!region.getConnect());
       region.insertToRegionList(_ownedRegions);
-      region._connect = this;
+      region.setConnect(this);
     }
     void eraseRegion(Region& region)
     {
-      region._connect = 0;
+      OpenRTIAssert(this == region.getConnect());
+      region.setConnect(0);
       region.eraseFromRegionList(_ownedRegions);
     }
 

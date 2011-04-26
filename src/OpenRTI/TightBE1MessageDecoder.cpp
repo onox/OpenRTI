@@ -273,7 +273,7 @@ public:
     value = readStringCompressed();
   }
 
-  void readUnsigned(unsigned& value)
+  void readUnsigned(uint32_t& value)
   {
     value = readUInt32Compressed();
   }
@@ -1489,7 +1489,7 @@ public:
   {
   }
 
-  void readPayloadUnsigned(const unsigned& value)
+  void readPayloadUnsigned(const uint32_t& value)
   {
   }
 

@@ -21,88 +21,54 @@
 #define OpenRTI_RangeBounds_h
 
 #include <limits>
+#include "Message.h"
 #include "Types.h"
 
 namespace OpenRTI {
 
-class OPENRTI_LOCAL RangeBounds {
+class OPENRTI_LOCAL RangeBounds : public RangeBoundsValue {
 public:
   /// Note that the upper bound does not belong to the range.
   /// It is [lower, upper)
-  typedef uint32_t value_type;
-  RangeBounds() :
-    _lower(std::numeric_limits<value_type>::max()),
-    _upper(std::numeric_limits<value_type>::min())
-  { }
-  RangeBounds(const value_type& value) :
-    _lower(value),
-    _upper(value)
-  { }
-  RangeBounds(const value_type& lower, const value_type& upper) :
-    _lower(lower),
-    _upper(upper)
-  { }
+  RangeBounds()
+  {
+    setLowerBound(std::numeric_limits<Unsigned>::max());
+    setUpperBound(std::numeric_limits<Unsigned>::min());
+  }
+  RangeBounds(const Unsigned& lower, const Unsigned& upper)
+  {
+    setLowerBound(lower);
+    setUpperBound(upper);
+  }
+  RangeBounds(const RangeBoundsValue& rangeBoundsValue) :
+    RangeBoundsValue(rangeBoundsValue)
+  {
+  }
 
   bool empty() const
-  { return _upper <= _lower; }
+  { return getUpperBound() <= getLowerBound(); }
 
   bool whole() const
-  { return _lower == std::numeric_limits<value_type>::min() && _upper == std::numeric_limits<value_type>::max(); }
+  { return getLowerBound() == std::numeric_limits<Unsigned>::min() && getUpperBound() == std::numeric_limits<Unsigned>::max(); }
 
-  const value_type& getLower() const
-  { return _lower; }
-  const value_type& getUpper() const
-  { return _upper; }
-
-  value_type getCenter() const
-  { return (_upper >> 1) + (_lower >> 1); }
+  Unsigned getCenter() const
+  { return (getUpperBound() >> 1) + (getLowerBound() >> 1); }
 
   bool intersects(const RangeBounds& rangeBounds) const
-  { return _lower < rangeBounds._upper && rangeBounds._lower < _upper; }
+  { return getLowerBound() < rangeBounds.getUpperBound() && rangeBounds.getLowerBound() < getUpperBound(); }
 
   bool includes(const RangeBounds& rangeBounds) const
   {
     if (empty())
       return false;
-    return _lower <= rangeBounds._lower && rangeBounds._upper <= _upper;
+    return getLowerBound() <= rangeBounds.getLowerBound() && rangeBounds.getUpperBound() <= getUpperBound();
   }
 
   void extend(const RangeBounds& rangeBounds)
   {
-    _lower = std::min(_lower, rangeBounds._lower);
-    _upper = std::max(_upper, rangeBounds._upper);
+    setLowerBound(std::min(getLowerBound(), rangeBounds.getLowerBound()));
+    setUpperBound(std::max(getUpperBound(), rangeBounds.getUpperBound()));
   }
-
-  RangeBounds& swap(RangeBounds& rangeBounds)
-  { std::swap(_lower, rangeBounds._lower); std::swap(_upper, rangeBounds._upper); return *this; }
-
-  // make that available as keys in maps and items in sets
-  bool operator==(const RangeBounds& rangeBounds) const
-  {
-    if (_lower != rangeBounds._lower) return false;
-    if (_upper != rangeBounds._upper) return false;
-    return true;
-  }
-  bool operator<(const RangeBounds& rangeBounds) const
-  {
-    if (_lower < rangeBounds._lower) return true;
-    if (rangeBounds._lower < _lower) return false;
-    if (_upper < rangeBounds._upper) return true;
-    if (rangeBounds._upper < _upper) return false;
-    return false;
-  }
-  bool operator!=(const RangeBounds& rangeBounds) const
-  { return !operator==(rangeBounds); }
-  bool operator>(const RangeBounds& rangeBounds) const
-  { return rangeBounds.operator<(*this); }
-  bool operator>=(const RangeBounds& rangeBounds) const
-  { return !operator<(rangeBounds); }
-  bool operator<=(const RangeBounds& rangeBounds) const
-  { return !operator>(rangeBounds); }
-
-private:
-  value_type _lower;
-  value_type _upper;
 };
 
 } // namespace OpenRTI

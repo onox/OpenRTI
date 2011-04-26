@@ -113,7 +113,7 @@ typedef bool Bool;
 
 typedef std::string String;
 
-typedef unsigned Unsigned;
+typedef uint32_t Unsigned;
 
 typedef size_t SizeType;
 
@@ -337,7 +337,7 @@ typedef bool Bool;
 
 typedef std::string String;
 
-typedef unsigned Unsigned;
+typedef uint32_t Unsigned;
 
 typedef size_t SizeType;
 
