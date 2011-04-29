@@ -73,7 +73,7 @@ main(int argc, char* argv[])
 
   OpenRTI::RTI1516SimpleAmbassador ambassador;
 
-  ambassador.createAmbassador(args);
+  ambassador.connect(args);
 
   // create, must work
   try {

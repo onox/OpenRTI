@@ -44,7 +44,7 @@ public:
   virtual bool exec()
   {
     RTI1516SimpleAmbassador ambassador;
-    ambassador.createAmbassador(getArgumentList());
+    ambassador.connect(getArgumentList());
     ambassador.setLogicalTimeFactory();
 
     // Try that several times. Ensure correct cleanup
