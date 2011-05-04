@@ -958,6 +958,13 @@ static PySharedPtr PyRTI1516InternalError;
     return 0;                                                                        \
   }
 
+#define CATCH_C_EXCEPTION_THREADS(ExceptionKind)                                     \
+  catch(const rti1516:: ExceptionKind& e) {                                          \
+    PyEval_RestoreThread(_save);                                                     \
+    PyErr_SetObject(PyRTI1516 ## ExceptionKind.get(), PyObject_NewString(e.what())); \
+    return 0;                                                                        \
+  }
+
 static std::wstring PyErr_GetExceptionString()
 {
   PyObject* ptype = 0;
@@ -1026,11 +1033,23 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
     ob_federateAmbassador = federateAmbassador;
   }
 
+  struct GILStateScope {
+    GILStateScope() :
+      _gstate(PyGILState_Ensure())
+    { }
+    ~GILStateScope()
+    { PyGILState_Release(_gstate); }
+    PyGILState_STATE _gstate;
+  };
+
   virtual void synchronizationPointRegistrationSucceeded(std::wstring const & label)
       throw (rti1516::FederateInternalError)
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewString(label);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"synchronizationPointRegistrationSucceeded", (char*)"N", arg0);
     if (result) {
@@ -1049,6 +1068,8 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
 
     PyObject* arg0 = PyObject_NewString(label);
     PyObject* arg1 = PyInt_FromLong(reason);
@@ -1069,6 +1090,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewString(label);
     PyObject* arg1 = PyObject_NewVariableLengthData(theUserSuppliedTag);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"announceSynchronizationPoint", (char*)"NN", arg0, arg1);
@@ -1087,6 +1111,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewString(label);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"federationSynchronized", (char*)"N", arg0);
     if (result) {
@@ -1105,6 +1132,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewString(label);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"initiateFederateSave", (char*)"N", arg0);
     if (result) {
@@ -1125,6 +1155,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewString(label);
     PyObject* arg1 = PyObject_NewLogicalTime(theTime);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"initiateFederateSave", (char*)"NN", arg0, arg1);
@@ -1145,6 +1178,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"federationSaved", 0);
     if (result) {
       Py_DecRef(result);
@@ -1161,6 +1197,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyInt_FromLong(theSaveFailureReason);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"federationNotSaved", (char*)"N", arg0);
     if (result) {
@@ -1178,6 +1217,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewFederateHandleSaveStatusPairVector(theFederateStatusVector);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"federationSaveStatusResponse", (char*)"N", arg0);
     if (result) {
@@ -1195,6 +1237,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewString(label);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"requestFederationRestoreSucceeded", (char*)"N", arg0);
     if (result) {
@@ -1212,6 +1257,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewString(label);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"requestFederationRestoreFailed", (char*)"N", arg0);
     if (result) {
@@ -1229,6 +1277,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"federationRestoreBegun", 0);
     if (result) {
       Py_DecRef(result);
@@ -1247,6 +1298,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewString(label);
     PyObject* arg1 = PyObject_NewFederateHandle(handle);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"initiateFederateRestore", (char*)"NN", arg0, arg1);
@@ -1267,6 +1321,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"federationRestored", 0);
     if (result) {
       Py_DecRef(result);
@@ -1283,6 +1340,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyInt_FromLong(theRestoreFailureReason);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"federationNotRestored", (char*)"N", arg0);
     if (result) {
@@ -1300,6 +1360,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewFederateHandleRestoreStatusPairVector(theFederateStatusVector);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"federationRestoreStatusResponse", (char*)"N", arg0);
     if (result) {
@@ -1318,6 +1381,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectClassHandle(theClass);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"startRegistrationForObjectClass", (char*)"N", arg0);
     if (result) {
@@ -1337,6 +1403,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectClassHandle(theClass);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"stopRegistrationForObjectClass", (char*)"N", arg0);
     if (result) {
@@ -1356,6 +1425,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewInteractionClassHandle(theHandle);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"turnInteractionsOn", (char*)"N", arg0);
     if (result) {
@@ -1375,6 +1447,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewInteractionClassHandle(theHandle);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"turnInteractionsOff", (char*)"N", arg0);
     if (result) {
@@ -1394,6 +1469,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewString(theObjectInstanceName);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"objectInstanceNameReservationSucceeded", (char*)"N", arg0);
     if (result) {
@@ -1413,6 +1491,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewString(theObjectInstanceName);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"objectInstanceNameReservationFailed", (char*)"N", arg0);
     if (result) {
@@ -1434,6 +1515,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewObjectClassHandle(theObjectClass);
     PyObject* arg2 = PyObject_NewString(theObjectInstanceName);
@@ -1460,6 +1544,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleValueMap(theAttributeValues);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -1498,6 +1585,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleValueMap(theAttributeValues);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -1535,6 +1625,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleValueMap(theAttributeValues);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -1573,6 +1666,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleValueMap(theAttributeValues);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -1611,6 +1707,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleValueMap(theAttributeValues);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -1650,6 +1749,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleValueMap(theAttributeValues);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -1685,6 +1787,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewInteractionClassHandle(theInteraction);
     PyObject* arg1 = PyObject_NewParameterHandleValueMap(theParameterValues);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -1719,6 +1824,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewInteractionClassHandle(theInteraction);
     PyObject* arg1 = PyObject_NewParameterHandleValueMap(theParameterValues);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -1753,6 +1861,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewInteractionClassHandle(theInteraction);
     PyObject* arg1 = PyObject_NewParameterHandleValueMap(theParameterValues);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -1788,6 +1899,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewInteractionClassHandle(theInteraction);
     PyObject* arg1 = PyObject_NewParameterHandleValueMap(theParameterValues);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -1826,6 +1940,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewInteractionClassHandle(theInteraction);
     PyObject* arg1 = PyObject_NewParameterHandleValueMap(theParameterValues);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -1835,7 +1952,6 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
     PyObject* arg6 = PyObject_NewOrderType(receivedOrder);
     PyObject* arg7 = PyObject_NewMessageRetractionHandle(theHandle);
     PyObject* arg8 = Py_None;
-    // PyObject* arg8 = PyObject_NewRegionHandleSet(theSentRegionHandleSet);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"receiveInteraction",
                                            (char*)"NNNNNNNNO", arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
     if (result) {
@@ -1867,6 +1983,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewInteractionClassHandle(theInteraction);
     PyObject* arg1 = PyObject_NewParameterHandleValueMap(theParameterValues);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -1903,6 +2022,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewVariableLengthData(theUserSuppliedTag);
     PyObject* arg2 = PyObject_NewOrderType(sentOrder);
@@ -1934,6 +2056,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewVariableLengthData(theUserSuppliedTag);
     PyObject* arg2 = PyObject_NewOrderType(sentOrder);
@@ -1967,6 +2092,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewVariableLengthData(theUserSuppliedTag);
     PyObject* arg2 = PyObject_NewOrderType(sentOrder);
@@ -1998,6 +2126,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleSet(theAttributes);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"attributesInScope", (char*)"NN", arg0, arg1);
@@ -2025,6 +2156,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleSet(theAttributes);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"attributesOutOfScope", (char*)"NN", arg0, arg1);
@@ -2051,6 +2185,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleSet(theAttributes);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -2076,6 +2213,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleSet(theAttributes);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"turnUpdatesOnForObjectInstance", (char*)"NN", arg0, arg1);
@@ -2100,6 +2240,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleSet(theAttributes);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"turnUpdatesOffForObjectInstance", (char*)"NN", arg0, arg1);
@@ -2126,6 +2269,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleSet(offeredAttributes);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -2153,6 +2299,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleSet(releasedAttributes);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"requestDivestitureConfirmation", (char*)"NN", arg0, arg1);
@@ -2181,6 +2330,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleSet(securedAttributes);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -2209,6 +2361,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleSet(theAttributes);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"attributeOwnershipUnavailable", (char*)"NN", arg0, arg1);
@@ -2235,6 +2390,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleSet(candidateAttributes);
     PyObject* arg2 = PyObject_NewVariableLengthData(theUserSuppliedTag);
@@ -2262,6 +2420,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandleSet(theAttributes);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"confirmAttributeOwnershipAcquisitionCancellation", (char*)"NN", arg0, arg1);
@@ -2287,6 +2448,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandle(theAttribute);
     PyObject* arg2 = PyObject_NewFederateHandle(theOwner);
@@ -2310,6 +2474,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandle(theAttribute);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"attributeIsNotOwned", (char*)"NN", arg0, arg1);
@@ -2332,6 +2499,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewObjectInstanceHandle(theObject);
     PyObject* arg1 = PyObject_NewAttributeHandle(theAttribute);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"attributeIsOwnedByRTI", (char*)"NN", arg0, arg1);
@@ -2354,6 +2524,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewLogicalTime(theFederateTime);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"timeRegulationEnabled", (char*)"N", arg0);
     if (result) {
@@ -2376,6 +2549,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewLogicalTime(theFederateTime);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"timeConstrainedEnabled", (char*)"N", arg0);
     if (result) {
@@ -2397,6 +2573,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewLogicalTime(theTime);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"timeAdvanceGrant", (char*)"N", arg0);
     if (result) {
@@ -2416,6 +2595,9 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
   {
     if (!ob_federateAmbassador)
       return;
+
+    GILStateScope gilStateScope;
+
     PyObject* arg0 = PyObject_NewMessageRetractionHandle(theHandle);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"requestRetraction", (char*)"N", arg0);
     if (result) {
@@ -5776,14 +5958,18 @@ PyRTIambassador_evokeCallback(PyRTIambassadorObject *self, PyObject *args)
     return 0;
   }
 
+  PyThreadState *_save;
+  _save = PyEval_SaveThread();
   try {
 
     bool more = self->ob_value->evokeCallback(approximateMinimumTimeInSeconds);
 
+    PyEval_RestoreThread(_save);
+
     return PyBool_FromLong(more);
   }
-  CATCH_C_EXCEPTION(FederateNotExecutionMember)
-  CATCH_C_EXCEPTION(RTIinternalError)
+  CATCH_C_EXCEPTION_THREADS(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION_THREADS(RTIinternalError)
 }
 
 static PyObject *
@@ -5805,15 +5991,19 @@ PyRTIambassador_evokeMultipleCallbacks(PyRTIambassadorObject *self, PyObject *ar
     return 0;
   }
 
+  PyThreadState *_save;
+  _save = PyEval_SaveThread();
   try {
 
     bool more = self->ob_value->evokeMultipleCallbacks(approximateMinimumTimeInSeconds,
                                                        approximateMaximumTimeInSeconds);
 
+    PyEval_RestoreThread(_save);
+
     return PyBool_FromLong(more);
   }
-  CATCH_C_EXCEPTION(FederateNotExecutionMember)
-  CATCH_C_EXCEPTION(RTIinternalError)
+  CATCH_C_EXCEPTION_THREADS(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION_THREADS(RTIinternalError)
 }
 
 static PyObject *
