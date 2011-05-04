@@ -990,6 +990,7 @@ static std::wstring PyErr_GetExceptionString()
 #define CATCH_PYTHON_EXCEPTION(ExceptionKind, exception)                             \
   do {                                                                               \
     if (PyErr_GivenExceptionMatches(exception, PyRTI1516 ## ExceptionKind.get())) {  \
+      PyErr_Print();                                                                 \
       throw rti1516::ExceptionKind(PyErr_GetExceptionString());                      \
     }                                                                                \
   } while(0)
@@ -1000,6 +1001,7 @@ static std::wstring PyErr_GetExceptionString()
       PyErr_Clear();                                                                 \
       PyErr_SetInterrupt();                                                          \
     } else {                                                                         \
+      PyErr_Print();                                                                 \
       throw rti1516::FederateInternalError(PyErr_GetExceptionString());              \
     }                                                                                \
   } while(0)
