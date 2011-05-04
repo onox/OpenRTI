@@ -55,7 +55,7 @@ class BasicData(object):
         offset = alignTo(offset, self.__octetBoundary)
         return self.__encoder(value, buffer, offset)
 
-    def decode(self, buffer, offset):
+    def decode(self, value, buffer, offset):
         offset = alignTo(offset, self.__octetBoundary)
         return self.__decoder(buffer, offset)
 
@@ -88,9 +88,9 @@ class SimpleData(object):
         t = self.__type()
         return t.encode(value, buffer, offset)
 
-    def decode(self, buffer, offset):
+    def decode(self, value, buffer, offset):
         t = self.__type()
-        return t.decode(buffer, offset)
+        return t.decode(value, buffer, offset)
 
 # Most more complex datatypes need a backward reference to the
 # typemap, since datatypes are also stored in the typemap, use a weakref
@@ -125,9 +125,9 @@ class FixedRecordData(object):
             t = self.__type()
             return t.encode(value, buffer, offset)
 
-        def decode(self, buffer, offset):
+        def decode(self, value, buffer, offset):
             t = self.__type()
-            return t.decode(buffer, offset)
+            return t.decode(value, buffer, offset)
 
     def __init__(self, name):
         self.__name = name
@@ -170,11 +170,11 @@ class FixedRecordData(object):
             buffer, offset = f.encode(value[f.getName()], buffer, offset)
         return buffer, offset
 
-    def decode(self, buffer, offset):
+    def decode(self, value, buffer, offset):
         offset = alignTo(offset, self.__octetBoundary)
         value = FixedRecord()
         for f in self.__fieldList:
-            value[f.getName()], offset = f.decode(buffer, offset)
+            value[f.getName()], offset = f.decode(None, buffer, offset)
         return value, offset
 
 
@@ -215,7 +215,7 @@ class FixedArrayData(object):
             buffer, offset = t.encode(value[i], buffer, offset)
         return buffer, offset
 
-    def decode(self, buffer, offset):
+    def decode(self, value, buffer, offset):
         t = self.__type()
         value = []
         count = self.__cardinality
@@ -223,13 +223,13 @@ class FixedArrayData(object):
         if self.__isString:
             while i < count:
                 i = i + 1
-                v, offset = t.decode(buffer, offset)
+                v, offset = t.decode(None, buffer, offset)
                 value.append(unichr(v))
             value = ''.join(value)
         else:
             while i < count:
                 i = i + 1
-                v, offset = t.decode(buffer, offset)
+                v, offset = t.decode(None, buffer, offset)
                 value.append(v)
         return value, offset
 
@@ -275,22 +275,22 @@ class DynamicArrayData(object):
             buffer, offset = t.encode(value[i], buffer, offset)
         return buffer, offset
 
-    def decode(self, buffer, offset):
+    def decode(self, value, buffer, offset):
         offset = alignTo(offset, self.__octetBoundary)
         t = self.__type()
         value = []
-        count, offset = self.__countType.decode(buffer, offset)
+        count, offset = self.__countType.decode(None, buffer, offset)
         i = 0
         if self.__isString:
             while i < count:
                 i = i + 1
-                v, offset = t.decode(buffer, offset)
+                v, offset = t.decode(None, buffer, offset)
                 value.append(unichr(v))
             value = ''.join(value)
         else:
             while i < count:
                 i = i + 1
-                v, offset = t.decode(buffer, offset)
+                v, offset = t.decode(None, buffer, offset)
                 value.append(v)
         return value, offset
 
@@ -338,9 +338,9 @@ class EnumeratedData(object):
         buffer, offset = self.__type.encode(valueNumber, buffer, offset)
         return buffer, offset
 
-    def decode(self, buffer, offset):
+    def decode(self, value, buffer, offset):
         t = self.__type()
-        valueNumber, offset = t.decode(buffer, offset)
+        valueNumber, offset = t.decode(None, buffer, offset)
         value = self.__valueEnumeratorValueMap[valueNumber]
         return value, offset
 
@@ -378,9 +378,9 @@ class VariantRecordData(object):
             t = self.__type()
             return t.encode(value, buffer, offset)
 
-        def decode(self, buffer, offset):
+        def decode(self, value, buffer, offset):
             t = self.__type()
-            return t.decode(buffer, offset)
+            return t.decode(value, buffer, offset)
 
     def __init__(self, name, dataType):
         self.__name = name
@@ -439,13 +439,13 @@ class VariantRecordData(object):
         # FIXME default?? Throw??
         return buffer, offset
 
-    def decode(self, buffer, offset):
+    def decode(self, value, buffer, offset):
         offset = alignTo(offset, self.__octetBoundary)
         t = self.__type()
-        enumerator, offset = t.decode(buffer, offset)
+        enumerator, offset = t.decode(None, buffer, offset)
         alternative = self.__enumeratorAlternativeMap[enumerator]
         value = {}
-        value[alternative.getName()], offset = alternative.decode(buffer, offset)
+        value[alternative.getName()], offset = alternative.decode(None, buffer, offset)
         return value, offset
 
 ##################################################################
@@ -720,10 +720,10 @@ class Container(NameHandlePair):
         encodedValue, off = self.__encoder.encode(value, bytearray(), 0)
         return encodedValue
 
-    def decode(self, encodedValue):
+    def decode(self, value, encodedValue):
         if not self.__encoder:
-            return list()
-        value, off = self.__encoder.decode(encodedValue, 0)
+            return None
+        value, off = self.__encoder.decode(value, encodedValue, 0)
         return value
 
 
@@ -776,8 +776,8 @@ class ObjectInstanceAttribute(object):
     def encode(self, value):
         return self.__objectClassAttribute.encode(value)
 
-    def decode(self, encodedValue):
-        return self.__objectClassAttribute.decode(encodedValue)
+    def decode(self, value, encodedValue):
+        return self.__objectClassAttribute.decode(value, encodedValue)
 
 class ObjectInstance(NameHandlePair):
     def __init__(self, name, handle, objectClass):
@@ -789,13 +789,16 @@ class ObjectInstance(NameHandlePair):
         name = objectInstanceAttribute.getName()
         handle = objectInstanceAttribute.getHandle()
         self.__attributeMap.insert(objectInstanceAttribute)
-        self.__dict__[name] = []
+        self.__dict__[name] = None
 
     def reflectAttributeValues(self, attributeValues, tag, order, transport, d1, d2, d3, d4):
         for handle, encodedValue in attributeValues.items():
             objectInstanceAttribute = self.__attributeMap[handle]
             name = objectInstanceAttribute.getName()
-            self.__dict__[name] = objectInstanceAttribute.decode(encodedValue)
+            if name in self.__dict__.keys():
+                self.__dict__[name] = objectInstanceAttribute.decode(self.__dict__[name], encodedValue)
+            else:
+                self.__dict__[name] = objectInstanceAttribute.decode(None, encodedValue)
 
 class Federate(NameHandlePair):
     def __init__(self, name, handle, rtiAmbassador, federateAmbassador):
