@@ -19,27 +19,97 @@
 # Just import all so far
 from _rti1516 import *
 
-# A dynamic object system
-import _fom
-
-# FIXME move all this datatype python stuff into _fom for performance reasons
+# use the python provided buffer en- and decoding stuff
+import struct
 
 def alignTo(offset, octetBoundary):
     return ((offset + octetBoundary - 1) / octetBoundary) * octetBoundary
 
 # Basic data is done with this implementation
 class BasicData(object):
-    def __init__(self, name, octetBoundary, encoder, decoder):
+    def __init__(self, name):
         self.__name = name
-        self.__octetBoundary = octetBoundary
-        self.__encoder = encoder
-        self.__decoder = decoder
+
+        if name == "HLAoctet":
+            self.__octetBoundary = 1
+            self.__size = 1
+            self.__struct = struct.Struct('B')
+        elif name == "HLAinteger16BE":
+            self.__octetBoundary = 2
+            self.__size = 2
+            self.__struct = struct.Struct('>h')
+        elif name == "HLAinteger16LE":
+            self.__octetBoundary = 2
+            self.__size = 2
+            self.__struct = struct.Struct('<h')
+        elif name in ("HLAoctetPairBE", "UnsignedShort", "Unsignedinteger16BE", "UnsignedInteger16BE"):
+            self.__octetBoundary = 2
+            self.__size = 2
+            self.__struct = struct.Struct('>H')
+        elif name in ("HLAoctetPairLE", "Unsignedinteger16LE", "UnsignedInteger16LE"):
+            self.__octetBoundary = 2
+            self.__size = 2
+            self.__struct = struct.Struct('<H')
+        elif name == "HLAinteger32BE":
+            self.__octetBoundary = 4
+            self.__size = 4
+            self.__struct = struct.Struct('>i')
+        elif name == "HLAinteger32LE":
+            self.__octetBoundary = 4
+            self.__size = 4
+            self.__struct = struct.Struct('<i')
+        elif name in ("HLAdynamicArraySize", "UnsignedLong", "Unsignedinteger32BE", "UnsignedInteger32BE"):
+            self.__octetBoundary = 4
+            self.__size = 4
+            self.__struct = struct.Struct('>I')
+        elif name in ("Unsignedinteger32LE", "UnsignedInteger32LE"):
+            self.__octetBoundary = 4
+            self.__size = 4
+            self.__struct = struct.Struct('<I')
+        elif name in ("HLAinteger64BE", "HLAinteger64Time"):
+            self.__octetBoundary = 8
+            self.__size = 8
+            self.__struct = struct.Struct('>q')
+        elif name == "HLAinteger64LE":
+            self.__octetBoundary = 8
+            self.__size = 8
+            self.__struct = struct.Struct('<q')
+        elif name in ("Unsignedinteger64BE", "UnsignedInteger64BE"):
+            self.__octetBoundary = 8
+            self.__size = 8
+            self.__struct = struct.Struct('>Q')
+        elif name in ("Unsignedinteger64LE", "UnsignedInteger64LE"):
+            self.__octetBoundary = 8
+            self.__size = 8
+            self.__struct = struct.Struct('<Q')
+        elif name == "HLAfloat32BE":
+            self.__octetBoundary = 4
+            self.__size = 4
+            self.__struct = struct.Struct('>f')
+        elif name == "HLAfloat32LE":
+            self.__octetBoundary = 4
+            self.__size = 4
+            self.__struct = struct.Struct('<f')
+        elif name in ("HLAfloat64BE", "HLAfloat64Time"):
+            self.__octetBoundary = 8
+            self.__size = 8
+            self.__struct = struct.Struct('>d')
+        elif name == "HLAfloat64LE":
+            self.__octetBoundary = 8
+            self.__size = 8
+            self.__struct = struct.Struct('<d')
+        else:
+            # FIXMe except somethign??? HLAopaque??
+            pass
 
     def getName(self):
         return self.__name
 
     def getOctetBoundary(self):
         return self.__octetBoundary
+
+    def getSize(self):
+        return self.__size
 
     def resolveTypes(self, typemap):
         pass
@@ -53,11 +123,15 @@ class BasicData(object):
 
     def encode(self, value, buffer, offset):
         offset = alignTo(offset, self.__octetBoundary)
-        return self.__encoder(value, buffer, offset)
+        if len(buffer) < offset + self.__size:
+            buffer += bytearray(len(buffer))
+        self.__struct.pack_into(buffer, offset, value)
+        return buffer, offset + self.__size
 
     def decode(self, value, buffer, offset):
         offset = alignTo(offset, self.__octetBoundary)
-        return self.__decoder(buffer, offset)
+        value = self.__struct.unpack_from(buffer, offset)
+        return value[0], offset + self.__size
 
 # Simple data is a simple proxy to an other dataType
 class SimpleData(object):
@@ -210,9 +284,14 @@ class FixedArrayData(object):
         t = self.__type()
         count = self.__cardinality
         i = 0
-        while i < count:
-            i = i + 1
-            buffer, offset = t.encode(value[i], buffer, offset)
+        if type(value) in (str, unicode):
+            while i < count:
+                buffer, offset = t.encode(ord(value[i]), buffer, offset)
+                i = i + 1
+        else:
+            while i < count:
+                buffer, offset = t.encode(value[i], buffer, offset)
+                i = i + 1
         return buffer, offset
 
     def decode(self, value, buffer, offset):
@@ -250,7 +329,7 @@ class DynamicArrayData(object):
 
     def resolveTypes(self, typemap):
         self.__type = weakref.ref(typemap[self.__dataType])
-        self.__countType = BasicData('HLAdynamicArraySize', 4, _fom.encodeUInt32BE, _fom.decodeUInt32BE)
+        self.__countType = BasicData('HLAdynamicArraySize')
 
     def resolveOctetBoundary(self):
         t = self.__type()
@@ -270,9 +349,14 @@ class DynamicArrayData(object):
         count = len(value)
         buffer, offset = self.__countType.encode(count, buffer, offset)
         i = 0
-        while i < count:
-            i = i + 1
-            buffer, offset = t.encode(value[i], buffer, offset)
+        if type(value) in (str, unicode):
+            while i < count:
+                buffer, offset = t.encode(ord(value[i]), buffer, offset)
+                i = i + 1
+        else:
+            while i < count:
+                buffer, offset = t.encode(value[i], buffer, offset)
+                i = i + 1
         return buffer, offset
 
     def decode(self, value, buffer, offset):
@@ -305,7 +389,7 @@ class EnumeratedData(object):
     def addEnumerator(self, name, values):
         # FIXME might be more than one, might not be able to do that before resolve?
         intValues = int(values)
-        self.__enumeratorValueMap[name] = values
+        self.__enumeratorValueMap[name] = intValues
         self.__valueEnumeratorValueMap[intValues] = name
 
     def getEnumeratorValueMap(self):
@@ -335,7 +419,7 @@ class EnumeratedData(object):
     def encode(self, value, buffer, offset):
         t = self.__type()
         valueNumber = self.__enumeratorValueMap[value]
-        buffer, offset = self.__type.encode(valueNumber, buffer, offset)
+        buffer, offset = t.encode(valueNumber, buffer, offset)
         return buffer, offset
 
     def decode(self, value, buffer, offset):
@@ -435,7 +519,7 @@ class VariantRecordData(object):
             if k in self.__nameAlternativeMap:
                 alternative = self.__nameAlternativeMap[k]
                 buffer, offset = t.encode(alternative.getEnumerator(), buffer, offset)
-                return alternative.encode(value[key], buffer, offset)
+                return alternative.encode(value[k], buffer, offset)
         # FIXME default?? Throw??
         return buffer, offset
 
@@ -543,49 +627,7 @@ class FOMContentHandler(xml.sax.handler.ContentHandler):
 
         elif elementName == "basicData":
             name = attributes["name"]
-            if name == "HLAoctet":
-                self.__typeMap[name] = BasicData(name, 1, _fom.encodeUInt8, _fom.decodeUInt8)
-            elif name == "HLAoctetPairBE":
-                self.__typeMap[name] = BasicData(name, 2, _fom.encodeUInt16BE, _fom.decodeUInt16BE)
-            elif name == "HLAoctetPairLE":
-                self.__typeMap[name] = BasicData(name, 2, _fom.encodeUInt16LE, _fom.decodeUInt16LE)
-            elif name == "HLAinteger16BE":
-                self.__typeMap[name] = BasicData(name, 2, _fom.encodeInt16BE, _fom.decodeInt16BE)
-            elif name == "HLAinteger16LE":
-                self.__typeMap[name] = BasicData(name, 2, _fom.encodeInt16LE, _fom.decodeInt16LE)
-            elif name == "HLAinteger32BE":
-                self.__typeMap[name] = BasicData(name, 4, _fom.encodeInt32BE, _fom.decodeInt32BE)
-            elif name == "HLAinteger32LE":
-                self.__typeMap[name] = BasicData(name, 4, _fom.encodeInt32LE, _fom.decodeInt32LE)
-            elif name == "HLAinteger64BE":
-                self.__typeMap[name] = BasicData(name, 8, _fom.encodeInt64BE, _fom.decodeInt64BE)
-            elif name == "HLAinteger64LE":
-                self.__typeMap[name] = BasicData(name, 8, _fom.encodeInt64LE, _fom.decodeInt64LE)
-            elif name == "HLAfloat32BE":
-                self.__typeMap[name] = BasicData(name, 4, _fom.encodeFloat32BE, _fom.decodeFloat32BE)
-            elif name == "HLAfloat32LE":
-                self.__typeMap[name] = BasicData(name, 4, _fom.encodeFloat32LE, _fom.decodeFloat32LE)
-            elif name == "HLAfloat64BE":
-                self.__typeMap[name] = BasicData(name, 8, _fom.encodeFloat64BE, _fom.decodeFloat64BE)
-            elif name == "HLAfloat64LE":
-                self.__typeMap[name] = BasicData(name, 8, _fom.encodeFloat64LE, _fom.decodeFloat64LE)
-            elif name == "UnsignedShort":
-                self.__typeMap[name] = BasicData(name, 2, _fom.encodeUInt16BE, _fom.decodeUInt16BE)
-            elif name == "Unsignedinteger16BE":
-                self.__typeMap[name] = BasicData(name, 2, _fom.encodeUInt16BE, _fom.decodeUInt16BE)
-            elif name == "Unsignedinteger16LE":
-                self.__typeMap[name] = BasicData(name, 2, _fom.encodeUInt16LE, _fom.decodeUInt16LE)
-            elif name == "UnsignedLong":
-                self.__typeMap[name] = BasicData(name, 4, _fom.encodeUInt32BE, _fom.decodeUInt32BE)
-            elif name == "Unsignedinteger32BE":
-                self.__typeMap[name] = BasicData(name, 4, _fom.encodeUInt32BE, _fom.decodeUInt32BE)
-            elif name == "Unsignedinteger32LE":
-                self.__typeMap[name] = BasicData(name, 4, _fom.encodeUInt32LE, _fom.decodeUInt32LE)
-            elif name == "Unsignedinteger64BE":
-                self.__typeMap[name] = BasicData(name, 8, _fom.encodeUInt64BE, _fom.decodeUInt64BE)
-            elif name == "Unsignedinteger64LE":
-                self.__typeMap[name] = BasicData(name, 8, _fom.encodeUInt64LE, _fom.decodeUInt64LE)
-            # else:
+            self.__typeMap[name] = BasicData(name)
 
         elif elementName == "enumeratedData":
             name = attributes["name"]
@@ -717,13 +759,13 @@ class Container(NameHandlePair):
     def encode(self, value):
         if not self.__encoder:
             return bytearray()
-        encodedValue, off = self.__encoder.encode(value, bytearray(), 0)
-        return encodedValue
+        encodedValue, off = self.__encoder.encode(value, bytearray(1024), 0)
+        return encodedValue[0:off]
 
     def decode(self, value, encodedValue):
         if not self.__encoder:
             return None
-        value, off = self.__encoder.decode(value, encodedValue, 0)
+        value, off = self.__encoder.decode(value, buffer(encodedValue), 0)
         return value
 
 
