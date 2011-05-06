@@ -17,7 +17,7 @@
 #
 
 # Just import all so far
-from _rti1516 import *
+from rti1516._rti1516 import *
 
 # use the python provided buffer en- and decoding stuff
 import struct
