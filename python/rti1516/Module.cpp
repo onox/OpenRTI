@@ -563,7 +563,7 @@ PyObject_GetRangeBounds(rti1516::RangeBounds& rangeBounds, PyObject* o)
         Py_DecRef(set);                                                 \
         return 0;                                                       \
       }                                                                 \
-      if (!PySet_Add(set, key)) {                                       \
+      if (PySet_Add(set, key)) {                                        \
         Py_DecRef(key);                                                 \
         Py_DecRef(set);                                                 \
         return 0;                                                       \
