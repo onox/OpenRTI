@@ -702,14 +702,20 @@ PyObject_NewAttributeHandleValueMap(const rti1516::AttributeHandleValueMap& attr
 static bool
 PyObject_GetAttributeHandleValueMap(rti1516::AttributeHandleValueMap& attributeHandleValueMap, PyObject* o)
 {
-  PyObject* iterator = PyObject_GetIter(o);
-  if (!iterator)
+  PyObject* items = PyMapping_Items(o);
+  if (!items)
     return false;
+  PyObject* iterator = PyObject_GetIter(items);
+  if (!iterator) {
+    Py_DecRef(items);
+    return false;
+  }
   while (PyObject* item = PyIter_Next(iterator)) {
     PyObject* key = PySequence_GetItem(item, 0);
     if (!key) {
       Py_DecRef(item);
       Py_DecRef(iterator);
+      Py_DecRef(items);
       return false;
     }
     rti1516::AttributeHandle attributeHandle;
@@ -717,6 +723,7 @@ PyObject_GetAttributeHandleValueMap(rti1516::AttributeHandleValueMap& attributeH
       Py_DecRef(key);
       Py_DecRef(item);
       Py_DecRef(iterator);
+      Py_DecRef(items);
       return false;
     }
     Py_DecRef(key);
@@ -725,16 +732,19 @@ PyObject_GetAttributeHandleValueMap(rti1516::AttributeHandleValueMap& attributeH
     Py_DecRef(item);
     if (!value) {
       Py_DecRef(iterator);
+      Py_DecRef(items);
       return false;
     }
     if (!PyObject_GetVariableLengthData(attributeHandleValueMap[attributeHandle], value)) {
       Py_DecRef(value);
       Py_DecRef(iterator);
+      Py_DecRef(items);
       return false;
     }
     Py_DecRef(value);
   }
   Py_DecRef(iterator);
+  Py_DecRef(items);
   return true;
 }
 
@@ -768,14 +778,20 @@ PyObject_NewParameterHandleValueMap(const rti1516::ParameterHandleValueMap& para
 static bool
 PyObject_GetParameterHandleValueMap(rti1516::ParameterHandleValueMap& parameterHandleValueMap, PyObject* o)
 {
-  PyObject* iterator = PyObject_GetIter(o);
-  if (!iterator)
+  PyObject* items = PyMapping_Items(o);
+  if (!items)
     return false;
+  PyObject* iterator = PyObject_GetIter(items);
+  if (!iterator) {
+    Py_DecRef(items);
+    return false;
+  }
   while (PyObject* item = PyIter_Next(iterator)) {
     PyObject* key = PySequence_GetItem(item, 0);
     if (!key) {
       Py_DecRef(item);
       Py_DecRef(iterator);
+      Py_DecRef(items);
       return false;
     }
     rti1516::ParameterHandle parameterHandle;
@@ -783,6 +799,7 @@ PyObject_GetParameterHandleValueMap(rti1516::ParameterHandleValueMap& parameterH
       Py_DecRef(key);
       Py_DecRef(item);
       Py_DecRef(iterator);
+      Py_DecRef(items);
       return false;
     }
     Py_DecRef(key);
@@ -791,16 +808,19 @@ PyObject_GetParameterHandleValueMap(rti1516::ParameterHandleValueMap& parameterH
     Py_DecRef(item);
     if (!value) {
       Py_DecRef(iterator);
+      Py_DecRef(items);
       return false;
     }
     if (!PyObject_GetVariableLengthData(parameterHandleValueMap[parameterHandle], value)) {
       Py_DecRef(value);
       Py_DecRef(iterator);
+      Py_DecRef(items);
       return false;
     }
     Py_DecRef(value);
   }
   Py_DecRef(iterator);
+  Py_DecRef(items);
   return true;
 }
 
