@@ -27,6 +27,11 @@
 
 using namespace OpenRTI;
 
+static void usage(const char* argv0)
+{
+  std::cerr << argv0 << ": [-b] [-f file] [-h] [-i address] [-p parent]" << std::endl;
+}
+
 static Server server;
 
 static void sighandler(int sig)
@@ -45,11 +50,10 @@ main(int argc, char* argv[])
   ::signal(SIGINT, sighandler);
 
   bool background = false;
-  bool silent = false;
   bool defaultListen = true;
 
   Options options(argc, argv);
-  while (options.next("bf:i:p:s")) {
+  while (options.next("bf:hi:p:s")) {
     switch (options.getOptChar()) {
     case 'b':
       background = true;
@@ -62,6 +66,10 @@ main(int argc, char* argv[])
         std::cerr << "Could not set up pipe server transport:" << std::endl;
         std::cerr << e.getReasonInLocale() << std::endl;
       }
+      break;
+    case 'h':
+      usage(argv[0]);
+      exit(EXIT_SUCCESS);
       break;
     case 'i':
       try {
@@ -79,9 +87,6 @@ main(int argc, char* argv[])
         std::cerr << "Could not connect parent server:" << std::endl;
         std::cerr << e.getReasonInLocale() << std::endl;
       }
-      break;
-    case 's':
-      silent = true;
       break;
     }
   }
@@ -105,10 +110,8 @@ main(int argc, char* argv[])
   if (background)
     std::cerr << "Running in background is not yet supported!" << std::endl;
 #else
-  // Hmm, for now ...
-  int noclose = silent ? 0 : 1;
   if (background)
-    daemon(0, noclose);
+    daemon(0, 0);
 #endif
 
   return server.exec();
