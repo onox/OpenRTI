@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2011 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2011 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -21,6 +21,7 @@
 #define OpenRTI_ThreadPrivateDataPosix_h
 
 #include <pthread.h>
+#include <signal.h>
 
 #include "Export.h"
 #include "SharedPtr.h"
@@ -53,7 +54,18 @@ struct OPENRTI_LOCAL Thread::PrivateData {
   {
     if (_started)
       return false;
-    if (0 != pthread_create(&_thread, 0, start_routine, &thread))
+
+    // Do not handle application signals in the openrti threads
+    sigset_t new_signals;
+    sigfillset(&new_signals);
+    sigset_t old_signals;
+    pthread_sigmask(SIG_SETMASK, &new_signals, &old_signals);
+
+    int ret = pthread_create(&_thread, 0, start_routine, &thread);
+
+    pthread_sigmask(SIG_SETMASK, &old_signals, NULL);
+
+    if (0 != ret)
       return false;
     _started = true;
 #ifdef HAVE_PTHREAD_SETNAME_NP
