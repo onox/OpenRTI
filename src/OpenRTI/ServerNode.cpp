@@ -149,8 +149,20 @@ public:
   FederationServer(const std::string& name, const FederationHandle& handle, const SharedPtr<const ServerOptions>& serverOptions) :
     /// FIXME make this a member instead of a base
     ServerObjectModel(name, handle),
-    _serverOptions(serverOptions)
+    _serverOptions(serverOptions),
+    _parentPermitTimeRegulation(true)
   {
+  }
+  void setParentConfigurationParameterMap(const ConfigurationParameterMap& configurationParameterMap)
+  {
+    ConfigurationParameterMap::const_iterator i;
+    // time regulation is by default permittet, but may be denied due to parent server policy
+    i = configurationParameterMap.find("permitTimeRegulation");
+    if (i != configurationParameterMap.end() && !i->second.empty()) {
+      _parentPermitTimeRegulation = (i->second.front() == "true");
+    } else {
+      _parentPermitTimeRegulation = true;
+    }
   }
 
   /// Get the rti servers name
@@ -614,6 +626,11 @@ public:
   // Time management
   void accept(const ConnectHandle& connectHandle, EnableTimeRegulationRequestMessage* message)
   {
+    // A correctly programmed ambassador already denies the enable request.
+    // So this is an error terminating the connection if somebody asks for that if it should not do so.
+    if (!permitTimeRegulation(connectHandle))
+      throw MessageError("EnableTimeRegulationRequestMessage from unauthorized connect!");
+
     if (isRootServer()) {
       // Note that this message really loops back to the requestor.
       // The requestor needs to know which federates he needs to wait for.
@@ -652,6 +669,16 @@ public:
     // of each regulating federate, thus just broadcast
     broadcast(connectHandle, message);
   }
+
+  bool permitTimeRegulation(const ConnectHandle& connectHandle)
+  {
+    if (!_parentPermitTimeRegulation)
+      return false;
+    ConnectData* connectData = getConnect(connectHandle);
+    OpenRTIAssert(connectData);
+    return connectData->_permitTimeRegulation;
+  }
+
 
   // Regions
   void accept(const ConnectHandle& connectHandle, InsertRegionMessage* message)
@@ -1462,6 +1489,7 @@ public:
     OpenRTIAssert(!connectData->_messageSender.valid());
     connectData->_messageSender = messageSender;
     connectData->_name = name;
+    connectData->_permitTimeRegulation = true;
   }
   void insertConnect(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessageSender>& messageSender, const std::string& name)
   {
@@ -1474,11 +1502,14 @@ public:
 
     connectData->_messageSender = messageSender;
     connectData->_name = name;
+    connectData->_permitTimeRegulation = _parentPermitTimeRegulation && _serverOptions->getPermitTimeRegulation();
 
     SharedPtr<InsertFederationExecutionMessage> message = new InsertFederationExecutionMessage;
     message->setFederationHandle(getHandle());
     message->setFederationName(getName());
     message->setLogicalTimeFactoryName(getLogicalTimeFactoryName());
+    if (!connectData->_permitTimeRegulation)
+      message->getConfigurationParameterMap()["permitTimeRegulation"].push_back("false");
     // FIXME add the server options
 
     // FIXME push them as required
@@ -1733,6 +1764,9 @@ public:
 
   /// The rti servers options
   SharedPtr<const ServerOptions> _serverOptions;
+
+  /// The parents policy if we are allowed to get time regulating
+  bool _parentPermitTimeRegulation;
 };
 
 
@@ -2013,6 +2047,7 @@ public:
     }
 
     i = insertFederation(message->getFederationName(), federationHandle);
+    i->second->setParentConfigurationParameterMap(message->getConfigurationParameterMap());
     i->second->setLogicalTimeFactoryName(message->getLogicalTimeFactoryName());
     i->second->insert(message->getFOMModuleList());
     // FIXME add the server options
@@ -2144,7 +2179,7 @@ public:
 
       } else {
         // Insert a new connect
-	i->second->insertConnect(connectHandle, _serverConnectSet.getMessageSender(connectHandle), _serverConnectSet.getName(connectHandle));
+        i->second->insertConnect(connectHandle, _serverConnectSet.getMessageSender(connectHandle), _serverConnectSet.getName(connectHandle));
         // Process the join request
         i->second->accept(connectHandle, message);
       }

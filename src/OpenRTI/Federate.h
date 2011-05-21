@@ -347,6 +347,7 @@ public:
     _timeConstrainedEnabled(false),
     _timeAdvancePending(false),
     _flushQueueMode(false),
+    _permitTimeRegulation(true),
     _asynchronousDeliveryEnabled(true),
     _messageRetractionSerial(0),
     _logicalTimeFactory(logicalTimeFactory)
@@ -354,6 +355,12 @@ public:
     for (FOMModuleList::const_iterator i = insertFederationExecution.getFOMModuleList().begin();
          i != insertFederationExecution.getFOMModuleList().end(); ++i)
       insert(*i);
+
+    ConfigurationParameterMap::const_iterator i;
+    // time regulation is by default permitted, but may be denied due to parent server policy
+    i = insertFederationExecution.getConfigurationParameterMap().find("permitTimeRegulation");
+    if (i != insertFederationExecution.getConfigurationParameterMap().end() && !i->second.empty() && i->second.front() != "true")
+      _permitTimeRegulation = false;
 
     _logicalTime = _logicalTimeFactory.initialLogicalTime();
     _pendingLogicalTime.first = _logicalTime;
@@ -1687,6 +1694,8 @@ public:
       Traits::throwInTimeAdvancingState();
     if (!_logicalTimeFactory.isPositiveTimeInterval(nativeLookahead))
       Traits::throwInvalidLookahead(_logicalTimeFactory.toString(nativeLookahead));
+    if (!_permitTimeRegulation)
+      Traits::throwRTIinternalError("Enable time regulation not permitted due to server policy!");
 
     _timeRegulationEnablePending = true;
 
@@ -3962,6 +3971,7 @@ private:
   bool _timeConstrainedEnabled;
   bool _timeAdvancePending;
   bool _flushQueueMode;
+  bool _permitTimeRegulation;
   bool _asynchronousDeliveryEnabled;
   // Serial number for message retraction
   uint32_t _messageRetractionSerial;

@@ -1126,13 +1126,15 @@ public:
   // The ConnectHandle <-> connect data mappings
   struct OPENRTI_LOCAL ConnectData : public Referenced {
     ConnectData(const ConnectHandleConnectDataMap::iterator& connectHandleConnectDataMapIterator) :
-      _connectHandleConnectDataMapIterator(connectHandleConnectDataMapIterator)
+      _connectHandleConnectDataMapIterator(connectHandleConnectDataMapIterator),
+      _permitTimeRegulation(true)
     { }
     ConnectHandleConnectDataMap::iterator _connectHandleConnectDataMapIterator;
     SharedPtr<AbstractMessageSender> _messageSender;
     const ConnectHandle& getHandle() const { return _connectHandleConnectDataMapIterator->first; }
     std::string _name;
     FederateList _federateList;
+    bool _permitTimeRegulation;
     void send(const SharedPtr<AbstractMessage>& message)
     {
       if (!_messageSender.valid())
