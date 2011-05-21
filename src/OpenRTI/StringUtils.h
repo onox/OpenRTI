@@ -346,6 +346,18 @@ getProtocolAddressPair(const std::string& url)
   return std::make_pair(protocol, address);
 }
 
+inline std::pair<std::string, std::string>
+getProtocolRestPair(const std::string& url)
+{
+  /// Seperate this into:
+  /// <protocol>://<address>
+  std::string::size_type pos = url.find("://");
+  if (pos == std::string::npos)
+    return std::make_pair(std::string(), url);
+
+  return std::make_pair(url.substr(0, pos), url.substr(pos + 3));
+}
+
 inline StringMap
 getStringMapFromUrl(const StringMap& defaults, const std::string& url)
 {

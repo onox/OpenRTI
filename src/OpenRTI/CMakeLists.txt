@@ -146,6 +146,7 @@ SET(OpenRTI_SOURCES
   ProtocolRegistry.cpp
   RegionSet.cpp
   Server.cpp
+  ServerConfigContentHandler.cpp
   SocketEvent.cpp
   SocketReadEvent.cpp
   SocketServerAcceptEvent.cpp

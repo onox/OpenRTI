@@ -20,6 +20,8 @@
 #ifndef OpenRTI_Server_h
 #define OpenRTI_Server_h
 
+#include <iosfwd>
+
 #include "Clock.h"
 #include "SocketEventDispatcher.h"
 #include "SocketTCP.h"
@@ -40,11 +42,17 @@ public:
   const std::string& getServerName() const;
   void setServerName(const std::string& name);
 
+  void setUpFromConfig(const std::string& config);
+  void setUpFromConfig(std::istream& stream);
+
+  void listen(const std::string& url, int backlog);
   void listenInet(const std::string& address, int backlog);
+  void listenInet(const std::string& node, const std::string& service, int backlog);
   void listenPipe(const std::string& address, int backlog);
 
   SharedPtr<SocketTCP> connectedTCPSocket(const std::string& name);
 
+  void connectParentServer(const std::string& url, const Clock& abstime);
   void connectParentInetServer(const std::string& name, const Clock& abstime);
   void connectParentPipeServer(const std::string& name, const Clock& abstime);
   void connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime);
@@ -57,7 +65,6 @@ public:
   bool getDone() const;
 
   int exec();
-  int exec(const Clock& abstime);
 
 private:
   class WakeupSocketEvent;

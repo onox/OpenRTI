@@ -29,7 +29,7 @@ using namespace OpenRTI;
 
 static void usage(const char* argv0)
 {
-  std::cerr << argv0 << ": [-b] [-f file] [-h] [-i address] [-p parent]" << std::endl;
+  std::cerr << argv0 << ": [-b] [-c configfile] [-f file] [-h] [-i address] [-p parent]" << std::endl;
 }
 
 static Server server;
@@ -53,10 +53,19 @@ main(int argc, char* argv[])
   bool defaultListen = true;
 
   Options options(argc, argv);
-  while (options.next("bf:hi:p:s")) {
+  while (options.next("bc:f:hi:p:s")) {
     switch (options.getOptChar()) {
     case 'b':
       background = true;
+      break;
+    case 'c':
+      try {
+        defaultListen = false;
+        server.setUpFromConfig(options.getArgument());
+      } catch (const Exception& e) {
+        std::cerr << "Could not set up server from config file:" << std::endl;
+        std::cerr << e.getReasonInLocale() << std::endl;
+      }
       break;
     case 'f':
       try {

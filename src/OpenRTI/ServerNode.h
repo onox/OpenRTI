@@ -42,6 +42,7 @@ public:
 
   bool isRunning() const;
 
+  ServerOptions& getServerOptions();
   const ServerOptions& getServerOptions() const;
 
 protected:

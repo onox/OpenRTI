@@ -2510,6 +2510,12 @@ ServerNode::isRunning() const
   return _serverMessageDispatcher->isRunning();
 }
 
+ServerOptions&
+ServerNode::getServerOptions()
+{
+  return _serverMessageDispatcher->getServerOptions();
+}
+
 const ServerOptions&
 ServerNode::getServerOptions() const
 {

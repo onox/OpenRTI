@@ -19,14 +19,20 @@
 
 #include "Server.h"
 
+#include <fstream>
+#include <sstream>
+
 #include "Clock.h"
+#include "DefaultErrorHandler.h"
 #include "Exception.h"
+#include "ExpatXMLReader.h"
 #include "MessageEncodingRegistry.h"
 #include "MessageServer.h"
 #include "MessageSocketReadEvent.h"
 #include "MessageSocketWriteEvent.h"
 #include "Mutex.h"
 #include "ScopeLock.h"
+#include "ServerConfigContentHandler.h"
 #include "SocketEventDispatcher.h"
 #include "SocketAddress.h"
 #include "SocketPipe.h"
@@ -194,12 +200,78 @@ Server::setServerName(const std::string& name)
 }
 
 void
+Server::setUpFromConfig(const std::string& config)
+{
+  std::pair<std::string, std::string> protocolAddressPair = getProtocolRestPair(config);
+  if (protocolAddressPair.first == "file" || protocolAddressPair.first.empty()) {
+
+    std::ifstream stream(utf8ToLocale(protocolAddressPair.second).c_str());
+    if (!stream.is_open())
+      throw RTIinternalError("Could not open server config file: \"" + protocolAddressPair.second + "\"!");
+
+    setUpFromConfig(stream);
+
+  } else {
+
+    std::stringstream stream(protocolAddressPair.second);
+    setUpFromConfig(stream);
+
+  }
+}
+
+void
+Server::setUpFromConfig(std::istream& stream)
+{
+  // Set up the config file parser
+  SharedPtr<XML::XMLReader> reader;
+  reader = new XML::ExpatXMLReader;
+
+  SharedPtr<ServerConfigContentHandler> contentHandler = new ServerConfigContentHandler;
+  reader->setContentHandler(contentHandler.get());
+  SharedPtr<DefaultErrorHandler> errorHandler = new DefaultErrorHandler;
+  reader->setErrorHandler(errorHandler.get());
+
+  reader->parse(stream);
+
+  std::string errorMessage = errorHandler->getMessages();
+  if (!errorMessage.empty())
+    throw RTIinternalError(errorMessage);
+
+  _messageServer->getServerOptions()._preferCompression = contentHandler->getEnableZLibCompression();
+  _messageServer->getServerOptions()._permitTimeRegulation = contentHandler->getPermitTimeRegulation();
+
+  if (!contentHandler->getParentServerUrl().empty())
+    connectParentServer(contentHandler->getParentServerUrl(), Clock::now() + Clock::fromSeconds(90));
+
+  for (unsigned i = 0; i < contentHandler->getNumListenConfig(); ++i)
+    listen(contentHandler->getListenConfig(i).getUrl(), 20);
+}
+
+void
+Server::listen(const std::string& url, int backlog)
+{
+  std::pair<std::string, std::string> protocolAddressPair = getProtocolRestPair(url);
+  if (protocolAddressPair.first == "rti") {
+    listenInet(protocolAddressPair.second, backlog);
+  } else if (protocolAddressPair.first == "pipe" || protocolAddressPair.first == "file" || protocolAddressPair.first.empty()) {
+    listenPipe(protocolAddressPair.second, backlog);
+  } else {
+    throw RTIinternalError(std::string("Trying to listen on \"") + url + "\": Unknown protocol type!");
+  }
+}
+
+void
 Server::listenInet(const std::string& address, int backlog)
 {
   std::pair<std::string, std::string> hostPortPair;
   hostPortPair = parseInetAddress(address);
+  listenInet(hostPortPair.first, hostPortPair.second, backlog);
+}
 
-  std::list<SocketAddress> addressList = SocketAddress::resolve(hostPortPair.first, hostPortPair.second, true);
+void
+Server::listenInet(const std::string& node, const std::string& service, int backlog)
+{
+  std::list<SocketAddress> addressList = SocketAddress::resolve(node, service, true);
   // Set up a stream socket for the server connect
   bool success = false;
   for (std::list<SocketAddress>::const_iterator i = addressList.begin(); i != addressList.end(); ++i) {
@@ -246,6 +318,19 @@ Server::connectedTCPSocket(const std::string& name)
     }
   }
   throw RTIinternalError(std::string("Can not resolve address") + name);
+}
+
+void
+Server::connectParentServer(const std::string& url, const Clock& abstime)
+{
+  std::pair<std::string, std::string> protocolAddressPair = getProtocolRestPair(url);
+  if (protocolAddressPair.first == "rti") {
+    connectParentInetServer(protocolAddressPair.second, abstime);
+  } else if (protocolAddressPair.first == "pipe" || protocolAddressPair.first == "file" || protocolAddressPair.first.empty()) {
+    connectParentPipeServer(protocolAddressPair.second, abstime);
+  } else {
+    throw RTIinternalError(std::string("Trying to listen on \"") + url + "\": Unknown protocol type!");
+  }
 }
 
 void
@@ -351,12 +436,6 @@ int
 Server::exec()
 {
   return _dispatcher.exec();
-}
-
-int
-Server::exec(const Clock& abstime)
-{
-  return _dispatcher.exec(abstime);
 }
 
 } // namespace OpenRTI
