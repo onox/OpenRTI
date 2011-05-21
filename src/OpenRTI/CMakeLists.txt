@@ -120,6 +120,7 @@ SET(OpenRTI_SOURCES
   AbstractMessageEncoder.cpp
   Attributes.cpp
   ContentHandler.cpp
+  DefaultErrorHandler.cpp
   ErrorHandler.cpp
   ExpatXMLReader.cpp
   Exception.cpp

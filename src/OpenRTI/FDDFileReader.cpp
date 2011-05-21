@@ -21,6 +21,7 @@
 
 #include <fstream>
 
+#include "DefaultErrorHandler.h"
 #include "Exception.h"
 #include "FDDContentHandler.h"
 #include "Message.h"
@@ -42,7 +43,7 @@ readFDDFile(const std::string& fullPathNameToTheFDDfile, FOMStringModule& module
 
   SharedPtr<FEDContentHandler> contentHandler = new FEDContentHandler;
   reader->setContentHandler(contentHandler.get());
-  SharedPtr<FEDErrorHandler> errorHandler = new FEDErrorHandler;
+  SharedPtr<DefaultErrorHandler> errorHandler = new DefaultErrorHandler;
   reader->setErrorHandler(errorHandler.get());
 
   reader->parse(fddStream);

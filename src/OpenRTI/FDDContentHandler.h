@@ -322,29 +322,6 @@ private:
   FOMStringModuleBuilder _fomStringModuleBuilder;
 };
 
-class FEDErrorHandler : public XML::ErrorHandler {
-public:
-  virtual void error(const char* msg, unsigned line, unsigned col)
-  {
-    _stream << "error: at line " << line << " in column " << col << ": \""
-            << msg << "\"" << std::endl;
-  }
-  virtual void fatalError(const char* msg, unsigned line, unsigned col)
-  {
-    _stream << "fatalError: at line " << line << " in column " << col << ": \""
-            << msg << "\"" << std::endl;
-  }
-  virtual void warning(const char* msg, unsigned line, unsigned col)
-  {
-  }
-
-  std::string getMessages() const
-  { return _stream.str(); }
-
-private:
-  std::stringstream _stream;
-};
-
 }
 
 #endif
