@@ -68,7 +68,7 @@ InitialServerSocketWriteEvent::written(SocketEventDispatcher& dispatcher)
   /// The connection that sends messages back to the child
   SharedPtr<AbstractMessageSender> toClientSender = writeMessageSocketEvent->getMessageSender();
 
-  /// returns a sender wher incomming messages should be sent to
+  /// returns a sender where incomming messages should be sent to
   SharedPtr<AbstractMessageSender> toServerSender = _messageServer->insertConnect(toClientSender, _clientValueMap);
   if (!toServerSender.valid()) {
     dispatcher.eraseSocket(this);
