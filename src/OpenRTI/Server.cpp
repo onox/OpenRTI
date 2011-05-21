@@ -199,7 +199,7 @@ Server::listenInet(const std::string& address, int backlog)
   std::pair<std::string, std::string> hostPortPair;
   hostPortPair = parseInetAddress(address);
 
-  std::list<SocketAddress> addressList = SocketAddress::resolve(hostPortPair.first, hostPortPair.second);
+  std::list<SocketAddress> addressList = SocketAddress::resolve(hostPortPair.first, hostPortPair.second, true);
   // Set up a stream socket for the server connect
   bool success = false;
   for (std::list<SocketAddress>::const_iterator i = addressList.begin(); i != addressList.end(); ++i) {
@@ -233,7 +233,7 @@ Server::connectedTCPSocket(const std::string& name)
   hostPortPair = parseInetAddress(name);
 
   // Note that here the may be lenghty name lookup for the connection address happens
-  std::list<SocketAddress> addressList = SocketAddress::resolve(hostPortPair.first, hostPortPair.second);
+  std::list<SocketAddress> addressList = SocketAddress::resolve(hostPortPair.first, hostPortPair.second, false);
   while (!addressList.empty()) {
     try {
       SharedPtr<SocketTCP> socketStream = new SocketTCP;

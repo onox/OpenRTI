@@ -91,7 +91,7 @@ SocketAddress::isInet6() const
 }
 
 std::list<SocketAddress>
-SocketAddress::resolve(const std::string& address, const std::string& service)
+SocketAddress::resolve(const std::string& address, const std::string& service, bool passive)
 {
   WSADATA wsaData;
   if (WSAStartup(MAKEWORD(2, 2), &wsaData))
@@ -111,8 +111,7 @@ SocketAddress::resolve(const std::string& address, const std::string& service)
   hints.ai_flags = 0;
   hints.ai_protocol = 0;
 
-  // If the address is empty, assume we are asking for a wildcard address
-  if (address.empty())
+  if (passive)
     hints.ai_flags = AI_PASSIVE;
 
   std::string localeAddress = utf8ToLocale(address);

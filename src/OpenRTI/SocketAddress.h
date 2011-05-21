@@ -52,7 +52,7 @@ public:
   bool isInet6() const;
 
   static std::list<SocketAddress>
-  resolve(const std::string& address, const std::string& service);
+  resolve(const std::string& address, const std::string& service, bool passive);
 
 private:
   struct PrivateData;
