@@ -125,6 +125,7 @@ SET(OpenRTI_SOURCES
   ExpatXMLReader.cpp
   Exception.cpp
   FDDFileReader.cpp
+  FDD1516ContentHandler.cpp
   FOMModuleSet.cpp
   InitialClientSocketReadEvent.cpp
   InitialClientSocketWriteEvent.cpp

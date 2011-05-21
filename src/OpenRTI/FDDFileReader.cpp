@@ -23,8 +23,10 @@
 
 #include "DefaultErrorHandler.h"
 #include "Exception.h"
-#include "FDDContentHandler.h"
+#include "ExpatXMLReader.h"
+#include "FDD1516ContentHandler.h"
 #include "Message.h"
+#include "StringUtils.h"
 
 namespace OpenRTI {
 
@@ -41,7 +43,7 @@ readFDDFile(const std::string& fullPathNameToTheFDDfile, FOMStringModule& module
   SharedPtr<XML::XMLReader> reader;
   reader = new XML::ExpatXMLReader;
 
-  SharedPtr<FEDContentHandler> contentHandler = new FEDContentHandler;
+  SharedPtr<FDD1516ContentHandler> contentHandler = new FDD1516ContentHandler;
   reader->setContentHandler(contentHandler.get());
   SharedPtr<DefaultErrorHandler> errorHandler = new DefaultErrorHandler;
   reader->setErrorHandler(errorHandler.get());
