@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -50,9 +50,6 @@ public:
   /// FIXME colapse them all to what is needed
   int exec();
   int exec(const Clock& absclock);
-
-  // only iterate one time
-  int exec1(const Clock& absclock);
 
 private:
   struct PrivateData;

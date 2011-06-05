@@ -143,7 +143,7 @@ struct SocketEventDispatcher::PrivateData {
     _socketEventMap.erase(i);
   }
 
-  int exec(SocketEventDispatcher& dispatcher, const Clock* absclock, bool oneTime)
+  int exec(SocketEventDispatcher& dispatcher, const Clock* absclock)
   {
     int retv = 0;
 
@@ -219,9 +219,6 @@ struct SocketEventDispatcher::PrivateData {
           --count;
         }
       }
-
-      if (oneTime)
-        break;
     }
 
     return retv;
@@ -284,19 +281,13 @@ SocketEventDispatcher::eraseSocket(const SharedPtr<SocketEvent>& socketEvent)
 int
 SocketEventDispatcher::exec()
 {
-  return _privateData->exec(*this, 0, false);
+  return _privateData->exec(*this, 0);
 }
 
 int
 SocketEventDispatcher::exec(const Clock& absclock)
 {
-  return _privateData->exec(*this, &absclock, false);
-}
-
-int
-SocketEventDispatcher::exec1(const Clock& absclock)
-{
-  return _privateData->exec(*this, &absclock, true);
+  return _privateData->exec(*this, &absclock);
 }
 
 }
