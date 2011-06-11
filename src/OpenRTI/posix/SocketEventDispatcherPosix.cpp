@@ -206,18 +206,21 @@ struct SocketEventDispatcher::PrivateData {
         SharedPtr<SocketReadEvent> socketReadEvent = i->second._socketReadEvent;
         SharedPtr<SocketWriteEvent> socketWriteEvent = i->second._socketWriteEvent;
         ++i;
+        bool activated = false;
         if (FD_ISSET(fd, &readfds)) {
           if (socketReadEvent.valid()) {
             socketReadEvent->read(dispatcher);
           }
-          --count;
+          activated = true;
         }
         if (FD_ISSET(fd, &writefds)) {
           if (socketWriteEvent.valid()) {
             socketWriteEvent->write(dispatcher);
           }
-          --count;
+          activated = true;
         }
+        if (activated)
+          --count;
       }
     }
 
