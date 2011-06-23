@@ -40,7 +40,7 @@ class ConstAbstractMessageDispatcher;
 
 class OPENRTI_API AbstractMessage : public Referenced {
 public:
-  virtual ~AbstractMessage() {}
+  virtual ~AbstractMessage();
   // virtual FederationMessage* toFederationMessage() { return 0; }
   // virtual ServiceMessage* toServiceMessage() { return 0; }
   // virtual TimeStampedMessage* toTimeStampedMessage() { return 0; }
@@ -48,6 +48,11 @@ public:
   virtual void out(std::ostream& os) const = 0;
   virtual void dispatch(AbstractMessageDispatcher&) = 0;
   virtual void dispatch(ConstAbstractMessageDispatcher&) const = 0;
+
+  // Returns true if the message needs to be reliably sent or not.
+  // The default implementation returns true. Interaction and attribute
+  // update messages will provide a dynamic implementation for that.
+  virtual bool getReliable() const;
 
   // template<typename T>
   // void accept(const T& functor)

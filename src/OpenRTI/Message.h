@@ -3262,6 +3262,8 @@ public:
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
+  virtual bool getReliable() const;
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -3314,6 +3316,8 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
+
+  virtual bool getReliable() const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3794,6 +3798,8 @@ public:
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
 
+  virtual bool getReliable() const;
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -3846,6 +3852,8 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(AbstractMessageDispatcher& dispatcher);
   virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;
+
+  virtual bool getReliable() const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }

@@ -116,6 +116,7 @@ IF(ZLIB_FOUND)
 ENDIF()
 
 SET(OpenRTI_SOURCES
+  AbstractMessage.cpp
   AbstractMessageDecoder.cpp
   AbstractMessageEncoder.cpp
   Attributes.cpp

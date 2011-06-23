@@ -632,6 +632,7 @@
     <field name="TransportationType" type="TransportationType"/>
     <field name="Tag" type="VariableLengthData"/>
     <field name="ParameterValues" type="ParameterValueVector"/>
+    <reliable expression="getTransportationType() == RELIABLE"/>
   </message>
   <message type="TimeStampedInteraction">
     <field name="FederationHandle" type="FederationHandle"/>
@@ -641,6 +642,7 @@
     <field name="TimeStamp" type="VariableLengthData"/>
     <field name="MessageRetractionHandle" type="MessageRetractionHandle"/>
     <field name="ParameterValues" type="ParameterValueVector"/>
+    <reliable expression="getTransportationType() == RELIABLE"/>
   </message>
 
   <!-- ObjectInstance handle and name management -->
@@ -745,6 +747,7 @@
     <field name="Tag" type="VariableLengthData"/>
     <field name="TransportationType" type="TransportationType"/>
     <field name="AttributeValues" type="AttributeValueVector"/>
+    <reliable expression="getTransportationType() == RELIABLE"/>
   </message>
   <message type="TimeStampedAttributeUpdate">
     <field name="FederationHandle" type="FederationHandle"/>
@@ -754,6 +757,7 @@
     <field name="MessageRetractionHandle" type="MessageRetractionHandle"/>
     <field name="TransportationType" type="TransportationType"/>
     <field name="AttributeValues" type="AttributeValueVector"/>
+    <reliable expression="getTransportationType() == RELIABLE"/>
   </message>
 
 

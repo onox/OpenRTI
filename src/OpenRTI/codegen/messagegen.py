@@ -532,9 +532,16 @@ class StructDataType(DataType):
 class MessageDataType(StructDataType):
     def __init__(self, name, parentTypeName = None):
         StructDataType.__init__(self, name, parentTypeName)
+        self.__reliableExpression = None
 
     def isMessage(self):
         return True
+
+    def setReliableExpression(self, reliableExpression):
+        self.__reliableExpression = reliableExpression
+
+    def getReliableExpression(self):
+        return self.__reliableExpression
 
     def writeForwardDeclaration(self, sourceStream):
         sourceStream.writeline('class {name};'.format(name = self.getName()))
@@ -555,6 +562,10 @@ class MessageDataType(StructDataType):
         sourceStream.writeline('virtual void dispatch(AbstractMessageDispatcher& dispatcher);')
         sourceStream.writeline('virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;')
         sourceStream.writeline()
+
+        if self.getReliableExpression():
+            sourceStream.writeline('virtual bool getReliable() const;')
+            sourceStream.writeline()
 
         for field in self.getFieldList():
             field.writeSetter(sourceStream, '')
@@ -607,6 +618,15 @@ class MessageDataType(StructDataType):
         sourceStream.writeline('  dispatcher.accept(*this);')
         sourceStream.writeline('}')
         sourceStream.writeline()
+
+        if self.getReliableExpression():
+            sourceStream.writeline('bool')
+            sourceStream.writeline('{name}::getReliable() const'.format(name = self.getName()))
+            sourceStream.writeline('{')
+            sourceStream.writeline('  return {expression};'.format(expression = self.getReliableExpression()))
+            sourceStream.writeline('}')
+            sourceStream.writeline()
+
         sourceStream.writeline()
 
 
@@ -1323,6 +1343,8 @@ class TypeMap(object):
                     while field:
                         if field.type == 'element' and field.name == 'field':
                             message.addField(field.prop('name'), field.prop('type'))
+                        elif field.type == 'element' and field.name == 'reliable':
+                            message.setReliableExpression(field.prop('expression'))
                         field = field.next
                     self.addType(message)
 

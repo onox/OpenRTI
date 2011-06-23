@@ -1283,6 +1283,12 @@ InteractionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
   dispatcher.accept(*this);
 }
 
+bool
+InteractionMessage::getReliable() const
+{
+  return getTransportationType() == RELIABLE;
+}
+
 
 TimeStampedInteractionMessage::TimeStampedInteractionMessage()
 {
@@ -1314,6 +1320,12 @@ void
 TimeStampedInteractionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
+}
+
+bool
+TimeStampedInteractionMessage::getReliable() const
+{
+  return getTransportationType() == RELIABLE;
 }
 
 
@@ -1679,6 +1691,12 @@ AttributeUpdateMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) con
   dispatcher.accept(*this);
 }
 
+bool
+AttributeUpdateMessage::getReliable() const
+{
+  return getTransportationType() == RELIABLE;
+}
+
 
 TimeStampedAttributeUpdateMessage::TimeStampedAttributeUpdateMessage()
 {
@@ -1710,6 +1728,12 @@ void
 TimeStampedAttributeUpdateMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
+}
+
+bool
+TimeStampedAttributeUpdateMessage::getReliable() const
+{
+  return getTransportationType() == RELIABLE;
 }
 
 
