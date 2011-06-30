@@ -141,6 +141,7 @@ SET(OpenRTI_SOURCES
   MessageSocketReadEvent.cpp
   MessageSocketWriteEvent.cpp
   Options.cpp
+  ParenthesesReader.cpp
   ServerNode.cpp
   ServerObjectModel.cpp
   StreamSocketReadEvent.cpp
