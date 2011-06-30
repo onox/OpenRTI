@@ -38,7 +38,7 @@ ParenthesesReader::ContentHandler::endDocument()
 }
 
 void
-ParenthesesReader::ContentHandler::startElement(const ParenthesesReader& parenthesesReader, const StringList& tokens)
+ParenthesesReader::ContentHandler::startElement(const ParenthesesReader& parenthesesReader, const StringVector& tokens)
 {
 }
 
@@ -76,7 +76,7 @@ ParenthesesReader::parse(std::istream& stream, ContentHandler& contentHandler, E
 
   bool newToken = true;
   bool allowToken = false;
-  StringList tokenList;
+  StringVector tokenList;
   while (stream.good()) {
     int c = stream.get();
     ++_column;

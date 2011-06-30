@@ -53,6 +53,9 @@ inline bool contains(const StringList& stringList, const std::string& string)
 inline bool contains(const StringVector& stringVector, const std::string& string)
 { return std::find(stringVector.begin(), stringVector.end(), string) != stringVector.end(); }
 
+inline bool endsWith(const std::string& s, const char* tail)
+{ return s.size() - s.rfind(tail) == std::strlen(tail); }
+
 /// Internationalization concept:
 /// All internal computations are done in ucs{32,16} aka wchar_t
 /// Strings are sent over the wire in utf8, that means all the indices are

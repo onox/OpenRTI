@@ -26,6 +26,7 @@
 #include "AbstractFederate.h"
 #include "Clock.h"
 #include "FDDFileReader.h"
+#include "FEDFileReader.h"
 #include "Federate.h"
 #include "LogStream.h"
 #include "Message.h"
@@ -232,7 +233,10 @@ public:
       // Try to read the object model
       for (std::vector<std::string>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i) {
         FOMStringModule module;
-        readFDDFile(*i, module);
+        if (endsWith(*i, ".fed"))
+          readFEDFile(*i, module);
+        else
+          readFDDFile(*i, module);
         request->getFOMStringModuleList().push_back(module);
       }
 

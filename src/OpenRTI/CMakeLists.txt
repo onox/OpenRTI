@@ -127,6 +127,7 @@ SET(OpenRTI_SOURCES
   Exception.cpp
   FDDFileReader.cpp
   FDD1516ContentHandler.cpp
+  FEDFileReader.cpp
   FOMModuleSet.cpp
   InitialClientSocketReadEvent.cpp
   InitialClientSocketWriteEvent.cpp

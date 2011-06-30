@@ -38,7 +38,7 @@ public:
     virtual void startDocument();
     virtual void endDocument();
 
-    virtual void startElement(const ParenthesesReader& parenthesesReader, const StringList& tokens);
+    virtual void startElement(const ParenthesesReader& parenthesesReader, const StringVector& tokens);
     virtual void endElement();
   };
 

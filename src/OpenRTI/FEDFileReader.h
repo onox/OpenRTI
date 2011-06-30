@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef OpenRTI_FDDFileReader_h
-#define OpenRTI_FDDFileReader_h
+#ifndef OpenRTI_FEDFileReader_h
+#define OpenRTI_FEDFileReader_h
 
 #include <string>
 #include "Export.h"
@@ -28,7 +28,7 @@ namespace OpenRTI {
 class FOMStringModule;
 
 OPENRTI_API bool
-readFDDFile(const std::string& fullPathNameToTheFDDfile, FOMStringModule& module);
+readFEDFile(const std::string& fullPathNameToTheFEDfile, FOMStringModule& module);
 
 } // namespace OpenRTI
 
