@@ -139,10 +139,10 @@ PyObject_GetVariableLengthData(rti1516::VariableLengthData& variableLengthData, 
 static bool
 PyObject_GetInt(long& value, PyObject* o)
 {
-  PyObject* i = PyNumber_Int(o);
+  PyObject* i = PyNumber_Long(o);
   if (!i)
     return false;
-  value = PyInt_AsLong(i);
+  value = PyLong_AsLong(i);
   Py_DecRef(i);
   return true;
 }
@@ -172,7 +172,7 @@ PyObject_GetDouble(double& value, PyObject* o)
 static PyObject*
 PyObject_NewTransportationType(const rti1516::TransportationType& transportationType)
 {
-  return PyInt_FromLong(transportationType);
+  return PyLong_FromLong(transportationType);
 }
 
 static bool
@@ -203,7 +203,7 @@ PyObject_GetTransportationType(rti1516::TransportationType& transportationType, 
 static PyObject*
 PyObject_NewOrderType(const rti1516::OrderType& orderType)
 {
-  return PyInt_FromLong(orderType);
+  return PyLong_FromLong(orderType);
 }
 
 static bool
@@ -454,14 +454,50 @@ PyObject_GetRangeBounds(rti1516::RangeBounds& rangeBounds, PyObject* o)
     Py_TYPE(o)->tp_free(o);                                             \
   }                                                                     \
                                                                         \
-  static int                                                            \
-  HandleKind ## _compare(Py ## HandleKind *o0, Py ## HandleKind *o1)    \
+  static PyObject*                                                      \
+  HandleKind ## _richcmp(Py ## HandleKind *o0, Py ## HandleKind *o1,    \
+                         int op)                                        \
   {                                                                     \
-    if (o1->ob_value < o0->ob_value)                                    \
-      return 1;                                                         \
-    if (o0->ob_value < o1->ob_value)                                    \
-      return -1;                                                        \
-    return 0;                                                           \
+    switch (op) {                                                       \
+    case Py_LT:                                                         \
+      if (o0->ob_value < o1->ob_value)                                  \
+        return PyLong_FromLong(1);                                      \
+      else                                                              \
+        return PyLong_FromLong(0);                                      \
+      break;                                                            \
+    case Py_LE:                                                         \
+      if (o1->ob_value < o0->ob_value)                                  \
+        return PyLong_FromLong(0);                                      \
+      else                                                              \
+        return PyLong_FromLong(1);                                      \
+      break;                                                            \
+    case Py_EQ:                                                         \
+      if (o0->ob_value == o1->ob_value)                                 \
+        return PyLong_FromLong(1);                                      \
+      else                                                              \
+        return PyLong_FromLong(0);                                      \
+      break;                                                            \
+    case Py_NE:                                                         \
+      if (o0->ob_value != o1->ob_value)                                 \
+        return PyLong_FromLong(1);                                      \
+      else                                                              \
+        return PyLong_FromLong(0);                                      \
+      break;                                                            \
+    case Py_GT:                                                         \
+      if (o1->ob_value < o0->ob_value)                                  \
+        return PyLong_FromLong(1);                                      \
+      else                                                              \
+        return PyLong_FromLong(0);                                      \
+      break;                                                            \
+    case Py_GE:                                                         \
+      if (o0->ob_value < o1->ob_value)                                  \
+        return PyLong_FromLong(0);                                      \
+      else                                                              \
+        return PyLong_FromLong(1);                                      \
+      break;                                                            \
+    default:                                                            \
+      return 0;                                                         \
+    };                                                                  \
   }                                                                     \
                                                                         \
   static PyObject*                                                      \
@@ -500,8 +536,7 @@ PyObject_GetRangeBounds(rti1516::RangeBounds& rangeBounds, PyObject* o)
   };                                                                    \
                                                                         \
   static PyTypeObject Py ## HandleKind ## Type = {                      \
-    PyObject_HEAD_INIT(NULL)                                            \
-    0,                                  /* ob_size */                   \
+    PyVarObject_HEAD_INIT(NULL, 0)                                      \
     # HandleKind ,                      /* tp_name */                   \
     sizeof(Py##HandleKind),             /* tp_basicsize */              \
     0,                                  /* tp_itemsize */               \
@@ -509,7 +544,7 @@ PyObject_GetRangeBounds(rti1516::RangeBounds& rangeBounds, PyObject* o)
     0,                                  /* tp_print */                  \
     0,                                  /* tp_getattr */                \
     0,                                  /* tp_setattr */                \
-    (cmpfunc)HandleKind ## _compare,    /* tp_compare */                \
+    0,                                  /* tp_compare */                \
     (reprfunc)HandleKind ## _repr,      /* tp_repr */                   \
     0,                                  /* tp_as_number */              \
     0,                                  /* tp_as_sequence */            \
@@ -521,10 +556,10 @@ PyObject_GetRangeBounds(rti1516::RangeBounds& rangeBounds, PyObject* o)
     0,                                  /* tp_setattro */               \
     0,                                  /* tp_as_buffer */              \
     Py_TPFLAGS_DEFAULT,                 /* tp_flags */                  \
-    #HandleKind ,                       /* tp_doc */                    \
+    # HandleKind ,                      /* tp_doc */                    \
     0,                                  /* tp_traverse */               \
     0,                                  /* tp_clear */                  \
-    0,                                  /* tp_richcompare */            \
+    (richcmpfunc)HandleKind ## _richcmp,/* tp_richcompare */            \
     0,                                  /* tp_weaklistoffset */         \
     0,                                  /* tp_iter */                   \
     0,                                  /* tp_iternext */               \
@@ -614,7 +649,7 @@ PyObject_NewFederateHandleSaveStatusPairVector(const rti1516::FederateHandleSave
       Py_DecRef(list);
       return 0;
     }
-    PyObject *second = PyInt_FromLong(federateStatusVector[i].second);
+    PyObject *second = PyLong_FromLong(federateStatusVector[i].second);
     if (!second) {
       Py_DecRef(first);
       Py_DecRef(list);
@@ -648,7 +683,7 @@ PyObject_NewFederateHandleRestoreStatusPairVector(const rti1516::FederateHandleR
       Py_DecRef(list);
       return 0;
     }
-    PyObject *second = PyInt_FromLong(federateStatusVector[i].second);
+    PyObject *second = PyLong_FromLong(federateStatusVector[i].second);
     if (!second) {
       Py_DecRef(first);
       Py_DecRef(list);
@@ -1094,7 +1129,7 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
     GILStateScope gilStateScope;
 
     PyObject* arg0 = PyObject_NewString(label);
-    PyObject* arg1 = PyInt_FromLong(reason);
+    PyObject* arg1 = PyLong_FromLong(reason);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"synchronizationPointRegistrationFailed", (char*)"NN", arg0, arg1);
     if (result) {
       Py_DecRef(result);
@@ -1222,7 +1257,7 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
 
     GILStateScope gilStateScope;
 
-    PyObject* arg0 = PyInt_FromLong(theSaveFailureReason);
+    PyObject* arg0 = PyLong_FromLong(theSaveFailureReason);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"federationNotSaved", (char*)"N", arg0);
     if (result) {
       Py_DecRef(result);
@@ -1365,7 +1400,7 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
 
     GILStateScope gilStateScope;
 
-    PyObject* arg0 = PyInt_FromLong(theRestoreFailureReason);
+    PyObject* arg0 = PyLong_FromLong(theRestoreFailureReason);
     PyObject* result = PyObject_CallMethod(ob_federateAmbassador, (char*)"federationNotRestored", (char*)"N", arg0);
     if (result) {
       Py_DecRef(result);
@@ -6396,8 +6431,7 @@ PyRTIambassadorObject_dealloc(PyRTIambassadorObject *o)
 }
 
 static PyTypeObject PyRTIambassadorType = {
-  PyObject_HEAD_INIT(NULL)
-  0,                                /* ob_size */
+  PyVarObject_HEAD_INIT(NULL, 0)
   "RTIambassador",                  /* tp_name */
   sizeof(PyRTIambassadorObject),    /* tp_basicsize */
   0,                                /* tp_itemsize */
@@ -6439,35 +6473,60 @@ static PyTypeObject PyRTIambassadorType = {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static PyMethodDef methods[] = {
-    {NULL, NULL, 0, NULL}
+static PyMethodDef _rti1516_methods[] = {
+    {NULL, NULL}
 };
 
+#if 3 <= PY_MAJOR_VERSION
+
+static struct PyModuleDef moduledef = {
+        PyModuleDef_HEAD_INIT,
+        "_rti1516",
+        NULL,
+        -1,
+        _rti1516_methods,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+};
+
+# define INITFUNCNAME PyInit__rti1516
+# define INITERROR return NULL
+#else
+# define INITFUNCNAME init_rti1516
+# define INITERROR return
+#endif
+
 PyMODINIT_FUNC
-init_rti1516(void)
+INITFUNCNAME(void)
 {
   if (PyType_Ready(&PyFederateHandleType) < 0)
-    return;
+    INITERROR;
   if (PyType_Ready(&PyObjectClassHandleType) < 0)
-    return;
+    INITERROR;
   if (PyType_Ready(&PyInteractionClassHandleType) < 0)
-    return;
+    INITERROR;
   if (PyType_Ready(&PyObjectInstanceHandleType) < 0)
-    return;
+    INITERROR;
   if (PyType_Ready(&PyAttributeHandleType) < 0)
-    return;
+    INITERROR;
   if (PyType_Ready(&PyParameterHandleType) < 0)
-    return;
+    INITERROR;
   if (PyType_Ready(&PyDimensionHandleType) < 0)
-    return;
+    INITERROR;
   if (PyType_Ready(&PyRegionHandleType) < 0)
-    return;
+    INITERROR;
   if (PyType_Ready(&PyMessageRetractionHandleType) < 0)
-    return;
+    INITERROR;
   if (PyType_Ready(&PyRTIambassadorType) < 0)
-    return;
+    INITERROR;
 
-  PyObject* module = Py_InitModule3("_rti1516", methods, "rti1516 RTI/HLA backend implementation.");
+#if PY_MAJOR_VERSION >= 3
+  PyObject* module = PyModule_Create(&moduledef);
+#else
+  PyObject* module = Py_InitModule3("_rti1516", _rti1516_methods, "rti1516 RTI/HLA backend implementation.");
+#endif
 
   Py_IncRef((PyObject*)&PyFederateHandleType);
   PyModule_AddObject(module, "FederateHandle", (PyObject*)&PyFederateHandleType);
@@ -6656,4 +6715,8 @@ init_rti1516(void)
   RTI_EXCEPTION(UnknownName)
   RTI_EXCEPTION(InternalError)
 #undef RTI_EXCEPTION
+
+#if PY_MAJOR_VERSION >= 3
+  return module;
+#endif
 }
