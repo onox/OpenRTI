@@ -33,14 +33,11 @@ public:
 
   virtual void send(const SharedPtr<AbstractMessage>& message)
   {
-    if (!_socketEvent->getSocket()->isOpen())
-      throw RTIinternalError("Trying to send message to a closed MessageSender");
     _socketEvent->sendToSocket(message);
   }
   virtual void close()
   {
-    // May be shutdown???
-    _socketEvent->getSocket()->close();
+    _socketEvent->shutdownSocket();
   }
 
 private:
@@ -49,7 +46,8 @@ private:
 
 MessageSocketWriteEvent::MessageSocketWriteEvent(const SharedPtr<SocketStream>& socket, const SharedPtr<AbstractMessageEncoder>& encoder) :
   StreamSocketWriteEvent(socket),
-  _encoder(encoder)
+  _encoder(encoder),
+  _shutdownSocket(false)
 {
 }
 
@@ -72,6 +70,9 @@ MessageSocketWriteEvent::written(SocketEventDispatcher& dispatcher)
     return;
   // disable writing for now when the next message arrives we get woken up again
   setEnable(false);
+  // May be shutdown???
+  if (_shutdownSocket)
+    getSocket()->close();
 }
 
 bool
@@ -89,8 +90,16 @@ MessageSocketWriteEvent::getMessageSender()
 void
 MessageSocketWriteEvent::sendToSocket(const SharedPtr<AbstractMessage>& message)
 {
+  if (_shutdownSocket || !getSocket()->isOpen())
+    throw RTIinternalError("Trying to send message to a closed MessageSender");
   _messageList.push_back(message);
   setEnable(true);
+}
+
+void
+MessageSocketWriteEvent::shutdownSocket()
+{
+  _shutdownSocket = true;
 }
 
 } // namespace OpenRTI

@@ -41,12 +41,14 @@ public:
 
   AbstractMessageSender* getMessageSender();
   void sendToSocket(const SharedPtr<AbstractMessage>& message);
+  void shutdownSocket();
 
 private:
   class MessageSender;
 
   SharedPtr<AbstractMessageEncoder> _encoder;
   MessageList _messageList;
+  bool _shutdownSocket;
 };
 
 } // namespace OpenRTI
