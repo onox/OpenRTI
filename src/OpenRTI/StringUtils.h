@@ -56,6 +56,29 @@ inline bool contains(const StringVector& stringVector, const std::string& string
 inline bool endsWith(const std::string& s, const char* tail)
 { return s.size() - s.rfind(tail) == std::strlen(tail); }
 
+/// checks for a file case insensitive extension
+inline bool matchExtension(const std::string& name, const char* extension)
+{
+  size_t extensionSize = std::strlen(extension);
+  if (name.size() < extensionSize)
+    return false;
+  for (size_t i = name.size() - extensionSize, j = 0; j < extensionSize; ++i, ++j) {
+    std::string::value_type s = name[i];
+    char e = extension[j];
+    if (s == e)
+      continue;
+    if ('A' <= e && e <= 'Z') {
+      if (s == (e + 'a' - 'A'))
+        continue;
+    } else if ('a' <= e && e <= 'z') {
+      if (s == (e + 'A' - 'a'))
+        continue;
+    }
+    return false;
+  }
+  return true;
+}
+
 /// Internationalization concept:
 /// All internal computations are done in ucs{32,16} aka wchar_t
 /// Strings are sent over the wire in utf8, that means all the indices are

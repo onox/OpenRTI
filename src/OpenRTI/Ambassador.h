@@ -233,7 +233,7 @@ public:
       // Try to read the object model
       for (std::vector<std::string>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i) {
         FOMStringModule module;
-        if (endsWith(*i, ".fed"))
+        if (matchExtension(*i, ".fed"))
           readFEDFile(*i, module);
         else
           readFDDFile(*i, module);
