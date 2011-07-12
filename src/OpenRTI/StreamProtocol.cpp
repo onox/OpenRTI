@@ -89,13 +89,10 @@ public:
   };
 
   // Sync call to connect to a server
-  SharedPtr<AbstractMessageSender> connectServer(const std::string& name, const SharedPtr<AbstractMessageSender>& fromServerQueue,
-                                                 const Clock& abstime)
+  SharedPtr<AbstractMessageSender> connectServer(const std::string& name, const StringStringListMap& clientOptions,
+                                                 const SharedPtr<AbstractMessageSender>& fromServerQueue, const Clock& abstime)
   {
-    /* FIXME */
-    StringStringListMap valueMap;
-    valueMap["serverName"].push_back("ambassadorConnect");
-    SharedPtr<ConnectServerCallback> callback = new ConnectServerCallback(fromServerQueue, valueMap);
+    SharedPtr<ConnectServerCallback> callback = new ConnectServerCallback(fromServerQueue, clientOptions);
     _abstime = abstime;
     if (!execThreadProcedure(name, callback, true))
       return 0;
@@ -190,16 +187,16 @@ StreamProtocol::~StreamProtocol()
 }
 
 SharedPtr<AbstractConnect>
-StreamProtocol::connect(const std::map<std::string,std::string>& parameterMap, const Clock& abstime) const
+StreamProtocol::connect(const StringStringListMap& clientOptions, const Clock& abstime) const
 {
   std::string serverThreadKey;
-  std::map<std::string,std::string>::const_iterator i = parameterMap.find("address");
-  if (i != parameterMap.end())
-    serverThreadKey = i->second;
+  StringStringListMap::const_iterator i = clientOptions.find("address");
+  if (i != clientOptions.end() && !i->second.empty())
+    serverThreadKey = i->second.front();
 
   SharedPtr<ThreadMessageQueue> threadMessageQueue = new ThreadMessageQueue;
   SharedPtr<AbstractMessageSender> messageSender;
-  messageSender = _serverThreadRegistry->connectServer(serverThreadKey, threadMessageQueue->getMessageSender(), abstime);
+  messageSender = _serverThreadRegistry->connectServer(serverThreadKey, clientOptions, threadMessageQueue->getMessageSender(), abstime);
   return new Connect(messageSender, threadMessageQueue, _serverThreadRegistry, serverThreadKey);
 }
 

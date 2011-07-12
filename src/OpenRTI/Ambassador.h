@@ -170,7 +170,12 @@ public:
         Traits::throwConnectionFailed(std::string("Unknown or unsupported protocol \"") + i->second + std::string("\"."));
 
       // a send receive pair to create a federation
-      _connect = protocol->connect(parameterMap, abstime);
+      // FIXME
+      StringStringListMap stringStringListMap;
+      for (StringMap::const_iterator j = parameterMap.begin(); j != parameterMap.end(); ++j)
+        stringStringListMap[j->first].push_back(j->second);
+      stringStringListMap["serverName"].push_back("ambassadorConnect");
+      _connect = protocol->connect(stringStringListMap, abstime);
       if (!_connect.valid())
         Traits::throwConnectionFailed();
 

@@ -105,13 +105,15 @@ private:
 };
 
 SharedPtr<AbstractConnect>
-TraceProtocol::connect(const std::map<std::string,std::string>& parameterMap, const Clock& abstime) const
+TraceProtocol::connect(const StringStringListMap& parameterMap, const Clock& abstime) const
 {
-  std::map<std::string,std::string>::const_iterator i = parameterMap.find("traceProtocol");
+  StringStringListMap::const_iterator i = parameterMap.find("traceProtocol");
   if (i == parameterMap.end())
     return 0;
+  if (i->second.size() != 1)
+    return 0;
 
-  SharedPtr<const AbstractProtocol> protocol = ProtocolRegistry::instance()->getProtocol(i->second);
+  SharedPtr<const AbstractProtocol> protocol = ProtocolRegistry::instance()->getProtocol(i->second.front());
   if (!protocol.valid())
     return 0;
 
@@ -120,9 +122,9 @@ TraceProtocol::connect(const std::map<std::string,std::string>& parameterMap, co
     return 0;
 
   std::string traceFile = "trace.txt";
-  std::map<std::string,std::string>::const_iterator j = parameterMap.find("traceFile");
-  if (j != parameterMap.end())
-    traceFile = j->second;
+  StringStringListMap::const_iterator j = parameterMap.find("traceFile");
+  if (j != parameterMap.end() && !j->second.empty())
+    traceFile = j->second.front();
 
   SharedPtr<Stream> stream = new Stream(traceFile);
   return new Connect(connect, stream);

@@ -135,11 +135,8 @@ ThreadProtocol::~ThreadProtocol()
 }
 
 SharedPtr<AbstractConnect>
-ThreadProtocol::connect(const std::map<std::string,std::string>&, const Clock&) const
+ThreadProtocol::connect(const StringStringListMap& clientOptions, const Clock&) const
 {
-  /* FIXME, use the string string map argument for this */
-  StringStringListMap clientOptions;
-  clientOptions["serverName"].push_back("ambassadorConnect");
   SharedPtr<ThreadMessageQueue> outgoingQueue = new ThreadMessageQueue;
   SharedPtr<AbstractMessageSender> toAmbassador = outgoingQueue->getMessageSender();
   SharedPtr<AbstractMessageSender> messageSender = _threadProtocolServer->insertConnect(toAmbassador, clientOptions);
