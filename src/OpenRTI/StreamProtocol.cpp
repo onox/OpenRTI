@@ -66,7 +66,7 @@ public:
       // FIXME what about just an atomic count on the number of connects to this registry???
       // Once this drops to zero, shut down that thread ...
       // FIXME, need to have good semantics for that
-      return _server.isRunning();
+      return !_server.getServerNode().isIdle();
     }
 
   private:

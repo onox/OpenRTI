@@ -41,7 +41,7 @@ public:
   const std::string& getServerName() const;
   void setServerName(const std::string& name);
 
-  bool isRunning() const;
+  virtual bool isIdle() const;
 
   ServerOptions& getServerOptions();
   const ServerOptions& getServerOptions() const;

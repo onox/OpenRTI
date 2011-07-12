@@ -60,8 +60,6 @@ public:
 
   SharedPtr<AbstractMessageSender> connectServer(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);
 
-  bool isRunning() const;
-
   /// Gives access to the rti server node running in this NetworkServer.
   /// The method is guaranteed to return a valid ServerNode.
   virtual AbstractServerNode& getServerNode();

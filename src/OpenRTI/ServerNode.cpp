@@ -2388,10 +2388,8 @@ public:
   bool isRootServer() const
   { return !_serverConnectSet.hasParentConnect(); }
 
-  /// FIXME ????
-  bool isRunning() const
-  // { return _serverConnectSet.hasChildConnects() || !_federationServerMap.empty(); }
-  { return _serverConnectSet.hasChildConnects(); }
+  bool isIdle() const
+  { return !isRootServer() && !hasChildConnects(); }
 
   ServerOptions& getServerOptions()
   { return *_serverOptions; }
@@ -2505,9 +2503,9 @@ ServerNode::setServerName(const std::string& name)
 }
 
 bool
-ServerNode::isRunning() const
+ServerNode::isIdle() const
 {
-  return _serverMessageDispatcher->isRunning();
+  return _serverMessageDispatcher->isIdle();
 }
 
 ServerOptions&

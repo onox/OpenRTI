@@ -409,12 +409,6 @@ Server::connectServer(const SharedPtr<AbstractMessageSender>& messageSender, con
   return toServerSender;
 }
 
-bool
-Server::isRunning() const
-{
-  return _messageServer->isRunning();
-}
-
 AbstractServerNode&
 Server::getServerNode()
 {

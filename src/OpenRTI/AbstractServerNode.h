@@ -37,6 +37,11 @@ public:
 
   virtual SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& childOptions) = 0;
   virtual SharedPtr<AbstractMessageSender> insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions) = 0;
+
+  /// Returns true if the server is idle.
+  /// Whare idle means that it is save to shut down the server completely.
+  /// This is false for any root server or, for a child server that has child connects.
+  virtual bool isIdle() const = 0;
 };
 
 } // namespace OpenRTI
