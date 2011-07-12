@@ -22,6 +22,7 @@
 
 #include <string>
 #include "AbstractMessageSender.h"
+#include "AbstractServerNode.h"
 #include "Referenced.h"
 #include "SharedPtr.h"
 #include "StringUtils.h"
@@ -32,7 +33,7 @@ class ConnectHandle;
 class ServerMessageDispatcher;
 class ServerOptions;
 
-class OPENRTI_LOCAL ServerNode : public Referenced {
+class OPENRTI_LOCAL ServerNode : public AbstractServerNode {
 public:
   ServerNode(const SharedPtr<ServerOptions>& serverOptions);
   virtual ~ServerNode();
@@ -46,8 +47,8 @@ public:
   const ServerOptions& getServerOptions() const;
 
 protected:
-  ConnectHandle insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);
-  ConnectHandle insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions);
+  ConnectHandle _insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);
+  ConnectHandle _insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions);
   void removeConnect(const ConnectHandle& connectHandle);
 
   void dispatchMessage(AbstractMessage& message, const ConnectHandle& connectHandle);

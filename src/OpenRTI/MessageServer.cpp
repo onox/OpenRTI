@@ -66,7 +66,7 @@ MessageServer::~MessageServer()
 SharedPtr<AbstractMessageSender>
 MessageServer::insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& childOptions)
 {
-  ConnectHandle connectHandle = ServerNode::insertConnect(messageSender, childOptions);
+  ConnectHandle connectHandle = _insertConnect(messageSender, childOptions);
   if (!connectHandle.valid())
     return 0;
   return new MessageSender(this, connectHandle);
@@ -75,7 +75,7 @@ MessageServer::insertConnect(const SharedPtr<AbstractMessageSender>& messageSend
 SharedPtr<AbstractMessageSender>
 MessageServer::insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions)
 {
-  ConnectHandle connectHandle = ServerNode::insertParentConnect(messageSender, parentOptions);
+  ConnectHandle connectHandle = _insertParentConnect(messageSender, parentOptions);
   if (!connectHandle.valid())
     return 0;
   return new MessageSender(this, connectHandle);

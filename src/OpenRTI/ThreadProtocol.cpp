@@ -36,13 +36,20 @@ public:
     ServerNode(new ServerOptions)
   { }
 
-  SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender)
+  virtual SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
   {
     ScopeLock scopeLock(_mutex);
-    /* FIXME */
-    StringStringListMap valueMap;
-    valueMap["serverName"].push_back("ambassadorConnect");
-    ConnectHandle connectHandle = ServerNode::insertConnect(messageSender, valueMap);
+    ConnectHandle connectHandle = _insertConnect(messageSender, clientOptions);
+    if (!connectHandle.valid())
+      return 0;
+    return new MessageSender(this, connectHandle);
+  }
+
+  // unused but implemented
+  virtual SharedPtr<AbstractMessageSender> insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions)
+  {
+    ScopeLock scopeLock(_mutex);
+    ConnectHandle connectHandle = _insertParentConnect(messageSender, parentOptions);
     if (!connectHandle.valid())
       return 0;
     return new MessageSender(this, connectHandle);
@@ -130,9 +137,12 @@ ThreadProtocol::~ThreadProtocol()
 SharedPtr<AbstractConnect>
 ThreadProtocol::connect(const std::map<std::string,std::string>&, const Clock&) const
 {
+  /* FIXME, use the string string map argument for this */
+  StringStringListMap clientOptions;
+  clientOptions["serverName"].push_back("ambassadorConnect");
   SharedPtr<ThreadMessageQueue> outgoingQueue = new ThreadMessageQueue;
   SharedPtr<AbstractMessageSender> toAmbassador = outgoingQueue->getMessageSender();
-  SharedPtr<AbstractMessageSender> messageSender = _threadProtocolServer->insertConnect(toAmbassador);
+  SharedPtr<AbstractMessageSender> messageSender = _threadProtocolServer->insertConnect(toAmbassador, clientOptions);
   return new Connect(messageSender, outgoingQueue);
 }
 

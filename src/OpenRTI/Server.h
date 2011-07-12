@@ -22,6 +22,7 @@
 
 #include <iosfwd>
 
+#include "AbstractNetworkServer.h"
 #include "Clock.h"
 #include "SocketEventDispatcher.h"
 #include "SocketTCP.h"
@@ -34,7 +35,7 @@ class Clock;
 class MessageServer;
 class SocketWakeupTrigger;
 
-class OPENRTI_API Server {
+class OPENRTI_API Server : public AbstractNetworkServer {
 public:
   Server();
   ~Server();
@@ -61,10 +62,19 @@ public:
 
   bool isRunning() const;
 
+  /// Gives access to the rti server node running in this NetworkServer.
+  /// The method is guaranteed to return a valid ServerNode.
+  virtual AbstractServerNode& getServerNode();
+
+  /// Stops the NetworkServers exec loop.
+  /// Must be thread safe as it might be called from a different thread
+  /// than the one running the exec loop.
+  virtual void setDone();
   void setDone(bool done);
   bool getDone() const;
 
-  int exec();
+  /// Run the server's main message loop.
+  virtual int exec();
 
 private:
   class WakeupSocketEvent;

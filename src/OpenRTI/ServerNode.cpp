@@ -2523,13 +2523,13 @@ ServerNode::getServerOptions() const
 }
 
 ConnectHandle
-ServerNode::insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
+ServerNode::_insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
 {
   return _serverMessageDispatcher->insertConnect(messageSender, clientOptions);
 }
 
 ConnectHandle
-ServerNode::insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions)
+ServerNode::_insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions)
 {
   return _serverMessageDispatcher->insertParentConnect(messageSender, parentOptions);
 }

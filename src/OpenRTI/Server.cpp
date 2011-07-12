@@ -415,6 +415,18 @@ Server::isRunning() const
   return _messageServer->isRunning();
 }
 
+AbstractServerNode&
+Server::getServerNode()
+{
+  return *_messageServer;
+}
+
+void
+Server::setDone()
+{
+  setDone(true);
+}
+
 void
 Server::setDone(bool done)
 {
