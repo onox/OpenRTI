@@ -32,10 +32,10 @@ namespace OpenRTI {
 // Just a chain writing socket event to push out the initial connect answer and
 // Than replace that one with a next read event
 InitialServerSocketWriteEvent::InitialServerSocketWriteEvent(const SharedPtr<SocketStream>& socketStream,
-                                                             const SharedPtr<MessageServer>& messageServer,
+                                                             const SharedPtr<AbstractServerNode>& serverNode,
                                                              const StringStringListMap& clientValueMap) :
   InitialSocketWriteEvent(socketStream),
-  _messageServer(messageServer),
+  _serverNode(serverNode),
   _clientValueMap(clientValueMap)
 {
 }
@@ -69,7 +69,7 @@ InitialServerSocketWriteEvent::written(SocketEventDispatcher& dispatcher)
   SharedPtr<AbstractMessageSender> toClientSender = writeMessageSocketEvent->getMessageSender();
 
   /// returns a sender where incomming messages should be sent to
-  SharedPtr<AbstractMessageSender> toServerSender = _messageServer->insertConnect(toClientSender, _clientValueMap);
+  SharedPtr<AbstractMessageSender> toServerSender = _serverNode->insertConnect(toClientSender, _clientValueMap);
   if (!toServerSender.valid()) {
     dispatcher.eraseSocket(this);
     Log(MessageCoding, Warning) << "Could not get server connect handle: Dropping connection!" << std::endl;

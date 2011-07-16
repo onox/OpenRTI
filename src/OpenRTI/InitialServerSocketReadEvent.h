@@ -30,14 +30,14 @@ namespace OpenRTI {
 class OPENRTI_LOCAL InitialServerSocketReadEvent : public InitialSocketReadEvent {
 public:
   InitialServerSocketReadEvent(const SharedPtr<SocketStream>& socketStream,
-                               const SharedPtr<MessageServer>& messageServer);
+                               const SharedPtr<AbstractServerNode>& serverNode);
   virtual ~InitialServerSocketReadEvent();
 
   // When the whole packet has arrived, this is called with the whole data
   virtual void readPacket(SocketEventDispatcher& dispatcher, NetworkBuffer& networkBuffer);
 
 private:
-  SharedPtr<MessageServer> _messageServer;
+  SharedPtr<AbstractServerNode> _serverNode;
 };
 
 } // namespace OpenRTI

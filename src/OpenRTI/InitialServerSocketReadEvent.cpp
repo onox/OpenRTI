@@ -28,9 +28,9 @@
 namespace OpenRTI {
 
 InitialServerSocketReadEvent::InitialServerSocketReadEvent(const SharedPtr<SocketStream>& socketStream,
-                                                           const SharedPtr<MessageServer>& messageServer) :
+                                                           const SharedPtr<AbstractServerNode>& serverNode) :
   InitialSocketReadEvent(socketStream),
-  _messageServer(messageServer)
+  _serverNode(serverNode)
 {
 }
 
@@ -56,9 +56,9 @@ InitialServerSocketReadEvent::readPacket(SocketEventDispatcher& dispatcher, Netw
 
   // Helper to set up a server connect
   StringStringListMap responseValueMap;
-  responseValueMap = MessageEncodingRegistry::instance().getBestServerEncoding(_valueMap, _messageServer->getServerOptions());
+  responseValueMap = MessageEncodingRegistry::instance().getBestServerEncoding(_valueMap, _serverNode->getServerOptions());
 
-  StringStringListMap optionMap = _messageServer->getServerOptions()._optionMap;
+  StringStringListMap optionMap = _serverNode->getServerOptions()._optionMap;
   for (StringStringListMap::iterator i = optionMap.begin(); i != optionMap.end(); ++i) {
     if (responseValueMap.find(i->first) != responseValueMap.end())
       continue;
@@ -68,7 +68,7 @@ InitialServerSocketReadEvent::readPacket(SocketEventDispatcher& dispatcher, Netw
   // Ok, we have now set up all we need for the encoded communication.
   // But still we need to respond ...
   SharedPtr<InitialServerSocketWriteEvent> initialServerWriteEvent;
-  initialServerWriteEvent = new InitialServerSocketWriteEvent(getSocket(), _messageServer, _valueMap);
+  initialServerWriteEvent = new InitialServerSocketWriteEvent(getSocket(), _serverNode, _valueMap);
   initialServerWriteEvent->setValueMap(responseValueMap);
 
   dispatcher.insert(initialServerWriteEvent.get());
