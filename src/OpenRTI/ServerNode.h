@@ -44,7 +44,7 @@ public:
   virtual bool isIdle() const;
 
   ServerOptions& getServerOptions();
-  const ServerOptions& getServerOptions() const;
+  virtual const ServerOptions& getServerOptions() const;
 
 protected:
   ConnectHandle _insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);

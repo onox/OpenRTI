@@ -27,6 +27,7 @@
 namespace OpenRTI {
 
 class AbstractMessageSender;
+class ServerOptions;
 
 /// Provides a rti ServerNode in the tree hierarchy.
 /// This class already operates on AbstractMessage typed data structures.
@@ -37,6 +38,9 @@ public:
 
   virtual SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& childOptions) = 0;
   virtual SharedPtr<AbstractMessageSender> insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions) = 0;
+
+  /// Hmm, make that more callback based during connection setup, but for now ...
+  virtual const ServerOptions& getServerOptions() const = 0;
 
   /// Returns true if the server is idle.
   /// Whare idle means that it is save to shut down the server completely.
