@@ -17,26 +17,16 @@
  *
  */
 
-#ifndef OpenRTI_AbstractMessageSender_h
-#define OpenRTI_AbstractMessageSender_h
-
-#include "Referenced.h"
-#include "SharedPtr.h"
+#include "AbstractMessageSender.h"
 
 namespace OpenRTI {
 
-class AbstractMessage;
+AbstractMessageSender::AbstractMessageSender()
+{
+}
 
-class OPENRTI_API AbstractMessageSender : public Referenced {
-public:
-  AbstractMessageSender();
-  virtual ~AbstractMessageSender();
-
-  virtual void send(const SharedPtr<AbstractMessage>& message) = 0;
-  virtual void close() = 0;
-  // virtual bool isOpen() const = 0;
-};
+AbstractMessageSender::~AbstractMessageSender()
+{
+}
 
 } // namespace OpenRTI
-
-#endif
