@@ -34,7 +34,7 @@ class ServerOptions;
 /// This is purely for the message logic independent of any network details.
 class OPENRTI_API AbstractServerNode : public Referenced {
 public:
-  virtual ~AbstractServerNode() {}
+  virtual ~AbstractServerNode();
 
   virtual SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& childOptions) = 0;
   virtual SharedPtr<AbstractMessageSender> insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions) = 0;

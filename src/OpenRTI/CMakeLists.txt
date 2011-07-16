@@ -120,6 +120,7 @@ SET(OpenRTI_SOURCES
   AbstractMessageDecoder.cpp
   AbstractMessageEncoder.cpp
   AbstractMessageSender.cpp
+  AbstractServerNode.cpp
   Attributes.cpp
   ContentHandler.cpp
   DefaultErrorHandler.cpp
