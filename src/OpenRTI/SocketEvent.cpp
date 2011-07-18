@@ -21,8 +21,7 @@
 
 namespace OpenRTI {
 
-SocketEvent::SocketEvent(bool enable) :
-  _enable(enable)
+SocketEvent::SocketEvent()
 {
 }
 

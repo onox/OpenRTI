@@ -29,7 +29,6 @@
 namespace OpenRTI {
 
 SocketServerAcceptEvent::SocketServerAcceptEvent(SharedPtr<SocketServer> socket, SharedPtr<MessageServer> messageServer) :
-  SocketReadEvent(true),
   _socket(socket),
   _messageServer(messageServer)
 {

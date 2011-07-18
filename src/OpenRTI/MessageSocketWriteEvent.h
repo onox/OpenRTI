@@ -35,6 +35,8 @@ public:
   MessageSocketWriteEvent(const SharedPtr<SocketStream>& socket, const SharedPtr<AbstractMessageEncoder>& encoder);
   virtual ~MessageSocketWriteEvent();
 
+  virtual bool getEnable() const;
+
   virtual void writePacket(SocketEventDispatcher& dispatcher, NetworkBuffer& networkBuffer);
   virtual void written(SocketEventDispatcher& dispatcher);
   virtual bool getMoreToSend() const;
@@ -49,6 +51,7 @@ private:
   SharedPtr<AbstractMessageEncoder> _encoder;
   MessageList _messageList;
   bool _shutdownSocket;
+  bool _enable;
 };
 
 } // namespace OpenRTI

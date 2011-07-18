@@ -29,7 +29,6 @@ StreamSocketReadEvent::ReceiveCallback::~ReceiveCallback()
 }
 
 StreamSocketReadEvent::StreamSocketReadEvent(const SharedPtr<SocketStream>& socketStream) :
-  SocketReadEvent(true),
   _socketStream(socketStream)
 {
 }

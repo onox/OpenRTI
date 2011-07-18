@@ -21,8 +21,7 @@
 
 namespace OpenRTI {
 
-SocketWriteEvent::SocketWriteEvent(bool enable) :
-  SocketEvent(enable)
+SocketWriteEvent::SocketWriteEvent()
 {
 }
 

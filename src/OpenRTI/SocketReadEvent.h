@@ -28,10 +28,12 @@ class SocketEventDispatcher;
 
 class OPENRTI_API SocketReadEvent : public SocketEvent {
 public:
-  SocketReadEvent(bool enable = false);
+  SocketReadEvent();
   virtual ~SocketReadEvent();
 
   virtual void read(SocketEventDispatcher&) = 0;
+
+  virtual bool getEnable() const;
 };
 
 } // namespace OpenRTI

@@ -47,12 +47,19 @@ private:
 MessageSocketWriteEvent::MessageSocketWriteEvent(const SharedPtr<SocketStream>& socket, const SharedPtr<AbstractMessageEncoder>& encoder) :
   StreamSocketWriteEvent(socket),
   _encoder(encoder),
-  _shutdownSocket(false)
+  _shutdownSocket(false),
+  _enable(false)
 {
 }
 
 MessageSocketWriteEvent::~MessageSocketWriteEvent()
 {
+}
+
+bool
+MessageSocketWriteEvent::getEnable() const
+{
+  return _enable;
 }
 
 void
@@ -69,7 +76,7 @@ MessageSocketWriteEvent::written(SocketEventDispatcher& dispatcher)
   if (!_messageList.empty())
     return;
   // disable writing for now when the next message arrives we get woken up again
-  setEnable(false);
+  _enable = false;
   // May be shutdown???
   if (_shutdownSocket)
     getSocket()->close();
@@ -93,7 +100,7 @@ MessageSocketWriteEvent::sendToSocket(const SharedPtr<AbstractMessage>& message)
   if (_shutdownSocket || !getSocket()->isOpen())
     throw RTIinternalError("Trying to send message to a closed MessageSender");
   _messageList.push_back(message);
-  setEnable(true);
+  _enable = true;
 }
 
 void

@@ -52,7 +52,6 @@ class OPENRTI_LOCAL Server::WakeupSocketEvent : public SocketReadEvent {
 public:
   // Need to provide the server side message sender.
   WakeupSocketEvent(SharedPtr<SocketWakeupEvent> socketWakeupEvent) :
-    SocketReadEvent(true),
     _socketWakeupEvent(socketWakeupEvent)
   { }
 
@@ -97,7 +96,6 @@ class OPENRTI_LOCAL Server::TriggeredConnectSocketEvent : public SocketReadEvent
 public:
   // Need to provide the server side message sender.
   TriggeredConnectSocketEvent(const SharedPtr<AbstractMessageSender>& serverMessageSender) :
-    SocketReadEvent(true),
     _socketWakeupTrigger(new SocketWakeupTrigger),
     _socketWakeupEvent(_socketWakeupTrigger->connect()),
     _lockedMessageList(new LockedMessageList),

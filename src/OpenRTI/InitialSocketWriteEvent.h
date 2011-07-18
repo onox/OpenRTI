@@ -45,6 +45,8 @@ public:
   InitialSocketWriteEvent(const SharedPtr<SocketStream>& socketStream);
   virtual ~InitialSocketWriteEvent();
 
+  virtual bool getEnable() const;
+
   void setValueMap(const StringStringListMap& valueMap);
   const StringStringListMap& getValueMap() const
   { return _valueMap; }
@@ -52,10 +54,14 @@ public:
   virtual void writePacket(SocketEventDispatcher& dispatcher, NetworkBuffer& networkBuffer);
 
 protected:
+  void setEnable(bool enable)
+  { _enable = enable; }
+
   StringStringListMap _valueMap;
 
 private:
   class EncodeStream;
+  bool _enable;
 };
 
 } // namespace OpenRTI

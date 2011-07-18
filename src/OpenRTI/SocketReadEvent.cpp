@@ -21,13 +21,18 @@
 
 namespace OpenRTI {
 
-SocketReadEvent::SocketReadEvent(bool enable) :
-  SocketEvent(enable)
+SocketReadEvent::SocketReadEvent()
 {
 }
 
 SocketReadEvent::~SocketReadEvent()
 {
+}
+
+bool
+SocketReadEvent::getEnable() const
+{
+  return true;
 }
 
 } // namespace OpenRTI

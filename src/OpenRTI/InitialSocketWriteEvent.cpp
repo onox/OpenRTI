@@ -66,7 +66,8 @@ public:
 };
 
 InitialSocketWriteEvent::InitialSocketWriteEvent(const SharedPtr<SocketStream>& socketStream) :
-  StreamSocketWriteEvent(socketStream)
+  StreamSocketWriteEvent(socketStream),
+  _enable(false)
 {
 }
 
@@ -74,11 +75,17 @@ InitialSocketWriteEvent::~InitialSocketWriteEvent()
 {
 }
 
+bool
+InitialSocketWriteEvent::getEnable() const
+{
+  return _enable;
+}
+
 void
 InitialSocketWriteEvent::setValueMap(const StringStringListMap& valueMap)
 {
   _valueMap = valueMap;
-  setEnable(true);
+  _enable = true;
 }
 
 void

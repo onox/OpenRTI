@@ -30,7 +30,6 @@ StreamSocketWriteEvent::SendCallback::~SendCallback()
 
 // Have a common class peeking into a header and writeing the whole packet then
 StreamSocketWriteEvent::StreamSocketWriteEvent(const SharedPtr<SocketStream>& socketStream) :
-  SocketWriteEvent(false),
   _socketStream(socketStream)
 {
 }

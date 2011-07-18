@@ -28,20 +28,12 @@ class Socket;
 
 class OPENRTI_API SocketEvent : public Referenced {
 public:
-  SocketEvent(bool enable = false);
+  SocketEvent();
   virtual ~SocketEvent();
 
   virtual Socket* getSocket() const = 0;
 
-  bool getEnable() const
-  { return _enable; }
-
-protected:
-  void setEnable(bool enable)
-  { _enable = enable; }
-
-private:
-  bool _enable;
+  virtual bool getEnable() const = 0;
 };
 
 } // namespace OpenRTI

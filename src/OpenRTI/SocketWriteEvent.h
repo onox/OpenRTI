@@ -28,7 +28,7 @@ class SocketEventDispatcher;
 
 class OPENRTI_API SocketWriteEvent : public SocketEvent {
 public:
-  SocketWriteEvent(bool enable = false);
+  SocketWriteEvent();
   virtual ~SocketWriteEvent();
 
   virtual void write(SocketEventDispatcher&) = 0;
