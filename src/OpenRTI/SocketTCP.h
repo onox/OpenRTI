@@ -33,6 +33,7 @@ public:
 
   void connect(const SocketAddress& address);
   virtual void cork(bool enable);
+  virtual void shutdown();
 
 protected:
   SocketTCP(PrivateData* privateData);

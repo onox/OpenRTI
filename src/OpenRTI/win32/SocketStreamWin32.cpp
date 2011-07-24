@@ -85,6 +85,11 @@ SocketStream::cork(bool enable)
 {
 }
 
+void
+SocketStream::shutdown()
+{
+}
+
 SocketStream::SocketStream(PrivateData* privateData) :
   SocketData(privateData)
 {

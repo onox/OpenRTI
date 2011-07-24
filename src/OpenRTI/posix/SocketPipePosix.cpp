@@ -80,6 +80,15 @@ SocketPipe::connect(const std::string& file)
   _privateData->_fd = fd;
 }
 
+void
+SocketPipe::shutdown()
+{
+  int fd = _privateData->_fd;
+  if (fd == -1)
+    return;
+  ::shutdown(fd, SHUT_WR);
+}
+
 SocketPipe::SocketPipe(PrivateData* privateData) :
   SocketStream(privateData)
 {

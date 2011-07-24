@@ -86,6 +86,15 @@ SocketTCP::cork(bool enable)
   setsockopt(_privateData->_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&nodelay, sizeof(nodelay));
 }
 
+void
+SocketTCP::shutdown()
+{
+  SOCKET fd = _privateData->_socket;
+  if (fd == INVALID_SOCKET)
+    return;
+  ::shutdown(fd, SHUT_WR);
+}
+
 SocketTCP::SocketTCP(PrivateData* privateData) :
   SocketStream(privateData)
 {

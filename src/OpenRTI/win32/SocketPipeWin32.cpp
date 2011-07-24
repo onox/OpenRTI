@@ -35,6 +35,12 @@ SocketPipe::connect(const std::string& file)
   throw RTIinternalError("Pipes are not implemented on WIN32");
 }
 
+void
+SocketPipe::shutdown()
+{
+  throw RTIinternalError("Pipes are not implemented on WIN32");
+}
+
 SocketPipe::~SocketPipe()
 {
 }

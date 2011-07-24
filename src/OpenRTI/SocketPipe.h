@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -32,6 +32,7 @@ public:
   SocketPipe();
 
   void connect(const std::string& file);
+  virtual void shutdown();
 
 protected:
   SocketPipe(PrivateData* privateData);

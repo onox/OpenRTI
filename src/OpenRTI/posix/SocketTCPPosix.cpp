@@ -112,6 +112,15 @@ SocketTCP::cork(bool enable)
 #endif
 }
 
+void
+SocketTCP::shutdown()
+{
+  int fd = _privateData->_fd;
+  if (fd == -1)
+    return;
+  ::shutdown(fd, SHUT_WR);
+}
+
 SocketTCP::SocketTCP(PrivateData* privateData) :
   SocketStream(privateData)
 {

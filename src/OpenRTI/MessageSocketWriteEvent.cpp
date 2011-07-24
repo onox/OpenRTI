@@ -79,7 +79,7 @@ MessageSocketWriteEvent::written(SocketEventDispatcher& dispatcher)
   _enable = false;
   // May be shutdown???
   if (_shutdownSocket)
-    getSocket()->close();
+    getSocket()->shutdown();
 }
 
 bool
