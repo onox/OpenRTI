@@ -87,16 +87,16 @@ StreamSocketWriteEvent::written(SocketEventDispatcher& dispatcher)
 {
 }
 
-bool
-StreamSocketWriteEvent::getMoreToSend() const
-{
-  return false;
-}
-
 SocketStream*
 StreamSocketWriteEvent::getSocket() const
 {
   return _socketStream.get();
+}
+
+bool
+StreamSocketWriteEvent::getEnable() const
+{
+  return !_networkBuffer.complete() || getMoreToSend();
 }
 
 ssize_t

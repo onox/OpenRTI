@@ -67,7 +67,7 @@ public:
 
 InitialSocketWriteEvent::InitialSocketWriteEvent(const SharedPtr<SocketStream>& socketStream) :
   StreamSocketWriteEvent(socketStream),
-  _enable(false)
+  _moreToSend(false)
 {
 }
 
@@ -75,17 +75,11 @@ InitialSocketWriteEvent::~InitialSocketWriteEvent()
 {
 }
 
-bool
-InitialSocketWriteEvent::getEnable() const
-{
-  return _enable;
-}
-
 void
 InitialSocketWriteEvent::setValueMap(const StringStringListMap& valueMap)
 {
   _valueMap = valueMap;
-  _enable = true;
+  _moreToSend = true;
 }
 
 void
@@ -101,6 +95,15 @@ InitialSocketWriteEvent::writePacket(SocketEventDispatcher& dispatcher, NetworkB
   // Write the message header
   headerStream.writeFixedString("OpenRTI\0", 8);
   headerStream.writeUInt32BE(bodyStream.size() + 12);
+
+  // Once network buffer is sent, there is not more than that.
+  _moreToSend = false;
+}
+
+bool
+InitialSocketWriteEvent::getMoreToSend() const
+{
+  return _moreToSend;
 }
 
 } // namespace OpenRTI

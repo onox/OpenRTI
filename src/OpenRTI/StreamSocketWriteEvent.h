@@ -43,7 +43,7 @@ public:
   // Called when the packet is written completely
   virtual void written(SocketEventDispatcher& dispatcher);
   // Returns if there is currently more data to send beyond the currently sent network buffer
-  virtual bool getMoreToSend() const;
+  virtual bool getMoreToSend() const = 0;
 
   class OPENRTI_LOCAL SendCallback : public Referenced {
   public:
@@ -58,6 +58,7 @@ public:
   // The SocketReadEvent side interface implementation
   virtual void write(SocketEventDispatcher& dispatcher);
   virtual SocketStream* getSocket() const;
+  virtual bool getEnable() const;
 
 protected:
   ssize_t send(const NetworkBuffer& networkBuffer, bool moreToSend);

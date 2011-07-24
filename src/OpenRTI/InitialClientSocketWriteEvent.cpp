@@ -33,11 +33,4 @@ InitialClientSocketWriteEvent::~InitialClientSocketWriteEvent()
 {
 }
 
-void
-InitialClientSocketWriteEvent::written(SocketEventDispatcher& dispatcher)
-{
-  // this is a one time event
-  setEnable(false);
-}
-
 } // namespace OpenRTI

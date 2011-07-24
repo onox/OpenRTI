@@ -45,23 +45,19 @@ public:
   InitialSocketWriteEvent(const SharedPtr<SocketStream>& socketStream);
   virtual ~InitialSocketWriteEvent();
 
-  virtual bool getEnable() const;
-
   void setValueMap(const StringStringListMap& valueMap);
   const StringStringListMap& getValueMap() const
   { return _valueMap; }
 
   virtual void writePacket(SocketEventDispatcher& dispatcher, NetworkBuffer& networkBuffer);
+  virtual bool getMoreToSend() const;
 
 protected:
-  void setEnable(bool enable)
-  { _enable = enable; }
-
   StringStringListMap _valueMap;
 
 private:
   class EncodeStream;
-  bool _enable;
+  bool _moreToSend;
 };
 
 } // namespace OpenRTI

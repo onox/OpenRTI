@@ -29,8 +29,6 @@ class OPENRTI_LOCAL InitialClientSocketWriteEvent : public InitialSocketWriteEve
 public:
   InitialClientSocketWriteEvent(const SharedPtr<SocketStream>& socketStream);
   virtual ~InitialClientSocketWriteEvent();
-
-  virtual void written(SocketEventDispatcher& dispatcher);
 };
 
 } // namespace OpenRTI

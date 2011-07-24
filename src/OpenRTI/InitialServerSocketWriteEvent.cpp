@@ -48,7 +48,6 @@ void
 InitialServerSocketWriteEvent::written(SocketEventDispatcher& dispatcher)
 {
   // this is a one time event
-  setEnable(false);
   dispatcher.erase(this);
 
   // Try to get an encoder pair.
