@@ -28,7 +28,6 @@ namespace OpenRTI {
 class AbstractMessage;
 class Clock;
 
-// class AbstractMessageInput : public Referenced {
 class OPENRTI_API AbstractMessageReceiver : public Referenced {
 public:
   virtual ~AbstractMessageReceiver() {}

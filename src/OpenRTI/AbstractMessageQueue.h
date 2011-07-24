@@ -23,7 +23,6 @@
 #include "AbstractMessage.h"
 #include "AbstractMessageReceiver.h"
 #include "AbstractMessageSender.h"
-#include "Atomic.h"
 #include "SharedPtr.h"
 // FIXME make implementation file
 #include "Exception.h"
@@ -47,16 +46,11 @@ protected:
   // FIXME may be only have const messages in delivery???
   virtual void append(const SharedPtr<AbstractMessage>& message) = 0;
 
-  // bool canRecieve() const
-  // { return 0 < _numMessageSenders; }
-
 private:
   class OPENRTI_LOCAL MessageSender : public AbstractMessageSender {
   public:
     MessageSender(AbstractMessageQueue* messageQueue) : _messageQueue(messageQueue)
-    {
-      // ++messageQueue->_numMessageSenders;
-    }
+    { }
     virtual ~MessageSender()
     {
       close();
@@ -71,14 +65,11 @@ private:
     {
       if (!_messageQueue.valid())
         return;
-      // --messageQueue->_numMessageSenders;
       _messageQueue = 0;
     }
   private:
     SharedPtr<AbstractMessageQueue> _messageQueue;
   };
-
-  // Atomic _numMessageSenders;
 };
 
 } // namespace OpenRTI
