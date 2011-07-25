@@ -92,7 +92,7 @@ SocketTCP::shutdown()
   SOCKET fd = _privateData->_socket;
   if (fd == INVALID_SOCKET)
     return;
-  ::shutdown(fd, SHUT_WR);
+  ::shutdown(fd, SD_SEND);
 }
 
 SocketTCP::SocketTCP(PrivateData* privateData) :
