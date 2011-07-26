@@ -25,6 +25,11 @@
 #include "Server.h"
 #include "StringUtils.h"
 
+#if !defined(_WIN32)
+#include <sys/time.h>
+#include <sys/resource.h>
+#endif
+
 using namespace OpenRTI;
 
 static void usage(const char* argv0)
@@ -121,6 +126,13 @@ main(int argc, char* argv[])
 #else
   if (background)
     daemon(0, 0);
+#endif
+
+#if !defined(_WIN32)
+  struct rlimit limit;
+  getrlimit(RLIMIT_NOFILE, &limit);
+  limit.rlim_cur = limit.rlim_max;
+  setrlimit(RLIMIT_NOFILE, &limit);
 #endif
 
   return server.exec();
