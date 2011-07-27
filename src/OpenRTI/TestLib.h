@@ -36,12 +36,24 @@
 #include <StringUtils.h>
 #include <Thread.h>
 
+#if !defined(_WIN32)
+#include <sys/time.h>
+#include <sys/resource.h>
+#endif
+
 namespace OpenRTI {
 
 class ServerPool {
 public:
   ServerPool()
-  { }
+  {
+#if !defined(_WIN32)
+    struct rlimit limit;
+    getrlimit(RLIMIT_NOFILE, &limit);
+    limit.rlim_cur = limit.rlim_max;
+    setrlimit(RLIMIT_NOFILE, &limit);
+#endif
+  }
   ~ServerPool()
   { stopServerPool(); }
 
