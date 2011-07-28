@@ -32,8 +32,7 @@ class OPENRTI_API AbstractMessageReceiver : public Referenced {
 public:
   virtual ~AbstractMessageReceiver() {}
   virtual SharedPtr<AbstractMessage> receive(const Clock& timeout) = 0;
-  /* virtual void close() = 0; */
-  /* virtual void isOpen() = 0; */
+  virtual bool isOpen() const = 0;
 };
 
 } // namespace OpenRTI

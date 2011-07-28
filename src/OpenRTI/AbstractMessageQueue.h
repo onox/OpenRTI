@@ -38,6 +38,7 @@ class OPENRTI_LOCAL AbstractMessageQueue : public AbstractMessageReceiver {
 public:
   virtual ~AbstractMessageQueue() {}
   virtual SharedPtr<AbstractMessage> receive(const Clock& timeout) = 0;
+  virtual bool isOpen() const = 0;
 
   SharedPtr<AbstractMessageSender> getMessageSender()
   { return new MessageSender(this); }
@@ -45,6 +46,7 @@ public:
 protected:
   // FIXME may be only have const messages in delivery???
   virtual void append(const SharedPtr<AbstractMessage>& message) = 0;
+  virtual void close() = 0;
 
 private:
   class OPENRTI_LOCAL MessageSender : public AbstractMessageSender {
@@ -65,6 +67,7 @@ private:
     {
       if (!_messageQueue.valid())
         return;
+      _messageQueue->close();
       _messageQueue = 0;
     }
   private:

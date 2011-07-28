@@ -35,20 +35,31 @@ namespace OpenRTI {
 // if that single thread is waiting for exactly that queue.
 class OPENRTI_LOCAL LocalMessageQueue : public AbstractMessageQueue {
 public:
+  LocalMessageQueue() :
+    _isClosed(false)
+  { }
   virtual SharedPtr<AbstractMessage> receive(const Clock&)
   { return _messageList.pop_front(); }
+  virtual bool isOpen() const
+  { return !_isClosed; }
 
 protected:
   virtual void append(const SharedPtr<AbstractMessage>& message)
   { _messageList.push_back(message); }
+  virtual void close()
+  { _isClosed = true; }
 
 private:
   MessageList _messageList;
+  bool _isClosed;
 };
 
 // Thread safe queue with condition/mutex based signaling of new messages
 class OPENRTI_LOCAL ThreadMessageQueue : public AbstractMessageQueue {
 public:
+  ThreadMessageQueue() :
+    _isClosed(false)
+  { }
   virtual SharedPtr<AbstractMessage> receive(const Clock& timeout)
   {
     ScopeLock scopeLock(_mutex);
@@ -56,8 +67,15 @@ public:
       // On timeout, the list must be empty, so return 0
       if (!_condition.wait(_mutex, timeout))
         return 0;
+      if (_isClosed && _messageList.empty())
+        return 0;
     }
     return _messageList.pop_front();
+  }
+  virtual bool isOpen() const
+  {
+    ScopeLock scopeLock(_mutex);
+    return !_isClosed;
   }
 
 protected:
@@ -69,11 +87,18 @@ protected:
     if (needSignal)
       _condition.signal();
   }
+  virtual void close()
+  {
+    ScopeLock scopeLock(_mutex);
+    _isClosed = true;
+    _condition.signal();
+  }
 
 private:
   Mutex _mutex;
   Condition _condition;
   MessageList _messageList;
+  bool _isClosed;
 };
 
 } // namespace OpenRTI

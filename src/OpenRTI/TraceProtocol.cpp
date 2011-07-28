@@ -80,6 +80,10 @@ public:
     _stream->_stream << Clock::now() << ": in:  " << *message << std::endl;
     return message;
   }
+  virtual bool isOpen() const
+  {
+    return _connect->getMessageReceiver()->isOpen();
+  }
 
 private:
   SharedPtr<AbstractConnect> _connect;
