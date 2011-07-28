@@ -36,7 +36,6 @@ public:
   virtual ~MessageSocketWriteEvent();
 
   virtual void writePacket(SocketEventDispatcher& dispatcher, NetworkBuffer& networkBuffer);
-  virtual void written(SocketEventDispatcher& dispatcher);
   virtual bool getMoreToSend() const;
 
   AbstractMessageSender* getMessageSender();

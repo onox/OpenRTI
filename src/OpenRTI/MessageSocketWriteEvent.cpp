@@ -58,24 +58,17 @@ MessageSocketWriteEvent::~MessageSocketWriteEvent()
 void
 MessageSocketWriteEvent::writePacket(SocketEventDispatcher& dispatcher, NetworkBuffer& networkBuffer)
 {
-  OpenRTIAssert(!_messageList.empty());
   // Process next message
-  _encoder->encodeMessage(networkBuffer, *_messageList.pop_front());
-}
-
-void
-MessageSocketWriteEvent::written(SocketEventDispatcher& dispatcher)
-{
-  if (getMoreToSend())
-    return;
-  if (_shutdownSocket)
+  if (!_messageList.empty())
+    _encoder->encodeMessage(networkBuffer, *_messageList.pop_front());
+  else if (_shutdownSocket)
     getSocket()->shutdown();
 }
 
 bool
 MessageSocketWriteEvent::getMoreToSend() const
 {
-  return !_messageList.empty();
+  return !_messageList.empty() || _shutdownSocket;
 }
 
 AbstractMessageSender*
