@@ -272,15 +272,16 @@ Server::listenInet(const std::string& node, const std::string& service, int back
   std::list<SocketAddress> addressList = SocketAddress::resolve(node, service, true);
   // Set up a stream socket for the server connect
   bool success = false;
-  for (std::list<SocketAddress>::const_iterator i = addressList.begin(); i != addressList.end(); ++i) {
+  while (!addressList.empty()) {
+    SocketAddress address = addressList.front();
+    addressList.pop_front();
     try {
       SharedPtr<SocketServerTCP> socket = new SocketServerTCP;
-      socket->bind(*i);
+      socket->bind(address);
       socket->listen(backlog);
       _dispatcher.insert(new SocketServerAcceptEvent(socket, _messageServer));
       success = true;
     } catch (const OpenRTI::Exception& e) {
-      addressList.pop_front();
       if (addressList.empty() && !success)
         throw e;
     }
