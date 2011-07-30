@@ -145,7 +145,7 @@ public:
   {
     if (!_data.valid())
       return 0;
-    return _data->capacity();
+    return _data->capacity() - _offset;
   }
 
   bool empty() const
@@ -183,7 +183,7 @@ public:
   {
     if (!_data.valid()) {
       _data = createOwnData(capacity);
-    } else if (_data->capacity() < capacity) {
+    } else if (_data->capacity() - _offset < capacity) {
       SharedPtr<Data> data = createOwnData(capacity);
       if (_size)
         std::memcpy(data->data(0), constData(), _size);
