@@ -78,6 +78,11 @@ public:
     _size(0),
     _offset(0)
   { setData(string, std::strlen(string)); }
+  VariableLengthData(const std::string& s) :
+    _data(0),
+    _size(0),
+    _offset(0)
+  { setData(s.c_str(), s.size()); }
   VariableLengthData(const VariableLengthData& value) :
     _data(value._data),
     _size(value._size),
@@ -267,12 +272,46 @@ public:
   bool operator<=(const VariableLengthData& variableLengthData) const
   { return !operator>(variableLengthData); }
 
+  /// convert the content of this into a std::string value
+  std::string toString() const
+  { return std::string(charData(0), size()); }
+
   // Set of value accessors with a common interface:
   // Each set/get pair does *unchecked* access. So make sure to have sufficient memory.
   // We always have accessors for little endian and big endian, aligned and unaligned,
   // even for byte access. This is to have more consistent encoding/decoding over all types.
 
+  void setVariableLengthData(const VariableLengthData& variableLengthData, size_t offset)
+  {
+    OpenRTIAssert(offset + variableLengthData.size() <= size());
+    if (offset == 0 && variableLengthData.size() == size()) {
+      _data = variableLengthData._data;
+      _offset = variableLengthData._offset;
+    } else {
+      std::memcpy(data(offset), variableLengthData.data(), variableLengthData.size());
+    }
+  }
+  VariableLengthData getVariableLengthData(size_t offset) const
+  {
+    OpenRTIAssert(offset <= size());
+    return VariableLengthData(*this, offset, size() - offset);
+  }
+
+
   // 8 bit value accessors
+  void setChar(char value, size_t offset)
+  {
+    OpenRTIAssert(offset + 1 <= size());
+    char* data = charData(offset);
+    data[0] = value;
+  }
+  char getChar(size_t offset) const
+  {
+    OpenRTIAssert(offset + 1 <= size());
+    const char* data = charData(offset);
+    return data[0];
+  }
+
   void setUInt8(uint8_t value, size_t offset)
   {
     OpenRTIAssert(offset + 1 <= size());
