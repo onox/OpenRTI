@@ -27,7 +27,9 @@
 #include "Types.h"
 #include <algorithm>
 #include <cstring>
+#include <list>
 #include <ostream>
+#include <string>
 
 namespace OpenRTI {
 
@@ -173,24 +175,19 @@ public:
       size_t cap = capacity();
       if (cap < size)
         reserve(std::max(size, 2*cap));
-      else
-        reserve(size);
     }
     _size = size;
   }
 
-  void reserve(size_t capacity)
+  /// Allocate space for cap bytes data.
+  /// This call triggers delayed allocation of the data area.
+  void reserve(size_t cap)
   {
+    OpenRTIAssert(_size <= cap);
     if (!_data.valid()) {
-      _data = createOwnData(capacity);
-    } else if (_data->capacity() - _offset < capacity) {
-      SharedPtr<Data> data = createOwnData(capacity);
-      if (_size)
-        std::memcpy(data->data(0), constData(), _size);
-      _data.swap(data);
-      _offset = 0;
-    } else if (1 < Data::count(_data.get())) {
-      SharedPtr<Data> data = createOwnData(std::max(capacity, _size));
+      _data = createOwnData(cap);
+    } else if (capacity() < cap) {
+      SharedPtr<Data> data = createOwnData(cap);
       if (_size)
         std::memcpy(data->data(0), constData(), _size);
       _data.swap(data);
@@ -198,15 +195,25 @@ public:
     }
   }
 
+  /// Make sure the data is not shared with other instances of VariableLengthData
   void ensurePrivate()
   {
     if (Data::count(_data.get()) <= 1)
       return;
-    SharedPtr<Data> data = createOwnData(_size);
+    SharedPtr<Data> data = createOwnData(capacity());
     if (_size)
       std::memcpy(data->data(0), constData(), _size);
     _data.swap(data);
     _offset = 0;
+  }
+
+  /// Replace this with the data range starting from offset up to the end.
+  /// This is kind of 'resize from the start'.
+  void tail(size_t offset)
+  {
+    OpenRTIAssert(offset <= size());
+    _size -= offset;
+    _offset += offset;
   }
 
   void
@@ -214,30 +221,33 @@ public:
   {
     // Setting size to 0 avoids needless copying of old data
     _size = 0;
+    ensurePrivate();
     resize(size);
     std::memcpy(data(), p, _size);
   }
 
-  void
-  setDataPointer(void* data, size_t size)
-  {
-    if (!_data.valid()) {
-      _data = createExternalData(data);
-    } else {
-      _data->takeData(data);
-    }
-  }
+  // Caller is responsible for ensuring that the data that is
+  // pointed to is valid for the lifetime of this object, or past
+  // the next time this object is given new data.
+  // void
+  // setDataPointer(void* data, size_t size)
+  // {
+  //   _size = size;
+  //   _offset = 0;
+  //   _data = createExternalData(data);
+  // }
 
+  // Caller gives up ownership of inData to this object.
+  // This object assumes the responsibility of deleting inData
+  // when it is no longer needed.
   void
   takeDataPointer(void* data, size_t size)
   {
     // Take over ownership of that memory area.
     // Past that, we need to delete that.
-    if (!_data.valid()) {
-      _data = createExternalData(data);
-    } else {
-      _data->takeData(data);
-    }
+    _size = size;
+    _offset = 0;
+    _data = createExternalData(data);
   }
 
   bool operator==(const VariableLengthData& variableLengthData) const
@@ -889,12 +899,6 @@ private:
       if (_data != _dummy)
         ::operator delete(_data);
     }
-    void takeData(void* data)
-    {
-      if (_data != _dummy)
-        ::operator delete(_data);
-      _data = data;
-    }
     void* data(size_t offset = 0)
     {
       return static_cast<char*>(_data) + offset;
@@ -931,6 +935,8 @@ private:
   size_t _size;
   size_t _offset;
 };
+
+typedef std::list<VariableLengthData> VariableLengthDataList;
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
