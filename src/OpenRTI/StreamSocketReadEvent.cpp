@@ -75,7 +75,7 @@ StreamSocketReadEvent::read(SocketEventDispatcher& dispatcher)
   } catch (const Exception& e) {
     readError(e.getReason());
     dispatcher.eraseSocket(this);
-    Log(MessageCoding, Warning) << "Caught exception processing socket input: " << e.getReasonInLocale()
+    Log(MessageCoding, Warning) << "Caught exception processing socket input: " << e.getReason()
                                 << "\nDropping connection!" << std::endl;
   } catch (...) {
     readError("Caught unknown Exception!");

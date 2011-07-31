@@ -20,42 +20,26 @@
 #ifndef OpenRTI_Exception_h
 #define OpenRTI_Exception_h
 
+#include <exception>
 #include <string>
 
 #include "Export.h"
 
 namespace OpenRTI {
 
-class OPENRTI_API Exception {
+class OPENRTI_API Exception : public std::exception {
 public:
-  enum Type {
-    RTIinternalError,
-    ResourceError, // unrecoverable errors when we run out of resources
-    TransportError, // unrecoverable errors on sockets or other transports
-    MessageError, // Inconsistent messages reaching a server
-    IgnoredError, // the rti13 interface has some exceptions that should be ignored
-    InconsistentFDD,
-    CouldNotOpenFDD,
-    ErrorReadingFDD,
-    CouldNotOpenMIM,
-    ErrorReadingMIM
-  };
+  virtual ~Exception() throw();
 
-  virtual ~Exception();
-
-  Type getType() const throw()
-  { return _type; }
-  const std::string& getReason() const throw()
-  { return _reason; }
-  std::string getReasonInLocale() const;
+  const char* what() const throw();
+  const std::string& getReason() const throw();
 
 protected:
-  Exception(Type type = RTIinternalError, const char* reason = 0);
-  Exception(Type type, const std::string& reason);
-  Exception(Type type, const std::wstring& reason);
+  Exception(const char* type, const char* reason);
+  Exception(const char* type, const std::string& reason);
+  Exception(const char* type, const std::wstring& reason);
 
 private:
-  Type _type;
   std::string _reason;
 };
 
@@ -64,7 +48,7 @@ public:
   RTIinternalError(const char* reason = 0);
   RTIinternalError(const std::string& reason);
   RTIinternalError(const char* file, unsigned line, const char* reason = 0);
-  virtual ~RTIinternalError();
+  virtual ~RTIinternalError() throw();
 
 private:
   static std::string buildAssertMessage(const char* file, unsigned line, const char* reason = 0);
@@ -79,15 +63,17 @@ private:
 #define RTI_EXCEPTION(name) \
 class OPENRTI_API name : public Exception { \
 public: \
-  name(const char* reason = 0) : Exception(Exception:: name, reason) { }  \
-  name(const std::string& reason) : Exception(Exception:: name, reason) { } \
-  name(const std::wstring& reason) : Exception(Exception:: name, reason) { } \
+  name(const char* reason = 0) : Exception( #name, reason) { }  \
+  name(const std::string& reason) : Exception( #name, reason) { } \
+  name(const std::wstring& reason) : Exception( #name, reason) { } \
+  virtual ~name() throw() { } \
 };
 
-RTI_EXCEPTION(ResourceError)
-RTI_EXCEPTION(TransportError)
-RTI_EXCEPTION(MessageError)
-RTI_EXCEPTION(IgnoredError)
+RTI_EXCEPTION(ResourceError) // unrecoverable errors when we run out of resources
+RTI_EXCEPTION(TransportError) // unrecoverable errors on sockets or other transports
+RTI_EXCEPTION(HTTPError) // unrecoverable errors on http connects
+RTI_EXCEPTION(MessageError) // Inconsistent messages reaching a server
+RTI_EXCEPTION(IgnoredError) // the rti13 interface has some exceptions that should be ignored
 RTI_EXCEPTION(InconsistentFDD)
 RTI_EXCEPTION(CouldNotOpenFDD)
 RTI_EXCEPTION(ErrorReadingFDD)

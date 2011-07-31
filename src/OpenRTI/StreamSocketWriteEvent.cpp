@@ -73,7 +73,7 @@ StreamSocketWriteEvent::write(SocketEventDispatcher& dispatcher)
 
   } catch (const Exception& e) {
     dispatcher.eraseSocket(this);
-    Log(MessageCoding, Warning) << "Caught exception while processing socket output: " << e.getReasonInLocale()
+    Log(MessageCoding, Warning) << "Caught exception while processing socket output: " << e.getReason()
                                 << "\nClosing connection!" << std::endl;
   } catch (...) {
     dispatcher.eraseSocket(this);

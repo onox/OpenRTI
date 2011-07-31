@@ -140,7 +140,7 @@ ExpatStartElement(void* userData, const char* name, const char** atts)
     if (contentHandler)
       contentHandler->startElement("", name, name, &eAtts);
   } catch (Exception& e) {
-    userDataSetException(userData, e.getReasonInLocale());
+    userDataSetException(userData, e.getReason());
     XML_StopParser(userDataToParser(userData), XML_FALSE);
   } catch (...) {
     XML_StopParser(userDataToParser(userData), XML_FALSE);
@@ -155,7 +155,7 @@ ExpatEndElement(void* userData, const char* name)
     if (contentHandler)
       contentHandler->endElement("", name, name);
   } catch (Exception& e) {
-    userDataSetException(userData, e.getReasonInLocale());
+    userDataSetException(userData, e.getReason());
     XML_StopParser(userDataToParser(userData), XML_FALSE);
   } catch (...) {
     XML_StopParser(userDataToParser(userData), XML_FALSE);
@@ -170,7 +170,7 @@ ExpatCharacterData(void* userData, const char* data, int length)
     if (contentHandler)
       contentHandler->characters(data, length);
   } catch (Exception& e) {
-    userDataSetException(userData, e.getReasonInLocale());
+    userDataSetException(userData, e.getReason());
     XML_StopParser(userDataToParser(userData), XML_FALSE);
   } catch (...) {
     XML_StopParser(userDataToParser(userData), XML_FALSE);
@@ -185,7 +185,7 @@ ExpatComment(void* userData, const char* data)
     if (contentHandler)
       contentHandler->comment(data, strlen(data));
   } catch (Exception& e) {
-    userDataSetException(userData, e.getReasonInLocale());
+    userDataSetException(userData, e.getReason());
     XML_StopParser(userDataToParser(userData), XML_FALSE);
   } catch (...) {
     XML_StopParser(userDataToParser(userData), XML_FALSE);
@@ -201,7 +201,7 @@ ExpatSkippedEntity(void *userData, const char *entityName, int)
   if (contentHandler)
     contentHandler->skippedEntity(entityName);
   } catch (Exception& e) {
-    userDataSetException(userData, e.getReasonInLocale());
+    userDataSetException(userData, e.getReason());
     XML_StopParser(userDataToParser(userData), XML_FALSE);
   } catch (...) {
     XML_StopParser(userDataToParser(userData), XML_FALSE);
@@ -217,7 +217,7 @@ ExpatProcessingInstructions(void* userData, const char* target, const char* data
     if (contentHandler)
       contentHandler->processingInstruction(target, data);
   } catch (Exception& e) {
-    userDataSetException(userData, e.getReasonInLocale());
+    userDataSetException(userData, e.getReason());
     XML_StopParser(userDataToParser(userData), XML_FALSE);
   } catch (...) {
     XML_StopParser(userDataToParser(userData), XML_FALSE);

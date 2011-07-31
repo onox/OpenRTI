@@ -28,54 +28,57 @@
 
 namespace OpenRTI {
 
-Exception::Exception(Type type, const char* reason) :
-  _type(type),
-  _reason(asciiToUtf8(reason))
+Exception::Exception(const char* type, const char* reason) :
+  _reason(asciiToUtf8(type) + std::string(": ") + asciiToUtf8(reason))
 {
   Log(Assert, Info) << "Fired exception: type = " << type << ", reason = " << _reason << std::endl;
 }
 
-Exception::Exception(Type type, const std::string& reason) :
-  _type(type),
-  _reason(reason)
+Exception::Exception(const char* type, const std::string& reason) :
+  _reason(asciiToUtf8(type) + std::string(": ") + reason)
 {
   Log(Assert, Info) << "Fired exception: type = " << type << ", reason = " << _reason << std::endl;
 }
 
-Exception::Exception(Type type, const std::wstring& reason) :
-  _type(type),
-  _reason(ucsToUtf8(reason))
+Exception::Exception(const char* type, const std::wstring& reason) :
+  _reason(asciiToUtf8(type) + std::string(": ") + ucsToUtf8(reason))
 {
   Log(Assert, Info) << "Fired exception: type = " << type << ", reason = " << _reason << std::endl;
 }
 
-Exception::~Exception()
+Exception::~Exception() throw()
 {
 }
 
-std::string
-Exception::getReasonInLocale() const
+const char*
+Exception::what() const throw()
 {
-  return utf8ToLocale(_reason);
+  return _reason.c_str();
+}
+
+const std::string&
+Exception::getReason() const throw()
+{
+  return _reason;
 }
 
 
 RTIinternalError::RTIinternalError(const char* reason) :
-  Exception(Exception::RTIinternalError, reason)
+  Exception("RTIinternalError", reason)
 {
 }
 
 RTIinternalError::RTIinternalError(const std::string& reason) :
-  Exception(Exception::RTIinternalError, reason)
+  Exception("RTIinternalError", reason)
 {
 }
 
 RTIinternalError::RTIinternalError(const char* file, unsigned line, const char* reason) :
-  Exception(Exception::RTIinternalError, buildAssertMessage(file, line, reason))
+  Exception("RTIinternalError", buildAssertMessage(file, line, reason))
 {
 }
 
-RTIinternalError::~RTIinternalError()
+RTIinternalError::~RTIinternalError() throw()
 {
 }
 

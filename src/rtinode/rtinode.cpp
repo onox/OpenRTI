@@ -69,7 +69,7 @@ main(int argc, char* argv[])
         server.setUpFromConfig(options.getArgument());
       } catch (const Exception& e) {
         std::cerr << "Could not set up server from config file:" << std::endl;
-        std::cerr << e.getReasonInLocale() << std::endl;
+        std::cerr << utf8ToLocale(e.getReason()) << std::endl;
       }
       break;
     case 'f':
@@ -78,7 +78,7 @@ main(int argc, char* argv[])
         server.listenPipe(localeToUtf8(options.getArgument()), 20);
       } catch (const Exception& e) {
         std::cerr << "Could not set up pipe server transport:" << std::endl;
-        std::cerr << e.getReasonInLocale() << std::endl;
+        std::cerr << utf8ToLocale(e.getReason()) << std::endl;
       }
       break;
     case 'h':
@@ -91,7 +91,7 @@ main(int argc, char* argv[])
         server.listenInet(localeToUtf8(options.getArgument()), 20);
       } catch (const Exception& e) {
         std::cerr << "Could not set up inet server transport:" << std::endl;
-        std::cerr << e.getReasonInLocale() << std::endl;
+        std::cerr << utf8ToLocale(e.getReason()) << std::endl;
       }
       break;
     case 'p':
@@ -99,7 +99,7 @@ main(int argc, char* argv[])
         server.connectParentInetServer(localeToUtf8(options.getArgument()), Clock::now() + Clock::fromSeconds(75));
       } catch (const Exception& e) {
         std::cerr << "Could not connect parent server:" << std::endl;
-        std::cerr << e.getReasonInLocale() << std::endl;
+        std::cerr << utf8ToLocale(e.getReason()) << std::endl;
       }
       break;
     }
@@ -114,7 +114,7 @@ main(int argc, char* argv[])
         server.listenInet("0.0.0.0", 20);
       } catch (const Exception& e) {
         std::cerr << "Could not set up default inet server transport:" << std::endl;
-        std::cerr << e.getReasonInLocale() << std::endl;
+        std::cerr << utf8ToLocale(e.getReason()) << std::endl;
         return EXIT_FAILURE;
       }
     }
