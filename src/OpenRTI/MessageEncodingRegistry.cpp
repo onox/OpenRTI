@@ -32,6 +32,35 @@
 namespace OpenRTI {
 
 MessageEncoderPair
+MessageEncodingRegistry::getEncoderPair(const std::string& encodingName) const
+{
+  /// Currently only one encoding available.
+  if (encodingName == "TightBE1")
+    return MessageEncoderPair(new TightBE1MessageEncoder, new TightBE1MessageDecoder);
+  return MessageEncoderPair();
+}
+
+StringList
+MessageEncodingRegistry::getEncodings() const
+{
+  StringList encodingList;
+  encodingList.push_back("TightBE1");
+  return encodingList;
+}
+
+StringList
+MessageEncodingRegistry::getCommonEncodings(const StringList& encodingList) const
+{
+  /// Currently only one encoding available.
+  StringList commonEncodingList;
+  for (StringList::const_iterator i = encodingList.begin(); i != encodingList.end(); ++i) {
+    if (*i == "TightBE1")
+      commonEncodingList.push_back(*i);
+  }
+  return commonEncodingList;
+}
+
+MessageEncoderPair
 MessageEncodingRegistry::getEncodingPair(const StringStringListMap& valueMap) const
 {
   // get the enconding ...
@@ -44,9 +73,9 @@ MessageEncodingRegistry::getEncodingPair(const StringStringListMap& valueMap) co
     throw RTIinternalError(i->second.front());
   }
 
-  std::string encodingName = i->second.front();
-  if (encodingName == "TightBE1")
-    return MessageEncoderPair(new TightBE1MessageEncoder, new TightBE1MessageDecoder);
+  MessageEncoderPair encoderPair = getEncoderPair(i->second.front());
+  if (encoderPair.first.valid() && encoderPair.second.valid())
+    return encoderPair;
 
   throw RTIinternalError("No matching encoder: Dropping connection!");
 }
@@ -84,7 +113,7 @@ MessageEncodingRegistry::negotiateEncoding(const SharedPtr<SocketStream>& socket
   valueMap["compression"].push_back("no");
 #endif
   // And all our encodings we can just do
-  valueMap["encoding"].push_back("TightBE1");
+  valueMap["encoding"] = getEncodings();
 
   SharedPtr<InitialClientSocketWriteEvent> writeEvent = new InitialClientSocketWriteEvent(socketStream);
   writeEvent->setValueMap(valueMap);
@@ -132,15 +161,7 @@ MessageEncodingRegistry::getBestServerEncoding(const StringStringListMap& valueM
     return responseValueMap;
   }
   // collect some possible encodings
-  StringList encoding;
-  encoding.push_back("TightBE1");
-  // Throw out again what does not match with the client
-  for (StringList::iterator j = encoding.begin(); j != encoding.end();) {
-    if (contains(i->second, *j))
-      ++j;
-    else
-      j = encoding.erase(j);
-  }
+  StringList encoding = getCommonEncodings(i->second);
   if (encoding.empty()) {
     responseValueMap["error"].push_back("Client and server have no common encoding!");
     return responseValueMap;
