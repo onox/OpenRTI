@@ -25,6 +25,7 @@
 
 namespace OpenRTI {
 
+class AbstractSocketEvent;
 class Clock;
 class SocketEvent;
 class SocketReadEvent;
@@ -46,6 +47,9 @@ public:
 
   // Erases both the read and the write part.
   void eraseSocket(const SharedPtr<SocketEvent>& socketEvent);
+
+  void insert(const SharedPtr<AbstractSocketEvent>& socketEvent);
+  void erase(const SharedPtr<AbstractSocketEvent>& socketEvent);
 
   /// FIXME colapse them all to what is needed
   int exec();

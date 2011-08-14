@@ -121,6 +121,7 @@ SET(OpenRTI_SOURCES
   AbstractMessageEncoder.cpp
   AbstractMessageSender.cpp
   AbstractServerNode.cpp
+  AbstractSocketEvent.cpp
   Attributes.cpp
   ContentHandler.cpp
   DefaultErrorHandler.cpp
@@ -154,6 +155,7 @@ SET(OpenRTI_SOURCES
   Server.cpp
   ServerConfigContentHandler.cpp
   SocketEvent.cpp
+  SocketEventDispatcher.cpp
   SocketReadEvent.cpp
   SocketServerAcceptEvent.cpp
   SocketWriteEvent.cpp

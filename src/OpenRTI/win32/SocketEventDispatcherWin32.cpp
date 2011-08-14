@@ -23,6 +23,7 @@
 #include <map>
 #include <cerrno>
 
+#include "AbstractSocketEvent.h"
 #include "Clock.h"
 #include "ErrnoWin32.h"
 #include "Exception.h"
@@ -113,6 +114,20 @@ struct SocketEventDispatcher::PrivateData {
   }
 
   void eraseSocket(const SharedPtr<SocketEvent>& socketEvent)
+  {
+    if (!socketEvent.valid())
+      return;
+    if (!socketEvent->getSocket())
+      return;
+    SOCKET socket = socketEvent->getSocket()->_privateData->_socket;
+    SocketEventMap::iterator i = _socketEventMap.find(socket);
+    if (i == _socketEventMap.end())
+      return;
+
+    _socketEventMap.erase(i);
+  }
+
+  void erase(const SharedPtr<AbstractSocketEvent>& socketEvent)
   {
     if (!socketEvent.valid())
       return;
@@ -274,6 +289,12 @@ void
 SocketEventDispatcher::eraseSocket(const SharedPtr<SocketEvent>& socketEvent)
 {
   _privateData->eraseSocket(socketEvent);
+}
+
+void
+SocketEventDispatcher::erase(const SharedPtr<AbstractSocketEvent>& socketEvent)
+{
+  _privateData->erase(socketEvent);
 }
 
 int
