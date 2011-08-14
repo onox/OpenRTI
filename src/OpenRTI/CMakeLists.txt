@@ -120,6 +120,8 @@ SET(OpenRTI_SOURCES
   AbstractMessageDecoder.cpp
   AbstractMessageEncoder.cpp
   AbstractMessageSender.cpp
+  AbstractProtocolLayer.cpp
+  AbstractProtocolSocket.cpp
   AbstractServerNode.cpp
   AbstractSocketEvent.cpp
   Attributes.cpp
@@ -151,6 +153,7 @@ SET(OpenRTI_SOURCES
   StreamSocketReadEvent.cpp
   StreamSocketWriteEvent.cpp
   ProtocolRegistry.cpp
+  ProtocolSocketEvent.cpp
   RegionSet.cpp
   Server.cpp
   ServerConfigContentHandler.cpp
