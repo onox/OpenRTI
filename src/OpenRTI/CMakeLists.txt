@@ -162,6 +162,7 @@ SET(OpenRTI_SOURCES
   SocketReadEvent.cpp
   SocketServerAcceptEvent.cpp
   SocketWriteEvent.cpp
+  StreamBufferProtocol.cpp
   StreamProtocol.cpp
   TightBE1MessageDecoder.cpp
   TightBE1MessageEncoder.cpp
