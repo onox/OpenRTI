@@ -140,6 +140,7 @@ SET(OpenRTI_SOURCES
   InitialServerSocketWriteEvent.cpp
   InitialSocketReadEvent.cpp
   InitialSocketWriteEvent.cpp
+  InitialStreamProtocol.cpp
   LogStream.cpp
   Message.cpp
   MessageEncodingRegistry.cpp
