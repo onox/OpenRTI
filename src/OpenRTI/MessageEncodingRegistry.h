@@ -21,6 +21,7 @@
 #define OpenRTI_MessageEncodingRegistry_h
 
 #include "AbstractMessageEncoder.h"
+#include "AbstractMessageEncoding.h"
 #include "AbstractMessageDecoder.h"
 #include "InitialSocketWriteEvent.h"
 #include "SocketStream.h"
@@ -49,8 +50,10 @@ typedef std::pair<SharedPtr<AbstractMessageEncoder>, SharedPtr<AbstractMessageDe
 /// and such. The server selects the used encoding and sends that back to the client.
 /// The next data that is exchanged needs to happen in the selected encoding.
 ///
-class MessageEncodingRegistry {
+class OPENRTI_API MessageEncodingRegistry {
 public:
+  /// Return an encoder for a given encoding name
+  SharedPtr<AbstractMessageEncoding> getEncoding(const std::string& encodingName) const;
   /// Return an encoder pair for a given encoding name
   MessageEncoderPair getEncoderPair(const std::string& encodingName) const;
   /// Return the list of supported encodings known to the registry.

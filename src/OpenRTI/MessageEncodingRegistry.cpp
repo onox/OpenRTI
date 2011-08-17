@@ -31,6 +31,12 @@
 
 namespace OpenRTI {
 
+SharedPtr<AbstractMessageEncoding>
+MessageEncodingRegistry::getEncoding(const std::string& encodingName) const
+{
+  return 0;
+}
+
 MessageEncoderPair
 MessageEncodingRegistry::getEncoderPair(const std::string& encodingName) const
 {
