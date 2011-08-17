@@ -28,7 +28,7 @@ namespace OpenRTI {
 template<typename T>
 class WeakPtr;
 
-class OPENRTI_LOCAL WeakReferenced {
+class OPENRTI_API WeakReferenced {
 public:
   /// The object backref and the reference count for this object need to be
   /// there in any case. Also these are per object and shall not be copied nor
@@ -99,7 +99,7 @@ private:
   /// Support for weak references, not increasing the reference count
   /// that is done through that small helper class which holds an uncounted
   /// reference which is zeroed out on destruction of the current object
-  class OPENRTI_LOCAL WeakData : public Referenced {
+  class OPENRTI_API WeakData : public Referenced {
   public:
     WeakData(WeakReferenced* weakReferenced);
     ~WeakData();
