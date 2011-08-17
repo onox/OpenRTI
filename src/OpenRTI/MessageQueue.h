@@ -42,6 +42,8 @@ public:
   { return _messageList.pop_front(); }
   virtual bool isOpen() const
   { return !_isClosed; }
+  virtual bool empty() const
+  { return _messageList.empty(); }
 
 protected:
   virtual void append(const SharedPtr<AbstractMessage>& message)
@@ -76,6 +78,11 @@ public:
   {
     ScopeLock scopeLock(_mutex);
     return !_isClosed;
+  }
+  virtual bool empty() const
+  {
+    ScopeLock scopeLock(_mutex);
+    return _messageList.empty();
   }
 
 protected:

@@ -84,6 +84,10 @@ public:
   {
     return _connect->getMessageReceiver()->isOpen();
   }
+  virtual bool empty() const
+  {
+    return _connect->getMessageReceiver()->empty();
+  }
 
 private:
   SharedPtr<AbstractConnect> _connect;

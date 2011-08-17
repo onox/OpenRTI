@@ -30,7 +30,7 @@ namespace OpenRTI {
 
 class Clock;
 
-class AbstractConnect : public Referenced {
+class OPENRTI_API AbstractConnect : public Referenced {
 public:
   virtual ~AbstractConnect() {}
   virtual AbstractMessageSender* getMessageSender() = 0;
@@ -46,6 +46,14 @@ public:
   /// Returns the next message if there is one.
   SharedPtr<AbstractMessage> receive()
   { return getMessageReceiver()->receive(Clock::initial()); }
+
+  /// Close the message sender
+  void close()
+  { getMessageSender()->close(); }
+
+  /// Return true if there is something ready to receive
+  bool empty()
+  { return getMessageReceiver()->empty(); }
 };
 
 } // namespace OpenRTI
