@@ -33,6 +33,9 @@
 
 namespace OpenRTI {
 
+class VariableLengthData;
+typedef std::list<VariableLengthData> VariableLengthDataList;
+
 /// Class for an opaque byte array.
 /// The class behaves similar to a std::vector as it does not reallocate when clearing or
 /// resizing to a smaller size.
@@ -97,6 +100,20 @@ public:
     _size(size),
     _offset(value._offset + offset)
   { OpenRTIAssert(offset + size <= value.size()); }
+  VariableLengthData(const VariableLengthDataList& variableLengthDataList) :
+    _data(0),
+    _size(0),
+    _offset(0)
+  {
+    size_t size = 0;
+    for (VariableLengthDataList::const_iterator i = variableLengthDataList.begin();
+         i != variableLengthDataList.end(); ++i)
+      size += i->size();
+    reserve(size);
+    for (VariableLengthDataList::const_iterator i = variableLengthDataList.begin();
+         i != variableLengthDataList.end(); ++i)
+      append(*i);
+  }
   ~VariableLengthData()
   { }
 
@@ -307,6 +324,14 @@ public:
     return VariableLengthData(*this, offset, size() - offset);
   }
 
+  /// Append valiableLengthData to this.
+  VariableLengthData& append(const VariableLengthData& variableLengthData)
+  {
+    size_t offset = size();
+    resize(offset + variableLengthData.size());
+    std::memcpy(data(offset), variableLengthData.data(), variableLengthData.size());
+    return *this;
+  }
 
   // 8 bit value accessors
   void setChar(char value, size_t offset)
@@ -935,8 +960,6 @@ private:
   size_t _size;
   size_t _offset;
 };
-
-typedef std::list<VariableLengthData> VariableLengthDataList;
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
