@@ -119,6 +119,7 @@ SET(OpenRTI_SOURCES
   AbstractMessage.cpp
   AbstractMessageDecoder.cpp
   AbstractMessageEncoder.cpp
+  AbstractMessageEncoding.cpp
   AbstractMessageSender.cpp
   AbstractProtocolLayer.cpp
   AbstractProtocolSocket.cpp
