@@ -109,12 +109,7 @@ SocketAddress::isInet6() const
 std::list<SocketAddress>
 SocketAddress::resolve(const std::string& address, const std::string& service, bool passive)
 {
-  // Due to problems with ipv6 on these platforms
-#if defined __sun || defined __hpux
-  int family = AF_INET;
-#else
   int family = AF_UNSPEC;
-#endif
   int socktype = SOCK_STREAM;
 
   struct addrinfo hints;
