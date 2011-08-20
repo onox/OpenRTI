@@ -24,6 +24,15 @@
 #include "Exception.h"
 #include "StringUtils.h"
 
+#if defined(__linux)
+# ifndef AF_INET_SDP
+#  define AF_INET_SDP 27
+# endif
+# ifndef AF_INET6_SDP
+#  define AF_INET6_SDP 28
+# endif
+#endif
+
 namespace OpenRTI {
 
 SocketAddress::SocketAddress() :
@@ -78,6 +87,10 @@ SocketAddress::isInet4() const
 {
   if (_privateData->_addrlen != sizeof(struct sockaddr_in))
     return false;
+#if defined(AF_INET_SDP)
+  if (_privateData->_addr->sa_family == AF_INET_SDP)
+    return true;
+#endif
   return _privateData->_addr->sa_family == AF_INET;
 }
 
@@ -86,6 +99,10 @@ SocketAddress::isInet6() const
 {
   if (_privateData->_addrlen != sizeof(struct sockaddr_in6))
     return false;
+#if defined(AF_INET6_SDP)
+  if (_privateData->_addr->sa_family == AF_INET6_SDP)
+    return true;
+#endif
   return _privateData->_addr->sa_family == AF_INET6;
 }
 
@@ -123,6 +140,21 @@ SocketAddress::resolve(const std::string& address, const std::string& service, b
   std::list<SocketAddress> socketAddressList;
   struct addrinfo *res = ai;
   while (res) {
+    // Insert alternative address for ib connects.
+#if defined(AF_INET_SDP)
+    if (res->ai_addr->sa_family == AF_INET) {
+      res->ai_addr->sa_family = AF_INET_SDP;
+      socketAddressList.push_back(SocketAddress(new PrivateData(res->ai_addr, res->ai_addrlen)));
+      res->ai_addr->sa_family = AF_INET;
+    }
+#endif
+#if defined(AF_INET6_SDP)
+    if (res->ai_addr->sa_family == AF_INET6) {
+      res->ai_addr->sa_family = AF_INET6_SDP;
+      socketAddressList.push_back(SocketAddress(new PrivateData(res->ai_addr, res->ai_addrlen)));
+      res->ai_addr->sa_family = AF_INET6;
+    }
+#endif
     socketAddressList.push_back(SocketAddress(new PrivateData(res->ai_addr, res->ai_addrlen)));
     res = res->ai_next;
   }
