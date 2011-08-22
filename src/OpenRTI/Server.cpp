@@ -26,11 +26,13 @@
 #include "DefaultErrorHandler.h"
 #include "Exception.h"
 #include "ExpatXMLReader.h"
+#include "InitialClientStreamProtocol.h"
 #include "MessageEncodingRegistry.h"
 #include "MessageServer.h"
 #include "MessageSocketReadEvent.h"
 #include "MessageSocketWriteEvent.h"
 #include "Mutex.h"
+#include "ProtocolSocketEvent.h"
 #include "ScopeLock.h"
 #include "ServerConfigContentHandler.h"
 #include "SocketEventDispatcher.h"
@@ -313,7 +315,7 @@ Server::connectedTCPSocket(const std::string& name)
     } catch (const OpenRTI::Exception& e) {
       addressList.pop_front();
       if (addressList.empty())
-        throw e;
+        throw;
     }
   }
   throw RTIinternalError(std::string("Can not resolve address") + name);
@@ -356,38 +358,31 @@ Server::connectParentPipeServer(const std::string& name, const Clock& abstime)
 void
 Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime)
 {
-  bool compress = true;
-  StringStringListMap parentOptions;
-  // Negotiate with the server how to encode
-  MessageEncoderPair encodingPair = MessageEncodingRegistry::instance().negotiateEncoding(socketStream, abstime, getServerName(), compress, parentOptions);
-
-  // The socket side message encoder and output message queue
-  SharedPtr<MessageSocketWriteEvent> writeMessageSocketEvent = new MessageSocketWriteEvent(socketStream, encodingPair.first);
-  /// The connection that sends messages up to the parent
-  SharedPtr<AbstractMessageSender> toParentSender = writeMessageSocketEvent->getMessageSender();
-
-  /// returns a sender where incomming messages should be sent to
-  SharedPtr<AbstractMessageSender> toServerSender = _messageServer->insertParentConnect(toParentSender, parentOptions);
-  if (!toServerSender.valid())
-    throw RTIinternalError("Could not set up parent server connect");
-
-  // The socket side message parser and dispatcher that fires the above on completely
-  // received messages
-  SharedPtr<MessageSocketReadEvent> readMessageSocketEvent;
-  readMessageSocketEvent = new MessageSocketReadEvent(socketStream, toServerSender.get(), encodingPair.second);
-
-  if (compress) {
-#ifdef OPENRTI_HAVE_ZLIB
-    readMessageSocketEvent->setReceiveCallback(new ZLibReceiveCallback);
-    writeMessageSocketEvent->setSendCallback(new ZLibSendCallback);
-#else
-    Log(MessageCoding, Warning) << "Parent server negotiated zlib compression, but client does not support that!" << std::endl;
-    throw RTIinternalError("Parent server negotiated zlib compression, but client does not support that!");
-#endif
+  // Set up the server configured option map
+  StringStringListMap connectOptions;
+  if (_messageServer->getServerOptions()._preferCompression) {
+    connectOptions["compression"].push_back("zlib");
+    connectOptions["compression"].push_back("lzma");
+  } else {
+    connectOptions["compression"].push_back("no");
   }
 
-  _dispatcher.insert(readMessageSocketEvent.get());
-  _dispatcher.insert(writeMessageSocketEvent.get());
+  // Set up the protocol and socket events for connection startup
+  SharedPtr<ProtocolSocketEvent> protocolSocketEvent = new ProtocolSocketEvent(socketStream);
+  SharedPtr<InitialClientStreamProtocol> clientStreamProtocol = new InitialClientStreamProtocol(*this, connectOptions);
+  protocolSocketEvent->setProtocolLayer(clientStreamProtocol);
+  _dispatcher.insert(SharedPtr<AbstractSocketEvent>(protocolSocketEvent));
+
+  // Process messages until we have either recieved the servers response or the timeout expires
+  _dispatcher.exec(abstime);
+
+  if (!clientStreamProtocol->getSuccessfulConnect()) {
+    if (!clientStreamProtocol->getErrorMessage().empty())
+      throw RTIinternalError(clientStreamProtocol->getErrorMessage());
+    throw RTIinternalError("Timeout connecting to parent server!");
+  }
+
+  setDone(false);
 }
 
 SharedPtr<AbstractMessageSender>
