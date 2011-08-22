@@ -279,7 +279,7 @@ Server::listenInet(const std::string& node, const std::string& service, int back
       SharedPtr<SocketServerTCP> socket = new SocketServerTCP;
       socket->bind(address);
       socket->listen(backlog);
-      _dispatcher.insert(new SocketServerAcceptEvent(socket, _messageServer));
+      _dispatcher.insert(new SocketServerAcceptEvent(socket, *this));
       success = true;
     } catch (const OpenRTI::Exception& e) {
       if (addressList.empty() && !success)
@@ -294,7 +294,7 @@ Server::listenPipe(const std::string& address, int backlog)
   SharedPtr<SocketServerPipe> socket = new SocketServerPipe();
   socket->bind(address);
   socket->listen(backlog);
-  _dispatcher.insert(new SocketServerAcceptEvent(socket, _messageServer));
+  _dispatcher.insert(new SocketServerAcceptEvent(socket, *this));
 }
 
 SharedPtr<SocketTCP>

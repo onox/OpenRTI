@@ -20,23 +20,30 @@
 #ifndef OpenRTI_SocketServerAcceptEvent_h
 #define OpenRTI_SocketServerAcceptEvent_h
 
-#include "MessageServer.h"
-#include "SocketReadEvent.h"
+#include "AbstractSocketEvent.h"
 #include "SocketServer.h"
 
 namespace OpenRTI {
 
-class OPENRTI_LOCAL SocketServerAcceptEvent : public SocketReadEvent {
+class AbstractNetworkServer;
+
+class OPENRTI_API SocketServerAcceptEvent : public AbstractSocketEvent {
 public:
-  SocketServerAcceptEvent(SharedPtr<SocketServer> socket, SharedPtr<MessageServer> messageServer);
+  SocketServerAcceptEvent(const SharedPtr<SocketServer>& socketServer,
+                          AbstractNetworkServer& networkServer);
   virtual ~SocketServerAcceptEvent();
 
   virtual void read(SocketEventDispatcher& dispatcher);
+  virtual bool getEnableRead() const;
+
+  virtual void write(SocketEventDispatcher& dispatcher);
+  virtual bool getEnableWrite() const;
+
   virtual SocketServer* getSocket() const;
 
 private:
-  SharedPtr<SocketServer> _socket;
-  SharedPtr<MessageServer> _messageServer;
+  SharedPtr<SocketServer> _socketServer;
+  AbstractNetworkServer& _networkServer;
 };
 
 } // namespace OpenRTI

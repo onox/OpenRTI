@@ -19,18 +19,18 @@
 
 #include "SocketServerAcceptEvent.h"
 
-#include "InitialServerSocketReadEvent.h"
-#include "MessageServer.h"
+#include "InitialServerStreamProtocol.h"
+#include "ProtocolSocketEvent.h"
 #include "SocketEventDispatcher.h"
-#include "SocketReadEvent.h"
 #include "SocketServer.h"
 #include "SocketStream.h"
 
 namespace OpenRTI {
 
-SocketServerAcceptEvent::SocketServerAcceptEvent(SharedPtr<SocketServer> socket, SharedPtr<MessageServer> messageServer) :
-  _socket(socket),
-  _messageServer(messageServer)
+SocketServerAcceptEvent::SocketServerAcceptEvent(const SharedPtr<SocketServer>& socketServer,
+                                                 AbstractNetworkServer& networkServer) :
+  _socketServer(socketServer),
+  _networkServer(networkServer)
 {
 }
 
@@ -41,18 +41,38 @@ SocketServerAcceptEvent::~SocketServerAcceptEvent()
 void
 SocketServerAcceptEvent::read(SocketEventDispatcher& dispatcher)
 {
-  SharedPtr<SocketStream> s = _socket->accept();
+  SharedPtr<SocketStream> s = _socketServer->accept();
   if (!s.valid())
     return;
+  
+  /// IDEA: peek into the read data to see if this is an OpenRTI or a HTTP request
+  
+  SharedPtr<ProtocolSocketEvent> protocolSocketEvent = new ProtocolSocketEvent(s);
+  protocolSocketEvent->setProtocolLayer(new InitialServerStreamProtocol(_networkServer));
+  dispatcher.insert(SharedPtr<AbstractSocketEvent>(protocolSocketEvent));
+}
 
-  // Set up a connection accepting a new client connection
-  dispatcher.insert(new InitialServerSocketReadEvent(s.get(), _messageServer));
+bool
+SocketServerAcceptEvent::getEnableRead() const
+{
+  return true;
+}
+
+void
+SocketServerAcceptEvent::write(SocketEventDispatcher&)
+{
+}
+
+bool
+SocketServerAcceptEvent::getEnableWrite() const
+{
+  return false;
 }
 
 SocketServer*
 SocketServerAcceptEvent::getSocket() const
 {
-  return _socket.get();
+  return _socketServer.get();
 }
 
 } // namespace OpenRTI
