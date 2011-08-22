@@ -68,12 +68,19 @@ class SourceStream(object):
 class DataType(object):
     def __init__(self, name):
         self.__name = name
+        self._hasPayload = None
 
     def getName(self):
         return self.__name
 
     def isMessage(self):
         return False
+
+    def resolveHasPayload(self, typeMap):
+        pass
+
+    def hasPayload(self):
+        return self._hasPayload
 
     def writeForwardDeclaration(self, sourceStream):
         pass
@@ -103,6 +110,9 @@ class CDataType(DataType):
 
     def getTypeName(self):
         return self.__ctype
+
+    def resolveHasPayload(self, typeMap):
+        self._hasPayload = self.getTypeName() == 'VariableLengthData'
 
     def writeForwardDeclaration(self, sourceStream):
         self.writeDeclaration(sourceStream)
@@ -181,6 +191,11 @@ class VectorDataType(DataType):
     def getScalarTypeName(self):
         return self.__scalarTypeName
 
+    def resolveHasPayload(self, typeMap):
+        t = typeMap.getType(self.getScalarTypeName())
+        t.resolveHasPayload(typeMap)
+        self._hasPayload = t.hasPayload()
+
     def writeForwardDeclaration(self, sourceStream):
         self.writeDeclaration(sourceStream)
 
@@ -222,6 +237,11 @@ class SetDataType(DataType):
     def getScalarTypeName(self):
         return self.__scalarTypeName
 
+    def resolveHasPayload(self, typeMap):
+        t = typeMap.getType(self.getScalarTypeName())
+        t.resolveHasPayload(typeMap)
+        self._hasPayload = t.hasPayload()
+
     def writeForwardDeclaration(self, sourceStream):
         self.writeDeclaration(sourceStream)
 
@@ -260,12 +280,29 @@ class MapDataType(DataType):
         DataType.__init__(self, name)
         self.__keyTypeName = keyTypeName
         self.__valueTypeName = valueTypeName
+        self.__keyHasPayload = None
+        self.__valueHasPayload = None
 
     def getKeyTypeName(self):
         return self.__keyTypeName
 
     def getValueTypeName(self):
         return self.__valueTypeName
+
+    def resolveHasPayload(self, typeMap):
+        t = typeMap.getType(self.getKeyTypeName())
+        t.resolveHasPayload(typeMap)
+        self.__keyHasPayload = t.hasPayload()
+        t = typeMap.getType(self.getValueTypeName())
+        t.resolveHasPayload(typeMap)
+        self.__valueHasPayload = t.hasPayload()
+        self._hasPayload = self.__keyHasPayload or self.__valueHasPayload
+        
+    def keyHasPayload(self):
+        return self.__keyHasPayload
+
+    def valueHasPayload(self):
+        return self.__valueHasPayload
 
     def writeForwardDeclaration(self, sourceStream):
         self.writeDeclaration(sourceStream)
@@ -306,12 +343,29 @@ class PairDataType(DataType):
         DataType.__init__(self, name)
         self.__firstTypeName = firstTypeName
         self.__secondTypeName = secondTypeName
+        self.__firstHasPayload = None
+        self.__secondHasPayload = None
 
     def getFirstTypeName(self):
         return self.__firstTypeName
 
     def getSecondTypeName(self):
         return self.__secondTypeName
+
+    def resolveHasPayload(self, typeMap):
+        t = typeMap.getType(self.getFirstTypeName())
+        t.resolveHasPayload(typeMap)
+        self.__firstHasPayload = t.hasPayload()
+        t = typeMap.getType(self.getSecondTypeName())
+        t.resolveHasPayload(typeMap)
+        self.__secondHasPayload = t.hasPayload()
+        self._hasPayload = self.__firstHasPayload or self.__secondHasPayload
+
+    def firstHasPayload(self):
+        return self.__firstHasPayload
+
+    def secondHasPayload(self):
+        return self.__secondHasPayload
 
     def writeForwardDeclaration(self, sourceStream):
         self.writeDeclaration(sourceStream)
@@ -345,6 +399,7 @@ class StructField(object):
     def __init__(self, name, typeName):
         self.__name = name
         self.__typeName = typeName
+        self._hasPayload = None
 
     def getName(self):
         return self.__name
@@ -360,6 +415,14 @@ class StructField(object):
 
     def getTypeName(self):
         return self.__typeName
+
+    def resolveHasPayload(self, typeMap):
+        t = typeMap.getType(self.getTypeName())
+        t.resolveHasPayload(typeMap)
+        self._hasPayload = t.hasPayload()
+
+    def hasPayload(self):
+        return self._hasPayload
 
     def writeSetter(self, sourceStream, valuePrefix):
         upperName = self.getUpperName()
@@ -409,6 +472,12 @@ class StructDataType(DataType):
 
     def getParentTypeName(self):
         return self.__parentTypeName
+
+    def resolveHasPayload(self, typeMap):
+        for field in self.__fieldList:
+            field.resolveHasPayload(typeMap)
+        for field in self.__fieldList:
+            self._hasPayload = self.hasPayload() or field.hasPayload()
 
     def writeForwardDeclaration(self, sourceStream):
         sourceStream.writeline('class {name};'.format(name = self.getName()))
@@ -708,7 +777,7 @@ class MessageEncoding(object):
         if typeName == 'VariableLengthData':
             sourceStream.writeline('  writeSizeTCompressed(value.size());')
             sourceStream.writeline('  if (!value.empty())')
-            sourceStream.writeline('    _networkBuffer.addBuffer(value);')
+            sourceStream.writeline('    _messageEncoding.addWriteBuffer(value);')
         else:
             sourceStream.writeline('  write{encoding}Compressed(value);'.format(encoding = encoding))
         sourceStream.writeline('}')
@@ -724,30 +793,26 @@ class MessageEncoding(object):
             sourceStream.writeline('  size_t size = readSizeTCompressed();')
             sourceStream.writeline('  value.resize(size);')
             sourceStream.writeline('  if (size)')
-            sourceStream.writeline('    _networkBuffer.addBuffer(VariableLengthData(size));')
+            sourceStream.writeline('    _messageEncoding.addReadBuffer(size);')
         else:
             sourceStream.writeline('  value = read{encoding}Compressed();'.format(encoding = encoding))
         sourceStream.writeline('}')
         sourceStream.writeline()
 
     def writeCPayloadDecoder(self, dataType, sourceStream):
+        if not dataType.hasPayload():
+            return
         name = dataType.getName()
         typeName = dataType.getTypeName()
         encoding = dataType.getEncoding()
-        if typeName == 'VariableLengthData':
-            sourceStream.writeline('void readPayload{name}({ctype}& value)'.format(name = name, ctype = typeName))
-            sourceStream.writeline('{')
-            sourceStream.writeline('  if (!value.size())')
-            sourceStream.writeline('    return;')
-            sourceStream.writeline('  value = _networkBuffer[++_index];')
-            sourceStream.writeline('}')
-            sourceStream.writeline()
-        else:
-            # Note the const here, this is a hack to make that work somehow ...
-            sourceStream.writeline('void readPayload{name}(const {ctype}& value)'.format(name = name, ctype = typeName))
-            sourceStream.writeline('{')
-            sourceStream.writeline('}')
-            sourceStream.writeline()
+        sourceStream.writeline('void readPayload{name}({ctype}& value)'.format(name = name, ctype = typeName))
+        sourceStream.writeline('{')
+        sourceStream.writeline('  if (!value.size())')
+        sourceStream.writeline('    return;')
+        sourceStream.writeline('  value = *_i;')
+        sourceStream.writeline('  ++_i;')
+        sourceStream.writeline('}')
+        sourceStream.writeline()
 
     def writeEnumEncoder(self, dataType, sourceStream):
         name = dataType.getName()
@@ -786,12 +851,7 @@ class MessageEncoding(object):
         sourceStream.writeline()
 
     def writeEnumPayloadDecoder(self, dataType, sourceStream):
-        name = dataType.getName()
-        sourceStream.writeline('void readPayload{name}({name}& value)'.format(name = name))
-        sourceStream.writeline('{')
-        sourceStream.writeline('}')
-        sourceStream.writeline()
-
+        pass
 
     def writeVectorEncoder(self, dataType, sourceStream):
         name = dataType.getName()
@@ -818,6 +878,8 @@ class MessageEncoding(object):
         sourceStream.writeline()
 
     def writeVectorPayloadDecoder(self, dataType, sourceStream):
+        if not dataType.hasPayload():
+            return
         name = dataType.getName()
         scalarName = dataType.getScalarTypeName()
         sourceStream.writeline('void readPayload{name}({name}& value)'.format(name = name))
@@ -856,6 +918,8 @@ class MessageEncoding(object):
         sourceStream.writeline()
 
     def writeSetPayloadDecoder(self, dataType, sourceStream):
+        if not dataType.hasPayload():
+            return
         name = dataType.getName()
         scalarName = dataType.getScalarTypeName()
         sourceStream.writeline('void readPayload{name}({name}& value)'.format(name = name))
@@ -897,14 +961,18 @@ class MessageEncoding(object):
         sourceStream.writeline()
 
     def writeMapPayloadDecoder(self, dataType, sourceStream):
+        if not dataType.hasPayload():
+            return
         name = dataType.getName()
         keyTypeName = dataType.getKeyTypeName()
         valueTypeName = dataType.getValueTypeName()
         sourceStream.writeline('void readPayload{name}({name}& value)'.format(name = name))
         sourceStream.writeline('{')
         sourceStream.writeline('  for ({name}::iterator i = value.begin(); i != value.end(); ++i) {{'.format(name = name))
-        sourceStream.writeline('    readPayload{keyTypeName}(i->first);'.format(keyTypeName = keyTypeName))
-        sourceStream.writeline('    readPayload{valueTypeName}(i->second);'.format(valueTypeName = valueTypeName))
+        if dataType.keyHasPayload():
+            sourceStream.writeline('    readPayload{keyTypeName}(i->first);'.format(keyTypeName = keyTypeName))
+        if dataType.valueHasPayload():
+            sourceStream.writeline('    readPayload{valueTypeName}(i->second);'.format(valueTypeName = valueTypeName))
         sourceStream.writeline('  }')
         sourceStream.writeline('}')
         sourceStream.writeline()
@@ -933,13 +1001,17 @@ class MessageEncoding(object):
         sourceStream.writeline()
 
     def writePairPayloadDecoder(self, dataType, sourceStream):
+        if not dataType.hasPayload():
+            return
         name = dataType.getName()
         firstTypeName = dataType.getFirstTypeName()
         secondTypeName = dataType.getSecondTypeName()
         sourceStream.writeline('void readPayload{name}({name}& value)'.format(name = name))
         sourceStream.writeline('{')
-        sourceStream.writeline('  readPayload{firstTypeName}(value.first);'.format(firstTypeName = firstTypeName))
-        sourceStream.writeline('  readPayload{secondTypeName}(value.second);'.format(secondTypeName = secondTypeName))
+        if dataType.firstHasPayload():
+            sourceStream.writeline('  readPayload{firstTypeName}(value.first);'.format(firstTypeName = firstTypeName))
+        if dataType.secondHasPayload():
+            sourceStream.writeline('  readPayload{secondTypeName}(value.second);'.format(secondTypeName = secondTypeName))
         sourceStream.writeline('}')
         sourceStream.writeline()
 
@@ -967,51 +1039,57 @@ class MessageEncoding(object):
         sourceStream.writeline()
 
     def writeStructPayloadDecoder(self, dataType, sourceStream):
+        if not dataType.hasPayload():
+            return
         name = dataType.getName()
         sourceStream.writeline('void readPayload{name}({name}& value)'.format(name = name))
         sourceStream.writeline('{')
         for field in dataType.getFieldList():
-            fieldName = field.getName()
-            typeName = field.getTypeName()
-            sourceStream.writeline('  readPayload{typeName}(value.get{fieldName}());'.format(typeName = typeName, fieldName = fieldName))
+            if field.hasPayload():
+                fieldName = field.getName()
+                typeName = field.getTypeName()
+                sourceStream.writeline('  readPayload{typeName}(value.get{fieldName}());'.format(typeName = typeName, fieldName = fieldName))
         sourceStream.writeline('}')
         sourceStream.writeline()
 
-
-    def writeEncoderDeclaration(self, messageMap, sourceStream):
+    def writeEncodingDeclaration(self, messageMap, sourceStream):
         encodingName = self.getName()
         sourceStream.writeCopyright()
-        sourceStream.writeline('#ifndef OpenRTI_' + encodingName + 'MessageEncoder_h')
-        sourceStream.writeline('#define OpenRTI_' + encodingName + 'MessageEncoder_h')
+        sourceStream.writeline('#ifndef OpenRTI_' + encodingName + 'MessageEncoding_h')
+        sourceStream.writeline('#define OpenRTI_' + encodingName + 'MessageEncoding_h')
         sourceStream.writeline()
-        sourceStream.writeline('#include "AbstractMessageEncoder.h"')
-        sourceStream.writeline('#include "EncodeDataStream.h"')
+        sourceStream.writeline('#include "AbstractMessageEncoding.h"')
         sourceStream.writeline('#include "Export.h"')
-        sourceStream.writeline('#include "Message.h"')
-        sourceStream.writeline('#include "NetworkBuffer.h"')
         sourceStream.writeline()
         sourceStream.writeline('namespace OpenRTI {')
         sourceStream.writeline()
 
-        sourceStream.writeline('class OPENRTI_LOCAL ' + encodingName + 'MessageEncoder : public AbstractMessageEncoder {')
+        sourceStream.writeline('class OPENRTI_LOCAL ' + encodingName + 'MessageEncoding : public AbstractMessageEncoding {')
         sourceStream.writeline('public:')
         sourceStream.pushIndent()
-        sourceStream.writeline(encodingName + 'MessageEncoder();')
-        sourceStream.writeline('virtual ~' + encodingName + 'MessageEncoder();')
+        sourceStream.writeline(encodingName + 'MessageEncoding();')
+        sourceStream.writeline('virtual ~' + encodingName + 'MessageEncoding();')
         sourceStream.writeline()
 
         sourceStream.writeline('virtual const char* getName() const;')
         sourceStream.writeline()
 
-        sourceStream.writeline('virtual void encodeMessage(NetworkBuffer& networkBuffer, const AbstractMessage& message);')
+        sourceStream.writeline('virtual void readPacket(const Buffer& buffer);')
+        sourceStream.writeline('void decodeBody(const VariableLengthData& variableLengthData);')
+        sourceStream.writeline('void decodePayload(const Buffer::const_iterator& i);')
+        sourceStream.writeline('virtual void writeMessage(const AbstractMessage& message);')
         sourceStream.writeline()
 
         sourceStream.popIndent()
         sourceStream.writeline('private:')
         sourceStream.pushIndent()
 
+        sourceStream.writeline('class DecodeStream;')
         sourceStream.writeline('class DispatchFunctor;')
+        sourceStream.writeline('class PayloadDecoder;')
         sourceStream.writeline('class EncodeStream;')
+        sourceStream.writeline()
+        sourceStream.writeline('SharedPtr<AbstractMessage> _message;')
         sourceStream.popIndent()
         sourceStream.writeline('};')
         sourceStream.writeline()
@@ -1019,12 +1097,14 @@ class MessageEncoding(object):
         sourceStream.writeline()
         sourceStream.writeline('#endif')
 
-    def writeEncoderImplementation(self, messageMap, sourceStream):
+    def writeEncodingImplementation(self, messageMap, sourceStream):
         encodingName = self.getName()
+        encodingClass = encodingName + 'MessageEncoding'
         sourceStream.writeCopyright()
         sourceStream.writeline()
-        sourceStream.writeline('#include "' + encodingName + 'MessageEncoder.h"')
-        sourceStream.writeline('#include "AbstractMessageEncoder.h"')
+        sourceStream.writeline('#include "' + encodingName + 'MessageEncoding.h"')
+        sourceStream.writeline('#include "AbstractMessageEncoding.h"')
+        sourceStream.writeline('#include "DecodeDataStream.h"')
         sourceStream.writeline('#include "EncodeDataStream.h"')
         sourceStream.writeline('#include "Export.h"')
         sourceStream.writeline('#include "Message.h"')
@@ -1032,40 +1112,40 @@ class MessageEncoding(object):
         sourceStream.writeline('namespace OpenRTI {')
         sourceStream.writeline()
 
-        sourceStream.writeline('class OPENRTI_LOCAL ' + encodingName + 'MessageEncoder::EncodeStream : public EncodeDataStream {')
+        sourceStream.writeline('class OPENRTI_LOCAL ' + encodingClass + '::EncodeStream : public EncodeDataStream {')
         sourceStream.writeline('public:')
         sourceStream.pushIndent()
-        sourceStream.writeline('EncodeStream(VariableLengthData& variableLengthData, NetworkBuffer& networkBuffer) :')
+        sourceStream.writeline('EncodeStream(VariableLengthData& variableLengthData, ' + encodingClass + '& messageEncoding) :')
         sourceStream.writeline('  EncodeDataStream(variableLengthData),')
-        sourceStream.writeline('  _networkBuffer(networkBuffer)')
+        sourceStream.writeline('  _messageEncoding(messageEncoding)')
         sourceStream.writeline('{ }')
 
         for t in messageMap.getTypeList():
             t.writeComponent('Encoder', sourceStream, self)
 
-        sourceStream.writeline('NetworkBuffer& _networkBuffer;')
+        sourceStream.writeline(encodingName + 'MessageEncoding& _messageEncoding;')
         sourceStream.popIndent()
         sourceStream.writeline('};')
         sourceStream.writeline()
 
 
-        sourceStream.writeline('class OPENRTI_LOCAL ' + encodingName + 'MessageEncoder::DispatchFunctor {')
+        sourceStream.writeline('class OPENRTI_LOCAL ' + encodingClass + '::DispatchFunctor {')
         sourceStream.writeline('public:')
         sourceStream.pushIndent()
-        sourceStream.writeline('DispatchFunctor(' + encodingName + 'MessageEncoder& encoder, NetworkBuffer& networkBuffer) :')
-        sourceStream.writeline('  _encoder(encoder), _networkBuffer(networkBuffer)')
+        sourceStream.writeline('DispatchFunctor(' + encodingClass + '& messageEncoding) :')
+        sourceStream.writeline('  _messageEncoding(messageEncoding)')
         sourceStream.writeline('{ }')
         sourceStream.writeline()
 
         sourceStream.writeline('template<typename M>')
         sourceStream.writeline('void operator()(const M& message) const')
-        sourceStream.writeline('{ encode(_networkBuffer, message); }')
+        sourceStream.writeline('{ encode(_messageEncoding, message); }')
         sourceStream.writeline()
 
         sourceStream.writeline('void')
-        sourceStream.writeline('encode(NetworkBuffer& networkBuffer, const AbstractMessage& message) const')
+        sourceStream.writeline('encode(' + encodingClass + '&, const AbstractMessage&) const')
         sourceStream.writeline('{')
-        sourceStream.writeline('  throw RTIinternalError("Invalid message dispatched to encoder!");')
+        sourceStream.writeline('  throw RTIinternalError("Invalid message dispatched to encoding!");')
         sourceStream.writeline('}')
         sourceStream.writeline()
 
@@ -1075,11 +1155,11 @@ class MessageEncoding(object):
             if opcode is None:
                 continue
             sourceStream.writeline('void')
-            sourceStream.writeline('encode(NetworkBuffer& networkBuffer, const {messageName}& message) const'.format(messageName = messageName))
+            sourceStream.writeline('encode(' + encodingClass + '& messageEncoding, const {messageName}& message) const'.format(messageName = messageName))
             sourceStream.writeline('{')
             sourceStream.pushIndent()
-            sourceStream.writeline('EncodeDataStream headerStream(networkBuffer.addScratchBuffer());')
-            sourceStream.writeline('EncodeStream encodeStream(networkBuffer.addScratchBuffer(), networkBuffer);')
+            sourceStream.writeline('EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());')
+            sourceStream.writeline('EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);')
             sourceStream.writeline('encodeStream.writeUInt16Compressed({opcode});'.format(opcode = opcode))
             sourceStream.writeline('encodeStream.write{messageName}(message);'.format(messageName = messageName))
             sourceStream.writeline('headerStream.writeUInt32BE(uint32_t(encodeStream.size()));')
@@ -1090,205 +1170,89 @@ class MessageEncoding(object):
         sourceStream.popIndent()
         sourceStream.writeline('private:')
         sourceStream.pushIndent()
-        sourceStream.writeline(encodingName + 'MessageEncoder& _encoder;')
-        sourceStream.writeline('NetworkBuffer& _networkBuffer;')
+        sourceStream.writeline(encodingClass + '& _messageEncoding;')
         sourceStream.popIndent()
         sourceStream.writeline('};')
         sourceStream.writeline()
 
 
-        sourceStream.writeline(encodingName + 'MessageEncoder::' + encodingName + 'MessageEncoder()')
-        sourceStream.writeline('{')
-        sourceStream.writeline('}')
-        sourceStream.writeline()
-        sourceStream.writeline(encodingName + 'MessageEncoder::~' + encodingName + 'MessageEncoder()')
-        sourceStream.writeline('{')
-        sourceStream.writeline('}')
-        sourceStream.writeline()
-
-        sourceStream.writeline('const char*')
-        sourceStream.writeline(encodingName + 'MessageEncoder::getName() const')
-        sourceStream.writeline('{')
-        sourceStream.writeline('  return "' + encodingName + '";')
-        sourceStream.writeline('}')
-        sourceStream.writeline()
-
-        sourceStream.writeline('void')
-        sourceStream.writeline(encodingName + 'MessageEncoder::encodeMessage(NetworkBuffer& networkBuffer, const AbstractMessage& message)')
-        sourceStream.writeline('{')
-        sourceStream.writeline('  FunctorConstMessageDispatcher<DispatchFunctor> dispatcher(DispatchFunctor(*this, networkBuffer));')
-        sourceStream.writeline('  message.dispatch(dispatcher);')
-        sourceStream.writeline('}')
-        sourceStream.writeline()
-
-        sourceStream.writeline('} // namespace OpenRTI')
-        sourceStream.writeline()
-
-    def writeDecoderDeclaration(self, messageMap, sourceStream):
-        encodingName = self.getName()
-        sourceStream.writeCopyright()
-        sourceStream.writeline('#ifndef OpenRTI_' + encodingName + 'MessageDecoder_h')
-        sourceStream.writeline('#define OpenRTI_' + encodingName + 'MessageDecoder_h')
-        sourceStream.writeline()
-        sourceStream.writeline('#include "AbstractMessageDecoder.h"')
-        sourceStream.writeline('#include "DecodeDataStream.h"')
-        sourceStream.writeline('#include "Export.h"')
-        sourceStream.writeline('#include "Message.h"')
-        sourceStream.writeline('#include "NetworkBuffer.h"')
-        sourceStream.writeline()
-        sourceStream.writeline('namespace OpenRTI {')
-        sourceStream.writeline()
-
-        sourceStream.writeline('class OPENRTI_LOCAL ' + encodingName + 'MessageDecoder : public AbstractMessageDecoder {')
+        sourceStream.writeline('class OPENRTI_LOCAL ' + encodingClass + '::DecodeStream : public DecodeDataStream {')
         sourceStream.writeline('public:')
         sourceStream.pushIndent()
-        sourceStream.writeline(encodingName + 'MessageDecoder();')
-        sourceStream.writeline('virtual ~' + encodingName + 'MessageDecoder();')
-        sourceStream.writeline()
-
-        sourceStream.writeline('virtual const char* getName() const;')
-        sourceStream.writeline()
-
-        sourceStream.writeline('virtual SharedPtr<AbstractMessage> readMessage(NetworkBuffer& networkBuffer);')
-        sourceStream.writeline()
-
-        sourceStream.popIndent()
-        sourceStream.writeline('private:')
-        sourceStream.pushIndent()
-        sourceStream.writeline('class DecodeStream;')
-        sourceStream.writeline('class PayloadDecoder;')
-        sourceStream.writeline('void decodePayload(const NetworkBuffer& networkBuffer);')
-        sourceStream.writeline('void decodeBody(NetworkBuffer& networkBuffer);')
-
-        sourceStream.writeline('SharedPtr<AbstractMessage> _message;')
-        sourceStream.popIndent()
-        sourceStream.writeline('};')
-        sourceStream.writeline()
-        sourceStream.writeline('} // namespace OpenRTI')
-        sourceStream.writeline()
-        sourceStream.writeline('#endif')
-
-    def writeDecoderImplementation(self, messageMap, sourceStream):
-        encodingName = self.getName()
-        sourceStream.writeCopyright()
-        sourceStream.writeline('#include "' + encodingName + 'MessageDecoder.h"')
-        sourceStream.writeline('#include "AbstractMessageDecoder.h"')
-        sourceStream.writeline('#include "DecodeDataStream.h"')
-        sourceStream.writeline('#include "Export.h"')
-        sourceStream.writeline('#include "Message.h"')
-        sourceStream.writeline('#include "NetworkBuffer.h"')
-        sourceStream.writeline()
-        sourceStream.writeline('namespace OpenRTI {')
-        sourceStream.writeline()
-
-        sourceStream.writeline('class OPENRTI_LOCAL ' + encodingName + 'MessageDecoder::DecodeStream : public DecodeDataStream {')
-        sourceStream.writeline('public:')
-        sourceStream.pushIndent()
-        sourceStream.writeline('DecodeStream(const VariableLengthData& variableLengthData, NetworkBuffer& networkBuffer) :')
+        sourceStream.writeline('DecodeStream(const VariableLengthData& variableLengthData, ' + encodingClass + '& messageEncoding) :')
         sourceStream.writeline('  DecodeDataStream(variableLengthData),')
-        sourceStream.writeline('  _networkBuffer(networkBuffer)')
+        sourceStream.writeline('  _messageEncoding(messageEncoding)')
         sourceStream.writeline('{ }')
 
         for t in messageMap.getTypeList():
             t.writeComponent('Decoder', sourceStream, self)
 
-        sourceStream.writeline('NetworkBuffer& _networkBuffer;')
+        sourceStream.popIndent()
+        sourceStream.writeline('private:')
+        sourceStream.pushIndent()
+        sourceStream.writeline(encodingClass + '& _messageEncoding;')
         sourceStream.popIndent()
         sourceStream.writeline('};')
         sourceStream.writeline()
 
 
-        sourceStream.writeline('class OPENRTI_LOCAL ' + encodingName + 'MessageDecoder::PayloadDecoder {')
+        sourceStream.writeline('class OPENRTI_LOCAL ' + encodingClass + '::PayloadDecoder {')
         sourceStream.writeline('public:')
         sourceStream.pushIndent()
-        sourceStream.writeline('PayloadDecoder(const NetworkBuffer& networkBuffer) :')
-        sourceStream.writeline('  _networkBuffer(networkBuffer),')
-        sourceStream.writeline('  _index(1)')
+        sourceStream.writeline('PayloadDecoder(const Buffer::const_iterator& i) :')
+        sourceStream.writeline('  _i(i)')
         sourceStream.writeline('{ }')
 
         for t in messageMap.getTypeList():
             t.writeComponent('PayloadDecoder', sourceStream, self)
 
-        sourceStream.writeline('const NetworkBuffer& _networkBuffer;')
-        sourceStream.writeline('size_t _index;')
+        sourceStream.writeline('Buffer::const_iterator _i;')
         sourceStream.popIndent()
         sourceStream.writeline('};')
         sourceStream.writeline()
 
 
-        sourceStream.writeline(encodingName + 'MessageDecoder::' + encodingName + 'MessageDecoder()')
+        sourceStream.writeline(encodingName + 'MessageEncoding::' + encodingName + 'MessageEncoding()')
         sourceStream.writeline('{')
         sourceStream.writeline('}')
         sourceStream.writeline()
-        sourceStream.writeline(encodingName + 'MessageDecoder::~' + encodingName + 'MessageDecoder()')
+        sourceStream.writeline(encodingName + 'MessageEncoding::~' + encodingName + 'MessageEncoding()')
         sourceStream.writeline('{')
         sourceStream.writeline('}')
         sourceStream.writeline()
 
         sourceStream.writeline('const char*')
-        sourceStream.writeline(encodingName + 'MessageDecoder::getName() const')
+        sourceStream.writeline(encodingName + 'MessageEncoding::getName() const')
         sourceStream.writeline('{')
         sourceStream.writeline('  return "' + encodingName + '";')
         sourceStream.writeline('}')
         sourceStream.writeline()
 
-        sourceStream.writeline('SharedPtr<AbstractMessage>')
-        sourceStream.writeline(encodingName + 'MessageDecoder::readMessage(NetworkBuffer& networkBuffer)')
+        sourceStream.writeline('void')
+        sourceStream.writeline(encodingName + 'MessageEncoding::readPacket(const Buffer& buffer)')
         sourceStream.writeline('{')
         sourceStream.pushIndent()
-        sourceStream.writeline('switch (networkBuffer.size()) {')
-        sourceStream.writeline('case 0:')
-        sourceStream.writeline('  networkBuffer.addScratchBuffer().resize(4);')
-        sourceStream.writeline('  return 0;')
-        sourceStream.writeline('case 1:')
-        sourceStream.writeline('  networkBuffer.addScratchBuffer().resize(networkBuffer[0].getUInt32BE(0));')
-        sourceStream.writeline('  return 0;')
-        sourceStream.writeline('case 2:')
-        sourceStream.writeline('  decodeBody(networkBuffer);')
-        sourceStream.writeline('  break;')
-        sourceStream.writeline('default:')
-        sourceStream.writeline('  decodePayload(networkBuffer);')
-        sourceStream.writeline('  break;')
+        sourceStream.writeline('Buffer::const_iterator i = buffer.begin();')
+        sourceStream.writeline('if (i == buffer.end()) {')
+        sourceStream.writeline('  addReadBuffer(4);')
+        sourceStream.writeline('} else if (++i == buffer.end()) {')
+        sourceStream.writeline('  addReadBuffer(buffer.front().getUInt32BE(0));')
+        sourceStream.writeline('} else if (++i == buffer.end()) {')
+        sourceStream.writeline('  decodeBody(*(--i));')
+        sourceStream.writeline('} else {')
+        sourceStream.writeline('  decodePayload(i);')
         sourceStream.writeline('}')
-        sourceStream.writeline()
-        sourceStream.writeline('if (!networkBuffer.complete())')
-        sourceStream.writeline('  return 0;')
-        sourceStream.writeline()
-        sourceStream.writeline('return SharedPtr<AbstractMessage>().swap(_message);')
+        sourceStream.writeline('if (getInputBufferComplete())')
+        sourceStream.writeline('  getConnect()->send(SharedPtr<AbstractMessage>().swap(_message));')
         sourceStream.popIndent()
         sourceStream.writeline('}')
         sourceStream.writeline()
 
         sourceStream.writeline('void')
-        sourceStream.writeline(encodingName + 'MessageDecoder::decodePayload(const NetworkBuffer& networkBuffer)')
+        sourceStream.writeline(encodingClass + '::decodeBody(const VariableLengthData& variableLengthData)')
         sourceStream.writeline('{')
         sourceStream.pushIndent()
-        sourceStream.writeline('DecodeDataStream decodeStream(networkBuffer[1]);')
-        sourceStream.writeline('uint16_t opcode = decodeStream.readUInt16Compressed();')
-        sourceStream.writeline('PayloadDecoder payloadDecoder(networkBuffer);')
-        sourceStream.writeline('switch (opcode) {')
-        for t in messageMap.getTypeList():
-            messageName = t.getName()
-            opcode = self.getMessageOpcode(messageName)
-            if opcode is None:
-                continue
-            sourceStream.writeline('case {opcode}:'.format(opcode = opcode))
-            sourceStream.pushIndent()
-            sourceStream.writeline('payloadDecoder.readPayload{messageName}(static_cast<{messageName}&>(*_message));'.format(messageName = messageName))
-            sourceStream.writeline('break;')
-            sourceStream.popIndent()
-        sourceStream.writeline('default:')
-        sourceStream.writeline('  break;')
-        sourceStream.writeline('}')
-        sourceStream.popIndent()
-        sourceStream.writeline('}')
-        sourceStream.writeline()
-
-        sourceStream.writeline('void')
-        sourceStream.writeline(encodingName + 'MessageDecoder::decodeBody(NetworkBuffer& networkBuffer)')
-        sourceStream.writeline('{')
-        sourceStream.pushIndent()
-        sourceStream.writeline('DecodeStream decodeStream(networkBuffer[1], networkBuffer);')
+        sourceStream.writeline('DecodeStream decodeStream(variableLengthData, *this);')
         sourceStream.writeline('uint16_t opcode = decodeStream.readUInt16Compressed();')
         sourceStream.writeline('switch (opcode) {')
 
@@ -1305,13 +1269,50 @@ class MessageEncoding(object):
             sourceStream.popIndent()
 
         sourceStream.writeline('default:')
-        sourceStream.writeline('break;')
+        sourceStream.writeline('  break;')
+        sourceStream.writeline('}')
+        sourceStream.popIndent()
+        sourceStream.writeline('};')
+        sourceStream.writeline()
+
+        sourceStream.writeline('void')
+        sourceStream.writeline(encodingClass + '::decodePayload(const Buffer::const_iterator& i)')
+        sourceStream.writeline('{')
+        sourceStream.pushIndent()
+        sourceStream.writeline('Buffer::const_iterator j = i;')
+        sourceStream.writeline('DecodeDataStream decodeStream(*(--j));')
+        sourceStream.writeline('uint16_t opcode = decodeStream.readUInt16Compressed();')
+        sourceStream.writeline('PayloadDecoder payloadDecoder(i);')
+        sourceStream.writeline('switch (opcode) {')
+        for t in messageMap.getTypeList():
+            messageName = t.getName()
+            opcode = self.getMessageOpcode(messageName)
+            if opcode is None:
+                continue
+            if not t.hasPayload():
+                continue
+            sourceStream.writeline('case {opcode}:'.format(opcode = opcode))
+            sourceStream.pushIndent()
+            sourceStream.writeline('payloadDecoder.readPayload{messageName}(static_cast<{messageName}&>(*_message));'.format(messageName = messageName))
+            sourceStream.writeline('break;')
+            sourceStream.popIndent()
+        sourceStream.writeline('default:')
+        sourceStream.writeline('  break;')
         sourceStream.writeline('}')
         sourceStream.popIndent()
         sourceStream.writeline('}')
         sourceStream.writeline()
 
+        sourceStream.writeline('void')
+        sourceStream.writeline(encodingName + 'MessageEncoding::writeMessage(const AbstractMessage& message)')
+        sourceStream.writeline('{')
+        sourceStream.writeline('  FunctorConstMessageDispatcher<DispatchFunctor> dispatcher(DispatchFunctor(*this));')
+        sourceStream.writeline('  message.dispatch(dispatcher);')
+        sourceStream.writeline('}')
+        sourceStream.writeline()
+
         sourceStream.writeline('} // namespace OpenRTI')
+        sourceStream.writeline()
 
 ###############################################################################
 # FIXME move actual value encodings to here
@@ -1385,12 +1386,18 @@ class TypeMap(object):
                         self.addType(dataType)
             node = node.next
 
+        for t in self.__typeList:
+            t.resolveHasPayload(self)
+
     def addType(self, t):
         self.__typeList.append(t)
         self.__typeMap[t.getName()] = t
 
     def getTypeList(self):
         return self.__typeList
+
+    def getType(self, name):
+        return self.__typeMap[name]
 
     def writeDeclaration(self, sourceStream):
         sourceStream.writeCopyright()
@@ -1528,17 +1535,11 @@ class TypeMap(object):
         sourceStream.writeline()
         sourceStream.writeline('#endif')
 
-    def writeEncoderDeclaration(self, sourceStream, messageEncoding):
-        messageEncoding.writeEncoderDeclaration(self, sourceStream)
+    def writeEncodingDeclaration(self, sourceStream, messageEncoding):
+        messageEncoding.writeEncodingDeclaration(self, sourceStream)
 
-    def writeEncoderImplementation(self, sourceStream, messageEncoding):
-        messageEncoding.writeEncoderImplementation(self, sourceStream)
-
-    def writeDecoderDeclaration(self, sourceStream, messageEncoding):
-        messageEncoding.writeDecoderDeclaration(self, sourceStream)
-
-    def writeDecoderImplementation(self, sourceStream, messageEncoding):
-        messageEncoding.writeDecoderImplementation(self, sourceStream)
+    def writeEncodingImplementation(self, sourceStream, messageEncoding):
+        messageEncoding.writeEncodingImplementation(self, sourceStream)
 
 
 # The main application
@@ -1578,10 +1579,12 @@ elif outputMode == 'MessageImplementation':
     typeMap.writeImplementation(SourceStream(sys.stdout))
 elif outputMode == 'MessageDispatcher':
     typeMap.writeDispatcher(SourceStream(sys.stdout))
-elif outputMode == 'MessageEncoder':
-    typeMap.writeEncoder(SourceStream(sys.stdout), messageEncoding)
-elif outputMode == 'MessageDecoder':
-    typeMap.writeDecoder(SourceStream(sys.stdout), messageEncoding)
+elif outputMode == 'MessageEncodingDeclaration':
+    messageEncoding = TightBE1MessageEncoding()
+    typeMap.writeEncodingDeclaration(SourceStream(SourceStream(sys.stdout)), messageEncoding)
+elif outputMode == 'MessageEncodingImplementation':
+    messageEncoding = TightBE1MessageEncoding()
+    typeMap.writeEncodingImplementation(SourceStream(SourceStream(sys.stdout)), messageEncoding)
 else:
     # This is the shortcut for 'just do all output into the current directory'
     typeMap.writeDeclaration(SourceStream(open('Message.h', 'w+')))
@@ -1589,8 +1592,5 @@ else:
     typeMap.writeDispatcher(SourceStream(open('AbstractMessageDispatcher.h', 'w+')))
 
     messageEncoding = TightBE1MessageEncoding()
-    typeMap.writeEncoderDeclaration(SourceStream(open('TightBE1MessageEncoder.h', 'w+')), messageEncoding)
-    typeMap.writeEncoderImplementation(SourceStream(open('TightBE1MessageEncoder.cpp', 'w+')), messageEncoding)
-    typeMap.writeDecoderDeclaration(SourceStream(open('TightBE1MessageDecoder.h', 'w+')), messageEncoding)
-    typeMap.writeDecoderImplementation(SourceStream(open('TightBE1MessageDecoder.cpp', 'w+')), messageEncoding)
-
+    typeMap.writeEncodingDeclaration(SourceStream(open('TightBE1MessageEncoding.h', 'w+')), messageEncoding)
+    typeMap.writeEncodingImplementation(SourceStream(open('TightBE1MessageEncoding.cpp', 'w+')), messageEncoding)
