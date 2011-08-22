@@ -26,6 +26,7 @@
 #include "SocketEventDispatcher.h"
 #include "StringUtils.h"
 
+#include "TightBE1MessageEncoding.h"
 #include "TightBE1MessageEncoder.h"
 #include "TightBE1MessageDecoder.h"
 
@@ -34,6 +35,8 @@ namespace OpenRTI {
 SharedPtr<AbstractMessageEncoding>
 MessageEncodingRegistry::getEncoding(const std::string& encodingName) const
 {
+  if (encodingName == "TightBE1")
+    return new TightBE1MessageEncoding;
   return 0;
 }
 

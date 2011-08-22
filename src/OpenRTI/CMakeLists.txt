@@ -168,6 +168,7 @@ SET(OpenRTI_SOURCES
   StreamProtocol.cpp
   TightBE1MessageDecoder.cpp
   TightBE1MessageEncoder.cpp
+  TightBE1MessageEncoding.cpp
   ThreadProtocol.cpp
   TraceProtocol.cpp
   WeakReferenced.cpp
