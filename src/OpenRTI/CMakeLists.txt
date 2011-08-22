@@ -137,8 +137,10 @@ SET(OpenRTI_SOURCES
   FOMModuleSet.cpp
   InitialClientSocketReadEvent.cpp
   InitialClientSocketWriteEvent.cpp
+  InitialClientStreamProtocol.cpp
   InitialServerSocketReadEvent.cpp
   InitialServerSocketWriteEvent.cpp
+  InitialServerStreamProtocol.cpp
   InitialSocketReadEvent.cpp
   InitialSocketWriteEvent.cpp
   InitialStreamProtocol.cpp
