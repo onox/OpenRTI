@@ -20,18 +20,14 @@
 #ifndef OpenRTI_MessageEncodingRegistry_h
 #define OpenRTI_MessageEncodingRegistry_h
 
-#include "AbstractMessageEncoder.h"
 #include "AbstractMessageEncoding.h"
-#include "AbstractMessageDecoder.h"
-#include "InitialSocketWriteEvent.h"
 #include "SocketStream.h"
+#include "StringUtils.h"
 
 namespace OpenRTI {
 
 class Clock;
 class ServerOptions;
-
-typedef std::pair<SharedPtr<AbstractMessageEncoder>, SharedPtr<AbstractMessageDecoder> > MessageEncoderPair;
 
 /// MessageEncodingRegistry
 ///
@@ -54,19 +50,10 @@ class OPENRTI_API MessageEncodingRegistry {
 public:
   /// Return an encoder for a given encoding name
   SharedPtr<AbstractMessageEncoding> getEncoding(const std::string& encodingName) const;
-  /// Return an encoder pair for a given encoding name
-  MessageEncoderPair getEncoderPair(const std::string& encodingName) const;
   /// Return the list of supported encodings known to the registry.
   StringList getEncodings() const;
   /// Return the common subset of encodings from the encodingList and the ones known to the registry.
   StringList getCommonEncodings(const StringList& encodingList) const;
-
-  MessageEncoderPair getEncodingPair(const StringStringListMap& valueMap) const;
-  static bool getUseCompression(const StringStringListMap& valueMap);
-  // Helper to set up a client
-  MessageEncoderPair negotiateEncoding(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, const std::string& serverName, bool& compress, StringStringListMap& parentOptions) const;
-  // Helper to set up a server connect
-  StringStringListMap getBestServerEncoding(const StringStringListMap& valueMap, const ServerOptions& serverOptions) const;
 
   /// FIXME: move this away from a singlton to something that belongs to a NetworkServer.
   /// Then just have there those encodings that we want to use in this NetworkServer instance.

@@ -21,6 +21,7 @@
 #define OpenRTI_SocketServerAcceptEvent_h
 
 #include "AbstractSocketEvent.h"
+#include "SharedPtr.h"
 #include "SocketServer.h"
 
 namespace OpenRTI {

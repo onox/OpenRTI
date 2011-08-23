@@ -28,9 +28,8 @@
 #include "ExpatXMLReader.h"
 #include "InitialClientStreamProtocol.h"
 #include "MessageEncodingRegistry.h"
+#include "MessageList.h"
 #include "MessageServer.h"
-#include "MessageSocketReadEvent.h"
-#include "MessageSocketWriteEvent.h"
 #include "Mutex.h"
 #include "ProtocolSocketEvent.h"
 #include "ScopeLock.h"
@@ -38,6 +37,7 @@
 #include "SocketEventDispatcher.h"
 #include "SocketAddress.h"
 #include "SocketPipe.h"
+#include "SocketReadEvent.h"
 #include "SocketServerPipe.h"
 #include "SocketServerTCP.h"
 #include "SocketServerAcceptEvent.h"
@@ -45,7 +45,6 @@
 #include "SocketWakeupEvent.h"
 #include "SocketWakeupTrigger.h"
 #include "StringUtils.h"
-#include "ZLibCallbacks.h"
 
 namespace OpenRTI {
 

@@ -117,8 +117,6 @@ ENDIF()
 
 SET(OpenRTI_SOURCES
   AbstractMessage.cpp
-  AbstractMessageDecoder.cpp
-  AbstractMessageEncoder.cpp
   AbstractMessageEncoding.cpp
   AbstractMessageSender.cpp
   AbstractProtocolLayer.cpp
@@ -135,27 +133,17 @@ SET(OpenRTI_SOURCES
   FDD1516ContentHandler.cpp
   FEDFileReader.cpp
   FOMModuleSet.cpp
-  InitialClientSocketReadEvent.cpp
-  InitialClientSocketWriteEvent.cpp
   InitialClientStreamProtocol.cpp
-  InitialServerSocketReadEvent.cpp
-  InitialServerSocketWriteEvent.cpp
   InitialServerStreamProtocol.cpp
-  InitialSocketReadEvent.cpp
-  InitialSocketWriteEvent.cpp
   InitialStreamProtocol.cpp
   LogStream.cpp
   Message.cpp
   MessageEncodingRegistry.cpp
   MessageServer.cpp
-  MessageSocketReadEvent.cpp
-  MessageSocketWriteEvent.cpp
   Options.cpp
   ParenthesesReader.cpp
   ServerNode.cpp
   ServerObjectModel.cpp
-  StreamSocketReadEvent.cpp
-  StreamSocketWriteEvent.cpp
   ProtocolRegistry.cpp
   ProtocolSocketEvent.cpp
   RegionSet.cpp
@@ -168,8 +156,6 @@ SET(OpenRTI_SOURCES
   SocketWriteEvent.cpp
   StreamBufferProtocol.cpp
   StreamProtocol.cpp
-  TightBE1MessageDecoder.cpp
-  TightBE1MessageEncoder.cpp
   TightBE1MessageEncoding.cpp
   ThreadProtocol.cpp
   TraceProtocol.cpp

@@ -20,16 +20,13 @@
 #ifndef OpenRTI_AbstractSocketEvent_h
 #define OpenRTI_AbstractSocketEvent_h
 
-#include <string>
 #include "Exception.h"
-#include "LogStream.h"
 #include "Referenced.h"
-#include "SharedPtr.h"
-#include "SocketEventDispatcher.h"
-#include "SocketReadEvent.h"
-#include "SocketWriteEvent.h"
 
 namespace OpenRTI {
+
+class Socket;
+class SocketEventDispatcher;
 
 class OPENRTI_API AbstractSocketEvent : public Referenced {
 public:
