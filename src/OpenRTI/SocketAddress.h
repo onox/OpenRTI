@@ -61,6 +61,7 @@ private:
 
   PrivateData* _privateData;
 
+  friend class SocketPacket;
   friend class SocketServerTCP;
   friend class SocketTCP;
 };

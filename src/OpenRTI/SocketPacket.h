@@ -20,7 +20,7 @@
 #ifndef OpenRTI_SocketPacket_h
 #define OpenRTI_SocketPacket_h
 
-#include "NetworkBuffer.h"
+#include "Buffer.h"
 #include "SocketAddress.h"
 #include "SocketData.h"
 
@@ -29,8 +29,8 @@ namespace OpenRTI {
 class SocketPacket : public SocketData {
 public:
 
-  ssize_t send(const SocketAddress& socketAddress, const NetworkBuffer& networkBuffer);
-  ssize_t recv(SocketAddress& socketAddress, NetworkBuffer& networkBuffer, bool peek);
+  ssize_t send(const SocketAddress& socketAddress, const ConstBufferRange& bufferRange);
+  ssize_t recv(SocketAddress& socketAddress, const BufferRange& bufferRange, bool peek);
 
 protected:
   SocketPacket(PrivateData* privateData);

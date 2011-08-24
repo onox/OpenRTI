@@ -21,7 +21,6 @@
 #define OpenRTI_SocketStream_h
 
 #include "Buffer.h"
-#include "NetworkBuffer.h"
 #include "SocketData.h"
 
 namespace OpenRTI {
@@ -44,9 +43,7 @@ class SocketServer;
 class SocketStream : public SocketData {
 public:
 
-  ssize_t send(const NetworkBuffer& networkBuffer, bool moreToSend);
   ssize_t send(const ConstBufferRange& bufferRange, bool more);
-  ssize_t recv(NetworkBuffer& networkBuffer);
   ssize_t recv(const BufferRange& bufferRange, bool peek);
   virtual void cork(bool enable);
   virtual void shutdown();
