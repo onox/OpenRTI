@@ -25,7 +25,7 @@
 
 namespace OpenRTI {
 
-class MessageList {
+class OPENRTI_API MessageList {
 public:
   bool empty() const
   { return _list.empty(); }
