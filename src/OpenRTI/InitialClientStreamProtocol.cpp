@@ -23,6 +23,7 @@
 #include "MessageEncodingRegistry.h"
 #include "NetworkServerConnect.h"
 #include "ServerOptions.h"
+#include "ZLibProtocolLayer.h"
 
 namespace OpenRTI {
 
@@ -52,8 +53,6 @@ InitialClientStreamProtocol::setConnectOptions(StringStringListMap connectOption
   // The servers configuration might have configured compression algorithms
   // that are not available in this current version. Make sure these are
   // not announced to the server.
-  //// FIXME currently, the implementatation does not yet handle this.
-  connectOptions.erase("compression");
 #if !defined(OPENRTI_HAVE_XZ)
   connectOptions["compression"].remove("lzma");
 #endif
@@ -62,9 +61,9 @@ InitialClientStreamProtocol::setConnectOptions(StringStringListMap connectOption
 #endif
   // And all our encodings we can just do,
   connectOptions["encoding"] = MessageEncodingRegistry::instance().getEncodings();
-  
+
   writeOptionMap(connectOptions);
-  
+
   // Add space for the initial header
   addReadBuffer(12);
 }
@@ -82,30 +81,30 @@ InitialClientStreamProtocol::readOptionMap(const StringStringListMap& optionMap)
       throw RTIinternalError("Error response from server without error message!");
     throw RTIinternalError(i->second.front());
   }
-  
+
   i = optionMap.find("encoding");
   // This means 'if (1 < i->second.size())' without running into O(N) size with lists.
   if (i == optionMap.end() || i->second.empty())
     throw RTIinternalError("No encoding sent with server reponse!");
   if (1 < i->second.size())
     throw RTIinternalError("Non unique encoding sent with server reponse!");
-  
+
   SharedPtr<AbstractMessageEncoding> messageProtocol;
   messageProtocol = MessageEncodingRegistry::instance().getEncoding(i->second.front());
   if (!messageProtocol.valid()) {
     throw RTIinternalError("Unable to do server given encoding!");
   }
-  
+
   // FIXME May be get this from the AbstractNetworkServer?
   // This way we could get a connect that matches the network servers idea of threading?
   SharedPtr<NetworkServerConnect> connect = new NetworkServerConnect;
   connect->connectParent(_networkServer.getServerNode(), optionMap);
   messageProtocol->setConnect(connect);
-  
+
   // This is the part of the protocol stack that replaces this initial stuff.
   SharedPtr<AbstractProtocolLayer> protocolStack = messageProtocol;
   // Now decide what type of compression and checksumming happens in between.
-  
+
   i = optionMap.find("compression");
   if (i != optionMap.end() && !i->second.empty()) {
     if (1 < i->second.size())
@@ -120,13 +119,13 @@ InitialClientStreamProtocol::readOptionMap(const StringStringListMap& optionMap)
 // #endif
     }
     if (i->second.front() == "zlib") {
-// #if defined(OPENRTI_HAVE_ZLIB)
-//         SharedPtr<ZLibCompressionProtocolLayer> layer = new ZLibCompressionProtocolLayer;
-//         layer->setProtocolLayer(protocolStack);
-//         protocolStack = layer;
-// #else
+#if defined(OPENRTI_HAVE_ZLIB)
+      SharedPtr<ZLibProtocolLayer> layer = new ZLibProtocolLayer;
+      layer->setProtocolLayer(protocolStack);
+      protocolStack = layer;
+#else
       throw RTIinternalError("Unable to do server given zlib compression!");
-// #endif
+#endif
     }
   }
 

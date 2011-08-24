@@ -113,6 +113,11 @@ INCLUDE(FindZLIB)
 IF(ZLIB_FOUND)
   INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
   ADD_DEFINITIONS(-DOPENRTI_HAVE_ZLIB)
+  SET(OpenRTI_ZLIB_SOURCES
+    ZLibProtocolLayer.cpp
+  )
+ELSE()
+  SET(OpenRTI_ZLIB_SOURCES "")
 ENDIF()
 
 SET(OpenRTI_SOURCES
@@ -140,6 +145,7 @@ SET(OpenRTI_SOURCES
   Message.cpp
   MessageEncodingRegistry.cpp
   MessageServer.cpp
+  NestedProtocolLayer.cpp
   Options.cpp
   ParenthesesReader.cpp
   ServerNode.cpp
@@ -163,6 +169,7 @@ SET(OpenRTI_SOURCES
   XMLReader.cpp
   ${OpenRTI_OS_SOURCES}
   ${OpenRTI_EXPAT_SOURCES}
+  ${OpenRTI_ZLIB_SOURCES}
 )
 
 # ADD_LIBRARY(OpenRTI-STATIC STATIC ${OpenRTI_SOURCES})

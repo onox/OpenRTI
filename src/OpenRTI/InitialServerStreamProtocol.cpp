@@ -23,6 +23,7 @@
 #include "MessageEncodingRegistry.h"
 #include "NetworkServerConnect.h"
 #include "ServerOptions.h"
+#include "ZLibProtocolLayer.h"
 
 namespace OpenRTI {
 
@@ -57,7 +58,7 @@ InitialServerStreamProtocol::readOptionMap(const StringStringListMap& clientOpti
     errorResponse("Client does not support version 1 of the protocol.");
     return;
   }
-  
+
   // Check the encodings
   i = clientOptionMap.find("encoding");
   if (i == clientOptionMap.end() || i->second.empty()) {
@@ -71,21 +72,21 @@ InitialServerStreamProtocol::readOptionMap(const StringStringListMap& clientOpti
     return;
   }
   // FIXME Here, we could negotiate with a server configuration which one to take...
-  
+
   // Preload this with the server nodes configuration
   StringStringListMap responseValueMap;
   responseValueMap = _networkServer.getServerNode().getServerOptions()._optionMap;
-  
+
   // Since we already asked for the common encodings, this must be successful now.
   SharedPtr<AbstractMessageEncoding> messageProtocol;
   messageProtocol = MessageEncodingRegistry::instance().getEncoding(encodingList.front());
-  
+
   // FIXME May be get this from the AbstractNetworkServer?
   // This way we could get a connect that matches the network servers idea of threading?
   SharedPtr<NetworkServerConnect> connect = new NetworkServerConnect;
   connect->connect(_networkServer.getServerNode(), clientOptionMap);
   messageProtocol->setConnect(connect);
-  
+
   // This is the part of the protocol stack that replaces this initial stuff.
   SharedPtr<AbstractProtocolLayer> protocolStack = messageProtocol;
 
@@ -108,20 +109,20 @@ InitialServerStreamProtocol::readOptionMap(const StringStringListMap& clientOpti
 //           break;
 //         }
 // #endif
-// #if defined(OPENRTI_HAVE_ZLIB)
-//         if (*j == "zlib") {
-//           SharedPtr<ZLibCompressionProtocolLayer> layer = new ZLibCompressionProtocolLayer;
-//           layer->setProtocolLayer(protocolStack);
-//           protocolStack = layer;
-//           responseValueMap["compression"].push_back("zlib");
-//           break;
-//         }
-// #endif
+#if defined(OPENRTI_HAVE_ZLIB)
+      if (*j == "zlib") {
+        SharedPtr<ZLibProtocolLayer> layer = new ZLibProtocolLayer;
+        layer->setProtocolLayer(protocolStack);
+        protocolStack = layer;
+        responseValueMap["compression"].push_back("zlib");
+        break;
+      }
+#endif
     }
   }
   if (responseValueMap["compression"].empty())
     responseValueMap["compression"].push_back("no");
-  
+
   writeOptionMap(responseValueMap);
   setFollowupProtocol(protocolStack);
 }
