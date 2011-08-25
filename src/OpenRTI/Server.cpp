@@ -37,7 +37,6 @@
 #include "SocketEventDispatcher.h"
 #include "SocketAddress.h"
 #include "SocketPipe.h"
-#include "SocketReadEvent.h"
 #include "SocketServerPipe.h"
 #include "SocketServerTCP.h"
 #include "SocketServerAcceptEvent.h"
@@ -49,7 +48,7 @@
 namespace OpenRTI {
 
 /// This one is to trigger ThreadProcedureCallbacks in the thread
-class OPENRTI_LOCAL Server::WakeupSocketEvent : public SocketReadEvent {
+class OPENRTI_LOCAL Server::WakeupSocketEvent : public AbstractSocketEvent {
 public:
   // Need to provide the server side message sender.
   WakeupSocketEvent(SharedPtr<SocketWakeupEvent> socketWakeupEvent) :
@@ -61,12 +60,19 @@ public:
     ssize_t ret = _socketWakeupEvent->read();
     if (ret == -1) {
       // Protocol errors in any sense lead to a closed connection
-      dispatcher.eraseSocket(this);
+      dispatcher.erase(this);
       /// FIXME: need to catch this kind of error somehow in the registry
     }
     // This is to just break out of the exec of the sockets.
     dispatcher.setDone(true);
   }
+  virtual bool getEnableRead() const
+  { return true; }
+
+  virtual void write(SocketEventDispatcher& dispatcher)
+  { }
+  virtual bool getEnableWrite() const
+  { return false; }
 
   virtual SocketWakeupEvent* getSocket() const
   { return _socketWakeupEvent.get(); }
@@ -76,7 +82,7 @@ private:
 };
 
 // This one is to communicate from the ambassador to the server.
-class OPENRTI_LOCAL Server::TriggeredConnectSocketEvent : public SocketReadEvent {
+class OPENRTI_LOCAL Server::TriggeredConnectSocketEvent : public AbstractSocketEvent {
   class OPENRTI_LOCAL LockedMessageList : public Referenced {
   public:
     void push_back(const SharedPtr<AbstractMessage>& message)
@@ -118,10 +124,17 @@ public:
 
     if (ret == -1) {
       // Protocol errors in any sense lead to a closed connection
-      dispatcher.eraseSocket(this);
+      dispatcher.erase(this);
       /// Send something to the originator FIXME
     }
   }
+  virtual bool getEnableRead() const
+  { return true; }
+
+  virtual void write(SocketEventDispatcher& dispatcher)
+  { }
+  virtual bool getEnableWrite() const
+  { return false; }
 
   virtual SocketWakeupEvent* getSocket() const
   { return _socketWakeupEvent.get(); }
