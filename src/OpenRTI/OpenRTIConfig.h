@@ -36,9 +36,6 @@
 
 // FIXME detect when to use this
 // #define OpenRTI_ATOMIC_USE_STD_ATOMIC
-// FIXME sunos, and bsd variant detections are missing
-// # define OpenRTI_ATOMIC_USE_SUN
-// # define OpenRTI_ATOMIC_USE_BSD
 
 #if defined _WIN32
 // Neat old Win32 functions
@@ -51,6 +48,11 @@
 #elif defined(__sgi) && defined(_COMPILER_VERSION) && (_COMPILER_VERSION>=730)
 // No need to include something. Is a Compiler API ...
 # define OpenRTI_ATOMIC_USE_MIPSPRO_BUILTINS
+// FIXME
+// #elif defined(__sun)
+// # define OpenRTI_ATOMIC_USE_SUN
+#elif defined(__APPLE__)
+# define OpenRTI_ATOMIC_USE_BSD
 #else
 // The sledge hammer ...
 # define OpenRTI_ATOMIC_USE_MUTEX
