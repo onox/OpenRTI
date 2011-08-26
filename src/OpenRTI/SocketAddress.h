@@ -23,12 +23,14 @@
 #include <list>
 #include <string>
 
+#include "Export.h"
+
 namespace OpenRTI {
 
 class SocketServerTCP;
 class SocketTCP;
 
-class SocketAddress {
+class OPENRTI_API SocketAddress {
 public:
   SocketAddress();
   SocketAddress(const SocketAddress& socketAddress);
