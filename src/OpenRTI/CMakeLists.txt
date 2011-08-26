@@ -155,11 +155,8 @@ SET(OpenRTI_SOURCES
   RegionSet.cpp
   Server.cpp
   ServerConfigContentHandler.cpp
-  SocketEvent.cpp
   SocketEventDispatcher.cpp
-  SocketReadEvent.cpp
   SocketServerAcceptEvent.cpp
-  SocketWriteEvent.cpp
   StreamBufferProtocol.cpp
   StreamProtocol.cpp
   TightBE1MessageEncoding.cpp

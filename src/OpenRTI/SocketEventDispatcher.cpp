@@ -22,83 +22,43 @@
 #include "AbstractSocketEvent.h"
 #include "Exception.h"
 #include "LogStream.h"
-#include "SocketReadEvent.h"
-#include "SocketWriteEvent.h"
 
 namespace OpenRTI {
 
-class OPENRTI_LOCAL SocketWriteEventAdapter : public SocketWriteEvent {
-public:
-  SocketWriteEventAdapter(const SharedPtr<AbstractSocketEvent>& socketEvent) :
-    _socketEvent(socketEvent)
-  { }
-
-  virtual void write(SocketEventDispatcher& dispatcher)
-  {
-    try {
-      _socketEvent->write(dispatcher);
-    } catch (const Exception& e) {
-      Log(MessageCoding, Warning) << "Caught exception while processing socket output: " << e.what()
-                                  << "\nClosing connection!" << std::endl;
-      _socketEvent->error(e);
-      dispatcher.eraseSocket(this);
-    } catch (const std::exception& e) {
-      Log(MessageCoding, Warning) << "Caught exception while processing socket output: " << e.what()
-                                  << "\nClosing connection!" << std::endl;
-      _socketEvent->error(RTIinternalError(e.what()));
-      dispatcher.eraseSocket(this);
-    }
+void
+SocketEventDispatcher::read(const SharedPtr<AbstractSocketEvent>& socketEvent)
+{
+  try {
+    socketEvent->read(*this);
+  } catch (const Exception& e) {
+    Log(MessageCoding, Warning) << "Caught exception while processing socket input: " << e.what()
+                                << "\nClosing connection!" << std::endl;
+    socketEvent->error(e);
+    erase(socketEvent);
+  } catch (const std::exception& e) {
+    Log(MessageCoding, Warning) << "Caught exception while processing socket input: " << e.what()
+                                << "\nClosing connection!" << std::endl;
+    socketEvent->error(RTIinternalError(e.what()));
+    erase(socketEvent);
   }
-  virtual Socket* getSocket() const
-  { return _socketEvent->getSocket(); }
-  virtual bool getEnable() const
-  { return _socketEvent->getEnableWrite(); }
-
-private:
-  SharedPtr<AbstractSocketEvent> _socketEvent;
-};
-
-class OPENRTI_LOCAL SocketReadEventAdapter : public SocketReadEvent {
-public:
-  SocketReadEventAdapter(const SharedPtr<AbstractSocketEvent>& socketEvent) :
-    _socketEvent(socketEvent)
-  { }
-
-  virtual void read(SocketEventDispatcher& dispatcher)
-  {
-    /// Hmm, move that try/catch block into the socket dispatcher???
-    /// alternatively enable the read/write event to communicate connection close to the dispatcher.
-    try {
-      _socketEvent->read(dispatcher);
-    } catch (const Exception& e) {
-      Log(MessageCoding, Warning) << "Caught exception while processing socket input: " << e.what()
-                                  << "\nClosing connection!" << std::endl;
-      _socketEvent->error(e);
-      dispatcher.eraseSocket(this);
-    } catch (const std::exception& e) {
-      Log(MessageCoding, Warning) << "Caught exception while processing socket input: " << e.what()
-                                  << "\nClosing connection!" << std::endl;
-      _socketEvent->error(RTIinternalError(e.what()));
-      dispatcher.eraseSocket(this);
-    }
-  }
-  virtual Socket* getSocket() const
-  { return _socketEvent->getSocket(); }
-  virtual bool getEnable() const
-  { return _socketEvent->getEnableRead(); }
-
-private:
-  SharedPtr<AbstractSocketEvent> _socketEvent;
-};
+}
 
 void
-SocketEventDispatcher::insert(const SharedPtr<AbstractSocketEvent>& socketEvent)
+SocketEventDispatcher::write(const SharedPtr<AbstractSocketEvent>& socketEvent)
 {
-  SharedPtr<SocketWriteEventAdapter> writeEvent = new SocketWriteEventAdapter(socketEvent);
-  SharedPtr<SocketReadEventAdapter> readEvent = new SocketReadEventAdapter(socketEvent);
-
-  insert(readEvent.get());
-  insert(writeEvent.get());
+  try {
+    socketEvent->write(*this);
+  } catch (const Exception& e) {
+    Log(MessageCoding, Warning) << "Caught exception while processing socket output: " << e.what()
+                                << "\nClosing connection!" << std::endl;
+    socketEvent->error(e);
+    erase(socketEvent);
+  } catch (const std::exception& e) {
+    Log(MessageCoding, Warning) << "Caught exception while processing socket output: " << e.what()
+                                << "\nClosing connection!" << std::endl;
+    socketEvent->error(RTIinternalError(e.what()));
+    erase(socketEvent);
+  }
 }
 
 } // namespace OpenRTI

@@ -383,7 +383,7 @@ Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, c
   SharedPtr<ProtocolSocketEvent> protocolSocketEvent = new ProtocolSocketEvent(socketStream);
   SharedPtr<InitialClientStreamProtocol> clientStreamProtocol = new InitialClientStreamProtocol(*this, connectOptions);
   protocolSocketEvent->setProtocolLayer(clientStreamProtocol);
-  _dispatcher.insert(SharedPtr<AbstractSocketEvent>(protocolSocketEvent));
+  _dispatcher.insert(protocolSocketEvent);
 
   // Process messages until we have either recieved the servers response or the timeout expires
   _dispatcher.exec(abstime);

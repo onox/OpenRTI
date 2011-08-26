@@ -39,15 +39,6 @@ public:
   void setDone(bool done);
   bool getDone() const;
 
-  void insert(const SharedPtr<SocketReadEvent>& socketEvent);
-  void erase(const SharedPtr<SocketReadEvent>& socketEvent);
-
-  void insert(const SharedPtr<SocketWriteEvent>& socketEvent);
-  void erase(const SharedPtr<SocketWriteEvent>& socketEvent);
-
-  // Erases both the read and the write part.
-  void eraseSocket(const SharedPtr<SocketEvent>& socketEvent);
-
   void insert(const SharedPtr<AbstractSocketEvent>& socketEvent);
   void erase(const SharedPtr<AbstractSocketEvent>& socketEvent);
 
@@ -56,6 +47,9 @@ public:
   int exec(const Clock& absclock);
 
 private:
+  void read(const SharedPtr<AbstractSocketEvent>& socketEvent);
+  void write(const SharedPtr<AbstractSocketEvent>& socketEvent);
+
   struct PrivateData;
   PrivateData* _privateData;
 };

@@ -44,12 +44,12 @@ SocketServerAcceptEvent::read(SocketEventDispatcher& dispatcher)
   SharedPtr<SocketStream> s = _socketServer->accept();
   if (!s.valid())
     return;
-  
+
   /// IDEA: peek into the read data to see if this is an OpenRTI or a HTTP request
-  
+
   SharedPtr<ProtocolSocketEvent> protocolSocketEvent = new ProtocolSocketEvent(s);
   protocolSocketEvent->setProtocolLayer(new InitialServerStreamProtocol(_networkServer));
-  dispatcher.insert(SharedPtr<AbstractSocketEvent>(protocolSocketEvent));
+  dispatcher.insert(protocolSocketEvent);
 }
 
 bool

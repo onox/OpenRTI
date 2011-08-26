@@ -32,8 +32,6 @@
 #include "AbstractSocketEvent.h"
 #include "ClockPosix.h"
 #include "Exception.h"
-#include "SocketReadEvent.h"
-#include "SocketWriteEvent.h"
 #include "SocketPrivateDataPosix.h"
 
 namespace OpenRTI {
@@ -52,8 +50,7 @@ namespace OpenRTI {
 
 struct SocketEventDispatcher::PrivateData {
   struct SocketEventSet {
-    SharedPtr<SocketReadEvent> _socketReadEvent;
-    SharedPtr<SocketWriteEvent> _socketWriteEvent;
+    SharedPtr<AbstractSocketEvent> _socketEvent;
   };
 
   /// Map from the socket file descriptor to a SocketEvent
@@ -67,81 +64,14 @@ struct SocketEventDispatcher::PrivateData {
   {
   }
 
-  void insert(const SharedPtr<SocketReadEvent>& socketEvent)
+  void insert(const SharedPtr<AbstractSocketEvent>& socketEvent)
   {
     if (!socketEvent.valid())
       return;
     if (!socketEvent->getSocket())
       return;
     int fd = socketEvent->getSocket()->_privateData->_fd;
-    _socketEventMap[fd]._socketReadEvent = socketEvent;
-  }
-
-  void erase(const SharedPtr<SocketReadEvent>& socketEvent)
-  {
-    if (!socketEvent.valid())
-      return;
-    if (!socketEvent->getSocket())
-      return;
-    int fd = socketEvent->getSocket()->_privateData->_fd;
-    SocketEventMap::iterator i = _socketEventMap.find(fd);
-    if (i == _socketEventMap.end())
-      return;
-
-    if (i->second._socketReadEvent != socketEvent)
-      return;
-
-    i->second._socketReadEvent = 0;
-
-    //// FIXME: clean that up in the select call ...
-    if (i->second._socketWriteEvent.valid())
-      return;
-
-    _socketEventMap.erase(i);
-  }
-
-  void insert(const SharedPtr<SocketWriteEvent>& socketEvent)
-  {
-    if (!socketEvent.valid())
-      return;
-    if (!socketEvent->getSocket())
-      return;
-    int fd = socketEvent->getSocket()->_privateData->_fd;
-    _socketEventMap[fd]._socketWriteEvent = socketEvent;
-  }
-
-  void erase(const SharedPtr<SocketWriteEvent>& socketEvent)
-  {
-    if (!socketEvent.valid())
-      return;
-    if (!socketEvent->getSocket())
-      return;
-    int fd = socketEvent->getSocket()->_privateData->_fd;
-    SocketEventMap::iterator i = _socketEventMap.find(fd);
-    if (i == _socketEventMap.end())
-      return;
-
-    if (i->second._socketWriteEvent != socketEvent)
-      return;
-
-    i->second._socketWriteEvent = 0;
-    if (i->second._socketReadEvent.valid())
-      return;
-    _socketEventMap.erase(i);
-  }
-
-  void eraseSocket(const SharedPtr<SocketEvent>& socketEvent)
-  {
-    if (!socketEvent.valid())
-      return;
-    if (!socketEvent->getSocket())
-      return;
-    int fd = socketEvent->getSocket()->_privateData->_fd;
-    SocketEventMap::iterator i = _socketEventMap.find(fd);
-    if (i == _socketEventMap.end())
-      return;
-
-    _socketEventMap.erase(i);
+    _socketEventMap[fd]._socketEvent = socketEvent;
   }
 
   void erase(const SharedPtr<AbstractSocketEvent>& socketEvent)
@@ -172,16 +102,18 @@ struct SocketEventDispatcher::PrivateData {
 
       int nfds = -1;
       for (SocketEventMap::const_iterator i = _socketEventMap.begin(); i != _socketEventMap.end(); ++i) {
-        if (i->second._socketReadEvent.valid() && i->second._socketReadEvent->getEnable()) {
+        AbstractSocketEvent* socketEvent = i->second._socketEvent.get();
+        if (!socketEvent)
+          continue;
+        if (socketEvent->getEnableRead()) {
           FD_SET(i->first, &readfds);
           nfds = std::max(nfds, i->first);
-          OpenRTIAssert(i->first == i->second._socketReadEvent->getSocket()->_privateData->_fd);
         }
-        if (i->second._socketWriteEvent.valid() && i->second._socketWriteEvent->getEnable()) {
+        if (socketEvent && socketEvent->getEnableWrite()) {
           FD_SET(i->first, &writefds);
           nfds = std::max(nfds, i->first);
-          OpenRTIAssert(i->first == i->second._socketWriteEvent->getSocket()->_privateData->_fd);
         }
+        OpenRTIAssert(i->first == socketEvent->getSocket()->_privateData->_fd);
       }
       // HMM???
       if (nfds == -1) {
@@ -218,20 +150,15 @@ struct SocketEventDispatcher::PrivateData {
       SocketEventMap::const_iterator i = _socketEventMap.begin();
       while (0 < count && i != _socketEventMap.end()) {
         int fd = i->first;
-        SharedPtr<SocketReadEvent> socketReadEvent = i->second._socketReadEvent;
-        SharedPtr<SocketWriteEvent> socketWriteEvent = i->second._socketWriteEvent;
+        SharedPtr<AbstractSocketEvent> socketEvent = i->second._socketEvent;
         ++i;
         bool activated = false;
         if (FD_ISSET(fd, &readfds)) {
-          if (socketReadEvent.valid()) {
-            socketReadEvent->read(dispatcher);
-          }
+          dispatcher.read(socketEvent);
           activated = true;
         }
         if (FD_ISSET(fd, &writefds)) {
-          if (socketWriteEvent.valid()) {
-            socketWriteEvent->write(dispatcher);
-          }
+          dispatcher.write(socketEvent);
           activated = true;
         }
         if (activated)
@@ -267,35 +194,10 @@ SocketEventDispatcher::getDone() const
 }
 
 void
-SocketEventDispatcher::insert(const SharedPtr<SocketReadEvent>& socketEvent)
+SocketEventDispatcher::insert(const SharedPtr<AbstractSocketEvent>& socketEvent)
 {
   _privateData->insert(socketEvent);
 }
-
-void
-SocketEventDispatcher::erase(const SharedPtr<SocketReadEvent>& socketEvent)
-{
-  _privateData->erase(socketEvent);
-}
-
-void
-SocketEventDispatcher::insert(const SharedPtr<SocketWriteEvent>& socketEvent)
-{
-  _privateData->insert(socketEvent);
-}
-
-void
-SocketEventDispatcher::erase(const SharedPtr<SocketWriteEvent>& socketEvent)
-{
-  _privateData->erase(socketEvent);
-}
-
-void
-SocketEventDispatcher::eraseSocket(const SharedPtr<SocketEvent>& socketEvent)
-{
-  _privateData->eraseSocket(socketEvent);
-}
-
 void
 SocketEventDispatcher::erase(const SharedPtr<AbstractSocketEvent>& socketEvent)
 {
