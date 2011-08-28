@@ -3339,9 +3339,9 @@ protected:
   bool logicalTimeAlreadyPassed(const NativeLogicalTime& logicalTime)
   {
     if (_localLowerBoundTimeStamp.second) {
-      return _logicalTimeFactory.getLogicalTime(_localLowerBoundTimeStamp.first) < logicalTime;
+      return logicalTime <= _logicalTimeFactory.getLogicalTime(_localLowerBoundTimeStamp.first);
     } else {
-      return _logicalTimeFactory.getLogicalTime(_localLowerBoundTimeStamp.first) <= logicalTime;
+      return logicalTime < _logicalTimeFactory.getLogicalTime(_localLowerBoundTimeStamp.first);
     }
   }
   // The language binding needs that to see how it should really deliver messages
