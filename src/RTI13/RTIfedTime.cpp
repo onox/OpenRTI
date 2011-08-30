@@ -20,11 +20,11 @@
 #include "fedtime.hh"
 
 #include <cmath>
+#include <cstring>
 #include <limits>
 #include <sstream>
 
 #include "Types.h"
-#include "VariableLengthData.h"
 
 static inline const RTIfedTime& toRTIfedTime(const RTI::FedTime& fedTime)
 {
