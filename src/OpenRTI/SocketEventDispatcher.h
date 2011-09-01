@@ -20,16 +20,13 @@
 #ifndef OpenRTI_SocketEventDispatcher_h
 #define OpenRTI_SocketEventDispatcher_h
 
+#include "AbstractSocketEvent.h"
 #include "Export.h"
 #include "SharedPtr.h"
 
 namespace OpenRTI {
 
-class AbstractSocketEvent;
 class Clock;
-class SocketEvent;
-class SocketReadEvent;
-class SocketWriteEvent;
 
 class OPENRTI_API SocketEventDispatcher {
 public:
@@ -53,6 +50,8 @@ private:
 
   struct PrivateData;
   PrivateData* _privateData;
+
+  SocketEventList _socketEventList;
 };
 
 } // namespace OpenRTI

@@ -49,43 +49,11 @@ namespace OpenRTI {
 /// eventfd looks nice too
 
 struct SocketEventDispatcher::PrivateData {
-  struct SocketEventSet {
-    SharedPtr<AbstractSocketEvent> _socketEvent;
-  };
-
-  /// Map from the socket file descriptor to a SocketEvent
-  typedef std::map<int,SocketEventSet> SocketEventMap;
-  SocketEventMap _socketEventMap;
-
   bool _done;
 
   PrivateData() :
     _done(false)
   {
-  }
-
-  void insert(const SharedPtr<AbstractSocketEvent>& socketEvent)
-  {
-    if (!socketEvent.valid())
-      return;
-    if (!socketEvent->getSocket())
-      return;
-    int fd = socketEvent->getSocket()->_privateData->_fd;
-    _socketEventMap[fd]._socketEvent = socketEvent;
-  }
-
-  void erase(const SharedPtr<AbstractSocketEvent>& socketEvent)
-  {
-    if (!socketEvent.valid())
-      return;
-    if (!socketEvent->getSocket())
-      return;
-    int fd = socketEvent->getSocket()->_privateData->_fd;
-    SocketEventMap::iterator i = _socketEventMap.find(fd);
-    if (i == _socketEventMap.end())
-      return;
-
-    _socketEventMap.erase(i);
   }
 
   int exec(SocketEventDispatcher& dispatcher, const Clock* absclock)
@@ -105,13 +73,14 @@ struct SocketEventDispatcher::PrivateData {
         timeout = *absclock;
 
       int nfds = -1;
-      for (SocketEventMap::const_iterator i = _socketEventMap.begin(); i != _socketEventMap.end(); ++i) {
-        AbstractSocketEvent* socketEvent = i->second._socketEvent.get();
+      for (SocketEventList::const_iterator i = dispatcher._socketEventList.begin(); i != dispatcher._socketEventList.end(); ++i) {
+        AbstractSocketEvent* socketEvent = i->get();
         timeout = std::min(timeout, socketEvent->getTimeout());
         if (!socketEvent->getSocket())
           continue;
         int fd = socketEvent->getSocket()->_privateData->_fd;
-        OpenRTIAssert(i->first == fd);
+        if (fd == -1)
+          continue;
         if (socketEvent->getEnableRead()) {
           FD_SET(fd, &readfds);
           nfds = std::max(nfds, fd);
@@ -154,16 +123,18 @@ struct SocketEventDispatcher::PrivateData {
         break;
       }
 
-      for (SocketEventMap::const_iterator i = _socketEventMap.begin(); i != _socketEventMap.end();) {
-        SharedPtr<AbstractSocketEvent> socketEvent = i->second._socketEvent;
+      for (SocketEventList::const_iterator i = dispatcher._socketEventList.begin(); i != dispatcher._socketEventList.end();) {
+        SharedPtr<AbstractSocketEvent> socketEvent = *i;
         ++i;
         Socket* abstractSocket = socketEvent->getSocket();
         if (abstractSocket) {
           int fd = abstractSocket->_privateData->_fd;
-          if (FD_ISSET(fd, &readfds))
-            dispatcher.read(socketEvent);
-          if (FD_ISSET(fd, &writefds))
-            dispatcher.write(socketEvent);
+          if (fd != -1) {
+            if (FD_ISSET(fd, &readfds))
+              dispatcher.read(socketEvent);
+            if (FD_ISSET(fd, &writefds))
+              dispatcher.write(socketEvent);
+          }
         }
         if (socketEvent->getTimeout().getNSec() <= now)
           dispatcher.timeout(socketEvent);
@@ -195,17 +166,6 @@ bool
 SocketEventDispatcher::getDone() const
 {
   return _privateData->_done;
-}
-
-void
-SocketEventDispatcher::insert(const SharedPtr<AbstractSocketEvent>& socketEvent)
-{
-  _privateData->insert(socketEvent);
-}
-void
-SocketEventDispatcher::erase(const SharedPtr<AbstractSocketEvent>& socketEvent)
-{
-  _privateData->erase(socketEvent);
 }
 
 int

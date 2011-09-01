@@ -26,6 +26,28 @@
 namespace OpenRTI {
 
 void
+SocketEventDispatcher::insert(const SharedPtr<AbstractSocketEvent>& socketEvent)
+{
+  if (!socketEvent.valid())
+    return;
+  if (socketEvent->_socketEventDispatcher)
+    return;
+  socketEvent->_socketEventDispatcher = this;
+  socketEvent->_iterator = _socketEventList.insert(_socketEventList.begin(), socketEvent);
+}
+
+void
+SocketEventDispatcher::erase(const SharedPtr<AbstractSocketEvent>& socketEvent)
+{
+  if (!socketEvent.valid())
+    return;
+  if (socketEvent->_socketEventDispatcher != this)
+    return;
+  socketEvent->_socketEventDispatcher = 0;
+  _socketEventList.erase(socketEvent->_iterator);
+}
+
+void
 SocketEventDispatcher::read(const SharedPtr<AbstractSocketEvent>& socketEvent)
 {
   try {

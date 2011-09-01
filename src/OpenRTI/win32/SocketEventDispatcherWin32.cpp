@@ -32,43 +32,11 @@
 namespace OpenRTI {
 
 struct SocketEventDispatcher::PrivateData {
-  struct SocketEventSet {
-    SharedPtr<AbstractSocketEvent> _socketEvent;
-  };
-
-  /// Map from the socket file descriptor to a SocketEvent
-  typedef std::map<SOCKET,SocketEventSet> SocketEventMap;
-  SocketEventMap _socketEventMap;
-
   bool _done;
 
   PrivateData() :
     _done(false)
   {
-  }
-
-  void insert(const SharedPtr<AbstractSocketEvent>& socketEvent)
-  {
-    if (!socketEvent.valid())
-      return;
-    if (!socketEvent->getSocket())
-      return;
-    SOCKET socket = socketEvent->getSocket()->_privateData->_socket;
-    _socketEventMap[socket]._socketEvent = socketEvent;
-  }
-
-  void erase(const SharedPtr<AbstractSocketEvent>& socketEvent)
-  {
-    if (!socketEvent.valid())
-      return;
-    if (!socketEvent->getSocket())
-      return;
-    SOCKET socket = socketEvent->getSocket()->_privateData->_socket;
-    SocketEventMap::iterator i = _socketEventMap.find(socket);
-    if (i == _socketEventMap.end())
-      return;
-
-    _socketEventMap.erase(i);
   }
 
   static struct timeval toTimeval(const uint64_t& nsec)
@@ -96,16 +64,19 @@ struct SocketEventDispatcher::PrivateData {
       Clock timeout = Clock::final();
       if (absclock)
         timeout = *absclock;
-      
+
       int nfds = -1;
-      for (SocketEventMap::const_iterator i = _socketEventMap.begin(); i != _socketEventMap.end(); ++i) {
-        AbstractSocketEvent* socketEvent = i->second._socketEvent.get();
+      for (SocketEventList::const_iterator i = dispatcher._socketEventList.begin(); i != dispatcher._socketEventList.end(); ++i) {
+        AbstractSocketEvent* socketEvent = i->get();
         if (socketEvent->getTimeout() < timeout)
           timeout = socketEvent->getTimeout();
         if (!socketEvent->getSocket())
           continue;
         SOCKET socket = socketEvent->getSocket()->_privateData->_socket;
-        OpenRTIAssert(i->first == socket);
+        if (socket == INVALID_SOCKET)
+          continue;
+        if (socket == SOCKET_ERROR)
+          continue;
         if (socketEvent->getEnableRead()) {
           FD_SET(socket, &readfds);
           if (nfds < int(socket))
@@ -150,16 +121,18 @@ struct SocketEventDispatcher::PrivateData {
         break;
       }
 
-      for (SocketEventMap::const_iterator i = _socketEventMap.begin(); i != _socketEventMap.end();) {
-        SharedPtr<AbstractSocketEvent> socketEvent = i->second._socketEvent;
+      for (SocketEventList::const_iterator i = dispatcher._socketEventList.begin(); i != dispatcher._socketEventList.end();) {
+        SharedPtr<AbstractSocketEvent> socketEvent = *i;
         ++i;
         Socket* abstractSocket = socketEvent->getSocket();
         if (abstractSocket) {
           SOCKET socket = abstractSocket->_privateData->_socket;
-          if (FD_ISSET(socket, &readfds))
-            dispatcher.read(socketEvent);
-          if (FD_ISSET(socket, &writefds))
-            dispatcher.write(socketEvent);
+          if (socket != INVALID_SOCKET && socket != SOCKET_ERROR) {
+            if (FD_ISSET(socket, &readfds))
+              dispatcher.read(socketEvent);
+            if (FD_ISSET(socket, &writefds))
+              dispatcher.write(socketEvent);
+          }
         }
         if (socketEvent->getTimeout() <= now)
           dispatcher.timeout(socketEvent);
@@ -191,18 +164,6 @@ bool
 SocketEventDispatcher::getDone() const
 {
   return _privateData->_done;
-}
-
-void
-SocketEventDispatcher::insert(const SharedPtr<AbstractSocketEvent>& socketEvent)
-{
-  _privateData->insert(socketEvent);
-}
-
-void
-SocketEventDispatcher::erase(const SharedPtr<AbstractSocketEvent>& socketEvent)
-{
-  _privateData->erase(socketEvent);
 }
 
 int

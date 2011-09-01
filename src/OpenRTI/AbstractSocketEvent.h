@@ -20,14 +20,19 @@
 #ifndef OpenRTI_AbstractSocketEvent_h
 #define OpenRTI_AbstractSocketEvent_h
 
+#include <list>
 #include "Clock.h"
 #include "Exception.h"
 #include "Referenced.h"
+#include "SharedPtr.h"
 
 namespace OpenRTI {
 
+class AbstractSocketEvent;
 class Socket;
 class SocketEventDispatcher;
+
+typedef std::list<SharedPtr<AbstractSocketEvent> > SocketEventList;
 
 class OPENRTI_API AbstractSocketEvent : public Referenced {
 public:
@@ -58,7 +63,14 @@ public:
   { _timeout = timeout; }
 
 private:
+  /// The event dispatcher this event is attached to
+  SocketEventDispatcher* _socketEventDispatcher;
+  /// If attahced, the iterator into the dispatchers SocketEventList
+  SocketEventList::iterator _iterator;
+  /// The absolute time of the timeout
   Clock _timeout;
+
+  friend class SocketEventDispatcher;
 };
 
 } // namespace OpenRTI
