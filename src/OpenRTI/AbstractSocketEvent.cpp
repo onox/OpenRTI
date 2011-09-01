@@ -21,6 +21,11 @@
 
 namespace OpenRTI {
 
+AbstractSocketEvent::AbstractSocketEvent() :
+  _timeout(Clock::final())
+{
+}
+
 AbstractSocketEvent::~AbstractSocketEvent()
 {
 }
@@ -32,6 +37,11 @@ AbstractSocketEvent::read(SocketEventDispatcher& dispatcher)
 
 void
 AbstractSocketEvent::write(SocketEventDispatcher& dispatcher)
+{
+}
+
+void
+AbstractSocketEvent::timeout(SocketEventDispatcher& dispatcher)
 {
 }
 

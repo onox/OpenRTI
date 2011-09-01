@@ -20,6 +20,7 @@
 #ifndef OpenRTI_AbstractSocketEvent_h
 #define OpenRTI_AbstractSocketEvent_h
 
+#include "Clock.h"
 #include "Exception.h"
 #include "Referenced.h"
 
@@ -30,9 +31,7 @@ class SocketEventDispatcher;
 
 class OPENRTI_API AbstractSocketEvent : public Referenced {
 public:
-  // AbstractSocketEvent() :
-  //   _timeout(Clock::final())
-  // { }
+  AbstractSocketEvent();
   virtual ~AbstractSocketEvent();
 
   // Is called from the parent protocol layer when there is data to read
@@ -44,8 +43,7 @@ public:
   virtual bool getEnableWrite() const = 0;
 
   // Is called when the given timeout value expires.
-  // virtual void timeout(SocketEventDispatcher& dispatcher)
-  // { }
+  virtual void timeout(SocketEventDispatcher& dispatcher);
 
   // Is called when an unrecoverable error happens.
   virtual void error(const Exception& e);
@@ -54,13 +52,13 @@ public:
 
   /// Here we could also store a timeout value that is used for the poll/select timeout
   /// Since we need to traverse all active readwriteevents in any case this is not an extra effort.
-  // const Clock& getTimeout() const
-  // { return _timeout; }
-  // void setTimeout(const Clock& timeout)
-  // { _timeout = timeout; }
+  const Clock& getTimeout() const
+  { return _timeout; }
+  void setTimeout(const Clock& timeout)
+  { _timeout = timeout; }
 
 private:
-  // Clock _timeout;
+  Clock _timeout;
 };
 
 } // namespace OpenRTI

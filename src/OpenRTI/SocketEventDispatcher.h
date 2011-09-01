@@ -49,6 +49,7 @@ public:
 private:
   void read(const SharedPtr<AbstractSocketEvent>& socketEvent);
   void write(const SharedPtr<AbstractSocketEvent>& socketEvent);
+  void timeout(const SharedPtr<AbstractSocketEvent>& socketEvent);
 
   struct PrivateData;
   PrivateData* _privateData;

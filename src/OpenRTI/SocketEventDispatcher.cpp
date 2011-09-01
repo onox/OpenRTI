@@ -61,4 +61,22 @@ SocketEventDispatcher::write(const SharedPtr<AbstractSocketEvent>& socketEvent)
   }
 }
 
+void
+SocketEventDispatcher::timeout(const SharedPtr<AbstractSocketEvent>& socketEvent)
+{
+  try {
+    socketEvent->timeout(*this);
+  } catch (const Exception& e) {
+    Log(MessageCoding, Warning) << "Caught exception while processing socket output: " << e.what()
+                                << "\nClosing connection!" << std::endl;
+    socketEvent->error(e);
+    erase(socketEvent);
+  } catch (const std::exception& e) {
+    Log(MessageCoding, Warning) << "Caught exception while processing socket output: " << e.what()
+                                << "\nClosing connection!" << std::endl;
+    socketEvent->error(RTIinternalError(e.what()));
+    erase(socketEvent);
+  }
+}
+
 } // namespace OpenRTI

@@ -100,20 +100,26 @@ struct SocketEventDispatcher::PrivateData {
       FD_ZERO(&writefds);
       FD_ZERO(&exceptfds);
 
+      Clock timeout = Clock::final();
+      if (absclock)
+        timeout = *absclock;
+
       int nfds = -1;
       for (SocketEventMap::const_iterator i = _socketEventMap.begin(); i != _socketEventMap.end(); ++i) {
         AbstractSocketEvent* socketEvent = i->second._socketEvent.get();
-        if (!socketEvent)
+        timeout = std::min(timeout, socketEvent->getTimeout());
+        if (!socketEvent->getSocket())
           continue;
+        int fd = socketEvent->getSocket()->_privateData->_fd;
+        OpenRTIAssert(i->first == fd);
         if (socketEvent->getEnableRead()) {
-          FD_SET(i->first, &readfds);
-          nfds = std::max(nfds, i->first);
+          FD_SET(fd, &readfds);
+          nfds = std::max(nfds, fd);
         }
-        if (socketEvent && socketEvent->getEnableWrite()) {
-          FD_SET(i->first, &writefds);
-          nfds = std::max(nfds, i->first);
+        if (socketEvent->getEnableWrite()) {
+          FD_SET(fd, &writefds);
+          nfds = std::max(nfds, fd);
         }
-        OpenRTIAssert(i->first == socketEvent->getSocket()->_privateData->_fd);
       }
       // HMM???
       if (nfds == -1) {
@@ -123,15 +129,15 @@ struct SocketEventDispatcher::PrivateData {
       }
 
       int count;
-      if (absclock) {
+      if (timeout < Clock::final()) {
         uint64_t now = ClockPosix::now();
-        if (absclock->getNSec() < now) {
+        if (timeout.getNSec() < now) {
           count = 0;
           FD_ZERO(&readfds);
           FD_ZERO(&writefds);
           FD_ZERO(&exceptfds);
         } else {
-          struct timeval timeval = ClockPosix::toTimeval(absclock->getNSec() - now);
+          struct timeval timeval = ClockPosix::toTimeval(timeout.getNSec() - now);
           count = ::select(nfds + 1, &readfds, &writefds, &exceptfds, &timeval);
         }
       } else {
@@ -142,27 +148,25 @@ struct SocketEventDispatcher::PrivateData {
         break;
       }
       // Timeout
-      if (count == 0) {
+      uint64_t now = ClockPosix::now();
+      if (absclock && absclock->getNSec() <= now) {
         retv = 0;
         break;
       }
 
-      SocketEventMap::const_iterator i = _socketEventMap.begin();
-      while (0 < count && i != _socketEventMap.end()) {
-        int fd = i->first;
+      for (SocketEventMap::const_iterator i = _socketEventMap.begin(); i != _socketEventMap.end();) {
         SharedPtr<AbstractSocketEvent> socketEvent = i->second._socketEvent;
         ++i;
-        bool activated = false;
-        if (FD_ISSET(fd, &readfds)) {
-          dispatcher.read(socketEvent);
-          activated = true;
+        Socket* abstractSocket = socketEvent->getSocket();
+        if (abstractSocket) {
+          int fd = abstractSocket->_privateData->_fd;
+          if (FD_ISSET(fd, &readfds))
+            dispatcher.read(socketEvent);
+          if (FD_ISSET(fd, &writefds))
+            dispatcher.write(socketEvent);
         }
-        if (FD_ISSET(fd, &writefds)) {
-          dispatcher.write(socketEvent);
-          activated = true;
-        }
-        if (activated)
-          --count;
+        if (socketEvent->getTimeout().getNSec() <= now)
+          dispatcher.timeout(socketEvent);
       }
     }
 
