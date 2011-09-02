@@ -20,6 +20,8 @@
 #include "SocketAddress.h"
 #include "SocketAddressPrivateDataPosix.h"
 
+#include <sstream>
+
 #include "Exception.h"
 #include "StringUtils.h"
 
@@ -84,6 +86,35 @@ SocketAddress::isInet6() const
     return true;
 #endif
   return addr->sa_family == AF_INET6;
+}
+
+std::string
+SocketAddress::getNumericName() const
+{
+  if (!valid())
+    return std::string();
+  socklen_t addrlen = PrivateData::addrlen(_privateData.get());
+  const struct sockaddr* addr = PrivateData::sockaddr(_privateData.get());
+  char host[256];
+  host[sizeof(host)-1] = 0;
+  char serv[32];
+  serv[sizeof(host)-1] = 0;
+  while (int ret = ret = ::getnameinfo(addr, addrlen, host, sizeof(host)-1, serv, sizeof(serv)-1, NI_NUMERICHOST|NI_NUMERICSERV)) {
+    if (ret == EAI_AGAIN)
+      continue;
+    throw TransportError(localeToUtf8(gai_strerror(ret)));
+  }
+
+  std::stringstream ss;
+  bool inet6 = isInet6();
+  if (inet6)
+    ss << "[";
+  ss << host;
+  if (inet6)
+    ss << "]";
+  ss << ":";
+  ss << serv;
+  return ss.str();
 }
 
 std::list<SocketAddress>

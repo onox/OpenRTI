@@ -56,6 +56,8 @@ public:
   bool isInet4() const;
   bool isInet6() const;
 
+  std::string getNumericName() const;
+
   static std::list<SocketAddress>
   resolve(const std::string& address, const std::string& service, bool passive);
 
