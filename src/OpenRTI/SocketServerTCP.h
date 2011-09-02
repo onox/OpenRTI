@@ -36,6 +36,8 @@ public:
 
   virtual SocketTCP* accept();
 
+  SocketAddress getsockname() const;
+
 protected:
   virtual ~SocketServerTCP();
 };

@@ -112,6 +112,20 @@ SocketServerTCP::accept()
   return new SocketTCP(new PrivateData(fd));
 }
 
+SocketAddress
+SocketServerTCP::getsockname() const
+{
+  struct sockaddr_storage sockaddr;
+  socklen_t addrlen = sizeof(sockaddr);
+  int ret = ::getsockname(_privateData->_fd, (struct sockaddr*)&sockaddr, &addrlen);
+  if (ret == -1) {
+    int errorNumber = errno;
+    throw TransportError(errnoToUtf8(errorNumber));
+  }
+
+  return SocketAddress(new SocketAddress::PrivateData((struct sockaddr*)&sockaddr, addrlen));
+}
+
 SocketServerTCP::~SocketServerTCP()
 {
   close();
