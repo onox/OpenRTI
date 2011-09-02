@@ -34,7 +34,11 @@ SocketServerTCP::SocketServerTCP() :
 void
 SocketServerTCP::bind(const SocketAddress& socketAddress)
 {
-  int fd = socket(socketAddress._privateData->_addr->sa_family, SOCK_STREAM, 0);
+  if (!socketAddress.valid())
+    throw TransportError("Trying to bind server socket to an invalid address!");
+
+  const struct sockaddr* sockaddr = SocketAddress::PrivateData::sockaddr(socketAddress.constData());
+  int fd = socket(sockaddr->sa_family, SOCK_STREAM, 0);
   if (fd == -1)
     throw TransportError(errnoToUtf8(errno));
 
@@ -47,7 +51,8 @@ SocketServerTCP::bind(const SocketAddress& socketAddress)
   unsigned reuseaddr = 1;
   setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(reuseaddr));
 
-  int ret = ::bind(fd, socketAddress._privateData->_addr, socketAddress._privateData->_addrlen);
+  socklen_t addrlen = SocketAddress::PrivateData::addrlen(socketAddress.constData());
+  int ret = ::bind(fd, sockaddr, addrlen);
   if (ret == -1) {
     int errorNumber = errno;
     ::close(fd);

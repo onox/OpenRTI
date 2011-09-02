@@ -63,8 +63,8 @@ SocketPacket::send(const SocketAddress& socketAddress, const ConstBufferRange& b
   }
 
   struct msghdr msg = { 0, };
-  msg.msg_name = socketAddress._privateData->_addr;
-  msg.msg_namelen = socketAddress._privateData->_addrlen;
+  msg.msg_name = const_cast<struct sockaddr*>(SocketAddress::PrivateData::sockaddr(socketAddress.constData()));
+  msg.msg_namelen = SocketAddress::PrivateData::addrlen(socketAddress.constData());
   msg.msg_iov = iov;
   msg.msg_iovlen = iovlen;
 
@@ -132,8 +132,8 @@ SocketPacket::recv(SocketAddress& socketAddress, const BufferRange& bufferRange,
   }
 
   struct msghdr msg = { 0, };
-  msg.msg_name = socketAddress._privateData->_addr;
-  msg.msg_namelen = socketAddress._privateData->_addrlen;
+  msg.msg_name = SocketAddress::PrivateData::sockaddr(socketAddress.data());
+  msg.msg_namelen = SocketAddress::PrivateData::addrlen(socketAddress.data());
   msg.msg_iov = iov;
   msg.msg_iovlen = iovlen;
 

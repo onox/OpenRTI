@@ -24,6 +24,7 @@
 #include <string>
 
 #include "Export.h"
+#include "SharedPtr.h"
 
 namespace OpenRTI {
 
@@ -38,14 +39,16 @@ public:
 
   SocketAddress& operator=(const SocketAddress& socketAddress);
 
-  bool operator<(const SocketAddress& socketAddress) const;
+  bool operator<(const SocketAddress& socketAddress) const
+  { return cmp(socketAddress) < 0; }
   bool operator>(const SocketAddress& socketAddress) const
   { return socketAddress.operator<(*this); }
   bool operator<=(const SocketAddress& socketAddress) const
   { return !socketAddress.operator<(*this); }
   bool operator>=(const SocketAddress& socketAddress) const
   { return !operator<(socketAddress); }
-  bool operator==(const SocketAddress& socketAddress) const;
+  bool operator==(const SocketAddress& socketAddress) const
+  { return cmp(socketAddress) == 0; }
   bool operator!=(const SocketAddress& socketAddress) const
   { return !operator==(socketAddress); }
 
@@ -61,7 +64,12 @@ private:
 
   SocketAddress(PrivateData* privateData);
 
-  PrivateData* _privateData;
+  int cmp(const SocketAddress& socketAddress) const;
+
+  PrivateData* data();
+  const PrivateData* constData() const;
+
+  SharedPtr<PrivateData> _privateData;
 
   friend class SocketPacket;
   friend class SocketServerTCP;

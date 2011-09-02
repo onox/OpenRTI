@@ -28,60 +28,58 @@
 #include <ws2tcpip.h>
 #include <windows.h>
 
+#include "LogStream.h"
+#include "Referenced.h"
+
 namespace OpenRTI {
 
-struct SocketAddress::PrivateData {
+struct SocketAddress::PrivateData : public Referenced {
   PrivateData() :
-    _addr(0), _addrlen(0)
-  { }
-  PrivateData(const struct sockaddr* addr, const socklen_t addrlen) :
-    _addr(0), _addrlen(addrlen)
+    _addrlen(0)
   {
-    if (addrlen) {
-      _addr = static_cast<struct sockaddr*>(::operator new(addrlen));
-      std::memcpy(_addr, addr, addrlen);
-    }
   }
-  PrivateData(const PrivateData& privateData) :
-    _addr(0), _addrlen(privateData._addrlen)
+  PrivateData(const struct sockaddr* addr, socklen_t addrlen) :
+    _addrlen(0)
   {
-    if (_addrlen) {
-      _addr = static_cast<struct sockaddr*>(::operator new(_addrlen));
-      std::memcpy(_addr, privateData._addr, _addrlen);
-    }
-  }
-  ~PrivateData()
-  {
-    ::operator delete(_addr);
-    _addr = 0;
-  }
-
-  PrivateData& operator=(const PrivateData& privateData)
-  {
-    assignSocketAddress(privateData._addr, privateData._addrlen);
-    return *this;
-  }
-
-  void assignSocketAddress(const struct sockaddr* addr, const socklen_t addrlen)
-  {
-    if (_addrlen) {
-      ::operator delete(_addr);
-      _addr = 0;
+    if (sizeof(_sockaddr) < addrlen) {
+      std::memset(&_sockaddr + addrlen, 0, sizeof(_sockaddr));
+      Log(Network, Warning) << "Socket address is too long!" << std::endl;
+      return;
     }
     _addrlen = addrlen;
-    if (_addrlen) {
-      _addr = static_cast<struct sockaddr*>(::operator new(addrlen));
-      std::memcpy(_addr, addr, addrlen);
-    }
+    if (addrlen)
+      std::memcpy(&_sockaddr, addr, addrlen);
+    size_t len = sizeof(_sockaddr) - addrlen;
+    if (len)
+      std::memset(reinterpret_cast<char*>(&_sockaddr) + addrlen, 0, len);
   }
 
-  const char* begin() const
-  { return reinterpret_cast<const char*>(_addr); }
-  const char* end() const
-  { return reinterpret_cast<const char*>(_addr) + _addrlen; }
+  static socklen_t addrlen(const PrivateData* privateData)
+  {
+    if (!privateData)
+      return 0;
+    return privateData->_addrlen;
+  }
+  static const struct sockaddr* sockaddr(const PrivateData* privateData)
+  {
+    if (!privateData)
+      return 0;
+    return reinterpret_cast<const struct sockaddr*>(&privateData->_sockaddr);
+  }
+  static struct sockaddr* sockaddr(PrivateData* privateData)
+  {
+    if (!privateData)
+      return 0;
+    return reinterpret_cast<struct sockaddr*>(&privateData->_sockaddr);
+  }
 
-  struct sockaddr* _addr;
+private:
+  // We should not need them
+  PrivateData(const PrivateData& privateData);
+  PrivateData& operator=(const PrivateData& privateData);
+
   socklen_t _addrlen;
+  struct sockaddr_storage _sockaddr;
 };
 
 }

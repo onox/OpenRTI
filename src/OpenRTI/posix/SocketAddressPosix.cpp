@@ -20,7 +20,6 @@
 #include "SocketAddress.h"
 #include "SocketAddressPrivateDataPosix.h"
 
-#include <algorithm>
 #include "Exception.h"
 #include "StringUtils.h"
 
@@ -35,75 +34,56 @@
 
 namespace OpenRTI {
 
-SocketAddress::SocketAddress() :
-  _privateData(new PrivateData)
+SocketAddress::SocketAddress()
 {
 }
 
 SocketAddress::SocketAddress(const SocketAddress& socketAddress) :
-  _privateData(new PrivateData(*socketAddress._privateData))
+  _privateData(socketAddress._privateData)
 {
 }
 
 SocketAddress::~SocketAddress()
 {
-  delete _privateData;
-  _privateData = 0;
 }
 
 SocketAddress&
 SocketAddress::operator=(const SocketAddress& socketAddress)
 {
-  if (socketAddress._privateData == _privateData)
-    return *this;
-  delete _privateData;
-  _privateData = new PrivateData(*socketAddress._privateData);
+  _privateData = socketAddress._privateData;
   return *this;
-}
-
-bool
-SocketAddress::operator<(const SocketAddress& socketAddress) const
-{
-  return std::lexicographical_compare(_privateData->begin(), _privateData->end(),
-                                      socketAddress._privateData->begin(), socketAddress._privateData->end());
-}
-
-bool
-SocketAddress::operator==(const SocketAddress& socketAddress) const
-{
-  if (_privateData->_addrlen != socketAddress._privateData->_addrlen)
-    return false;
-  return std::memcmp(_privateData->begin(), socketAddress._privateData->begin(), _privateData->_addrlen) == 0;
 }
 
 bool
 SocketAddress::valid() const
 {
-  return _privateData->_addrlen != 0;
+  return SocketAddress::PrivateData::addrlen(_privateData.get()) != 0;
 }
 
 bool
 SocketAddress::isInet4() const
 {
-  if (_privateData->_addrlen != sizeof(struct sockaddr_in))
+  if (SocketAddress::PrivateData::addrlen(_privateData.get()) != sizeof(struct sockaddr_in))
     return false;
+  const struct sockaddr* addr = SocketAddress::PrivateData::sockaddr(_privateData.get());
 #if defined(AF_INET_SDP)
-  if (_privateData->_addr->sa_family == AF_INET_SDP)
+  if (addr->sa_family == AF_INET_SDP)
     return true;
 #endif
-  return _privateData->_addr->sa_family == AF_INET;
+  return addr->sa_family == AF_INET;
 }
 
 bool
 SocketAddress::isInet6() const
 {
-  if (_privateData->_addrlen != sizeof(struct sockaddr_in6))
+  if (SocketAddress::PrivateData::addrlen(_privateData.get()) != sizeof(struct sockaddr_in6))
     return false;
+  const struct sockaddr* addr = SocketAddress::PrivateData::sockaddr(_privateData.get());
 #if defined(AF_INET6_SDP)
-  if (_privateData->_addr->sa_family == AF_INET6_SDP)
+  if (addr->sa_family == AF_INET6_SDP)
     return true;
 #endif
-  return _privateData->_addr->sa_family == AF_INET6;
+  return addr->sa_family == AF_INET6;
 }
 
 std::list<SocketAddress>
@@ -161,6 +141,52 @@ SocketAddress::resolve(const std::string& address, const std::string& service, b
 SocketAddress::SocketAddress(PrivateData* privateData) :
   _privateData(privateData)
 {
+}
+
+int
+SocketAddress::cmp(const SocketAddress& socketAddress) const
+{
+  // Both refer to the same data, must be equal
+  if (_privateData == socketAddress._privateData)
+    return 0;
+  socklen_t len1 = PrivateData::addrlen(_privateData.get());
+  socklen_t len2 = PrivateData::addrlen(socketAddress._privateData.get());
+  const struct sockaddr* addr1 = PrivateData::sockaddr(_privateData.get());
+  const struct sockaddr* addr2 = PrivateData::sockaddr(socketAddress._privateData.get());
+  if (len1 == len2) {
+    if (len1 == 0)
+      return 0;
+    return std::memcmp(addr1, addr2, len1);
+  } else if (len1 < len2) {
+    if (len1 == 0)
+      return -1;
+    int ret = std::memcmp(addr1, addr2, len1);
+    if (ret)
+      return ret;
+    return -1;
+  } else {
+    if (len2 == 0)
+      return 1;
+    int ret = std::memcmp(addr1, addr2, len2);
+    if (ret)
+      return ret;
+    return 1;
+  }
+}
+
+SocketAddress::PrivateData*
+SocketAddress::data()
+{
+  if (PrivateData::count(_privateData.get()) == 1)
+    return _privateData.get();
+  _privateData = new PrivateData;
+  return _privateData.get();
+}
+
+const SocketAddress::PrivateData*
+SocketAddress::constData() const
+{
+  return _privateData.get();
 }
 
 }

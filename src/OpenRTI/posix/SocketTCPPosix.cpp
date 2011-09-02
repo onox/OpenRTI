@@ -38,9 +38,10 @@ SocketTCP::connect(const SocketAddress& socketAddress)
     throw TransportError("Trying to connect an already open SocketTCP!");
 
   if (!socketAddress.valid())
-    throw TransportError("Trying to connect an invalid address!");
+    throw TransportError("Trying to connect to an invalid address!");
 
-  int fd = ::socket(socketAddress._privateData->_addr->sa_family, SOCK_STREAM, 0);
+  const struct sockaddr* sockaddr = SocketAddress::PrivateData::sockaddr(socketAddress.constData());
+  int fd = ::socket(sockaddr->sa_family, SOCK_STREAM, 0);
   if (fd == -1)
     throw TransportError(errnoToUtf8(errno));
 
@@ -63,7 +64,8 @@ SocketTCP::connect(const SocketAddress& socketAddress)
     throw TransportError(errnoToUtf8(errorNumber));
   }
 
-  ret = ::connect(fd, socketAddress._privateData->_addr, socketAddress._privateData->_addrlen);
+  socklen_t addrlen = SocketAddress::PrivateData::addrlen(socketAddress.constData());
+  ret = ::connect(fd, sockaddr, addrlen);
   if (ret == -1) {
     int errorNumber = errno;
     ::close(fd);
