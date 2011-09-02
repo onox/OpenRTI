@@ -64,15 +64,7 @@ SocketTCP::connect(const SocketAddress& socketAddress)
     throw TransportError(errnoToUtf8(errorNumber));
   }
 
-  socklen_t addrlen = SocketAddress::PrivateData::addrlen(socketAddress.constData());
-  ret = ::connect(fd, sockaddr, addrlen);
-  if (ret == -1) {
-    int errorNumber = errno;
-    ::close(fd);
-    throw TransportError(errnoToUtf8(errorNumber));
-  }
-
-  // Past the connect use non blocking io, required.
+  // Switch to nonblocking io
   flags = fcntl(fd, F_GETFL, 0);
   if (flags == -1) {
     int errorNumber = errno;
@@ -84,6 +76,16 @@ SocketTCP::connect(const SocketAddress& socketAddress)
     int errorNumber = errno;
     ::close(fd);
     throw TransportError(errnoToUtf8(errorNumber));
+  }
+
+  socklen_t addrlen = SocketAddress::PrivateData::addrlen(socketAddress.constData());
+  ret = ::connect(fd, sockaddr, addrlen);
+  if (ret == -1) {
+    int errorNumber = errno;
+    if (errorNumber != EINPROGRESS && errorNumber != EWOULDBLOCK) {
+      ::close(fd);
+      throw TransportError(errnoToUtf8(errorNumber));
+    }
   }
 
   _privateData->_fd = fd;

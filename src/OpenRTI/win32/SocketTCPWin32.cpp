@@ -53,21 +53,23 @@ SocketTCP::connect(const SocketAddress& socketAddress)
     throw TransportError(errnoToUtf8(errorNumber));
   }
 
-  socklen_t addrlen = SocketAddress::PrivateData::addrlen(socketAddress.constData());
-  ret = ::connect(fd, sockaddr, addrlen);
-  if (ret == SOCKET_ERROR) {
-    int errorNumber = WSAGetLastError();
-    ::closesocket(fd);
-    throw TransportError(errnoToUtf8(errorNumber));
-  }
-
-  // Past the connect use non blocking io, required.
+  // Switch to nonblocking io
   u_long mode = 1;
   ret = ::ioctlsocket(fd, FIONBIO, &mode);
   if (ret == SOCKET_ERROR) {
     int errorNumber = WSAGetLastError();
     ::closesocket(fd);
     throw TransportError(errnoToUtf8(errorNumber));
+  }
+
+  socklen_t addrlen = SocketAddress::PrivateData::addrlen(socketAddress.constData());
+  ret = ::connect(fd, sockaddr, addrlen);
+  if (ret == SOCKET_ERROR) {
+    int errorNumber = WSAGetLastError();
+    if (errorNumber != WSAEINPROGRESS && errorNumber != WSAEWOULDBLOCK) {
+      ::closesocket(fd);
+      throw TransportError(errnoToUtf8(errorNumber));
+    }
   }
 
   _privateData->_socket = fd;
