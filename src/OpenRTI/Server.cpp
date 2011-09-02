@@ -290,16 +290,24 @@ Server::listenInet(const std::string& node, const std::string& service, int back
     SocketAddress address = addressList.front();
     addressList.pop_front();
     try {
-      SharedPtr<SocketServerTCP> socket = new SocketServerTCP;
-      socket->bind(address);
-      socket->listen(backlog);
-      _dispatcher.insert(new SocketServerAcceptEvent(socket, *this));
+      listenInet(address, backlog);
       success = true;
     } catch (const OpenRTI::Exception& e) {
       if (addressList.empty() && !success)
-        throw e;
+        throw;
     }
   }
+}
+
+SocketAddress
+Server::listenInet(const SocketAddress& socketAddress, int backlog)
+{
+  SharedPtr<SocketServerTCP> socket = new SocketServerTCP;
+  socket->bind(socketAddress);
+  socket->listen(backlog);
+  SocketAddress boundAddress = socket->getsockname();
+  _dispatcher.insert(new SocketServerAcceptEvent(socket, *this));
+  return boundAddress;
 }
 
 void
@@ -321,9 +329,7 @@ Server::connectedTCPSocket(const std::string& name)
   std::list<SocketAddress> addressList = SocketAddress::resolve(hostPortPair.first, hostPortPair.second, false);
   while (!addressList.empty()) {
     try {
-      SharedPtr<SocketTCP> socketStream = new SocketTCP;
-      socketStream->connect(addressList.front());
-      return socketStream;
+      return connectedTCPSocket(addressList.front());
     } catch (const OpenRTI::Exception& e) {
       addressList.pop_front();
       if (addressList.empty())
@@ -331,6 +337,14 @@ Server::connectedTCPSocket(const std::string& name)
     }
   }
   throw RTIinternalError(std::string("Can not resolve address") + name);
+}
+
+SharedPtr<SocketTCP>
+Server::connectedTCPSocket(const SocketAddress& socketAddress)
+{
+  SharedPtr<SocketTCP> socketStream = new SocketTCP;
+  socketStream->connect(socketAddress);
+  return socketStream;
 }
 
 void
@@ -350,6 +364,12 @@ void
 Server::connectParentInetServer(const std::string& name, const Clock& abstime)
 {
   connectParentStreamServer(connectedTCPSocket(name), abstime);
+}
+
+void
+Server::connectParentInetServer(const SocketAddress& socketAddress, const Clock& abstime)
+{
+  connectParentStreamServer(connectedTCPSocket(socketAddress), abstime);
 }
 
 void
