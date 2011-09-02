@@ -62,26 +62,25 @@ public:
     if (numServers <= 0)
       return;
 
-    typedef std::list<unsigned short> PortList;
-    PortList portList;
+    typedef std::list<SocketAddress> AddressList;
+    AddressList addressList;
 
-    unsigned short port = 17777; /// Just a random number
-    startServer(port, 0);
-    portList.push_back(port);
+    SocketAddress listeningAddress = startServer(SocketAddress());
+    addressList.push_back(listeningAddress);
 
-    PortList parentPortList = portList;
-    for (;portList.size() < numServers;) {
-      PortList currentPortList;
-      for (PortList::iterator j = parentPortList.begin(); j != parentPortList.end(); ++j) {
+    AddressList parentAddressList = addressList;
+    for (;addressList.size() < numServers;) {
+      AddressList currentAddressList;
+      for (AddressList::iterator j = parentAddressList.begin(); j != parentAddressList.end(); ++j) {
         for (unsigned k = 0; k < numClientsPerServers; ++k) {
-          startServer(++port, *j);
-          portList.push_back(port);
-          currentPortList.push_back(port);
-          if (numServers <= portList.size())
+          listeningAddress = startServer(*j);
+          addressList.push_back(listeningAddress);
+          currentAddressList.push_back(listeningAddress);
+          if (numServers <= addressList.size())
             return;
         }
       }
-      parentPortList.swap(currentPortList);
+      parentAddressList.swap(currentAddressList);
     }
   }
 
@@ -97,25 +96,36 @@ public:
   {
     if (_serverThreadList.empty())
       return std::string();
-    return _serverThreadList[i % _serverThreadList.size()]->getAddress();
+    return _serverThreadList[i % _serverThreadList.size()]->getAddress().getNumericName();
   }
 
 private:
   class ServerThread : public Thread {
   public:
-    void setupServer(const std::string& host, unsigned short port, unsigned short parentPort)
+    void setupServer(const std::string& host, const SocketAddress& parentAddress)
     {
-      std::stringstream address;
-      address << host << ":" << port;
-      _address = address.str();
-      _server.setServerName(_address);
-      if (parentPort) {
-        std::stringstream address;
-        address << host << ":" << parentPort;
-        Clock abstime = Clock::now() + Clock::fromSeconds(1);
-        _server.connectParentInetServer(address.str(), abstime);
+      std::list<SocketAddress> addressList = SocketAddress::resolve(host, "0", true);
+      // Set up a stream socket for the server connect
+      bool success = false;
+      while (!addressList.empty()) {
+        SocketAddress address = addressList.front();
+        addressList.pop_front();
+        try {
+          _address = _server.listenInet(address, 20);
+          success = true;
+          break;
+        } catch (const OpenRTI::Exception& e) {
+          if (addressList.empty() && !success)
+            throw;
+        }
       }
-      _server.listenInet(_address, 20);
+      _server.setServerName(_address.getNumericName());
+
+      if (parentAddress.valid()) {
+        Clock abstime = Clock::now() + Clock::fromSeconds(1);
+        _server.connectParentInetServer(parentAddress, abstime);
+      }
+
       start();
     }
 
@@ -125,7 +135,7 @@ private:
       wait();
     }
 
-    const std::string& getAddress() const
+    const SocketAddress& getAddress() const
     { return _address; }
 
   protected:
@@ -136,21 +146,15 @@ private:
     { _server.exec(); }
 
     Server _server;
-    std::string _address;
+    SocketAddress _address;
   };
 
-  void startServer(unsigned short& port, unsigned short parentPort)
+  SocketAddress startServer(const SocketAddress& parentAddress)
   {
     SharedPtr<ServerThread> serverThread = new ServerThread;
-    while (1) {
-      try {
-        serverThread->setupServer("localhost", port, parentPort);
-        break;
-      } catch (...) {
-        ++port;
-      }
-    }
+    serverThread->setupServer("localhost", parentAddress);
     _serverThreadList.push_back(serverThread);
+    return serverThread->getAddress();
   }
 
   typedef std::vector<SharedPtr<ServerThread> > ServerThreadList;
