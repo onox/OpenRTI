@@ -70,9 +70,10 @@ struct SocketEventDispatcher::PrivateData {
         AbstractSocketEvent* socketEvent = i->get();
         if (socketEvent->getTimeout() < timeout)
           timeout = socketEvent->getTimeout();
-        if (!socketEvent->getSocket())
-          continue;
-        SOCKET socket = socketEvent->getSocket()->_privateData->_socket;
+        Socket* abstractSocket = socketEvent->getSocket();
+        if (!abstractSocket)
+           continue;
+        SOCKET socket = abstractSocket->_privateData->_socket;
         if (socket == INVALID_SOCKET)
           continue;
         if (socket == SOCKET_ERROR)
@@ -110,9 +111,16 @@ struct SocketEventDispatcher::PrivateData {
       } else {
         count = ::select(nfds + 1, &readfds, &writefds, &exceptfds, 0);
       }
-      if (count == -1 && errno != EINTR) {
-        retv = -1;
-        break;
+      if (count == -1) {
+        if (errno != EINTR) {
+          retv = -1;
+          break;
+        } else {
+          count = 0;
+          FD_ZERO(&readfds);
+          FD_ZERO(&writefds);
+          FD_ZERO(&exceptfds);
+        }
       }
       // Timeout
       Clock now = Clock::now();
