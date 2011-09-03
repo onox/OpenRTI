@@ -33,7 +33,7 @@ InitialServerStreamProtocol::InitialServerStreamProtocol(AbstractNetworkServer& 
   _networkServer(networkServer)
 {
   // Add space for the initial header
-  addReadBuffer(12);
+  addScratchReadBuffer(12);
 }
 
 InitialServerStreamProtocol::~InitialServerStreamProtocol()

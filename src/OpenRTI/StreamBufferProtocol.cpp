@@ -54,11 +54,17 @@ StreamBufferProtocol::read(AbstractProtocolSocket& protocolSocket)
       _inputIterator += ret;
       _inputIterator.skip_empty_chunks(_inputBuffer.byte_end());
     }
-    
+
     readPacket(_inputBuffer);
     if (_inputIterator != _inputBuffer.byte_end())
       continue;
-    
+
+    for (std::list<Buffer::iterator>::iterator i = _inputScratchBufferList.begin();
+         i != _inputScratchBufferList.end(); ++i) {
+      _scratchPool.splice(_scratchPool.end(), _inputBuffer, *i);
+    }
+
+    _iteratorPool.splice(_iteratorPool.end(), _inputScratchBufferList);
     _inputBuffer.clear();
   }
 }
@@ -75,7 +81,7 @@ StreamBufferProtocol::write(AbstractProtocolSocket& protocolSocket)
   while (getEnableWrite()) {
     if (_outputBuffer.empty())
       writePacket();
-    
+
     while (_outputIterator != _outputBuffer.byte_end()) {
       ssize_t ret = protocolSocket.send(ConstBufferRange(_outputIterator, _outputBuffer.byte_end()), getMoreToSend());
       if (ret == -1) {
@@ -93,9 +99,16 @@ StreamBufferProtocol::write(AbstractProtocolSocket& protocolSocket)
       _outputIterator += ret;
       _outputIterator.skip_empty_chunks(_outputBuffer.byte_end());
     }
-    
+
     // We are ready with this packet, reset state
+    for (std::list<Buffer::iterator>::iterator i = _outputScratchBufferList.begin();
+         i != _outputScratchBufferList.end(); ++i) {
+      _scratchPool.splice(_scratchPool.end(), _outputBuffer, *i);
+    }
+
+    _iteratorPool.splice(_iteratorPool.end(), _outputScratchBufferList);
     _outputBuffer.clear();
+
     _outputIterator = _outputBuffer.byte_begin();
   }
 }
@@ -117,6 +130,28 @@ StreamBufferProtocol::addReadBuffer(size_t size)
 }
 
 void
+StreamBufferProtocol::addScratchReadBuffer(size_t size)
+{
+  OpenRTIAssert(size);
+  VariableLengthDataList scratchElement;
+  if (!_scratchPool.empty())
+    scratchElement.splice(scratchElement.end(), _scratchPool, _scratchPool.begin());
+  else
+    scratchElement.push_back(VariableLengthData());
+  if (_inputIterator == _inputBuffer.byte_end())
+    _inputIterator = scratchElement.begin();
+
+  if (_iteratorPool.empty())
+    _inputScratchBufferList.push_back(scratchElement.begin());
+  else {
+    _inputScratchBufferList.splice(_inputScratchBufferList.end(), _iteratorPool, _iteratorPool.begin());
+    _inputScratchBufferList.back() = scratchElement.begin();
+  }
+  _inputBuffer.splice(_inputBuffer.end(), scratchElement, scratchElement.begin());
+  _inputBuffer.back().resize(size);
+}
+
+void
 StreamBufferProtocol::addWriteBuffer(const VariableLengthData& value)
 {
   if (value.empty())
@@ -128,19 +163,25 @@ StreamBufferProtocol::addWriteBuffer(const VariableLengthData& value)
 }
 
 VariableLengthData&
-StreamBufferProtocol::addWriteBuffer(size_t size)
-{
-  if (_outputIterator == _outputBuffer.byte_end())
-    _outputIterator = _outputBuffer.insert(_outputBuffer.end(), VariableLengthData(size));
-  else
-    _outputBuffer.push_back(VariableLengthData(size));
-  return _outputBuffer.back();
-}
-
-VariableLengthData&
 StreamBufferProtocol::addScratchWriteBuffer()
 {
-  return addWriteBuffer(0);
+  VariableLengthDataList scratchElement;
+  if (!_scratchPool.empty())
+    scratchElement.splice(scratchElement.end(), _scratchPool, _scratchPool.begin());
+  else
+    scratchElement.push_back(VariableLengthData());
+  if (_outputIterator == _outputBuffer.byte_end())
+    _outputIterator = scratchElement.begin();
+
+  if (_iteratorPool.empty())
+    _outputScratchBufferList.push_back(scratchElement.begin());
+  else {
+    _outputScratchBufferList.splice(_outputScratchBufferList.end(), _iteratorPool, _iteratorPool.begin());
+    _outputScratchBufferList.back() = scratchElement.begin();
+  }
+  _outputBuffer.splice(_outputBuffer.end(), scratchElement, scratchElement.begin());
+  _outputBuffer.back().resize(0);
+  return _outputBuffer.back();
 }
 
 } // namespace OpenRTI

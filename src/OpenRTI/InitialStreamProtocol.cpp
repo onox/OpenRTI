@@ -117,8 +117,8 @@ void
 InitialStreamProtocol::writeOptionMap(const StringStringListMap& stringStringListMap)
 {
   // Header and body
-  EncodeStream headerStream(addWriteBuffer(0));
-  EncodeStream bodyStream(addWriteBuffer(0));
+  EncodeStream headerStream(addScratchWriteBuffer());
+  EncodeStream bodyStream(addScratchWriteBuffer());
 
   // Write the message body
   bodyStream.writeStringStringListMap(stringStringListMap);
@@ -134,7 +134,7 @@ InitialStreamProtocol::readPacket(const Buffer& buffer)
   switch (buffer.size()) {
   case 0:
     // First read a 12 byte header
-    addReadBuffer(12);
+    addScratchReadBuffer(12);
     break;
   case 1:
     {
@@ -155,7 +155,7 @@ InitialStreamProtocol::readPacket(const Buffer& buffer)
       }
 
       // Add buffer space for the message body
-      addReadBuffer(size - 12);
+      addScratchReadBuffer(size - 12);
     }
     break;
   case 2:

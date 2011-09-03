@@ -65,7 +65,7 @@ InitialClientStreamProtocol::setConnectOptions(StringStringListMap connectOption
   writeOptionMap(connectOptions);
 
   // Add space for the initial header
-  addReadBuffer(12);
+  addScratchReadBuffer(12);
 }
 
 void

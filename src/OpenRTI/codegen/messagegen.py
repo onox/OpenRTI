@@ -297,7 +297,7 @@ class MapDataType(DataType):
         t.resolveHasPayload(typeMap)
         self.__valueHasPayload = t.hasPayload()
         self._hasPayload = self.__keyHasPayload or self.__valueHasPayload
-        
+
     def keyHasPayload(self):
         return self.__keyHasPayload
 
@@ -1234,9 +1234,9 @@ class MessageEncoding(object):
         sourceStream.pushIndent()
         sourceStream.writeline('Buffer::const_iterator i = buffer.begin();')
         sourceStream.writeline('if (i == buffer.end()) {')
-        sourceStream.writeline('  addReadBuffer(4);')
+        sourceStream.writeline('  addScratchReadBuffer(4);')
         sourceStream.writeline('} else if (++i == buffer.end()) {')
-        sourceStream.writeline('  addReadBuffer(buffer.front().getUInt32BE(0));')
+        sourceStream.writeline('  addScratchReadBuffer(buffer.front().getUInt32BE(0));')
         sourceStream.writeline('} else if (++i == buffer.end()) {')
         sourceStream.writeline('  decodeBody(*(--i));')
         sourceStream.writeline('} else {')

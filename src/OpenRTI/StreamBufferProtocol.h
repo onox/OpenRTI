@@ -48,8 +48,8 @@ public:
   { return _outputIterator == _outputBuffer.byte_end(); }
 
   void addReadBuffer(size_t size);
+  void addScratchReadBuffer(size_t size);
   void addWriteBuffer(const VariableLengthData& value);
-  VariableLengthData& addWriteBuffer(size_t size);
   VariableLengthData& addScratchWriteBuffer();
 
 private:
@@ -60,6 +60,12 @@ private:
   // Buffer for the outgoing data
   Buffer _outputBuffer;
   Buffer::const_byte_iterator _outputIterator;
+
+  // Pool of scratch data packets
+  std::list<Buffer::iterator> _inputScratchBufferList;
+  std::list<Buffer::iterator> _outputScratchBufferList;
+  std::list<Buffer::iterator> _iteratorPool;
+  VariableLengthDataList _scratchPool;
 };
 
 } // namespace OpenRTI

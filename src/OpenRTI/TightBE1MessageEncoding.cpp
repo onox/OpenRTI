@@ -3478,9 +3478,9 @@ TightBE1MessageEncoding::readPacket(const Buffer& buffer)
 {
   Buffer::const_iterator i = buffer.begin();
   if (i == buffer.end()) {
-    addReadBuffer(4);
+    addScratchReadBuffer(4);
   } else if (++i == buffer.end()) {
-    addReadBuffer(buffer.front().getUInt32BE(0));
+    addScratchReadBuffer(buffer.front().getUInt32BE(0));
   } else if (++i == buffer.end()) {
     decodeBody(*(--i));
   } else {
