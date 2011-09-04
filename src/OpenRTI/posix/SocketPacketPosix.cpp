@@ -132,8 +132,9 @@ SocketPacket::recv(SocketAddress& socketAddress, const BufferRange& bufferRange,
   }
 
   struct msghdr msg = { 0, };
-  msg.msg_name = SocketAddress::PrivateData::sockaddr(socketAddress.data());
-  msg.msg_namelen = SocketAddress::PrivateData::addrlen(socketAddress.data());
+  SocketAddress::PrivateData* socketAddressPrivateData = socketAddress.data();
+  msg.msg_name = SocketAddress::PrivateData::sockaddr(socketAddressPrivateData);
+  msg.msg_namelen = SocketAddress::PrivateData::capacity(socketAddressPrivateData);
   msg.msg_iov = iov;
   msg.msg_iovlen = iovlen;
 
@@ -148,6 +149,9 @@ SocketPacket::recv(SocketAddress& socketAddress, const BufferRange& bufferRange,
   // note that return 0 traditionally means end of file for reads
   if (errno == EWOULDBLOCK || errno == EAGAIN || errno == EINTR)
     return -1;
+
+  // Set the address size
+  SocketAddress::PrivateData::setAddrlen(socketAddressPrivateData, msg.msg_namelen);
 
   // All other errors are considered serious and need to be handled somewhere where this is caught
   throw TransportError(errnoToUtf8(errno));

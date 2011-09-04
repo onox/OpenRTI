@@ -20,6 +20,7 @@
 #include "SocketAddress.h"
 #include "SocketAddressPrivateDataPosix.h"
 
+#include <sys/un.h>
 #include <sstream>
 
 #include "Exception.h"
@@ -63,6 +64,15 @@ SocketAddress::valid() const
 }
 
 bool
+SocketAddress::isPipe() const
+{
+  const struct sockaddr* addr = SocketAddress::PrivateData::sockaddr(_privateData.get());
+  if (!addr)
+    return false;
+  return addr->sa_family == AF_UNIX;
+}
+
+bool
 SocketAddress::isInet4() const
 {
   if (SocketAddress::PrivateData::addrlen(_privateData.get()) != sizeof(struct sockaddr_in))
@@ -91,30 +101,50 @@ SocketAddress::isInet6() const
 std::string
 SocketAddress::getNumericName() const
 {
-  if (!valid())
-    return std::string();
   socklen_t addrlen = PrivateData::addrlen(_privateData.get());
-  const struct sockaddr* addr = PrivateData::sockaddr(_privateData.get());
-  char host[256];
-  host[sizeof(host)-1] = 0;
-  char serv[32];
-  serv[sizeof(host)-1] = 0;
-  while (int ret = ret = ::getnameinfo(addr, addrlen, host, sizeof(host)-1, serv, sizeof(serv)-1, NI_NUMERICHOST|NI_NUMERICSERV)) {
-    if (ret == EAI_AGAIN)
-      continue;
-    throw TransportError(localeToUtf8(gai_strerror(ret)));
-  }
+  if (!addrlen)
+    return std::string();
 
-  std::stringstream ss;
-  bool inet6 = isInet6();
-  if (inet6)
-    ss << "[";
-  ss << host;
-  if (inet6)
-    ss << "]";
-  ss << ":";
-  ss << serv;
-  return ss.str();
+  if (isPipe()) {
+    struct sockaddr* addr = PrivateData::sockaddr(_privateData.get());
+    struct sockaddr_un* un = (struct sockaddr_un*)addr;
+    return std::string(un->sun_path);
+  } else if (addrlen <= sizeof(struct sockaddr_storage)) {
+    struct sockaddr_storage storage;
+    memcpy(&storage, PrivateData::sockaddr(_privateData.get()), addrlen);
+    struct sockaddr* addr = (struct sockaddr*)&storage;
+
+#if defined(AF_INET_SDP)
+    if (addr->sa_family == AF_INET_SDP)
+      addr->sa_family = AF_INET;
+#endif
+#if defined(AF_INET6_SDP)
+    if (addr->sa_family == AF_INET6_SDP)
+      addr->sa_family = AF_INET6;
+#endif
+
+    char host[256];
+    host[sizeof(host)-1] = 0;
+    char serv[32];
+    serv[sizeof(host)-1] = 0;
+    while (int ret = ::getnameinfo(addr, addrlen, host, sizeof(host)-1, serv, sizeof(serv)-1, NI_NUMERICHOST|NI_NUMERICSERV)) {
+      if (ret == EAI_AGAIN)
+        continue;
+      throw TransportError(localeToUtf8(gai_strerror(ret)));
+    }
+
+    std::stringstream ss;
+    if (addr->sa_family == AF_INET6)
+      ss << "[";
+    ss << host;
+    if (addr->sa_family == AF_INET6)
+      ss << "]";
+    ss << ":";
+    ss << serv;
+    return ss.str();
+  } else {
+    throw TransportError("Invalid socket address!");
+  }
 }
 
 std::list<SocketAddress>
@@ -150,18 +180,18 @@ SocketAddress::resolve(const std::string& address, const std::string& service, b
 #if defined(AF_INET_SDP)
     if (res->ai_addr->sa_family == AF_INET) {
       res->ai_addr->sa_family = AF_INET_SDP;
-      socketAddressList.push_back(SocketAddress(new PrivateData(res->ai_addr, res->ai_addrlen)));
+      socketAddressList.push_back(SocketAddress(PrivateData::create(res->ai_addr, res->ai_addrlen)));
       res->ai_addr->sa_family = AF_INET;
     }
 #endif
 #if defined(AF_INET6_SDP)
     if (res->ai_addr->sa_family == AF_INET6) {
       res->ai_addr->sa_family = AF_INET6_SDP;
-      socketAddressList.push_back(SocketAddress(new PrivateData(res->ai_addr, res->ai_addrlen)));
+      socketAddressList.push_back(SocketAddress(PrivateData::create(res->ai_addr, res->ai_addrlen)));
       res->ai_addr->sa_family = AF_INET6;
     }
 #endif
-    socketAddressList.push_back(SocketAddress(new PrivateData(res->ai_addr, res->ai_addrlen)));
+    socketAddressList.push_back(SocketAddress(PrivateData::create(res->ai_addr, res->ai_addrlen)));
     res = res->ai_next;
   }
   ::freeaddrinfo(ai);
@@ -210,7 +240,7 @@ SocketAddress::data()
 {
   if (PrivateData::count(_privateData.get()) == 1)
     return _privateData.get();
-  _privateData = new PrivateData;
+  _privateData = PrivateData::create(0);
   return _privateData.get();
 }
 

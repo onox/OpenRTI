@@ -56,6 +56,12 @@ SocketAddress::valid() const
 }
 
 bool
+SocketAddress::isPipe() const
+{
+  return false;
+}
+
+bool
 SocketAddress::isInet4() const
 {
   if (SocketAddress::PrivateData::addrlen(_privateData.get()) != sizeof(struct sockaddr_in))

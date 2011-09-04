@@ -25,58 +25,75 @@
 #include <netdb.h>
 #include <cstring>
 
+#include "Exception.h"
 #include "LogStream.h"
 #include "Referenced.h"
 
 namespace OpenRTI {
 
 struct SocketAddress::PrivateData : public Referenced {
-  PrivateData() :
-    _addrlen(0)
+  static socklen_t capacity(const PrivateData* privateData)
   {
+    if (!privateData)
+      return 0;
+    return privateData->_capacity;
   }
-  PrivateData(const struct sockaddr* addr, socklen_t addrlen) :
-    _addrlen(0)
-  {
-    if (sizeof(_sockaddr) < addrlen) {
-      std::memset(&_sockaddr + addrlen, 0, sizeof(_sockaddr));
-      Log(Network, Warning) << "Socket address is too long!" << std::endl;
-      return;
-    }
-    _addrlen = addrlen;
-    if (addrlen)
-      std::memcpy(&_sockaddr, addr, addrlen);
-    size_t len = sizeof(_sockaddr) - addrlen;
-    if (len)
-      std::memset(reinterpret_cast<char*>(&_sockaddr) + addrlen, 0, len);
-  }
-
   static socklen_t addrlen(const PrivateData* privateData)
   {
     if (!privateData)
       return 0;
     return privateData->_addrlen;
   }
+  static void setAddrlen(PrivateData* privateData, socklen_t addrlen)
+  {
+    OpenRTIAssert(addrlen <= capacity(privateData));
+    if (!privateData)
+      return;
+    privateData->_addrlen = addrlen;
+  }
+
   static const struct sockaddr* sockaddr(const PrivateData* privateData)
   {
     if (!privateData)
       return 0;
-    return reinterpret_cast<const struct sockaddr*>(&privateData->_sockaddr);
+    return &privateData->_sockaddr;
   }
   static struct sockaddr* sockaddr(PrivateData* privateData)
   {
     if (!privateData)
       return 0;
-    return reinterpret_cast<struct sockaddr*>(&privateData->_sockaddr);
+    return &privateData->_sockaddr;
+  }
+
+  static PrivateData* create(socklen_t addrlen)
+  {
+    socklen_t capacity = std::max(addrlen, socklen_t(sizeof(struct sockaddr_storage)));
+    void* data = ::operator new(capacity + sizeof(PrivateData) - sizeof(struct sockaddr));
+    return new (data) PrivateData(capacity);
+  }
+  static PrivateData* create(const struct sockaddr* addr, socklen_t addrlen)
+  {
+    PrivateData* privateData = create(addrlen);
+    privateData->_addrlen = addrlen;
+    std::memcpy(&privateData->_sockaddr, addr, addrlen);
+    return privateData;
   }
 
 private:
+  PrivateData(socklen_t capacity) :
+    _capacity(capacity),
+    _addrlen(0)
+  {
+    std::memset(&_sockaddr, 0, capacity);
+  }
+
   // We should not need them
   PrivateData(const PrivateData& privateData);
   PrivateData& operator=(const PrivateData& privateData);
 
+  socklen_t _capacity;
   socklen_t _addrlen;
-  struct sockaddr_storage _sockaddr;
+  struct sockaddr _sockaddr;
 };
 
 }

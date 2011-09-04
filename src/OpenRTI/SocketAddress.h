@@ -53,6 +53,7 @@ public:
   { return !operator==(socketAddress); }
 
   bool valid() const;
+  bool isPipe() const;
   bool isInet4() const;
   bool isInet6() const;
 
