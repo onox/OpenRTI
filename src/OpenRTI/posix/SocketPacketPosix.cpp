@@ -18,6 +18,11 @@
  */
 
 #include "SocketPacket.h"
+
+#ifdef OpenRTI_HAVE_ALLOCA
+#include <alloca.h>
+#endif
+
 #include "SocketAddressPrivateDataPosix.h"
 #include "SocketPrivateDataPosix.h"
 #include "ErrnoPosix.h"
