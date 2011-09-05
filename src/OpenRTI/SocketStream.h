@@ -40,7 +40,7 @@ class SocketServer;
 /// does with error numbers. So, when reusing the usual method names, also
 /// reuse their semantics as much as possible.
 
-class SocketStream : public SocketData {
+class OPENRTI_API SocketStream : public SocketData {
 public:
 
   ssize_t send(const ConstBufferRange& bufferRange, bool more);

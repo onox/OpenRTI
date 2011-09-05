@@ -26,7 +26,7 @@
 
 namespace OpenRTI {
 
-class SocketServerPipe : public SocketServer {
+class OPENRTI_API SocketServerPipe : public SocketServer {
 public:
   SocketServerPipe();
 

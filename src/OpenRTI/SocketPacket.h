@@ -26,7 +26,7 @@
 
 namespace OpenRTI {
 
-class SocketPacket : public SocketData {
+class OPENRTI_API SocketPacket : public SocketData {
 public:
 
   ssize_t send(const SocketAddress& socketAddress, const ConstBufferRange& bufferRange);

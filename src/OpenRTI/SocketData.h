@@ -24,7 +24,7 @@
 
 namespace OpenRTI {
 
-class SocketData : public Socket {
+class OPENRTI_API SocketData : public Socket {
 public:
 
   // FIXME need to distinguish between the read side which can have an EOF

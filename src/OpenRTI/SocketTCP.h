@@ -27,7 +27,7 @@ namespace OpenRTI {
 
 class SocketServerTCP;
 
-class SocketTCP : public SocketStream {
+class OPENRTI_API SocketTCP : public SocketStream {
 public:
   SocketTCP();
 
