@@ -138,16 +138,17 @@ StreamBufferProtocol::addScratchReadBuffer(size_t size)
     scratchElement.splice(scratchElement.end(), _scratchPool, _scratchPool.begin());
   else
     scratchElement.push_back(VariableLengthData());
-  if (_inputIterator == _inputBuffer.byte_end())
-    _inputIterator = scratchElement.begin();
-
+  _inputBuffer.splice(_inputBuffer.end(), scratchElement, scratchElement.begin());
+  VariableLengthDataList::iterator back_iterator = _inputBuffer.end();
+  --back_iterator;
+  if (_inputIterator.iterator() == _inputBuffer.end())
+    _inputIterator = back_iterator;
   if (_iteratorPool.empty())
-    _inputScratchBufferList.push_back(scratchElement.begin());
+    _inputScratchBufferList.push_back(back_iterator);
   else {
     _inputScratchBufferList.splice(_inputScratchBufferList.end(), _iteratorPool, _iteratorPool.begin());
-    _inputScratchBufferList.back() = scratchElement.begin();
+    _inputScratchBufferList.back() = back_iterator;
   }
-  _inputBuffer.splice(_inputBuffer.end(), scratchElement, scratchElement.begin());
   _inputBuffer.back().resize(size);
 }
 
@@ -170,16 +171,17 @@ StreamBufferProtocol::addScratchWriteBuffer()
     scratchElement.splice(scratchElement.end(), _scratchPool, _scratchPool.begin());
   else
     scratchElement.push_back(VariableLengthData());
-  if (_outputIterator == _outputBuffer.byte_end())
-    _outputIterator = scratchElement.begin();
-
+  _outputBuffer.splice(_outputBuffer.end(), scratchElement, scratchElement.begin());
+  VariableLengthDataList::iterator back_iterator = _outputBuffer.end();
+  --back_iterator;
+  if (_outputIterator.iterator() == _outputBuffer.end())
+    _outputIterator = back_iterator;
   if (_iteratorPool.empty())
-    _outputScratchBufferList.push_back(scratchElement.begin());
+    _outputScratchBufferList.push_back(back_iterator);
   else {
     _outputScratchBufferList.splice(_outputScratchBufferList.end(), _iteratorPool, _iteratorPool.begin());
-    _outputScratchBufferList.back() = scratchElement.begin();
+    _outputScratchBufferList.back() = back_iterator;
   }
-  _outputBuffer.splice(_outputBuffer.end(), scratchElement, scratchElement.begin());
   _outputBuffer.back().resize(0);
   return _outputBuffer.back();
 }
