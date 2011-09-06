@@ -54,6 +54,12 @@ struct SocketEventDispatcher::PrivateData {
     int retv = 0;
 
     while (!_done) {
+      if (dispatcher.empty()) {
+        _done = true;
+        retv = 0;
+        break;
+      }
+
       fd_set readfds;
       fd_set writefds;
       fd_set exceptfds;
@@ -88,12 +94,6 @@ struct SocketEventDispatcher::PrivateData {
           if (nfds < int(socket))
             nfds = int(socket);
         }
-      }
-      // HMM???
-      if (nfds == -1) {
-        _done = true;
-        retv = 0;
-        break;
       }
 
       int count;

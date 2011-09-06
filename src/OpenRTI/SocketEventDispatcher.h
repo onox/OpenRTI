@@ -38,6 +38,8 @@ public:
 
   void insert(const SharedPtr<AbstractSocketEvent>& socketEvent);
   void erase(const SharedPtr<AbstractSocketEvent>& socketEvent);
+  bool empty() const
+  { return _socketEventList.empty(); }
 
   /// FIXME colapse them all to what is needed
   int exec();
