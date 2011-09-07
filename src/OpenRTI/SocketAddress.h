@@ -28,8 +28,11 @@
 
 namespace OpenRTI {
 
+class SocketAddress;
 class SocketServerTCP;
 class SocketTCP;
+
+typedef std::list<SocketAddress> SocketAddressList;
 
 class OPENRTI_API SocketAddress {
 public:
@@ -59,8 +62,10 @@ public:
 
   std::string getNumericName() const;
 
-  static std::list<SocketAddress>
+  static SocketAddressList
   resolve(const std::string& address, const std::string& service, bool passive);
+  static SocketAddressList
+  resolve(const std::string& address, bool passive);
 
 private:
   struct PrivateData;

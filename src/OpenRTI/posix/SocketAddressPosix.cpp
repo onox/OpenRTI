@@ -147,7 +147,7 @@ SocketAddress::getNumericName() const
   }
 }
 
-std::list<SocketAddress>
+SocketAddressList
 SocketAddress::resolve(const std::string& address, const std::string& service, bool passive)
 {
   int family = AF_UNSPEC;
@@ -173,7 +173,7 @@ SocketAddress::resolve(const std::string& address, const std::string& service, b
     throw TransportError(localeToUtf8(gai_strerror(ret)));
   }
 
-  std::list<SocketAddress> socketAddressList;
+  SocketAddressList socketAddressList;
   struct addrinfo *res = ai;
   while (res) {
     // Insert alternative address for ib connects.
@@ -197,6 +197,14 @@ SocketAddress::resolve(const std::string& address, const std::string& service, b
   ::freeaddrinfo(ai);
 
   return socketAddressList;
+}
+
+SocketAddressList
+SocketAddress::resolve(const std::string& address, bool passive)
+{
+  std::pair<std::string, std::string> addressServicePair;
+  addressServicePair = parseInetAddress(address);
+  return resolve(addressServicePair.first, addressServicePair.second, passive);
 }
 
 SocketAddress::SocketAddress(PrivateData* privateData) :

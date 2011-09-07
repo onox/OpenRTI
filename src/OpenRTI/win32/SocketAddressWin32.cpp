@@ -119,7 +119,7 @@ SocketAddress::getNumericName() const
   return ss.str();
 }
 
-std::list<SocketAddress>
+SocketAddressList
 SocketAddress::resolve(const std::string& address, const std::string& service, bool passive)
 {
   WSADATA wsaData;
@@ -154,7 +154,7 @@ SocketAddress::resolve(const std::string& address, const std::string& service, b
     throw TransportError(localeToUtf8(gai_strerror(ret)));
   }
 
-  std::list<SocketAddress> socketAddressList;
+  SocketAddressList socketAddressList;
   struct addrinfo *res = ai;
   while (res) {
     socketAddressList.push_back(SocketAddress(new PrivateData(res->ai_addr, res->ai_addrlen)));
@@ -164,6 +164,14 @@ SocketAddress::resolve(const std::string& address, const std::string& service, b
   WSACleanup();
 
   return socketAddressList;
+}
+
+SocketAddressList
+SocketAddress::resolve(const std::string& address, bool passive)
+{
+  std::pair<std::string, std::string> addressServicePair;
+  addressServicePair = parseInetAddress(address);
+  return resolve(addressServicePair.first, addressServicePair.second, passive);
 }
 
 SocketAddress::SocketAddress(PrivateData* privateData) :
