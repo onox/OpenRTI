@@ -20,6 +20,7 @@
 #include "Condition.h"
 
 #include "Clock.h"
+#include "ClockWin32.h"
 #include "Mutex.h"
 #include "MutexPrivateDataWin32.h"
 #include "ConditionPrivateDataWin32.h"
@@ -61,9 +62,7 @@ Condition::wait(Mutex& mutex, const Clock& absclock)
   Clock now = Clock::now();
   if (absclock < now)
     return false;
-  DWORD msec = (DWORD)(((absclock - now).getNSec() + 500000)/1000000);
-  if (msec == 0)
-    msec = 1;
+  DWORD msec = ClockWin32::toMsec((absclock - now).getNSec());
   return _privateData->wait(*mutex._privateData, msec);
 }
 

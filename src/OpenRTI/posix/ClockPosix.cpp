@@ -21,6 +21,11 @@
 #include "Clock.h"
 #include "ClockPosix.h"
 
+#if defined __hpux
+#include <sys/time.h>
+#else
+#include <sys/select.h>
+#endif
 #include <time.h>
 #include <unistd.h>
 #include <pthread.h>
@@ -106,6 +111,32 @@ Clock
 Clock::now()
 {
   return Clock(ClockPosix::now());
+}
+
+void
+Clock::sleep(const Clock& reltime)
+{
+#if defined(HAVE_POSIX_TIMERS)
+  struct timespec ts = ClockPosix::toTimespec(reltime.getNSec());
+#if defined(HAVE_PTHREAD_CONDATTR_SETCLOCK)
+  clock_nanosleep(ClockPosix::getClockId(), 0, &ts, 0);
+#else
+  clock_nanosleep(CLOCK_REALTIME, 0, &ts, 0);
+#endif
+#else
+  fd_set readfds;
+  fd_set writefds;
+  fd_set exceptfds;
+  FD_ZERO(&readfds);
+  FD_ZERO(&writefds);
+  FD_ZERO(&exceptfds);
+  if (reltime == Clock::final())
+    select(0, &readfds, &writefds, &exceptfds, 0);
+  else {
+    struct timeval tv = ClockPosix::toTimeval(reltime.getNSec());
+    select(0, &readfds, &writefds, &exceptfds, &tv);
+  }
+#endif
 }
 
 } // namespace OpenRTI

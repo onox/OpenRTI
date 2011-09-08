@@ -25,6 +25,7 @@
 
 #include "AbstractSocketEvent.h"
 #include "Clock.h"
+#include "ClockWin32.h"
 #include "ErrnoWin32.h"
 #include "Exception.h"
 #include "SocketPrivateDataWin32.h"
@@ -37,16 +38,6 @@ struct SocketEventDispatcher::PrivateData {
   PrivateData() :
     _done(false)
   {
-  }
-
-  static struct timeval toTimeval(const uint64_t& nsec)
-  {
-    struct timeval tv;
-    uint64_t usec = (nsec + 500) / 1000;
-    uint64_t frac = usec % 1000000;
-    tv.tv_usec = (long)frac;
-    tv.tv_sec = (long)((usec - frac) / 1000000);
-    return tv;
   }
 
   int exec(SocketEventDispatcher& dispatcher, const Clock* absclock)
@@ -105,7 +96,7 @@ struct SocketEventDispatcher::PrivateData {
           FD_ZERO(&writefds);
           FD_ZERO(&exceptfds);
         } else {
-          struct timeval timeval = toTimeval((*absclock - now).getNSec());
+          struct timeval timeval = ClockWin32::toTimeval((*absclock - now).getNSec());
           count = ::select(nfds + 1, &readfds, &writefds, &exceptfds, &timeval);
         }
       } else {

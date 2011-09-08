@@ -38,6 +38,8 @@ public:
 
   static Clock now();
 
+  static void sleep(const Clock& reltime);
+
   static Clock initial()
   { return Clock(0); }
   static Clock final()

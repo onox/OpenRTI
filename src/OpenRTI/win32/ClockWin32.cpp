@@ -20,6 +20,7 @@
 #include "Clock.h"
 
 #include "Atomic.h"
+#include "ClockWin32.h"
 
 #include <windows.h>
 
@@ -79,5 +80,11 @@ Clock::now()
 }
 
 #endif
+
+void
+Clock::sleep(const Clock& reltime)
+{
+  Sleep(ClockWin32::toMsec(reltime.getNSec()));
+}
 
 }
