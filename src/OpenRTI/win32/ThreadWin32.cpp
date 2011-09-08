@@ -58,7 +58,7 @@ struct OPENRTI_LOCAL Thread::PrivateData {
   {
     if (_handle == INVALID_HANDLE_VALUE)
       return;
-    DWORD ret = WaitForSingleObject(_handle, 0);
+    DWORD ret = WaitForSingleObject(_handle, INFINITE);
     if (ret != WAIT_OBJECT_0)
       return;
     CloseHandle(_handle);
