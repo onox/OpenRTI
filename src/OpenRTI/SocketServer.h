@@ -25,11 +25,14 @@
 
 namespace OpenRTI {
 
+class SocketAddress;
 class SocketStream;
 
 class OPENRTI_API SocketServer : public Socket {
 public:
   virtual SocketStream* accept() = 0;
+
+  SocketAddress getsockname() const;
 
 protected:
   SocketServer(PrivateData* privateData);

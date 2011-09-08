@@ -26,8 +26,9 @@
 #include <alloca.h>
 #endif
 
-#include "SocketPrivateDataPosix.h"
 #include "ErrnoPosix.h"
+#include "SocketAddressPrivateDataPosix.h"
+#include "SocketPrivateDataPosix.h"
 
 namespace OpenRTI {
 
@@ -212,6 +213,29 @@ SocketStream::cork(bool enable)
 void
 SocketStream::shutdown()
 {
+}
+
+SocketAddress
+SocketStream::getpeername() const
+{
+  socklen_t addrlen = 0;
+  int ret = ::getpeername(_privateData->_fd, 0, &addrlen);
+  if (ret == -1) {
+    int errorNumber = errno;
+    throw TransportError(errnoToUtf8(errorNumber));
+  }
+
+  SharedPtr<SocketAddress::PrivateData> privateData = SocketAddress::PrivateData::create(addrlen);
+  struct sockaddr* sockaddr = SocketAddress::PrivateData::sockaddr(privateData.get());
+  addrlen = SocketAddress::PrivateData::capacity(privateData.get());
+  ret = ::getpeername(_privateData->_fd, sockaddr, &addrlen);
+  if (ret == -1) {
+    int errorNumber = errno;
+    throw TransportError(errnoToUtf8(errorNumber));
+  }
+  SocketAddress::PrivateData::setAddrlen(privateData.get(), addrlen);
+
+  return SocketAddress(privateData.get());
 }
 
 SocketStream::SocketStream(PrivateData* privateData) :

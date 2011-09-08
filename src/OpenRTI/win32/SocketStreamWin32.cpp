@@ -20,6 +20,7 @@
 #include "SocketStream.h"
 
 #include "ErrnoWin32.h"
+#include "SocketAddressPrivateDataWin32.h"
 #include "SocketPrivateDataWin32.h"
 
 namespace OpenRTI {
@@ -96,6 +97,18 @@ SocketStream::cork(bool enable)
 void
 SocketStream::shutdown()
 {
+}
+
+SocketAddress
+SocketStream::getpeername() const
+{
+  struct sockaddr_storage sockaddr;
+  socklen_t addrlen = sizeof(sockaddr);
+  int ret = ::getpeername(_privateData->_socket, (struct sockaddr*)&sockaddr, &addrlen);
+  if (ret == -1)
+    throw TransportError(errnoToUtf8(WSAGetLastError()));
+
+  return SocketAddress(new SocketAddress::PrivateData((struct sockaddr*)&sockaddr, addrlen));
 }
 
 SocketStream::SocketStream(PrivateData* privateData) :

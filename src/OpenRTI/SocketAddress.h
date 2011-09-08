@@ -29,7 +29,10 @@
 namespace OpenRTI {
 
 class SocketAddress;
+class SocketPacket;
+class SocketServer;
 class SocketServerTCP;
+class SocketStream;
 class SocketTCP;
 
 typedef std::list<SocketAddress> SocketAddressList;
@@ -80,7 +83,9 @@ private:
   SharedPtr<PrivateData> _privateData;
 
   friend class SocketPacket;
+  friend class SocketServer;
   friend class SocketServerTCP;
+  friend class SocketStream;
   friend class SocketTCP;
 };
 

@@ -99,18 +99,6 @@ SocketServerTCP::accept()
   return new SocketTCP(pd);
 }
 
-SocketAddress
-SocketServerTCP::getsockname() const
-{
-  struct sockaddr_storage sockaddr;
-  socklen_t addrlen = sizeof(sockaddr);
-  int ret = ::getsockname(_privateData->_socket, (struct sockaddr*)&sockaddr, &addrlen);
-  if (ret == -1)
-    throw TransportError(errnoToUtf8(WSAGetLastError()));
-
-  return SocketAddress(new SocketAddress::PrivateData((struct sockaddr*)&sockaddr, addrlen));
-}
-
 SocketServerTCP::~SocketServerTCP()
 {
   close();

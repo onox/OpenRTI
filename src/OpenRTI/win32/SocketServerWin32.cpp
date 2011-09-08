@@ -19,7 +19,23 @@
 
 #include "SocketServer.h"
 
+#include "ErrnoWin32.h"
+#include "SocketAddressPrivateDataWin32.h"
+#include "SocketPrivateDataWin32.h"
+
 namespace OpenRTI {
+
+SocketAddress
+SocketServer::getsockname() const
+{
+  struct sockaddr_storage sockaddr;
+  socklen_t addrlen = sizeof(sockaddr);
+  int ret = ::getsockname(_privateData->_socket, (struct sockaddr*)&sockaddr, &addrlen);
+  if (ret == -1)
+    throw TransportError(errnoToUtf8(WSAGetLastError()));
+
+  return SocketAddress(new SocketAddress::PrivateData((struct sockaddr*)&sockaddr, addrlen));
+}
 
 SocketServer::SocketServer(PrivateData* privateData) :
   Socket(privateData)

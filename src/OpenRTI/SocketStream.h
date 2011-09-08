@@ -25,6 +25,7 @@
 
 namespace OpenRTI {
 
+class SocketAddress;
 class SocketServer;
 
 /// Desired error semantics:
@@ -47,6 +48,8 @@ public:
   ssize_t recv(const BufferRange& bufferRange, bool peek);
   virtual void cork(bool enable);
   virtual void shutdown();
+
+  SocketAddress getpeername() const;
 
 protected:
   SocketStream(PrivateData* privateData);
