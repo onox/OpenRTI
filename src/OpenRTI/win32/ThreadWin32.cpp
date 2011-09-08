@@ -20,6 +20,7 @@
 #include "Thread.h"
 
 #include <windows.h>
+#include "Exception.h"
 #include "Export.h"
 
 namespace OpenRTI {
@@ -39,8 +40,10 @@ struct OPENRTI_LOCAL Thread::PrivateData {
 
   static DWORD WINAPI start_routine(LPVOID data)
   {
-    SharedPtr<Thread> thread = reinterpret_cast<Thread*>(data);
+    Thread* thread = reinterpret_cast<Thread*>(data);
     thread->run();
+    if (!Thread::put(thread))
+      Thread::destruct(thread);
     return 0;
   }
 
@@ -48,9 +51,12 @@ struct OPENRTI_LOCAL Thread::PrivateData {
   {
     if (_handle != INVALID_HANDLE_VALUE)
       return false;
+    get(&thread);
     _handle = CreateThread(0, 0, start_routine, &thread, 0, 0);
-    if (_handle == INVALID_HANDLE_VALUE)
+    if (_handle == INVALID_HANDLE_VALUE) {
+      put(&thread);
       return false;
+    }
     return true;
   }
 
@@ -75,6 +81,7 @@ Thread::Thread(void) :
 
 Thread::~Thread(void)
 {
+  OpenRTIAssert(!Thread::count(this));
   delete _privateData;
   _privateData = 0;
 }

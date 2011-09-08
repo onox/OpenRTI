@@ -19,6 +19,7 @@
 
 #include "Thread.h"
 #include "ThreadPrivateDataPosix.h"
+#include "Exception.h"
 
 namespace OpenRTI {
 
@@ -29,6 +30,7 @@ Thread::Thread(void) :
 
 Thread::~Thread(void)
 {
+  OpenRTIAssert(!Thread::count(this));
   delete _privateData;
   _privateData = 0;
 }

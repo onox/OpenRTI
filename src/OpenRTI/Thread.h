@@ -21,12 +21,12 @@
 #define OpenRTI_Thread_h
 
 #include "Export.h"
-#include "Referenced.h"
 #include "SharedPtr.h"
+#include "WeakReferenced.h"
 
 namespace OpenRTI {
 
-class OPENRTI_API Thread : public Referenced {
+class OPENRTI_API Thread : public WeakReferenced {
 public:
   Thread(void);
 

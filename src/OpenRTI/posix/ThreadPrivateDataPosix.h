@@ -45,8 +45,10 @@ struct OPENRTI_LOCAL Thread::PrivateData {
 
   static void *start_routine(void* data)
   {
-    SharedPtr<Thread> thread = reinterpret_cast<Thread*>(data);
+    Thread* thread = reinterpret_cast<Thread*>(data);
     thread->run();
+    if (!Thread::put(thread))
+      Thread::destruct(thread);
     return 0;
   }
 
@@ -54,6 +56,8 @@ struct OPENRTI_LOCAL Thread::PrivateData {
   {
     if (_started)
       return false;
+
+    get(&thread);
 
     // Do not handle application signals in the openrti threads
     sigset_t new_signals;
@@ -65,8 +69,10 @@ struct OPENRTI_LOCAL Thread::PrivateData {
 
     pthread_sigmask(SIG_SETMASK, &old_signals, NULL);
 
-    if (0 != ret)
+    if (0 != ret) {
+      put(&thread);
       return false;
+    }
     _started = true;
 #ifdef HAVE_PTHREAD_SETNAME_NP
     // Ignore errors since this is just a debugging aid - nothing more
