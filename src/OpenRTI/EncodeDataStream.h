@@ -56,7 +56,7 @@ public:
     if (!alignSize)
       return;
     size_t offset = ((_offset + alignSize - 1)/alignSize)*alignSize;
-// #if defined(NDEBUG)
+// #if defined(NDEBUG) || defined(_NDEBUG)
 //     // Just seeking will make valgrind cry
 //     seek(offset);
 // #else

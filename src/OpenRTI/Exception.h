@@ -54,7 +54,7 @@ private:
   static std::string buildAssertMessage(const char* file, unsigned line, const char* reason = 0);
 };
 
-#ifdef NDEBUG
+#if defined(NDEBUG) || defined(_NDEBUG)
 #define OpenRTIAssert(expr) do { } while(0)
 #else
 #define OpenRTIAssert(expr) if (!(expr)) throw OpenRTI::RTIinternalError(__FILE__, __LINE__, #expr)
