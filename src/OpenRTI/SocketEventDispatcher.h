@@ -54,6 +54,7 @@ private:
   PrivateData* _privateData;
 
   SocketEventList _socketEventList;
+  bool _done;
 };
 
 } // namespace OpenRTI

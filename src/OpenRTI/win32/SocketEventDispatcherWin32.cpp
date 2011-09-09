@@ -33,20 +33,13 @@
 namespace OpenRTI {
 
 struct SocketEventDispatcher::PrivateData {
-  bool _done;
-
-  PrivateData() :
-    _done(false)
-  {
-  }
-
   int exec(SocketEventDispatcher& dispatcher, const Clock* absclock)
   {
     int retv = 0;
 
-    while (!_done) {
+    while (!dispatcher._done) {
       if (dispatcher.empty()) {
-        _done = true;
+        dispatcher._done = true;
         retv = 0;
         break;
       }
@@ -143,7 +136,8 @@ struct SocketEventDispatcher::PrivateData {
 };
 
 SocketEventDispatcher::SocketEventDispatcher() :
-  _privateData(new PrivateData)
+  _privateData(new PrivateData),
+  _done(false)
 {
 }
 
@@ -156,13 +150,13 @@ SocketEventDispatcher::~SocketEventDispatcher()
 void
 SocketEventDispatcher::setDone(bool done)
 {
-  _privateData->_done = done;
+  _done = done;
 }
 
 bool
 SocketEventDispatcher::getDone() const
 {
-  return _privateData->_done;
+  return _done;
 }
 
 int
