@@ -38,11 +38,11 @@ public:
 
     virtual void wakeUp()
     {
-      _server.setDone(true);
+      _server.wakeUp();
     }
     virtual void exec()
     {
-      _server.setDone(false);
+      // _server.setDone(false);
       _server.exec();
     }
 

@@ -72,7 +72,7 @@ void
 InitialClientStreamProtocol::readOptionMap(const StringStringListMap& optionMap)
 {
   // For now, just stop processing once we have recieved the connect reply
-  _networkServer.setDone();
+  _networkServer.setDone(true);
 
   // Check for an error response
   StringStringListMap::const_iterator i = optionMap.find("error");

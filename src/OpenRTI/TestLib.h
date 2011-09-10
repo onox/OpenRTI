@@ -131,7 +131,7 @@ private:
 
     void stopServer()
     {
-      setDone();
+      _server.setDone();
       wait();
     }
 
@@ -139,9 +139,6 @@ private:
     { return _address; }
 
   protected:
-    void setDone()
-    { _server.setDone(true); }
-
     virtual void run()
     { _server.exec(); }
 

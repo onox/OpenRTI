@@ -71,14 +71,15 @@ public:
   /// Must be thread safe as it might be called from a different thread
   /// than the one running the exec loop.
   virtual void setDone();
-  void setDone(bool done);
+  virtual void setDone(bool done);
   bool getDone() const;
+
+  void wakeUp();
 
   /// Run the server's main message loop.
   virtual int exec();
 
 private:
-  class WakeupSocketEvent;
   class TriggeredConnectSocketEvent;
 
   Server(const Server&);
@@ -89,9 +90,6 @@ private:
 
   // The socket dispatcher
   SocketEventDispatcher _dispatcher;
-
-  // This is used to wake up the dispatcher waiting in the select call.
-  SharedPtr<SocketWakeupTrigger> _socketWakeupTrigger;
 };
 
 } // namespace OpenRTI

@@ -47,40 +47,6 @@
 
 namespace OpenRTI {
 
-/// This one is to trigger ThreadProcedureCallbacks in the thread
-class OPENRTI_LOCAL Server::WakeupSocketEvent : public AbstractSocketEvent {
-public:
-  // Need to provide the server side message sender.
-  WakeupSocketEvent(SharedPtr<SocketWakeupEvent> socketWakeupEvent) :
-    _socketWakeupEvent(socketWakeupEvent)
-  { }
-
-  virtual void read(SocketEventDispatcher& dispatcher)
-  {
-    ssize_t ret = _socketWakeupEvent->read();
-    if (ret == -1) {
-      // Protocol errors in any sense lead to a closed connection
-      dispatcher.erase(this);
-      /// FIXME: need to catch this kind of error somehow in the registry
-    }
-    // This is to just break out of the exec of the sockets.
-    dispatcher.setDone(true);
-  }
-  virtual bool getEnableRead() const
-  { return true; }
-
-  virtual void write(SocketEventDispatcher& dispatcher)
-  { }
-  virtual bool getEnableWrite() const
-  { return false; }
-
-  virtual SocketWakeupEvent* getSocket() const
-  { return _socketWakeupEvent.get(); }
-
-private:
-  SharedPtr<SocketWakeupEvent> _socketWakeupEvent;
-};
-
 // This one is to communicate from the ambassador to the server.
 class OPENRTI_LOCAL Server::TriggeredConnectSocketEvent : public AbstractSocketEvent {
   class OPENRTI_LOCAL LockedMessageList : public Referenced {
@@ -189,10 +155,8 @@ private:
 };
 
 Server::Server() :
-  _messageServer(new MessageServer),
-  _socketWakeupTrigger(new SocketWakeupTrigger)
+  _messageServer(new MessageServer)
 {
-  _dispatcher.insert(new WakeupSocketEvent(_socketWakeupTrigger->connect()));
 }
 
 Server::~Server()
@@ -406,7 +370,9 @@ Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, c
   _dispatcher.insert(protocolSocketEvent);
 
   // Process messages until we have either recieved the servers response or the timeout expires
-  _dispatcher.exec(abstime);
+  do {
+    _dispatcher.exec(abstime);
+  } while (Clock::now() <= abstime && !_dispatcher.getDone());
 
   if (!clientStreamProtocol->getSuccessfulConnect()) {
     if (!clientStreamProtocol->getErrorMessage().empty())
@@ -444,24 +410,26 @@ Server::getServerNode()
 void
 Server::setDone()
 {
-  setDone(true);
+  _dispatcher.setDone(true);
+  _dispatcher.wakeUp();
 }
 
 void
 Server::setDone(bool done)
 {
-  if (done) {
-    // The trigger sets the dispatcher to done to avoid races
-    _socketWakeupTrigger->trigger();
-  } else {
-    _dispatcher.setDone(false);
-  }
+  _dispatcher.setDone(done);
 }
 
 bool
 Server::getDone() const
 {
   return _dispatcher.getDone();
+}
+
+void
+Server::wakeUp()
+{
+  _dispatcher.wakeUp();
 }
 
 int
