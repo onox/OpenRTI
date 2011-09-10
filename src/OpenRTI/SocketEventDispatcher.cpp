@@ -30,8 +30,7 @@ SocketEventDispatcher::insert(const SharedPtr<AbstractSocketEvent>& socketEvent)
 {
   if (!socketEvent.valid())
     return;
-  if (socketEvent->_socketEventDispatcher)
-    return;
+  OpenRTIAssert(socketEvent->_socketEventDispatcher == 0);
   socketEvent->_socketEventDispatcher = this;
   socketEvent->_iterator = _socketEventList.insert(_socketEventList.begin(), socketEvent);
 }
@@ -41,8 +40,7 @@ SocketEventDispatcher::erase(const SharedPtr<AbstractSocketEvent>& socketEvent)
 {
   if (!socketEvent.valid())
     return;
-  if (socketEvent->_socketEventDispatcher != this)
-    return;
+  OpenRTIAssert(socketEvent->_socketEventDispatcher == this);
   socketEvent->_socketEventDispatcher = 0;
   _socketEventList.erase(socketEvent->_iterator);
 }

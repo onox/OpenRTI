@@ -31,25 +31,67 @@
 
 #include "AbstractSocketEvent.h"
 #include "ClockPosix.h"
+#include "ErrnoPosix.h"
 #include "Exception.h"
+#include "LogStream.h"
 #include "SocketPrivateDataPosix.h"
 
 namespace OpenRTI {
 
-/// FIXME from the linux man page!!!!
-/// Rethink!!!!
-// Under Linux, select() may report a socket file descriptor as "ready
-// for reading", while nevertheless a subsequent read blocks. This
-// could for example happen when data has arrived but upon examination
-// has wrong checksum and is discarded. There may be other
-// circumstances in which a file descriptor is spuriously reported as
-// ready. Thus it may be safer to use O_NONBLOCK on sockets that
-// should not block.
+static int
+nonblocking_pipe(int pipeFd[2])
+{
+  int ret = pipe(pipeFd);
+  if (-1 == ret)
+    return ret;
 
-/// eventfd looks nice too
+  for (unsigned i = 0; i < 2; ++i) {
+    // This is nice to have, so just try and don't bail out
+    int flags = fcntl(pipeFd[i], F_GETFD, 0);
+    if (flags != -1)
+      fcntl(pipeFd[i], F_SETFD, flags | FD_CLOEXEC);
 
-struct SocketEventDispatcher::PrivateData {
-  int exec(SocketEventDispatcher& dispatcher, const Clock* absclock)
+    // Switch to nonblocking io, this is required
+    flags = fcntl(pipeFd[i], F_GETFL, 0);
+    if (flags == -1)
+      return flags;
+    ret = fcntl(pipeFd[i], F_SETFL, flags | O_NONBLOCK);
+    if (ret == -1)
+      return ret;
+  }
+}
+
+struct OPENRTI_LOCAL SocketEventDispatcher::PrivateData {
+  PrivateData() :
+    _wakeupReadFd(-1),
+    _wakeupWriteFd(-1)
+  {
+    int pipeFd[2] = {-1, -1};
+    if (-1 == nonblocking_pipe(pipeFd)) {
+      int errorNumber = errno;
+      for (unsigned i = 0; i < 2; ++i) {
+        if (pipeFd[i] == -1)
+          continue;
+        close(pipeFd[i]);
+      }
+      throw TransportError(errnoToUtf8(errorNumber));
+    }
+    _wakeupReadFd = pipeFd[0];
+    _wakeupWriteFd = pipeFd[1];
+  }
+  ~PrivateData()
+  {
+    if (_wakeupReadFd != -1) {
+      close(_wakeupReadFd);
+      _wakeupReadFd = -1;
+    }
+    if (_wakeupWriteFd != -1) {
+      close(_wakeupWriteFd);
+      _wakeupWriteFd = -1;
+    }
+  }
+
+  int exec(SocketEventDispatcher& dispatcher, const Clock& absclock)
   {
     int retv = 0;
 
@@ -67,9 +109,7 @@ struct SocketEventDispatcher::PrivateData {
       FD_ZERO(&writefds);
       FD_ZERO(&exceptfds);
 
-      Clock timeout = Clock::final();
-      if (absclock)
-        timeout = *absclock;
+      Clock timeout = absclock;
 
       int nfds = -1;
       for (SocketEventList::const_iterator i = dispatcher._socketEventList.begin(); i != dispatcher._socketEventList.end(); ++i) {
@@ -91,6 +131,9 @@ struct SocketEventDispatcher::PrivateData {
         }
       }
 
+      FD_SET(_wakeupReadFd, &readfds);
+      nfds = std::max(nfds, _wakeupReadFd);
+
       int count;
       if (timeout < Clock::final()) {
         uint64_t now = ClockPosix::now();
@@ -107,7 +150,8 @@ struct SocketEventDispatcher::PrivateData {
         count = ::select(nfds + 1, &readfds, &writefds, &exceptfds, 0);
       }
       if (count == -1) {
-        if (errno != EINTR) {
+        int errorNumber = errno;
+        if (errorNumber != EINTR && errorNumber != EAGAIN) {
           retv = -1;
           break;
         } else {
@@ -119,7 +163,7 @@ struct SocketEventDispatcher::PrivateData {
       }
       // Timeout
       uint64_t now = ClockPosix::now();
-      if (absclock && absclock->getNSec() <= now) {
+      if (absclock.getNSec() <= now) {
         retv = 0;
         break;
       }
@@ -140,10 +184,46 @@ struct SocketEventDispatcher::PrivateData {
         if (socketEvent->getTimeout().getNSec() <= now)
           dispatcher.timeout(socketEvent);
       }
+
+      if (FD_ISSET(_wakeupReadFd, &readfds)) {
+        char dummy[64];
+        while (0 < ::read(_wakeupReadFd, dummy, sizeof(dummy)));
+        if (!_wokenUp.compareAndExchange(1, 0))
+          Log(Network, Warning) << "Having something to read from the wakeup pipe, but the flag is not set?" << std::endl;
+        retv = 0;
+        break;
+      }
     }
 
     return retv;
   }
+
+  void wakeUp()
+  {
+    // Check if we already have a wakeup pending
+    if (!_wokenUp.compareAndExchange(0, 1))
+      return;
+    // No, the first one, write to the pipe
+    char data = 1;
+    for (;;) {
+      ssize_t ret = ::write(_wakeupWriteFd, &data, sizeof(data));
+      if (ret == 1)
+        break;
+      // We should not get EAGAIN here, since we only write the first time to wake up,
+      // but be paranoid.
+      if (ret == 0)
+        continue;
+      int errorNumber = errno;
+      if (ret == -1 && (errorNumber == EAGAIN || errorNumber == EINTR))
+        continue;
+      throw TransportError(errnoToUtf8(errorNumber));
+    }
+  }
+
+private:
+  Atomic _wokenUp;
+  int _wakeupReadFd;
+  int _wakeupWriteFd;
 };
 
 SocketEventDispatcher::SocketEventDispatcher() :
@@ -170,16 +250,16 @@ SocketEventDispatcher::getDone() const
   return _done;
 }
 
-int
-SocketEventDispatcher::exec()
+void
+SocketEventDispatcher::wakeUp()
 {
-  return _privateData->exec(*this, 0);
+  _privateData->wakeUp();
 }
 
 int
 SocketEventDispatcher::exec(const Clock& absclock)
 {
-  return _privateData->exec(*this, &absclock);
+  return _privateData->exec(*this, absclock);
 }
 
 }

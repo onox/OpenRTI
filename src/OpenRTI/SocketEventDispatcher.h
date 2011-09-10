@@ -41,11 +41,20 @@ public:
   bool empty() const
   { return _socketEventList.empty(); }
 
-  /// FIXME colapse them all to what is needed
-  int exec();
-  int exec(const Clock& absclock);
+  // Make the exec loop exit one time ???
+  void wakeUp();
+
+  // Processes socket events when there is something to do.
+  // The function returns on three conditions:
+  // * The timeout expires.
+  // * When empty(), that is there are no socket events left.
+  // * The wakeUp method is called from some thread.
+  int exec(const Clock& absclock = Clock::final());
 
 private:
+  SocketEventDispatcher(const SocketEventDispatcher&);
+  SocketEventDispatcher& operator=(const SocketEventDispatcher&);
+
   void read(const SharedPtr<AbstractSocketEvent>& socketEvent);
   void write(const SharedPtr<AbstractSocketEvent>& socketEvent);
   void timeout(const SharedPtr<AbstractSocketEvent>& socketEvent);
