@@ -1,0 +1,7 @@
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src/OpenRTI)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/OpenRTI)
+
+ADD_EXECUTABLE(socketaddress socketaddress.cpp)
+TARGET_LINK_LIBRARIES(socketaddress OpenRTI)
+
+ADD_TEST(OpenRTI/socketaddress ${CMAKE_CURRENT_BINARY_DIR}/socketaddress)
