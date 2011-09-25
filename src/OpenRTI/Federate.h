@@ -2039,10 +2039,25 @@ public:
            RestoreInProgress,
            RTIinternalError)
   {
-    if (_logicalTimeMessageListMap.empty())
-      return false;
-    logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeMessageListMap.begin()->first);
-    return true;
+    if (_logicalTimeMessageListMap.empty()) {
+      if (_logicalTimeFederateHandleSetMap.empty()) {
+        return false;
+      } else {
+        logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeFederateHandleSetMap.begin()->first.first);
+        return true;
+      }
+    } else {
+      if (_logicalTimeFederateHandleSetMap.empty()) {
+        logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeMessageListMap.begin()->first);
+        return true;
+      } else {
+        if (_logicalTimeFederateHandleSetMap.begin()->first.first < _logicalTimeMessageListMap.begin()->first)
+          logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeFederateHandleSetMap.begin()->first.first);
+        else
+          logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeMessageListMap.begin()->first);
+        return true;
+      }
+    }
   }
 
   virtual void modifyLookahead(const NativeLogicalTimeInterval& nativeLookahead)
