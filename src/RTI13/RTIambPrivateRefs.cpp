@@ -2178,7 +2178,9 @@ RTI::RTIambassador::queryLBTS(RTI::FedTime& fedTime)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->queryLITS(fedTime);
+  if (privateRefs->queryGALT(fedTime))
+    return;
+  fedTime.setPositiveInfinity();
 }
 
 void
@@ -2202,7 +2204,7 @@ RTI::RTIambassador::queryMinNextEventTime(RTI::FedTime& fedTime)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  if (privateRefs->queryGALT(fedTime))
+  if (privateRefs->queryLITS(fedTime))
     return;
   fedTime.setPositiveInfinity();
 }
