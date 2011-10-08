@@ -40,6 +40,8 @@ SocketEventDispatcher::erase(const SharedPtr<AbstractSocketEvent>& socketEvent)
 {
   if (!socketEvent.valid())
     return;
+  if (socketEvent->_socketEventDispatcher == 0)
+    return;
   OpenRTIAssert(socketEvent->_socketEventDispatcher == this);
   socketEvent->_socketEventDispatcher = 0;
   _socketEventList.erase(socketEvent->_iterator);
