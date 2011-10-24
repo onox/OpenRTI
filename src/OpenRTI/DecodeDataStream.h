@@ -36,6 +36,9 @@ public:
   size_t size() const
   { return _variableLengthData.size(); }
 
+  size_t offset() const
+  { return _offset; }
+
   void seek(size_t offset)
   {
     if (_variableLengthData.size() < offset)
