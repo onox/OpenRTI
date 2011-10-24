@@ -271,7 +271,10 @@ public:
 
   void writeString(const std::string& value)
   {
-    writeStringCompressed(value);
+    writeSizeTCompressed(value.size());
+    for (std::string::const_iterator i = value.begin(); i != value.end(); ++i) {
+      writeChar(*i);
+    }
   }
 
   void writeUnsigned(const uint32_t& value)
@@ -2158,7 +2161,10 @@ public:
 
   void readString(std::string& value)
   {
-    value = readStringCompressed();
+    value.resize(readSizeTCompressed());
+    for (std::string::iterator i = value.begin(); i != value.end(); ++i) {
+      *i = readChar();
+    }
   }
 
   void readUnsigned(uint32_t& value)

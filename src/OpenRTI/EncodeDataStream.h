@@ -370,30 +370,24 @@ public:
   void writeBoolCompressed(bool value)
   { writeBool(value); }
 
-  /// FIXME may be this is already policy from the generated code??
-  void writeString(const std::string& s)
-  {
-    writeUInt32BE(uint32_t(s.size()));
-    for (std::string::size_type i = 0; i < s.size(); ++i)
-      writeChar(s[i]);
-  }
-
-  void writeStringCompressed(const std::string& s)
-  {
-    writeSizeTCompressed(s.size());
-    for (std::string::size_type i = 0; i < s.size(); ++i)
-      writeChar(s[i]);
-  }
-
   void writeData(const VariableLengthData& d)
   {
-    size_t size = d.size();
-    writeSizeTCompressed(size);
+    size_t offset = _offset;
+    _offset += d.size();
+    if (_variableLengthData.size() < _offset)
+      _variableLengthData.resize(_offset);
+    if (d.size())
+      std::memcpy(_variableLengthData.data(offset), d.data(), d.size());
+  }
+
+  void writeData(const void* data, size_t size)
+  {
     size_t offset = _offset;
     _offset += size;
     if (_variableLengthData.size() < _offset)
       _variableLengthData.resize(_offset);
-    memcpy(_variableLengthData.data(offset), d.data(), size);
+    if (size)
+      std::memcpy(_variableLengthData.data(offset), data, size);
   }
 
 private:

@@ -778,6 +778,11 @@ class MessageEncoding(object):
             sourceStream.writeline('  writeSizeTCompressed(value.size());')
             sourceStream.writeline('  if (!value.empty())')
             sourceStream.writeline('    _messageEncoding.addWriteBuffer(value);')
+        elif typeName == 'std::string':
+            sourceStream.writeline('  writeSizeTCompressed(value.size());')
+            sourceStream.writeline('  for (std::string::const_iterator i = value.begin(); i != value.end(); ++i) {')
+            sourceStream.writeline('    writeChar(*i);')
+            sourceStream.writeline('  }')
         else:
             sourceStream.writeline('  write{encoding}Compressed(value);'.format(encoding = encoding))
         sourceStream.writeline('}')
@@ -794,6 +799,11 @@ class MessageEncoding(object):
             sourceStream.writeline('  value.resize(size);')
             sourceStream.writeline('  if (size)')
             sourceStream.writeline('    _messageEncoding.addReadBuffer(size);')
+        elif typeName == 'std::string':
+            sourceStream.writeline('  value.resize(readSizeTCompressed());')
+            sourceStream.writeline('  for (std::string::iterator i = value.begin(); i != value.end(); ++i) {')
+            sourceStream.writeline('    *i = readChar();')
+            sourceStream.writeline('  }')
         else:
             sourceStream.writeline('  value = read{encoding}Compressed();'.format(encoding = encoding))
         sourceStream.writeline('}')

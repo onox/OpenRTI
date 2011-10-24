@@ -83,7 +83,6 @@
   </type>
 
   <type name="Bool" ctype="bool" encoding="Bool"/>
-  <!-- FIXME Leave that to the encoding implementation -->
   <type name="String" ctype="std::string" encoding="String"/>
   <type name="Unsigned" ctype="uint32_t" encoding="UInt32"/>
   <!-- FIXME Make that UInt64 -->

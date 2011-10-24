@@ -323,11 +323,7 @@ public:
 
   // FIXME rethink all below
 
-  // bool readBoolBE()
-  // { return !!readUInt8BE(); }
-  // bool readBoolLE()
-  // { return !!readUInt8LE(); }
-  bool readBool() // FIXME
+  bool readBool()
   { return !!readUInt8LE(); }
 
   uint8_t readUInt8Compressed()
@@ -382,41 +378,6 @@ public:
       throw RTIinternalError("Reading beyond the end of the packet");
     if (size)
       std::memcpy(data, _variableLengthData.data(offset), size);
-  }
-
-
-
-  // FIXME Move the below into the encoding implementations?
-
-  void readString(std::string& s)
-  {
-    uint32_t i = readUInt32BE();
-    s.resize(0);
-    s.reserve(i);
-    for (; i != 0; --i)
-      s.push_back(readChar());
-  }
-
-  void readStringCompressed(std::string& s)
-  {
-    size_t i = readSizeTCompressed();
-    s.resize(0);
-    s.reserve(i);
-    for (; i != 0; --i)
-      s.push_back(readChar());
-  }
-
-  std::string readStringCompressed()
-  {
-    std::string s;
-    readStringCompressed(s);
-    return s;
-  }
-
-  // FIXME move that into the implementation
-  void readData(VariableLengthData& d)
-  {
-    readData(d, readSizeTCompressed());
   }
 
 private:
