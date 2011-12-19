@@ -59,6 +59,7 @@ nonblocking_pipe(int pipeFd[2])
     if (ret == -1)
       return ret;
   }
+  return 0;
 }
 
 struct OPENRTI_LOCAL SocketEventDispatcher::PrivateData {
