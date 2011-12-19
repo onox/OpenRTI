@@ -21,7 +21,7 @@
 #include "Clock.h"
 #include "ClockPosix.h"
 
-#if defined __hpux
+#if defined( __hpux) || defined( __APPLE__)
 #include <sys/time.h>
 #else
 #include <sys/select.h>
