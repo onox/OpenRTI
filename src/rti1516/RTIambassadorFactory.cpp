@@ -26,24 +26,6 @@
 
 #include <memory>
 
-#if defined(__APPLE__)
-// Strange, but due to the circular shared library reference,
-// need to have dynamically bound symbols, which in turn appear
-// to be implemented in a non thread safe way.
-// With this small class forces the symbols to be resolved
-// at load time which solves the observed problems.
-#include <mach-o/dyld.h>
-
-class MACBindNow {
-public:
-  MACBindNow()
-  {
-    _dyld_bind_fully_image_containing_address(this);
-  }
-};
-static MACBindNow macBindNow;
-#endif
-
 namespace rti1516
 {
 
