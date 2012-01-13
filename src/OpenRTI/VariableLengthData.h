@@ -965,7 +965,7 @@ template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const VariableLengthData& value)
 {
-  os << "{ size: " << value.size() << ", data: [...]";
+  os << "{ size: " << value.size() << ", data: [...] }";
   return os;
 }
 
