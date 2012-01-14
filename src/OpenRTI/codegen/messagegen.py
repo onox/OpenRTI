@@ -40,7 +40,7 @@ class SourceStream(object):
         self.write('\n')
 
     def writeCopyright(self):
-        self.writeline('/* -*-c++-*- OpenRTI - Copyright (C) 2009-2011 Mathias Froehlich')
+        self.writeline('/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich')
         self.writeline(' *')
         self.writeline(' *')
         self.writeline(' * This file is part of OpenRTI.')
