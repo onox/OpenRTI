@@ -116,7 +116,7 @@ Clock::now()
 void
 Clock::sleep(const Clock& reltime)
 {
-#if defined(HAVE_POSIX_TIMERS)
+#if defined(HAVE_POSIX_TIMERS) && !defined(ANDROID)
   struct timespec ts = ClockPosix::toTimespec(reltime.getNSec());
 #if defined(HAVE_PTHREAD_CONDATTR_SETCLOCK)
   clock_nanosleep(ClockPosix::getClockId(), 0, &ts, 0);

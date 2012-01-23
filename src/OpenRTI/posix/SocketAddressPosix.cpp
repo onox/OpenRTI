@@ -20,13 +20,14 @@
 #include "SocketAddress.h"
 #include "SocketAddressPrivateDataPosix.h"
 
+#include <netinet/in.h>
 #include <sys/un.h>
 #include <sstream>
 
 #include "Exception.h"
 #include "StringUtils.h"
 
-#if defined(__linux)
+#if defined(__linux) && !defined(ANDROID)
 # ifndef AF_INET_SDP
 #  define AF_INET_SDP 27
 # endif
