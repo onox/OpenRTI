@@ -170,7 +170,6 @@ SocketAddress::resolve(const std::string& address, const std::string& service, b
   while (int ret = ::getaddrinfo(localeAddress.c_str(), localeService.c_str(), &hints, &ai)) {
     if (ret == EAI_AGAIN)
       continue;
-    ::freeaddrinfo(ai);
     throw TransportError(localeToUtf8(gai_strerror(ret)));
   }
 
