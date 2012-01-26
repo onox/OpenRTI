@@ -22,6 +22,7 @@
 #include <iosfwd>
 
 #include <RTI/RTI1516.h>
+#include "OpenRTIConfig.h"
 #include "StringUtils.h"
 
 namespace rti1516
