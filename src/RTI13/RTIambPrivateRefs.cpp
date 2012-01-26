@@ -34,6 +34,15 @@
 #include "RTI13LogicalTimeFactory.h"
 #include "StringUtils.h"
 
+/// Returns a new string as required with RTI13 interfaces
+static char* newUtf8ToLocale(const std::string& utf8)
+{
+  std::string s = OpenRTI::utf8ToLocale(utf8);
+  char* data = new char[s.size()+1];
+  data[s.size()] = 0;
+  return std::strncpy(data, s.c_str(), s.size());
+}
+
 static OpenRTI::VariableLengthData toOpenRTITag(const char* tag)
 {
   if (!tag)
@@ -2544,7 +2553,7 @@ RTI::RTIambassador::getObjectClassName(RTI::ObjectClassHandle objectClassHandle)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  return OpenRTI::newUtf8ToLocale(privateRefs->getObjectClassName(objectClassHandle));
+  return newUtf8ToLocale(privateRefs->getObjectClassName(objectClassHandle));
 }
 
 RTI::AttributeHandle
@@ -2572,7 +2581,7 @@ RTI::RTIambassador::getAttributeName(RTI::AttributeHandle attributeHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  return OpenRTI::newUtf8ToLocale(privateRefs->getAttributeName(objectClassHandle, attributeHandle));
+  return newUtf8ToLocale(privateRefs->getAttributeName(objectClassHandle, attributeHandle));
 }
 
 RTI::InteractionClassHandle
@@ -2596,7 +2605,7 @@ RTI::RTIambassador::getInteractionClassName(RTI::InteractionClassHandle interact
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  return OpenRTI::newUtf8ToLocale(privateRefs->getInteractionClassName(interactionClassHandle));
+  return newUtf8ToLocale(privateRefs->getInteractionClassName(interactionClassHandle));
 }
 
 RTI::ParameterHandle
@@ -2624,7 +2633,7 @@ RTI::RTIambassador::getParameterName(RTI::ParameterHandle parameterHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  return OpenRTI::newUtf8ToLocale(privateRefs->getParameterName(interactionClassHandle, parameterHandle));
+  return newUtf8ToLocale(privateRefs->getParameterName(interactionClassHandle, parameterHandle));
 }
 
 RTI::ObjectHandle
@@ -2648,7 +2657,7 @@ RTI::RTIambassador::getObjectInstanceName(RTI::ObjectHandle objectHandle)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  return OpenRTI::newUtf8ToLocale(privateRefs->getObjectInstanceName(objectHandle));
+  return newUtf8ToLocale(privateRefs->getObjectInstanceName(objectHandle));
 }
 
 RTI::SpaceHandle

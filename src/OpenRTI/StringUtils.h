@@ -233,15 +233,6 @@ inline std::string asciiToUtf8(const char* ascii)
   return utf8;
 }
 
-/// Returns a new string as required with RTI13 interfaces
-inline char* newUtf8ToLocale(const std::string& utf8)
-{
-  std::string s = utf8ToLocale(utf8);
-  char* data = new char[s.size()+1];
-  data[s.size()] = 0;
-  return std::strncpy(data, s.c_str(), s.size());
-}
-
 inline std::vector<std::string>
 split(const std::string& s, const char* c = ", \t\n")
 {
