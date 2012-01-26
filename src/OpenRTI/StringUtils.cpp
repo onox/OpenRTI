@@ -201,13 +201,13 @@ split(const std::string& s, const char* c)
   std::string::size_type p0 = 0;
   std::string::size_type p = s.find_first_of(c);
   while (p != std::string::npos) {
-    v.push_back(s.substr(p0, p));
+    v.push_back(s.substr(p0, p - p0));
     p0 = s.find_first_not_of(c, p);
     if (p0 == std::string::npos)
       return v;
     p = s.find_first_of(c, p0);
   }
-  v.push_back(s.substr(p0, p));
+  v.push_back(s.substr(p0, p - p0));
   return v;
 }
 
