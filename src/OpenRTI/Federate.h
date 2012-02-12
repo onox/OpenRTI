@@ -3485,6 +3485,9 @@ protected:
       if (!isValidObjectClass(objectClassHandle))
         return;
     }
+    // Ok we get duplicate inserts. FIXME investigate this
+    if (_objectInstanceHandleMap.find(message.getObjectInstanceHandle()) != _objectInstanceHandleMap.end())
+      return;
     insertObjectInstance(message.getObjectInstanceHandle(), message.getName(), objectClassHandle, false);
     discoverObjectInstance(message.getObjectInstanceHandle(), objectClassHandle, message.getName());
   }
