@@ -3745,6 +3745,8 @@ protected:
 
   void insertObjectInstance(ObjectInstanceHandle objectInstanceHandle, const std::string& name, ObjectClassHandle objectClassHandle, bool owned)
   {
+    OpenRTIAssert(_nameObjectInstanceHandleMap.find(name) == _nameObjectInstanceHandleMap.end());
+    OpenRTIAssert(_objectInstanceHandleMap.find(objectInstanceHandle) == _objectInstanceHandleMap.end());
     typename NameObjectInstanceHandleMap::iterator i;
     i = _nameObjectInstanceHandleMap.insert(typename NameObjectInstanceHandleMap::value_type(name, objectInstanceHandle)).first;
     typename ObjectInstanceHandleMap::iterator j;

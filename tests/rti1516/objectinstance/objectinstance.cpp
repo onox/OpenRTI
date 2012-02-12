@@ -263,6 +263,11 @@ public:
                          << ", but discovered object class "  << objectClassHandle.toString() << std::endl;
       _fail = true;
     }
+    if (_foreignObjectInstanceHandles.find(objectInstanceHandle) != _foreignObjectInstanceHandles.end()) {
+      Log(Assert, Error) << "Duplicate discoverObjectInstance callback for object instance "
+                         << objectInstanceHandle.toString() << std::endl;
+      _fail = true;
+    }
     _foreignObjectInstanceHandles.insert(objectInstanceHandle);
   }
 
@@ -272,6 +277,11 @@ public:
     throw (rti1516::ObjectInstanceNotKnown,
            rti1516::FederateInternalError)
   {
+    if (_foreignObjectInstanceHandles.find(objectInstanceHandle) == _foreignObjectInstanceHandles.end()) {
+      Log(Assert, Error) << "Spurious removeObjectInstance callback for object instance "
+                         << objectInstanceHandle.toString() << std::endl;
+      _fail = true;
+    }
     // Log(Assert, Error) << "remove " << objectInstanceHandle.toString() << std::endl;
     _foreignObjectInstanceHandles.erase(objectInstanceHandle);
   }
