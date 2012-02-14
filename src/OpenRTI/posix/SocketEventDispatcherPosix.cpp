@@ -19,15 +19,12 @@
 
 #include "SocketEventDispatcher.h"
 
-#if defined __hpux
-#include <sys/time.h>
-#else
-#include <sys/select.h>
-#endif
+#include <poll.h>
 #include <pthread.h>
 #include <vector>
 #include <map>
 #include <cerrno>
+#include <cstring>
 
 #include "AbstractSocketEvent.h"
 #include "ClockPosix.h"
@@ -103,52 +100,57 @@ struct OPENRTI_LOCAL SocketEventDispatcher::PrivateData {
         break;
       }
 
-      fd_set readfds;
-      fd_set writefds;
-      fd_set exceptfds;
-      FD_ZERO(&readfds);
-      FD_ZERO(&writefds);
-      FD_ZERO(&exceptfds);
+      _fdVector.resize(0);
+      _socketEventVector.resize(0);
+      _timerSocketEventVector.resize(0);
 
       Clock timeout = absclock;
 
-      int nfds = -1;
+      struct pollfd pfd;
+      std::memset(&pfd, 0, sizeof(pfd));
       for (SocketEventList::const_iterator i = dispatcher._socketEventList.begin(); i != dispatcher._socketEventList.end(); ++i) {
         AbstractSocketEvent* socketEvent = i->get();
-        timeout = std::min(timeout, socketEvent->getTimeout());
+        bool included = false;
         Socket* abstractSocket = socketEvent->getSocket();
-        if (!abstractSocket)
-          continue;
-        int fd = abstractSocket->_privateData->_fd;
-        if (fd == -1)
-          continue;
-        if (socketEvent->getEnableRead()) {
-          FD_SET(fd, &readfds);
-          nfds = std::max(nfds, fd);
+        if (abstractSocket) {
+          int fd = abstractSocket->_privateData->_fd;
+          if (fd != -1) {
+            pfd.fd = fd;
+            if (socketEvent->getEnableRead())
+              pfd.events |= POLLRDNORM;
+            if (socketEvent->getEnableWrite())
+              pfd.events |= POLLWRNORM;
+
+            if (pfd.events) {
+              included = true;
+              _fdVector.push_back(pfd);
+              _socketEventVector.push_back(socketEvent);
+            }
+          }
         }
-        if (socketEvent->getEnableWrite()) {
-          FD_SET(fd, &writefds);
-          nfds = std::max(nfds, fd);
+
+        if (socketEvent->getTimeout() != Clock::final()) {
+          timeout = std::min(timeout, socketEvent->getTimeout());
+          if (!included)
+            _timerSocketEventVector.push_back(socketEvent);
         }
       }
-
-      FD_SET(_wakeupReadFd, &readfds);
-      nfds = std::max(nfds, _wakeupReadFd);
+      // The wakeup event is always put at the end and does *not* have a
+      // corresponding _socketEventVector entry!
+      pfd.fd = _wakeupReadFd;
+      pfd.events = POLLRDNORM;
+      _fdVector.push_back(pfd);
 
       int count;
       if (timeout < Clock::final()) {
         uint64_t now = ClockPosix::now();
         if (timeout.getNSec() < now) {
           count = 0;
-          FD_ZERO(&readfds);
-          FD_ZERO(&writefds);
-          FD_ZERO(&exceptfds);
         } else {
-          struct timeval timeval = ClockPosix::toTimeval(timeout.getNSec() - now);
-          count = ::select(nfds + 1, &readfds, &writefds, &exceptfds, &timeval);
+          count = ::poll(&_fdVector[0], _fdVector.size(), ClockPosix::toIntMSec(timeout.getNSec() - now));
         }
       } else {
-        count = ::select(nfds + 1, &readfds, &writefds, &exceptfds, 0);
+        count = ::poll(&_fdVector[0], _fdVector.size(), -1);
       }
       if (count == -1) {
         int errorNumber = errno;
@@ -157,9 +159,6 @@ struct OPENRTI_LOCAL SocketEventDispatcher::PrivateData {
           break;
         } else {
           count = 0;
-          FD_ZERO(&readfds);
-          FD_ZERO(&writefds);
-          FD_ZERO(&exceptfds);
         }
       }
       // Timeout
@@ -169,16 +168,19 @@ struct OPENRTI_LOCAL SocketEventDispatcher::PrivateData {
         break;
       }
 
-      for (SocketEventList::const_iterator i = dispatcher._socketEventList.begin(); i != dispatcher._socketEventList.end();) {
-        SharedPtr<AbstractSocketEvent> socketEvent = *i;
-        ++i;
+      // We know the last one is from _fdVector is the wakup fd. Hence the _socketEventVector size is the one to walk.
+      for (SocketEventVector::size_type i = 0; i < _socketEventVector.size(); ++i) {
+        SharedPtr<AbstractSocketEvent> socketEvent;
+        socketEvent.swap(_socketEventVector[i]);
         Socket* abstractSocket = socketEvent->getSocket();
         if (abstractSocket) {
           int fd = abstractSocket->_privateData->_fd;
           if (fd != -1) {
-            if (FD_ISSET(fd, &readfds))
+            OpenRTIAssert(fd == _fdVector[i].fd);
+            short revents = _fdVector[i].revents;
+            if (revents & POLLRDNORM)
               dispatcher.read(socketEvent);
-            if (FD_ISSET(fd, &writefds))
+            if (revents & POLLWRNORM)
               dispatcher.write(socketEvent);
           }
         }
@@ -186,7 +188,15 @@ struct OPENRTI_LOCAL SocketEventDispatcher::PrivateData {
           dispatcher.timeout(socketEvent);
       }
 
-      if (FD_ISSET(_wakeupReadFd, &readfds)) {
+      for (SocketEventVector::size_type i = 0; i < _timerSocketEventVector.size(); ++i) {
+        SharedPtr<AbstractSocketEvent> socketEvent;
+        socketEvent.swap(_timerSocketEventVector[i]);
+        if (socketEvent->getTimeout().getNSec() <= now)
+          dispatcher.timeout(socketEvent);
+      }
+
+      OpenRTIAssert(!_fdVector.empty());
+      if (_fdVector.back().revents & POLLRDNORM) {
         char dummy[64];
         while (0 < ::read(_wakeupReadFd, dummy, sizeof(dummy)));
         if (!_wokenUp.compareAndExchange(1, 0))
@@ -195,6 +205,10 @@ struct OPENRTI_LOCAL SocketEventDispatcher::PrivateData {
         break;
       }
     }
+
+    _fdVector.resize(0);
+    _socketEventVector.resize(0);
+    _timerSocketEventVector.resize(0);
 
     return retv;
   }
@@ -225,6 +239,15 @@ private:
   Atomic _wokenUp;
   int _wakeupReadFd;
   int _wakeupWriteFd;
+
+  typedef std::vector<SharedPtr<AbstractSocketEvent> > SocketEventVector;
+  // Contains the fds for use with poll
+  std::vector<struct pollfd> _fdVector;
+  // Must be kept consistent in size with _fdVector, for each entry in _fdVector, contains the
+  // socket event belonging to the above fd.
+  SocketEventVector _socketEventVector;
+  // For times that can expire, store the AbstractSocetEvents that are not already stored in _socketEventVector.
+  SocketEventVector _timerSocketEventVector;
 };
 
 SocketEventDispatcher::SocketEventDispatcher() :

@@ -23,6 +23,7 @@
 #include <time.h>
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 #include "Clock.h"
 #include "Export.h"
@@ -59,6 +60,18 @@ struct OPENRTI_LOCAL ClockPosix {
   }
   static uint64_t toNSec(const struct timeval& tv)
   { return uint64_t(tv.tv_usec)*1000 + uint64_t(tv.tv_sec) * 1000000000; }
+
+  static int toIntMSec(const uint64_t& nsec)
+  {
+    if (std::numeric_limits<uint64_t>::max() - 500000 <= nsec)
+      return std::numeric_limits<int>::max();
+    uint64_t msec = (nsec + 500000)/1000000;
+    if (uint64_t(std::numeric_limits<int>::max()) <= msec)
+      return std::numeric_limits<int>::max();
+    if (msec == 0)
+      return 1;
+    return (int)msec;
+  }
 
   static uint64_t now();
 
