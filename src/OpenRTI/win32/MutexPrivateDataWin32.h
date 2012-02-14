@@ -21,6 +21,7 @@
 #define MutexPrivateDataWin32_h
 
 #include "Mutex.h"
+#define NOMINMAX
 #include <windows.h>
 
 namespace OpenRTI {

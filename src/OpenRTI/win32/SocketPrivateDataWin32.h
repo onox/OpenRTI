@@ -25,6 +25,7 @@
 #include "Exception.h"
 #include "Export.h"
 
+#define NOMINMAX
 #include <winsock2.h>
 #include <windows.h>
 

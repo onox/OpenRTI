@@ -19,6 +19,7 @@
 
 #include "Atomic.h"
 
+#define NOMINMAX
 #include <windows.h>
 
 #if !defined OpenRTI_ATOMIC_USE_LIBRARY

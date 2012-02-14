@@ -19,6 +19,7 @@
 
 #include "ErrnoWin32.h"
 
+#define NOMINMAX
 #include <windows.h>
 #include "StringUtils.h"
 

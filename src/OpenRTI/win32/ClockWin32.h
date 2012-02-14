@@ -20,8 +20,11 @@
 #ifndef OpenRTI_ClockWin32_h
 #define OpenRTI_ClockWin32_h
 
+#define NOMINMAX
 #include <winsock2.h>
 #include <windows.h>
+
+#include <limits>
 
 namespace OpenRTI {
 
@@ -30,21 +33,33 @@ struct OPENRTI_LOCAL ClockWin32 {
   static struct timeval toTimeval(const uint64_t& nsec)
   {
     struct timeval tv;
-    uint64_t usec = (nsec + 500) / 1000;
-    uint64_t frac = usec % 1000000;
-    tv.tv_usec = (long)frac;
-    tv.tv_sec = (long)((usec - frac) / 1000000);
+    if (std::numeric_limits<uint64_t>::max() - 500 <= nsec) {
+      tv.tv_usec = 999999;
+      tv.tv_sec = std::numeric_limits<long>::max();
+    } else {
+      uint64_t usec = (nsec + 500) / 1000;
+      if (uint64_t(std::numeric_limits<long>::max()) < usec) {
+        tv.tv_usec = 999999;
+        tv.tv_sec = std::numeric_limits<long>::max();
+      } else {
+        uint64_t frac = usec % 1000000;
+        tv.tv_usec = (long)frac;
+        tv.tv_sec = (long)((usec - frac) / 1000000);
+      }
+    }
     return tv;
   }
   
   static DWORD toMsec(const uint64_t& nsec)
   {
-    if (nsec == (~uint64_t(0)))
+    if (std::numeric_limits<uint64_t>::max() - 500000 <= nsec)
       return INFINITE;
-    DWORD msec = (DWORD)((nsec + 500000)/1000000);
+    uint64_t msec = (nsec + 500000)/1000000;
+    if (uint64_t(std::numeric_limits<DWORD>::max()) <= msec)
+      return INFINITE;
     if (msec == 0)
       return 1;
-    return msec;
+    return (DWORD)msec;
   }
 };
 

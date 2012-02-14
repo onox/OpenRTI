@@ -22,6 +22,7 @@
 #include "Atomic.h"
 #include "ClockWin32.h"
 
+#define NOMINMAX
 #include <windows.h>
 
 // Windows XP provides performance counters
