@@ -46,7 +46,7 @@ ServerObjectModel::ObjectInstance::referenceObjectInstance(ConnectData* connect)
   ConnectHandleObjectInstanceConnectMap::iterator i;
   // FIXME make that assert at some time
   // OpenRTIAssert(_connectHandleObjectInstanceConnectMap.find(connectHandle) == _connectHandleObjectInstanceConnectMap.end());
-  i = _connectHandleObjectInstanceConnectMap.insert(value_type(connectHandle, 0)).first;
+  i = _connectHandleObjectInstanceConnectMap.insert(value_type(connectHandle, SharedPtr<ObjectInstanceConnect>())).first;
   if (i->second.get())
     return i->second.get();
   i->second = new ObjectInstanceConnect(i, this, connect);
@@ -192,7 +192,7 @@ ServerObjectModel::insertRegion(const RegionHandle& regionHandle)
 {
   typedef RegionHandleRegionMap::value_type value_type;
   RegionHandleRegionMap::iterator i;
-  i = _regionHandleRegionMap.insert(value_type(regionHandle, 0)).first;
+  i = _regionHandleRegionMap.insert(value_type(regionHandle, SharedPtr<Region>())).first;
   OpenRTIAssert(!i->second.valid());
   i->second = new Region(i);
   return i->second.get();
@@ -262,7 +262,7 @@ ServerObjectModel::_insertObjectInstanceHandle(const ObjectInstanceHandle& objec
   StringSet::iterator stringSetIterator = _objectInstanceNameSet.insert(objectInstanceName).first;
   ObjectInstanceHandleObjectInstanceMap::iterator i;
   typedef ObjectInstanceHandleObjectInstanceMap::value_type value_type;
-  i = _objectInstanceHandleObjectInstanceMap.insert(value_type(objectInstanceHandle, 0)).first;
+  i = _objectInstanceHandleObjectInstanceMap.insert(value_type(objectInstanceHandle, SharedPtr<ObjectInstance>())).first;
   i->second = new ObjectInstance(i, stringSetIterator);
   return i->second.get();
 }
@@ -311,7 +311,7 @@ ServerObjectModel::insertFederate(const ConnectHandle& connectHandle, const std:
   stringSetIterator = _federateNameSet.insert(federateName).first;
   FederateHandleFederateMap::iterator i;
   typedef FederateHandleFederateMap::value_type value_type;
-  i = _federateHandleFederateMap.insert(value_type(federateHandle, 0)).first;
+  i = _federateHandleFederateMap.insert(value_type(federateHandle, SharedPtr<Federate>())).first;
   i->second = new Federate(i, stringSetIterator);
   // i->second->_connectHandle = connectHandle;
   ConnectHandleConnectDataMap::iterator j = _connectHandleConnectDataMap.find(connectHandle);
@@ -403,7 +403,7 @@ ServerObjectModel::getOrInsertConnect(const ConnectHandle& connectHandle)
   OpenRTIAssert(connectHandle.valid());
   std::pair<ConnectHandleConnectDataMap::iterator, bool> iteratorBoolPair;
   typedef ConnectHandleConnectDataMap::value_type value_type;
-  iteratorBoolPair = _connectHandleConnectDataMap.insert(value_type(connectHandle, 0));
+  iteratorBoolPair = _connectHandleConnectDataMap.insert(value_type(connectHandle, SharedPtr<ConnectData>()));
   if (!iteratorBoolPair.second) {
     OpenRTIAssert(iteratorBoolPair.first->second.valid());
     return iteratorBoolPair.first->second.get();
