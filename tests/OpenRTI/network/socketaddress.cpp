@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
 
   SocketAddressList addressList;
 
-  addressList = SocketAddress::resolve("0", true);
+  addressList = SocketAddress::resolve("0.0.0.0", true);
   for (SocketAddressList::const_iterator i = addressList.begin(); i != addressList.end(); ++i) {
     if (!i->valid())
       return EXIT_FAILURE;
