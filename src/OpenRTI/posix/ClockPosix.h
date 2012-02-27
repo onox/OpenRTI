@@ -21,6 +21,8 @@
 #define OpenRTI_ClockPosix_h
 
 #include <time.h>
+#include <unistd.h>
+#include <sys/time.h>
 #include <algorithm>
 #include <cmath>
 #include <limits>
