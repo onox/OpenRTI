@@ -1431,11 +1431,25 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
          rti1516::CouldNotCreateLogicalTimeFactory,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->ensureConnected(ucsToUtf8(federationExecutionName));
+  std::string fddFile = OpenRTI::ucsToUtf8(fullPathNameToTheFDDfile);
 
-  std::vector<std::string> fomModules;
-  fomModules.push_back(ucsToUtf8(fullPathNameToTheFDDfile));
-  _ambassadorInterface->createFederationExecution(getFilePart(ucsToUtf8(federationExecutionName)), fomModules, ucsToUtf8(logicalTimeImplementationName));
+  OpenRTI::FOMStringModuleList fomModules;
+  try {
+    fomModules.push_back(OpenRTI::FOMStringModule());
+    readFDDFile(fddFile, fomModules.back());
+  } catch (const OpenRTI::CouldNotOpenFDD& e) {
+    throw rti1516::CouldNotOpenFDD(OpenRTI::utf8ToUcs(e.getReason()));
+  } catch (const OpenRTI::ErrorReadingFDD& e) {
+    throw rti1516::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
+  } catch (const OpenRTI::Exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.getReason()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown error");
+  }
+
+  std::string utf8FederationExecutionName = OpenRTI::ucsToUtf8(federationExecutionName);
+  _ambassadorInterface->ensureConnected(utf8FederationExecutionName);
+  _ambassadorInterface->createFederationExecution(getFilePart(utf8FederationExecutionName), fomModules, ucsToUtf8(logicalTimeImplementationName));
 }
 
 // 4.3
@@ -1466,7 +1480,7 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
 
   FederateHandle federateHandle = _ambassadorInterface->joinFederationExecution(std::string(), ucsToUtf8(federateType),
                                                                                 getFilePart(ucsToUtf8(federationExecutionName)),
-                                                                                std::vector<std::string>(), &federateAmbassador);
+                                                                                OpenRTI::FOMStringModuleList(), &federateAmbassador);
   return rti1516::FederateHandleFriend::createHandle(federateHandle);
 }
 

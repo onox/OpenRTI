@@ -1146,12 +1146,26 @@ RTI::RTIambassador::createFederationExecution(const char* federationExecutionNam
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
+  std::string fddFile = OpenRTI::localeToUtf8(fedFile);
   std::string utf8FederationExecutionName = OpenRTI::localeToUtf8(federationExecutionName);
+  OpenRTI::FOMStringModuleList fomModules;
+  try {
+    fomModules.push_back(OpenRTI::FOMStringModule());
+    if (OpenRTI::matchExtension(fddFile, ".fed"))
+      readFEDFile(fddFile, fomModules.back());
+    else
+      readFDDFile(fddFile, fomModules.back());
+  } catch (const OpenRTI::CouldNotOpenFDD& e) {
+    throw RTI::CouldNotOpenFED(OpenRTI::utf8ToLocale(e.getReason()).c_str());
+  } catch (const OpenRTI::ErrorReadingFDD& e) {
+    throw RTI::ErrorReadingFED(OpenRTI::utf8ToLocale(e.getReason()).c_str());
+  } catch (const OpenRTI::Exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.getReason()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown error");
+  }
 
   privateRefs->ensureConnected(utf8FederationExecutionName);
-
-  std::vector<std::string> fomModules;
-  fomModules.push_back(OpenRTI::localeToUtf8(fedFile));
   privateRefs->createFederationExecution(OpenRTI::getFilePart(utf8FederationExecutionName), fomModules, std::string(/*FIXME*/));
 }
 
@@ -1193,7 +1207,7 @@ RTI::RTIambassador::joinFederationExecution(const char* federateType,
   std::string utf8FederateType = OpenRTI::localeToUtf8(federateType);
   FederateHandle federateHandle = privateRefs->joinFederationExecution(std::string(), utf8FederateType,
                                                                        OpenRTI::getFilePart(utf8FederationExecutionName),
-                                                                       std::vector<std::string>(), federateAmbassadorPointer);
+                                                                       OpenRTI::FOMStringModuleList(), federateAmbassadorPointer);
   return federateHandle;
 }
 

@@ -891,7 +891,7 @@ public:
     try {
       rti1516e::InteractionClassHandle rti1516InteractionClassHandle;
       rti1516InteractionClassHandle = rti1516e::InteractionClassHandleFriend::createHandle(interactionClassHandle);
- 
+
       const typename Federate<RTI1516ETraits, LogicalTimeFactory>::InteractionClass& interactionClass
         = Federate<RTI1516ETraits, LogicalTimeFactory>::getInteractionClass(interactionClassHandle);
       rti1516e::ParameterHandleValueMap rti1516ParameterValues;
@@ -926,7 +926,7 @@ public:
     try {
       rti1516e::InteractionClassHandle rti1516InteractionClassHandle;
       rti1516InteractionClassHandle = rti1516e::InteractionClassHandleFriend::createHandle(interactionClassHandle);
- 
+
       const typename Federate<RTI1516ETraits, LogicalTimeFactory>::InteractionClass& interactionClass
         = Federate<RTI1516ETraits, LogicalTimeFactory>::getInteractionClass(interactionClassHandle);
       rti1516e::ParameterHandleValueMap rti1516ParameterValues;
@@ -1553,8 +1553,23 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
-  std::vector<std::string> fomModules;
-  fomModules.push_back(ucsToUtf8(fomModule));
+  OpenRTI::FOMStringModuleList fomModules;
+
+  std::string fddFile = OpenRTI::ucsToUtf8(fomModule);
+  try {
+    fomModules.push_back(OpenRTI::FOMStringModule());
+    readFDDFile(fddFile, fomModules.back());
+  } catch (const OpenRTI::CouldNotOpenFDD& e) {
+    throw rti1516e::CouldNotOpenFDD(OpenRTI::utf8ToUcs(e.getReason()));
+  } catch (const OpenRTI::ErrorReadingFDD& e) {
+    throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
+  } catch (const OpenRTI::Exception& e) {
+    throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.getReason()));
+  } catch (...) {
+    throw rti1516e::RTIinternalError(L"Unknown error");
+  }
+
+  std::string utf8FederationExecutionName = OpenRTI::ucsToUtf8(federationExecutionName);
   _ambassadorInterface->createFederationExecution(ucsToUtf8(federationExecutionName), fomModules, ucsToUtf8(logicalTimeImplementationName));
 }
 
@@ -1570,10 +1585,25 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
-  std::vector<std::string> utf8FomModules;
-  for (std::vector<std::wstring>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i)
-    utf8FomModules.push_back(ucsToUtf8(*i));
-  _ambassadorInterface->createFederationExecution(ucsToUtf8(federationExecutionName), utf8FomModules, ucsToUtf8(logicalTimeImplementationName));
+  OpenRTI::FOMStringModuleList fomModuleList;
+
+  for (std::vector<std::wstring>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i) {
+    std::string fddFile = OpenRTI::ucsToUtf8(*i);
+    try {
+      fomModuleList.push_back(OpenRTI::FOMStringModule());
+      readFDDFile(fddFile, fomModuleList.back());
+    } catch (const OpenRTI::CouldNotOpenFDD& e) {
+      throw rti1516e::CouldNotOpenFDD(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (const OpenRTI::ErrorReadingFDD& e) {
+      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (const OpenRTI::Exception& e) {
+      throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (...) {
+      throw rti1516e::RTIinternalError(L"Unknown error");
+    }
+  }
+
+  _ambassadorInterface->createFederationExecution(ucsToUtf8(federationExecutionName), fomModuleList, ucsToUtf8(logicalTimeImplementationName));
 }
 
 void
@@ -1592,11 +1622,39 @@ RTIambassadorImplementation::createFederationExecution (std::wstring const & fed
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
-  std::vector<std::string> utf8FomModules;
-  utf8FomModules.push_back(ucsToUtf8(mimModule));
-  for (std::vector<std::wstring>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i)
-    utf8FomModules.push_back(ucsToUtf8(*i));
-  _ambassadorInterface->createFederationExecution(ucsToUtf8(federationExecutionName), utf8FomModules, ucsToUtf8(logicalTimeImplementationName));
+  OpenRTI::FOMStringModuleList fomModuleList;
+
+  std::string fddFile = OpenRTI::ucsToUtf8(mimModule);
+  try {
+    fomModuleList.push_back(OpenRTI::FOMStringModule());
+    readFDDFile(fddFile, fomModuleList.back());
+  } catch (const OpenRTI::CouldNotOpenFDD& e) {
+    throw rti1516e::CouldNotOpenMIM(OpenRTI::utf8ToUcs(e.getReason()));
+  } catch (const OpenRTI::ErrorReadingFDD& e) {
+    throw rti1516e::ErrorReadingMIM(OpenRTI::utf8ToUcs(e.getReason()));
+  } catch (const OpenRTI::Exception& e) {
+    throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.getReason()));
+  } catch (...) {
+    throw rti1516e::RTIinternalError(L"Unknown error");
+  }
+
+  for (std::vector<std::wstring>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i) {
+    std::string fddFile = OpenRTI::ucsToUtf8(*i);
+    try {
+      fomModuleList.push_back(OpenRTI::FOMStringModule());
+      readFDDFile(fddFile, fomModuleList.back());
+    } catch (const OpenRTI::CouldNotOpenFDD& e) {
+      throw rti1516e::CouldNotOpenFDD(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (const OpenRTI::ErrorReadingFDD& e) {
+      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (const OpenRTI::Exception& e) {
+      throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (...) {
+      throw rti1516e::RTIinternalError(L"Unknown error");
+    }
+  }
+
+  _ambassadorInterface->createFederationExecution(ucsToUtf8(federationExecutionName), fomModuleList, ucsToUtf8(logicalTimeImplementationName));
 }
 
 void
@@ -1633,11 +1691,26 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
          rti1516e::CallNotAllowedFromWithinCallback,
          rti1516e::RTIinternalError)
 {
-  std::vector<std::string> utf8FomModules;
-  for (std::vector<std::wstring>::const_iterator i = additionalFomModules.begin(); i != additionalFomModules.end(); ++i)
-    utf8FomModules.push_back(ucsToUtf8(*i));
+  OpenRTI::FOMStringModuleList fomModuleList;
+
+  for (std::vector<std::wstring>::const_iterator i = additionalFomModules.begin(); i != additionalFomModules.end(); ++i) {
+    std::string fddFile = OpenRTI::ucsToUtf8(*i);
+    try {
+      fomModuleList.push_back(OpenRTI::FOMStringModule());
+      readFDDFile(fddFile, fomModuleList.back());
+    } catch (const OpenRTI::CouldNotOpenFDD& e) {
+      throw rti1516e::CouldNotOpenFDD(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (const OpenRTI::ErrorReadingFDD& e) {
+      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (const OpenRTI::Exception& e) {
+      throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (...) {
+      throw rti1516e::RTIinternalError(L"Unknown error");
+    }
+  }
+
   FederateHandle federateHandle = _ambassadorInterface->joinFederationExecution(std::string(), ucsToUtf8(federateType), ucsToUtf8(federationExecutionName),
-                                                                                utf8FomModules, _ambassadorInterface->_federateAmbassador);
+                                                                                fomModuleList, _ambassadorInterface->_federateAmbassador);
   return rti1516e::FederateHandleFriend::createHandle(federateHandle);
 }
 
@@ -1659,11 +1732,26 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
          rti1516e::CallNotAllowedFromWithinCallback,
          rti1516e::RTIinternalError)
 {
-  std::vector<std::string> utf8FomModules;
-  for (std::vector<std::wstring>::const_iterator i = additionalFomModules.begin(); i != additionalFomModules.end(); ++i)
-    utf8FomModules.push_back(ucsToUtf8(*i));
+  OpenRTI::FOMStringModuleList fomModuleList;
+
+  for (std::vector<std::wstring>::const_iterator i = additionalFomModules.begin(); i != additionalFomModules.end(); ++i) {
+    std::string fddFile = OpenRTI::ucsToUtf8(*i);
+    try {
+      fomModuleList.push_back(OpenRTI::FOMStringModule());
+      readFDDFile(fddFile, fomModuleList.back());
+    } catch (const OpenRTI::CouldNotOpenFDD& e) {
+      throw rti1516e::CouldNotOpenFDD(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (const OpenRTI::ErrorReadingFDD& e) {
+      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (const OpenRTI::Exception& e) {
+      throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (...) {
+      throw rti1516e::RTIinternalError(L"Unknown error");
+    }
+  }
+
   FederateHandle federateHandle = _ambassadorInterface->joinFederationExecution(ucsToUtf8(federateName), ucsToUtf8(federateType), ucsToUtf8(federationExecutionName),
-                                                                                utf8FomModules, _ambassadorInterface->_federateAmbassador);
+                                                                                fomModuleList, _ambassadorInterface->_federateAmbassador);
   return rti1516e::FederateHandleFriend::createHandle(federateHandle);
 }
 

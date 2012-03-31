@@ -212,7 +212,7 @@ public:
   { return _connect.valid(); }
 
   void createFederationExecution(const std::string& federationExecutionName,
-                                 const std::vector<std::string>& fomModules,
+                                 const FOMStringModuleList& fomModules,
                                  const std::string& logicalTimeFactoryName)
     throw (FederationExecutionAlreadyExists,
            // InconsistentFDD,
@@ -234,16 +234,7 @@ public:
       SharedPtr<CreateFederationExecutionRequestMessage> request = new CreateFederationExecutionRequestMessage;
       request->setFederationExecution(federationExecutionName);
       request->setLogicalTimeFactoryName(logicalTimeFactoryName);
-
-      // Try to read the object model
-      for (std::vector<std::string>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i) {
-        FOMStringModule module;
-        if (matchExtension(*i, ".fed"))
-          readFEDFile(*i, module);
-        else
-          readFDDFile(*i, module);
-        request->getFOMStringModuleList().push_back(module);
-      }
+      request->setFOMStringModuleList(fomModules);
 
       // The maximum abstime to try to connect
       Clock abstime = Clock::now() + Clock::fromSeconds(70);
@@ -352,7 +343,7 @@ public:
 
   FederateHandle joinFederationExecution(const std::string& federateName, const std::string& federateType,
                                          const std::string& federationExecutionName,
-                                         const std::vector<std::string>& additionalFomModules,
+                                         const FOMStringModuleList& fomModules,
                                          FederateAmbassador* federateAmbassador)
     throw (CouldNotCreateLogicalTimeFactory,
            FederationExecutionDoesNotExist,
@@ -375,7 +366,7 @@ public:
         Traits::throwNotConnected(std::string("Could not get connect RTI of federation execution \"") +
                                   federationExecutionName + std::string("\"."));
 
-      if (!additionalFomModules.empty())
+      if (!fomModules.empty())
         Traits::throwRTIinternalError("Additionaly FOM modules are not implemented yet!");
 
       // The maximum abstime to try to connect
