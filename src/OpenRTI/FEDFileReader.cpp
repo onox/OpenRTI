@@ -32,12 +32,15 @@ public:
   virtual void startDocument()
   {
     OpenRTIAssert(_modeStack.empty());
-    _fomStringModuleBuilder.addTransportationType("reliable");
-    _fomStringModuleBuilder.addTransportationType("best_effort");
+    _fomStringModuleBuilder.addTransportationType();
+    _fomStringModuleBuilder.getCurrentTransportationType().setName("reliable");
+    _fomStringModuleBuilder.addTransportationType();
+    _fomStringModuleBuilder.getCurrentTransportationType().setName("best_effort");
   }
   virtual void endDocument()
   {
     OpenRTIAssert(_modeStack.empty());
+    _fomStringModuleBuilder.validate();
   }
 
   virtual void startElement(const ParenthesesReader&, const StringVector& tokens)
@@ -110,14 +113,18 @@ public:
         if (2 < tokens.size())
           throw ErrorReadingFDD("object class contains too many tokens!");
         _modeStack.push_back(ObjectClassMode);
-        _fomStringModuleBuilder.pushObjectClassData(tokens[1]);
+        _fomStringModuleBuilder.pushObjectClass();
+        _fomStringModuleBuilder.getCurrentObjectClass().setName(tokens[1]);
       } else if (currentMode == InteractionsMode || currentMode == InteractionClassMode) {
         if (tokens.size() < 4)
           throw ErrorReadingFDD("interaction class contains too little information!");
         if (5 < tokens.size())
           throw ErrorReadingFDD("interaction class contains too many tokens!");
         _modeStack.push_back(InteractionClassMode);
-        _fomStringModuleBuilder.pushInteractionClassData(tokens[1], tokens[3], tokens[2]);
+        _fomStringModuleBuilder.pushInteractionClass();
+        _fomStringModuleBuilder.getCurrentInteractionClass().setName(tokens[1]);
+        _fomStringModuleBuilder.getCurrentInteractionClass().setTransportationType(tokens[2]);
+        _fomStringModuleBuilder.getCurrentInteractionClass().setOrderType(tokens[3]);
         /// FIXME
         // if (4 < tokens.size())
         //   _fomStringModuleBuilder.addInteractionSpace(tokens[4]);
@@ -132,7 +139,10 @@ public:
       if (5 < tokens.size())
         throw ErrorReadingFDD("attribute contains too many tokens!");
       _modeStack.push_back(AttributeMode);
-      _fomStringModuleBuilder.addAttribute(tokens[1], tokens[3], tokens[2]);
+      _fomStringModuleBuilder.addAttribute();
+      _fomStringModuleBuilder.getCurrentObjectClassAttribute().setName(tokens[1]);
+      _fomStringModuleBuilder.getCurrentObjectClassAttribute().setTransportationType(tokens[2]);
+      _fomStringModuleBuilder.getCurrentObjectClassAttribute().setOrderType(tokens[3]);
       /// FIXME
       // if (4 < tokens.size())
       //   _fomStringModuleBuilder.addAttributeSpace(tokens[4]);
@@ -144,7 +154,8 @@ public:
       if (2 < tokens.size())
         throw ErrorReadingFDD("interaction class contains too many tokens!");
       _modeStack.push_back(ParameterMode);
-      _fomStringModuleBuilder.addParameter(tokens[1]);
+      _fomStringModuleBuilder.addParameter();
+      _fomStringModuleBuilder.getCurrentInteractionClassParameter().setName(tokens[1]);
     } else {
       _modeStack.push_back(UnknownMode);
     }
@@ -153,9 +164,9 @@ public:
   {
     Mode currentMode = getCurrentMode();
     if (currentMode == ObjectClassMode) {
-      _fomStringModuleBuilder.popObjectClassData();
+      _fomStringModuleBuilder.popObjectClass();
     } else if (currentMode == InteractionClassMode) {
-      _fomStringModuleBuilder.popInteractionClassData();
+      _fomStringModuleBuilder.popInteractionClass();
     }
     _modeStack.pop_back();
   }

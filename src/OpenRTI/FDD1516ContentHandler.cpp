@@ -48,6 +48,7 @@ void
 FDD1516ContentHandler::endDocument(void)
 {
   OpenRTIAssert(_modeStack.empty());
+  _fomStringModuleBuilder.validate();
 }
 
 void
@@ -59,11 +60,14 @@ FDD1516ContentHandler::startElement(const char* uri, const char* name,
       throw ErrorReadingFDD("attribute tag outside objectClass!");
     _modeStack.push_back(AttributeMode);
 
-    std::string name = trim(atts->getValue("name"));
-    std::string order = trim(atts->getValue("order"));
-    std::string transportation = trim(atts->getValue("transportation"));
+    _fomStringModuleBuilder.addAttribute();
 
-    _fomStringModuleBuilder.addAttribute(name, order, transportation);
+    std::string name = trim(atts->getValue("name"));
+    _fomStringModuleBuilder.getCurrentObjectClassAttribute().setName(name);
+    std::string order = trim(atts->getValue("order"));
+    _fomStringModuleBuilder.getCurrentObjectClassAttribute().setOrderType(order);
+    std::string transportation = trim(atts->getValue("transportation"));
+    _fomStringModuleBuilder.getCurrentObjectClassAttribute().setTransportationType(transportation);
 
     std::vector<std::string> dimensionList = split(atts->getValue("dimensions"), ", \t\n");
     for (std::vector<std::string>::const_iterator i = dimensionList.begin(); i != dimensionList.end(); ++i) {
@@ -80,8 +84,10 @@ FDD1516ContentHandler::startElement(const char* uri, const char* name,
       throw ErrorReadingFDD("objectClass tag outside objectClass or objects!");
     _modeStack.push_back(ObjectClassMode);
 
+    _fomStringModuleBuilder.pushObjectClass();
+
     std::string name = trim(atts->getValue("name"));
-    _fomStringModuleBuilder.pushObjectClassData(name);
+    _fomStringModuleBuilder.getCurrentObjectClass().setName(name);
 
   } else if (strcmp(name, "objects") == 0) {
     if (getCurrentMode() != ObjectModelMode)
@@ -93,18 +99,24 @@ FDD1516ContentHandler::startElement(const char* uri, const char* name,
       throw ErrorReadingFDD("parameter tag outside interactionClass!");
     _modeStack.push_back(ParameterMode);
 
+    _fomStringModuleBuilder.addParameter();
+
     std::string name = trim(atts->getValue("name"));
-    _fomStringModuleBuilder.addParameter(name);
+    _fomStringModuleBuilder.getCurrentInteractionClassParameter().setName(name);
 
   } else if (strcmp(name, "interactionClass") == 0) {
     if (getCurrentMode() != InteractionsMode && getCurrentMode() != InteractionClassMode)
       throw ErrorReadingFDD("interactionClass tag outside interactions or interactionClass!");
     _modeStack.push_back(InteractionClassMode);
 
+    _fomStringModuleBuilder.pushInteractionClass();
+
     std::string name = trim(atts->getValue("name"));
+    _fomStringModuleBuilder.getCurrentInteractionClass().setName(name);
     std::string order = trim(atts->getValue("order"));
+    _fomStringModuleBuilder.getCurrentInteractionClass().setOrderType(order);
     std::string transportation = trim(atts->getValue("transportation"));
-    _fomStringModuleBuilder.pushInteractionClassData(name, order, transportation);
+    _fomStringModuleBuilder.getCurrentInteractionClass().setTransportationType(transportation);
 
     std::vector<std::string> dimensionList = split(atts->getValue("dimensions"),  ", \t\n");
     for (std::vector<std::string>::const_iterator i = dimensionList.begin(); i != dimensionList.end(); ++i) {
@@ -131,19 +143,25 @@ FDD1516ContentHandler::startElement(const char* uri, const char* name,
       throw ErrorReadingFDD("dimension tag outside dimensions!");
     _modeStack.push_back(DimensionMode);
 
+    _fomStringModuleBuilder.addDimension();
+
     std::string name = trim(atts->getValue("name"));
+    _fomStringModuleBuilder.getCurrentDimension().setName(name);
+
     std::stringstream ss(atts->getValue("upperBound"));
     Unsigned upperBound = 0;
     ss >> upperBound;
-    _fomStringModuleBuilder.addDimension(name, upperBound);
+    _fomStringModuleBuilder.getCurrentDimension().setUpperBound(upperBound);
 
   } else if (strcmp(name, "transportation") == 0) {
     if (getCurrentMode() != TransportationsMode)
       throw ErrorReadingFDD("transportation tag outside transportations!");
     _modeStack.push_back(TransportationMode);
 
+    _fomStringModuleBuilder.addTransportationType();
+
     std::string name = trim(atts->getValue("name"));
-    _fomStringModuleBuilder.addTransportationType(name);
+    _fomStringModuleBuilder.getCurrentTransportationType().setName(name);
 
   } else if (strcmp(name, "transportations") == 0) {
     if (getCurrentMode() != ObjectModelMode)
@@ -244,9 +262,9 @@ void
 FDD1516ContentHandler::endElement(const char* uri, const char* name, const char* qName)
 {
   if (strcmp(name, "objectClass") == 0) {
-    _fomStringModuleBuilder.popObjectClassData();
+    _fomStringModuleBuilder.popObjectClass();
   } else if (strcmp(name, "interactionClass") == 0) {
-    _fomStringModuleBuilder.popInteractionClassData();
+    _fomStringModuleBuilder.popInteractionClass();
   }
   _modeStack.pop_back();
 }

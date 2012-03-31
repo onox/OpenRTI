@@ -33,80 +33,68 @@ namespace OpenRTI {
 class OPENRTI_LOCAL FOMStringModuleBuilder {
 public:
 
-  void addTransportationType(const std::string& name)
+  void addTransportationType()
   {
-    if (!_transportationTypeNames.insert(name).second)
-      throw ErrorReadingFDD(std::string("Duplicate transportation type name \"") + name + "\".");
     _module.getTransportationTypeList().push_back(FOMStringTransportationType());
-    _module.getTransportationTypeList().back().setName(name);
+  }
+  FOMStringTransportationType& getCurrentTransportationType()
+  {
+    if (_module.getTransportationTypeList().empty())
+      throw RTIinternalError("No current transportation type.");
+    return _module.getTransportationTypeList().back();
   }
 
-  void addDimension(const std::string& name, Unsigned upperBound)
+  void addDimension()
   {
-    if (!_dimensionNames.insert(name).second)
-      throw ErrorReadingFDD(std::string("Duplicate dimension name \"") + name + "\".");
     _module.getDimensionList().push_back(FOMStringDimension());
-    _module.getDimensionList().back().setName(name);
-    _module.getDimensionList().back().setUpperBound(upperBound);
+  }
+  FOMStringDimension& getCurrentDimension()
+  {
+    if (_module.getDimensionList().empty())
+      throw RTIinternalError("No current dimension.");
+    return _module.getDimensionList().back();
   }
 
-  void pushObjectClassData(const std::string& name)
+  void pushObjectClass()
   {
-    if (name.empty())
-      throw ErrorReadingFDD("Empty object class name is not allowed.");
-    if (!_objectClassNames.insert(name).second)
-      throw ErrorReadingFDD(std::string("Duplicate object class name \"") + name + "\".");
-
     if (_objectClassIndexStack.empty()) {
       _objectClassIndexStack.push_back(0);
+      _parentObjectClassIndexVector.push_back(~size_t(0));
       _module.getObjectClassList().resize(1);
-      _attributeNameStack.push_back(StringSet());
     } else {
       size_t parentIndex = _objectClassIndexStack.back();
       size_t index = _module.getObjectClassList().size();
       _objectClassIndexStack.push_back(index);
+      _parentObjectClassIndexVector.push_back(parentIndex);
       _module.getObjectClassList().resize(index + 1);
-      _module.getObjectClassList().back().setParentName(_module.getObjectClassList()[parentIndex].getName());
-      _attributeNameStack.push_back(_attributeNameStack.back());
     }
-    _module.getObjectClassList().back().setName(name);
   }
-
-  void popObjectClassData()
+  void popObjectClass()
   {
     _objectClassIndexStack.pop_back();
-    _attributeNameStack.pop_back();
   }
-
   FOMStringObjectClass& getCurrentObjectClass()
   {
+    if (_objectClassIndexStack.empty())
+      throw RTIinternalError("No current object class.");
+    if (_module.getObjectClassList().size() <= _objectClassIndexStack.back())
+      throw RTIinternalError("No current object class.");
     return _module.getObjectClassList()[_objectClassIndexStack.back()];
   }
 
-  void addAttribute(const std::string& name, const std::string& orderType, const std::string& transportationType)
+  void addAttribute()
   {
-    if (name.empty())
-      throw ErrorReadingFDD("Empty attribute name is not allowed.");
-    if (_objectClassIndexStack.empty())
-      throw ErrorReadingFDD("No current object class.");
-    if (!_attributeNameStack.back().insert(name).second)
-      throw ErrorReadingFDD(std::string("Duplicate object class attribute name \"") + name + "\"");
-
     getCurrentObjectClass().getAttributeList().push_back(FOMStringAttribute());
-    getCurrentObjectClass().getAttributeList().back().setName(name);
-    getCurrentObjectClass().getAttributeList().back().setOrderType(orderType);
-    getCurrentObjectClass().getAttributeList().back().setTransportationType(transportationType);
   }
-
+  FOMStringAttribute& getCurrentObjectClassAttribute()
+  {
+    if (getCurrentObjectClass().getAttributeList().empty())
+      throw RTIinternalError("No current attribute.");
+    return getCurrentObjectClass().getAttributeList().back();
+  }
   void addAttributeDimension(const std::string& name)
   {
-    if (name.empty())
-      throw ErrorReadingFDD("Empty dimension name is not allowed.");
-    if (_objectClassIndexStack.empty())
-      throw ErrorReadingFDD("No current object class.");
-    if (getCurrentObjectClass().getAttributeList().empty())
-      throw ErrorReadingFDD("No current attribute.");
-    if (!getCurrentObjectClass().getAttributeList().back().getDimensionSet().insert(name).second) {
+    if (!getCurrentObjectClassAttribute().getDimensionSet().insert(name).second) {
       std::stringstream ss;
       ss << "Duplicate dimension \"" << name << "\" while processing attribute \""
          << getCurrentObjectClass().getAttributeList().back().getName() << "\" for ObjectClass \""
@@ -115,47 +103,34 @@ public:
     }
   }
 
-  void pushInteractionClassData(const std::string& name, const std::string& orderType, const std::string& transportationType)
+  void pushInteractionClass()
   {
-    if (name.empty())
-      throw ErrorReadingFDD("Empty object class name is not allowed.");
-    if (!_interactionClassNames.insert(name).second)
-      throw ErrorReadingFDD(std::string("Duplicate object class name \"") + name + "\".");
-
     if (_interactionClassIndexStack.empty()) {
       _interactionClassIndexStack.push_back(0);
+      _parentInteractionClassIndexVector.push_back(~size_t(0));
       _module.getInteractionClassList().resize(1);
-      _parameterNameStack.push_back(StringSet());
     } else {
       size_t parentIndex = _interactionClassIndexStack.back();
       size_t index = _module.getInteractionClassList().size();
       _interactionClassIndexStack.push_back(index);
+      _parentInteractionClassIndexVector.push_back(parentIndex);
       _module.getInteractionClassList().resize(index + 1);
-      _module.getInteractionClassList().back().setParentName(_module.getInteractionClassList()[parentIndex].getName());
-      _parameterNameStack.push_back(_parameterNameStack.back());
     }
-    _module.getInteractionClassList().back().setName(name);
-    _module.getInteractionClassList().back().setOrderType(orderType);
-    _module.getInteractionClassList().back().setTransportationType(transportationType);
   }
-
-  void popInteractionClassData()
+  void popInteractionClass()
   {
     _interactionClassIndexStack.pop_back();
-    _parameterNameStack.pop_back();
   }
-
   FOMStringInteractionClass& getCurrentInteractionClass()
   {
+    if (_interactionClassIndexStack.empty())
+      throw RTIinternalError("No current interaction class.");
+    if (_module.getInteractionClassList().size() <= _interactionClassIndexStack.back())
+      throw RTIinternalError("No current interaction class.");
     return _module.getInteractionClassList()[_interactionClassIndexStack.back()];
   }
-
   void addInteractionDimension(const std::string& name)
   {
-    if (name.empty())
-      throw ErrorReadingFDD("Empty dimension name is not allowed.");
-    if (_interactionClassIndexStack.empty())
-      throw ErrorReadingFDD("No current interaction class.");
     if (!getCurrentInteractionClass().getDimensionSet().insert(name).second) {
       std::stringstream ss;
       ss << "Duplicate dimension \"" << name << "\" while processing InteractionClass \""
@@ -164,36 +139,139 @@ public:
     }
   }
 
-  void addParameter(const std::string& name)
+  void addParameter()
   {
-    if (name.empty())
-      throw ErrorReadingFDD("Empty parameter name is not allowed.");
-    if (_interactionClassIndexStack.empty())
-      throw ErrorReadingFDD("No current interaction class.");
-    if (!_parameterNameStack.back().insert(name).second)
-      throw ErrorReadingFDD(std::string("Duplicate interaction class parameter name \"") + name + "\"");
     getCurrentInteractionClass().getParameterList().push_back(FOMStringParameter());
-    getCurrentInteractionClass().getParameterList().back().setName(name);
+  }
+  FOMStringParameter& getCurrentInteractionClassParameter()
+  {
+    if (getCurrentInteractionClass().getParameterList().empty())
+      throw RTIinternalError("No current parameter.");
+    return getCurrentInteractionClass().getParameterList().back();
+  }
+
+  void validate()
+  {
+    // Check the interaction/object class names to be distinct
+    StringSet transportationTypeNames;
+    for (size_t i = 0; i < _module.getTransportationTypeList().size(); ++i) {
+      std::string name = _module.getTransportationTypeList()[i].getName();
+      if (name.empty())
+        throw ErrorReadingFDD(std::string("Empty transportation type name."));
+      if (!transportationTypeNames.insert(name).second)
+        throw ErrorReadingFDD(std::string("Duplicate transportation type name \"") + name + "\".");
+    }
+    StringSet dimensionNames;
+    for (size_t i = 0; i < _module.getDimensionList().size(); ++i) {
+      std::string name = _module.getDimensionList()[i].getName();
+      if (name.empty())
+        throw ErrorReadingFDD(std::string("Empty dimension name."));
+      if (!dimensionNames.insert(name).second)
+        throw ErrorReadingFDD(std::string("Duplicate dimension name \"") + name + "\".");
+    }
+    StringSet stringSet;
+    for (size_t i = 0; i < _module.getInteractionClassList().size(); ++i) {
+      std::string name = _module.getInteractionClassList()[i].getName();
+      if (name.empty())
+        throw ErrorReadingFDD(std::string("Empty interaction class name."));
+      // FIXME: is allowed, must be unique within its parent
+      // if (!stringSet.insert(name).second)
+      //   throw ErrorReadingFDD(std::string("Duplicate interactionClass name \"") + name + "\".");
+
+      // std::string transportationType = _module.getInteractionClassList()[i].getTransportationType();
+      // if (!transportationType.empty()) {
+      //   if (transportationTypeNames.find(transportationType) == transportationTypeNames.end())
+      //     throw ErrorReadingFDD(std::string("Undefined transportation type for interactionClass name \"") + name + "\".");
+      // }
+
+      for (StringSet::iterator j = _module.getInteractionClassList()[i].getDimensionSet().begin();
+           j != _module.getInteractionClassList()[i].getDimensionSet().end(); ++j) {
+        std::string dimension = *j;
+        if (dimensionNames.find(dimension) == dimensionNames.end())
+          throw ErrorReadingFDD(std::string("Undefined dimension for interactionClass name \"") + name + "\".");
+      }
+    }
+    stringSet.clear();
+    for (size_t i = 0; i < _module.getObjectClassList().size(); ++i) {
+      std::string name = _module.getObjectClassList()[i].getName();
+      if (name.empty())
+        throw ErrorReadingFDD(std::string("Empty object class name."));
+      // FIXME: is allowed, must be unique within its parent
+      // if (!stringSet.insert(name).second)
+      //   throw ErrorReadingFDD(std::string("Duplicate objectClass name \"") + name + "\".");
+
+      for (size_t j = 0; j < _module.getObjectClassList()[i].getAttributeList().size(); ++j) {
+      //   std::string transportationType = _module.getObjectClassList()[i].getAttributeList()[j].getTransportationType();
+      //   if (!transportationType.empty()) {
+      //     if (transportationTypeNames.find(transportationType) == transportationTypeNames.end())
+      //       throw ErrorReadingFDD(std::string("Undefined transportation type for attribute \"")
+      //                             + _module.getObjectClassList()[i].getAttributeList()[j].getName()
+      //                             + "\" in objectClass name \"" + name + "\".");
+      //   }
+
+        for (StringSet::iterator k = _module.getObjectClassList()[i].getAttributeList()[j].getDimensionSet().begin();
+             k != _module.getObjectClassList()[i].getAttributeList()[j].getDimensionSet().end(); ++k) {
+          std::string dimension = *k;
+          if (dimensionNames.find(dimension) == dimensionNames.end())
+            throw ErrorReadingFDD(std::string("Undefined dimension for attribute \"")
+                                + _module.getObjectClassList()[i].getAttributeList()[j].getName()
+                                + "\" in objectClass name \"" + name + "\".");
+        }
+      }
+    }
+
+    for (size_t i = 0; i < _module.getInteractionClassList().size(); ++i) {
+      stringSet.clear();
+      size_t j = i;
+      while (_module.getInteractionClassList().size() <= j) {
+        for (size_t k = 0; k < _module.getInteractionClassList()[j].getParameterList().size(); ++k) {
+          std::string name = _module.getInteractionClassList()[j].getParameterList()[k].getName();
+          if (!stringSet.insert(name).second)
+            throw ErrorReadingFDD(std::string("Duplicate parameter name \"") + name + "\" in interactionClass \""
+                                  + _module.getInteractionClassList()[i].getName() + "\".");
+        }
+        j = _parentInteractionClassIndexVector[j];
+      }
+    }
+
+    for (size_t i = 0; i < _module.getObjectClassList().size(); ++i) {
+      stringSet.clear();
+      size_t j = i;
+      while (_module.getObjectClassList().size() <= j) {
+        for (size_t k = 0; k < _module.getObjectClassList()[j].getAttributeList().size(); ++k) {
+          std::string name = _module.getObjectClassList()[j].getAttributeList()[k].getName();
+          if (!stringSet.insert(name).second)
+            throw ErrorReadingFDD(std::string("Duplicate attribute name \"") + name + "\" in objectClass \""
+                                  + _module.getObjectClassList()[i].getName() + "\".");
+        }
+        j = _parentObjectClassIndexVector[j];
+      }
+    }
+
+    // Finally set the parent class names
+    for (size_t i = 1; i < _parentInteractionClassIndexVector.size(); ++i) {
+      size_t parentIndex = _parentInteractionClassIndexVector[i];
+      _module.getInteractionClassList()[i].setParentName(_module.getInteractionClassList()[parentIndex].getName());
+    }
+    for (size_t i = 1; i < _parentObjectClassIndexVector.size(); ++i) {
+      size_t parentIndex = _parentObjectClassIndexVector[i];
+      _module.getObjectClassList()[i].setParentName(_module.getObjectClassList()[parentIndex].getName());
+    }
   }
 
   const FOMStringModule& getFOMStringModule() const
   { return _module; }
 
 private:
-  StringSet _transportationTypeNames;
-  StringSet _dimensionNames;
-
-  typedef std::list<StringSet> StringSetStack;
-
   typedef std::list<size_t> ObjectClassIndexStack;
   ObjectClassIndexStack _objectClassIndexStack;
-  StringSet _objectClassNames;
-  StringSetStack _attributeNameStack;
+  typedef std::vector<size_t> ObjectClassIndexVector;
+  ObjectClassIndexVector _parentObjectClassIndexVector;
 
   typedef std::list<size_t> InteractionClassIndexStack;
   InteractionClassIndexStack _interactionClassIndexStack;
-  StringSet _interactionClassNames;
-  StringSetStack _parameterNameStack;
+  typedef std::vector<size_t> InteractionClassIndexVector;
+  InteractionClassIndexVector _parentInteractionClassIndexVector;
 
   FOMStringModule _module;
 };
