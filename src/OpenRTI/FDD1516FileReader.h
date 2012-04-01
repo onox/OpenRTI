@@ -17,18 +17,20 @@
  *
  */
 
-#ifndef OpenRTI_FDDFileReader_h
-#define OpenRTI_FDDFileReader_h
+#ifndef OpenRTI_FDD1516FileReader_h
+#define OpenRTI_FDD1516FileReader_h
 
-#include <string>
+#include <iosfwd>
 #include "Export.h"
 
 namespace OpenRTI {
 
 class FOMStringModule;
 
-OPENRTI_API bool
-readFDDFile(const std::string& fullPathNameToTheFDDfile, FOMStringModule& module);
+class OPENRTI_API FDD1516FileReader {
+public:
+  static FOMStringModule read(std::istream& stream);
+};
 
 } // namespace OpenRTI
 

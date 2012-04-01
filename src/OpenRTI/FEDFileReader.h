@@ -20,15 +20,17 @@
 #ifndef OpenRTI_FEDFileReader_h
 #define OpenRTI_FEDFileReader_h
 
-#include <string>
+#include <iosfwd>
 #include "Export.h"
 
 namespace OpenRTI {
 
 class FOMStringModule;
 
-OPENRTI_API bool
-readFEDFile(const std::string& fullPathNameToTheFEDfile, FOMStringModule& module);
+class OPENRTI_API FEDFileReader {
+public:
+  static FOMStringModule read(std::istream& stream);
+};
 
 } // namespace OpenRTI
 

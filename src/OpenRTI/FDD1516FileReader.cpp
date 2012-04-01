@@ -17,18 +17,100 @@
  *
  */
 
-#include "FDD1516ContentHandler.h"
+#include "FDD1516FileReader.h"
 
-#include <sstream>
-#include <cstring>
-
-#include "Attributes.h"
-#include "ContentHandler.h"
+#include "DefaultErrorHandler.h"
+#include "Exception.h"
+#include "ExpatXMLReader.h"
 #include "FOMStringModuleBuilder.h"
 #include "Message.h"
 #include "StringUtils.h"
 
 namespace OpenRTI {
+
+class OPENRTI_LOCAL FDD1516ContentHandler : public XML::ContentHandler {
+public:
+  FDD1516ContentHandler();
+  virtual ~FDD1516ContentHandler();
+
+  virtual void startDocument(void);
+  virtual void endDocument(void);
+  virtual void startElement(const char* uri, const char* name,
+                            const char* qName, const XML::Attributes* atts);
+  virtual void endElement(const char* uri, const char* name, const char* qName);
+
+  // poor man's schema checking ...
+  enum Mode {
+    UnknownMode,
+
+    ObjectModelMode,
+
+    ObjectsMode,
+    ObjectClassMode,
+    AttributeMode,
+
+    InteractionsMode,
+    InteractionClassMode,
+    ParameterMode,
+
+    DimensionsMode,
+    DimensionMode,
+
+    // TimeMode,
+    // TimeStampMode,
+    // LookaheadMode,
+
+    // TagsMode,
+    // UpdateReflectTagMode,
+    // SendReceiveTagMode,
+    // DeleteRemoveTagMode,
+    // DivestitureRequestTagMode,
+    // DivestitureCompletionTagMode,
+    // AcquisitionRequestTagMode,
+    // RequestUpdateTagMode,
+
+    // SynchronizationsMode,
+    // SynchronizationMode,
+
+    TransportationsMode,
+    TransportationMode,
+
+    // SwitchesMode,
+
+    DataTypesMode,
+    BasicDataRepresentationsMode,
+    BasicDataMode,
+    SimpleDataTypesMode,
+    SimpleDataMode,
+    EnumeratedDataTypesMode,
+    EnumeratedDataMode,
+    EnumeratorMode,
+    ArrayDataTypesMode,
+    ArrayDataMode,
+    FixedRecordDataTypesMode,
+    FixedRecordDataMode,
+    FieldMode,
+    VariantRecordDataTypesMode,
+    VariantRecordDataMode,
+    AlternativeDataMode// ,
+
+    // NotesMode,
+    // NoteMode
+  };
+
+  Mode getCurrentMode()
+  {
+    if (_modeStack.empty())
+      return UnknownMode;
+    return _modeStack.back();
+  }
+
+  // Current modes in a stack
+  std::vector<Mode> _modeStack;
+
+  // Helper to build up the data
+  FOMStringModuleBuilder _fomStringModuleBuilder;
+};
 
 FDD1516ContentHandler::FDD1516ContentHandler()
 {
@@ -269,4 +351,25 @@ FDD1516ContentHandler::endElement(const char* uri, const char* name, const char*
   _modeStack.pop_back();
 }
 
+FOMStringModule
+FDD1516FileReader::read(std::istream& stream)
+{
+  // Set up the fdd parser
+  SharedPtr<XML::XMLReader> reader;
+  reader = new XML::ExpatXMLReader;
+
+  SharedPtr<FDD1516ContentHandler> contentHandler = new FDD1516ContentHandler;
+  reader->setContentHandler(contentHandler.get());
+  SharedPtr<DefaultErrorHandler> errorHandler = new DefaultErrorHandler;
+  reader->setErrorHandler(errorHandler.get());
+
+  reader->parse(stream);
+
+  std::string errorMessage = errorHandler->getMessages();
+  if (!errorMessage.empty())
+    throw ErrorReadingFDD(errorMessage);
+
+  return contentHandler->_fomStringModuleBuilder.getFOMStringModule();
 }
+
+} // namespace OpenRTI

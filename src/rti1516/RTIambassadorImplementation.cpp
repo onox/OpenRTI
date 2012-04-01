@@ -24,6 +24,7 @@
 #include "RTIambassadorImplementation.h"
 
 #include <algorithm>
+#include <fstream>
 #include <memory>
 
 #include <RTI/RTIambassador.h>
@@ -34,6 +35,7 @@
 #include <RTI/RangeBounds.h>
 
 #include "Ambassador.h"
+#include "FDD1516FileReader.h"
 #include "LogStream.h"
 
 #include "HandleImplementation.h"
@@ -1431,25 +1433,23 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
          rti1516::CouldNotCreateLogicalTimeFactory,
          rti1516::RTIinternalError)
 {
-  std::string fddFile = OpenRTI::ucsToUtf8(fullPathNameToTheFDDfile);
+  // Make sure we can read the fdd file
+  std::ifstream stream(OpenRTI::ucsToLocale(fullPathNameToTheFDDfile).c_str());
+  if (!stream.is_open())
+    throw rti1516::CouldNotOpenFDD(fullPathNameToTheFDDfile);
 
-  OpenRTI::FOMStringModuleList fomModules;
+  OpenRTI::FOMStringModuleList fomModuleList;
   try {
-    fomModules.push_back(OpenRTI::FOMStringModule());
-    readFDDFile(fddFile, fomModules.back());
-  } catch (const OpenRTI::CouldNotOpenFDD& e) {
-    throw rti1516::CouldNotOpenFDD(OpenRTI::utf8ToUcs(e.getReason()));
-  } catch (const OpenRTI::ErrorReadingFDD& e) {
-    throw rti1516::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
+    fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream));
   } catch (const OpenRTI::Exception& e) {
-    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.getReason()));
+    throw rti1516::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
   } catch (...) {
-    throw rti1516::RTIinternalError(L"Unknown error");
+    throw rti1516::RTIinternalError(L"Unknown error while reading fdd file");
   }
 
   std::string utf8FederationExecutionName = OpenRTI::ucsToUtf8(federationExecutionName);
   _ambassadorInterface->ensureConnected(utf8FederationExecutionName);
-  _ambassadorInterface->createFederationExecution(getFilePart(utf8FederationExecutionName), fomModules, ucsToUtf8(logicalTimeImplementationName));
+  _ambassadorInterface->createFederationExecution(getFilePart(utf8FederationExecutionName), fomModuleList, ucsToUtf8(logicalTimeImplementationName));
 }
 
 // 4.3

@@ -25,8 +25,6 @@
 #include "AbstractConnect.h"
 #include "AbstractFederate.h"
 #include "Clock.h"
-#include "FDDFileReader.h"
-#include "FEDFileReader.h"
 #include "Federate.h"
 #include "LogStream.h"
 #include "Message.h"

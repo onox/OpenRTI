@@ -20,6 +20,7 @@
 #include <RTI.hh>
 
 #include <cstring>
+#include <fstream>
 #include <memory>
 
 #include "Ambassador.h"
@@ -28,6 +29,8 @@
 #include "AttributeHandleValuePairSetCallback.h"
 #include "AttributeHandleValuePairSetImplementation.h"
 #include "FederateHandleSetImplementation.h"
+#include "FDD1516FileReader.h"
+#include "FEDFileReader.h"
 #include "LogStream.h"
 #include "ParameterHandleValuePairSetCallback.h"
 #include "ParameterHandleValuePairSetImplementation.h"
@@ -1146,25 +1149,27 @@ RTI::RTIambassador::createFederationExecution(const char* federationExecutionNam
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::string fddFile = OpenRTI::localeToUtf8(fedFile);
-  std::string utf8FederationExecutionName = OpenRTI::localeToUtf8(federationExecutionName);
+
+  // Make sure we can read the fed file
+  if (!fedFile)
+    throw RTI::CouldNotOpenFED("fedFile is NULL!");
+  std::ifstream stream(fedFile);
+  if (!stream.is_open())
+    throw RTI::CouldNotOpenFED(fedFile);
+
   OpenRTI::FOMStringModuleList fomModules;
   try {
-    fomModules.push_back(OpenRTI::FOMStringModule());
-    if (OpenRTI::matchExtension(fddFile, ".fed"))
-      readFEDFile(fddFile, fomModules.back());
+    if (OpenRTI::matchExtension(fedFile, ".fed"))
+      fomModules.push_back(OpenRTI::FEDFileReader::read(stream));
     else
-      readFDDFile(fddFile, fomModules.back());
-  } catch (const OpenRTI::CouldNotOpenFDD& e) {
-    throw RTI::CouldNotOpenFED(OpenRTI::utf8ToLocale(e.getReason()).c_str());
-  } catch (const OpenRTI::ErrorReadingFDD& e) {
-    throw RTI::ErrorReadingFED(OpenRTI::utf8ToLocale(e.getReason()).c_str());
+      fomModules.push_back(OpenRTI::FDD1516FileReader::read(stream));
   } catch (const OpenRTI::Exception& e) {
-    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.getReason()).c_str());
+    throw RTI::ErrorReadingFED(OpenRTI::utf8ToLocale(e.getReason()).c_str());
   } catch (...) {
     throw RTI::RTIinternalError("Unknown error");
   }
 
+  std::string utf8FederationExecutionName = OpenRTI::localeToUtf8(federationExecutionName);
   privateRefs->ensureConnected(utf8FederationExecutionName);
   privateRefs->createFederationExecution(OpenRTI::getFilePart(utf8FederationExecutionName), fomModules, "HLAfloat64Time");
 }

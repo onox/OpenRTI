@@ -222,22 +222,16 @@ public:
   }
 };
 
-bool
-readFEDFile(const std::string& fullPathNameToTheFEDfile, FOMStringModule& module)
+FOMStringModule
+FEDFileReader::read(std::istream& stream)
 {
-  // Make sure we can read the fed file
-  std::ifstream fedStream(utf8ToLocale(fullPathNameToTheFEDfile).c_str());
-  if (!fedStream.is_open())
-    throw CouldNotOpenFDD(fullPathNameToTheFEDfile);
-
   FEDContentHandler contentHandler;
   FEDErrorHandler errorHandler;
   ParenthesesReader parenthesesReader;
-  if (!parenthesesReader.parse(fedStream, contentHandler, errorHandler))
+  if (!parenthesesReader.parse(stream, contentHandler, errorHandler))
     throw ErrorReadingFDD("ParenthesesReader returned false!");
 
-  module = contentHandler.getFOMStringModule();
-  return true;
+  return contentHandler.getFOMStringModule();
 }
 
 } // namespace OpenRTI
