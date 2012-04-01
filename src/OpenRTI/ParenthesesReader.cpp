@@ -84,6 +84,13 @@ ParenthesesReader::parse(std::istream& stream, ContentHandler& contentHandler, E
     case -1:
       break;
 
+    case ';':
+      while (int cc = stream.get()) {
+        if (cc == '\n' || cc == '\r')
+          break;
+      }
+      break;
+
     case '(':
       if (allowToken) {
         // flush the collected tokes so far
