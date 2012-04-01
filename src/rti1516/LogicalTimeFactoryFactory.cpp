@@ -35,11 +35,11 @@ std::auto_ptr<LogicalTimeFactory>
 LogicalTimeFactoryFactory::makeLogicalTimeFactory(const std::wstring& implementationName)
 {
   if (implementationName.empty())
-    return std::auto_ptr<LogicalTimeFactory>(new HLAinteger64TimeFactory);
-  else if (implementationName == L"HLAinteger64Time")
-    return std::auto_ptr<LogicalTimeFactory>(new HLAinteger64TimeFactory);
+    return std::auto_ptr<LogicalTimeFactory>(new HLAfloat64TimeFactory);
   else if (implementationName == L"HLAfloat64Time")
     return std::auto_ptr<LogicalTimeFactory>(new HLAfloat64TimeFactory);
+  else if (implementationName == L"HLAinteger64Time")
+    return std::auto_ptr<LogicalTimeFactory>(new HLAinteger64TimeFactory);
   else if (implementationName == L"certiFedTime1516")
     return std::auto_ptr<LogicalTimeFactory>(new RTI1516fedTimeFactory);
   else if (implementationName == L"CERTI")

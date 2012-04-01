@@ -1166,7 +1166,7 @@ RTI::RTIambassador::createFederationExecution(const char* federationExecutionNam
   }
 
   privateRefs->ensureConnected(utf8FederationExecutionName);
-  privateRefs->createFederationExecution(OpenRTI::getFilePart(utf8FederationExecutionName), fomModules, std::string(/*FIXME*/));
+  privateRefs->createFederationExecution(OpenRTI::getFilePart(utf8FederationExecutionName), fomModules, "HLAfloat64Time");
 }
 
 void
