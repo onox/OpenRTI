@@ -475,6 +475,9 @@ public:
 
   int exec()
   {
+    if (_numAmbassadorThreads < 1)
+      return EXIT_SUCCESS;
+
     typedef std::list<SharedPtr<AmbassadorThread> > AmbassadorThreadList;
     AmbassadorThreadList _ambassadorThreadList;
 
