@@ -68,7 +68,7 @@ public:
         throw ErrorReadingFDD("FEDversion contains no version information!");
       if (2 < tokens.size())
         throw ErrorReadingFDD("FEDversion contains too many tokens!");
-      if (tokens[1] != "1.3" && tokens[1] != "v1.3" && tokens[1] != "1_3")
+      if (tokens[1] != "1.3" && tokens[1] != "v1.3" && tokens[1] != "1_3" && tokens[1] != "v1_3")
         throw ErrorReadingFDD("FEDversion \"" + tokens[1] + "\" is not supported!");
       _modeStack.push_back(FEDversionMode);
     } else if (t0 == "spaces") {
