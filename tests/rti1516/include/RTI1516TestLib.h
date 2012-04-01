@@ -205,7 +205,7 @@ public:
 
     // create, must work once
     try {
-      ambassador->createFederationExecution(getFederationExecution(), getFddFile());
+      ambassador->createFederationExecution(getFederationExecution(), getFddFile(), std::wstring(L"HLAinteger64Time"));
 
       if (!getFederationBarrier()->success())
         return false;
@@ -300,7 +300,7 @@ public:
 
       // create, must work once
       try {
-        ambassador->createFederationExecution(getFederationExecution(), getFddFile());
+        ambassador->createFederationExecution(getFederationExecution(), getFddFile(), std::wstring(L"HLAinteger64Time"));
 
         if (!getFederationBarrier()->success())
           return false;
@@ -885,7 +885,7 @@ public:
     setLogicalTimeFactory();
   }
 
-  void setLogicalTimeFactory(const std::wstring& logicalTimeImplementationName = std::wstring())
+  void setLogicalTimeFactory(const std::wstring& logicalTimeImplementationName = std::wstring(L"HLAinteger64Time"))
   {
     _logicalTimeImplementationName = logicalTimeImplementationName;
     _logicalTimeFactory = rti1516::LogicalTimeFactoryFactory::makeLogicalTimeFactory(logicalTimeImplementationName);
