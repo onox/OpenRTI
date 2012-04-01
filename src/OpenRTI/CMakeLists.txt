@@ -134,6 +134,7 @@ SET(OpenRTI_SOURCES
   ErrorHandler.cpp
   ExpatXMLReader.cpp
   Exception.cpp
+  FDD1516EFileReader.cpp
   FDD1516FileReader.cpp
   FEDFileReader.cpp
   FOMModuleSet.cpp

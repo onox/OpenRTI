@@ -35,7 +35,7 @@
 #include <RTI/RangeBounds.h>
 
 #include "Ambassador.h"
-#include "FDD1516FileReader.h"
+#include "FDD1516EFileReader.h"
 #include "LogStream.h"
 
 #include "HandleImplementation.h"
@@ -1562,7 +1562,7 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
 
   OpenRTI::FOMStringModuleList fomModuleList;
   try {
-    fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream));
+    fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
   } catch (const OpenRTI::Exception& e) {
     throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
   } catch (...) {
@@ -1593,7 +1593,7 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
       throw rti1516e::CouldNotOpenFDD(*i);
 
     try {
-      fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream));
+      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
     } catch (const OpenRTI::Exception& e) {
       throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
     } catch (...) {
@@ -1627,7 +1627,7 @@ RTIambassadorImplementation::createFederationExecution (std::wstring const & fed
     throw rti1516e::CouldNotOpenMIM(mimModule);
 
   try {
-    fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream));
+    fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
   } catch (const OpenRTI::Exception& e) {
     throw rti1516e::ErrorReadingMIM(OpenRTI::utf8ToUcs(e.getReason()));
   } catch (...) {
@@ -1640,7 +1640,7 @@ RTIambassadorImplementation::createFederationExecution (std::wstring const & fed
       throw rti1516e::CouldNotOpenFDD(*i);
 
     try {
-      fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream));
+      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
     } catch (const OpenRTI::Exception& e) {
       throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
     } catch (...) {
@@ -1693,7 +1693,7 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
       throw rti1516e::CouldNotOpenFDD(*i);
 
     try {
-      fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream));
+      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
     } catch (const OpenRTI::Exception& e) {
       throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
     } catch (...) {
@@ -1732,7 +1732,7 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
       throw rti1516e::CouldNotOpenFDD(*i);
 
     try {
-      fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream));
+      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
     } catch (const OpenRTI::Exception& e) {
       throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
     } catch (...) {
