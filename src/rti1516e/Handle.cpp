@@ -84,6 +84,11 @@ namespace rti1516e
       HandleKind##Implementation::getHandle(rhs._impl);                 \
   }                                                                     \
                                                                         \
+  long HandleKind::hash() const                                         \
+  {                                                                     \
+    return HandleKind##Implementation::getHandle(_impl);                \
+  }                                                                     \
+                                                                        \
   VariableLengthData                                                    \
   HandleKind::encode() const                                            \
   {                                                                     \
@@ -95,12 +100,15 @@ namespace rti1516e
     return VariableLengthDataFriend::create(data);                      \
   }                                                                     \
                                                                         \
-  size_t                                                                \
-  HandleKind::encodedLength() const                                     \
+  void                                                                  \
+  HandleKind::encode(VariableLengthData& buffer) const                  \
   {                                                                     \
     OpenRTI::HandleKind handle;                                         \
     handle = HandleKind##Implementation::getHandle(_impl);              \
-    return handle.getEncodedLength();                                   \
+    size_t encodedLength = handle.getEncodedLength();                   \
+    OpenRTI::VariableLengthData data(encodedLength);                    \
+    handle.encode(data.data());                                         \
+    buffer = VariableLengthDataFriend::create(data);                    \
   }                                                                     \
                                                                         \
   size_t                                                                \
@@ -114,6 +122,14 @@ namespace rti1516e
       throw CouldNotEncode(toString());                                 \
     handle.encode(buffer);                                              \
     return encodedLength;                                               \
+  }                                                                     \
+                                                                        \
+  size_t                                                                \
+  HandleKind::encodedLength() const                                     \
+  {                                                                     \
+    OpenRTI::HandleKind handle;                                         \
+    handle = HandleKind##Implementation::getHandle(_impl);              \
+    return handle.getEncodedLength();                                   \
   }                                                                     \
                                                                         \
   std::wstring HandleKind::toString() const                             \
