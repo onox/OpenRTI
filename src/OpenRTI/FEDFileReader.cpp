@@ -47,13 +47,13 @@ public:
   {
     OpenRTIAssert(!tokens.empty());
     const std::string& t0 = tokens.front();
-    if (t0 == "FED") {
+    if (caseCompare(t0, "FED")) {
       if (!_modeStack.empty())
         throw ErrorReadingFDD("FED token is not at top level!");
       if (1 < tokens.size())
         throw ErrorReadingFDD("FED contains too many tokens!");
       _modeStack.push_back(FEDMode);
-    } else if (t0 == "Federation") {
+    } else if (caseCompare(t0, "Federation")) {
       if (getCurrentMode() != FEDMode)
         throw ErrorReadingFDD("Federation token is not under the FED level!");
       if (tokens.size() < 2)
@@ -61,23 +61,23 @@ public:
       if (2 < tokens.size())
         throw ErrorReadingFDD("Federation contains too many tokens!");
       _modeStack.push_back(FederationMode);
-    } else if (t0 == "FEDversion") {
+    } else if (caseCompare(t0, "FEDversion")) {
       if (getCurrentMode() != FEDMode)
         throw ErrorReadingFDD("FEDversion token is not under the FED level!");
       if (tokens.size() < 2)
         throw ErrorReadingFDD("FEDversion contains no version information!");
       if (2 < tokens.size())
         throw ErrorReadingFDD("FEDversion contains too many tokens!");
-      if (tokens[1] != "1.3" && tokens[1] != "v1.3" && tokens[1] != "1_3" && tokens[1] != "v1_3")
+      if (tokens[1] != "1.3" && !caseCompare(tokens[1], "v1.3") && tokens[1] != "1_3" && !caseCompare(tokens[1], "v1_3"))
         throw ErrorReadingFDD("FEDversion \"" + tokens[1] + "\" is not supported!");
       _modeStack.push_back(FEDversionMode);
-    } else if (t0 == "spaces") {
+    } else if (caseCompare(t0, "spaces")) {
       if (getCurrentMode() != FEDMode)
         throw ErrorReadingFDD("spaces token is not under the FED level!");
       if (1 < tokens.size())
         throw ErrorReadingFDD("spaces contains too many tokens!");
       _modeStack.push_back(SpacesMode);
-    } else if (t0 == "space") {
+    } else if (caseCompare(t0, "space")) {
       if (getCurrentMode() != SpacesMode)
         throw ErrorReadingFDD("space token is not under the spaces level!");
       if (tokens.size() < 2)
@@ -85,7 +85,7 @@ public:
       if (2 < tokens.size())
         throw ErrorReadingFDD("space contains too many tokens!");
       _modeStack.push_back(SpaceMode);
-    } else if (t0 == "dimension") {
+    } else if (caseCompare(t0, "dimension")) {
       if (getCurrentMode() != SpaceMode)
         throw ErrorReadingFDD("dimension token is not under the space level!");
       if (tokens.size() < 2)
@@ -93,19 +93,19 @@ public:
       if (2 < tokens.size())
         throw ErrorReadingFDD("dimension contains too many tokens!");
       _modeStack.push_back(DimensionMode);
-    } else if (t0 == "objects") {
+    } else if (caseCompare(t0, "objects")) {
       if (getCurrentMode() != FEDMode)
         throw ErrorReadingFDD("objects token is not under the FED level!");
       if (1 < tokens.size())
         throw ErrorReadingFDD("objects contains too many tokens!");
       _modeStack.push_back(ObjectsMode);
-    } else if (t0 == "interactions") {
+    } else if (caseCompare(t0, "interactions")) {
       if (getCurrentMode() != FEDMode)
         throw ErrorReadingFDD("interactions token is not under the FED level!");
       if (1 < tokens.size())
         throw ErrorReadingFDD("interactions contains too many tokens!");
       _modeStack.push_back(InteractionsMode);
-    } else if (t0 == "class") {
+    } else if (caseCompare(t0, "class")) {
       Mode currentMode = getCurrentMode();
       if (currentMode == ObjectsMode || currentMode == ObjectClassMode) {
         if (tokens.size() < 2)
@@ -131,7 +131,7 @@ public:
       } else {
         throw ErrorReadingFDD("class only allowed in object class or interaction class definitions!");
       }
-    } else if (t0 == "attribute") {
+    } else if (caseCompare(t0, "attribute")) {
       if (getCurrentMode() != ObjectClassMode)
         throw ErrorReadingFDD("attribute token is not under an object class level!");
       if (tokens.size() < 4)
@@ -146,7 +146,7 @@ public:
       /// FIXME
       // if (4 < tokens.size())
       //   _fomStringModuleBuilder.addAttributeSpace(tokens[4]);
-    } else if (t0 == "parameter") {
+    } else if (caseCompare(t0, "parameter")) {
       if (getCurrentMode() != InteractionClassMode)
         throw ErrorReadingFDD("parameter token is not under an interaction class level!");
       if (tokens.size() < 2)

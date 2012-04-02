@@ -32,6 +32,29 @@
 namespace OpenRTI {
 
 OPENRTI_API bool
+caseCompare(const std::string& l, const char* r)
+{
+  size_t size = std::strlen(r);
+  if (size != l.size())
+    return false;
+  for (size_t i = 0; i < size; ++i) {
+    std::string::value_type cl = l[i];
+    char cr = r[i];
+    if (cl == cr)
+      continue;
+    if ('A' <= cr && cr <= 'Z') {
+      if (cl == (cr + 'a' - 'A'))
+        continue;
+    } else if ('a' <= cr && cr <= 'z') {
+      if (cl == (cr + 'A' - 'a'))
+        continue;
+    }
+    return false;
+  }
+  return true;
+}
+
+OPENRTI_API bool
 endsWith(const std::string& s, const char* tail)
 {
   return s.size() - s.rfind(tail) == std::strlen(tail);

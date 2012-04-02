@@ -47,6 +47,9 @@ inline bool contains(const StringVector& stringVector, const std::string& string
 { return std::find(stringVector.begin(), stringVector.end(), string) != stringVector.end(); }
 
 OPENRTI_API bool
+caseCompare(const std::string& s, const char* cmp);
+
+OPENRTI_API bool
 endsWith(const std::string& s, const char* tail);
 
 /// checks for a file case insensitive extension
