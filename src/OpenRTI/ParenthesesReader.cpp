@@ -84,13 +84,6 @@ ParenthesesReader::parse(std::istream& stream, ContentHandler& contentHandler, E
     case -1:
       break;
 
-    case ';':
-      while (int cc = stream.get()) {
-        if (cc == '\n' || cc == '\r')
-          break;
-      }
-      break;
-
     case '(':
       if (allowToken) {
         // flush the collected tokes so far
@@ -126,6 +119,26 @@ ParenthesesReader::parse(std::istream& stream, ContentHandler& contentHandler, E
     case '\t':
       newToken = true;
       break;
+
+    case ';':
+      // It's only a comment if we have ';;'
+      c = stream.get();
+      if (c == ';') {
+        // Then skip the rest of the line
+        while (c = stream.get()) {
+          if (c == '\n' || c == '\r') {
+            stream.putback(c);
+            break;
+          }
+        }
+        break;
+      } else {
+        // undo the second character get
+        stream.putback(c);
+        // and restore the first character in c
+        c = ';';
+        // fallthrough, treat the ';' as the beginning of a token.
+      }
 
     default:
       if (!allowToken) {
