@@ -54,13 +54,9 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
 
   OrderType getOrderType(const std::string& name) const
   {
-    if (name == "TimeStamp")
+    if (caseCompare(name, "timestamp"))
       return TIMESTAMP;
-    else if (name == "timestamp")
-      return TIMESTAMP;
-    else if (name == "Receive")
-      return RECEIVE;
-    else if (name == "receive")
+    else if (caseCompare(name, "receive"))
       return RECEIVE;
     else
       throw ErrorReadingFDD(std::string("Unknown order type \"") + name + "\".");
@@ -72,11 +68,11 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
       return false;
     if (stringModule.getName() == "HLAreliable")
       _nameTransportationTypeMap[stringModule.getName()] = RELIABLE;
-    else if (stringModule.getName() == "reliable")
+    else if (caseCompare(stringModule.getName(), "reliable"))
       _nameTransportationTypeMap[stringModule.getName()] = RELIABLE;
     else if (stringModule.getName() == "HLAbestEffort")
       _nameTransportationTypeMap[stringModule.getName()] = BEST_EFFORT;
-    else if (stringModule.getName() == "best_effort")
+    else if (caseCompare(stringModule.getName(), "best_effort"))
       _nameTransportationTypeMap[stringModule.getName()] = BEST_EFFORT;
     else
       throw ErrorReadingFDD(std::string("Unsupported transportation type \"") + stringModule.getName() + "\".");
