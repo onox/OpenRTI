@@ -1,0 +1,2690 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The IEEE hereby grants a general, royalty-free license to copy, distribute, display and make derivative works from this material, for all purposes, provided that any use of the material contains the following attribution: “Reprinted with permission from IEEE 1516.2(TM)-2010”. Should you require additional information, contact the Manager, Standards Intellectual Property, IEEE Standards Association (stdsipr@ieee.org).-->
+<!-- IEEE1516-2010-OMT Schema is a stricter version of the IEEE1516-2010-DIF Schema used to validates conformance with the OMT specification. -->
+<!-- Validation using this schema does not guarantee full conformance with the OMT specification.  -->
+<!-- Updated 2010-08-16 -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://standards.ieee.org/IEEE1516-2010" xmlns:ns="http://standards.ieee.org/IEEE1516-2010" targetNamespace="http://standards.ieee.org/IEEE1516-2010" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2010">
+	<xs:element name="objectModel" type="objectModelType">
+		<xs:key name="dimensionDatatypeKey">
+			<xs:selector xpath=".//ns:simpleData/ns:name | .//ns:enumeratedData/ns:name"/>
+			<xs:field xpath="."/>
+		</xs:key>
+		<xs:keyref name="dimensionDatatypeRef" refer="dimensionDatatypeKey">
+			<xs:selector xpath="./ns:dimensions/*/ns:dataType"/>
+			<xs:field xpath="."/>
+		</xs:keyref>
+		<xs:key name="representationKey">
+			<xs:annotation>
+				<xs:documentation>unique keys for identifying basic data representations</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath=".//ns:basicData"/>
+			<xs:field xpath="ns:name"/>
+		</xs:key>
+		<xs:keyref name="representationRef" refer="representationKey">
+			<xs:selector xpath=".//ns:representation"/>
+			<xs:field xpath="."/>
+		</xs:keyref>
+		<xs:key name="dataTypeKey">
+			<xs:annotation>
+				<xs:documentation>unique keys for identifying datatypes</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath=".//ns:simpleData/ns:name | .//ns:enumeratedData/ns:name | .//ns:arrayData/ns:name | .//ns:fixedRecordData/ns:name | .//ns:variantRecordData/ns:name | .//ns:note/ns:label"/>
+			<xs:field xpath="."/>
+		</xs:key>
+		<xs:keyref name="dataTypeRef" refer="dataTypeKey">
+			<xs:selector xpath=".//ns:dataType"/>
+			<xs:field xpath="."/>
+		</xs:keyref>
+		<xs:key name="dimensionKey">
+			<xs:selector xpath="./ns:dimensions/ns:dimension"/>
+			<xs:field xpath="ns:name"/>
+		</xs:key>
+		<xs:keyref name="dimensionRef" refer="dimensionKey">
+			<xs:selector xpath=".//ns:attribute/ns:dimensions/ns:dimension | .//ns:interactionClass/ns:dimensions/ns:dimension"/>
+			<xs:field xpath="."/>
+		</xs:keyref>
+		<xs:key name="transportationKey">
+			<xs:selector xpath="./ns:transportations/ns:transportation"/>
+			<xs:field xpath="ns:name"/>
+		</xs:key>
+		<xs:keyref name="transportationRef" refer="transportationKey">
+			<xs:selector xpath=".//ns:attribute | .//ns:interactionClass"/>
+			<xs:field xpath="ns:transportation"/>
+		</xs:keyref>
+	</xs:element>
+	<xs:complexType name="objectModelType">
+		<xs:sequence>
+			<xs:element name="modelIdentification" type="modelIdentificationType">
+				<xs:annotation>
+					<xs:documentation>documents certain key identifying information within the object model description</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="serviceUtilization" type="serviceUtilizationType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>RTI services used in the federation or by a federate</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="objects" type="objectsType">
+				<xs:annotation>
+					<xs:documentation>specifies classes of objects and their hierarchical relationships </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="interactions" type="interactionsType">
+				<xs:annotation>
+					<xs:documentation>specifies classes of interactions and their hierarchical relationships </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dimensions" type="dimensionsType">
+				<xs:annotation>
+					<xs:documentation>specifies dimensions associated with attribute types and interaction classes</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="time" type="timeType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>specifies timestamp and lookahead datatypes</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tags" type="tagsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>specifies the datatype of user-defined tags</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="synchronizations" type="synchronizationsType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>specifies federate and federation capabilities for synchronization-points</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="transportations" type="transportationsType">
+				<xs:annotation>
+					<xs:documentation>documents transportation type support and agreements</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="switches" type="switchesType">
+				<xs:annotation>
+					<xs:documentation>specification of the initial setting of RTI switches</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="updateRates" type="updateRatesType" minOccurs="0"/>
+			<xs:element name="dataTypes" type="dataTypesType">
+				<xs:annotation>
+					<xs:documentation>specifies all referenced datatypes</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="notes" type="notesType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>specifies all referenced notes</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="modelIdentificationType">
+		<xs:sequence>
+			<xs:element name="name" type="NonEmptyString">
+				<xs:annotation>
+					<xs:documentation>specifies the name assigned to the object model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="type" type="modelType">
+				<xs:annotation>
+					<xs:documentation>specify the type of model that is represented</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="version" type="NonEmptyString">
+				<xs:annotation>
+					<xs:documentation>specifies the version identification assigned to the object model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="modificationDate" nillable="false">
+				<xs:annotation>
+					<xs:documentation>specifies the latest date on which this version of the object model was created or modified. The modification date shall be specified in the format "YYYY-MM-DD"</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:date">
+							<xs:attributeGroup ref="commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="securityClassification" type="securityClassificationType">
+				<xs:annotation>
+					<xs:documentation>specifies the security classification of the object model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="releaseRestriction" type="String" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>specifies any restrictions on the release of the object models to specific organizations or individuals</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="purpose" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>specifies the purpose for which the federate or federation was developed</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="applicationDomain" type="applicationDomainType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>specifies the type or class of application to which the federate or federation applies</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="NonEmptyString"/>
+			<xs:element name="useLimitation" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>specifies any known applications for which this model has been found not to be appropriate</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="useHistory" type="String" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>specifies a description of where this model has been used</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="keyword" type="keywordType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>specifies keywords that characterize the model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="poc" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>specify an organization or a person who has a particular role with respect to the model</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="pocType">
+							<xs:attributeGroup ref="commonAttributes"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="reference" type="idReferenceType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>specifies a pointer to additional sources of information</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="other" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>specifies other data deemed relevant by the author of the object model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="glyph" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>specifies a glyph to visually represent the model</xs:documentation>
+				</xs:annotation>
+				<xs:complexType mixed="true">
+					<xs:simpleContent>
+						<xs:extension base="glyphType"/>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="modelType">
+		<xs:simpleContent>
+			<xs:extension base="OMTypeUnion">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="securityClassificationType">
+		<xs:simpleContent>
+			<xs:extension base="SecurityClassificationUnion">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="applicationDomainType">
+		<xs:simpleContent>
+			<xs:extension base="ApplicationDomainUnion">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="keywordType">
+		<xs:sequence>
+			<xs:element name="taxonomy" type="String" minOccurs="0"/>
+			<xs:element name="keywordValue" type="NonEmptyString"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="pocType">
+		<xs:sequence>
+			<xs:element name="pocType" type="pocTypeType">
+				<xs:annotation>
+					<xs:documentation>specifies the role that the POC has with respect to the model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="pocName" type="String" minOccurs="0"/>
+			<xs:element name="pocOrg" type="String" minOccurs="0"/>
+			<xs:element name="pocTelephone" type="String" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="pocEmail" type="String" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="pocTypeType">
+		<xs:simpleContent>
+			<xs:extension base="POCTypeUnion">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="idReferenceType">
+		<xs:sequence>
+			<xs:element name="type">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attributeGroup ref="commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="identification">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attributeGroup ref="commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="glyphType" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="xs:base64Binary">
+				<xs:attributeGroup ref="commonAttributes"/>
+				<xs:attribute name="href" type="xs:anyURI"/>
+				<xs:attribute name="type" type="glyphTypeUnion"/>
+				<xs:attribute name="height" type="xs:short"/>
+				<xs:attribute name="width" type="xs:short"/>
+				<xs:attribute name="alt" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="serviceUtilizationType">
+		<xs:all>
+			<xs:element name="connect">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.2"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="disconnect">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.3"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="connectionLost">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.4"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="createFederationExecution">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.5"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="destroyFederationExecution">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.6"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="listFederationExecutions">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.7"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="reportFederationExecutions">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.8"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="joinFederationExecution">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.9"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="resignFederationExecution">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.10"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="registerFederationSynchronizationPoint">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.11"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="confirmSynchronizationPointRegistration">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.12"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="announceSynchronizationPoint">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.13"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="synchronizationPointAchieved">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.14"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="federationSynchronized">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.15"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="requestFederationSave">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.16"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="initiateFederateSave">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.17"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="federateSaveBegun">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.18"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="federateSaveComplete">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.19"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="federationSaved">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.20"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="abortFederationSave">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.21"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="queryFederationSaveStatus">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.22"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="federationSaveStatusResponse">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.23"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="requestFederationRestore">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.24"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="confirmFederationRestorationRequest">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.25"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="federationRestoreBegun">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.26"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="initiateFederateRestore">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.27"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="federateRestoreComplete">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.28"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="federationRestored">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.29"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="abortFederationRestore">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.30"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="queryFederationRestoreStatus">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.31"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="federationRestoreStatusResponse">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="4.32"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="publishObjectClassAttributes">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="5.2"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="unpublishObjectClassAttributes">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="5.3"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="publishInteractionClass">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="5.4"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="unpublishInteractionClass">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="5.5"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="subscribeObjectClassAttributes">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="5.6"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="unsubscribeObjectClassAttributes">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="5.7"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="subscribeInteractionClass">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="5.8"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="unsubscribeInteractionClass">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="5.9"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="startRegistrationForObjectClass">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="5.10"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="stopRegistrationForObjectClass">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="5.11"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="turnInteractionsOn">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="5.12"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="turnInteractionsOff">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="5.13"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="reserveObjectInstanceName">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.2"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="objectInstanceNameReserved">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.3"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="releaseObjectInstanceName">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.4"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="reserveMultipleObjectInstanceNames">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.5"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="multipleObjectInstanceNamesReserved">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.6"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="releaseMultipleObjectInstanceNames">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.7"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="registerObjectInstance">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.8"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="discoverObjectInstance">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.9"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="updateAttributeValues">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.10"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="reflectAttributeValues">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.11"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="sendInteraction">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.12"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="receiveInteraction">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.13"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="deleteObjectInstance">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.14"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="removeobjectinstance">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.15"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="localDeleteObjectInstance">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.16"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="attributesInScope">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.17"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="attributesOutOfScope">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.18"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="requestAttributeValueUpdate">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.19"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="provideAttributeValueUpdate">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.20"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="turnUpdatesOnForObjectInstance">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.21"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="turnUpdatesOffForObjectInstance">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.22"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="requestAttributeTransportationTypeChange">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.23"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="confirmAttributeTransportationTypeChange">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.24"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="queryAttributeTransportationType">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.25"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="reportAttributeTransportationType">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.26"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="requestInteractionTransportationTypeChange">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.27"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="confirmInteractionTransportationTypeChange">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.28"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="queryInteractionTransportationType">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.29"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="reportInteractionTransportationType">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="6.30"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="unconditionalAttributeOwnershipDivestiture">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.2"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="negotiatedAttributeOwnershipDivestiture">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.3"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="requestAttributeOwnershipAssumption">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.4"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="requestDivestitureConfirmation">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.5"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="confirmDivestiture">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.6"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="attributeOwnershipAcquisitionNotification">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.7"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="attributeOwnershipAcquisition">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.8"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="attributeOwnershipAcquisitionIfAvailable">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.9"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="attributeOwnershipUnavailable">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.10"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="requestAttributeOwnershipRelease">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.11"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="attributeOwnershipReleaseDenied">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.12"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="attributeOwnershipDivestitureIfWanted">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.13"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="cancelNegotiatedAttributeOwnershipDivestiture">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.14"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="cancelAttributeOwnershipAcquisition">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.15"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="confirmAttributeOwnershipAcquisitionCancellation">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.16"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="queryAttributeOwnership">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.17"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="informAttributeOwnership">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.18"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="isAttributeOwnedByFederate">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="7.19"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="enableTimeRegulation">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.2"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="timeRegulationEnabled">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.3"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="disableTimeRegulation">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.4"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="enableTimeConstrained">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.5"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="timeConstrainedEnabled">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.6"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="disableTimeConstrained">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.7"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="timeAdvanceRequest">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.8"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="timeAdvanceRequestAvailable">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.9"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="nextMessageRequest">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.10"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="nextMessageRequestAvailable">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.11"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="flushQueueRequest">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.12"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="timeAdvanceGrant">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.13"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="enableAsynchronousDelivery">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.14"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="disableAsynchronousDelivery">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.15"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="queryGALT">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.16"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="queryLogicalTime">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.17"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="queryLITS">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.18"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="modifyLookahead">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.19"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="queryLookahead">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.20"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="retract">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.21"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="requestRetraction">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.22"/>
+					<xs:attribute name="isCallback" use="required" fixed="true"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="changeAttributeOrderType">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.23"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="changeInteractionOrderType">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="8.24"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="createRegion">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="9.2"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="commitRegionModifications">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="9.3"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="deleteRegion">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="9.4"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="registerObjectInstanceWithRegions">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="9.5"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="associateRegionsForUpdates">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="9.6"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="unassociateRegionsForUpdates">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="9.7"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="subscribeObjectClassAttributesWithRegions">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="9.8"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="unsubscribeObjectClassAttributesWithRegions">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="9.9"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="subscribeInteractionClassWithRegions">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="9.10"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="unsubscribeInteractionClassWithRegions">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="9.11"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="sendInteractionWithRegions">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="9.12"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="requestAttributeValueUpdateWithRegions">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="9.13"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getAutomaticResignDirective">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.2"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="setAutomaticResignDirective">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.3"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getFederateHandle">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.4"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getFederateName">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.5"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getObjectClassHandle">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.6"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getObjectClassName">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.7"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getKnownObjectClassHandle">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.8"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getObjectInstanceHandle">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.9"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getObjectInstanceName">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.10"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getAttributeHandle">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.11"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getAttributeName">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.12"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getUpdateRateValue">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.13"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getUpdateRateValueForAttribute">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.14"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getInteractionClassHandle">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.15"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getInteractionClassName">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.16"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getParameterHandle">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.17"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getParameterName">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.18"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getOrderType">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.19"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getOrderName">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.20"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getTransportationTypeHandle">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.21"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getTransportationTypeName">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.22"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getAvailableDimensionsForClassAttribute">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.23"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getAvailableDimensionsForInteractionClass">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.24"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getDimensionHandle">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.25"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getDimensionName">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.26"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getDimensionUpperBound">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.27"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getDimensionHandleSet">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.28"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="getRangeBounds">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.29"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="setRangeBounds">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.30"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="normalizeFederateHandle">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.31"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="normalizeServiceGroup">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.32"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="enableObjectClassRelevanceAdvisorySwitch">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.33"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="disableObjectClassRelevanceAdvisorySwitch">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.34"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="enableAttributeRelevanceAdvisorySwitch">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.35"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="disableAttributeRelevanceAdvisorySwitch">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.36"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="enableAttributeScopeAdvisorySwitch">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.37"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="disableAttributeScopeAdvisorySwitch">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.38"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="enableInteractionRelevanceAdvisorySwitch">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.39"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="disableInteractionRelevanceAdvisorySwitch">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.40"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="evokeCallback">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.41"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="evokeMultipleCallbacks">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.42"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="enableCallbacks">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.43"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="disableCallbacks">
+				<xs:complexType>
+					<xs:attribute name="section" use="required" fixed="10.44"/>
+					<xs:attribute name="isCallback" use="required" fixed="false"/>
+					<xs:attributeGroup ref="commonAttributes"/>
+					<xs:attribute name="isUsed" type="xs:boolean" default="false"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="objectsType">
+		<xs:sequence>
+			<xs:element ref="objectClass"/>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:element name="objectClass">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="objectClassType"/>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:unique name="className">
+			<xs:annotation>
+				<xs:documentation>ensures uniqueness of objectClass names among class siblings</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./ns:objectClass"/>
+			<xs:field xpath="ns:name"/>
+		</xs:unique>
+		<xs:unique name="attributeName">
+			<xs:selector xpath="./ns:attribute"/>
+			<xs:field xpath="ns:name"/>
+		</xs:unique>
+	</xs:element>
+	<xs:complexType name="objectClassType">
+		<xs:sequence>
+			<xs:element name="name" type="IdentifierType"/>
+			<xs:element name="sharing" type="sharingType" default="Neither">
+				<xs:annotation>
+					<xs:documentation>specifies publication and subscription capabilities of this object class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>lexicon entry for this object class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="attribute" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="objectClass" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:element name="attribute">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="attributeType"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="attributeType">
+		<xs:sequence>
+			<xs:element name="name" type="IdentifierType"/>
+			<xs:element name="dataType" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype of the attribute</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="updateType" type="updateType">
+				<xs:annotation>
+					<xs:documentation>records the policy for updating an instance of the class attribute</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="updateCondition" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>expands and explains the policies for updating an instance of the class attribute</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ownership" type="ownershipType">
+				<xs:annotation>
+					<xs:documentation>indicates whether ownership of an instance of the class attribute can be divested and/or acquired</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sharing" type="sharingType">
+				<xs:annotation>
+					<xs:documentation>identifies the capabilities of a federate or federation with respect to class attribute publishing and subscribing</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dimensions" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>records the association of the class attribute with a set of dimensions if a federate or federation is using DDM services for this attribute</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="dimension" type="ReferenceType" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>identifies a dimension associated with this attribute</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:any namespace="##other" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="transportation" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>specifies the type of transportation used with this attribute</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="order" type="orderType">
+				<xs:annotation>
+					<xs:documentation>specifies the order of delivery used with instances of this class attribute</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>lexicon entry for this attribute</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="updateType">
+		<xs:simpleContent>
+			<xs:extension base="updateEnumerations">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ownershipType">
+		<xs:simpleContent>
+			<xs:extension base="ownershipEnumerations">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="interactionsType">
+		<xs:sequence>
+			<xs:element ref="interactionClass"/>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:element name="interactionClass">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="interactionClassType"/>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:unique name="interactionName">
+			<xs:annotation>
+				<xs:documentation>ensures uniqueness of interactionClass names among class siblings</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./ns:interactionClass"/>
+			<xs:field xpath="ns:name"/>
+		</xs:unique>
+		<xs:unique name="parameterName">
+			<xs:selector xpath="./ns:parameter"/>
+			<xs:field xpath="ns:name"/>
+		</xs:unique>
+	</xs:element>
+	<xs:complexType name="interactionClassType">
+		<xs:sequence>
+			<xs:element name="name" type="IdentifierType"/>
+			<xs:element name="sharing" type="sharingType">
+				<xs:annotation>
+					<xs:documentation>specifies publication and subscription capabilities of this interaction class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dimensions" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>records the association of the interaction class with a set of dimensions if a federate or federation is using DDM services for this attribute</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="dimension" type="ReferenceType" minOccurs="0" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>identifies a dimension associated with this interaction class</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:any namespace="##other" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="transportation" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>specifies the type of transportation used with this interaction class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="order" type="orderType">
+				<xs:annotation>
+					<xs:documentation>specifies the order of delivery used with instances of this interaction class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>lexicon entry for this interaction class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="parameter" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="interactionClass" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:element name="parameter">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="parameterType"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="parameterType">
+		<xs:sequence>
+			<xs:element name="name" type="IdentifierType"/>
+			<xs:element name="dataType" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype of the parameter</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>lexicon entry for the parameter</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="dimensionsType">
+		<xs:sequence>
+			<xs:element name="dimension" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="dimensionType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="dimensionType">
+		<xs:sequence>
+			<xs:element name="name" type="IdentifierType"/>
+			<xs:element name="dataType" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype for the federate view of the dimension</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="upperBound" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>specifies the upper bound for the dimension that meets the federation's requirement for dimension subrange resolution</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:positiveInteger">
+							<xs:attributeGroup ref="commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="normalization" type="NonEmptyString">
+				<xs:annotation>
+					<xs:documentation>specifies the map from a subscription/update region's bounding coordinates to nonnegative integer subranges in the range [0, dimension upper bound).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="value" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>specifies a default range for the dimension that the RTI is to use in overlap calculations if the dimension is an available dimension of an attribute or interaction and has been left unspecified when a federate creates a region that is subsequently used with the attribute or interaction</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="dimensionValuePattern">
+							<xs:attributeGroup ref="commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="timeType">
+		<xs:sequence>
+			<xs:element name="timeStamp" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="dataType" type="ReferenceType">
+							<xs:annotation>
+								<xs:documentation>identifies the timestamp datatype</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="semantics" type="String" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>expands and describes the use of the datatype for timestamp</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:any namespace="##other" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="lookahead" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="dataType" type="ReferenceType">
+							<xs:annotation>
+								<xs:documentation>identifies the lookahead datatype</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="semantics" type="String" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>expands and describes the use of the datatype for lookahead</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:any namespace="##other" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="tagsType">
+		<xs:sequence>
+			<xs:element name="updateReflectTag" type="tagType" minOccurs="0"/>
+			<xs:element name="sendReceiveTag" type="tagType" minOccurs="0"/>
+			<xs:element name="deleteRemoveTag" type="tagType" minOccurs="0"/>
+			<xs:element name="divestitureRequestTag" type="tagType" minOccurs="0"/>
+			<xs:element name="divestitureCompletionTag" type="tagType" minOccurs="0"/>
+			<xs:element name="acquisitionRequestTag" type="tagType" minOccurs="0"/>
+			<xs:element name="requestUpdateTag" type="tagType" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="tagType">
+		<xs:sequence>
+			<xs:element name="dataType" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype for the user-defined tag</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>expands and describes the use of the datatype for the user-supplied tag</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="synchronizationsType">
+		<xs:sequence>
+			<xs:element name="synchronizationPoint" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="synchronizationPointType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="synchronizationPointType">
+		<xs:sequence>
+			<xs:element name="label" type="IdentifierType"/>
+			<xs:element name="dataType" type="ReferenceType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype of the user-supplied tag for those synchronization points that the federate or federation designate as providing a user-supplied tag</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="capability" type="capabilityType">
+				<xs:annotation>
+					<xs:documentation>indicates the level of interaction that a federate is capable of honoring</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>expands and describes the use of the synchronization point</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="capabilityType">
+		<xs:simpleContent>
+			<xs:extension base="capabilityEnumerations">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="transportationsType">
+		<xs:sequence>
+			<xs:element name="transportation" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="transportationType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="transportationType">
+		<xs:sequence>
+			<xs:element name="name" type="IdentifierType"/>
+			<xs:element name="reliable">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="reliableEnumerations">
+							<xs:attributeGroup ref="commonAttributes"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="semantics" type="String" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>describes the transportation type</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="switchesType">
+		<xs:sequence>
+			<xs:element name="autoProvide" type="switchType"/>
+			<xs:element name="conveyRegionDesignatorSets" type="switchType"/>
+			<xs:element name="conveyProducingFederate" type="switchType"/>
+			<xs:element name="attributeScopeAdvisory" type="switchType"/>
+			<xs:element name="attributeRelevanceAdvisory" type="switchType"/>
+			<xs:element name="objectClassRelevanceAdvisory" type="switchType"/>
+			<xs:element name="interactionRelevanceAdvisory" type="switchType"/>
+			<xs:element name="serviceReporting" type="switchType"/>
+			<xs:element name="exceptionReporting" type="switchType"/>
+			<xs:element name="delaySubscriptionEvaluation" type="switchType"/>
+			<xs:element name="automaticResignAction" type="resignSwitchType"/>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="switchType">
+		<xs:attribute name="isEnabled" type="xs:boolean" default="false"/>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="resignSwitchType">
+		<xs:attribute name="resignAction" type="resignActionType" default="NoAction"/>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:simpleType name="resignActionType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="UnconditionallyDivestAttributes"/>
+			<xs:enumeration value="DeleteObjects"/>
+			<xs:enumeration value="CancelPendingOwnershipAcquisitions"/>
+			<xs:enumeration value="DeleteObjectsThenDivest"/>
+			<xs:enumeration value="CancelThenDeleteThenDivest"/>
+			<xs:enumeration value="NoAction"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="updateRatesType">
+		<xs:sequence>
+			<xs:element name="updateRate" type="updateRateType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="updateRateType">
+		<xs:sequence>
+			<xs:element name="name" type="IdentifierType"/>
+			<xs:element name="rate" type="RateType"/>
+			<xs:element name="semantics" type="String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="RateType">
+		<xs:simpleContent>
+			<xs:extension base="xs:decimal">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="dataTypesType">
+		<xs:sequence>
+			<xs:element name="basicDataRepresentations" type="basicDataRepresentationsType">
+				<xs:annotation>
+					<xs:documentation>Basic data representation is the underpinning of all OMT datatypes. Although it is not used as a datatype, it forms the basis of the datatypes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="simpleDataTypes" type="simpleDataTypesType">
+				<xs:annotation>
+					<xs:documentation>The simple datatypes describes simple, scalar data items.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="enumeratedDataTypes" type="enumeratedDataTypesType">
+				<xs:annotation>
+					<xs:documentation>The enumerated datatypes describes data elements that can take on a finite discrete set of possible values.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="arrayDataTypes">
+				<xs:annotation>
+					<xs:documentation>The array datatypes describes indexed homogenous collections of datatypes; also known as arrays or sequences.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="arrayDataTypesType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="fixedRecordDataTypes" type="fixedRecordDataTypesType">
+				<xs:annotation>
+					<xs:documentation>The fixed datatypes describes heterogeneous collections of types; also known as records or structures.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="variantRecordDataTypes" type="variantRecordDataTypesType">
+				<xs:annotation>
+					<xs:documentation>The variant record datatypes describes discriminated unions of types; also known as variant or choice records.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="basicDataRepresentationsType">
+		<xs:sequence>
+			<xs:element name="basicData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="basicDataType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="basicDataType">
+		<xs:sequence>
+			<xs:element name="name" type="IdentifierType"/>
+			<xs:element name="size" type="Size">
+				<xs:annotation>
+					<xs:documentation>defines the size of the data representation in terms of the number of bits contained in the data representation</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="interpretation" type="String">
+				<xs:annotation>
+					<xs:documentation>describes how the data representation should be interpreted</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="endian" type="endianType">
+				<xs:annotation>
+					<xs:documentation>describe how multiple bytes within the representation are arranged</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="encoding" type="String">
+				<xs:annotation>
+					<xs:documentation>describes, in detail, the encoding of the data representation (e.g., the bit ordering) as delivered to and received from the RTI</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="Size">
+		<xs:simpleContent>
+			<xs:extension base="xs:integer">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="endianType">
+		<xs:simpleContent>
+			<xs:extension base="endianEnumerations">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="simpleDataTypesType">
+		<xs:sequence>
+			<xs:element name="simpleData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="simpleDataType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="simpleDataType">
+		<xs:sequence>
+			<xs:element name="name" type="IdentifierType"/>
+			<xs:element name="representation" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the basic data representation of this datatype</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="units" type="NonEmptyString" default="NA" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>identifies the units of measure (e.g., m, km, kg) for the datatype whenever such units exist. Any units entered in this column also specify the units of Resolution and Accuracy.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="resolution" type="NonEmptyString" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>describes the precision of measure for the datatype</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="accuracy" type="NonEmptyString" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>describes maximum deviation of the value from its intended value in the federate or federation</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="fixedRecordDataTypesType">
+		<xs:sequence>
+			<xs:element name="fixedRecordData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="fixedRecordDataType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="fixedRecordDataType">
+		<xs:sequence>
+			<xs:element name="name" type="IdentifierType"/>
+			<xs:element name="encoding" type="fixedRecordEncodingType">
+				<xs:annotation>
+					<xs:documentation>describes the encoding of the fixed record datatype (i.e., the organization of fields) as delivered to and received from the RTI</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="String" minOccurs="0"/>
+			<xs:element name="field" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="name" type="IdentifierType"/>
+						<xs:element name="dataType" type="ReferenceType"/>
+						<xs:element name="semantics" type="String" minOccurs="0"/>
+						<xs:any namespace="##other" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="fixedRecordEncodingType">
+		<xs:simpleContent>
+			<xs:extension base="fixedRecordEncodingUnion">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="enumeratedDataTypesType">
+		<xs:sequence>
+			<xs:element name="enumeratedData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="enumeratedDataType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="enumeratedDataType">
+		<xs:sequence>
+			<xs:element name="name" type="IdentifierType"/>
+			<xs:element name="representation" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the basic data representation that forms the basis of this datatype</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="String" minOccurs="0"/>
+			<xs:element name="enumerator" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>defines the enumerators associated with this datatype</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="name" type="IdentifierType"/>
+						<xs:element name="value" type="String" maxOccurs="unbounded">
+							<xs:annotation>
+								<xs:documentation>provides values that correspond to each enumerator</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:any namespace="##other" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="variantRecordDataTypesType">
+		<xs:sequence>
+			<xs:element name="variantRecordData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="variantRecordDataType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="variantRecordDataType">
+		<xs:sequence>
+			<xs:element name="name" type="IdentifierType"/>
+			<xs:element name="discriminant" type="IdentifierType"/>
+			<xs:element name="dataType" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype of the discriminant</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="alternative" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="enumerator" type="NonEmptyString">
+							<xs:annotation>
+								<xs:documentation>enumerators or enumerator ranges that determines the alternative</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="name" type="IdentifierType" minOccurs="0"/>
+						<xs:element name="dataType" type="ReferenceType" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>identify the datatype of the field</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="semantics" type="String" minOccurs="0"/>
+						<xs:any namespace="##other" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="encoding" type="variantRecordEncodingType">
+				<xs:annotation>
+					<xs:documentation>describes the encoding of the variant record datatype (e.g., the location of the discriminant) as delivered to and received from the RTI</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="variantRecordEncodingType">
+		<xs:simpleContent>
+			<xs:extension base="variantRecordEncodingUnion">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="arrayDataTypesType">
+		<xs:sequence>
+			<xs:element name="arrayData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="arrayDataType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="arrayDataType">
+		<xs:sequence>
+			<xs:element name="name" type="IdentifierType"/>
+			<xs:element name="dataType" type="ReferenceType">
+				<xs:annotation>
+					<xs:documentation>identifies the datatype of an element of this array</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cardinality" type="cardinalityType">
+				<xs:annotation>
+					<xs:documentation>contains the number of elements that are contained in the array</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="encoding" type="arrayDatatypeEncodingType">
+				<xs:annotation>
+					<xs:documentation>describe, in detail, the encoding of the array datatype (e.g., the sequence of elements and the order of elements in multi-dimensional arrays) as delivered to and received from the RTI</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="semantics" type="String" minOccurs="0"/>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="arrayDatatypeEncodingType">
+		<xs:simpleContent>
+			<xs:extension base="arrayDatatypeEncodingUnion">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="cardinalityType">
+		<xs:simpleContent>
+			<xs:extension base="cardinalityPattern">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="notesType">
+		<xs:sequence>
+			<xs:element name="note" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="label" type="xs:ID"/>
+						<xs:element name="semantics" type="String" minOccurs="0"/>
+						<xs:any namespace="##other" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="commonAttributes"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="commonAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="IdentifierType">
+		<xs:simpleContent>
+			<xs:extension base="xs:NCName">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ReferenceType">
+		<xs:simpleContent>
+			<xs:extension base="xs:NCName">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="String">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="NonEmptyString">
+		<xs:simpleContent>
+			<xs:extension base="nonEmptyString">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="sharingType">
+		<xs:simpleContent>
+			<xs:extension base="sharingEnumerations">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="orderType">
+		<xs:simpleContent>
+			<xs:extension base="orderEnumerations">
+				<xs:attributeGroup ref="commonAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="nonEmptyString">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="reliableEnumerations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Yes"/>
+			<xs:enumeration value="No"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="sharingEnumerations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Publish"/>
+			<xs:enumeration value="Subscribe"/>
+			<xs:enumeration value="PublishSubscribe"/>
+			<xs:enumeration value="Neither"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="orderEnumerations">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Receive"/>
+			<xs:enumeration value="TimeStamp"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="endianEnumerations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Big"/>
+			<xs:enumeration value="Little"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OMTypeEnumerations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FOM"/>
+			<xs:enumeration value="SOM"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="capabilityEnumerations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Register"/>
+			<xs:enumeration value="Achieve"/>
+			<xs:enumeration value="RegisterAchieve"/>
+			<xs:enumeration value="NoSynch"/>
+			<xs:enumeration value="NA"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="updateEnumerations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Static"/>
+			<xs:enumeration value="Periodic"/>
+			<xs:enumeration value="Conditional"/>
+			<xs:enumeration value="NA"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ownershipEnumerations">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Divest"/>
+			<xs:enumeration value="Acquire"/>
+			<xs:enumeration value="DivestAcquire"/>
+			<xs:enumeration value="NoTransfer"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="glyphTypeEnumerations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BITMAP"/>
+			<xs:enumeration value="JPG"/>
+			<xs:enumeration value="GIF"/>
+			<xs:enumeration value="PNG"/>
+			<xs:enumeration value="TIFF"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SecurityClassificationEnumeration">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Unclassified"/>
+			<xs:enumeration value="Confidential"/>
+			<xs:enumeration value="Secret"/>
+			<xs:enumeration value="Top Secret"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ApplicationDomainEnumerations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Analysis"/>
+			<xs:enumeration value="Training"/>
+			<xs:enumeration value="Test and Evaluation"/>
+			<xs:enumeration value="Engineering"/>
+			<xs:enumeration value="Acquisition"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="fixedRecordEncodingEnumeration">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="HLAfixedRecord"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="variantRecordEncodingEnumerator">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="HLAvariantRecord"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="arrayDatatypeEncodingEnum">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="HLAfixedArray"/>
+			<xs:pattern value="HLAvariableArray"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="POCTypeEnumeration">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Primary author"/>
+			<xs:enumeration value="Contributor"/>
+			<xs:enumeration value="Proponent"/>
+			<xs:enumeration value="Sponsor"/>
+			<xs:enumeration value="Release authority"/>
+			<xs:enumeration value="Technical POC"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OMTypeUnion">
+		<xs:union memberTypes="OMTypeEnumerations nonEmptyString"/>
+	</xs:simpleType>
+	<xs:simpleType name="glyphTypeUnion">
+		<xs:union memberTypes="glyphTypeEnumerations xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="fixedRecordEncodingUnion">
+		<xs:union memberTypes="fixedRecordEncodingEnumeration nonEmptyString"/>
+	</xs:simpleType>
+	<xs:simpleType name="variantRecordEncodingUnion">
+		<xs:union memberTypes="variantRecordEncodingEnumerator nonEmptyString"/>
+	</xs:simpleType>
+	<xs:simpleType name="arrayDatatypeEncodingUnion">
+		<xs:union memberTypes="arrayDatatypeEncodingEnum nonEmptyString"/>
+	</xs:simpleType>
+	<xs:simpleType name="SecurityClassificationUnion">
+		<xs:union memberTypes="SecurityClassificationEnumeration nonEmptyString"/>
+	</xs:simpleType>
+	<xs:simpleType name="ApplicationDomainUnion">
+		<xs:union memberTypes="ApplicationDomainEnumerations xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="POCTypeUnion">
+		<xs:union memberTypes="POCTypeEnumeration nonEmptyString"/>
+	</xs:simpleType>
+	<xs:attributeGroup name="commonAttributes">
+		<xs:attribute name="notes" type="xs:IDREFS" use="optional"/>
+		<xs:attribute name="idtag" type="xs:ID" use="optional"/>
+		<xs:anyAttribute namespace="##other"/>
+	</xs:attributeGroup>
+	<xs:simpleType name="dimensionValuePattern">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d+|\[\d+\.\.\d+\)|\[\d+\)|Excluded"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="variantRecordEnumeratorPattern">
+		<xs:restriction base="xs:NCName">
+			<xs:pattern value="HLAother|(\S)+|([(\S)+..(\S)+])"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="cardinalityPattern">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(Dynamic|(\d)+|(\[(\d)+..(\d)+\]))(,(Dynamic|(\d)+|(\[(\d)+..(\d)+\])))*"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
