@@ -1556,17 +1556,33 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
          rti1516e::RTIinternalError)
 {
   // Make sure we can read the fdd file
-  std::ifstream stream(OpenRTI::ucsToLocale(fomModule).c_str());
-  if (!stream.is_open())
-    throw rti1516e::CouldNotOpenFDD(fomModule);
-
   OpenRTI::FOMStringModuleList fomModuleList;
-  try {
-    fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
-  } catch (const OpenRTI::Exception& e) {
-    throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
-  } catch (...) {
-    throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
+  {
+    std::wstring mim = utf8ToUcs(OPENRTI_DATAROOTDIR "/rti1516e/HLAstandardMIM.xml");
+    std::ifstream stream(ucsToLocale(mim).c_str());
+    if (!stream.is_open())
+      throw rti1516e::RTIinternalError(std::wstring(L"Could not open \"") + mim  + L"\".");
+
+    try {
+      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
+    } catch (const OpenRTI::Exception& e) {
+      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (...) {
+      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
+    }
+  }
+
+  {
+    std::ifstream stream(OpenRTI::ucsToLocale(fomModule).c_str());
+    if (!stream.is_open())
+      throw rti1516e::CouldNotOpenFDD(fomModule);
+    try {
+      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
+    } catch (const OpenRTI::Exception& e) {
+      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (...) {
+      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
+    }
   }
 
   std::string utf8FederationExecutionName = OpenRTI::ucsToUtf8(federationExecutionName);
@@ -1586,6 +1602,20 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
          rti1516e::RTIinternalError)
 {
   OpenRTI::FOMStringModuleList fomModuleList;
+  {
+    std::wstring mim = utf8ToUcs(OPENRTI_DATAROOTDIR "/rti1516e/HLAstandardMIM.xml");
+    std::ifstream stream(ucsToLocale(mim).c_str());
+    if (!stream.is_open())
+      throw rti1516e::RTIinternalError(std::wstring(L"Could not open \"") + mim  + L"\".");
+
+    try {
+      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
+    } catch (const OpenRTI::Exception& e) {
+      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
+    } catch (...) {
+      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
+    }
+  }
 
   for (std::vector<std::wstring>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i) {
     std::ifstream stream(OpenRTI::ucsToLocale(*i).c_str());
