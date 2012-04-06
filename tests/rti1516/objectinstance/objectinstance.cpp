@@ -45,6 +45,11 @@ public:
   {
     try {
       rti1516::ObjectClassHandle objectClassHandle = ambassador.getObjectClassHandle(L"ObjectClass0");
+      rti1516::ObjectClassHandle fqObjectClassHandle = ambassador.getObjectClassHandle(L"HLAobjectRoot.ObjectClass0");
+      if (objectClassHandle != fqObjectClassHandle) {
+        std::wcout << L"Full qualified object class lookup failed" << std::endl;
+        return false;
+      }
       _objectClassAttributeHandleSet[objectClassHandle].insert(ambassador.getAttributeHandle(objectClassHandle, L"attribute0"));
       _objectClassObjectClassHandleSet[objectClassHandle];
     } catch (const rti1516::Exception& e) {
@@ -57,6 +62,11 @@ public:
 
     try {
       rti1516::ObjectClassHandle objectClassHandle = ambassador.getObjectClassHandle(L"ObjectClass1");
+      rti1516::ObjectClassHandle fqObjectClassHandle = ambassador.getObjectClassHandle(L"HLAobjectRoot.ObjectClass0.ObjectClass1");
+      if (objectClassHandle != fqObjectClassHandle) {
+        std::wcout << L"Full qualified object class lookup failed" << std::endl;
+        return false;
+      }
       _objectClassAttributeHandleSet[objectClassHandle].insert(ambassador.getAttributeHandle(objectClassHandle, L"attribute0"));
       _objectClassAttributeHandleSet[objectClassHandle].insert(ambassador.getAttributeHandle(objectClassHandle, L"attribute1"));
       _objectClassObjectClassHandleSet[objectClassHandle].insert(ambassador.getObjectClassHandle(L"ObjectClass0"));
@@ -70,6 +80,11 @@ public:
 
     try {
       rti1516::ObjectClassHandle objectClassHandle = ambassador.getObjectClassHandle(L"ObjectClass2");
+      rti1516::ObjectClassHandle fqObjectClassHandle = ambassador.getObjectClassHandle(L"HLAobjectRoot.ObjectClass0.ObjectClass1.ObjectClass2");
+      if (objectClassHandle != fqObjectClassHandle) {
+        std::wcout << L"Full qualified object class lookup failed" << std::endl;
+        return false;
+      }
       _objectClassAttributeHandleSet[objectClassHandle].insert(ambassador.getAttributeHandle(objectClassHandle, L"attribute0"));
       _objectClassAttributeHandleSet[objectClassHandle].insert(ambassador.getAttributeHandle(objectClassHandle, L"attribute1"));
       _objectClassAttributeHandleSet[objectClassHandle].insert(ambassador.getAttributeHandle(objectClassHandle, L"attribute2"));
@@ -85,6 +100,11 @@ public:
 
     try {
       rti1516::ObjectClassHandle objectClassHandle = ambassador.getObjectClassHandle(L"ObjectClass3");
+      rti1516::ObjectClassHandle fqObjectClassHandle = ambassador.getObjectClassHandle(L"HLAobjectRoot.ObjectClass0.ObjectClass1.ObjectClass3");
+      if (objectClassHandle != fqObjectClassHandle) {
+        std::wcout << L"Full qualified object class lookup failed" << std::endl;
+        return false;
+      }
       _objectClassAttributeHandleSet[objectClassHandle].insert(ambassador.getAttributeHandle(objectClassHandle, L"attribute0"));
       _objectClassAttributeHandleSet[objectClassHandle].insert(ambassador.getAttributeHandle(objectClassHandle, L"attribute1"));
       _objectClassAttributeHandleSet[objectClassHandle].insert(ambassador.getAttributeHandle(objectClassHandle, L"attribute3"));
