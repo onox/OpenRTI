@@ -30,6 +30,7 @@
 using namespace OpenRTI;
 
 enum RequestType {
+  Interaction0,
   Interaction1,
   Interaction2,
   Interaction3,
@@ -68,13 +69,35 @@ public:
       return false;
     }
 
+    rti1516::InteractionClassHandle interactionClassHandle0;
     rti1516::InteractionClassHandle interactionClassHandle1;
     rti1516::InteractionClassHandle interactionClassHandle2;
     rti1516::InteractionClassHandle interactionClassHandle3;
     try {
+      interactionClassHandle0 = ambassador.getInteractionClassHandle(L"InteractionClass0");
+      rti1516::InteractionClassHandle fqInteractionClassHandle = ambassador.getInteractionClassHandle(L"HLAinteractionRoot.InteractionClass0");
+      if (interactionClassHandle0 != fqInteractionClassHandle) {
+        std::wcout << L"Full qualified interaction class lookup failed" << std::endl;
+        return false;
+      }
       interactionClassHandle1 = ambassador.getInteractionClassHandle(L"InteractionClass1");
+      fqInteractionClassHandle = ambassador.getInteractionClassHandle(L"HLAinteractionRoot.InteractionClass0.InteractionClass1");
+      if (interactionClassHandle1 != fqInteractionClassHandle) {
+        std::wcout << L"Full qualified interaction class lookup failed" << std::endl;
+        return false;
+      }
       interactionClassHandle2 = ambassador.getInteractionClassHandle(L"InteractionClass2");
+      fqInteractionClassHandle = ambassador.getInteractionClassHandle(L"HLAinteractionRoot.InteractionClass0.InteractionClass1.InteractionClass2");
+      if (interactionClassHandle2 != fqInteractionClassHandle) {
+        std::wcout << L"Full qualified interaction class lookup failed" << std::endl;
+        return false;
+      }
       interactionClassHandle3 = ambassador.getInteractionClassHandle(L"InteractionClass3");
+      fqInteractionClassHandle = ambassador.getInteractionClassHandle(L"HLAinteractionRoot.InteractionClass0.InteractionClass1.InteractionClass3");
+      if (interactionClassHandle3 != fqInteractionClassHandle) {
+        std::wcout << L"Full qualified interaction class lookup failed" << std::endl;
+        return false;
+      }
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -83,18 +106,24 @@ public:
       return false;
     }
 
+    rti1516::ParameterHandle class0Parameter0Handle;
+    rti1516::ParameterHandle class1Parameter0Handle;
     rti1516::ParameterHandle class1Parameter1Handle;
+    rti1516::ParameterHandle class2Parameter0Handle;
     rti1516::ParameterHandle class2Parameter1Handle;
     rti1516::ParameterHandle class2Parameter2Handle;
+    rti1516::ParameterHandle class3Parameter0Handle;
     rti1516::ParameterHandle class3Parameter1Handle;
-    rti1516::ParameterHandle class3Parameter2Handle;
     rti1516::ParameterHandle class3Parameter3Handle;
     try {
+      class0Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle0, L"parameter0");
+      class1Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle1, L"parameter0");
       class1Parameter1Handle = ambassador.getParameterHandle(interactionClassHandle1, L"parameter1");
+      class2Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter0");
       class2Parameter1Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter1");
       class2Parameter2Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter2");
+      class3Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle3, L"parameter0");
       class3Parameter1Handle = ambassador.getParameterHandle(interactionClassHandle3, L"parameter1");
-      class3Parameter2Handle = ambassador.getParameterHandle(interactionClassHandle3, L"parameter2");
       class3Parameter3Handle = ambassador.getParameterHandle(interactionClassHandle3, L"parameter3");
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -115,6 +144,7 @@ public:
     }
 
     try {
+      ambassador.publishInteractionClass(interactionClassHandle0);
       ambassador.publishInteractionClass(interactionClassHandle1);
       ambassador.publishInteractionClass(interactionClassHandle2);
       ambassador.publishInteractionClass(interactionClassHandle3);
@@ -164,19 +194,25 @@ public:
         case Finished:
           std::wcout << L"unexpected Request type Finished!" << std::endl;
           return false;
+        case Interaction0:
+          interactionClassHandle = interactionClassHandle0;
+          parameterValues[class0Parameter0Handle] = toVariableLengthData("parameter0");
+          break;
         case Interaction1:
           interactionClassHandle = interactionClassHandle1;
+          parameterValues[class1Parameter0Handle] = toVariableLengthData("parameter0");
           parameterValues[class1Parameter1Handle] = toVariableLengthData("parameter1");
           break;
         case Interaction2:
           interactionClassHandle = interactionClassHandle2;
+          parameterValues[class2Parameter0Handle] = toVariableLengthData("parameter0");
           parameterValues[class2Parameter1Handle] = toVariableLengthData("parameter1");
           parameterValues[class2Parameter2Handle] = toVariableLengthData("parameter2");
           break;
         case Interaction3:
           interactionClassHandle = interactionClassHandle3;
+          parameterValues[class3Parameter0Handle] = toVariableLengthData("parameter0");
           parameterValues[class3Parameter1Handle] = toVariableLengthData("parameter1");
-          parameterValues[class3Parameter2Handle] = toVariableLengthData("parameter2");
           parameterValues[class3Parameter3Handle] = toVariableLengthData("parameter3");
           break;
         }
@@ -196,9 +232,9 @@ public:
       return false;
 
     try {
+      ambassador.unpublishInteractionClass(interactionClassHandle0);
       ambassador.unpublishInteractionClass(interactionClassHandle1);
       ambassador.unpublishInteractionClass(interactionClassHandle2);
-      ambassador.unpublishInteractionClass(interactionClassHandle3);
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -276,6 +312,7 @@ public:
     }
 
     try {
+      interactionClassHandle0 = ambassador.getInteractionClassHandle(L"InteractionClass0");
       interactionClassHandle1 = ambassador.getInteractionClassHandle(L"InteractionClass1");
       interactionClassHandle2 = ambassador.getInteractionClassHandle(L"InteractionClass2");
       interactionClassHandle3 = ambassador.getInteractionClassHandle(L"InteractionClass3");
@@ -288,12 +325,15 @@ public:
     }
 
     try {
+      class0Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle0, L"parameter0");
+      class1Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle1, L"parameter0");
       class1Parameter1Handle = ambassador.getParameterHandle(interactionClassHandle1, L"parameter1");
+      class2Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter0");
       class2Parameter1Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter1");
       class2Parameter2Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter2");
-      class3Parameter1Handle = ambassador.getParameterHandle(interactionClassHandle3, L"parameter1");
-      class3Parameter2Handle = ambassador.getParameterHandle(interactionClassHandle3, L"parameter2");
-      class3Parameter3Handle = ambassador.getParameterHandle(interactionClassHandle3, L"parameter3");
+      class3Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter0");
+      class3Parameter1Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter1");
+      class3Parameter3Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter3");
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -313,6 +353,7 @@ public:
     }
 
     try {
+      ambassador.subscribeInteractionClass(interactionClassHandle0);
       ambassador.subscribeInteractionClass(interactionClassHandle1);
       ambassador.subscribeInteractionClass(interactionClassHandle2);
       ambassador.subscribeInteractionClass(interactionClassHandle3);
@@ -334,8 +375,8 @@ public:
 
       try {
         rti1516::ParameterHandleValueMap parameterValues;
-        rti1516::VariableLengthData tag = toVariableLengthData("parameter1");
-        parameterValues[requestTypeHandle] = toVariableLengthData(unsigned(Interaction2));
+        rti1516::VariableLengthData tag = toVariableLengthData("parameter0");
+        parameterValues[requestTypeHandle] = toVariableLengthData(unsigned(Interaction1));
         ambassador.sendInteraction(requestHandle, parameterValues, tag);
 
       } catch (const rti1516::Exception& e) {
@@ -374,7 +415,7 @@ public:
 
     try {
       rti1516::ParameterHandleValueMap parameterValues;
-      rti1516::VariableLengthData tag = toVariableLengthData("parameter1");
+      rti1516::VariableLengthData tag = toVariableLengthData("parameter0");
       parameterValues[requestTypeHandle] = toVariableLengthData(unsigned(Finished));
       ambassador.sendInteraction(requestHandle, parameterValues, tag);
 
@@ -400,6 +441,7 @@ public:
     }
 
     try {
+      ambassador.unsubscribeInteractionClass(interactionClassHandle0);
       ambassador.unsubscribeInteractionClass(interactionClassHandle1);
       ambassador.unsubscribeInteractionClass(interactionClassHandle2);
       ambassador.unsubscribeInteractionClass(interactionClassHandle3);
@@ -431,31 +473,21 @@ public:
   Clock _clock;
   bool _receivedInteraction;
 
+  rti1516::InteractionClassHandle interactionClassHandle0;
   rti1516::InteractionClassHandle interactionClassHandle1;
   rti1516::InteractionClassHandle interactionClassHandle2;
   rti1516::InteractionClassHandle interactionClassHandle3;
 
+  rti1516::ParameterHandle class0Parameter0Handle;
+  rti1516::ParameterHandle class1Parameter0Handle;
   rti1516::ParameterHandle class1Parameter1Handle;
+  rti1516::ParameterHandle class2Parameter0Handle;
   rti1516::ParameterHandle class2Parameter1Handle;
   rti1516::ParameterHandle class2Parameter2Handle;
+  rti1516::ParameterHandle class3Parameter0Handle;
   rti1516::ParameterHandle class3Parameter1Handle;
-  rti1516::ParameterHandle class3Parameter2Handle;
   rti1516::ParameterHandle class3Parameter3Handle;
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class Test : public RTITest {
 public:

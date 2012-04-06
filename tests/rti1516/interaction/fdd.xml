@@ -33,19 +33,27 @@
                    dataType="HLAopaqueData"/>
       </interactionClass>
       <interactionClass
-         name="InteractionClass1"
+         name="InteractionClass0"
          sharing="PublishSubscribe"
          transportation="HLAreliable"
          order="Receive">
-        <parameter name="parameter1"
+        <parameter name="parameter0"
                    dataType="HLAopaqueData"/>
         <interactionClass
-           name="InteractionClass2"
+           name="InteractionClass1"
            sharing="PublishSubscribe"
            transportation="HLAreliable"
            order="Receive">
-          <parameter name="parameter2"
+          <parameter name="parameter1"
                      dataType="HLAopaqueData"/>
+          <interactionClass
+             name="InteractionClass2"
+             sharing="PublishSubscribe"
+             transportation="HLAreliable"
+             order="Receive">
+            <parameter name="parameter2"
+                       dataType="HLAopaqueData"/>
+          </interactionClass>
           <interactionClass
              name="InteractionClass3"
              sharing="PublishSubscribe"
