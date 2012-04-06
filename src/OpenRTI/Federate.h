@@ -3826,22 +3826,25 @@ protected:
 
     InteractionClassHandle parentHandle = module.getParentInteractionClassHandle();
 
-    std::string parentFQN;
+    std::string fqn;
     if (parentHandle.valid()) {
-      parentFQN = getInteractionClass(parentHandle)._fqnName + ".";
+      fqn = getInteractionClass(parentHandle)._fqnName + "." + module.getName();
+    } else {
+      fqn = module.getName();
     }
 
-    std::string fqn = parentFQN + module.getName();
     _nameInteractionClassHandleMap[module.getName()] = module.getInteractionClassHandle();
     _nameInteractionClassHandleMap[fqn] = module.getInteractionClassHandle();
-    fqn.push_back('.');
 
     InteractionClass& interactionClass = *_interactionClassVector[index];
     interactionClass._name = module.getName();
+    interactionClass._fqnName = fqn;
     interactionClass._parentInteractionClassHandle = parentHandle;
     interactionClass._orderType = module.getOrderType();
     interactionClass._transportationType = module.getTransportationType();
     interactionClass._dimensionHandleSet = module.getDimensionHandleSet();
+
+    fqn += ".";
 
     if (parentHandle.valid()) {
       InteractionClass& parentClass = getInteractionClass(parentHandle);
@@ -3864,19 +3867,22 @@ protected:
 
     ObjectClassHandle parentHandle = module.getParentObjectClassHandle();
 
-    std::string parentFQN;
+    std::string fqn;
     if (parentHandle.valid()) {
-      parentFQN = getObjectClass(parentHandle)._fqnName + ".";
+      fqn = getObjectClass(parentHandle)._fqnName + "." + module.getName();
+    } else {
+      fqn = module.getName();
     }
 
-    std::string fqn = parentFQN + module.getName();
     _nameObjectClassHandleMap[module.getName()] = module.getObjectClassHandle();
     _nameObjectClassHandleMap[fqn] = module.getObjectClassHandle();
-    fqn.push_back('.');
 
     ObjectClass& objectClass = *_objectClassVector[index];
     objectClass._name = module.getName();
+    objectClass._fqnName = fqn;
     objectClass._parentObjectClassHandle = parentHandle;
+
+    fqn += ".";
 
     if (parentHandle.valid()) {
       ObjectClass& parentClass = getObjectClass(parentHandle);
