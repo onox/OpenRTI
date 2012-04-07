@@ -110,7 +110,9 @@ class OPENRTI_LOCAL Buffer : public VariableLengthDataList {
     { return _byte_iterator(*this) -= offset; }
 
     // Sigh, a strange access problem on aCC and early gcc, just disable that control here
-#if !defined(__hpux) && !(defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ <= 1)))
+#if !defined(__hpux) && \
+    !defined(__SUNPRO_CC) && \
+    !(defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ <= 1)))
   protected:
 #endif
     _byte_iterator& _increment(size_t offset)
