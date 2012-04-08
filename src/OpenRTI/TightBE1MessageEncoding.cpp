@@ -809,8 +809,7 @@ public:
 
   void writeFOMStringInteractionClass(const FOMStringInteractionClass& value)
   {
-    writeString(value.getName());
-    writeString(value.getParentName());
+    writeStringVector(value.getName());
     writeString(value.getOrderType());
     writeString(value.getTransportationType());
     writeString(value.getRoutingSpace());
@@ -845,8 +844,7 @@ public:
 
   void writeFOMStringObjectClass(const FOMStringObjectClass& value)
   {
-    writeString(value.getName());
-    writeString(value.getParentName());
+    writeStringVector(value.getName());
     writeFOMStringAttributeList(value.getAttributeList());
   }
 
@@ -2710,8 +2708,7 @@ public:
 
   void readFOMStringInteractionClass(FOMStringInteractionClass& value)
   {
-    readString(value.getName());
-    readString(value.getParentName());
+    readStringVector(value.getName());
     readString(value.getOrderType());
     readString(value.getTransportationType());
     readString(value.getRoutingSpace());
@@ -2746,8 +2743,7 @@ public:
 
   void readFOMStringObjectClass(FOMStringObjectClass& value)
   {
-    readString(value.getName());
-    readString(value.getParentName());
+    readStringVector(value.getName());
     readFOMStringAttributeList(value.getAttributeList());
   }
 

@@ -115,6 +115,9 @@ trim(const char* s, const char* c = " \t\n")
   return trim(std::string(s), c);
 }
 
+OPENRTI_API std::string
+fqClassName(const StringVector& name);
+
 OPENRTI_API std::pair<std::string, std::string>
 parseInetAddress(const std::string& address);
 

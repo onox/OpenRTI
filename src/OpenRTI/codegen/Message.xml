@@ -243,8 +243,7 @@
   <type name="FOMStringParameterList" type="vector" scalar="FOMStringParameter"/>
 
   <type name="FOMStringInteractionClass" type="struct" copyOnWrite="true">
-    <field name="Name" type="String"/>
-    <field name="ParentName" type="String"/>
+    <field name="Name" type="StringVector"/>
     <field name="OrderType" type="String"/>
     <field name="TransportationType" type="String"/>
     <field name="RoutingSpace" type="String"/>
@@ -263,8 +262,7 @@
   <type name="FOMStringAttributeList" type="vector" scalar="FOMStringAttribute"/>
 
   <type name="FOMStringObjectClass" type="struct" copyOnWrite="true">
-    <field name="Name" type="String"/>
-    <field name="ParentName" type="String"/>
+    <field name="Name" type="StringVector"/>
     <field name="AttributeList" type="FOMStringAttributeList"/>
   </type>
   <type name="FOMStringObjectClassList" type="vector" scalar="FOMStringObjectClass"/>

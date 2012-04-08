@@ -43,14 +43,16 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
     // The next free parameter handle to allocate for a derived class
     ParameterHandle _nextParameterHandle;
   };
-  typedef std::map<std::string, InteractionData> NameInteractionDataMap;
+  typedef std::map<StringVector, InteractionData> NameInteractionDataMap;
+  typedef std::map<InteractionClassHandle, StringVector> InteractionClassHandleNameMap;
 
   struct ObjectData {
     FOMObjectClass _objectClass;
     // The next free attribute handle to allocate for a derived class
     AttributeHandle _nextAttributeHandle;
   };
-  typedef std::map<std::string, ObjectData> NameObjectDataMap;
+  typedef std::map<StringVector, ObjectData> NameObjectDataMap;
+  typedef std::map<ObjectClassHandle, StringVector> ObjectClassHandleNameMap;
 
   OrderType getOrderType(const std::string& name) const
   {
@@ -125,11 +127,13 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
   {
     InteractionClassHandle parentInteractionClassHandle;
     ParameterHandle nextParameterHandle;
-    if (!stringModule.getParentName().empty()) {
-      NameInteractionDataMap::iterator i = _nameInteractionDataMap.find(stringModule.getParentName());
+    StringVector parentName = stringModule.getName();
+    parentName.pop_back();
+    if (!parentName.empty()) {
+      NameInteractionDataMap::iterator i = _nameInteractionDataMap.find(parentName);
       // FIXME nore an internal error??
       if (i == _nameInteractionDataMap.end())
-        throw ErrorReadingFDD(std::string("Unknown parent object class \"") + stringModule.getParentName() + "\".");
+        throw ErrorReadingFDD(std::string("Unknown parent object class \"") + fqClassName(parentName) + "\".");
       nextParameterHandle = i->second._nextParameterHandle;
       parentInteractionClassHandle = i->second._interactionClass.getInteractionClassHandle();
     }
@@ -141,19 +145,20 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
       // ... but in this case, we already have this class.
       // Check for some stuff if this is the same FIXME
 
-      OpenRTIAssert(i->second._interactionClass.getName() == stringModule.getName());
+      OpenRTIAssert(!stringModule.getName().empty());
+      OpenRTIAssert(i->second._interactionClass.getName() == stringModule.getName().back());
 
       if (!stringModule.getOrderType().empty()) {
         OrderType orderType = getOrderType(stringModule.getOrderType());
         if (orderType != i->second._interactionClass.getOrderType())
-          throw ErrorReadingFDD(std::string("Incompatible InteractionClass \"") + stringModule.getName()
+          throw ErrorReadingFDD(std::string("Incompatible InteractionClass \"") + fqClassName(stringModule.getName())
                                 + "\": OrderType does not match.");
       }
 
       if (!stringModule.getTransportationType().empty()) {
         TransportationType transportationType = getTransportationType(stringModule.getTransportationType());
         if (transportationType != i->second._interactionClass.getTransportationType())
-          throw ErrorReadingFDD(std::string("Incompatible InteractionClass \"") + stringModule.getName()
+          throw ErrorReadingFDD(std::string("Incompatible InteractionClass \"") + fqClassName(stringModule.getName())
                                 + "\": TransportationType does not match.");
       }
 
@@ -161,7 +166,7 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
         DimensionHandleSet dimensionHandles;
         resolveDimensionHandles(dimensionHandles, stringModule.getDimensionSet());
         if (i->second._interactionClass.getDimensionHandleSet() != dimensionHandles)
-          throw ErrorReadingFDD(std::string("Incompatible InteractionClass \"") + stringModule.getName()
+          throw ErrorReadingFDD(std::string("Incompatible InteractionClass \"") + fqClassName(stringModule.getName())
                                 + "\": Dimension handle set does not match.");
       }
 
@@ -170,16 +175,17 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
         FOMParameterList parameterList;
         insertParameterList(parameterList, stringModule.getParameterList(), nextParameterHandle);
         if (parameterList != i->second._interactionClass.getParameterList())
-          throw ErrorReadingFDD(std::string("Incompatible InteractionClass \"") + stringModule.getName()
+          throw ErrorReadingFDD(std::string("Incompatible InteractionClass \"") + fqClassName(stringModule.getName())
                                 + "\": Parameter list does not match.");
       }
     } else {
       i = _nameInteractionDataMap.insert(NameInteractionDataMap::value_type(stringModule.getName(), InteractionData())).first;
 
-      i->second._interactionClass.setName(stringModule.getName());
+      i->second._interactionClass.setName(stringModule.getName().back());
 
       i->second._interactionClass.setInteractionClassHandle(++_nextInteractionClassHandle);
       i->second._interactionClass.setParentInteractionClassHandle(parentInteractionClassHandle);
+      _interactionClassHandleNameMap[i->second._interactionClass.getInteractionClassHandle()] = stringModule.getName();
 
       if (stringModule.getOrderType().empty())
         i->second._interactionClass.setOrderType(TIMESTAMP);
@@ -237,11 +243,13 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
   {
     ObjectClassHandle parentObjectClassHandle;
     AttributeHandle nextAttributeHandle;
-    if (!stringModule.getParentName().empty()) {
-      NameObjectDataMap::iterator i = _nameObjectDataMap.find(stringModule.getParentName());
+    StringVector parentName = stringModule.getName();
+    parentName.pop_back();
+    if (!parentName.empty()) {
+      NameObjectDataMap::iterator i = _nameObjectDataMap.find(parentName);
       // FIXME nore an internal error??
       if (i == _nameObjectDataMap.end())
-        throw ErrorReadingFDD(std::string("Unknown parent object class \"") + stringModule.getParentName() + "\".");
+        throw ErrorReadingFDD(std::string("Unknown parent object class \"") + fqClassName(parentName) + "\".");
       nextAttributeHandle = i->second._nextAttributeHandle;
       parentObjectClassHandle = i->second._objectClass.getObjectClassHandle();
     }
@@ -253,23 +261,25 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
       // ... but in this case, we already have this class.
       // Check for some stuff if this is the same FIXME
 
-      OpenRTIAssert(i->second._objectClass.getName() == stringModule.getName());
+      OpenRTIAssert(!stringModule.getName().empty());
+      OpenRTIAssert(i->second._objectClass.getName() == stringModule.getName().back());
 
       // Check if either the attribute list is empty or identical
       if (!stringModule.getAttributeList().empty()) {
         FOMAttributeList attributeList;
         insertAttributeList(attributeList, stringModule.getAttributeList(), nextAttributeHandle);
         if (attributeList != i->second._objectClass.getAttributeList())
-          throw ErrorReadingFDD(std::string("Incompatible ObjectClass \"") + stringModule.getName()
+          throw ErrorReadingFDD(std::string("Incompatible ObjectClass \"") + fqClassName(stringModule.getName())
                                 + "\": Attribute list does not match.");
       }
     } else {
       i = _nameObjectDataMap.insert(NameObjectDataMap::value_type(stringModule.getName(), ObjectData())).first;
 
-      i->second._objectClass.setName(stringModule.getName());
+      i->second._objectClass.setName(stringModule.getName().back());
 
       i->second._objectClass.setObjectClassHandle(++_nextObjectClassHandle);
       i->second._objectClass.setParentObjectClassHandle(parentObjectClassHandle);
+      _objectClassHandleNameMap[i->second._objectClass.getObjectClassHandle()] = stringModule.getName();
 
       i->second._nextAttributeHandle = insertAttributeList(i->second._objectClass.getAttributeList(), stringModule.getAttributeList(), nextAttributeHandle);
     }
@@ -353,11 +363,16 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
       if (i->second._interactionClass.getParentInteractionClassHandle() == module.getParentInteractionClassHandle())
         nextParameterHandle = ParameterHandle(i->second._nextParameterHandle.getHandle() + module.getParameterList().size());
     }
-    _nameInteractionDataMap[module.getName()]._interactionClass = module;
-    // _nameInteractionDataMap[module.getName()]._interactionClass.getDerivedInteractionClassList().clear();
+    StringVector name;
+    InteractionClassHandleNameMap::const_iterator i = _interactionClassHandleNameMap.find(module.getParentInteractionClassHandle());
+    if (i != _interactionClassHandleNameMap.end())
+      name = i->second;
+    name.push_back(module.getName());
+    _nameInteractionDataMap[name]._interactionClass = module;
     if (_nextInteractionClassHandle < module.getInteractionClassHandle())
       _nextInteractionClassHandle = module.getInteractionClassHandle();
-    _nameInteractionDataMap[module.getName()]._nextParameterHandle = nextParameterHandle;
+    _nameInteractionDataMap[name]._nextParameterHandle = nextParameterHandle;
+    _interactionClassHandleNameMap[module.getInteractionClassHandle()] = name;
   }
   void insertObjectClass(const FOMObjectClass& module)
   {
@@ -367,11 +382,16 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
       if (i->second._objectClass.getParentObjectClassHandle() == module.getParentObjectClassHandle())
         nextAttributeHandle = AttributeHandle(i->second._nextAttributeHandle.getHandle() + module.getAttributeList().size());
     }
-    _nameObjectDataMap[module.getName()]._objectClass = module;
-    // _nameObjectDataMap[module.getName()]._objectClass.getDerivedObjectClassList().clear();
+    StringVector name;
+    ObjectClassHandleNameMap::const_iterator i = _objectClassHandleNameMap.find(module.getParentObjectClassHandle());
+    if (i != _objectClassHandleNameMap.end())
+      name = i->second;
+    name.push_back(module.getName());
+    _nameObjectDataMap[name]._objectClass = module;
     if (_nextObjectClassHandle < module.getObjectClassHandle())
       _nextObjectClassHandle = module.getObjectClassHandle();
-    _nameObjectDataMap[module.getName()]._nextAttributeHandle = nextAttributeHandle;
+    _nameObjectDataMap[name]._nextAttributeHandle = nextAttributeHandle;
+    _objectClassHandleNameMap[module.getObjectClassHandle()] = name;
   }
   void insertModuleList(const FOMModuleList& moduleList)
   {
@@ -431,8 +451,10 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
   NameDimensionHandleMap _nameDimensionHandleMap;
   DimensionHandle _nextDimensionHandle;
   NameInteractionDataMap _nameInteractionDataMap;
+  InteractionClassHandleNameMap _interactionClassHandleNameMap;
   InteractionClassHandle _nextInteractionClassHandle;
   NameObjectDataMap _nameObjectDataMap;
+  ObjectClassHandleNameMap _objectClassHandleNameMap;
   ObjectClassHandle _nextObjectClassHandle;
   // FOMStringModuleFOMModuleHandleMap _fomStringModuleFOMModuleHandleMap;
   FOMModuleHandleFOMModuleMap _fomModuleHandleFOMModuleMap;

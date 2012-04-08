@@ -509,13 +509,17 @@ FDD1516EContentHandler::endElement(const char* uri, const char* name, const char
   if (strcmp(name, "name") == 0) {
     switch (getCurrentMode()) {
     case ObjectClassNameMode:
-      _fomStringModuleBuilder.getCurrentObjectClass().setName(_characterData);
+      if (!_fomStringModuleBuilder.getCurrentObjectClass().getName().empty())
+        throw ErrorReadingFDD("Duplicate name tag for object class \"" + _characterData + "\"!");
+      _fomStringModuleBuilder.getCurrentObjectClass().getName().push_back(_characterData);
       break;
     case ObjectClassAttributeNameMode:
       _fomStringModuleBuilder.getCurrentObjectClassAttribute().setName(_characterData);
       break;
     case InteractionClassNameMode:
-      _fomStringModuleBuilder.getCurrentInteractionClass().setName(_characterData);
+      if (!_fomStringModuleBuilder.getCurrentInteractionClass().getName().empty())
+        throw ErrorReadingFDD("Duplicate name tag for interaction class \"" + _characterData + "\"!");
+      _fomStringModuleBuilder.getCurrentInteractionClass().getName().push_back(_characterData);
       break;
     case InteractionClassParameterNameMode:
       _fomStringModuleBuilder.getCurrentInteractionClassParameter().setName(_characterData);

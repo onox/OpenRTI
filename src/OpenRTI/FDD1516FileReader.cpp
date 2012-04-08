@@ -169,7 +169,7 @@ FDD1516ContentHandler::startElement(const char* uri, const char* name,
     _fomStringModuleBuilder.pushObjectClass();
 
     std::string name = trim(atts->getValue("name"));
-    _fomStringModuleBuilder.getCurrentObjectClass().setName(name);
+    _fomStringModuleBuilder.getCurrentObjectClass().getName().push_back(name);
 
   } else if (strcmp(name, "objects") == 0) {
     if (getCurrentMode() != ObjectModelMode)
@@ -194,7 +194,7 @@ FDD1516ContentHandler::startElement(const char* uri, const char* name,
     _fomStringModuleBuilder.pushInteractionClass();
 
     std::string name = trim(atts->getValue("name"));
-    _fomStringModuleBuilder.getCurrentInteractionClass().setName(name);
+    _fomStringModuleBuilder.getCurrentInteractionClass().getName().push_back(name);
     std::string order = trim(atts->getValue("order"));
     _fomStringModuleBuilder.getCurrentInteractionClass().setOrderType(order);
     std::string transportation = trim(atts->getValue("transportation"));

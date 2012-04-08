@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cwchar>
+#include <sstream>
 
 #include "OpenRTIConfig.h"
 #include "Types.h"
@@ -246,6 +247,18 @@ trim(std::string s, const char* c)
   if (0 < p && p != std::string::npos)
     s.erase(0, p);
   return s;
+}
+
+OPENRTI_API std::string
+fqClassName(const StringVector& name)
+{
+  std::stringstream ss;
+  for (StringVector::const_iterator i = name.begin(); i != name.end(); ++i) {
+    if (i != name.begin())
+      ss << ".";
+    ss << *i;
+  }
+  return ss.str();
 }
 
 OPENRTI_API std::pair<std::string, std::string>

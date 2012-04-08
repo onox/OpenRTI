@@ -897,19 +897,12 @@ public:
   FOMStringInteractionClass() : 
     _impl(new Implementation)
   { }
-  void setName(const String& value)
+  void setName(const StringVector& value)
   { getImpl()._name = value; }
-  String& getName()
+  StringVector& getName()
   { return getImpl()._name; }
-  const String& getName() const
+  const StringVector& getName() const
   { return getConstImpl()._name; }
-
-  void setParentName(const String& value)
-  { getImpl()._parentName = value; }
-  String& getParentName()
-  { return getImpl()._parentName; }
-  const String& getParentName() const
-  { return getConstImpl()._parentName; }
 
   void setOrderType(const String& value)
   { getImpl()._orderType = value; }
@@ -949,7 +942,6 @@ public:
   bool operator==(const FOMStringInteractionClass& rhs) const
   {
     if (getName() != rhs.getName()) return false;
-    if (getParentName() != rhs.getParentName()) return false;
     if (getOrderType() != rhs.getOrderType()) return false;
     if (getTransportationType() != rhs.getTransportationType()) return false;
     if (getRoutingSpace() != rhs.getRoutingSpace()) return false;
@@ -961,8 +953,6 @@ public:
   {
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
-    if (getParentName() < rhs.getParentName()) return true;
-    if (rhs.getParentName() < getParentName()) return false;
     if (getOrderType() < rhs.getOrderType()) return true;
     if (rhs.getOrderType() < getOrderType()) return false;
     if (getTransportationType() < rhs.getTransportationType()) return true;
@@ -985,8 +975,7 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
-    String _name;
-    String _parentName;
+    StringVector _name;
     String _orderType;
     String _transportationType;
     String _routingSpace;
@@ -1113,19 +1102,12 @@ public:
   FOMStringObjectClass() : 
     _impl(new Implementation)
   { }
-  void setName(const String& value)
+  void setName(const StringVector& value)
   { getImpl()._name = value; }
-  String& getName()
+  StringVector& getName()
   { return getImpl()._name; }
-  const String& getName() const
+  const StringVector& getName() const
   { return getConstImpl()._name; }
-
-  void setParentName(const String& value)
-  { getImpl()._parentName = value; }
-  String& getParentName()
-  { return getImpl()._parentName; }
-  const String& getParentName() const
-  { return getConstImpl()._parentName; }
 
   void setAttributeList(const FOMStringAttributeList& value)
   { getImpl()._attributeList = value; }
@@ -1137,7 +1119,6 @@ public:
   bool operator==(const FOMStringObjectClass& rhs) const
   {
     if (getName() != rhs.getName()) return false;
-    if (getParentName() != rhs.getParentName()) return false;
     if (getAttributeList() != rhs.getAttributeList()) return false;
     return true;
   }
@@ -1145,8 +1126,6 @@ public:
   {
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
-    if (getParentName() < rhs.getParentName()) return true;
-    if (rhs.getParentName() < getParentName()) return false;
     if (getAttributeList() < rhs.getAttributeList()) return true;
     if (rhs.getAttributeList() < getAttributeList()) return false;
     return false;
@@ -1161,8 +1140,7 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
-    String _name;
-    String _parentName;
+    StringVector _name;
     FOMStringAttributeList _attributeList;
   };
 
@@ -4901,8 +4879,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringIntera
   os << "{ ";
   os << "name: " << value.getName();
   os << ", ";
-  os << "parentName: " << value.getParentName();
-  os << ", ";
   os << "orderType: " << value.getOrderType();
   os << ", ";
   os << "transportationType: " << value.getTransportationType();
@@ -4972,8 +4948,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringObject
 {
   os << "{ ";
   os << "name: " << value.getName();
-  os << ", ";
-  os << "parentName: " << value.getParentName();
   os << ", ";
   os << "attributeList: " << value.getAttributeList();
   os << " }";

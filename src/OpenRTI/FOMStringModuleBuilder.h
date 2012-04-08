@@ -27,6 +27,7 @@
 #include "Message.h"
 #include "Referenced.h"
 #include "SharedPtr.h"
+#include "StringUtils.h"
 
 namespace OpenRTI {
 
@@ -152,6 +153,26 @@ public:
 
   void validate()
   {
+    // Complete the parent class names
+    OpenRTIAssert(_parentInteractionClassIndexVector.size() == _module.getInteractionClassList().size());
+    for (size_t i = 1; i < _parentInteractionClassIndexVector.size(); ++i) {
+      size_t parentIndex = _parentInteractionClassIndexVector[i];
+      OpenRTIAssert(parentIndex < _parentInteractionClassIndexVector.size());
+      StringVector stringVector = _module.getInteractionClassList()[parentIndex].getName();
+      OpenRTIAssert(_module.getInteractionClassList()[i].getName().size() == 1);
+      stringVector.push_back(_module.getInteractionClassList()[i].getName().front());
+      _module.getInteractionClassList()[i].getName().swap(stringVector);
+    }
+    OpenRTIAssert(_parentObjectClassIndexVector.size() == _module.getObjectClassList().size());
+    for (size_t i = 1; i < _parentObjectClassIndexVector.size(); ++i) {
+      size_t parentIndex = _parentObjectClassIndexVector[i];
+      OpenRTIAssert(parentIndex < _parentObjectClassIndexVector.size());
+      StringVector stringVector = _module.getObjectClassList()[parentIndex].getName();
+      OpenRTIAssert(_module.getObjectClassList()[i].getName().size() == 1);
+      stringVector.push_back(_module.getObjectClassList()[i].getName().front());
+      _module.getObjectClassList()[i].getName().swap(stringVector);
+    }
+
     // Check the interaction/object class names to be distinct
     StringSet transportationTypeNames;
     for (size_t i = 0; i < _module.getTransportationTypeList().size(); ++i) {
@@ -169,14 +190,13 @@ public:
       if (!dimensionNames.insert(name).second)
         throw ErrorReadingFDD(std::string("Duplicate dimension name \"") + name + "\".");
     }
-    StringSet stringSet;
+    std::set<StringVector> stringVectorSet;
     for (size_t i = 0; i < _module.getInteractionClassList().size(); ++i) {
-      std::string name = _module.getInteractionClassList()[i].getName();
+      StringVector name = _module.getInteractionClassList()[i].getName();
       if (name.empty())
         throw ErrorReadingFDD(std::string("Empty interaction class name."));
-      // FIXME: is allowed, must be unique within its parent
-      // if (!stringSet.insert(name).second)
-      //   throw ErrorReadingFDD(std::string("Duplicate interactionClass name \"") + name + "\".");
+      if (!stringVectorSet.insert(name).second)
+        throw ErrorReadingFDD(std::string("Duplicate interactionClass name \"") + fqClassName(name) + "\".");
 
       // std::string transportationType = _module.getInteractionClassList()[i].getTransportationType();
       // if (!transportationType.empty()) {
@@ -188,17 +208,16 @@ public:
            j != _module.getInteractionClassList()[i].getDimensionSet().end(); ++j) {
         std::string dimension = *j;
         if (dimensionNames.find(dimension) == dimensionNames.end())
-          throw ErrorReadingFDD(std::string("Undefined dimension for interactionClass name \"") + name + "\".");
+          throw ErrorReadingFDD(std::string("Undefined dimension for interactionClass name \"") + fqClassName(name) + "\".");
       }
     }
-    stringSet.clear();
+    stringVectorSet.clear();
     for (size_t i = 0; i < _module.getObjectClassList().size(); ++i) {
-      std::string name = _module.getObjectClassList()[i].getName();
+      StringVector name = _module.getObjectClassList()[i].getName();
       if (name.empty())
         throw ErrorReadingFDD(std::string("Empty object class name."));
-      // FIXME: is allowed, must be unique within its parent
-      // if (!stringSet.insert(name).second)
-      //   throw ErrorReadingFDD(std::string("Duplicate objectClass name \"") + name + "\".");
+      if (!stringVectorSet.insert(name).second)
+        throw ErrorReadingFDD(std::string("Duplicate objectClass name \"") + fqClassName(name) + "\".");
 
       for (size_t j = 0; j < _module.getObjectClassList()[i].getAttributeList().size(); ++j) {
       //   std::string transportationType = _module.getObjectClassList()[i].getAttributeList()[j].getTransportationType();
@@ -215,47 +234,37 @@ public:
           if (dimensionNames.find(dimension) == dimensionNames.end())
             throw ErrorReadingFDD(std::string("Undefined dimension for attribute \"")
                                 + _module.getObjectClassList()[i].getAttributeList()[j].getName()
-                                + "\" in objectClass name \"" + name + "\".");
+                                + "\" in objectClass name \"" + fqClassName(name) + "\".");
         }
       }
     }
 
     for (size_t i = 0; i < _module.getInteractionClassList().size(); ++i) {
-      stringSet.clear();
+      StringSet stringSet;
       size_t j = i;
       while (_module.getInteractionClassList().size() <= j) {
         for (size_t k = 0; k < _module.getInteractionClassList()[j].getParameterList().size(); ++k) {
           std::string name = _module.getInteractionClassList()[j].getParameterList()[k].getName();
           if (!stringSet.insert(name).second)
             throw ErrorReadingFDD(std::string("Duplicate parameter name \"") + name + "\" in interactionClass \""
-                                  + _module.getInteractionClassList()[i].getName() + "\".");
+                                  + fqClassName(_module.getInteractionClassList()[i].getName()) + "\".");
         }
         j = _parentInteractionClassIndexVector[j];
       }
     }
 
     for (size_t i = 0; i < _module.getObjectClassList().size(); ++i) {
-      stringSet.clear();
+      StringSet stringSet;
       size_t j = i;
       while (_module.getObjectClassList().size() <= j) {
         for (size_t k = 0; k < _module.getObjectClassList()[j].getAttributeList().size(); ++k) {
           std::string name = _module.getObjectClassList()[j].getAttributeList()[k].getName();
           if (!stringSet.insert(name).second)
             throw ErrorReadingFDD(std::string("Duplicate attribute name \"") + name + "\" in objectClass \""
-                                  + _module.getObjectClassList()[i].getName() + "\".");
+                                  + fqClassName(_module.getObjectClassList()[i].getName()) + "\".");
         }
         j = _parentObjectClassIndexVector[j];
       }
-    }
-
-    // Finally set the parent class names
-    for (size_t i = 1; i < _parentInteractionClassIndexVector.size(); ++i) {
-      size_t parentIndex = _parentInteractionClassIndexVector[i];
-      _module.getInteractionClassList()[i].setParentName(_module.getInteractionClassList()[parentIndex].getName());
-    }
-    for (size_t i = 1; i < _parentObjectClassIndexVector.size(); ++i) {
-      size_t parentIndex = _parentObjectClassIndexVector[i];
-      _module.getObjectClassList()[i].setParentName(_module.getObjectClassList()[parentIndex].getName());
     }
   }
 

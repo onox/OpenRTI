@@ -114,7 +114,7 @@ public:
           throw ErrorReadingFDD("object class contains too many tokens!");
         _modeStack.push_back(ObjectClassMode);
         _fomStringModuleBuilder.pushObjectClass();
-        _fomStringModuleBuilder.getCurrentObjectClass().setName(tokens[1]);
+        _fomStringModuleBuilder.getCurrentObjectClass().getName().push_back(tokens[1]);
       } else if (currentMode == InteractionsMode || currentMode == InteractionClassMode) {
         if (tokens.size() < 4)
           throw ErrorReadingFDD("interaction class contains too little information!");
@@ -122,7 +122,7 @@ public:
           throw ErrorReadingFDD("interaction class contains too many tokens!");
         _modeStack.push_back(InteractionClassMode);
         _fomStringModuleBuilder.pushInteractionClass();
-        _fomStringModuleBuilder.getCurrentInteractionClass().setName(tokens[1]);
+        _fomStringModuleBuilder.getCurrentInteractionClass().getName().push_back(tokens[1]);
         _fomStringModuleBuilder.getCurrentInteractionClass().setTransportationType(tokens[2]);
         _fomStringModuleBuilder.getCurrentInteractionClass().setOrderType(tokens[3]);
         /// FIXME
