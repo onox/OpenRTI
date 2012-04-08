@@ -76,28 +76,32 @@ public:
 
   static bool exec()
   {
+    Atomic counter;
     AtomicTest threads[4];
     for (unsigned i = 0; i < sizeof(threads)/sizeof(threads[0]); ++i)
-      threads[i].start();
+      threads[i].start(&counter);
     for (unsigned i = 0; i < sizeof(threads)/sizeof(threads[0]); ++i)
       threads[i].wait();
-    return getCounter() == 0;
+    return counter == 0;
   }
 
 protected:
+  AtomicTest() :
+    _counter(0)
+  { }
+  void start(Atomic* counter)
+  {
+    _counter = counter;
+    Thread::start();
+  }
   virtual void run()
   {
-    Atomic& counter = getCounter();
     for (unsigned i = 0; i < 1000000; ++i) {
-      ++counter;
-      --counter;
+      ++(*_counter);
+      --(*_counter);
     }
   }
-  static Atomic& getCounter()
-  {
-    static Atomic counter;
-    return counter;
-  }
+  Atomic* _counter;
 };
 
 class MutexTest : public Thread {
@@ -105,12 +109,12 @@ public:
 
   static bool exec()
   {
+    LockedData lockedData;
     MutexTest threads[4];
     for (unsigned i = 0; i < sizeof(threads)/sizeof(threads[0]); ++i)
-      threads[i].start();
+      threads[i].start(&lockedData);
     for (unsigned i = 0; i < sizeof(threads)/sizeof(threads[0]); ++i)
       threads[i].wait();
-    LockedData& lockedData = getLockedData();
     return lockedData._count == lockedData._atomic;
   }
 
@@ -129,17 +133,20 @@ protected:
     unsigned _count;
   };
 
+  MutexTest() :
+    _lockedData(0)
+  { }
+  void start(LockedData* lockedData)
+  {
+    _lockedData = lockedData;
+    Thread::start();
+  }
   virtual void run()
   {
-    LockedData& lockedData = getLockedData();
     for (unsigned i = 0; i < 1000000; ++i)
-      lockedData.exec();
+      _lockedData->exec();
   }
-  static LockedData& getLockedData()
-  {
-    static LockedData lockedData;
-    return lockedData;
-  }
+  LockedData* _lockedData;
 };
 
 
