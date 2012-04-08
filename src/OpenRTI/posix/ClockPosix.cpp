@@ -33,7 +33,7 @@ namespace OpenRTI {
 #if defined(HAVE_PTHREAD_CONDATTR_SETCLOCK)
 
 // Try to find out if we can use the monotonic clock.
-// In the end it is available if wave it and if we can use it for the
+// In the end it is available if we have it and if we can use it for the
 // condition variable timeout.
 // Else just use the realtime clock.
 static bool
@@ -70,18 +70,11 @@ getBestClockId()
   return CLOCK_REALTIME;
 }
 
-static Atomic clockIsInitialized(0);
-static clockid_t _clockId;
-
 clockid_t
 ClockPosix::getClockId()
 {
-  if (clockIsInitialized)
-    return _clockId;
-
-  _clockId = getBestClockId();
-  ++clockIsInitialized;
-  return _clockId;
+  static clockid_t clockId = getBestClockId();
+  return clockId;
 }
 
 #endif
