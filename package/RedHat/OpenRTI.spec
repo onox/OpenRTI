@@ -1,9 +1,7 @@
-#define gitdate 205f2905
-
 Summary: HLA/RTI runtime infrastructure
 Name: OpenRTI
-Version: 0.1
-Release: 2%{?dist}
+Version: 0.2
+Release: 1%{?dist}
 License: LGPL
 Group: System Environment/Libraries
 #URL: http://www.openrti.org
@@ -59,27 +57,40 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 #%doc README
-%{_bindir}/rtinode
 %{_libdir}/libOpenRTI.so.1
 %{_libdir}/libOpenRTI.so.1.0.0
 
-%{_libdir}/librti1516.so.1
-%{_libdir}/librti1516.so.1.0.0
-%{_libdir}/libfedtime1516.so.1
-%{_libdir}/libfedtime1516.so.1.0.0
-
+# RTI13 files
+# %files -n RTI13
+# %defattr(-,root,root,-)
 %{_libdir}/libRTI-NG.so.1
 %{_libdir}/libRTI-NG.so.1.3.0
 %{_libdir}/libFedTime.so.1
 %{_libdir}/libFedTime.so.1.3.0
 
+# rti1516 files
+# %files -n rti1516
+# %defattr(-,root,root,-)
+%{_libdir}/librti1516.so.1
+%{_libdir}/librti1516.so.1.0.0
+%{_libdir}/libfedtime1516.so.1
+%{_libdir}/libfedtime1516.so.1.0.0
+
+# rti1516e files
+# %files -n rti1516e
+# %defattr(-,root,root,-)
+%{_libdir}/librti1516e.so.1
+%{_libdir}/librti1516e.so.1.0.0
+%{_libdir}/libfedtime1516e.so.1
+%{_libdir}/libfedtime1516e.so.1.0.0
+%{_datadir}/OpenRTI/rti1516e/HLAstandardMIM.xml
+
 # %files -n rtinode
 # %defattr(-,root,root,-)
-# %{_bindir}/rtinode
+%{_bindir}/rtinode
 
 %files devel
 %defattr(-,root,root,-)
-# %{_libdir}/libOpenRTI.so
 # The RTI13 development files
 %{_includedir}/federateAmbServices.hh
 %{_includedir}/RTI.hh
@@ -91,10 +102,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libRTI-NG.so
 %{_libdir}/libFedTime.so
 
-# The RTI1516 development files
+# rti1516 development files
 %{_includedir}/rti1516
 %{_libdir}/libfedtime1516.so
 %{_libdir}/librti1516.so
+
+# rti1516e development files
+%{_includedir}/rti1516e
+%{_libdir}/libfedtime1516e.so
+%{_libdir}/librti1516e.so
 
 
 #%changelog
