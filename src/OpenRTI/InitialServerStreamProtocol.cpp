@@ -51,11 +51,11 @@ InitialServerStreamProtocol::readOptionMap(const StringStringListMap& clientOpti
     errorResponse("No version field in the connect header given.");
     return;
   }
-  // Currently only version "2" is supported on both sides, currently just something to be
+  // Currently only version "3beta" is supported on both sides, currently just something to be
   // extensible so that we can change something in the future without crashing clients or servers
   // by a wrong protocol or behavior.
-  if (!contains(i->second, "2")) {
-    errorResponse("Client does not support version 1 of the protocol.");
+  if (!contains(i->second, "3beta")) {
+    errorResponse("Client does not support version 3beta of the protocol.");
     return;
   }
 
@@ -92,7 +92,7 @@ InitialServerStreamProtocol::readOptionMap(const StringStringListMap& clientOpti
 
   // Survived, respond with a valid response packet
   responseValueMap["version"].clear();
-  responseValueMap["version"].push_back("2");
+  responseValueMap["version"].push_back("3beta");
   responseValueMap["encoding"].clear();
   responseValueMap["encoding"].push_back(encodingList.front());
   responseValueMap["compression"].clear();
