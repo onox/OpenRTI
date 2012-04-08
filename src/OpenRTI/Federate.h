@@ -3799,9 +3799,11 @@ protected:
   void insertTransportationType(const std::string& name, TransportationType transportationType)
   {
     OpenRTIAssert(_nameTransportationTypeMap.find(name) == _nameTransportationTypeMap.end());
-    OpenRTIAssert(_transportationTypeNameMap.find(transportationType) == _transportationTypeNameMap.end());
     _nameTransportationTypeMap[name] = transportationType;
-    _transportationTypeNameMap[transportationType] = name;
+    // Only insert the first occurance of transportationType to the type to name map
+    // This way we should get the standard name back even if we map a custom transportation
+    // type name to the same resulting transportation.
+    _transportationTypeNameMap.insert(TransportationTypeNameMap::value_type(transportationType, name));
   }
   // Insert a new dimension into the local object model
   void insertDimension(const std::string& name, const DimensionHandle& dimensionHandle, Unsigned upperBound)
