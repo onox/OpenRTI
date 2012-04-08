@@ -115,7 +115,9 @@ void
 ServerObjectModel::insertInteractionClass(const FOMInteractionClass& module)
 {
   if (getInteractionClass(module.getInteractionClassHandle())) {
-    OpenRTIAssert(module.getParameterList().empty());
+    // FIXME: currently jus trust the FOMModuleSet that this cannot happen.
+    // Also, since this  kind of stuff can arrive from the network, this is unsafe
+    // OpenRTIAssert(module.getParameterList().empty());
   } else {
     InteractionClass* parentInteractionClass = getInteractionClass(module.getParentInteractionClassHandle());
 
@@ -138,7 +140,9 @@ void
 ServerObjectModel::insertObjectClass(const FOMObjectClass& module)
 {
   if (getObjectClass(module.getObjectClassHandle())) {
-    OpenRTIAssert(module.getAttributeList().empty());
+    // FIXME: currently jus trust the FOMModuleSet that this cannot happen.
+    // Also, since this  kind of stuff can arrive from the network, this is unsafe
+    // OpenRTIAssert(module.getAttributeList().empty());
   } else {
     ObjectClass* parentObjectClass = getObjectClass(module.getParentObjectClassHandle());
 
