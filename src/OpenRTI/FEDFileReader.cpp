@@ -33,9 +33,9 @@ public:
   {
     OpenRTIAssert(_modeStack.empty());
     _fomStringModuleBuilder.addTransportationType();
-    _fomStringModuleBuilder.getCurrentTransportationType().setName("reliable");
+    _fomStringModuleBuilder.getCurrentTransportationType().setName(normalizeTransportationType("reliable"));
     _fomStringModuleBuilder.addTransportationType();
-    _fomStringModuleBuilder.getCurrentTransportationType().setName("best_effort");
+    _fomStringModuleBuilder.getCurrentTransportationType().setName(normalizeTransportationType("best_effort"));
   }
   virtual void endDocument()
   {
@@ -114,7 +114,7 @@ public:
           throw ErrorReadingFDD("object class contains too many tokens!");
         _modeStack.push_back(ObjectClassMode);
         _fomStringModuleBuilder.pushObjectClass();
-        _fomStringModuleBuilder.getCurrentObjectClass().getName().push_back(tokens[1]);
+        _fomStringModuleBuilder.getCurrentObjectClass().getName().push_back(normalizeObjectClassName(tokens[1]));
       } else if (currentMode == InteractionsMode || currentMode == InteractionClassMode) {
         if (tokens.size() < 4)
           throw ErrorReadingFDD("interaction class contains too little information!");
@@ -122,9 +122,9 @@ public:
           throw ErrorReadingFDD("interaction class contains too many tokens!");
         _modeStack.push_back(InteractionClassMode);
         _fomStringModuleBuilder.pushInteractionClass();
-        _fomStringModuleBuilder.getCurrentInteractionClass().getName().push_back(tokens[1]);
-        _fomStringModuleBuilder.getCurrentInteractionClass().setTransportationType(tokens[2]);
-        _fomStringModuleBuilder.getCurrentInteractionClass().setOrderType(tokens[3]);
+        _fomStringModuleBuilder.getCurrentInteractionClass().getName().push_back(normalizeInteractionClassName(tokens[1]));
+        _fomStringModuleBuilder.getCurrentInteractionClass().setTransportationType(normalizeTransportationType(tokens[2]));
+        _fomStringModuleBuilder.getCurrentInteractionClass().setOrderType(normalizeOrderType(tokens[3]));
         /// FIXME
         // if (4 < tokens.size())
         //   _fomStringModuleBuilder.addInteractionSpace(tokens[4]);
@@ -140,9 +140,9 @@ public:
         throw ErrorReadingFDD("attribute contains too many tokens!");
       _modeStack.push_back(AttributeMode);
       _fomStringModuleBuilder.addAttribute();
-      _fomStringModuleBuilder.getCurrentObjectClassAttribute().setName(tokens[1]);
-      _fomStringModuleBuilder.getCurrentObjectClassAttribute().setTransportationType(tokens[2]);
-      _fomStringModuleBuilder.getCurrentObjectClassAttribute().setOrderType(tokens[3]);
+      _fomStringModuleBuilder.getCurrentObjectClassAttribute().setName(normalizeObjectClassAttributeName(tokens[1]));
+      _fomStringModuleBuilder.getCurrentObjectClassAttribute().setTransportationType(normalizeTransportationType(tokens[2]));
+      _fomStringModuleBuilder.getCurrentObjectClassAttribute().setOrderType(normalizeOrderType(tokens[3]));
       /// FIXME
       // if (4 < tokens.size())
       //   _fomStringModuleBuilder.addAttributeSpace(tokens[4]);
@@ -174,7 +174,58 @@ public:
   const FOMStringModule& getFOMStringModule() const
   { return _fomStringModuleBuilder.getFOMStringModule(); }
 
-private:
+  std::string normalizeTransportationType(const std::string& name)
+  {
+    if (caseCompare(name, "reliable")) {
+      return "HLAreliable";
+    } else if (caseCompare(name, "best_effort")) {
+      return "HLAbestEffort";
+    } else {
+      // We allow other transportation types
+      return name;
+    }
+  }
+
+  std::string normalizeOrderType(const std::string& name)
+  {
+    if (caseCompare(name, "receive")) {
+      return "Receive";
+    } else {
+      // Map everything else to timestamp, should be about safer.
+      // If it is not meant timestamp ordered it is probably also not sent
+      // as timestamped message and thus just sent as receive ordered in the c code
+      // May be we should emit some kind of warning?!
+      return "TimeStamp";
+    }
+  }
+
+  std::string normalizeInteractionClassName(const std::string& name)
+  {
+    if (caseCompare(name, "InteractionRoot")) {
+      return "HLAinteractionRoot";
+    } else {
+      return name;
+    }
+  }
+
+  std::string normalizeObjectClassName(const std::string& name)
+  {
+    if (caseCompare(name, "ObjectRoot")) {
+      return "HLAobjectRoot";
+    } else {
+      return name;
+    }
+  }
+
+  std::string normalizeObjectClassAttributeName(const std::string& name)
+  {
+    if (caseCompare(name, "privilegeToDelete")) {
+      return "HLAprivilegeToDeleteObject";
+    } else {
+      return name;
+    }
+  }
+
   // poor man's schema checking ...
   enum Mode {
     UnknownMode,

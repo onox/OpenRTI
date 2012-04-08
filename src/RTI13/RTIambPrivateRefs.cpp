@@ -2560,8 +2560,10 @@ RTI::RTIambassador::getObjectClassHandle(const char* name)
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
-  OpenRTI::ObjectClassHandle objectClassHandle = privateRefs->getObjectClassHandle(OpenRTI::localeToUtf8(name));
-  return objectClassHandle;
+  // special casing for the root object
+  if (OpenRTI::caseCompare(name, "ObjectRoot"))
+    return privateRefs->getObjectClassHandle("HLAobjectRoot");
+  return privateRefs->getObjectClassHandle(OpenRTI::localeToUtf8(name));
 }
 
 char*
@@ -2572,7 +2574,11 @@ RTI::RTIambassador::getObjectClassName(RTI::ObjectClassHandle objectClassHandle)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  return newUtf8ToLocale(privateRefs->getObjectClassName(objectClassHandle));
+  std::string name = privateRefs->getObjectClassName(objectClassHandle);
+  // special casing for the root object
+  if (name == "HLAobjectRoot")
+    return newUtf8ToLocale("ObjectRoot");
+  return newUtf8ToLocale(name);
 }
 
 RTI::AttributeHandle
@@ -2587,6 +2593,9 @@ RTI::RTIambassador::getAttributeHandle(const char* name,
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
+  // special casing for the privilege to delete
+  if (OpenRTI::caseCompare(name, "privilegeToDelete"))
+    return privateRefs->getAttributeHandle(objectClassHandle, "HLAprivilegeToDeleteObject");
   return privateRefs->getAttributeHandle(objectClassHandle, OpenRTI::localeToUtf8(name));
 }
 
@@ -2600,7 +2609,11 @@ RTI::RTIambassador::getAttributeName(RTI::AttributeHandle attributeHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  return newUtf8ToLocale(privateRefs->getAttributeName(objectClassHandle, attributeHandle));
+  std::string name = privateRefs->getAttributeName(objectClassHandle, attributeHandle);
+  // special casing for the privilege to delete
+  if (name == "HLAprivilegeToDeleteObject")
+    return newUtf8ToLocale("privilegeToDelete");
+  return newUtf8ToLocale(name);
 }
 
 RTI::InteractionClassHandle
@@ -2613,6 +2626,9 @@ RTI::RTIambassador::getInteractionClassHandle(const char* name)
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
+  // special casing for the root object
+  if (OpenRTI::caseCompare(name, "InteractionRoot"))
+    return privateRefs->getInteractionClassHandle("HLAinteractionRoot");
   return privateRefs->getInteractionClassHandle(OpenRTI::localeToUtf8(name));
 }
 
@@ -2624,7 +2640,11 @@ RTI::RTIambassador::getInteractionClassName(RTI::InteractionClassHandle interact
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  return newUtf8ToLocale(privateRefs->getInteractionClassName(interactionClassHandle));
+  std::string name = privateRefs->getInteractionClassName(interactionClassHandle);
+  // special casing for the root object
+  if (name == "HLAinteractionRoot")
+    return newUtf8ToLocale("InteractionRoot");
+  return newUtf8ToLocale(name);
 }
 
 RTI::ParameterHandle
@@ -2776,7 +2796,11 @@ RTI::RTIambassador::getTransportationHandle(const char* name)
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
-  throw RTI::RTIinternalError("Unknown exception");
+  if (OpenRTI::caseCompare(name, "reliable"))
+    return rti13TransportType(privateRefs->getTransportationType("HLAreliable"));
+  if (OpenRTI::caseCompare(name, "best_effort"))
+    return rti13TransportType(privateRefs->getTransportationType("HLAbestEffort"));
+  return rti13TransportType(privateRefs->getTransportationType(OpenRTI::localeToUtf8(name)));
 }
 
 char*
@@ -2787,7 +2811,13 @@ RTI::RTIambassador::getTransportationName(RTI::TransportationHandle transportati
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  throw RTI::RTIinternalError("Unknown exception");
+  std::string name = privateRefs->getTransportationName(toOpenRTITransportationType(transportationHandle));
+  // special casing for the builtin types, the rest just maps through
+  if (name == "HLAreliable")
+    return newUtf8ToLocale("reliable");
+  if (name == "HLAbestEffort")
+    return newUtf8ToLocale("best_effort");
+  return newUtf8ToLocale(name);
 }
 
 RTI::OrderingHandle
@@ -2800,7 +2830,11 @@ RTI::RTIambassador::getOrderingHandle(const char* name)
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
-  throw RTI::RTIinternalError("Unknown exception");
+  if (OpenRTI::caseCompare(name, "timestamp"))
+    return rti13OrderType(OpenRTI::TIMESTAMP);
+  if (OpenRTI::caseCompare(name, "receive"))
+    return rti13OrderType(OpenRTI::RECEIVE);
+  throw RTI::NameNotFound(name);
 }
 
 char*
@@ -2811,7 +2845,14 @@ RTI::RTIambassador::getOrderingName(RTI::OrderingHandle orderingHandle)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  throw RTI::RTIinternalError("Unknown exception");
+  switch(toOpenRTIOrderType(orderingHandle)) {
+  case OpenRTI::TIMESTAMP:
+    return newUtf8ToLocale("timestamp");
+  case OpenRTI::RECEIVE:
+    return newUtf8ToLocale("receive");
+  default:
+    throw RTI::InvalidOrderingHandle("");
+  }
 }
 
 void

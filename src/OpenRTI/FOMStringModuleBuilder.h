@@ -239,6 +239,11 @@ public:
       }
     }
 
+    if (!_module.getInteractionClassList().empty()) {
+      _module.getInteractionClassList()[0].getName().clear();
+      _module.getInteractionClassList()[0].getName().push_back("HLAinteractionRoot");
+    }
+
     for (size_t i = 0; i < _module.getInteractionClassList().size(); ++i) {
       StringSet stringSet;
       size_t j = i;
@@ -251,6 +256,13 @@ public:
         }
         j = _parentInteractionClassIndexVector[j];
       }
+    }
+
+    if (!_module.getObjectClassList().empty()) {
+      _module.getObjectClassList()[0].getName().clear();
+      _module.getObjectClassList()[0].getName().push_back("HLAobjectRoot");
+      _module.getObjectClassList()[0].getAttributeList().resize(1);
+      _module.getObjectClassList()[0].getAttributeList()[0].setName("HLAprivilegeToDeleteObject");
     }
 
     for (size_t i = 0; i < _module.getObjectClassList().size(); ++i) {

@@ -70,14 +70,10 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
       return false;
     if (stringModule.getName() == "HLAreliable")
       _nameTransportationTypeMap[stringModule.getName()] = RELIABLE;
-    else if (caseCompare(stringModule.getName(), "reliable"))
-      _nameTransportationTypeMap[stringModule.getName()] = RELIABLE;
     else if (stringModule.getName() == "HLAbestEffort")
       _nameTransportationTypeMap[stringModule.getName()] = BEST_EFFORT;
-    else if (caseCompare(stringModule.getName(), "best_effort"))
-      _nameTransportationTypeMap[stringModule.getName()] = BEST_EFFORT;
     else
-      throw ErrorReadingFDD(std::string("Unsupported transportation type \"") + stringModule.getName() + "\".");
+      _nameTransportationTypeMap[stringModule.getName()] = BEST_EFFORT;
     return true;
   }
   TransportationType getTransportationType(const std::string& name) const
