@@ -899,7 +899,7 @@ public:
       } else if (i->second._instanceAttributeVector[AttributeHandle(0)]->_isOwnedByFederate) {
         ++i;
       } else {
-        eraseObjectInstance((i++)->first);
+        eraseObjectInstance(ObjectInstanceHandle((i++)->first));
       }
     }
   }
@@ -945,7 +945,7 @@ public:
         } else if (i->second._instanceAttributeVector[AttributeHandle(0)]->_isOwnedByFederate) {
           ++i;
         } else {
-          eraseObjectInstance((i++)->first);
+          eraseObjectInstance(ObjectInstanceHandle((i++)->first));
         }
       }
     }
