@@ -19,6 +19,7 @@
 
 #include "RTI.hh"
 #include <cstring>
+#include <ostream>
 
 RTI::Exception::Exception(const char* reason) :
   _serial(0),
