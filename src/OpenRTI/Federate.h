@@ -3504,6 +3504,20 @@ protected:
     }
     eraseObjectInstance(message.getObjectInstanceHandle());
   }
+  virtual void acceptCallbackMessage(const TimeStampedDeleteObjectInstanceMessage& message)
+  {
+    ObjectInstanceHandle objectInstanceHandle = message.getObjectInstanceHandle();
+    typename ObjectInstanceHandleMap::iterator i = _objectInstanceHandleMap.find(objectInstanceHandle);
+    if (i == _objectInstanceHandleMap.end())
+      return;
+    if (isValidObjectClass(i->second._objectClassHandle)) {
+      if (Unsubscribed != getObjectClass(i->second._objectClassHandle).getEffectiveSubscriptionType()) {
+        removeObjectInstance(message,
+                             _logicalTimeFactory.getLogicalTime(_logicalTimeFactory.decodeLogicalTime(message.getTimeStamp())));
+      }
+    }
+    eraseObjectInstance(message.getObjectInstanceHandle());
+  }
 
   virtual void acceptCallbackMessage(const AttributeUpdateMessage& message)
   {

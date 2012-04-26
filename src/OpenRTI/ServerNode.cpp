@@ -1299,6 +1299,20 @@ public:
     OpenRTIAssert(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects.count(connectHandle) == 0);
     send(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects, message);
   }
+  void accept(const ConnectHandle& connectHandle, TimeStampedDeleteObjectInstanceMessage* message)
+  {
+    // If the object class is already unsubscribed, we might still get delete instance or update messages
+    // That are sent by the owner at a time the subscription was still there.
+    // So This is not an error. FIXME: if we do explicit instance removal in parent to child order we can
+    // make that am error again.
+    ObjectInstance* objectInstance = getObjectInstance(message->getObjectInstanceHandle());
+    if (!objectInstance)
+      return;
+
+    // send that to all servers that have seen that object instance at some time
+    OpenRTIAssert(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects.count(connectHandle) == 0);
+    send(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects, message);
+  }
 
   void accept(const ConnectHandle& connectHandle, AttributeUpdateMessage* message)
   {
@@ -2299,6 +2313,8 @@ public:
   void accept(const ConnectHandle& connectHandle, InsertObjectInstanceMessage* message)
   { acceptFederationMessage(connectHandle, message); }
   void accept(const ConnectHandle& connectHandle, DeleteObjectInstanceMessage* message)
+  { acceptFederationMessage(connectHandle, message); }
+  void accept(const ConnectHandle& connectHandle, TimeStampedDeleteObjectInstanceMessage* message)
   { acceptFederationMessage(connectHandle, message); }
   void accept(const ConnectHandle& connectHandle, AttributeUpdateMessage* message)
   { acceptFederationMessage(connectHandle, message); }
