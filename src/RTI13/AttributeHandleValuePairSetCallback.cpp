@@ -50,7 +50,10 @@ AttributeHandleValuePairSetCallback::getValueLength(RTI::ULong index) const
 {
   if (_attributeValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
-  return _attributeValues[index].getValue().size();
+  size_t size = _attributeValues[index].getValue().size();
+  if (std::numeric_limits<RTI::ULong>::max() < size)
+    throw RTI::ArrayIndexOutOfBounds("Data size bigger than length data size");
+  return static_cast<RTI::ULong>(size);
 }
 
 void
@@ -60,9 +63,10 @@ AttributeHandleValuePairSetCallback::getValue(RTI::ULong index, char* data, RTI:
   if (_attributeValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
   size_t size = _attributeValues[index].getValue().size();
-  if (size < length)
-    length = size;
-  memcpy(data, _attributeValues[index].getValue().data(), length);
+  if (std::numeric_limits<RTI::ULong>::max() < size)
+    throw RTI::ArrayIndexOutOfBounds("Data size bigger than length data size");
+  length = static_cast<RTI::ULong>(size);
+  memcpy(data, _attributeValues[index].getValue().data(), size);
 }
 
 char*

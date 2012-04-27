@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -52,7 +52,10 @@ ParameterHandleValuePairSetCallback::getValueLength(RTI::ULong index) const
 {
   if (_parameterValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
-  return _parameterValues[index].getValue().size();
+  size_t size = _parameterValues[index].getValue().size();
+  if (std::numeric_limits<RTI::ULong>::max() < size)
+    throw RTI::ArrayIndexOutOfBounds("Data size bigger than length data size");
+  return static_cast<RTI::ULong>(size);
 }
 
 void
@@ -62,9 +65,10 @@ ParameterHandleValuePairSetCallback::getValue(RTI::ULong index, char* data, RTI:
   if (_parameterValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
   size_t size = _parameterValues[index].getValue().size();
-  if (size < length)
-    length = size;
-  memcpy(data, _parameterValues[index].getValue().data(), length);
+  if (std::numeric_limits<RTI::ULong>::max() < size)
+    throw RTI::ArrayIndexOutOfBounds("Data size bigger than length data size");
+  length = static_cast<RTI::ULong>(size);
+  memcpy(data, _parameterValues[index].getValue().data(), size);
 }
 
 char*
