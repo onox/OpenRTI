@@ -8,7 +8,11 @@ SET(CPACK_PACKAGE_VERSION_MINOR 0)
 SET(CPACK_PACKAGE_VERSION_PATCH 0)
 
 # Options
-#SET(BUILD_SHARED 1 CACHE BOOL "Build libraries as shared library.")
+
+# Not fully supported for all operating systems, but currently
+# the only way to make the circular link reference work on android.
+SET(OPENRTI_BUILD_SHARED TRUE CACHE BOOL "Build libraries as shared library.")
+MARK_AS_ADVANCED(OPENRTI_BUILD_SHARED)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   SET(LINUX TRUE)
