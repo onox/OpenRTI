@@ -51,7 +51,7 @@ protected:
   ConnectHandle _insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions);
   void removeConnect(const ConnectHandle& connectHandle);
 
-  void dispatchMessage(AbstractMessage& message, const ConnectHandle& connectHandle);
+  void dispatchMessage(const AbstractMessage& message, const ConnectHandle& connectHandle);
 
 private:
   ServerNode(const ServerNode&);

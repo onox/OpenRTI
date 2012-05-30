@@ -32,7 +32,7 @@ public:
     { }
   virtual ~MessageSender()
   { close(); }
-  virtual void send(const SharedPtr<AbstractMessage>& message)
+  virtual void send(const SharedPtr<const AbstractMessage>& message)
   {
     if (!_messageServer.valid())
       throw RTIinternalError("Trying to send message to a closed MessageSender");

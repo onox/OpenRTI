@@ -38,7 +38,7 @@ public:
   LocalMessageQueue() :
     _isClosed(false)
   { }
-  virtual SharedPtr<AbstractMessage> receive(const Clock&)
+  virtual SharedPtr<const AbstractMessage> receive(const Clock&)
   { return _messageList.pop_front(); }
   virtual bool isOpen() const
   { return !_isClosed; }
@@ -46,7 +46,7 @@ public:
   { return _messageList.empty(); }
 
 protected:
-  virtual void append(const SharedPtr<AbstractMessage>& message)
+  virtual void append(const SharedPtr<const AbstractMessage>& message)
   { _messageList.push_back(message); }
   virtual void close()
   { _isClosed = true; }
@@ -62,7 +62,7 @@ public:
   ThreadMessageQueue() :
     _isClosed(false)
   { }
-  virtual SharedPtr<AbstractMessage> receive(const Clock& timeout)
+  virtual SharedPtr<const AbstractMessage> receive(const Clock& timeout)
   {
     ScopeLock scopeLock(_mutex);
     while (_messageList.empty()) {
@@ -86,7 +86,7 @@ public:
   }
 
 protected:
-  virtual void append(const SharedPtr<AbstractMessage>& message)
+  virtual void append(const SharedPtr<const AbstractMessage>& message)
   {
     ScopeLock scopeLock(_mutex);
     bool needSignal = _messageList.empty();

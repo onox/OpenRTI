@@ -29,7 +29,7 @@ class OPENRTI_API MessageList {
 public:
   bool empty() const
   { return _list.empty(); }
-  void push_back(const SharedPtr<AbstractMessage>& message)
+  void push_back(const SharedPtr<const AbstractMessage>& message)
   {
     // Take the list entry from the pool if possible
     if (_pool.empty()) {
@@ -39,19 +39,19 @@ public:
       _list.back() = message;
     }
   }
-  SharedPtr<AbstractMessage> pop_front()
+  SharedPtr<const AbstractMessage> pop_front()
   {
     if (_list.empty())
       return 0;
     // take away the front message and move the empty list entry to the pool.
-    SharedPtr<AbstractMessage> message;
+    SharedPtr<const AbstractMessage> message;
     message.swap(_list.front());
     _pool.splice(_pool.begin(), _list, _list.begin());
     return message;
   }
 
 private:
-  typedef std::list<SharedPtr<AbstractMessage> > List;
+  typedef std::list<SharedPtr<const AbstractMessage> > List;
   List _list;
   List _pool;
 };

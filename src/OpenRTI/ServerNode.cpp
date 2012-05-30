@@ -91,18 +91,18 @@ public:
   }
 
   /// send message to the given connect
-  void send(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessage>& message) const
+  void send(const ConnectHandle& connectHandle, const SharedPtr<const AbstractMessage>& message) const
   {
     MessageSenderMap::const_iterator i = _messageSenderMap.find(connectHandle);
     OpenRTIAssert(i != _messageSenderMap.end());
     i->second._messageSender->send(message);
   }
   /// send upstream to the parent server
-  void sendToParent(const SharedPtr<AbstractMessage>& message) const
+  void sendToParent(const SharedPtr<const AbstractMessage>& message) const
   {
     send(_parentServerConnectHandle, message);
   }
-  void broadcastToChildren(const SharedPtr<AbstractMessage>& message) const
+  void broadcastToChildren(const SharedPtr<const AbstractMessage>& message) const
   {
     for (MessageSenderMap::const_iterator i = _messageSenderMap.begin(); i != _messageSenderMap.end(); ++i) {
       if (i->first == _parentServerConnectHandle)
@@ -172,7 +172,7 @@ public:
   const std::string& getServerPath() const
   { return _serverOptions->getServerPath(); }
 
-  void accept(const ConnectHandle& connectHandle, JoinFederationExecutionRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const JoinFederationExecutionRequestMessage* message)
   {
     // This function needs to be successful since the calling function has already inserted the connect here
     // and does not undo that FIXME: rethink?!
@@ -235,7 +235,7 @@ public:
       broadcastToChildren(announce);
     }
   }
-  void accept(const ConnectHandle& connectHandle, const ConnectHandle& requestConnectHandle, JoinFederationExecutionResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ConnectHandle& requestConnectHandle, const JoinFederationExecutionResponseMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
 
@@ -268,7 +268,7 @@ public:
   }
 
 
-  void accept(const ConnectHandle& connectHandle, ResignFederationExecutionRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ResignFederationExecutionRequestMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
     FederateHandle federateHandle = message->getFederateHandle();
@@ -392,7 +392,7 @@ public:
     }
   }
 
-  void accept(const ConnectHandle& connectHandle, JoinFederateNotifyMessage* message)
+  void accept(const ConnectHandle& connectHandle, const JoinFederateNotifyMessage* message)
   {
     FederateHandle federateHandle = message->getFederateHandle();
     if (_federateHandleFederateMap.find(federateHandle) != _federateHandleFederateMap.end())
@@ -404,7 +404,7 @@ public:
     federate->_federateType = message->getFederateType();
     broadcastToChildren(message);
   }
-  void accept(const ConnectHandle& connectHandle, ResignFederateNotifyMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ResignFederateNotifyMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
     FederateHandle federateHandle = message->getFederateHandle();
@@ -430,7 +430,7 @@ public:
   }
 
   // Synchronization labels
-  void accept(const ConnectHandle& connectHandle, RegisterFederationSynchronizationPointMessage* message)
+  void accept(const ConnectHandle& connectHandle, const RegisterFederationSynchronizationPointMessage* message)
   {
     // Labels must be ckecked by the ambassador. So what arrives here with an empty label must be some kind of error.
     if (message->getLabel().empty())
@@ -501,7 +501,7 @@ public:
       send(_parentServerConnectHandle, message);
     }
   }
-  void accept(const ConnectHandle& connectHandle, RegisterFederationSynchronizationPointResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const RegisterFederationSynchronizationPointResponseMessage* message)
   {
     if (message->getLabel().empty())
       throw MessageError("Received empty label in RegisterFederationSynchronizationPointResponseMessage!");
@@ -509,7 +509,7 @@ public:
     send(message->getFederateHandle(), message);
   }
 
-  void accept(const ConnectHandle& connectHandle, AnnounceSynchronizationPointMessage* message)
+  void accept(const ConnectHandle& connectHandle, const AnnounceSynchronizationPointMessage* message)
   {
     if (message->getLabel().empty())
       throw MessageError("Received empty label in AnnounceSynchronizationPointMessage!");
@@ -559,7 +559,7 @@ public:
       send(j->first, announce);
     }
   }
-  void accept(const ConnectHandle& connectHandle, SynchronizationPointAchievedMessage* message)
+  void accept(const ConnectHandle& connectHandle, const SynchronizationPointAchievedMessage* message)
   {
     SyncronizationLabelStateMap::iterator i = _syncronizationLabelStateMap.find(message->getLabel());
     if (i == _syncronizationLabelStateMap.end())
@@ -588,7 +588,7 @@ public:
       }
     }
   }
-  void accept(const ConnectHandle& connectHandle, FederationSynchronizedMessage* message)
+  void accept(const ConnectHandle& connectHandle, const FederationSynchronizedMessage* message)
   {
     SyncronizationLabelStateMap::iterator i = _syncronizationLabelStateMap.find(message->getLabel());
     if (i == _syncronizationLabelStateMap.end())
@@ -624,7 +624,7 @@ public:
   }
 
   // Time management
-  void accept(const ConnectHandle& connectHandle, EnableTimeRegulationRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const EnableTimeRegulationRequestMessage* message)
   {
     // A correctly programmed ambassador already denies the enable request.
     // So this is an error terminating the connection if somebody asks for that if it should not do so.
@@ -650,17 +650,17 @@ public:
       }
     }
   }
-  void accept(const ConnectHandle&, EnableTimeRegulationResponseMessage* message)
+  void accept(const ConnectHandle&, const EnableTimeRegulationResponseMessage* message)
   {
     send(message->getFederateHandle(), message);
   }
-  void accept(const ConnectHandle& connectHandle, DisableTimeRegulationRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const DisableTimeRegulationRequestMessage* message)
   {
     // Don't bail out on anything. If the federate dies in between, we might need to clean up somehow
     broadcast(connectHandle, message);
     _federateHandleTimeStampMap.erase(message->getFederateHandle());
   }
-  void accept(const ConnectHandle& connectHandle, CommitLowerBoundTimeStampMessage* message)
+  void accept(const ConnectHandle& connectHandle, const CommitLowerBoundTimeStampMessage* message)
   {
     _federateHandleTimeStampMap[message->getFederateHandle()] = message->getTimeStamp();
     // send to all time constrainted connects except to where it originates
@@ -681,7 +681,7 @@ public:
 
 
   // Regions
-  void accept(const ConnectHandle& connectHandle, InsertRegionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const InsertRegionMessage* message)
   {
     ConnectData* connect = getConnect(connectHandle);
     OpenRTIAssert(connect);
@@ -695,7 +695,7 @@ public:
 
     broadcast(connectHandle, message);
   }
-  void accept(const ConnectHandle& connectHandle, CommitRegionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const CommitRegionMessage* message)
   {
     ConnectData* connect = getConnect(connectHandle);
     OpenRTIAssert(connect);
@@ -710,7 +710,7 @@ public:
 
     broadcast(connectHandle, message);
   }
-  void accept(const ConnectHandle& connectHandle, EraseRegionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const EraseRegionMessage* message)
   {
     ConnectData* connect = getConnect(connectHandle);
     OpenRTIAssert(connect);
@@ -724,7 +724,7 @@ public:
   }
 
   // (un)publish messages for interactions
-  void accept(const ConnectHandle& connectHandle, ChangeInteractionClassPublicationMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ChangeInteractionClassPublicationMessage* message)
   {
     InteractionClass* interactionClass = getInteractionClass(message->getInteractionClassHandle());
     if (!interactionClass)
@@ -759,7 +759,7 @@ public:
       send(connectHandle, subscription);
     }
   }
-  void accept(const ConnectHandle& connectHandle, ChangeObjectClassPublicationMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ChangeObjectClassPublicationMessage* message)
   {
     ObjectClass* objectClass = getObjectClass(message->getObjectClassHandle());
     if (!objectClass)
@@ -886,7 +886,7 @@ public:
 
 
   // (un)subscription messages for interactions
-  void accept(const ConnectHandle& connectHandle, ChangeInteractionClassSubscriptionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ChangeInteractionClassSubscriptionMessage* message)
   {
     InteractionClass* interactionClass = getInteractionClass(message->getInteractionClassHandle());
     if (!interactionClass)
@@ -910,7 +910,7 @@ public:
   }
 
   // (un)subscription messages for object classes
-  void accept(const ConnectHandle& connectHandle, ChangeObjectClassSubscriptionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ChangeObjectClassSubscriptionMessage* message)
   {
     ObjectClass* objectClass = getObjectClass(message->getObjectClassHandle());
     if (!objectClass)
@@ -1030,7 +1030,7 @@ public:
   // Ambassador also requests a new instance handle to keep the pool of available handles in about the
   // same size. Only if latency is high and object registration rate is high also, the ambassador might block
   // on the registerObjectInstance call until a new free handle arrives.
-  void accept(const ConnectHandle& connectHandle, ObjectInstanceHandlesRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ObjectInstanceHandlesRequestMessage* message)
   {
     if (isRootServer()) {
       ConnectData* connect = getConnect(connectHandle);
@@ -1055,7 +1055,7 @@ public:
       send(_parentServerConnectHandle, message);
     }
   }
-  void accept(const ConnectHandle& connectHandle, ObjectInstanceHandlesResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ObjectInstanceHandlesResponseMessage* message)
   {
     FederateHandle federateHandle = message->getFederateHandle();
     Federate* federate = getFederate(federateHandle);
@@ -1077,7 +1077,7 @@ public:
       federateConnect->send(message);
     }
   }
-  void accept(const ConnectHandle& connectHandle, ReleaseMultipleObjectInstanceNameHandlePairsMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ReleaseMultipleObjectInstanceNameHandlePairsMessage* message)
   {
     ConnectData* connect = getConnect(connectHandle);
     OpenRTIAssert(connect);
@@ -1113,7 +1113,7 @@ public:
   // current server node.
   // FIXME: should work for the instance handles too. As long as the root server is authoritive, it will know all,
   // Once the root is no longer reachable, it is sufficient to know what is here and below ...
-  void accept(const ConnectHandle& connectHandle, ReserveObjectInstanceNameRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ReserveObjectInstanceNameRequestMessage* message)
   {
     FederateHandle federateHandle = message->getFederateHandle();
     Federate* federate = getFederate(federateHandle);
@@ -1146,7 +1146,7 @@ public:
       send(_parentServerConnectHandle, message);
     }
   }
-  void accept(const ConnectHandle& connectHandle, ReserveObjectInstanceNameResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ReserveObjectInstanceNameResponseMessage* message)
   {
     FederateHandle federateHandle = message->getFederateHandle();
     Federate* federate = getFederate(federateHandle);
@@ -1166,7 +1166,7 @@ public:
       federateConnect->send(message);
     }
   }
-  void accept(const ConnectHandle& connectHandle, ReserveMultipleObjectInstanceNameRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ReserveMultipleObjectInstanceNameRequestMessage* message)
   {
     FederateHandle federateHandle = message->getFederateHandle();
     Federate* federate = getFederate(federateHandle);
@@ -1210,7 +1210,7 @@ public:
       send(_parentServerConnectHandle, message);
     }
   }
-  void accept(const ConnectHandle& connectHandle, ReserveMultipleObjectInstanceNameResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ReserveMultipleObjectInstanceNameResponseMessage* message)
   {
     FederateHandle federateHandle = message->getFederateHandle();
     Federate* federate = getFederate(federateHandle);
@@ -1236,7 +1236,7 @@ public:
 
 
   // Object instance messages
-  void accept(const ConnectHandle& connectHandle, InsertObjectInstanceMessage* message)
+  void accept(const ConnectHandle& connectHandle, const InsertObjectInstanceMessage* message)
   {
     ObjectInstanceHandle objectInstanceHandle = message->getObjectInstanceHandle();
     ObjectClassHandle objectClassHandle = message->getObjectClassHandle();
@@ -1285,7 +1285,7 @@ public:
       send(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects, message);
     }
   }
-  void accept(const ConnectHandle& connectHandle, DeleteObjectInstanceMessage* message)
+  void accept(const ConnectHandle& connectHandle, const DeleteObjectInstanceMessage* message)
   {
     // If the object class is already unsubscribed, we might still get delete instance or update messages
     // That are sent by the owner at a time the subscription was still there.
@@ -1299,7 +1299,7 @@ public:
     OpenRTIAssert(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects.count(connectHandle) == 0);
     send(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects, message);
   }
-  void accept(const ConnectHandle& connectHandle, TimeStampedDeleteObjectInstanceMessage* message)
+  void accept(const ConnectHandle& connectHandle, const TimeStampedDeleteObjectInstanceMessage* message)
   {
     // If the object class is already unsubscribed, we might still get delete instance or update messages
     // That are sent by the owner at a time the subscription was still there.
@@ -1314,7 +1314,7 @@ public:
     send(objectInstance->getPrivilegeToDeleteAttribute()->_recieveingConnects, message);
   }
 
-  void accept(const ConnectHandle& connectHandle, AttributeUpdateMessage* message)
+  void accept(const ConnectHandle& connectHandle, const AttributeUpdateMessage* message)
   {
     ObjectInstance* objectInstance = getObjectInstance(message->getObjectInstanceHandle());
     if (!objectInstance)
@@ -1351,7 +1351,7 @@ public:
       send(i->first, update);
     }
   }
-  void accept(const ConnectHandle& connectHandle, TimeStampedAttributeUpdateMessage* message)
+  void accept(const ConnectHandle& connectHandle, const TimeStampedAttributeUpdateMessage* message)
   {
     ObjectInstance* objectInstance = getObjectInstance(message->getObjectInstanceHandle());
     if (!objectInstance)
@@ -1389,7 +1389,7 @@ public:
 
 
   // Send interactions due to the noted rounting tables
-  void accept(const ConnectHandle& connectHandle, InteractionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const InteractionMessage* message)
   {
     InteractionClass* interactionClass = getInteractionClass(message->getInteractionClassHandle());
     // This might happen with FOM modules
@@ -1398,7 +1398,7 @@ public:
     // Send to all subscribed connects except the originating one
     send(interactionClass->_cumulativeSubscribedConnectHandleSet, connectHandle, message);
   }
-  void accept(const ConnectHandle& connectHandle, TimeStampedInteractionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const TimeStampedInteractionMessage* message)
   {
     InteractionClass* interactionClass = getInteractionClass(message->getInteractionClassHandle());
     // This might happen with FOM modules
@@ -1408,7 +1408,7 @@ public:
     send(interactionClass->_cumulativeSubscribedConnectHandleSet, connectHandle, message);
   }
 
-  void accept(const ConnectHandle& connectHandle, RequestAttributeUpdateMessage* message)
+  void accept(const ConnectHandle& connectHandle, const RequestAttributeUpdateMessage* message)
   {
     typedef std::map<ConnectHandle, SharedPtr<RequestAttributeUpdateMessage> > ConnectMessageMap;
 
@@ -1442,7 +1442,7 @@ public:
       send(i->first, i->second);
     }
   }
-  void accept(const ConnectHandle& connectHandle, RequestClassAttributeUpdateMessage* message)
+  void accept(const ConnectHandle& connectHandle, const RequestClassAttributeUpdateMessage* message)
   {
     typedef std::map<ConnectHandle, SharedPtr<RequestClassAttributeUpdateMessage> > ConnectMessageMap;
 
@@ -1487,7 +1487,7 @@ public:
   }
 
   template<typename M>
-  void acceptFederationMessage(const ConnectHandle& connectHandle, M* message)
+  void acceptFederationMessage(const ConnectHandle& connectHandle, const M* message)
   {
     OpenRTIAssert(_connectHandleConnectDataMap.find(connectHandle) != _connectHandleConnectDataMap.end());
     accept(connectHandle, message);
@@ -1683,7 +1683,7 @@ public:
   }
 
 
-  void broadcastToChildren(const SharedPtr<AbstractMessage>& message) const
+  void broadcastToChildren(const SharedPtr<const AbstractMessage>& message) const
   {
     for (ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.begin();
 	 i != _connectHandleConnectDataMap.end(); ++i) {
@@ -1695,7 +1695,7 @@ public:
     }
   }
 
-  void broadcastToChildren(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessage>& message) const
+  void broadcastToChildren(const ConnectHandle& connectHandle, const SharedPtr<const AbstractMessage>& message) const
   {
     for (ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.begin();
 	 i != _connectHandleConnectDataMap.end(); ++i) {
@@ -1709,7 +1709,7 @@ public:
     }
   }
 
-  void broadcastToChildren(const FederateHandleSet& federateHandleSet, const SharedPtr<AbstractMessage>& message) const
+  void broadcastToChildren(const FederateHandleSet& federateHandleSet, const SharedPtr<const AbstractMessage>& message) const
   {
     ConnectHandleSet broadcastSet;
     for (FederateHandleSet::const_iterator i = federateHandleSet.begin(); i != federateHandleSet.end(); ++i) {
@@ -1730,7 +1730,7 @@ public:
   }
 
   // send to all in the set except the additionally given one
-  void send(const ConnectHandleSet& connectHandleSet, const ConnectHandle& connectHandle, const SharedPtr<AbstractMessage>& message) const
+  void send(const ConnectHandleSet& connectHandleSet, const ConnectHandle& connectHandle, const SharedPtr<const AbstractMessage>& message) const
   {
     // FIXME is currently O(n*log(n)) can be O(n)
     for (ConnectHandleSet::const_iterator i = connectHandleSet.begin(); i != connectHandleSet.end(); ++i) {
@@ -1740,14 +1740,14 @@ public:
     }
   }
 
-  void send(const ConnectHandleSet& connectHandleSet, const SharedPtr<AbstractMessage>& message) const
+  void send(const ConnectHandleSet& connectHandleSet, const SharedPtr<const AbstractMessage>& message) const
   {
     // FIXME is currently O(n*log(n)) can be O(n)
     for (ConnectHandleSet::const_iterator i = connectHandleSet.begin(); i != connectHandleSet.end(); ++i)
       send(*i, message);
   }
 
-  void broadcast(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessage>& message) const
+  void broadcast(const ConnectHandle& connectHandle, const SharedPtr<const AbstractMessage>& message) const
   {
     for (ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.begin();
 	 i != _connectHandleConnectDataMap.end(); ++i) {
@@ -1758,14 +1758,14 @@ public:
       i->second->send(message);
     }
   }
-  void send(const ConnectHandle& connectHandle, const SharedPtr<AbstractMessage>& message) const
+  void send(const ConnectHandle& connectHandle, const SharedPtr<const AbstractMessage>& message) const
   {
     // ConnectData* connect = getConnect(connectHandle);
     ConnectHandleConnectDataMap::const_iterator i = _connectHandleConnectDataMap.find(connectHandle);
     OpenRTIAssert(i != _connectHandleConnectDataMap.end());
     i->second->send(message);
   }
-  void send(const FederateHandle& federateHandle, const SharedPtr<AbstractMessage>& message) const
+  void send(const FederateHandle& federateHandle, const SharedPtr<const AbstractMessage>& message) const
   {
     FederateHandleFederateMap::const_iterator i = _federateHandleFederateMap.find(federateHandle);
     if (i == _federateHandleFederateMap.end())
@@ -1791,7 +1791,7 @@ public:
   { }
 
   template<typename M>
-  void acceptFederationMessage(const ConnectHandle& connectHandle, M* message)
+  void acceptFederationMessage(const ConnectHandle& connectHandle, const M* message)
   {
     FederationServerMap::const_iterator i = _federationServerMap.find(message->getFederationHandle());
     if (i == _federationServerMap.end()) {
@@ -1804,7 +1804,7 @@ public:
     i->second->acceptFederationMessage(connectHandle, message);
   }
   template<typename M>
-  void acceptUpstreamFederationMessage(const ConnectHandle& connectHandle, M* message)
+  void acceptUpstreamFederationMessage(const ConnectHandle& connectHandle, const M* message)
   {
     OpenRTIAssert(connectHandle.valid());
     if (connectHandle == _serverConnectSet.getParentConnectHandle())
@@ -1812,7 +1812,7 @@ public:
     acceptFederationMessage(connectHandle, message);
   }
   template<typename M>
-  void acceptDownstreamFederationMessage(const ConnectHandle& connectHandle, M* message)
+  void acceptDownstreamFederationMessage(const ConnectHandle& connectHandle, const M* message)
   {
     OpenRTIAssert(connectHandle.valid());
     if (connectHandle != _serverConnectSet.getParentConnectHandle())
@@ -1821,7 +1821,7 @@ public:
   }
 
   // If the parent connect dies, tell this all children
-  void accept(const ConnectHandle& connectHandle, ConnectionLostMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ConnectionLostMessage* message)
   {
     // Throw away these kind of messages when they originate from a child.
     // This can happen since a connect just sends this message on socket problems.
@@ -1832,7 +1832,7 @@ public:
   }
 
   // Create messages
-  void accept(const ConnectHandle& connectHandle, CreateFederationExecutionRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const CreateFederationExecutionRequestMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
     // If we are a root server ...
@@ -1893,7 +1893,7 @@ public:
       _serverConnectSet.sendToParent(message);
     }
   }
-  void accept(const ConnectHandle& connectHandle, CreateFederationExecutionResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const CreateFederationExecutionResponseMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
     // Such a response must originate from the parent.
@@ -1912,7 +1912,7 @@ public:
   }
 
   // Destroy messages
-  void accept(const ConnectHandle& connectHandle, DestroyFederationExecutionRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const DestroyFederationExecutionRequestMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
     // If we are a root server ...
@@ -1974,7 +1974,7 @@ public:
       _serverConnectSet.sendToParent(message);
     }
   }
-  void accept(const ConnectHandle& connectHandle, DestroyFederationExecutionResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const DestroyFederationExecutionResponseMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
     // Such a response must originate from the parent.
@@ -1994,7 +1994,7 @@ public:
 
 
   // Enumerate federations
-  void accept(const ConnectHandle& connectHandle, EnumerateFederationExecutionsRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const EnumerateFederationExecutionsRequestMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
     // If we are a root server ...
@@ -2019,7 +2019,7 @@ public:
       _serverConnectSet.sendToParent(message);
     }
   }
-  void accept(const ConnectHandle& connectHandle, EnumerateFederationExecutionsResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const EnumerateFederationExecutionsResponseMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
     // Such a response must originate from the parent.
@@ -2038,7 +2038,7 @@ public:
   }
 
   // Insert a new federation into the server node
-  void accept(const ConnectHandle& connectHandle, InsertFederationExecutionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const InsertFederationExecutionMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
     if (connectHandle != _serverConnectSet.getParentConnectHandle())
@@ -2067,7 +2067,7 @@ public:
     // FIXME add the server options
   }
   // A child server or an ambassador sends this request to be removed from the federation execution.
-  void accept(const ConnectHandle& connectHandle, ShutdownFederationExecutionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ShutdownFederationExecutionMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
     // Such a response must originate from the parent.
@@ -2093,7 +2093,7 @@ public:
     i->second->eraseFederationExecutionAtConnect(connectHandle);
   }
   // Erase a new federation from the server node
-  void accept(const ConnectHandle& connectHandle, EraseFederationExecutionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const EraseFederationExecutionMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
     // Such a response must originate from the parent.
@@ -2124,7 +2124,7 @@ public:
     }
   }
   // Erase a federation handle from the server node, this is part of the two way shutdown with a child
-  void accept(const ConnectHandle& connectHandle, ReleaseFederationHandleMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ReleaseFederationHandleMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
     // Such a response must originate from the parent.
@@ -2163,7 +2163,7 @@ public:
   }
 
   // The Join messages
-  void accept(const ConnectHandle& connectHandle, JoinFederationExecutionRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const JoinFederationExecutionRequestMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
 
@@ -2205,7 +2205,7 @@ public:
       _serverConnectSet.sendToParent(message);
     }
   }
-  void accept(const ConnectHandle& connectHandle, JoinFederationExecutionResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const JoinFederationExecutionResponseMessage* message)
   {
     OpenRTIAssert(connectHandle.valid());
     // Such a response must originate from the parent.
@@ -2240,100 +2240,100 @@ public:
     _pendingMessageList.pop_front();
   }
 
-  void accept(const ConnectHandle& connectHandle, ResignFederationExecutionRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ResignFederationExecutionRequestMessage* message)
   { acceptUpstreamFederationMessage(connectHandle, message); }
 
   // Message to inform federates about newly joined federates
-  void accept(const ConnectHandle& connectHandle, JoinFederateNotifyMessage* message)
+  void accept(const ConnectHandle& connectHandle, const JoinFederateNotifyMessage* message)
   { acceptDownstreamFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, ResignFederateNotifyMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ResignFederateNotifyMessage* message)
   { acceptDownstreamFederationMessage(connectHandle, message); }
 
   // Synchronization labels
-  void accept(const ConnectHandle& connectHandle, RegisterFederationSynchronizationPointMessage* message)
+  void accept(const ConnectHandle& connectHandle, const RegisterFederationSynchronizationPointMessage* message)
   { acceptUpstreamFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, RegisterFederationSynchronizationPointResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const RegisterFederationSynchronizationPointResponseMessage* message)
   { acceptDownstreamFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, AnnounceSynchronizationPointMessage* message)
+  void accept(const ConnectHandle& connectHandle, const AnnounceSynchronizationPointMessage* message)
   { acceptDownstreamFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, SynchronizationPointAchievedMessage* message)
+  void accept(const ConnectHandle& connectHandle, const SynchronizationPointAchievedMessage* message)
   { acceptUpstreamFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, FederationSynchronizedMessage* message)
+  void accept(const ConnectHandle& connectHandle, const FederationSynchronizedMessage* message)
   { acceptDownstreamFederationMessage(connectHandle, message); }
 
   // Time Management
-  void accept(const ConnectHandle& connectHandle, EnableTimeRegulationRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const EnableTimeRegulationRequestMessage* message)
   { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, EnableTimeRegulationResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const EnableTimeRegulationResponseMessage* message)
   { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, DisableTimeRegulationRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const DisableTimeRegulationRequestMessage* message)
   { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, CommitLowerBoundTimeStampMessage* message)
+  void accept(const ConnectHandle& connectHandle, const CommitLowerBoundTimeStampMessage* message)
   { acceptFederationMessage(connectHandle, message); }
 
   // Regions
-  void accept(const ConnectHandle& connectHandle, InsertRegionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const InsertRegionMessage* message)
   { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, CommitRegionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const CommitRegionMessage* message)
   { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, EraseRegionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const EraseRegionMessage* message)
   { acceptFederationMessage(connectHandle, message); }
 
   // Publications
-  void accept(const ConnectHandle& connectHandle, ChangeInteractionClassPublicationMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ChangeInteractionClassPublicationMessage* message)
   { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, ChangeObjectClassPublicationMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ChangeObjectClassPublicationMessage* message)
   { acceptFederationMessage(connectHandle, message); }
 
   // Subscriptions
-  void accept(const ConnectHandle& connectHandle, ChangeInteractionClassSubscriptionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ChangeInteractionClassSubscriptionMessage* message)
   { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, ChangeObjectClassSubscriptionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ChangeObjectClassSubscriptionMessage* message)
   { acceptFederationMessage(connectHandle, message); }
 
   // ObjectInstance handle management
-  void accept(const ConnectHandle& connectHandle, ObjectInstanceHandlesRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ObjectInstanceHandlesRequestMessage* message)
   { acceptUpstreamFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, ObjectInstanceHandlesResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ObjectInstanceHandlesResponseMessage* message)
   { acceptDownstreamFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, ReleaseMultipleObjectInstanceNameHandlePairsMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ReleaseMultipleObjectInstanceNameHandlePairsMessage* message)
   { acceptUpstreamFederationMessage(connectHandle, message); }
 
   // ObjectInstance name management
-  void accept(const ConnectHandle& connectHandle, ReserveObjectInstanceNameRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ReserveObjectInstanceNameRequestMessage* message)
   { acceptUpstreamFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, ReserveObjectInstanceNameResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ReserveObjectInstanceNameResponseMessage* message)
   { acceptDownstreamFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, ReserveMultipleObjectInstanceNameRequestMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ReserveMultipleObjectInstanceNameRequestMessage* message)
   { acceptUpstreamFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, ReserveMultipleObjectInstanceNameResponseMessage* message)
+  void accept(const ConnectHandle& connectHandle, const ReserveMultipleObjectInstanceNameResponseMessage* message)
   { acceptDownstreamFederationMessage(connectHandle, message); }
 
   // Object instance messages
-  void accept(const ConnectHandle& connectHandle, InsertObjectInstanceMessage* message)
+  void accept(const ConnectHandle& connectHandle, const InsertObjectInstanceMessage* message)
   { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, DeleteObjectInstanceMessage* message)
+  void accept(const ConnectHandle& connectHandle, const DeleteObjectInstanceMessage* message)
   { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, TimeStampedDeleteObjectInstanceMessage* message)
+  void accept(const ConnectHandle& connectHandle, const TimeStampedDeleteObjectInstanceMessage* message)
   { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, AttributeUpdateMessage* message)
+  void accept(const ConnectHandle& connectHandle, const AttributeUpdateMessage* message)
   { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, TimeStampedAttributeUpdateMessage* message)
+  void accept(const ConnectHandle& connectHandle, const TimeStampedAttributeUpdateMessage* message)
   { acceptFederationMessage(connectHandle, message); }
 
   // InteractionMessages
-  void accept(const ConnectHandle& connectHandle, InteractionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const InteractionMessage* message)
   { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, TimeStampedInteractionMessage* message)
+  void accept(const ConnectHandle& connectHandle, const TimeStampedInteractionMessage* message)
   { acceptFederationMessage(connectHandle, message); }
 
   // AttributeUpdateRequest messages
-  void accept(const ConnectHandle& connectHandle, RequestAttributeUpdateMessage* message)
+  void accept(const ConnectHandle& connectHandle, const RequestAttributeUpdateMessage* message)
   { acceptFederationMessage(connectHandle, message); }
-  void accept(const ConnectHandle& connectHandle, RequestClassAttributeUpdateMessage* message)
+  void accept(const ConnectHandle& connectHandle, const RequestClassAttributeUpdateMessage* message)
   { acceptFederationMessage(connectHandle, message); }
 
-  void accept(const ConnectHandle&, AbstractMessage* message)
+  void accept(const ConnectHandle&, const AbstractMessage* message)
   { throw MessageError("Received unexpected message???"); }
 
   class DispatchFunctor {
@@ -2342,17 +2342,17 @@ public:
       _serverMessageDispatcher(serverMessageDispatcher), _connectHandle(connectHandle)
     { }
     template<typename M>
-    void operator()(M& message) const
+    void operator()(const M& message) const
     { _serverMessageDispatcher.accept(_connectHandle, &message); }
   private:
     ServerMessageDispatcher& _serverMessageDispatcher;
     ConnectHandle _connectHandle;
   };
 
-  void dispatch(AbstractMessage& message, const ConnectHandle& connectHandle)
+  void dispatch(const AbstractMessage& message, const ConnectHandle& connectHandle)
   {
     Log(ServerMessage, Debug3) << getServerPath() << ": Received " << message << "!" << std::endl;
-    FunctorMessageDispatcher<DispatchFunctor> dispatcher(DispatchFunctor(*this, connectHandle));
+    FunctorConstMessageDispatcher<DispatchFunctor> dispatcher(DispatchFunctor(*this, connectHandle));
     message.dispatch(dispatcher);
   }
 
@@ -2481,7 +2481,7 @@ private:
   /// Note that the connect handles are invalidated once a connect dies while a response
   /// is pending. This way we can keep track of the responses even when some reqests get
   /// invalid before they completed.
-  typedef std::pair<ConnectHandle, SharedPtr<AbstractMessage> > ConnectHandleMessagePair;
+  typedef std::pair<ConnectHandle, SharedPtr<const AbstractMessage> > ConnectHandleMessagePair;
   typedef std::list<ConnectHandleMessagePair> ConnectHandleMessagePairList;
   ConnectHandleMessagePairList _pendingMessageList;
 
@@ -2555,7 +2555,7 @@ ServerNode::removeConnect(const ConnectHandle& connectHandle)
 }
 
 void
-ServerNode::dispatchMessage(AbstractMessage& message, const ConnectHandle& connectHandle)
+ServerNode::dispatchMessage(const AbstractMessage& message, const ConnectHandle& connectHandle)
 {
   _serverMessageDispatcher->dispatch(message, connectHandle);
 }

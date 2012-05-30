@@ -239,14 +239,14 @@ public:
 
       // Send this message and wait for the response
       _connect->send(request);
-      SharedPtr<AbstractMessage> response = _connect->receive(abstime);
+      SharedPtr<const AbstractMessage> response = _connect->receive(abstime);
 
       // Read the response and interpret that one
       if (!response.valid())
         Traits::throwRTIinternalError(std::string("Received no response message while talking to RTI of federation execution \"") +
                                       federationExecutionName + std::string("\"."));
 
-      CreateFederationExecutionResponseMessage* create = dynamic_cast<CreateFederationExecutionResponseMessage*>(response.get());
+      const CreateFederationExecutionResponseMessage* create = dynamic_cast<const CreateFederationExecutionResponseMessage*>(response.get());
       if (!create)
         Traits::throwRTIinternalError(std::string("Received unexpected message type \"") + response->getTypeName() + std::string("\" while talking to RTI of federation execution \"") +
                                       federationExecutionName + std::string("\"."));
@@ -286,14 +286,14 @@ public:
       // Send this message and wait for the response
       _connect->send(request);
 
-      SharedPtr<DestroyFederationExecutionResponseMessage> destroy;
+      SharedPtr<const DestroyFederationExecutionResponseMessage> destroy;
       while (!destroy.valid()) {
-        SharedPtr<AbstractMessage> response = _connect->receive(abstime);
+        SharedPtr<const AbstractMessage> response = _connect->receive(abstime);
         // Read the response and interpret that one
         if (!response.valid())
           Traits::throwRTIinternalError(std::string("Received no response message while talking to RTI of federation execution \"") +
                                         federationExecutionName + std::string("\"."));
-        destroy = dynamic_cast<DestroyFederationExecutionResponseMessage*>(response.get());
+        destroy = dynamic_cast<const DestroyFederationExecutionResponseMessage*>(response.get());
         if (_federate.valid()) {
           if (!destroy.valid()) {
             _federate->dispatchInternalMessage(*response);
@@ -379,18 +379,18 @@ public:
 
       // Send this message and wait for the response
       _connect->send(request);
-      SharedPtr<InsertFederationExecutionMessage> insertFederationMessage;
-      SharedPtr<JoinFederationExecutionResponseMessage> joinResponse;
+      SharedPtr<const InsertFederationExecutionMessage> insertFederationMessage;
+      SharedPtr<const JoinFederationExecutionResponseMessage> joinResponse;
       do {
-        SharedPtr<AbstractMessage> response = _connect->receive(abstime);
+        SharedPtr<const AbstractMessage> response = _connect->receive(abstime);
 
         // Read the response and interpret that one
         if (!response.valid())
           Traits::throwRTIinternalError(std::string("Received no response message while talking to RTI of federation execution \"") +
                                         federationExecutionName + std::string("\"."));
 
-        if (dynamic_cast<InsertFederationExecutionMessage*>(response.get())) {
-          insertFederationMessage = static_cast<InsertFederationExecutionMessage*>(response.get());
+        if (dynamic_cast<const InsertFederationExecutionMessage*>(response.get())) {
+          insertFederationMessage = static_cast<const InsertFederationExecutionMessage*>(response.get());
           // Put that into a factory into the ambassador FIXME
           //// FIXME: instead of a connect we need to cache message filters???
           std::string federateName; // FIXME
@@ -402,8 +402,8 @@ public:
           _federate->dispatchInternalMessage(*response);
         }
 
-        if (dynamic_cast<JoinFederationExecutionResponseMessage*>(response.get())) {
-          joinResponse = new JoinFederationExecutionResponseMessage(*static_cast<JoinFederationExecutionResponseMessage*>(response.get()));
+        if (dynamic_cast<const JoinFederationExecutionResponseMessage*>(response.get())) {
+          joinResponse = new JoinFederationExecutionResponseMessage(*static_cast<const JoinFederationExecutionResponseMessage*>(response.get()));
 
           switch (joinResponse->getJoinFederationExecutionResponseType()) {
           case JoinFederationExecutionResponseFederateNameAlreadyInUse:
@@ -438,10 +438,10 @@ public:
         Clock abstime = Clock::now() + Clock::fromSeconds(70);
         for (;;) {
           // Skip everything that is not the resign response - don't need that anymore
-          SharedPtr<AbstractMessage> message = _connect->receive(abstime);
+          SharedPtr<const AbstractMessage> message = _connect->receive(abstime);
           if (!message.valid())
             break;
-          if (dynamic_cast<EraseFederationExecutionMessage*>(message.get()))
+          if (dynamic_cast<const EraseFederationExecutionMessage*>(message.get()))
             break;
         }
 
@@ -2690,13 +2690,13 @@ public:
     _connect->send(message);
   }
 
-  SharedPtr<AbstractMessage> receive(const Clock& abstime)
+  SharedPtr<const AbstractMessage> receive(const Clock& abstime)
   {
     if (!_connect.valid())
       Traits::throwNotConnected();
     return _connect->receive(abstime);
   }
-  SharedPtr<AbstractMessage> receive()
+  SharedPtr<const AbstractMessage> receive()
   {
     if (!_connect.valid())
       Traits::throwNotConnected();

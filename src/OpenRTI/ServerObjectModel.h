@@ -1135,7 +1135,7 @@ public:
     std::string _name;
     FederateList _federateList;
     bool _permitTimeRegulation;
-    void send(const SharedPtr<AbstractMessage>& message)
+    void send(const SharedPtr<const AbstractMessage>& message)
     {
       if (!_messageSender.valid())
         return;

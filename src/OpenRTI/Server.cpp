@@ -51,12 +51,12 @@ namespace OpenRTI {
 class OPENRTI_LOCAL Server::TriggeredConnectSocketEvent : public AbstractSocketEvent {
   class OPENRTI_LOCAL LockedMessageList : public Referenced {
   public:
-    void push_back(const SharedPtr<AbstractMessage>& message)
+    void push_back(const SharedPtr<const AbstractMessage>& message)
     {
       ScopeLock scopeLock(_mutex);
       _messageList.push_back(message);
     }
-    SharedPtr<AbstractMessage> pop_front()
+    SharedPtr<const AbstractMessage> pop_front()
     {
       ScopeLock scopeLock(_mutex);
       return _messageList.pop_front();
@@ -80,7 +80,7 @@ public:
   {
     ssize_t ret = _socketWakeupEvent->read();
     for (;;) {
-      SharedPtr<AbstractMessage> message = _lockedMessageList->pop_front();
+      SharedPtr<const AbstractMessage> message = _lockedMessageList->pop_front();
       if (!message.valid())
         break;
       if (!_serverMessageSender.valid())
@@ -124,7 +124,7 @@ private:
     {
       close();
     }
-    virtual void send(const SharedPtr<AbstractMessage>& message)
+    virtual void send(const SharedPtr<const AbstractMessage>& message)
     {
       if (!_socketWakeupTrigger.valid())
         throw RTIinternalError("Trying to send message to a closed MessageSender");

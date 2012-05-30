@@ -37,7 +37,7 @@ namespace OpenRTI {
 class OPENRTI_LOCAL AbstractMessageQueue : public AbstractMessageReceiver {
 public:
   virtual ~AbstractMessageQueue() {}
-  virtual SharedPtr<AbstractMessage> receive(const Clock& timeout) = 0;
+  virtual SharedPtr<const AbstractMessage> receive(const Clock& timeout) = 0;
   virtual bool isOpen() const = 0;
 
   SharedPtr<AbstractMessageSender> getMessageSender()
@@ -45,7 +45,7 @@ public:
 
 protected:
   // FIXME may be only have const messages in delivery???
-  virtual void append(const SharedPtr<AbstractMessage>& message) = 0;
+  virtual void append(const SharedPtr<const AbstractMessage>& message) = 0;
   virtual void close() = 0;
 
 private:
@@ -57,7 +57,7 @@ private:
     {
       close();
     }
-    virtual void send(const SharedPtr<AbstractMessage>& message)
+    virtual void send(const SharedPtr<const AbstractMessage>& message)
     {
       if (!_messageQueue.valid())
         throw RTIinternalError("Trying to send message to a closed MessageSender");

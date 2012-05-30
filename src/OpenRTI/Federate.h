@@ -494,18 +494,18 @@ public:
 
     for (;;) {
       // Skip everything that is not the resign response - don't need that anymore
-      SharedPtr<AbstractMessage> message = receiveMessage(clock);
+      SharedPtr<const AbstractMessage> message = receiveMessage(clock);
       if (!message.valid())
         Traits::throwRTIinternalError("resignFederationExecution hit timeout!");
-      if (dynamic_cast<EraseFederationExecutionMessage*>(message.get()))
+      if (dynamic_cast<const EraseFederationExecutionMessage*>(message.get()))
         break;
-      if (InsertObjectInstanceMessage* insertMessage = dynamic_cast<InsertObjectInstanceMessage*>(message.get())) {
+      if (const InsertObjectInstanceMessage* insertMessage = dynamic_cast<const InsertObjectInstanceMessage*>(message.get())) {
         SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
         message->setFederationHandle(getFederationHandle());
         message->getObjectInstanceHandleVector().push_back(insertMessage->getObjectInstanceHandle());
         sendMessage(message);
       }
-      if (ObjectInstanceHandlesResponseMessage* reserveMessage = dynamic_cast<ObjectInstanceHandlesResponseMessage*>(message.get())) {
+      if (const ObjectInstanceHandlesResponseMessage* reserveMessage = dynamic_cast<const ObjectInstanceHandlesResponseMessage*>(message.get())) {
         SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
         message->setFederationHandle(getFederationHandle());
         for (ObjectInstanceHandleNamePairVector::const_iterator k = reserveMessage->getObjectInstanceHandleNamePairVector().begin();
@@ -514,7 +514,7 @@ public:
         }
         sendMessage(message);
       }
-      if (ReserveObjectInstanceNameResponseMessage* reserveMessage = dynamic_cast<ReserveObjectInstanceNameResponseMessage*>(message.get())) {
+      if (const ReserveObjectInstanceNameResponseMessage* reserveMessage = dynamic_cast<const ReserveObjectInstanceNameResponseMessage*>(message.get())) {
         if (reserveMessage->getSuccess()) {
           SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
           message->setFederationHandle(getFederationHandle());
@@ -522,7 +522,7 @@ public:
           sendMessage(message);
         }
       }
-      if (ReserveMultipleObjectInstanceNameResponseMessage* reserveMessage = dynamic_cast<ReserveMultipleObjectInstanceNameResponseMessage*>(message.get())) {
+      if (const ReserveMultipleObjectInstanceNameResponseMessage* reserveMessage = dynamic_cast<const ReserveMultipleObjectInstanceNameResponseMessage*>(message.get())) {
         if (reserveMessage->getSuccess()) {
           SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
           message->setFederationHandle(getFederationHandle());
@@ -2854,9 +2854,9 @@ public:
   }
 
 protected:
-  void sendMessage(SharedPtr<AbstractMessage> message)
+  void sendMessage(const SharedPtr<const AbstractMessage>& message)
   { _federationConnect->send(message); }
-  SharedPtr<AbstractMessage> receiveMessage(const Clock& clock)
+  SharedPtr<const AbstractMessage> receiveMessage(const Clock& clock)
   { return _federationConnect->receive(clock); }
 
   ObjectInstanceHandleNamePair
@@ -2909,7 +2909,7 @@ protected:
   // This is for internal messages
   bool dispatchInternal(const Clock& clock)
   {
-    SharedPtr<AbstractMessage> message = receiveMessage(clock);
+    SharedPtr<const AbstractMessage> message = receiveMessage(clock);
     if (!message.valid())
       return false;
 
@@ -2924,7 +2924,7 @@ protected:
   template<typename T>
   bool dispatchInternal(const T& functorMessageDispatcherCallback, const Clock& clock)
   {
-    SharedPtr<AbstractMessage> message = receiveMessage(clock);
+    SharedPtr<const AbstractMessage> message = receiveMessage(clock);
     if (!message.valid())
       return false;
 
@@ -2936,12 +2936,12 @@ protected:
         _federate(federate)
       { }
       using T::operator();
-      void operator()(AbstractMessage& message) const
+      void operator()(const AbstractMessage& message) const
       { _federate.dispatchInternalMessage(message); }
     private:
       Federate& _federate;
     };
-    FunctorMessageDispatcher<MyFunctor> messageDispatcher(MyFunctor(functorMessageDispatcherCallback));
+    FunctorConstMessageDispatcher<MyFunctor> messageDispatcher(MyFunctor(functorMessageDispatcherCallback));
     message->dispatch(messageDispatcher);
     return true;
   }

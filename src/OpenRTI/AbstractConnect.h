@@ -37,14 +37,14 @@ public:
   virtual AbstractMessageReceiver* getMessageReceiver() = 0;
 
   /// Convenience methods for obvious tasks
-  void send(const SharedPtr<AbstractMessage>& message)
+  void send(const SharedPtr<const AbstractMessage>& message)
   { getMessageSender()->send(message); }
 
   /// Returns the next message. Returns 0 if no new message arrives before abstime
-  SharedPtr<AbstractMessage> receive(const Clock& abstime)
+  SharedPtr<const AbstractMessage> receive(const Clock& abstime)
   { return getMessageReceiver()->receive(abstime); }
   /// Returns the next message if there is one.
-  SharedPtr<AbstractMessage> receive()
+  SharedPtr<const AbstractMessage> receive()
   { return getMessageReceiver()->receive(Clock::initial()); }
 
   /// Close the message sender

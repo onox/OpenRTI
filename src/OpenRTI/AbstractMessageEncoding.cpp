@@ -40,7 +40,7 @@ AbstractMessageEncoding::getEnableRead() const
 void
 AbstractMessageEncoding::writePacket()
 {
-  SharedPtr<AbstractMessage> message = _connect->receive();
+  SharedPtr<const AbstractMessage> message = _connect->receive();
   if (!message.valid())
     return;
   writeMessage(*message);

@@ -32,7 +32,7 @@ public:
   AbstractMessageSender();
   virtual ~AbstractMessageSender();
 
-  virtual void send(const SharedPtr<AbstractMessage>& message) = 0;
+  virtual void send(const SharedPtr<const AbstractMessage>& message) = 0;
   virtual void close() = 0;
   // virtual bool isOpen() const = 0;
 };

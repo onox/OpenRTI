@@ -61,7 +61,7 @@ private:
     ScopeLock scopeLock(_mutex);
     removeConnect(connectHandle);
   }
-  void dispatchMessageLocked(AbstractMessage& message, const ConnectHandle& connectHandle)
+  void dispatchMessageLocked(const AbstractMessage& message, const ConnectHandle& connectHandle)
   {
     ScopeLock scopeLock(_mutex);
     dispatchMessage(message, connectHandle);
@@ -77,7 +77,7 @@ private:
     { }
     virtual ~MessageSender()
     { close(); }
-    virtual void send(const SharedPtr<AbstractMessage>& message)
+    virtual void send(const SharedPtr<const AbstractMessage>& message)
     {
       if (!_threadProtocolServer.valid())
         throw RTIinternalError("Trying to send message to a closed MessageSender");
