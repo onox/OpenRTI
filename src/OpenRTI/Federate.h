@@ -2914,34 +2914,6 @@ protected:
     return true;
   }
 
-#if 0
-  // FIXME want to have something like that, but how, does the message dispatcher know where to forward??
-  // This dispatches messages at first with the given message dispatcher and what is not processed,
-  // passes this along to the internal message stuff.
-  template<typename T>
-  bool dispatchInternal(const T& functorMessageDispatcherCallback, const Clock& clock)
-  {
-    SharedPtr<const AbstractMessage> message = receiveMessage(clock);
-    if (!message.valid())
-      return false;
-
-    /// Derive in some intelligent way??
-    class OPENRTI_LOCAL MyFunctor : public T {
-    public:
-      MyFunctor(const T& t, Federate& federate) :
-        T(t),
-        _federate(federate)
-      { }
-      using T::operator();
-      void operator()(const AbstractMessage& message) const
-      { _federate.dispatchInternalMessage(message); }
-    private:
-      Federate& _federate;
-    };
-    message->dispatchFunctor(MyFunctor(functorMessageDispatcherCallback));
-    return true;
-  }
-#endif
 protected:
   // The default fallback implementation
   virtual void acceptInternalMessage(const AbstractMessage& message)
