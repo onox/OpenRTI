@@ -75,7 +75,7 @@ public:
     NameHandlePair<FederationHandle>(name, handle)
   {
   }
-  ~ServerObjectModel()
+  virtual ~ServerObjectModel()
   {
     // FIXME assert that this is empty
     _objectInstanceHandleObjectInstanceMap.clear();
@@ -86,8 +86,8 @@ public:
       _interactionClassVector.pop_back();
   }
 
-  /// Get the rti servers name
-  virtual const std::string& getServerName() const = 0;
+  // /// Get the rti servers name
+  // virtual const std::string& getServerName() const = 0;
   /// Get the rti servers path
   virtual const std::string& getServerPath() const = 0;
   // /// Get the rti servers name
