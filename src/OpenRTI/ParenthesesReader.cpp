@@ -121,11 +121,13 @@ ParenthesesReader::parse(std::istream& stream, ContentHandler& contentHandler, E
       break;
 
     case ';':
-      // It's only a comment if we have ';;'
       c = stream.get();
+      if (c == -1)
+        break;
+      // It's only a comment if we have ';;'
       if (c == ';') {
         // Then skip the rest of the line
-        while (c = stream.get()) {
+        while ((c = stream.get()) != -1) {
           if (c == '\n' || c == '\r') {
             stream.putback(c);
             break;
