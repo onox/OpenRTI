@@ -1067,7 +1067,6 @@ public:
       // Can happen, may be it has resigned/is died in between but the response is already underway
       // If so, then just ignore, the upstream server needs to release them
     } else {
-      ConnectHandle federateConnectHandle = federateConnect->getHandle();
       for (ObjectInstanceHandleNamePairVector::const_iterator k = message->getObjectInstanceHandleNamePairVector().begin();
            k != message->getObjectInstanceHandleNamePairVector().end(); ++k) {
         ObjectInstance* objectInstance = insertObjectInstanceHandle(k->first, k->second);
