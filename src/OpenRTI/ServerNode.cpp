@@ -2335,7 +2335,7 @@ public:
   void accept(const ConnectHandle&, const AbstractMessage* message)
   { throw MessageError("Received unexpected message???"); }
 
-  class DispatchFunctor {
+  class OPENRTI_LOCAL DispatchFunctor {
   public:
     DispatchFunctor(ServerMessageDispatcher& serverMessageDispatcher, const ConnectHandle& connectHandle) :
       _serverMessageDispatcher(serverMessageDispatcher), _connectHandle(connectHandle)
@@ -2351,8 +2351,7 @@ public:
   void dispatch(const AbstractMessage& message, const ConnectHandle& connectHandle)
   {
     Log(ServerMessage, Debug3) << getServerPath() << ": Received " << message << "!" << std::endl;
-    FunctorConstMessageDispatcher<DispatchFunctor> dispatcher(DispatchFunctor(*this, connectHandle));
-    message.dispatch(dispatcher);
+    message.dispatchFunctor(DispatchFunctor(*this, connectHandle));
   }
 
   ConnectHandle insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)

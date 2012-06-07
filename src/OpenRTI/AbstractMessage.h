@@ -29,10 +29,10 @@ namespace OpenRTI {
 class AbstractMessageDispatcher;
 class ConstAbstractMessageDispatcher;
 
-// template<typename T>
-// class FunctorMessageDispatcher;
-// template<typename T>
-// class FunctorConstMessageDispatcher;
+template<typename F>
+class FunctorMessageDispatcher;
+template<typename F>
+class FunctorConstMessageDispatcher;
 
 // class FederationMessage;
 // class ServiceMessage;
@@ -49,23 +49,23 @@ public:
   virtual void dispatch(AbstractMessageDispatcher&) = 0;
   virtual void dispatch(ConstAbstractMessageDispatcher&) const = 0;
 
+  template<typename F>
+  void dispatchFunctor(const F& functor)
+  {
+    FunctorMessageDispatcher<F> dispatcher(functor);
+    dispatch(dispatcher);
+  }
+  template<typename F>
+  void dispatchFunctor(const F& functor) const
+  {
+    FunctorConstMessageDispatcher<F> dispatcher(functor);
+    dispatch(dispatcher);
+  }
+
   // Returns true if the message needs to be reliably sent or not.
   // The default implementation returns true. Interaction and attribute
   // update messages will provide a dynamic implementation for that.
   virtual bool getReliable() const;
-
-  // template<typename T>
-  // void accept(const T& functor)
-  // {
-  //   FunctorMessageDispatcher<T> dispatcher(functor);
-  //   dispatch(dispatcher);
-  // }
-  // template<typename T>
-  // void accept(const T& functor) const
-  // {
-  //   FunctorConstMessageDispatcher<T> dispatcher(functor);
-  //   dispatch(dispatcher);
-  // }
 };
 
 inline std::ostream&

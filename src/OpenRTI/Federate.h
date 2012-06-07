@@ -2901,10 +2901,7 @@ protected:
   };
 
   virtual void dispatchInternalMessage(const AbstractMessage& message)
-  {
-    FunctorConstMessageDispatcher<InternalDispatchFunctor> dispatcher(InternalDispatchFunctor(*this));
-    message.dispatch(dispatcher);
-  }
+  { message.dispatchFunctor(InternalDispatchFunctor(*this)); }
 
   // This is for internal messages
   bool dispatchInternal(const Clock& clock)
@@ -2941,8 +2938,7 @@ protected:
     private:
       Federate& _federate;
     };
-    FunctorConstMessageDispatcher<MyFunctor> messageDispatcher(MyFunctor(functorMessageDispatcherCallback));
-    message->dispatch(messageDispatcher);
+    message->dispatchFunctor(MyFunctor(functorMessageDispatcherCallback));
     return true;
   }
 #endif
@@ -3410,10 +3406,7 @@ protected:
   };
 
   void dispatchCallbackMessage(const AbstractMessage& message)
-  {
-    FunctorConstMessageDispatcher<CallbackDispatchFunctor> dispatcher(CallbackDispatchFunctor(*this));
-    message.dispatch(dispatcher);
-  }
+  { message.dispatchFunctor(CallbackDispatchFunctor(*this)); }
 
   // Here we just should see messages which do callbacks in the ambassador
   bool dispatchCallback(const Clock& clock)

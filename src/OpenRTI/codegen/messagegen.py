@@ -1316,8 +1316,7 @@ class MessageEncoding(object):
         sourceStream.writeline('void')
         sourceStream.writeline(encodingName + 'MessageEncoding::writeMessage(const AbstractMessage& message)')
         sourceStream.writeline('{')
-        sourceStream.writeline('  FunctorConstMessageDispatcher<DispatchFunctor> dispatcher(DispatchFunctor(*this));')
-        sourceStream.writeline('  message.dispatch(dispatcher);')
+        sourceStream.writeline('  message.dispatchFunctor(DispatchFunctor(*this));')
         sourceStream.writeline('}')
         sourceStream.writeline()
 

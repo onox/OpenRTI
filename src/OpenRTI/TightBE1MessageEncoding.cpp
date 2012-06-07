@@ -3750,8 +3750,7 @@ TightBE1MessageEncoding::decodePayload(const Buffer::const_iterator& i)
 void
 TightBE1MessageEncoding::writeMessage(const AbstractMessage& message)
 {
-  FunctorConstMessageDispatcher<DispatchFunctor> dispatcher(DispatchFunctor(*this));
-  message.dispatch(dispatcher);
+  message.dispatchFunctor(DispatchFunctor(*this));
 }
 
 } // namespace OpenRTI
