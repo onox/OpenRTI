@@ -33,7 +33,6 @@ ssize_t
 SocketPacket::send(const SocketAddress& socketAddress, const ConstBufferRange& bufferRange)
 {
   size_t bytelen = 0;
-  size_t sendBufferSize = 64*1024; /* FIXME Use the real send buffer size instead */
 #ifdef OpenRTI_HAVE_ALLOCA
 #if defined(__sun)
   size_t numPengingBuffers = 100;
@@ -101,7 +100,6 @@ ssize_t
 SocketPacket::recv(SocketAddress& socketAddress, const BufferRange& bufferRange, bool peek)
 {
   size_t bytelen = 0;
-  size_t readBufferSize = 64*1024; /* FIXME Use the real read buffer size instead */
 #ifdef OpenRTI_HAVE_ALLOCA
 #if defined(__sun)
   size_t numPengingBuffers = 100;
