@@ -58,6 +58,10 @@ ENDIF()
 IF(MSVC)
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4290")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4290")
+  IF(CMAKE_CL_64)
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /bigobj")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+  ENDIF()
 ENDIF()
 
 # Change the default build type to something fast
