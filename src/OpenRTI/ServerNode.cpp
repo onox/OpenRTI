@@ -523,9 +523,9 @@ public:
     } else {
       // label is already there
       if (!i->second._addJoiningFederates)
-        MessageError("Receiving incremental synchronization point update for fixed federate handle synchronization point!");
+        throw MessageError("Receiving incremental synchronization point update for fixed federate handle synchronization point!");
       if (!message->getAddJoiningFederates())
-        MessageError("Receiving incremental synchronization point update for fixed federate handle synchronization point!");
+        throw MessageError("Receiving incremental synchronization point update for fixed federate handle synchronization point!");
     }
 
     // Cycle over all child connects and send announcements with the appropriate handle sets
