@@ -194,6 +194,9 @@ localeToUcs(const char* loc)
 OPENRTI_API std::string
 ucsToLocale(const std::wstring& ucs)
 {
+  if (ucs.empty())
+    return std::string();
+
   std::size_t n = std::wcstombs(NULL, ucs.c_str(), 0);
   if (n == std::size_t(-1))
     return std::string();
