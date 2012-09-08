@@ -19,11 +19,6 @@
 
 #include "LogStream.h"
 
-#ifndef _WIN32
-// FIXME: abstract that thread local stuff and implement the same on win32
-#include <pthread.h>
-#endif
-
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
@@ -33,85 +28,79 @@
 #include "ScopeLock.h"
 #include "SharedPtr.h"
 #include "StringUtils.h"
+#include "ThreadLocal.h"
 
 namespace OpenRTI {
 
-#ifndef _WIN32
-
-struct LogStream::AtomicStreamBuf : public std::stringbuf {
-public:
-  AtomicStreamBuf(std::ostream& stream) :
-    _referencedMutex(ReferencedMutex::getReferencedMutex()),
-    _stream(stream)
-  { }
-
-protected:
-  virtual int sync()
+struct OPENRTI_LOCAL LogStream::StreamPair {
+  // The reason for that not just being a static is that
+  // we can guarantee that the mutex only dies if its last
+  // user has died. This is hard to guarantee if it's just
+  // static in here.
+  struct OPENRTI_LOCAL ReferencedMutex : public Referenced {
+    Mutex _mutex;
+  };
+  static SharedPtr<ReferencedMutex> getReferencedMutex()
   {
-    ScopeLock scopeLock(_referencedMutex->_mutex);
-    const char* base = pbase();
-    _stream.write(base, pptr() - base);
-    pubseekpos(0, std::ios_base::out);
-    return 0;
+    static SharedPtr<ReferencedMutex> referencedMutex = new ReferencedMutex;
+    return referencedMutex;
   }
 
-private:
-  struct ReferencedMutex : public Referenced {
-    Mutex _mutex;
-    static SharedPtr<ReferencedMutex> getReferencedMutex()
+  struct OPENRTI_LOCAL StreamBuf : public std::stringbuf {
+  public:
+    StreamBuf(std::ostream& stream) :
+      _stream(stream),
+      _referencedMutex(getReferencedMutex())
+    { }
+    virtual ~StreamBuf()
     {
-      static SharedPtr<ReferencedMutex> referencedMutex = new ReferencedMutex;
-      return referencedMutex;
+      sync();
     }
+
+  protected:
+    virtual int sync()
+    {
+      ScopeLock scopeLock(_referencedMutex->_mutex);
+      const char* base = pbase();
+      size_t count = pptr() - base;
+      if (count <= 0)
+        return 0;
+      _stream.write(base, count);
+      pubseekpos(0, std::ios_base::out);
+      return 0;
+    }
+
+  private:
+    std::ostream& _stream;
+    SharedPtr<ReferencedMutex> _referencedMutex;
   };
 
-  SharedPtr<ReferencedMutex> _referencedMutex;
-  std::ostream& _stream;
-};
+  struct OPENRTI_LOCAL Stream {
+    Stream(std::ostream& stream) :
+      _streamBuf(stream),
+      _stream(&_streamBuf)
+    { }
 
-static pthread_key_t key;
-static pthread_once_t key_once = PTHREAD_ONCE_INIT;
+    // The order of these fields is to make sure initialization
+    // does not use an uninitialized streambuf.
+    StreamBuf _streamBuf;
+    std::ostream _stream;
+  };
 
-struct LogStream::StreamPair {
   StreamPair() :
-    _outBuf(std::cout),
-    _errBuf(std::cerr),
-    _outStream(&_outBuf),
-    _errStream(&_errBuf)
+    _outStream(std::cout),
+    _errStream(std::cerr)
   { }
 
-  // FIXME: the destructor is not called for the main threads data.
-  // Clean that up also
-  static void destructor(void* data)
+  static StreamPair& getStreamPair()
   {
-    delete static_cast<StreamPair*>(data);
+    static ThreadLocal<StreamPair> streamPair;
+    return streamPair.instance();
   }
 
-  static void make_key()
-  {
-    pthread_key_create(&key, destructor);
-  }
-
-  static LogStream::StreamPair& getStreamPair()
-  {
-    pthread_once(&key_once, make_key);
-
-    StreamPair* streamPair;
-    streamPair = static_cast<StreamPair*>(pthread_getspecific(key));
-    if (!streamPair) {
-      streamPair = new StreamPair;
-      pthread_setspecific(key, streamPair);
-    }
-    return *streamPair;
-  }
-
-  AtomicStreamBuf _outBuf;
-  AtomicStreamBuf _errBuf;
-  std::ostream _outStream;
-  std::ostream _errStream;
+  Stream _outStream;
+  Stream _errStream;
 };
-
-#endif
 
 static unsigned
 atou(const char* s)
@@ -165,17 +154,10 @@ LogStream::getStream(Category category, LogStream::Priority priority)
   if (!getEnabled(category, priority))
     return 0;
 
-#ifdef _WIN32
   if (Info <= priority)
-    return &std::cout;
+    return &StreamPair::getStreamPair()._outStream._stream;
   else
-    return &std::cerr;
-#else
-  if (Info <= priority)
-    return &StreamPair::getStreamPair()._outStream;
-  else
-    return &StreamPair::getStreamPair()._errStream;
-#endif
+    return &StreamPair::getStreamPair()._errStream._stream;
 }
 
 LogStream::LogStream() :

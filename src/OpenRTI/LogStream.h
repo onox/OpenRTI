@@ -94,7 +94,6 @@ protected:
   }
 
 private:
-  struct AtomicStreamBuf;
   struct StreamPair;
   unsigned mCategory;
   int mPriority;
