@@ -64,6 +64,7 @@ IF(WIN32)
     win32/SocketWakeupEventWin32.cpp
     win32/SocketWakeupTriggerWin32.cpp
     win32/SocketWin32.cpp
+    win32/ThreadLocalWin32.cpp
     win32/ThreadWin32.cpp
   )
 ELSE(WIN32)
@@ -86,6 +87,7 @@ ELSE(WIN32)
     posix/SocketUDPPosix.cpp
     posix/SocketWakeupEventPosix.cpp
     posix/SocketWakeupTriggerPosix.cpp
+    posix/ThreadLocalPosix.cpp
     posix/ThreadPosix.cpp
   )
 ENDIF(WIN32)
