@@ -2958,8 +2958,16 @@ RTI::RTIambassador::tick()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  bool pendingCallback = privateRefs->evokeMultipleCallbacks(0, std::numeric_limits<double>::infinity());
-  return pendingCallback ? RTI::RTI_TRUE : RTI::RTI_FALSE;
+  try {
+    bool pendingCallback = privateRefs->evokeMultipleCallbacks(0, std::numeric_limits<double>::infinity());
+    return pendingCallback ? RTI::RTI_TRUE : RTI::RTI_FALSE;
+  } catch (const RTI::FederateNotExecutionMember& e) {
+    throw RTI::RTIinternalError(e._reason);
+  } catch (const RTI::Exception& e) {
+    throw;
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown exception");
+  }
 }
 
 RTI::Boolean
@@ -2970,8 +2978,16 @@ RTI::RTIambassador::tick(RTI::TickTime minTime,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  bool pendingCallback = privateRefs->evokeMultipleCallbacks(minTime, maxTime);
-  return pendingCallback ? RTI::RTI_TRUE : RTI::RTI_FALSE;
+  try {
+    bool pendingCallback = privateRefs->evokeMultipleCallbacks(minTime, maxTime);
+    return pendingCallback ? RTI::RTI_TRUE : RTI::RTI_FALSE;
+  } catch (const RTI::FederateNotExecutionMember& e) {
+    throw RTI::RTIinternalError(e._reason);
+  } catch (const RTI::Exception& e) {
+    throw;
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown exception");
+  }
 }
 
 RTI::RegionToken
