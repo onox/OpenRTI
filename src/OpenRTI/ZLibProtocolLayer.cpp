@@ -54,6 +54,10 @@ public:
   {
     OpenRTIAssert(!peek);
 
+    // If closed return EOF
+    if (_closed)
+      return 0;
+
     // If we have nothing to read, return EAGAIN
     if (!_inStream.avail_in)
       return -1;
@@ -102,6 +106,9 @@ public:
   // Can be called from the consuming layer to send something into this protocol layer
   virtual ssize_t send(const ConstBufferRange& bufferRange, bool more)
   {
+    if (_closed)
+      throw MessageError("Connection already closed!");
+
     // return EAGAIN if there is no room left to compress
     if (!_outStream.avail_out)
       return 0;
