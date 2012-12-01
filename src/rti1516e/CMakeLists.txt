@@ -29,7 +29,7 @@ SET(RTI1516E_PUBLIC_HEADERS
 SET(RTI1516E_PUBLIC_ENCODING_HEADERS
         ${RTI1516E_HEADER_PATH}/RTI/encoding/BasicDataElements.h
         ${RTI1516E_HEADER_PATH}/RTI/encoding/DataElement.h
-        ${RTI1516E_HEADER_PATH}/RTI/encoding/EncoderExceptions.h
+        ${RTI1516E_HEADER_PATH}/RTI/encoding/EncodingExceptions.h
         ${RTI1516E_HEADER_PATH}/RTI/encoding/EncodingConfig.h
         ${RTI1516E_HEADER_PATH}/RTI/encoding/HLAfixedArray.h
         ${RTI1516E_HEADER_PATH}/RTI/encoding/HLAfixedRecord.h
