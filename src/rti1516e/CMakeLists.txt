@@ -48,18 +48,18 @@ SET(RTI1516E_PUBLIC_TIME_HEADERS
 )
 
 SET(LIB_RTI1516E_SOURCES
-	Exception.cpp
-	FederateAmbassador.cpp
-	Handle.cpp
-	HandleImplementation.h
-	LogicalTime.cpp
-	LogicalTimeFactory.cpp
-	LogicalTimeInterval.cpp
-	RangeBounds.cpp
-	VariableLengthData.cpp
-	VariableLengthDataImplementation.h
-	Version.cpp
-	Typedefs.cpp
+        BasicDataElements.cpp
+        DataElement.cpp
+        EncodingExceptions.cpp
+        Exception.cpp
+        FederateAmbassador.cpp
+        Handle.cpp
+        HandleImplementation.h
+        HLAfixedArray.cpp
+        HLAfixedRecord.cpp
+        HLAopaqueData.cpp
+        HLAvariableArray.cpp
+        HLAvariantRecord.cpp
         HLAfloat64Interval.cpp
         HLAfloat64Time.cpp
         HLAfloat64TimeFactory.cpp
@@ -67,10 +67,18 @@ SET(LIB_RTI1516E_SOURCES
         HLAinteger64Time.cpp
         HLAinteger64TimeFactory.cpp
         HLAlogicalTimeFactoryFactory.cpp
+        LogicalTime.cpp
+        LogicalTimeFactory.cpp
+        LogicalTimeInterval.cpp
+        RangeBounds.cpp
+        VariableLengthData.cpp
+        VariableLengthDataImplementation.h
+        Version.cpp
         RTI1516ELogicalTimeFactory.cpp
-	RTIambassador.cpp
-	RTIambassadorFactory.cpp
+        RTIambassador.cpp
+        RTIambassadorFactory.cpp
         RTIambassadorImplementation.cpp
+        Typedefs.cpp
 )
 
 SET(LIB_FEDTIME1516E_SOURCES
