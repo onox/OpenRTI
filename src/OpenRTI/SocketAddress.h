@@ -63,6 +63,8 @@ public:
   bool isInet4() const;
   bool isInet6() const;
 
+  bool isLocal() const;
+
   std::string getNumericName() const;
 
   static SocketAddressList

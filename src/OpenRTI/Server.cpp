@@ -284,26 +284,6 @@ Server::listenPipe(const std::string& address, int backlog)
 }
 
 SharedPtr<SocketTCP>
-Server::connectedTCPSocket(const std::string& name)
-{
-  std::pair<std::string, std::string> hostPortPair;
-  hostPortPair = parseInetAddress(name);
-
-  // Note that here the may be lenghty name lookup for the connection address happens
-  std::list<SocketAddress> addressList = SocketAddress::resolve(hostPortPair.first, hostPortPair.second, false);
-  while (!addressList.empty()) {
-    try {
-      return connectedTCPSocket(addressList.front());
-    } catch (const OpenRTI::Exception& e) {
-      addressList.pop_front();
-      if (addressList.empty())
-        throw;
-    }
-  }
-  throw RTIinternalError(std::string("Can not resolve address") + name);
-}
-
-SharedPtr<SocketTCP>
 Server::connectedTCPSocket(const SocketAddress& socketAddress)
 {
   SharedPtr<SocketTCP> socketStream = new SocketTCP;
@@ -327,13 +307,28 @@ Server::connectParentServer(const std::string& url, const Clock& abstime)
 void
 Server::connectParentInetServer(const std::string& name, const Clock& abstime)
 {
-  connectParentStreamServer(connectedTCPSocket(name), abstime);
+  std::pair<std::string, std::string> hostPortPair;
+  hostPortPair = parseInetAddress(name);
+
+  // Note that here the may be lenghty name lookup for the connection address happens
+  std::list<SocketAddress> addressList = SocketAddress::resolve(hostPortPair.first, hostPortPair.second, false);
+  while (!addressList.empty()) {
+    try {
+      connectParentInetServer(addressList.front(), abstime);
+      return;
+    } catch (const OpenRTI::Exception& e) {
+      addressList.pop_front();
+      if (addressList.empty())
+        throw;
+    }
+  }
+  throw RTIinternalError(std::string("Can not resolve address") + name);
 }
 
 void
 Server::connectParentInetServer(const SocketAddress& socketAddress, const Clock& abstime)
 {
-  connectParentStreamServer(connectedTCPSocket(socketAddress), abstime);
+  connectParentStreamServer(connectedTCPSocket(socketAddress), abstime, socketAddress.isLocal());
 }
 
 void
@@ -347,16 +342,16 @@ Server::connectParentPipeServer(const std::string& name, const Clock& abstime)
   SharedPtr<SocketPipe> socketStream = new SocketPipe;
   socketStream->connect(path);
 
-  connectParentStreamServer(socketStream, abstime);
+  connectParentStreamServer(socketStream, abstime, true);
 }
 
 // Creates a new server thread that is connected to a parent server through the socket stream
 void
-Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime)
+Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool local)
 {
   // Set up the server configured option map
   StringStringListMap connectOptions;
-  if (_messageServer->getServerOptions()._preferCompression) {
+  if (_messageServer->getServerOptions()._preferCompression && !local) {
     connectOptions["compression"].push_back("zlib");
     connectOptions["compression"].push_back("lzma");
   } else {

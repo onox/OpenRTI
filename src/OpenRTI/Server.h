@@ -52,14 +52,13 @@ public:
   SocketAddress listenInet(const SocketAddress& socketAddress, int backlog);
   void listenPipe(const std::string& address, int backlog);
 
-  SharedPtr<SocketTCP> connectedTCPSocket(const std::string& name);
   SharedPtr<SocketTCP> connectedTCPSocket(const SocketAddress& socketAddress);
 
   void connectParentServer(const std::string& url, const Clock& abstime);
   void connectParentInetServer(const std::string& name, const Clock& abstime);
   void connectParentInetServer(const SocketAddress& socketAddress, const Clock& abstime);
   void connectParentPipeServer(const std::string& name, const Clock& abstime);
-  void connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime);
+  void connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool local);
 
   SharedPtr<AbstractMessageSender> connectServer(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);
 
