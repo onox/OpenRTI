@@ -514,6 +514,9 @@ FDD1516EContentHandler::endElement(const char* uri, const char* name, const char
       _fomStringModuleBuilder.getCurrentObjectClass().getName().push_back(_characterData);
       break;
     case ObjectClassAttributeNameMode:
+      if (!_fomStringModuleBuilder.getCurrentObjectClassAttribute().getName().empty())
+        throw ErrorReadingFDD("Duplicate name tag for object class attribute \"" +
+                              _fomStringModuleBuilder.getCurrentObjectClassAttribute().getName() + "\"!");
       _fomStringModuleBuilder.getCurrentObjectClassAttribute().setName(_characterData);
       break;
     case InteractionClassNameMode:
@@ -522,12 +525,21 @@ FDD1516EContentHandler::endElement(const char* uri, const char* name, const char
       _fomStringModuleBuilder.getCurrentInteractionClass().getName().push_back(_characterData);
       break;
     case InteractionClassParameterNameMode:
+      if (!_fomStringModuleBuilder.getCurrentInteractionClassParameter().getName().empty())
+        throw ErrorReadingFDD("Duplicate name tag for interaction class parameter \"" +
+                              _fomStringModuleBuilder.getCurrentInteractionClassParameter().getName() + "\"!");
       _fomStringModuleBuilder.getCurrentInteractionClassParameter().setName(_characterData);
       break;
     case DimensionsDimensionNameMode:
+      if (!_fomStringModuleBuilder.getCurrentDimension().getName().empty())
+        throw ErrorReadingFDD("Duplicate name tag for dimension \"" +
+                              _fomStringModuleBuilder.getCurrentDimension().getName() + "\"!");
       _fomStringModuleBuilder.getCurrentDimension().setName(_characterData);
       break;
     case TransportationNameMode:
+      if (!_fomStringModuleBuilder.getCurrentTransportationType().getName().empty())
+        throw ErrorReadingFDD("Duplicate name tag for transportation \"" +
+                              _fomStringModuleBuilder.getCurrentTransportationType().getName() + "\"!");
       _fomStringModuleBuilder.getCurrentTransportationType().setName(_characterData);
       break;
     // case UpdateRateNameMode:
@@ -543,6 +555,10 @@ FDD1516EContentHandler::endElement(const char* uri, const char* name, const char
       break;
     case InteractionClassTransportationMode:
       _fomStringModuleBuilder.getCurrentInteractionClass().setTransportationType(_characterData);
+      break;
+    case TransportationNameMode:
+      if (_fomStringModuleBuilder.getCurrentTransportationType().getName().empty())
+        throw ErrorReadingFDD("No name given for transportation!");
       break;
     default:
       break;
@@ -568,6 +584,10 @@ FDD1516EContentHandler::endElement(const char* uri, const char* name, const char
     case InteractionClassDimensionsDimensionMode:
       _fomStringModuleBuilder.addInteractionDimension(_characterData);
       break;
+    case DimensionsDimensionNameMode:
+      if (_fomStringModuleBuilder.getCurrentDimension().getName().empty())
+        throw ErrorReadingFDD("No name given for dimension!");
+      break;
     default:
       break;
     }
@@ -578,10 +598,29 @@ FDD1516EContentHandler::endElement(const char* uri, const char* name, const char
     ss >> upperBound;
     _fomStringModuleBuilder.getCurrentDimension().setUpperBound(upperBound);
 
+
   } else if (strcmp(name, "objectClass") == 0) {
+    if (_fomStringModuleBuilder.getCurrentObjectClass().getName().size() != 1)
+      throw ErrorReadingFDD("No name given for object class!");
+    if (_fomStringModuleBuilder.getCurrentObjectClass().getName().front().empty())
+      throw ErrorReadingFDD("Empty name given for object class!");
     _fomStringModuleBuilder.popObjectClass();
+
+  } else if (strcmp(name, "attribute") == 0) {
+    if (_fomStringModuleBuilder.getCurrentObjectClassAttribute().getName().empty())
+      throw ErrorReadingFDD("No or empty name given for object class attribute!");
+
+
   } else if (strcmp(name, "interactionClass") == 0) {
+    if (_fomStringModuleBuilder.getCurrentInteractionClass().getName().size() != 1)
+      throw ErrorReadingFDD("No name given for interaction class!");
+    if (_fomStringModuleBuilder.getCurrentInteractionClass().getName().front().empty())
+      throw ErrorReadingFDD("Empty name given for interaction class!");
     _fomStringModuleBuilder.popInteractionClass();
+
+  } else if (strcmp(name, "parameter") == 0) {
+    if (_fomStringModuleBuilder.getCurrentInteractionClassParameter().getName().empty())
+      throw ErrorReadingFDD("No or empty name given for interaction class parameter!");
   }
   _modeStack.pop_back();
   _characterData.clear();
