@@ -109,6 +109,12 @@ SocketServerTCP::accept()
     throw TransportError(errnoToUtf8(errorNumber));
   }
 
+  // The error codes are set anyway, disable sending SIGPIPE, nice to have
+#ifdef SO_NOSIGPIPE
+  int nosigpipe = 1;
+  setsockopt(fd, SOL_SOCKET, SO_NOSIGPIPE, &nosigpipe, sizeof(nosigpipe));
+#endif
+
   return new SocketTCP(new PrivateData(fd));
 }
 

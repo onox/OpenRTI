@@ -49,6 +49,11 @@ SocketTCP::connect(const SocketAddress& socketAddress)
   int flags = fcntl(fd, F_GETFD, 0);
   if (flags != -1)
     fcntl(fd, F_SETFD, flags | FD_CLOEXEC);
+  // The error codes are set anyway, disable sending SIGPIPE
+#ifdef SO_NOSIGPIPE
+  int nosigpipe = 1;
+  setsockopt(fd, SOL_SOCKET, SO_NOSIGPIPE, &nosigpipe, sizeof(nosigpipe));
+#endif
 
 #ifdef DEBUG_LATENCY
   // When debugging latencies, just keep the messages longer in the send

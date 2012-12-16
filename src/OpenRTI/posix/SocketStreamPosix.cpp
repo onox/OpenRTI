@@ -96,6 +96,9 @@ SocketStream::send(const ConstBufferRange& bufferRange, bool more)
   if (more)
     cork(true);
 #endif
+#if defined MSG_NOSIGNAL
+  flags |= MSG_NOSIGNAL;
+#endif
   ssize_t ret = ::sendmsg(_privateData->_fd, &msg, flags);
   int errorNumber = errno;
 
