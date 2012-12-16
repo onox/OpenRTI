@@ -127,10 +127,10 @@ SocketStream::send(const ConstBufferRange& bufferRange, bool more)
     return -1;
 #endif
 
-  // // Also not sure - currently this is an exception when the connection is just closed below us
-  // // Note that this should not happen during any controlled shutdown of a client
-  // if (errorNumber == ECONNRESET || errorNumber == EPIPE)
-  //   return -1;
+  // Also not sure - currently this is an exception when the connection is just closed below us
+  // Note that this should not happen during any controlled shutdown of a client
+  if (errorNumber == ECONNRESET || errorNumber == EPIPE)
+    return -1;
 
   // All other errors are considered serious and need to be handled somewhere where this is caught
   throw TransportError(errnoToUtf8(errorNumber));

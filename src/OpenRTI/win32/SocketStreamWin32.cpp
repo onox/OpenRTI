@@ -58,10 +58,10 @@ SocketStream::send(const ConstBufferRange& bufferRange, bool more)
   if (errorNumber == WSAEMSGSIZE)
     return -1;
 
-  // // Also not sure - currently this is an exception when the connection is just closed below us
-  // // Note that this should not happen during any controlled shutdown of a client
-  // if (errorNumber == WSAECONNRESET || errorNumber == WSAEPIPE)
-  //   return -1;
+  // Also not sure - currently this is an exception when the connection is just closed below us
+  // Note that this should not happen during any controlled shutdown of a client
+  if (errorNumber == WSAECONNRESET || errorNumber == WSAECONNABORTED || errorNumber == WSAESHUTDOWN)
+    return -1;
 
   // All other errors are considered serious and need to be handled somewhere where this is caught
   throw TransportError(errnoToUtf8(errorNumber));
