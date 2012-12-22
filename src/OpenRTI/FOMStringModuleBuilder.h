@@ -239,9 +239,15 @@ public:
       }
     }
 
-    if (!_module.getInteractionClassList().empty()) {
-      _module.getInteractionClassList()[0].getName().clear();
-      _module.getInteractionClassList()[0].getName().push_back("HLAinteractionRoot");
+    // Insert an artificial interaction root if not yet there.
+    // note that the rti13 fed file reader normalizes its different name to the rti1516* standard one checked here.
+    StringVector interactionRootName;
+    interactionRootName.push_back("HLAinteractionRoot");
+    if (_module.getInteractionClassList().empty() || _module.getInteractionClassList()[0].getName() != interactionRootName) {
+      _module.getInteractionClassList().insert(_module.getInteractionClassList().begin(), FOMStringInteractionClass());
+      for (size_t i = 0; i < _module.getInteractionClassList().size(); ++i) {
+        _module.getInteractionClassList()[i].getName().insert(_module.getInteractionClassList()[i].getName().begin(), "HLAinteractionRoot");
+      }
     }
 
     for (size_t i = 0; i < _module.getInteractionClassList().size(); ++i) {
@@ -258,12 +264,21 @@ public:
       }
     }
 
-    if (!_module.getObjectClassList().empty()) {
-      _module.getObjectClassList()[0].getName().clear();
-      _module.getObjectClassList()[0].getName().push_back("HLAobjectRoot");
-      _module.getObjectClassList()[0].getAttributeList().resize(1);
-      _module.getObjectClassList()[0].getAttributeList()[0].setName("HLAprivilegeToDeleteObject");
+    // Insert an artificial object class if not yet there.
+    // note that the rti13 fed file reader normalizes its different name to the rti1516* standard one checked here.
+    StringVector objectRootName;
+    objectRootName.push_back("HLAobjectRoot");
+    if (_module.getObjectClassList().empty() || _module.getObjectClassList()[0].getName() != objectRootName) {
+      _module.getObjectClassList().insert(_module.getObjectClassList().begin(), FOMStringObjectClass());
+      for (size_t i = 0; i < _module.getObjectClassList().size(); ++i) {
+        _module.getObjectClassList()[i].getName().insert(_module.getObjectClassList()[i].getName().begin(), "HLAobjectRoot");
+      }
     }
+    // on any price this may be artificial object class must have exactly this single attribute
+    // Note that this resize preserves everything originally contained there.
+    // Only the name is normalized in any case.
+    _module.getObjectClassList()[0].getAttributeList().resize(1);
+    _module.getObjectClassList()[0].getAttributeList()[0].setName("HLAprivilegeToDeleteObject");
 
     for (size_t i = 0; i < _module.getObjectClassList().size(); ++i) {
       StringSet stringSet;
