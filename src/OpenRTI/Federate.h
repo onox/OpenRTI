@@ -1007,7 +1007,7 @@ public:
            RTIinternalError)
   {
     if (objectInstanceName.empty())
-      Traits::throwIllegalName("Empty object hames are not allowed!");
+      Traits::throwIllegalName("Empty object names are not allowed!");
     if (objectInstanceName.compare(0, 3, "HLA") == 0)
       Traits::throwIllegalName("Object instance names starting with \"HLA\" are reserved for the RTI.");
 
@@ -1826,7 +1826,7 @@ public:
       Traits::throwTimeConstrainedIsNotEnabled();
 
     _timeConstrainedEnabled = false;
-    // If we are in time advance ponding, we are now able to advance immediately
+    // If we are in time advance pending, we are now able to advance immediately
     if (_timeAdvancePending)
       queueTimeAdvanceGranted(_pendingLogicalTime.first);
     for (typename LogicalTimeMessageListMap::iterator i = _logicalTimeMessageListMap.begin(); i != _logicalTimeMessageListMap.end();) {
