@@ -331,9 +331,9 @@ public:
       class2Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter0");
       class2Parameter1Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter1");
       class2Parameter2Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter2");
-      class3Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter0");
-      class3Parameter1Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter1");
-      class3Parameter3Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter3");
+      class3Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle3, L"parameter0");
+      class3Parameter1Handle = ambassador.getParameterHandle(interactionClassHandle3, L"parameter1");
+      class3Parameter3Handle = ambassador.getParameterHandle(interactionClassHandle3, L"parameter3");
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
