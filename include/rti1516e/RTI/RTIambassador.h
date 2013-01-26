@@ -88,7 +88,7 @@ namespace rti1516e
             NotConnected,
             RTIinternalError) = 0;
 
-      virtual void createFederationExecution (
+      virtual void createFederationExecutionWithMIM (
          std::wstring const & federationExecutionName,
          std::vector<std::wstring> const & fomModules,
          std::wstring const & mimModule,
@@ -131,9 +131,9 @@ namespace rti1516e
             InconsistentFDD,
             ErrorReadingFDD,
             CouldNotOpenFDD,
-            FederateAlreadyExecutionMember,
             SaveInProgress,
             RestoreInProgress,
+            FederateAlreadyExecutionMember,
             NotConnected,
             CallNotAllowedFromWithinCallback,
             RTIinternalError) = 0;
@@ -150,9 +150,9 @@ namespace rti1516e
          InconsistentFDD,
             ErrorReadingFDD,
             CouldNotOpenFDD,
-            FederateAlreadyExecutionMember,
             SaveInProgress,
             RestoreInProgress,
+            FederateAlreadyExecutionMember,
             NotConnected,
             CallNotAllowedFromWithinCallback,
             RTIinternalError) = 0;
@@ -185,10 +185,10 @@ namespace rti1516e
          VariableLengthData const & theUserSuppliedTag,
          FederateHandleSet const & synchronizationSet)
          throw (
+            InvalidFederateHandle,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
-            InvalidFederateHandle,
             NotConnected,
             RTIinternalError) = 0;
 

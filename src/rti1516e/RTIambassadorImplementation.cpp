@@ -1635,7 +1635,7 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
 }
 
 void
-RTIambassadorImplementation::createFederationExecution (std::wstring const & federationExecutionName,
+RTIambassadorImplementation::createFederationExecutionWithMIM (std::wstring const & federationExecutionName,
                                                         std::vector<std::wstring> const & fomModules,
                                                         std::wstring const & mimModule,
                                                         std::wstring const & logicalTimeImplementationName)

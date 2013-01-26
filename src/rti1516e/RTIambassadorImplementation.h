@@ -71,7 +71,7 @@ public:
            rti1516e::RTIinternalError);
 
   virtual void
-  createFederationExecution (std::wstring const & federationExecutionName,
+  createFederationExecutionWithMIM (std::wstring const & federationExecutionName,
                              std::vector<std::wstring> const & fomModules,
                              std::wstring const & mimModule,
                              std::wstring const & logicalTimeImplementationName)
