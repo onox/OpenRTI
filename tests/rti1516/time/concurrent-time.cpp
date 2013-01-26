@@ -262,8 +262,37 @@ public:
     }
 
     try {
+      ambassador.disableTimeRegulation();
+      std::wcout << L"disableTimeRegulation does not fail as required!" << std::endl;
+      return false;
+    } catch (const rti1516::TimeRegulationIsNotEnabled&) {
+      // Ok, must do that
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+
+    try {
       ambassador.disableTimeConstrained();
       _timeConstrainedEnabled = false;
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    try {
+      ambassador.disableTimeConstrained();
+      std::wcout << L"disableTimeConstrained does not fail as required!" << std::endl;
+      return false;
+    } catch (const rti1516::TimeConstrainedIsNotEnabled&) {
+      // Ok, must do that
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
