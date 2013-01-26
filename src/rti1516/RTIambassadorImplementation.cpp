@@ -749,7 +749,7 @@ public:
                                                         rti1516TransportationType, logicalTime, rti1516::TIMESTAMP);
           } else {
             _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516::TIMESTAMP,
-                                                        rti1516TransportationType);
+                                                        rti1516TransportationType, logicalTime, rti1516::RECEIVE);
           }
         }
       }
@@ -797,7 +797,8 @@ public:
           _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516::TIMESTAMP,
                                                     logicalTime, rti1516::TIMESTAMP);
         } else {
-          _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516::TIMESTAMP);
+          _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516::TIMESTAMP,
+                                                    logicalTime, rti1516::RECEIVE);
         }
       }
     } catch (const rti1516::Exception& e) {
@@ -882,7 +883,7 @@ public:
                                                   rti1516TransportationType, logicalTime, rti1516::TIMESTAMP);
         } else {
           _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516::TIMESTAMP,
-                                                  rti1516TransportationType);
+                                                  rti1516TransportationType, logicalTime, rti1516::RECEIVE);
         }
       }
     } catch (const rti1516::Exception& e) {

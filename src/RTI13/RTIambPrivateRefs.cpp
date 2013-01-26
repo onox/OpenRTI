@@ -594,34 +594,24 @@ public:
     }
     try {
       RTI::TransportType transportType = rti13TransportType(message.getTransportationType());
-      if (getTimeConstrainedEnabled()) {
-        RTI::OrderType orderType = rti13OrderType(OpenRTI::TIMESTAMP);
-        AttributeHandleValuePairSetCallback attributeHandleValues(transportType, orderType);
-        RTI::EventRetractionHandle eventRetractionHandle = rti13MessageRetractionHandle(message.getMessageRetractionHandle());
-        attributeHandleValues.getAttributeValues().reserve(message.getAttributeValues().size());
-        for (std::vector<OpenRTI::AttributeValue>::const_iterator i = message.getAttributeValues().begin();
-             i != message.getAttributeValues().end(); ++i) {
-          if (objectClass.getAttributeSubscriptionType(i->getAttributeHandle()) == Unsubscribed)
-            continue;
-          attributeHandleValues.getAttributeValues().push_back(*i);
-        }
-        if (!attributeHandleValues.getAttributeValues().empty())
-          _federateAmbassador->reflectAttributeValues(rti13Handle(message.getObjectInstanceHandle()), attributeHandleValues,
-                                                      logicalTime, rti13Tag(message.getTag()), eventRetractionHandle);
-      } else {
-        RTI::OrderType orderType = rti13OrderType(OpenRTI::RECEIVE);
-        AttributeHandleValuePairSetCallback attributeHandleValues(transportType, orderType);
-        attributeHandleValues.getAttributeValues().reserve(message.getAttributeValues().size());
-        for (std::vector<OpenRTI::AttributeValue>::const_iterator i = message.getAttributeValues().begin();
-             i != message.getAttributeValues().end(); ++i) {
-          if (objectClass.getAttributeSubscriptionType(i->getAttributeHandle()) == Unsubscribed)
-            continue;
-          attributeHandleValues.getAttributeValues().push_back(*i);
-        }
-        if (!attributeHandleValues.getAttributeValues().empty())
-          _federateAmbassador->reflectAttributeValues(rti13Handle(message.getObjectInstanceHandle()), attributeHandleValues,
-                                                      rti13Tag(message.getTag()));
+      RTI::OrderType orderType;
+      if (getTimeConstrainedEnabled())
+        orderType = rti13OrderType(OpenRTI::TIMESTAMP);
+      else
+        orderType = rti13OrderType(OpenRTI::RECEIVE);
+
+      AttributeHandleValuePairSetCallback attributeHandleValues(transportType, orderType);
+      RTI::EventRetractionHandle eventRetractionHandle = rti13MessageRetractionHandle(message.getMessageRetractionHandle());
+      attributeHandleValues.getAttributeValues().reserve(message.getAttributeValues().size());
+      for (std::vector<OpenRTI::AttributeValue>::const_iterator i = message.getAttributeValues().begin();
+           i != message.getAttributeValues().end(); ++i) {
+        if (objectClass.getAttributeSubscriptionType(i->getAttributeHandle()) == Unsubscribed)
+          continue;
+        attributeHandleValues.getAttributeValues().push_back(*i);
       }
+      if (!attributeHandleValues.getAttributeValues().empty())
+        _federateAmbassador->reflectAttributeValues(rti13Handle(message.getObjectInstanceHandle()), attributeHandleValues,
+                                                    logicalTime, rti13Tag(message.getTag()), eventRetractionHandle);
     } catch (const RTI::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an RTI exception in callback: " << e._reason << std::endl;
     }
@@ -654,13 +644,15 @@ public:
       return;
     }
     try {
-      if (getTimeConstrainedEnabled()) {
-        RTI::EventRetractionHandle eventRetractionHandle = rti13MessageRetractionHandle(message.getMessageRetractionHandle());
-        _federateAmbassador->removeObjectInstance(rti13Handle(message.getObjectInstanceHandle()), logicalTime,
-                                                  rti13Tag(message.getTag()), eventRetractionHandle);
-      } else {
-        _federateAmbassador->removeObjectInstance(rti13Handle(message.getObjectInstanceHandle()), rti13Tag(message.getTag()));
-      }
+      RTI::OrderType orderType;
+      if (getTimeConstrainedEnabled())
+        orderType = rti13OrderType(OpenRTI::TIMESTAMP);
+      else
+        orderType = rti13OrderType(OpenRTI::RECEIVE);
+
+      RTI::EventRetractionHandle eventRetractionHandle = rti13MessageRetractionHandle(message.getMessageRetractionHandle());
+      _federateAmbassador->removeObjectInstance(rti13Handle(message.getObjectInstanceHandle()), logicalTime,
+                                                rti13Tag(message.getTag()), eventRetractionHandle);
     } catch (const RTI::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an RTI exception in callback: " << e._reason << std::endl;
     }
@@ -707,7 +699,11 @@ public:
       const InteractionClass& interactionClass = getInteractionClass(interactionClassHandle);
       RTI::InteractionClassHandle rti13InteractionClassHandle = rti13Handle(interactionClassHandle);
       RTI::TransportType transportType = rti13TransportType(message.getTransportationType());
-      RTI::OrderType orderType = rti13OrderType(OpenRTI::TIMESTAMP);
+      RTI::OrderType orderType;
+      if (getTimeConstrainedEnabled())
+        orderType = rti13OrderType(OpenRTI::TIMESTAMP);
+      else
+        orderType = rti13OrderType(OpenRTI::RECEIVE);
       RTI::EventRetractionHandle eventRetractionHandle = rti13MessageRetractionHandle(message.getMessageRetractionHandle());
       // FIXME no regions so far
       ParameterHandleValuePairSetCallback parameterHandleArray(transportType, orderType, 0);
