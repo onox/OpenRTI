@@ -1697,30 +1697,7 @@ public:
     if (!_permitTimeRegulation)
       Traits::throwRTIinternalError("Enable time regulation not permitted due to server policy!");
 
-    _timeRegulationEnablePending = true;
-
-    _currentLookahead = _logicalTimeFactory.getLogicalTimeInterval(nativeLookahead);
-    _targetLookahead = _currentLookahead;
-
-    _pendingLogicalTime.first = _logicalTime;
-    _pendingLogicalTime.second = _logicalTimeFactory.isZeroTimeInterval(_currentLookahead);
-
-    _localLowerBoundTimeStamp = _pendingLogicalTime;
-    _localLowerBoundTimeStamp.first += _currentLookahead;
-
-    _timeRegulationEnableFederateHandleSet = _federateHandleSet;
-    // Make sure we wait for the request looping back through the root server.
-    // We need to do that round trip to the root server to stay in order with newly
-    // joined federates that are serialized by the root server.
-    _timeRegulationEnableFederateHandleSet.insert(getFederateHandle());
-
-    SharedPtr<EnableTimeRegulationRequestMessage> request;
-    request = new EnableTimeRegulationRequestMessage;
-    request->setFederationHandle(getFederationHandle());
-    request->setFederateHandle(getFederateHandle());
-    request->getTimeStamp().setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_localLowerBoundTimeStamp.first));
-    request->getTimeStamp().setZeroLookahead(_localLowerBoundTimeStamp.second);
-    sendMessage(request);
+    _enableTimeRegulation(_logicalTimeFactory.getLogicalTime(_logicalTime), nativeLookahead);
   }
 
   // the RTI13 variant
@@ -1744,7 +1721,14 @@ public:
       Traits::throwInvalidLogicalTime(_logicalTimeFactory.toString(nativeLogicalTime));
     if (!_logicalTimeFactory.isPositiveTimeInterval(nativeLookahead))
       Traits::throwInvalidLookahead(_logicalTimeFactory.toString(nativeLookahead));
+    if (!_permitTimeRegulation)
+      Traits::throwRTIinternalError("Enable time regulation not permitted due to server policy!");
 
+    _enableTimeRegulation(nativeLogicalTime, nativeLookahead);
+  }
+
+  void _enableTimeRegulation(const NativeLogicalTime& nativeLogicalTime, const NativeLogicalTimeInterval& nativeLookahead)
+  {
     _timeRegulationEnablePending = true;
 
     _currentLookahead = _logicalTimeFactory.getLogicalTimeInterval(nativeLookahead);
