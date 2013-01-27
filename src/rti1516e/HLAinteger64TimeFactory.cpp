@@ -57,7 +57,7 @@ std::auto_ptr<LogicalTime> HLAinteger64TimeFactory::makeFinal()
   throw (InternalError)
 {
   std::auto_ptr<HLAinteger64Time> integerTime(new HLAinteger64Time);
-  integerTime->setInitial();
+  integerTime->setFinal();
   return std::auto_ptr<LogicalTime>(integerTime.release());
 }
 
