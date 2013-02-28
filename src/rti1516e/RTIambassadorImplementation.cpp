@@ -2077,7 +2077,8 @@ RTIambassadorImplementation::subscribeObjectClassAttributes(rti1516e::ObjectClas
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
-  throw rti1516e::RTIinternalError(L"Not implemented yet!"); // update rate
+  if (!updateRateDesignator.empty())
+    throw rti1516e::RTIinternalError(L"Non trvial update rate designators are not implemented yet!");
 
   OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
 
@@ -3281,6 +3282,7 @@ RTIambassadorImplementation::subscribeObjectClassAttributesWithRegions(rti1516e:
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
+  throw rti1516e::RTIinternalError(L"Not implemented yet!");
   // FIXME
   /* _ambassadorInterface->registerObjectInstanceWithRegions(); */
 }
