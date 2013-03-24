@@ -38,16 +38,21 @@ static void usage(const char* argv0)
   std::cerr << argv0 << ": [-b] [-c configfile] [-f file] [-h] [-i address] [-p parent]" << std::endl;
 }
 
-static Server server;
+static Server* _server = NULL;
 
 static void sighandler(int sig)
 {
-  server.setDone(true);
+  if (!_server)
+    return;
+  _server->setDone(true);
 }
 
 int
 main(int argc, char* argv[])
 {
+  Server server;
+  _server = &server;
+
   // We want to stop gracefully
 #ifndef _WIN32
   ::signal(SIGHUP, sighandler);
@@ -136,5 +141,8 @@ main(int argc, char* argv[])
   setrlimit(RLIMIT_NOFILE, &limit);
 #endif
 
-  return server.exec();
+  int ret = server.exec();
+  _server = NULL;
+
+  return ret;
 }
