@@ -74,7 +74,7 @@ LeafServerThread::_Registry::connect(const URL& url, const StringStringListMap& 
     /// Make sure the iterator does not point to anything important.
     i->second->_iterator = _urlServerMap.end();
   } else {
-    i = _urlServerMap.insert(UrlServerMap::value_type(url, 0)).first;
+    i = _urlServerMap.insert(UrlServerMap::value_type(url, SharedPtr<LeafServerThread>())).first;
   }
 
   /// This is be default the rti server node.
