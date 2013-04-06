@@ -24,12 +24,12 @@
 
 namespace OpenRTI {
 
-class Server;
+class NetworkServer;
 
 class OPENRTI_API InitialClientStreamProtocol : public InitialStreamProtocol {
 public:
-  InitialClientStreamProtocol(Server& networkServer);
-  InitialClientStreamProtocol(Server& networkServer, const StringStringListMap& connectOptions);
+  InitialClientStreamProtocol(NetworkServer& networkServer);
+  InitialClientStreamProtocol(NetworkServer& networkServer, const StringStringListMap& connectOptions);
   virtual ~InitialClientStreamProtocol();
 
   void setConnectOptions(StringStringListMap connectOptions);
@@ -43,7 +43,7 @@ public:
   { return _errorMessage; }
 
 private:
-  Server& _networkServer;
+  NetworkServer& _networkServer;
   std::string _errorMessage;
   bool _successfulConnect;
 };

@@ -28,7 +28,7 @@
 namespace OpenRTI {
 
 SocketServerAcceptEvent::SocketServerAcceptEvent(const SharedPtr<SocketServer>& socketServer,
-                                                 Server& networkServer) :
+                                                 NetworkServer& networkServer) :
   _socketServer(socketServer),
   _networkServer(networkServer)
 {

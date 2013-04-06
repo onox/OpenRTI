@@ -31,7 +31,7 @@
 #include <Referenced.h>
 #include <ScopeLock.h>
 #include <ScopeUnlock.h>
-#include <Server.h>
+#include <NetworkServer.h>
 #include <SharedPtr.h>
 #include <StringUtils.h>
 #include <Thread.h>
@@ -142,7 +142,7 @@ private:
     virtual void run()
     { _server.exec(); }
 
-    Server _server;
+    NetworkServer _server;
     SocketAddress _address;
   };
 

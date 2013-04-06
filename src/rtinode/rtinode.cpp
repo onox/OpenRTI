@@ -22,7 +22,7 @@
 
 #include "Exception.h"
 #include "Options.h"
-#include "Server.h"
+#include "NetworkServer.h"
 #include "StringUtils.h"
 
 #if !defined(_WIN32)
@@ -38,20 +38,20 @@ static void usage(const char* argv0)
   std::cerr << argv0 << ": [-b] [-c configfile] [-f file] [-h] [-i address] [-p parent]" << std::endl;
 }
 
-static Server* _server = NULL;
+static NetworkServer* _networkServer = NULL;
 
 static void sighandler(int sig)
 {
-  if (!_server)
+  if (!_networkServer)
     return;
-  _server->setDone(true);
+  _networkServer->setDone(true);
 }
 
 int
 main(int argc, char* argv[])
 {
-  Server server;
-  _server = &server;
+  NetworkServer networkServer;
+  _networkServer = &networkServer;
 
   // We want to stop gracefully
 #ifndef _WIN32
@@ -72,7 +72,7 @@ main(int argc, char* argv[])
     case 'c':
       try {
         defaultListen = false;
-        server.setUpFromConfig(options.getArgument());
+        networkServer.setUpFromConfig(options.getArgument());
       } catch (const Exception& e) {
         std::cerr << "Could not set up server from config file:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;
@@ -81,7 +81,7 @@ main(int argc, char* argv[])
     case 'f':
       try {
         defaultListen = false;
-        server.listenPipe(localeToUtf8(options.getArgument()), 20);
+        networkServer.listenPipe(localeToUtf8(options.getArgument()), 20);
       } catch (const Exception& e) {
         std::cerr << "Could not set up pipe server transport:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;
@@ -94,7 +94,7 @@ main(int argc, char* argv[])
     case 'i':
       try {
         defaultListen = false;
-        server.listenInet(localeToUtf8(options.getArgument()), 20);
+        networkServer.listenInet(localeToUtf8(options.getArgument()), 20);
       } catch (const Exception& e) {
         std::cerr << "Could not set up inet server transport:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;
@@ -102,7 +102,7 @@ main(int argc, char* argv[])
       break;
     case 'p':
       try {
-        server.connectParentInetServer(localeToUtf8(options.getArgument()), Clock::now() + Clock::fromSeconds(75));
+        networkServer.connectParentInetServer(localeToUtf8(options.getArgument()), Clock::now() + Clock::fromSeconds(75));
       } catch (const Exception& e) {
         std::cerr << "Could not connect parent server:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;
@@ -114,10 +114,10 @@ main(int argc, char* argv[])
   if (defaultListen) {
     // Try to listen on all sockets by default
     try {
-      server.listenInet("::", 20);
+      networkServer.listenInet("::", 20);
     } catch (const Exception&) {
       try {
-        server.listenInet("0.0.0.0", 20);
+        networkServer.listenInet("0.0.0.0", 20);
       } catch (const Exception& e) {
         std::cerr << "Could not set up default inet server transport:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;
@@ -141,8 +141,8 @@ main(int argc, char* argv[])
   setrlimit(RLIMIT_NOFILE, &limit);
 #endif
 
-  int ret = server.exec();
-  _server = NULL;
+  int ret = networkServer.exec();
+  _networkServer = NULL;
 
   return ret;
 }

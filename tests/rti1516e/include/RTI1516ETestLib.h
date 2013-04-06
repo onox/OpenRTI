@@ -20,6 +20,7 @@
 #ifndef OpenRTI_RTI1516ETestLib_h
 #define OpenRTI_RTI1516ETestLib_h
 
+#include <cstring>
 #include <string>
 #include <vector>
 #include <iostream>

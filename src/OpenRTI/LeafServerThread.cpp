@@ -21,7 +21,7 @@
 
 #include "MessageQueue.h"
 #include "Mutex.h"
-#include "Server.h"
+#include "NetworkServer.h"
 #include "ServerNode.h"
 #include "ServerOptions.h"
 #include "ThreadServer.h"
@@ -113,7 +113,7 @@ LeafServerThread::_Registry::createServer(const URL& url, const SharedPtr<Abstra
   if (url.getProtocol() == "thread") {
     return new ThreadServer(serverNode);
   } else if (url.getProtocol() == "rti" || url.getProtocol() == "pipe") {
-    SharedPtr<Server> server = new Server(serverNode);
+    SharedPtr<NetworkServer> server = new NetworkServer(serverNode);
 
     if (url.getProtocol() == "rti") {
       server->setServerName("INET leaf server");

@@ -19,7 +19,7 @@
 
 #include "InitialClientStreamProtocol.h"
 
-#include "Server.h"
+#include "NetworkServer.h"
 #include "MessageEncodingRegistry.h"
 #include "NetworkServerConnect.h"
 #include "ServerOptions.h"
@@ -27,13 +27,13 @@
 
 namespace OpenRTI {
 
-InitialClientStreamProtocol::InitialClientStreamProtocol(Server& networkServer) :
+InitialClientStreamProtocol::InitialClientStreamProtocol(NetworkServer& networkServer) :
   _networkServer(networkServer),
   _successfulConnect(false)
 {
 }
 
-InitialClientStreamProtocol::InitialClientStreamProtocol(Server& networkServer, const StringStringListMap& connectOptions) :
+InitialClientStreamProtocol::InitialClientStreamProtocol(NetworkServer& networkServer, const StringStringListMap& connectOptions) :
   _networkServer(networkServer),
   _successfulConnect(false)
 {

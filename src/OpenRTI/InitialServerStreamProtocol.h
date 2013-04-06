@@ -24,18 +24,18 @@
 
 namespace OpenRTI {
 
-class Server;
+class NetworkServer;
 
 class OPENRTI_API InitialServerStreamProtocol : public InitialStreamProtocol {
 public:
-  InitialServerStreamProtocol(Server& networkServer);
+  InitialServerStreamProtocol(NetworkServer& networkServer);
   virtual ~InitialServerStreamProtocol();
 
   virtual void readOptionMap(const StringStringListMap& clientOptionMap);
   void errorResponse(const std::string& errorMessage);
 
 private:
-  Server& _networkServer;
+  NetworkServer& _networkServer;
 };
 
 } // namespace OpenRTI

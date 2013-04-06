@@ -19,7 +19,7 @@
 
 #include "InitialServerStreamProtocol.h"
 
-#include "Server.h"
+#include "NetworkServer.h"
 #include "MessageEncodingRegistry.h"
 #include "NetworkServerConnect.h"
 #include "ServerOptions.h"
@@ -27,9 +27,9 @@
 
 namespace OpenRTI {
 
-class Server;
+class NetworkServer;
 
-InitialServerStreamProtocol::InitialServerStreamProtocol(Server& networkServer) :
+InitialServerStreamProtocol::InitialServerStreamProtocol(NetworkServer& networkServer) :
   _networkServer(networkServer)
 {
   // Add space for the initial header

@@ -151,7 +151,6 @@ SET(OpenRTI_SOURCES
   ServerObjectModel.cpp
   ProtocolSocketEvent.cpp
   RegionSet.cpp
-  Server.cpp
   ServerConfigContentHandler.cpp
   LeafServerThread.cpp
   SocketEventDispatcher.cpp
