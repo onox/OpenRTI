@@ -206,27 +206,6 @@ AbstractServer::_DisconnectOperation::operator()(AbstractServer& serverLoop)
     serverLoop.setDone(true);
 }
 
-class OPENRTI_LOCAL AbstractServer::_WakeUpOperation : public AbstractServer::_Operation {
-public:
-  _WakeUpOperation();
-  virtual ~_WakeUpOperation();
-  virtual void operator()(AbstractServer& serverLoop);
-};
-
-AbstractServer::_WakeUpOperation::_WakeUpOperation()
-{
-}
-
-AbstractServer::_WakeUpOperation::~_WakeUpOperation()
-{
-}
-
-void
-AbstractServer::_WakeUpOperation::operator()(AbstractServer& serverLoop)
-{
-  serverLoop._sendWakeUp();
-}
-
 class OPENRTI_LOCAL AbstractServer::_DoneOperation : public AbstractServer::_Operation {
 public:
   _DoneOperation();
@@ -374,12 +353,5 @@ AbstractServer::_postDone()
 {
   _postOperation(new _DoneOperation());
 }
-
-void
-AbstractServer::_postWakeUp()
-{
-  _postOperation(new _WakeUpOperation());
-}
-
 
 } // namespace OpenRTI

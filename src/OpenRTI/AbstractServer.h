@@ -77,13 +77,11 @@ protected:
   void _sendMessage(const _MessageConnectHandlePair& messageConnectHandlePair);
   void _sendOperation(_Operation& operation);
   virtual void _sendDone(bool done) = 0;
-  virtual void _sendWakeUp() = 0;  // FIXME temporary for implementing Server::wakeUp() in the transition time
 
   // Use this to send something from a different thread to this server.
   virtual void _postMessage(const _MessageConnectHandlePair& messageConnectHandlePair) = 0;
   virtual void _postOperation(const SharedPtr<_Operation>& operation) = 0;
   void _postDone();
-  void _postWakeUp();
 
   class OPENRTI_API _Queue {
   public:
@@ -108,7 +106,6 @@ private:
   class _Connect;
   class _ConnectOperation;
   class _DisconnectOperation;
-  class _WakeUpOperation; // FIXME temporary for implementing Server::wakeUp() in the transition time
   class _DoneOperation;
   class _MessageSender;
 

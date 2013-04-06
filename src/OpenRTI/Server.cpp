@@ -42,8 +42,6 @@
 #include "SocketServerTCP.h"
 #include "SocketServerAcceptEvent.h"
 #include "SocketTCP.h"
-#include "SocketWakeupEvent.h"
-#include "SocketWakeupTrigger.h"
 #include "StringUtils.h"
 
 namespace OpenRTI {
@@ -76,113 +74,6 @@ class OPENRTI_LOCAL Server::_ToServerMessageSender : public AbstractMessageSende
  private:
   SharedPtr<AbstractServerNode> _serverNode;
   ConnectHandle _connectHandle;
-};
-
-// This one is to communicate from the ambassador to the server.
-class OPENRTI_LOCAL Server::TriggeredConnectSocketEvent : public AbstractSocketEvent {
-  class OPENRTI_LOCAL LockedMessageList : public Referenced {
-  public:
-    void push_back(const SharedPtr<const AbstractMessage>& message)
-    {
-      ScopeLock scopeLock(_mutex);
-      _messageList.push_back(message);
-    }
-    SharedPtr<const AbstractMessage> pop_front()
-    {
-      ScopeLock scopeLock(_mutex);
-      return _messageList.pop_front();
-    }
-  public:
-    Mutex _mutex;
-    MessageList _messageList;
-  };
-
-public:
-  // Need to provide the server side message sender.
-  TriggeredConnectSocketEvent(const SharedPtr<AbstractMessageSender>& serverMessageSender) :
-    _socketWakeupTrigger(new SocketWakeupTrigger),
-    _socketWakeupEvent(_socketWakeupTrigger->connect()),
-    _lockedMessageList(new LockedMessageList),
-    _serverMessageSender(serverMessageSender)
-  {
-  }
-
-  virtual void read(SocketEventDispatcher& dispatcher)
-  {
-    ssize_t ret = _socketWakeupEvent->read();
-    for (;;) {
-      SharedPtr<const AbstractMessage> message = _lockedMessageList->pop_front();
-      if (!message.valid())
-        break;
-      if (!_serverMessageSender.valid())
-        continue;
-      _serverMessageSender->send(message);
-    }
-
-    if (ret == -1) {
-      // Protocol errors in any sense lead to a closed connection
-      dispatcher.erase(this);
-      /// Send something to the originator FIXME
-    }
-  }
-  virtual bool getEnableRead() const
-  { return true; }
-
-  virtual void write(SocketEventDispatcher& dispatcher)
-  { }
-  virtual bool getEnableWrite() const
-  { return false; }
-
-  virtual SocketWakeupEvent* getSocket() const
-  { return _socketWakeupEvent.get(); }
-
-  // The ambassador side message sender.
-  AbstractMessageSender* getAmbassadorMessageSender()
-  {
-    return new MessageSender(_socketWakeupTrigger, _lockedMessageList);
-  }
-
-private:
-  class OPENRTI_LOCAL MessageSender : public AbstractMessageSender {
-  public:
-    MessageSender(const SharedPtr<SocketWakeupTrigger>& socketWakeupTrigger,
-                  const SharedPtr<LockedMessageList>& lockedMessageList) :
-      _socketWakeupTrigger(socketWakeupTrigger),
-      _lockedMessageList(lockedMessageList)
-    {
-    }
-    virtual ~MessageSender()
-    {
-      close();
-    }
-    virtual void send(const SharedPtr<const AbstractMessage>& message)
-    {
-      if (!_socketWakeupTrigger.valid())
-        throw RTIinternalError("Trying to send message to a closed MessageSender");
-      _lockedMessageList->push_back(message);
-      _socketWakeupTrigger->trigger();
-    }
-    virtual void close()
-    {
-      if (!_socketWakeupTrigger.valid())
-        return;
-      _socketWakeupTrigger->close();
-      _socketWakeupTrigger = 0;
-      _lockedMessageList = 0;
-    }
-
-  private:
-    SharedPtr<SocketWakeupTrigger> _socketWakeupTrigger;
-    SharedPtr<LockedMessageList> _lockedMessageList;
-  };
-
-  // FIXME reverse the connect direction in the trigger/event pair
-  // Or think about a different api
-  SharedPtr<SocketWakeupTrigger> _socketWakeupTrigger;
-  SharedPtr<SocketWakeupEvent> _socketWakeupEvent;
-  SharedPtr<LockedMessageList> _lockedMessageList;
-  // The server side message sender. Here we need to have a server hanging.
-  SharedPtr<AbstractMessageSender> _serverMessageSender;
 };
 
 Server::Server() :
@@ -413,24 +304,6 @@ Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, c
 }
 
 SharedPtr<AbstractMessageSender>
-Server::connectServer(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
-{
-  SharedPtr<AbstractMessageSender> serverMessageSender;
-  serverMessageSender = insertConnect(messageSender, clientOptions);
-  if (!serverMessageSender.valid())
-    return 0;
-
-  SharedPtr<TriggeredConnectSocketEvent> socketEvent;
-  socketEvent = new TriggeredConnectSocketEvent(serverMessageSender);
-  _dispatcher.insert(socketEvent.get());
-
-  SharedPtr<AbstractMessageSender> toServerSender;
-  toServerSender = socketEvent->getAmbassadorMessageSender();
-
-  return toServerSender;
-}
-
-SharedPtr<AbstractMessageSender>
 Server::insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap)
 {
   ConnectHandle connectHandle = getServerNode()._insertConnect(messageSender, optionMap);
@@ -446,12 +319,6 @@ Server::insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSende
   if (!connectHandle.valid())
     return SharedPtr<AbstractMessageSender>();
   return new _ToServerMessageSender(&getServerNode(), connectHandle);
-}
-
-void
-Server::wakeUp()
-{
-  _postWakeUp();
 }
 
 } // namespace OpenRTI

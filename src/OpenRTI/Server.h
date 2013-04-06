@@ -32,7 +32,6 @@ namespace OpenRTI {
 
 class AbstractMessageSender;
 class Clock;
-class SocketWakeupTrigger;
 
 class OPENRTI_API Server : public NetworkServer {
 public:
@@ -60,16 +59,11 @@ public:
   void connectParentPipeServer(const std::string& name, const Clock& abstime);
   void connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool local);
 
-  SharedPtr<AbstractMessageSender> connectServer(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);
-
   SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap);
   SharedPtr<AbstractMessageSender> insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap);
 
-  void wakeUp();
-
 private:
   class _ToServerMessageSender;
-  class TriggeredConnectSocketEvent;
 
   Server(const Server&);
   Server& operator=(const Server&);

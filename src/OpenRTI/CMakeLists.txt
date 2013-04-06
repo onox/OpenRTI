@@ -61,8 +61,6 @@ IF(WIN32)
     win32/SocketStreamWin32.cpp
     win32/SocketTCPWin32.cpp
     win32/SocketUDPWin32.cpp
-    win32/SocketWakeupEventWin32.cpp
-    win32/SocketWakeupTriggerWin32.cpp
     win32/SocketWin32.cpp
     win32/ThreadLocalWin32.cpp
     win32/ThreadWin32.cpp
@@ -85,8 +83,6 @@ ELSE(WIN32)
     posix/SocketStreamPosix.cpp
     posix/SocketTCPPosix.cpp
     posix/SocketUDPPosix.cpp
-    posix/SocketWakeupEventPosix.cpp
-    posix/SocketWakeupTriggerPosix.cpp
     posix/ThreadLocalPosix.cpp
     posix/ThreadPosix.cpp
   )
@@ -153,7 +149,6 @@ SET(OpenRTI_SOURCES
   ParenthesesReader.cpp
   ServerNode.cpp
   ServerObjectModel.cpp
-  ProtocolRegistry.cpp
   ProtocolSocketEvent.cpp
   RegionSet.cpp
   Server.cpp
@@ -162,12 +157,9 @@ SET(OpenRTI_SOURCES
   SocketEventDispatcher.cpp
   SocketServerAcceptEvent.cpp
   StreamBufferProtocol.cpp
-  StreamProtocol.cpp
   StringUtils.cpp
   TightBE1MessageEncoding.cpp
-  ThreadProtocol.cpp
   ThreadServer.cpp
-  TraceProtocol.cpp
   URL.cpp
   WeakReferenced.cpp
   XMLReader.cpp
