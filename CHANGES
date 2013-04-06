@@ -1,0 +1,21 @@
+OpenRTI-0.4.0 2013-04-06
+------------------------
+
+ * Added this CHANGES file.
+ * Add the mozilla public license to the applicable licenses.
+ * Enable more already existing functionality in the RTI1516E binding.
+ * Import the most recent api header files for RTI1516E.
+ * Improove direct link compatibility with other RTI1516E implementations.
+ * Add bits of a RTI1516E encoding implementation.
+ * Enable test for interaction delivery.
+ * Add test for timestamped interaction delivery.
+ * Better root object name matching for compatibility between RTI variants.
+ * Avoid compression on localhost connects.
+ * Fixed a crash on exit with macos when stopping rtinode.
+ * Various bug fixes and typos.
+ * For a more detailed list of changes see the git history.
+
+OpenRTI-0.3.0 and before
+------------------------
+
+ * See git histroy.
