@@ -146,12 +146,6 @@ struct SocketEventDispatcher::PrivateData {
     int retv = 0;
 
     while (!dispatcher._done) {
-      if (dispatcher.empty()) {
-        dispatcher._done = true;
-        retv = 0;
-        break;
-      }
-
       fd_set readfds;
       fd_set writefds;
       fd_set exceptfds;
@@ -310,7 +304,7 @@ SocketEventDispatcher::wakeUp()
 {
   _privateData->wakeUp();
 }
- 
+
 int
 SocketEventDispatcher::exec(const Clock& absclock)
 {

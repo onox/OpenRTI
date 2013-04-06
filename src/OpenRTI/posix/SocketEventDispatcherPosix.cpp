@@ -94,12 +94,6 @@ struct OPENRTI_LOCAL SocketEventDispatcher::PrivateData {
     int retv = 0;
 
     while (!dispatcher._done) {
-      if (dispatcher.empty()) {
-        dispatcher._done = true;
-        retv = 0;
-        break;
-      }
-
       _fdVector.resize(0);
       _socketEventVector.resize(0);
       _timerSocketEventVector.resize(0);
