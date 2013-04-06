@@ -38,7 +38,7 @@ public:
   void erase(LeafServerThread& serverThread);
 
   static SharedPtr<AbstractServer> createServer(const URL& url, const SharedPtr<AbstractServerNode>& serverNode);
-  static SharedPtr<AbstractServerNode> createServerNode(const URL& url);
+  static SharedPtr<AbstractServerNode> createServerNode();
 
 private:
   Mutex _mutex;
@@ -80,7 +80,7 @@ LeafServerThread::_Registry::connect(const URL& url, const StringStringListMap& 
   /// This is be default the rti server node.
   /// For testing we can plug something different
   SharedPtr<AbstractServerNode> serverNode;
-  serverNode = createServerNode(url);
+  serverNode = createServerNode();
   if (!serverNode.valid())
     return SharedPtr<AbstractConnect>();
   serverNode->getServerOptions().setServerName("ambassadorConnect");
@@ -130,16 +130,9 @@ LeafServerThread::_Registry::createServer(const URL& url, const SharedPtr<Abstra
 }
 
 SharedPtr<AbstractServerNode>
-LeafServerThread::_Registry::createServerNode(const URL& url)
+LeafServerThread::_Registry::createServerNode()
 {
-  /// In thread mode we might create the federation with an other ambassador than
-  /// we use it. Make sure that we get the same server node in this case.
-  if (url.getProtocol() == "thread") {
-    static SharedPtr<AbstractServerNode> serverNode = new ServerNode;
-    return serverNode;
-  } else {
-    return new ServerNode;
-  }
+  return new ServerNode;
 }
 
 LeafServerThread::LeafServerThread(const SharedPtr<AbstractServer>& server) :
