@@ -48,7 +48,8 @@ public:
   /// Supposed to be called from the current thread
   void setDone(bool done)
   { _sendDone(done); }
-  virtual bool getDone() const = 0;
+  bool getDone() const
+  { return _done; }
 
   /// Supposed to be called from a differrent thread
   void postDone()
@@ -76,7 +77,7 @@ protected:
   // Use this to send something from within this current servers thread to this server.
   void _sendMessage(const _MessageConnectHandlePair& messageConnectHandlePair);
   void _sendOperation(_Operation& operation);
-  virtual void _sendDone(bool done) = 0;
+  virtual void _sendDone(bool done);
 
   // Use this to send something from a different thread to this server.
   virtual void _postMessage(const _MessageConnectHandlePair& messageConnectHandlePair) = 0;
@@ -110,6 +111,8 @@ private:
   class _MessageSender;
 
   SharedPtr<AbstractServerNode> _serverNode;
+
+  bool _done;
 };
 
 } // namespace OpenRTI

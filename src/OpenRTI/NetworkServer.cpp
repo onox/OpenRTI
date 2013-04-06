@@ -79,16 +79,12 @@ private:
 };
 
 NetworkServer::NetworkServer() :
-  AbstractServer(new ServerNode),
-  _done(false),
-  _wakeUp(false)
+  AbstractServer(new ServerNode)
 {
 }
 
 NetworkServer::NetworkServer(const SharedPtr<AbstractServerNode>& serverNode) :
-  AbstractServer(serverNode),
-  _done(false),
-  _wakeUp(false)
+  AbstractServer(serverNode)
 {
 }
 
@@ -332,8 +328,7 @@ int
 NetworkServer::exec()
 {
   ScopeLock scopeLock(_mutex);
-  _wakeUp = false;
-  while (!_done && !_wakeUp) {
+  while (!getDone()) {
     if (_queue.empty()) {
       ScopeUnlock scopeUnlock(_mutex);
 
@@ -362,23 +357,11 @@ NetworkServer::exec()
   return EXIT_SUCCESS;
 }
 
-bool
-NetworkServer::getDone() const
-{
-  return _done;
-}
-
 void
 NetworkServer::_sendDone(bool done)
 {
-  _done = done;
+  AbstractServer::_sendDone(done);
   _dispatcher.setDone(done);
-}
-
-void
-NetworkServer::_sendWakeUp()
-{
-  _wakeUp = true;
 }
 
 void

@@ -33,12 +33,7 @@ public:
 
   virtual int exec();
 
-  virtual bool getDone() const;
-
 protected:
-  virtual void _sendDone(bool done);
-  virtual void _sendWakeUp();
-
   virtual void _postMessage(const _MessageConnectHandlePair& messageConnectHandlePair);
   virtual void _postOperation(const SharedPtr<_Operation>& operation);
 
@@ -48,8 +43,6 @@ private:
 
   Mutex _mutex;
   Condition _condition;
-  bool _done;
-  bool _wakeUp;
   _Queue _queue;
   _MessageConnectHandlePairList _pool;
 };

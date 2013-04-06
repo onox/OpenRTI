@@ -25,9 +25,7 @@
 namespace OpenRTI {
 
 ThreadServer::ThreadServer(const SharedPtr<AbstractServerNode>& serverNode) :
-  AbstractServer(serverNode),
-  _done(false),
-  _wakeUp(false)
+  AbstractServer(serverNode)
 {
 }
 
@@ -40,8 +38,7 @@ int
 ThreadServer::exec()
 {
   ScopeLock scopeLock(_mutex);
-  _wakeUp = false;
-  while (!_wakeUp && !_done) {
+  while (!getDone()) {
     if (_queue.empty()) {
       _condition.wait(_mutex);
     } else {
@@ -64,24 +61,6 @@ ThreadServer::exec()
   }
 
   return EXIT_SUCCESS;
-}
-
-bool
-ThreadServer::getDone() const
-{
-  return _done;
-}
-
-void
-ThreadServer::_sendDone(bool done)
-{
-  _done = done;
-}
-
-void
-ThreadServer::_sendWakeUp()
-{
-  _wakeUp = true;
 }
 
 void

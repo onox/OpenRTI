@@ -271,7 +271,8 @@ AbstractServer::_MessageSender::close()
 }
 
 AbstractServer::AbstractServer(const SharedPtr<AbstractServerNode>& serverNode) :
-  _serverNode(serverNode)
+  _serverNode(serverNode),
+  _done(false)
 {
   OpenRTIAssert(_serverNode.valid());
 }
@@ -346,6 +347,12 @@ void
 AbstractServer::_sendOperation(_Operation& operation)
 {
   operation(*this);
+}
+
+void
+AbstractServer::_sendDone(bool done)
+{
+  _done = done;
 }
 
 void
