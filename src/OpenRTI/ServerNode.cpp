@@ -2495,8 +2495,8 @@ private:
   SharedPtr<ServerOptions> _serverOptions;
 };
 
-ServerNode::ServerNode(const SharedPtr<ServerOptions>& serverOptions) :
-  _serverMessageDispatcher(new ServerMessageDispatcher(serverOptions))
+ServerNode::ServerNode() :
+  _serverMessageDispatcher(new ServerMessageDispatcher(new ServerOptions))
 {
 }
 

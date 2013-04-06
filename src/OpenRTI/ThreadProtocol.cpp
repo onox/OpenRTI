@@ -33,8 +33,7 @@ namespace OpenRTI {
 // The fast path of the uptates and interactions should go through direct ambassador to ambassador connects.
 class OPENRTI_LOCAL ThreadProtocol::ThreadProtocolServer : public ServerNode {
 public:
-  ThreadProtocolServer() :
-    ServerNode(new ServerOptions)
+  ThreadProtocolServer()
   { }
 
   SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)

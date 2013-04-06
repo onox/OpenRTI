@@ -35,7 +35,7 @@ class ServerOptions;
 
 class OPENRTI_LOCAL ServerNode : public AbstractServerNode {
 public:
-  ServerNode(const SharedPtr<ServerOptions>& serverOptions);
+  ServerNode();
   virtual ~ServerNode();
 
   const std::string& getServerName() const;

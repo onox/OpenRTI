@@ -186,7 +186,7 @@ private:
 };
 
 Server::Server() :
-  _serverNode(new ServerNode(new ServerOptions))
+  _serverNode(new ServerNode)
 {
 }
 
