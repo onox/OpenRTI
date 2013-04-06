@@ -148,6 +148,7 @@ SET(OpenRTI_SOURCES
   Message.cpp
   MessageEncodingRegistry.cpp
   NestedProtocolLayer.cpp
+  NetworkServer.cpp
   Options.cpp
   ParenthesesReader.cpp
   ServerNode.cpp
