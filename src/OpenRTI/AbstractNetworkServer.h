@@ -33,15 +33,8 @@ public:
   /// The method is guaranteed to return a valid ServerNode.
   virtual AbstractServerNode& getServerNode() = 0;
 
-  /// Stops the NetworkServers exec loop.
-  /// Must be thread safe as it might be called from a different thread
-  /// than the one running the exec loop.
-  virtual void setDone() = 0;
   /// The non thread safe variant
   virtual void setDone(bool done) = 0;
-
-  /// Run the server's main message loop.
-  virtual int exec() = 0;
 };
 
 } // namespace OpenRTI

@@ -69,7 +69,7 @@ public:
   /// Stops the NetworkServers exec loop.
   /// Must be thread safe as it might be called from a different thread
   /// than the one running the exec loop.
-  virtual void setDone();
+  void setDone();
   virtual void setDone(bool done);
   bool getDone() const;
 
