@@ -129,6 +129,7 @@ SET(OpenRTI_SOURCES
   AbstractProtocolLayer.cpp
   AbstractProtocolSocket.cpp
   AbstractServerNode.cpp
+  AbstractServer.cpp
   AbstractSocketEvent.cpp
   Attributes.cpp
   ContentHandler.cpp
