@@ -37,9 +37,10 @@ protected:
   void _set(_AbstractData*);
 
 private:
+  AbstractThreadLocal(const AbstractThreadLocal&);
+  AbstractThreadLocal& operator=(const AbstractThreadLocal&);
+
   struct _Provider;
-  // FIXME do we need this here?! May be entirely in the implementation?
-  static _Provider& _provider();
 
   unsigned _index;
 };
