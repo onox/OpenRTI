@@ -131,7 +131,7 @@ private:
 
     void stopServer()
     {
-      _server.setDone();
+      _server.postDone();
       wait();
     }
 

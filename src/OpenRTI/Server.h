@@ -22,7 +22,7 @@
 
 #include <iosfwd>
 
-#include "AbstractServerNode.h"
+#include "NetworkServer.h"
 #include "Clock.h"
 #include "SocketEventDispatcher.h"
 #include "SocketTCP.h"
@@ -32,13 +32,13 @@ namespace OpenRTI {
 
 class AbstractMessageSender;
 class Clock;
-class ServerNode;
 class SocketWakeupTrigger;
 
-class OPENRTI_API Server : public Referenced {
+class OPENRTI_API Server : public NetworkServer {
 public:
   Server();
-  ~Server();
+  Server(const SharedPtr<AbstractServerNode>& serverNode);
+  virtual ~Server();
 
   void setServerName(const std::string& name);
 
@@ -55,6 +55,7 @@ public:
 
   void connectParentServer(const std::string& url, const Clock& abstime);
   void connectParentInetServer(const std::string& name, const Clock& abstime);
+  void connectParentInetServer(const std::pair<std::string, std::string>& hostPortPair, const Clock& abstime);
   void connectParentInetServer(const SocketAddress& socketAddress, const Clock& abstime);
   void connectParentPipeServer(const std::string& name, const Clock& abstime);
   void connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool local);
@@ -64,21 +65,7 @@ public:
   SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap);
   SharedPtr<AbstractMessageSender> insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap);
 
-  /// Gives access to the rti server node running in this NetworkServer.
-  /// The method is guaranteed to return a valid ServerNode.
-  virtual AbstractServerNode& getServerNode();
-
-  /// Stops the NetworkServers exec loop.
-  /// Must be thread safe as it might be called from a different thread
-  /// than the one running the exec loop.
-  void setDone();
-  virtual void setDone(bool done);
-  bool getDone() const;
-
   void wakeUp();
-
-  /// Run the server's main message loop.
-  virtual int exec();
 
 private:
   class _ToServerMessageSender;
@@ -86,12 +73,6 @@ private:
 
   Server(const Server&);
   Server& operator=(const Server&);
-
-  // The rti server itself
-  SharedPtr<ServerNode> _serverNode;
-
-  // The socket dispatcher
-  SocketEventDispatcher _dispatcher;
 };
 
 } // namespace OpenRTI

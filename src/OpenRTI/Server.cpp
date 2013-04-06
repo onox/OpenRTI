@@ -186,7 +186,12 @@ private:
 };
 
 Server::Server() :
-  _serverNode(new ServerNode)
+  NetworkServer(new ServerNode)
+{
+}
+
+Server::Server(const SharedPtr<AbstractServerNode>& serverNode) :
+  NetworkServer(serverNode)
 {
 }
 
@@ -321,7 +326,7 @@ Server::connectParentServer(const std::string& url, const Clock& abstime)
 {
   std::pair<std::string, std::string> protocolAddressPair = getProtocolRestPair(url);
   if (protocolAddressPair.first == "rti") {
-    connectParentInetServer(protocolAddressPair.second, abstime);
+    connectParentInetServer(parseInetAddress(protocolAddressPair.second), abstime);
   } else if (protocolAddressPair.first == "pipe" || protocolAddressPair.first == "file" || protocolAddressPair.first.empty()) {
     connectParentPipeServer(protocolAddressPair.second, abstime);
   } else {
@@ -332,9 +337,12 @@ Server::connectParentServer(const std::string& url, const Clock& abstime)
 void
 Server::connectParentInetServer(const std::string& name, const Clock& abstime)
 {
-  std::pair<std::string, std::string> hostPortPair;
-  hostPortPair = parseInetAddress(name);
+  connectParentInetServer(parseInetAddress(name), abstime);
+}
 
+void
+Server::connectParentInetServer(const std::pair<std::string, std::string>& hostPortPair, const Clock& abstime)
+{
   // Note that here the may be lenghty name lookup for the connection address happens
   std::list<SocketAddress> addressList = SocketAddress::resolve(hostPortPair.first, hostPortPair.second, false);
   while (!addressList.empty()) {
@@ -347,7 +355,8 @@ Server::connectParentInetServer(const std::string& name, const Clock& abstime)
         throw;
     }
   }
-  throw RTIinternalError(std::string("Can not resolve address") + name);
+  throw RTIinternalError(std::string("Can not resolve address: \"") + hostPortPair.first + std::string(":")
+                         + hostPortPair.second + std::string("\""));
 }
 
 void
@@ -439,41 +448,10 @@ Server::insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSende
   return new _ToServerMessageSender(&getServerNode(), connectHandle);
 }
 
-AbstractServerNode&
-Server::getServerNode()
-{
-  return *_serverNode;
-}
-
-void
-Server::setDone()
-{
-  _dispatcher.setDone(true);
-  _dispatcher.wakeUp();
-}
-
-void
-Server::setDone(bool done)
-{
-  _dispatcher.setDone(done);
-}
-
-bool
-Server::getDone() const
-{
-  return _dispatcher.getDone();
-}
-
 void
 Server::wakeUp()
 {
-  _dispatcher.wakeUp();
-}
-
-int
-Server::exec()
-{
-  return _dispatcher.exec();
+  _postWakeUp();
 }
 
 } // namespace OpenRTI
