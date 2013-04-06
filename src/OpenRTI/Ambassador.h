@@ -26,10 +26,10 @@
 #include "AbstractFederate.h"
 #include "Clock.h"
 #include "Federate.h"
+#include "LeafServerThread.h"
 #include "LogStream.h"
 #include "Message.h"
 #include "MessageList.h"
-#include "ProtocolRegistry.h"
 #include "StringUtils.h"
 
 namespace OpenRTI {
@@ -160,20 +160,33 @@ public:
       if (_connect.valid())
         Traits::throwAlreadyConnected();
 
-      StringMap::const_iterator i = parameterMap.find("protocol");
-      if (i == parameterMap.end())
-        Traits::throwConnectionFailed("Cannot get protocol.");
-      SharedPtr<const AbstractProtocol> protocol = ProtocolRegistry::instance()->getProtocol(i->second);
-      if (!protocol.valid())
-        Traits::throwConnectionFailed(std::string("Unknown or unsupported protocol \"") + i->second + std::string("\"."));
-
-      // a send receive pair to create a federation
-      // FIXME
       StringStringListMap stringStringListMap;
       for (StringMap::const_iterator j = parameterMap.begin(); j != parameterMap.end(); ++j)
         stringStringListMap[j->first].push_back(j->second);
-      stringStringListMap["serverName"].push_back("ambassadorConnect");
-      _connect = protocol->connect(stringStringListMap, abstime);
+
+      StringStringListMap::const_iterator i = stringStringListMap.find("protocol");
+      std::string protocol;
+      if (i != stringStringListMap.end() && !i->second.empty())
+        protocol = i->second.front();
+      else
+        protocol = "thread";
+
+      URL url;
+      if (protocol == "rti") {
+        i = stringStringListMap.find("address");
+        if (i != stringStringListMap.end() && !i->second.empty())
+          url = URL::fromProtocolAddress("rti", i->second.front());
+        else
+          url = URL::fromProtocolAddress("rti", "localhost");
+      } else if (protocol == "pipe") {
+        i = stringStringListMap.find("file");
+        if (i != stringStringListMap.end() && !i->second.empty())
+          url = URL::fromProtocolPath("pipe", i->second.front());
+      } else if (protocol == "thread") {
+        url = URL::fromProtocolAddress("thread", std::string());
+      }
+
+      _connect = LeafServerThread::connect(url, stringStringListMap);
       if (!_connect.valid())
         Traits::throwConnectionFailed();
 
