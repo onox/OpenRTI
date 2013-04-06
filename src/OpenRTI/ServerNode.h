@@ -41,17 +41,19 @@ public:
   const std::string& getServerName() const;
   void setServerName(const std::string& name);
 
+  /// Returns true if the server is idle.
+  /// Whare idle means that it is save to shut down the server completely.
+  /// This is false for any root server or, for a child server that has child connects.
   virtual bool isIdle() const;
 
-  ServerOptions& getServerOptions();
+  /// Hmm, make that more callback based during connection setup, but for now ...
+  virtual ServerOptions& getServerOptions();
   virtual const ServerOptions& getServerOptions() const;
 
-protected:
-  ConnectHandle _insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);
-  ConnectHandle _insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions);
-  void removeConnect(const ConnectHandle& connectHandle);
-
-  void dispatchMessage(const AbstractMessage& message, const ConnectHandle& connectHandle);
+  virtual ConnectHandle _insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);
+  virtual ConnectHandle _insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions);
+  virtual void _eraseConnect(const ConnectHandle& connectHandle);
+  virtual void _dispatchMessage(const AbstractMessage* message, const ConnectHandle& connectHandle);
 
 private:
   ServerNode(const ServerNode&);

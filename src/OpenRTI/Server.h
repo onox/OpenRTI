@@ -22,7 +22,7 @@
 
 #include <iosfwd>
 
-#include "AbstractNetworkServer.h"
+#include "AbstractServerNode.h"
 #include "Clock.h"
 #include "SocketEventDispatcher.h"
 #include "SocketTCP.h"
@@ -32,15 +32,14 @@ namespace OpenRTI {
 
 class AbstractMessageSender;
 class Clock;
-class MessageServer;
+class ServerNode;
 class SocketWakeupTrigger;
 
-class OPENRTI_API Server : public AbstractNetworkServer {
+class OPENRTI_API Server : public Referenced {
 public:
   Server();
   ~Server();
 
-  const std::string& getServerName() const;
   void setServerName(const std::string& name);
 
   void setUpFromConfig(const std::string& config);
@@ -62,6 +61,9 @@ public:
 
   SharedPtr<AbstractMessageSender> connectServer(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);
 
+  SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap);
+  SharedPtr<AbstractMessageSender> insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap);
+
   /// Gives access to the rti server node running in this NetworkServer.
   /// The method is guaranteed to return a valid ServerNode.
   virtual AbstractServerNode& getServerNode();
@@ -79,13 +81,14 @@ public:
   virtual int exec();
 
 private:
+  class _ToServerMessageSender;
   class TriggeredConnectSocketEvent;
 
   Server(const Server&);
   Server& operator=(const Server&);
 
   // The rti server itself
-  SharedPtr<MessageServer> _messageServer;
+  SharedPtr<ServerNode> _serverNode;
 
   // The socket dispatcher
   SocketEventDispatcher _dispatcher;

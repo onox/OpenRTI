@@ -19,7 +19,7 @@
 
 #include "InitialClientStreamProtocol.h"
 
-#include "AbstractNetworkServer.h"
+#include "Server.h"
 #include "MessageEncodingRegistry.h"
 #include "NetworkServerConnect.h"
 #include "ServerOptions.h"
@@ -27,13 +27,13 @@
 
 namespace OpenRTI {
 
-InitialClientStreamProtocol::InitialClientStreamProtocol(AbstractNetworkServer& networkServer) :
+InitialClientStreamProtocol::InitialClientStreamProtocol(Server& networkServer) :
   _networkServer(networkServer),
   _successfulConnect(false)
 {
 }
 
-InitialClientStreamProtocol::InitialClientStreamProtocol(AbstractNetworkServer& networkServer, const StringStringListMap& connectOptions) :
+InitialClientStreamProtocol::InitialClientStreamProtocol(Server& networkServer, const StringStringListMap& connectOptions) :
   _networkServer(networkServer),
   _successfulConnect(false)
 {
@@ -95,10 +95,10 @@ InitialClientStreamProtocol::readOptionMap(const StringStringListMap& optionMap)
     throw RTIinternalError("Unable to do server given encoding!");
   }
 
-  // FIXME May be get this from the AbstractNetworkServer?
+  // FIXME May be get this from the Server?
   // This way we could get a connect that matches the network servers idea of threading?
   SharedPtr<NetworkServerConnect> connect = new NetworkServerConnect;
-  connect->connectParent(_networkServer.getServerNode(), optionMap);
+  connect->connectParent(_networkServer, optionMap);
   messageProtocol->setConnect(connect);
 
   // This is the part of the protocol stack that replaces this initial stuff.

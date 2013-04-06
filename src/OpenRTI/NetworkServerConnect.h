@@ -21,6 +21,7 @@
 #define OpenRTI_NetworkServerConnect_h
 
 #include "AbstractConnect.h"
+#include "Server.h"
 #include "AbstractServerNode.h"
 #include "MessageQueue.h"
 
@@ -40,16 +41,16 @@ public:
   virtual AbstractMessageReceiver* getMessageReceiver()
   { return _messageQueue.get(); }
 
-  void connect(AbstractServerNode& serverNode, const StringStringListMap& optionMap)
+  void connect(Server& networkServer, const StringStringListMap& optionMap)
   {
     OpenRTIAssert(!_messageSender.valid());
-    _messageSender = serverNode.insertConnect(_messageQueue->getMessageSender(), optionMap);
+    _messageSender = networkServer.insertConnect(_messageQueue->getMessageSender(), optionMap);
   }
 
-  void connectParent(AbstractServerNode& serverNode, const StringStringListMap& optionMap)
+  void connectParent(Server& networkServer, const StringStringListMap& optionMap)
   {
     OpenRTIAssert(!_messageSender.valid());
-    _messageSender = serverNode.insertParentConnect(_messageQueue->getMessageSender(), optionMap);
+    _messageSender = networkServer.insertParentConnect(_messageQueue->getMessageSender(), optionMap);
   }
 
 private:

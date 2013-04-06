@@ -26,12 +26,12 @@
 
 namespace OpenRTI {
 
-class AbstractNetworkServer;
+class Server;
 
 class OPENRTI_API SocketServerAcceptEvent : public AbstractSocketEvent {
 public:
   SocketServerAcceptEvent(const SharedPtr<SocketServer>& socketServer,
-                          AbstractNetworkServer& networkServer);
+                          Server& networkServer);
   virtual ~SocketServerAcceptEvent();
 
   virtual void read(SocketEventDispatcher& dispatcher);
@@ -44,7 +44,7 @@ public:
 
 private:
   SharedPtr<SocketServer> _socketServer;
-  AbstractNetworkServer& _networkServer;
+  Server& _networkServer;
 };
 
 } // namespace OpenRTI

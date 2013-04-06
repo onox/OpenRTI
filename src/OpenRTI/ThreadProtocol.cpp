@@ -22,12 +22,13 @@
 #include "Handle.h"
 #include "MessageQueue.h"
 #include "Mutex.h"
-#include "MessageServer.h"
+#include "ServerNode.h"
+#include "ServerOptions.h"
 #include "ScopeLock.h"
 
 namespace OpenRTI {
 
-// Basically a wrapper around a MessageServer with a mutex to protect against
+// Basically a wrapper around a ServerNode with a mutex to protect against
 // concurrent access. Note that only little communication should go through the server itself.
 // The fast path of the uptates and interactions should go through direct ambassador to ambassador connects.
 class OPENRTI_LOCAL ThreadProtocol::ThreadProtocolServer : public ServerNode {
@@ -36,20 +37,10 @@ public:
     ServerNode(new ServerOptions)
   { }
 
-  virtual SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
+  SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
   {
     ScopeLock scopeLock(_mutex);
     ConnectHandle connectHandle = _insertConnect(messageSender, clientOptions);
-    if (!connectHandle.valid())
-      return 0;
-    return new MessageSender(this, connectHandle);
-  }
-
-  // unused but implemented
-  virtual SharedPtr<AbstractMessageSender> insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& parentOptions)
-  {
-    ScopeLock scopeLock(_mutex);
-    ConnectHandle connectHandle = _insertParentConnect(messageSender, parentOptions);
     if (!connectHandle.valid())
       return 0;
     return new MessageSender(this, connectHandle);
@@ -59,12 +50,12 @@ private:
   void removeConnectLocked(const ConnectHandle& connectHandle)
   {
     ScopeLock scopeLock(_mutex);
-    removeConnect(connectHandle);
+    _eraseConnect(connectHandle);
   }
-  void dispatchMessageLocked(const AbstractMessage& message, const ConnectHandle& connectHandle)
+  void dispatchMessageLocked(const AbstractMessage* message, const ConnectHandle& connectHandle)
   {
     ScopeLock scopeLock(_mutex);
-    dispatchMessage(message, connectHandle);
+    _dispatchMessage(message, connectHandle);
   }
 
   /// MessageSender implementation that calls a MessageDispatcher
@@ -83,7 +74,7 @@ private:
         throw RTIinternalError("Trying to send message to a closed MessageSender");
       if (!message.valid())
         return;
-      _threadProtocolServer->dispatchMessageLocked(*message, _connectHandle);
+      _threadProtocolServer->dispatchMessageLocked(message.get(), _connectHandle);
     }
     virtual void close()
     {

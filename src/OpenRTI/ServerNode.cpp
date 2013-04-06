@@ -2547,15 +2547,15 @@ ServerNode::_insertParentConnect(const SharedPtr<AbstractMessageSender>& message
 }
 
 void
-ServerNode::removeConnect(const ConnectHandle& connectHandle)
+ServerNode::_eraseConnect(const ConnectHandle& connectHandle)
 {
   _serverMessageDispatcher->removeConnect(connectHandle);
 }
 
 void
-ServerNode::dispatchMessage(const AbstractMessage& message, const ConnectHandle& connectHandle)
+ServerNode::_dispatchMessage(const AbstractMessage* message, const ConnectHandle& connectHandle)
 {
-  _serverMessageDispatcher->dispatch(message, connectHandle);
+  _serverMessageDispatcher->dispatch(*message, connectHandle);
 }
 
 } // namespace OpenRTI

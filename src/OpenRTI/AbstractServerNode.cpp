@@ -21,6 +21,10 @@
 
 namespace OpenRTI {
 
+AbstractServerNode::AbstractServerNode()
+{
+}
+
 AbstractServerNode::~AbstractServerNode()
 {
 }

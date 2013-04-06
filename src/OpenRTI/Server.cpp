@@ -29,7 +29,8 @@
 #include "InitialClientStreamProtocol.h"
 #include "MessageEncodingRegistry.h"
 #include "MessageList.h"
-#include "MessageServer.h"
+#include "ServerNode.h"
+#include "ServerOptions.h"
 #include "Mutex.h"
 #include "ProtocolSocketEvent.h"
 #include "ScopeLock.h"
@@ -46,6 +47,36 @@
 #include "StringUtils.h"
 
 namespace OpenRTI {
+
+class OPENRTI_LOCAL Server::_ToServerMessageSender : public AbstractMessageSender {
+ public:
+  _ToServerMessageSender(const SharedPtr<AbstractServerNode>& serverNode, const ConnectHandle& connectHandle) :
+    _serverNode(serverNode),
+    _connectHandle(connectHandle)
+    { }
+  virtual ~_ToServerMessageSender()
+  { close(); }
+  virtual void send(const SharedPtr<const AbstractMessage>& message)
+  {
+    if (!_serverNode.valid())
+      throw RTIinternalError("Trying to send message to a closed MessageSender");
+    if (!message.valid())
+      return;
+    _serverNode->_dispatchMessage(message.get(), _connectHandle);
+  }
+  virtual void close()
+  {
+    if (!_serverNode.valid())
+      return;
+    _serverNode->_eraseConnect(_connectHandle);
+    _serverNode = 0;
+    _connectHandle = ConnectHandle();
+  }
+
+ private:
+  SharedPtr<AbstractServerNode> _serverNode;
+  ConnectHandle _connectHandle;
+};
 
 // This one is to communicate from the ambassador to the server.
 class OPENRTI_LOCAL Server::TriggeredConnectSocketEvent : public AbstractSocketEvent {
@@ -155,7 +186,7 @@ private:
 };
 
 Server::Server() :
-  _messageServer(new MessageServer)
+  _serverNode(new ServerNode(new ServerOptions))
 {
 }
 
@@ -163,16 +194,10 @@ Server::~Server()
 {
 }
 
-const std::string&
-Server::getServerName() const
-{
-  return _messageServer->getServerName();
-}
-
 void
 Server::setServerName(const std::string& name)
 {
-  _messageServer->setServerName(name);
+  return getServerNode().getServerOptions().setServerName(name);
 }
 
 void
@@ -213,8 +238,8 @@ Server::setUpFromConfig(std::istream& stream)
   if (!errorMessage.empty())
     throw RTIinternalError(errorMessage);
 
-  _messageServer->getServerOptions()._preferCompression = contentHandler->getEnableZLibCompression();
-  _messageServer->getServerOptions()._permitTimeRegulation = contentHandler->getPermitTimeRegulation();
+  getServerNode().getServerOptions()._preferCompression = contentHandler->getEnableZLibCompression();
+  getServerNode().getServerOptions()._permitTimeRegulation = contentHandler->getPermitTimeRegulation();
 
   if (!contentHandler->getParentServerUrl().empty())
     connectParentServer(contentHandler->getParentServerUrl(), Clock::now() + Clock::fromSeconds(90));
@@ -351,7 +376,7 @@ Server::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, c
 {
   // Set up the server configured option map
   StringStringListMap connectOptions;
-  if (_messageServer->getServerOptions()._preferCompression && !local) {
+  if (getServerNode().getServerOptions()._preferCompression && !local) {
     connectOptions["compression"].push_back("zlib");
     connectOptions["compression"].push_back("lzma");
   } else {
@@ -382,7 +407,7 @@ SharedPtr<AbstractMessageSender>
 Server::connectServer(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
 {
   SharedPtr<AbstractMessageSender> serverMessageSender;
-  serverMessageSender = _messageServer->insertConnect(messageSender, clientOptions);
+  serverMessageSender = insertConnect(messageSender, clientOptions);
   if (!serverMessageSender.valid())
     return 0;
 
@@ -396,10 +421,28 @@ Server::connectServer(const SharedPtr<AbstractMessageSender>& messageSender, con
   return toServerSender;
 }
 
+SharedPtr<AbstractMessageSender>
+Server::insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap)
+{
+  ConnectHandle connectHandle = getServerNode()._insertConnect(messageSender, optionMap);
+  if (!connectHandle.valid())
+    return SharedPtr<AbstractMessageSender>();
+  return new _ToServerMessageSender(&getServerNode(), connectHandle);
+}
+
+SharedPtr<AbstractMessageSender>
+Server::insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap)
+{
+  ConnectHandle connectHandle = getServerNode()._insertParentConnect(messageSender, optionMap);
+  if (!connectHandle.valid())
+    return SharedPtr<AbstractMessageSender>();
+  return new _ToServerMessageSender(&getServerNode(), connectHandle);
+}
+
 AbstractServerNode&
 Server::getServerNode()
 {
-  return *_messageServer;
+  return *_serverNode;
 }
 
 void
