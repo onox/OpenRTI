@@ -158,6 +158,7 @@ SET(OpenRTI_SOURCES
   RegionSet.cpp
   Server.cpp
   ServerConfigContentHandler.cpp
+  LeafServerThread.cpp
   SocketEventDispatcher.cpp
   SocketServerAcceptEvent.cpp
   StreamBufferProtocol.cpp
@@ -167,6 +168,7 @@ SET(OpenRTI_SOURCES
   ThreadProtocol.cpp
   ThreadServer.cpp
   TraceProtocol.cpp
+  URL.cpp
   WeakReferenced.cpp
   XMLReader.cpp
   ${OpenRTI_OS_SOURCES}
