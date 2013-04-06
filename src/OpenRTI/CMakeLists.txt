@@ -164,6 +164,7 @@ SET(OpenRTI_SOURCES
   StringUtils.cpp
   TightBE1MessageEncoding.cpp
   ThreadProtocol.cpp
+  ThreadServer.cpp
   TraceProtocol.cpp
   WeakReferenced.cpp
   XMLReader.cpp
