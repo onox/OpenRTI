@@ -54,7 +54,6 @@ private:
   typedef std::map<URL, SharedPtr<LeafServerThread> > UrlServerMap;
 
   class _Registry;
-  static const SharedPtr<_Registry>& _getRegistry();
 
   /// The server loop that runs into this thread
   SharedPtr<AbstractServer> _server;

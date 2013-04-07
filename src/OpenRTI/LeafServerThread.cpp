@@ -24,6 +24,7 @@
 #include "NetworkServer.h"
 #include "ServerNode.h"
 #include "ServerOptions.h"
+#include "SingletonPtr.h"
 #include "ThreadServer.h"
 
 namespace OpenRTI {
@@ -40,10 +41,15 @@ public:
   static SharedPtr<AbstractServer> createServer(const URL& url, const SharedPtr<AbstractServerNode>& serverNode);
   static SharedPtr<AbstractServerNode> createServerNode();
 
+  static SingletonPtr<_Registry> _instance;
+
 private:
   Mutex _mutex;
   UrlServerMap _urlServerMap;
 };
+
+SingletonPtr<LeafServerThread::_Registry>
+LeafServerThread::_Registry::_instance;
 
 LeafServerThread::_Registry::_Registry()
 {
@@ -160,7 +166,7 @@ LeafServerThread::postShutdown()
 SharedPtr<AbstractConnect>
 LeafServerThread::connect(const URL& url, const StringStringListMap& clientOptions)
 {
-  SharedPtr<_Registry> registry = _getRegistry();
+  SharedPtr<_Registry> registry = _Registry::_instance.get();
   if (!registry.valid())
     return SharedPtr<AbstractConnect>();
 
@@ -172,16 +178,9 @@ LeafServerThread::run()
 {
   _server->exec();
 
-  SharedPtr<_Registry> registry = _getRegistry();
+  SharedPtr<_Registry> registry = _Registry::_instance.get();
   if (registry.valid())
     registry->erase(*this);
-}
-
-const SharedPtr<LeafServerThread::_Registry>&
-LeafServerThread::_getRegistry()
-{
-  static SharedPtr<_Registry> registry = new _Registry;
-  return registry;
 }
 
 } // namespace OpenRTI
