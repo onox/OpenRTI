@@ -158,7 +158,7 @@ public:
   {
     try {
       if (_connect.valid())
-        Traits::throwAlreadyConnected();
+        Traits::throwAlreadyConnected("Ambassador is already connected!");
 
       StringStringListMap stringStringListMap;
       for (StringMap::const_iterator j = parameterMap.begin(); j != parameterMap.end(); ++j)
@@ -188,7 +188,7 @@ public:
 
       _connect = LeafServerThread::connect(url, stringStringListMap);
       if (!_connect.valid())
-        Traits::throwConnectionFailed();
+        Traits::throwConnectionFailed("Connection failed!");
 
     } catch (const typename Traits::Exception&) {
       throw;
