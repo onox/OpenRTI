@@ -22,14 +22,14 @@
 #include <vector>
 #include <Windows.h>
 
+#include "SingletonPtr.h"
+
 namespace OpenRTI {
 
-struct OPENRTI_LOCAL AbstractThreadLocal::_Provider {
+struct OPENRTI_LOCAL AbstractThreadLocal::_Provider : public Referenced {
   typedef std::vector<AbstractThreadLocal::_AbstractData*> ThreadLocalVector;
 
-  static void destructor(void* data);
-
-  static _Provider& instance();
+  static SingletonPtr<_Provider> _instance;
 
   _Provider();
   ~_Provider();
@@ -39,30 +39,14 @@ struct OPENRTI_LOCAL AbstractThreadLocal::_Provider {
   _AbstractData* getData(unsigned index);
   void setData(unsigned index, _AbstractData* abstractThreadLocal);
 
-  ThreadLocalVector& _tlsVector();
+  ThreadLocalVector* _tlsVector();
 
   DWORD _key;
   unsigned _index;
 };
 
-void
-AbstractThreadLocal::_Provider::destructor(void* data)
-{
-  if (!data)
-    return;
-  ThreadLocalVector* tlsVector = static_cast<ThreadLocalVector*>(data);
-  for (ThreadLocalVector::iterator i = tlsVector->begin();
-       i != tlsVector->end(); ++i)
-    delete *i;
-  delete tlsVector;
-}
-
-AbstractThreadLocal::_Provider&
-AbstractThreadLocal::_Provider::instance()
-{
-  static _Provider provider;
-  return provider;
-}
+SingletonPtr<AbstractThreadLocal::_Provider>
+AbstractThreadLocal::_Provider::_instance;
 
 AbstractThreadLocal::_Provider::_Provider() :
   _key(TlsAlloc()),
@@ -85,33 +69,37 @@ AbstractThreadLocal::_Provider::getNextIndex()
 AbstractThreadLocal::_AbstractData*
 AbstractThreadLocal::_Provider::getData(unsigned index)
 {
-  ThreadLocalVector& tlsVector = _tlsVector();
-  if (tlsVector.size() <= index)
+  ThreadLocalVector* tlsVector = _tlsVector();
+  if (!tlsVector)
     return 0;
-  return tlsVector[index];
+  if (tlsVector->size() <= index)
+    return 0;
+  return (*tlsVector)[index];
 }
 
 void
 AbstractThreadLocal::_Provider::setData(unsigned index, AbstractThreadLocal::_AbstractData* abstractThreadLocal)
 {
-  ThreadLocalVector& tlsVector = _tlsVector();
-  if (tlsVector.size() <= index)
-    tlsVector.resize(index + 1, 0);
-  delete tlsVector[index];
-  tlsVector[index] = abstractThreadLocal;
+  ThreadLocalVector* tlsVector = _tlsVector();
+  if (!tlsVector)
+    return;
+  if (tlsVector->size() <= index)
+    tlsVector->resize(index + 1, 0);
+  delete (*tlsVector)[index];
+  (*tlsVector)[index] = abstractThreadLocal;
 }
 
-AbstractThreadLocal::_Provider::ThreadLocalVector&
+AbstractThreadLocal::_Provider::ThreadLocalVector*
 AbstractThreadLocal::_Provider::_tlsVector()
 {
   ThreadLocalVector* tlsVector;
   tlsVector = static_cast<ThreadLocalVector*>(TlsGetValue(_key));
   if (tlsVector)
-    return *tlsVector;
+    return tlsVector;
 
   tlsVector = new ThreadLocalVector;
   TlsSetValue(_key, tlsVector);
-  return *tlsVector;
+  return tlsVector;
 }
 
 AbstractThreadLocal::_AbstractData::~_AbstractData()
@@ -119,8 +107,11 @@ AbstractThreadLocal::_AbstractData::~_AbstractData()
 }
 
 AbstractThreadLocal::AbstractThreadLocal() :
-  _index(_Provider::instance().getNextIndex())
+  _index(~0u)
 {
+  SharedPtr<_Provider> instance = _Provider::_instance.get();
+  if (instance.valid())
+    _index = instance->getNextIndex();
 }
 
 AbstractThreadLocal::~AbstractThreadLocal()
@@ -130,13 +121,21 @@ AbstractThreadLocal::~AbstractThreadLocal()
 AbstractThreadLocal::_AbstractData*
 AbstractThreadLocal::_get()
 {
-  return _Provider::instance().getData(_index);
+  SharedPtr<_Provider> instance = _Provider::_instance.get();
+  if (!instance.valid())
+    return 0;
+  return instance->getData(_index);
 }
 
 void
 AbstractThreadLocal::_set(AbstractThreadLocal::_AbstractData* abstractThreadLocal)
 {
-  return _Provider::instance().setData(_index, abstractThreadLocal);
+  SharedPtr<_Provider> instance = _Provider::_instance.get();
+  if (!instance.valid())
+    return;
+  if (_index == ~0u)
+    return;
+  instance->setData(_index, abstractThreadLocal);
 }
 
 } // namespace OpenRTI
