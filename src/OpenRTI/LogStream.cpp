@@ -27,6 +27,7 @@
 #include "Referenced.h"
 #include "ScopeLock.h"
 #include "SharedPtr.h"
+#include "SingletonPtr.h"
 #include "StringUtils.h"
 #include "ThreadLocal.h"
 
@@ -42,8 +43,8 @@ struct OPENRTI_LOCAL LogStream::StreamPair {
   };
   static SharedPtr<ReferencedMutex> getReferencedMutex()
   {
-    static SharedPtr<ReferencedMutex> referencedMutex = new ReferencedMutex;
-    return referencedMutex;
+    static SingletonPtr<ReferencedMutex> referencedMutex;
+    return referencedMutex.get();
   }
 
   struct OPENRTI_LOCAL StreamBuf : public std::stringbuf {
