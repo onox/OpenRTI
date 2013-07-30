@@ -5,6 +5,11 @@ OpenRTI-0.5.0 (development)
  * Make every leaf server run in a thread.
  * For a more detailed list of changes see the git history.
 
+OpenRTI-0.4.1 2013-??-??
+------------------------
+
+* Fix an assert with visual c++ 2012
+
 OpenRTI-0.4.0 2013-04-06
 ------------------------
 

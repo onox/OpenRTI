@@ -66,6 +66,7 @@ StreamBufferProtocol::read(AbstractProtocolSocket& protocolSocket)
 
     _iteratorPool.splice(_iteratorPool.end(), _inputScratchBufferList);
     _inputBuffer.clear();
+    _inputIterator = _inputBuffer.byte_begin();
   }
 }
 
