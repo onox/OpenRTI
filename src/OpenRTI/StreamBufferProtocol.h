@@ -43,7 +43,7 @@ public:
   bool getBuffersComplete() const
   { return getInputBufferComplete() && getOutputBufferComplete(); }
   bool getInputBufferComplete() const
-  { return Buffer::const_byte_iterator(_inputIterator) == _inputBuffer.byte_end(); }
+  { return _inputIterator == _inputBuffer.byte_end(); }
   bool getOutputBufferComplete() const
   { return _outputIterator == _outputBuffer.byte_end(); }
 
