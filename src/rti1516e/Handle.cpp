@@ -179,7 +179,7 @@ namespace rti1516e
     if (encodedValue.size() < handle.getEncodedLength())                \
       throw CouldNotDecode(L"Handle");                                  \
     handle.decode(encodedValue.data());                                 \
-    _impl = HandleKind##Implementation::create(OpenRTI::HandleKind());  \
+    _impl = HandleKind##Implementation::create(handle);                 \
     HandleKind##Implementation::get(_impl);                             \
   }                                                                     \
                                                                         \
