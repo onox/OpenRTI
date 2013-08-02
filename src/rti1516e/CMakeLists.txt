@@ -70,6 +70,7 @@ SET(LIB_RTI1516E_SOURCES
         LogicalTime.cpp
         LogicalTimeFactory.cpp
         LogicalTimeInterval.cpp
+        NullFederateAmbassador.cpp
         RangeBounds.cpp
         VariableLengthData.cpp
         VariableLengthDataImplementation.h

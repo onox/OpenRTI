@@ -34,6 +34,7 @@ SET(LIB_RTI1516_SOURCES
 	LogicalTime.cpp
 	LogicalTimeFactory.cpp
 	LogicalTimeInterval.cpp
+	NullFederateAmbassador.cpp
 	RangeBounds.cpp
 	RTIambassador.cpp
 	RTIambassadorFactory.cpp
