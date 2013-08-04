@@ -3915,6 +3915,7 @@ private:
   // When we are in time regulation enable pending state, this contains the federates we need to
   // wait for to complete time regulation enabled
   FederateHandleSet _timeRegulationEnableFederateHandleSet;
+  typedef std::map<FederateHandle, TimeStamp> FederateHandleTimeStampMap;
   FederateHandleTimeStampMap _timeRegulationEnableFederateHandleTimeStampMap;
 
   // map containing all the committed logical times of all known time regulating federates

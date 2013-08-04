@@ -174,8 +174,6 @@ class AttributeValue;
 typedef std::vector<AttributeValue> AttributeValueVector;
 
 class TimeStamp;
-typedef std::map<FederateHandle, TimeStamp> FederateHandleTimeStampMap;
-
 typedef std::pair<FederateHandle, SaveStatus> FederateHandleSaveStatusPair;
 
 typedef std::vector<FederateHandleSaveStatusPair> FederateHandleSaveStatusPairVector;
@@ -596,8 +594,6 @@ private:
   VariableLengthData _logicalTime;
   Bool _zeroLookahead;
 };
-
-typedef std::map<FederateHandle, TimeStamp> FederateHandleTimeStampMap;
 
 typedef std::pair<FederateHandle, SaveStatus> FederateHandleSaveStatusPair;
 
@@ -4565,22 +4561,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeStamp& valu
   os << "logicalTime: " << value.getLogicalTime();
   os << ", ";
   os << "zeroLookahead: " << value.getZeroLookahead();
-  os << " }";
-  return os;
-}
-
-template<typename char_type, typename traits_type>
-std::basic_ostream<char_type, traits_type>&
-operator<<(std::basic_ostream<char_type, traits_type>& os, const FederateHandleTimeStampMap& value)
-{
-  os << "{ ";
-  FederateHandleTimeStampMap::const_iterator i = value.begin();
-  if (i != value.end()) {
-    os << i->first << ": " << i->second;
-    while (++i != value.end()) {
-      os << ", " << i->first << ": " << i->second;
-    }
-  }
   os << " }";
   return os;
 }

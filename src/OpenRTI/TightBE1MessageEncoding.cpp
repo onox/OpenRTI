@@ -589,15 +589,6 @@ public:
     writeBool(value.getZeroLookahead());
   }
 
-  void writeFederateHandleTimeStampMap(const FederateHandleTimeStampMap& value)
-  {
-    writeSizeTCompressed(value.size());
-    for (FederateHandleTimeStampMap::const_iterator i = value.begin(); i != value.end(); ++i) {
-      writeFederateHandle(i->first);
-      writeTimeStamp(i->second);
-    }
-  }
-
   void writeFederateHandleSaveStatusPair(const FederateHandleSaveStatusPair& value)
   {
     writeFederateHandle(value.first);
@@ -2486,16 +2477,6 @@ public:
     readBool(value.getZeroLookahead());
   }
 
-  void readFederateHandleTimeStampMap(FederateHandleTimeStampMap& value)
-  {
-    size_t size = readSizeTCompressed();
-    for (; size != 0; --size) {
-      FederateHandle key;
-      readFederateHandle(key);
-      readTimeStamp(value[key]);
-    }
-  }
-
   void readFederateHandleSaveStatusPair(FederateHandleSaveStatusPair& value)
   {
     readFederateHandle(value.first);
@@ -3362,13 +3343,6 @@ public:
   void readPayloadTimeStamp(TimeStamp& value)
   {
     readPayloadVariableLengthData(value.getLogicalTime());
-  }
-
-  void readPayloadFederateHandleTimeStampMap(FederateHandleTimeStampMap& value)
-  {
-    for (FederateHandleTimeStampMap::iterator i = value.begin(); i != value.end(); ++i) {
-      readPayloadTimeStamp(i->second);
-    }
   }
 
   void readPayloadRegisterFederationSynchronizationPointMessage(RegisterFederationSynchronizationPointMessage& value)

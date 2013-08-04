@@ -165,9 +165,6 @@
     <field name="ZeroLookahead" type="Bool"/>
   </type>
 
-  <!-- For the enable time regulation response data -->
-  <type name="FederateHandleTimeStampMap" type="map" key="FederateHandle" value="TimeStamp"/>
-
   <type name="FederateHandleSaveStatusPair" type="pair" first="FederateHandle" second="SaveStatus"/>
   <type name="FederateHandleSaveStatusPairVector" type="vector" scalar="FederateHandleSaveStatusPair"/>
 

@@ -112,6 +112,7 @@ public:
   std::string _logicalTimeFactoryName;
 
   /// Contains the committed timestamps, we will need them for a join response
+  typedef std::map<FederateHandle, TimeStamp> FederateHandleTimeStampMap;
   FederateHandleTimeStampMap _federateHandleTimeStampMap;
 
 
