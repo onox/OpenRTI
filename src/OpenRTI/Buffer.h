@@ -65,10 +65,18 @@ class OPENRTI_LOCAL Buffer : public VariableLengthDataList {
 
     template<typename T>
     bool operator==(const _byte_iterator<T>& i) const
-    { return _offset == i._offset && _listIterator == i._listIterator; }
+    {
+      if (_offset != i._offset)
+        return false;
+#if !defined(__SUNPRO_CC)
+      return _listIterator == i._listIterator;
+#else
+      return VariableLengthDataList::const_iterator(_listIterator) == VariableLengthDataList::const_iterator(i._listIterator);
+#endif
+    }
     template<typename T>
     bool operator!=(const _byte_iterator<T>& i) const
-    { return _offset != i._offset || _listIterator != i._listIterator; }
+    { return !operator==(i); }
 
     bool operator==(const list_iterator& i) const
     { return _offset == 0 && _listIterator == i; }
