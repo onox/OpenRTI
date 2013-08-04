@@ -23,6 +23,7 @@
 #include <list>
 
 #include "AbstractFederate.h"
+#include "FederateHandleLowerBoundTimeStampMap.h"
 #include "HandleAllocator.h"
 #include "LogStream.h"
 #include "Region.h"
@@ -1789,15 +1790,11 @@ public:
       Traits::throwInTimeAdvancingState();
 
     _timeConstrainedEnablePending = true;
-    if (_logicalTimeFederateHandleSetMap.empty()) {
-      // Ok, we are getting time constrained, but nobody is holding us back
+
+    // If we wait for getting time constrained we need to wait until the federations lower bound
+    // passes our logical time. Unleach this if we get beyond.
+    if (_federateLowerBoundMap.canAdvanceTo(_logicalTime))
       queueTimeConstrainedEnabled(_logicalTime);
-    } else if (_logicalTime <= _logicalTimeFederateHandleSetMap.begin()->first.first) {
-      // Ok, we are getting time constrained, but everybody potentially holding us back is ahead of us
-      queueTimeConstrainedEnabled(_logicalTime);
-    } else {
-      // Ok, we are getting time constrained, but we need to wait until the one behind us unleaches us
-    }
   }
 
   virtual void disableTimeConstrained()
@@ -1921,17 +1918,13 @@ public:
       sendCommitLowerBoundTimeStamp(_localLowerBoundTimeStamp);
 
     if (_timeConstrainedEnabled) {
-      if (_logicalTimeFederateHandleSetMap.empty()) {
+      // Case, time advance pending
+      if (_nextMessageMode && !_logicalTimeMessageListMap.empty()) {
+        _pendingLogicalTime.first = std::min(_pendingLogicalTime.first, _logicalTimeMessageListMap.begin()->first);
+      }
+      if (_federateLowerBoundMap.canAdvanceTo(_pendingLogicalTime)) {
         // Ok, nobody holding us back
         queueTimeAdvanceGranted(_pendingLogicalTime.first);
-      } else if (_pendingLogicalTime <= _logicalTimeFederateHandleSetMap.begin()->first) {
-        // Ok, nobody holding our pending time back
-        queueTimeAdvanceGranted(_pendingLogicalTime.first);
-      } else if (_nextMessageMode && _logicalTime < _logicalTimeFederateHandleSetMap.begin()->first.first) {
-        // Ok, room for advancement
-        // FIXME, what about the guarantees???
-        _pendingLogicalTime = _logicalTimeFederateHandleSetMap.begin()->first;
-        queueTimeAdvanceGranted(_logicalTimeFederateHandleSetMap.begin()->first.first);
       }
     } else {
       // If we are not time constrained, just schedule the time advance
@@ -2004,9 +1997,9 @@ public:
            RestoreInProgress,
            RTIinternalError)
   {
-    if (_logicalTimeFederateHandleSetMap.empty())
+    if (_federateLowerBoundMap.empty())
       return false;
-    logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeFederateHandleSetMap.begin()->first.first);
+    logicalTime = _logicalTimeFactory.getLogicalTime(_federateLowerBoundMap.getGALT());
     return true;
   }
 
@@ -2024,19 +2017,19 @@ public:
            RTIinternalError)
   {
     if (_logicalTimeMessageListMap.empty()) {
-      if (_logicalTimeFederateHandleSetMap.empty()) {
+      if (_federateLowerBoundMap.empty()) {
         return false;
       } else {
-        logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeFederateHandleSetMap.begin()->first.first);
+        logicalTime = _logicalTimeFactory.getLogicalTime(_federateLowerBoundMap.getGALT());
         return true;
       }
     } else {
-      if (_logicalTimeFederateHandleSetMap.empty()) {
+      if (_federateLowerBoundMap.empty()) {
         logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeMessageListMap.begin()->first);
         return true;
       } else {
-        if (_logicalTimeFederateHandleSetMap.begin()->first.first < _logicalTimeMessageListMap.begin()->first)
-          logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeFederateHandleSetMap.begin()->first.first);
+        if (_federateLowerBoundMap.getGALT() < _logicalTimeMessageListMap.begin()->first)
+          logicalTime = _logicalTimeFactory.getLogicalTime(_federateLowerBoundMap.getGALT());
         else
           logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeMessageListMap.begin()->first);
         return true;
@@ -3097,13 +3090,7 @@ protected:
         sendMessage(response);
       }
 
-      // Store that in the time map, so that we cannot advance more than that until this federate
-      // commits a new lbts in the rti. This will usually happen in immediate response to that sent message.
-      typename LogicalTimeFederateHandleSetMap::iterator i;
-      // only inserts if the entry is new
-      i = _logicalTimeFederateHandleSetMap.insert(std::make_pair(logicalTimePair, FederateHandleSet())).first;
-      i->second.insert(message.getFederateHandle());
-      _federateHandleLogicalTimeMap.insert(std::make_pair(message.getFederateHandle(), i));
+      _federateLowerBoundMap.insert(message.getFederateHandle(), logicalTimePair);
     }
   }
   virtual void acceptInternalMessage(const EnableTimeRegulationResponseMessage& message)
@@ -3130,59 +3117,28 @@ protected:
   }
   virtual void acceptInternalMessage(const CommitLowerBoundTimeStampMessage& message)
   {
-    // Once we receive these commits, the federate must have registered as some regulating, this must be here
-    OpenRTIAssert(!_logicalTimeFederateHandleSetMap.empty());
-    OpenRTIAssert(!_federateHandleLogicalTimeMap.empty());
-
-    FederateHandle federateHandle = message.getFederateHandle();
     LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp().getLogicalTime());
     bool zeroLookahead = message.getTimeStamp().getZeroLookahead(); /* FIXME*/
-    LogicalTimePair logicalTimePair(logicalTime, zeroLookahead);
 
-    // Register the new logical time for this federate.
-    // If this one is federate handle is already registered at this given time, just return.
-    // This case where nothing new is in this commit might happen when a federate started
-    // being time regulating and got a correction from this current federate. Then we
-    // have already noted this corrected time in the map.
-    typename LogicalTimeFederateHandleSetMap::iterator i;
-    // only inserts if the entry is new
-    i = _logicalTimeFederateHandleSetMap.insert(std::make_pair(logicalTimePair, FederateHandleSet())).first;
-    if (!i->second.insert(federateHandle).second)
+    if (!_federateLowerBoundMap.commit(message.getFederateHandle(), LogicalTimePair(logicalTime, zeroLookahead)))
       return;
 
-    typename FederateHandleLogicalTimeMap::iterator j = _federateHandleLogicalTimeMap.find(federateHandle);
-    OpenRTIAssert(j != _federateHandleLogicalTimeMap.end());
-    // The federate has a new timestamp, complete that change and remove the reference to the old timestamp now
-    // store the new logical time for the federate handle
-    std::swap(j->second, i);
-    // and erase the old logical time
-    i->second.erase(federateHandle);
-
-    // Check if we have with this commit now enabled a time advance in some sense.
-    // If this map entry has no federate handle left, then this is the case
-    if (!i->second.empty())
-      return;
-
-    // This map entry could then be erased ...
-    _logicalTimeFederateHandleSetMap.erase(i);
-    OpenRTIAssert(!_logicalTimeFederateHandleSetMap.empty());
-
-    // .. and see if we could safely advance to the pending logical time
+    // See if we could safely advance to the pending logical time
     if (_timeConstrainedEnablePending) {
-      if (_logicalTime <= _logicalTimeFederateHandleSetMap.begin()->first.first) {
+      // If we wait for getting time constrained we need to wait until the federations lower bound
+      // passes our logical time. Unleach this if we get beyond.
+      if (_federateLowerBoundMap.canAdvanceTo(_logicalTime))
         queueTimeConstrainedEnabled(_logicalTime);
-      }
     } else if (_timeConstrainedEnabled && _timeAdvancePending) {
-      if (_pendingLogicalTime <= _logicalTimeFederateHandleSetMap.begin()->first) {
+      // Case, time advance pending
+      if (_nextMessageMode && !_logicalTimeMessageListMap.empty()) {
+        _pendingLogicalTime.first = std::min(_pendingLogicalTime.first, _logicalTimeMessageListMap.begin()->first);
+      }
+      if (_federateLowerBoundMap.canAdvanceTo(_pendingLogicalTime)) {
+        // Ok, nobody holding us back
         queueTimeAdvanceGranted(_pendingLogicalTime.first);
-      } else if (_nextMessageMode && _logicalTime < _logicalTimeFederateHandleSetMap.begin()->first.first) {
-        _pendingLogicalTime = _logicalTimeFederateHandleSetMap.begin()->first;
-        queueTimeAdvanceGranted(_logicalTimeFederateHandleSetMap.begin()->first.first);
       }
     }
-
-    OpenRTIAssert(!_logicalTimeFederateHandleSetMap.empty());
-    OpenRTIAssert(!_federateHandleLogicalTimeMap.empty());
   }
 
   virtual void acceptInternalMessage(const RequestAttributeUpdateMessage& message)
@@ -3196,13 +3152,7 @@ protected:
     _timeRegulationEnableFederateHandleSet.erase(federateHandle);
     _timeRegulationEnableFederateHandleTimeStampMap.erase(federateHandle);
 
-    typename FederateHandleLogicalTimeMap::iterator i = _federateHandleLogicalTimeMap.find(federateHandle);
-    if (i != _federateHandleLogicalTimeMap.end()) {
-      i->second->second.erase(federateHandle);
-      if (i->second->second.empty())
-        _logicalTimeFederateHandleSetMap.erase(i->second);
-      _federateHandleLogicalTimeMap.erase(i);
-    }
+    _federateLowerBoundMap.erase(federateHandle);
 
     if (_timeRegulationEnablePending) {
       // This one checks if we are the last one this ambassador is waiting for
@@ -3211,24 +3161,19 @@ protected:
       checkTimeRegulationEnabled();
     }
     if (_timeConstrainedEnablePending) {
-      // Case, time constrained pending
-      if (_logicalTimeFederateHandleSetMap.empty()) {
-        // Ok, now nobody constrains us anymore
+      // If we wait for getting time constrained we need to wait until the federations lower bound
+      // passes our logical time. Unleach this if we get beyond.
+      if (_federateLowerBoundMap.canAdvanceTo(_logicalTime))
         queueTimeConstrainedEnabled(_logicalTime);
-      } else if (_logicalTime <= _logicalTimeFederateHandleSetMap.begin()->first.first) {
-        // Ok, all that might constrain us is ahead of us
-        queueTimeConstrainedEnabled(_logicalTime);
-      }
     }
     if (_timeAdvancePending) {
       // Case, time advance pending
-      if (_logicalTimeFederateHandleSetMap.empty()) {
+      if (_nextMessageMode && !_logicalTimeMessageListMap.empty()) {
+        _pendingLogicalTime.first = std::min(_pendingLogicalTime.first, _logicalTimeMessageListMap.begin()->first);
+      }
+      if (_federateLowerBoundMap.canAdvanceTo(_pendingLogicalTime)) {
+        // Ok, nobody holding us back
         queueTimeAdvanceGranted(_pendingLogicalTime.first);
-      } else if (_pendingLogicalTime <= _logicalTimeFederateHandleSetMap.begin()->first) {
-        queueTimeAdvanceGranted(_pendingLogicalTime.first);
-      } else if (_nextMessageMode && _logicalTime < _logicalTimeFederateHandleSetMap.begin()->first.first) {
-        _pendingLogicalTime = _logicalTimeFederateHandleSetMap.begin()->first;
-        queueTimeAdvanceGranted(_logicalTimeFederateHandleSetMap.begin()->first.first);
       }
     }
   }
@@ -3973,10 +3918,8 @@ private:
   FederateHandleTimeStampMap _timeRegulationEnableFederateHandleTimeStampMap;
 
   // map containing all the committed logical times of all known time regulating federates
-  typedef std::map<LogicalTimePair, FederateHandleSet> LogicalTimeFederateHandleSetMap;
-  LogicalTimeFederateHandleSetMap _logicalTimeFederateHandleSetMap;
-  typedef std::map<FederateHandle, typename LogicalTimeFederateHandleSetMap::iterator> FederateHandleLogicalTimeMap;
-  FederateHandleLogicalTimeMap _federateHandleLogicalTimeMap;
+  typedef FederateHandleLowerBoundTimeStampMap<LogicalTime> FederateLowerBoundMap;
+  FederateLowerBoundMap _federateLowerBoundMap;
 
   // The logical time factory required to do our job
   LogicalTimeFactory _logicalTimeFactory;
