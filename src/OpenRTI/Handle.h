@@ -246,6 +246,7 @@ typedef std::vector<DimensionHandle> DimensionHandleVector;
 typedef std::vector<ParameterHandle> ParameterHandleVector;
 typedef std::vector<RegionHandle> RegionHandleVector;
 typedef std::vector<FederateHandle> FederateHandleVector;
+typedef std::vector<ObjectInstanceHandle> ObjectInstanceHandleVector;
 
 typedef std::pair<AttributeHandleSet, RegionHandleSet> AttributeHandleSetRegionHandleSetPair;
 typedef std::vector<AttributeHandleSetRegionHandleSetPair> AttributeHandleSetRegionHandleSetPairVector;

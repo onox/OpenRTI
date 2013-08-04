@@ -37,6 +37,7 @@
 #include "Ambassador.h"
 #include "FDD1516FileReader.h"
 #include "LogStream.h"
+#include "TemplateTimeManagement.h"
 
 #include "HandleImplementation.h"
 #include "RTI1516LogicalTimeFactory.h"
@@ -270,19 +271,30 @@ public:
 #undef MAP_EXCEPTION
 };
 
-template<typename LogicalTimeFactory>
-class OPENRTI_LOCAL RTI1516Federate : public Federate<RTI1516Traits, LogicalTimeFactory> {
+class OPENRTI_LOCAL RTIambassadorImplementation::RTI1516AmbassadorInterface : public OpenRTI::Ambassador<RTI1516Traits> {
 public:
-  using Federate<RTI1516Traits, LogicalTimeFactory>::getTimeConstrainedEnabled;
-  using Federate<RTI1516Traits, LogicalTimeFactory>::getFlushQueueMode;
+  RTI1516AmbassadorInterface(const std::vector<std::wstring>& args) :
+    Ambassador<RTI1516Traits>(),
+    _federateAmbassador(0),
+    _forceOpaqueLogicalTime(false)
+  {
+    _parameterMap["protocol"] = "thread";
 
-  RTI1516Federate(SharedPtr<AbstractConnect> connect,
-                  const InsertFederationExecutionMessage& insertFederationExecution,
-                  const LogicalTimeFactory& logicalTimeFactory,
-                  rti1516::FederateAmbassador* federateAmbassador) :
-    Federate<RTI1516Traits, LogicalTimeFactory>(connect, insertFederationExecution, logicalTimeFactory),
-    _federateAmbassador(federateAmbassador)
-  { }
+    for (unsigned i = 0; i < args.size(); ++i) {
+      if (args[i] == L"force-opaque-time") {
+        _forceOpaqueLogicalTime = true;
+      } else {
+        std::wstring::size_type pos = args[i].find('=');
+        if (pos == std::wstring::npos)
+          continue;
+        if (args[i].size() <= pos + 1)
+          continue;
+        std::string key = ucsToUtf8(args[i].substr(0, pos));
+        std::string value = ucsToUtf8(args[i].substr(pos + 1));
+        _parameterMap[key] = value;
+      }
+    }
+  }
 
   virtual void synchronizationPointRegistrationResponse(const std::string& label, RegisterFederationSynchronizationPointResponseType reason)
     throw ()
@@ -677,7 +689,7 @@ public:
     }
   }
 
-  virtual void reflectAttributeValues(const typename RTI1516Federate::ObjectClass& objectClass, const AttributeUpdateMessage& message)
+  virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, const AttributeUpdateMessage& message)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -710,7 +722,7 @@ public:
     }
   }
 
-  virtual void reflectAttributeValues(const typename RTI1516Federate::ObjectClass& objectClass,
+  virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, bool flushQueueMode, bool timeConstrainedEnabled,
                                       const TimeStampedAttributeUpdateMessage& message, const rti1516::LogicalTime& logicalTime)
     throw ()
   {
@@ -736,13 +748,13 @@ public:
 
         rti1516::TransportationType rti1516TransportationType = translate(message.getTransportationType());
 
-        if (getFlushQueueMode()) {
+        if (flushQueueMode) {
           rti1516::MessageRetractionHandle rti1516MessageRetractionHandle;
           rti1516MessageRetractionHandle = rti1516::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
           _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516::TIMESTAMP,
                                                       rti1516TransportationType, logicalTime, rti1516::TIMESTAMP, rti1516MessageRetractionHandle);
         } else {
-          if (getTimeConstrainedEnabled()) {
+          if (timeConstrainedEnabled) {
             _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516::TIMESTAMP,
                                                         rti1516TransportationType, logicalTime, rti1516::TIMESTAMP);
           } else {
@@ -774,7 +786,8 @@ public:
     }
   }
 
-  virtual void removeObjectInstance(const TimeStampedDeleteObjectInstanceMessage& message, const rti1516::LogicalTime& logicalTime)
+  virtual void removeObjectInstance(bool flushQueueMode, bool timeConstrainedEnabled,
+                                    const TimeStampedDeleteObjectInstanceMessage& message, const rti1516::LogicalTime& logicalTime)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -785,13 +798,13 @@ public:
       rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle;
       rti1516ObjectInstanceHandle = rti1516::ObjectInstanceHandleFriend::createHandle(message.getObjectInstanceHandle());
       rti1516::VariableLengthData rti1516Tag = rti1516::VariableLengthDataFriend::create(message.getTag());
-      if (getFlushQueueMode()) {
+      if (flushQueueMode) {
         rti1516::MessageRetractionHandle rti1516MessageRetractionHandle;
         rti1516MessageRetractionHandle = rti1516::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
         _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516::TIMESTAMP,
                                                   logicalTime, rti1516::TIMESTAMP, rti1516MessageRetractionHandle);
       } else {
-        if (getTimeConstrainedEnabled()) {
+        if (timeConstrainedEnabled) {
           _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516::TIMESTAMP,
                                                     logicalTime, rti1516::TIMESTAMP);
         } else {
@@ -807,7 +820,7 @@ public:
 
   // 6.9
   virtual void
-  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const InteractionMessage& message)
+  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const Federate::InteractionClass& interactionClass, const InteractionMessage& message)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -818,12 +831,10 @@ public:
       rti1516::InteractionClassHandle rti1516InteractionClassHandle;
       rti1516InteractionClassHandle = rti1516::InteractionClassHandleFriend::createHandle(interactionClassHandle);
 
-      const typename Federate<RTI1516Traits, LogicalTimeFactory>::InteractionClass& interactionClass
-        = Federate<RTI1516Traits, LogicalTimeFactory>::getInteractionClass(interactionClassHandle);
       rti1516::ParameterHandleValueMap rti1516ParameterValues;
       for (std::vector<OpenRTI::ParameterValue>::const_iterator i = message.getParameterValues().begin();
            i != message.getParameterValues().end(); ++i) {
-        if (!interactionClass.isValidParameter(i->getParameterHandle()))
+        if (!interactionClass.getParameter(i->getParameterHandle()))
           continue;
         rti1516ParameterValues[rti1516::ParameterHandleFriend::createHandle(i->getParameterHandle())]
           = rti1516::VariableLengthDataFriend::create(i->getValue());
@@ -841,7 +852,8 @@ public:
   }
 
   virtual void
-  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const TimeStampedInteractionMessage& message, const rti1516::LogicalTime& logicalTime)
+  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const Federate::InteractionClass& interactionClass, bool flushQueueMode, bool timeConstrainedEnabled,
+                     const TimeStampedInteractionMessage& message, const rti1516::LogicalTime& logicalTime)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -852,12 +864,10 @@ public:
       rti1516::InteractionClassHandle rti1516InteractionClassHandle;
       rti1516InteractionClassHandle = rti1516::InteractionClassHandleFriend::createHandle(interactionClassHandle);
 
-      const typename Federate<RTI1516Traits, LogicalTimeFactory>::InteractionClass& interactionClass
-        = Federate<RTI1516Traits, LogicalTimeFactory>::getInteractionClass(interactionClassHandle);
       rti1516::ParameterHandleValueMap rti1516ParameterValues;
       for (std::vector<OpenRTI::ParameterValue>::const_iterator i = message.getParameterValues().begin();
            i != message.getParameterValues().end(); ++i) {
-        if (!interactionClass.isValidParameter(i->getParameterHandle()))
+        if (!interactionClass.getParameter(i->getParameterHandle()))
           continue;
         rti1516ParameterValues[rti1516::ParameterHandleFriend::createHandle(i->getParameterHandle())]
           = rti1516::VariableLengthDataFriend::create(i->getValue());
@@ -870,13 +880,13 @@ public:
       rti1516::TransportationType rti1516TransportationType;
       rti1516TransportationType = translate(message.getTransportationType());
 
-      if (getFlushQueueMode()) {
+      if (flushQueueMode) {
         rti1516::MessageRetractionHandle rti1516MessageRetractionHandle;
         rti1516MessageRetractionHandle = rti1516::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
         _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516::TIMESTAMP,
                                                 rti1516TransportationType, logicalTime, rti1516::TIMESTAMP, rti1516MessageRetractionHandle);
       } else {
-        if (getTimeConstrainedEnabled()) {
+        if (timeConstrainedEnabled) {
           _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516::TIMESTAMP,
                                                   rti1516TransportationType, logicalTime, rti1516::TIMESTAMP);
         } else {
@@ -1301,38 +1311,9 @@ public:
     }
   }
 
-  rti1516::FederateAmbassador* _federateAmbassador;
-};
-
-class OPENRTI_LOCAL RTIambassadorImplementation::RTI1516AmbassadorInterface : public OpenRTI::Ambassador<RTI1516Traits> {
-public:
-  RTI1516AmbassadorInterface(const std::vector<std::wstring>& args) :
-    Ambassador<RTI1516Traits>(),
-    _forceOpaqueLogicalTime(false)
+  virtual TimeManagement<RTI1516Traits>* createTimeManagement(Federate& federate)
   {
-    _parameterMap["protocol"] = "thread";
-
-    for (unsigned i = 0; i < args.size(); ++i) {
-      if (args[i] == L"force-opaque-time") {
-        _forceOpaqueLogicalTime = true;
-      } else {
-        std::wstring::size_type pos = args[i].find('=');
-        if (pos == std::wstring::npos)
-          continue;
-        if (args[i].size() <= pos + 1)
-          continue;
-        std::string key = ucsToUtf8(args[i].substr(0, pos));
-        std::string value = ucsToUtf8(args[i].substr(pos + 1));
-        _parameterMap[key] = value;
-      }
-    }
-  }
-
-  virtual OpenRTI::AbstractFederate<Traits>*
-  createFederate(const InsertFederationExecutionMessage& insertFederationExecution,
-                 SharedPtr<AbstractConnect> connect, rti1516::FederateAmbassador* federateAmbassador)
-  {
-    std::string logicalTimeFactoryName = insertFederationExecution.getLogicalTimeFactoryName();
+    std::string logicalTimeFactoryName = federate.getLogicalTimeFactoryName();
     std::auto_ptr<rti1516::LogicalTimeFactory> logicalTimeFactory;
     logicalTimeFactory = rti1516::LogicalTimeFactoryFactory::makeLogicalTimeFactory(utf8ToUcs(logicalTimeFactoryName));
     if (!logicalTimeFactory.get())
@@ -1356,8 +1337,7 @@ public:
           *logicalTime = time;
           *logicalTimeInterval = interval;
           if (*logicalTime == time && *logicalTimeInterval == interval) {
-            return new RTI1516Federate<RTI1516integer64TimeFactory>(connect, insertFederationExecution, RTI1516integer64TimeFactory(ucsToUtf8(time.implementationName())),
-                                       federateAmbassador);
+            return new TemplateTimeManagement<RTI1516Traits, RTI1516integer64TimeFactory>(RTI1516integer64TimeFactory(ucsToUtf8(time.implementationName())));
           }
         }
       } catch (...) {
@@ -1373,8 +1353,7 @@ public:
           *logicalTime = time;
           *logicalTimeInterval = interval;
           if (*logicalTime == time && *logicalTimeInterval == interval) {
-            return new RTI1516Federate<RTI1516float64TimeFactory>(connect, insertFederationExecution, RTI1516float64TimeFactory(ucsToUtf8(time.implementationName())),
-                                       federateAmbassador);
+            return new TemplateTimeManagement<RTI1516Traits, RTI1516float64TimeFactory>(RTI1516float64TimeFactory(ucsToUtf8(time.implementationName())));
           }
         }
       } catch (...) {
@@ -1382,7 +1361,7 @@ public:
     }
 
     // Ok, we will just need to use the opaque logical time factory
-    return new RTI1516Federate<RTI1516LogicalTimeFactory>(connect, insertFederationExecution, RTI1516LogicalTimeFactory(logicalTimeFactory), federateAmbassador);
+    return new TemplateTimeManagement<RTI1516Traits, RTI1516LogicalTimeFactory>(RTI1516LogicalTimeFactory(logicalTimeFactory));
   }
 
   void ensureConnected(const std::string& federationExecutionName)
@@ -1404,6 +1383,7 @@ public:
   }
 
   // The instantiation time argument list
+  rti1516::FederateAmbassador* _federateAmbassador;
   StringMap _parameterMap;
   StringMap _connectParameters;
   bool _forceOpaqueLogicalTime;
@@ -1474,10 +1454,11 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
          rti1516::RTIinternalError)
 {
   _ambassadorInterface->ensureConnected(ucsToUtf8(federationExecutionName));
+  _ambassadorInterface->_federateAmbassador = &federateAmbassador;
 
   FederateHandle federateHandle = _ambassadorInterface->joinFederationExecution(std::string(), ucsToUtf8(federateType),
                                                                                 getFilePart(ucsToUtf8(federationExecutionName)),
-                                                                                OpenRTI::FOMStringModuleList(), &federateAmbassador);
+                                                                                OpenRTI::FOMStringModuleList(), NULL /*FIXME*/);
   return rti1516::FederateHandleFriend::createHandle(federateHandle);
 }
 
@@ -1513,6 +1494,7 @@ RTIambassadorImplementation::resignFederationExecution(rti1516::ResignAction rti
     resignAction = OpenRTI::CANCEL_THEN_DELETE_THEN_DIVEST;
   }
 
+  _ambassadorInterface->_federateAmbassador = 0;
   _ambassadorInterface->resignFederationExecution(resignAction);
 }
 
@@ -1526,7 +1508,8 @@ RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring
          rti1516::RTIinternalError)
 {
   OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
-  _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag);
+  // According to the standard, an empty set also means all federates currently joined.
+  _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, OpenRTI::FederateHandleSet());
 }
 
 void

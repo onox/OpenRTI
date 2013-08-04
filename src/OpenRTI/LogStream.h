@@ -100,7 +100,7 @@ private:
 };
 
 #define Log(c, p) \
-if (std::ostream* s = LogStream::getStaticStream(LogStream::c, LogStream::p)) *s
+if (std::ostream* s = OpenRTI::LogStream::getStaticStream(OpenRTI::LogStream::c, OpenRTI::LogStream::p)) *s
 
 #define Bulk Log(All, Debug3)
 

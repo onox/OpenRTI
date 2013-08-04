@@ -36,6 +36,7 @@
 #include "ParameterHandleValuePairSetImplementation.h"
 #include "RTI13LogicalTimeFactory.h"
 #include "StringUtils.h"
+#include "TemplateTimeManagement.h"
 
 /// Returns a new string as required with RTI13 interfaces
 static char* newUtf8ToLocale(const std::string& utf8)
@@ -227,16 +228,15 @@ public:
 #undef MAP_EXCEPTION
 };
 
-class OPENRTI_LOCAL RTI13Federate : public OpenRTI::Federate<OpenRTI::RTI13Traits, OpenRTI::RTI13LogicalTimeFactory> {
+} // namespace OpenRTI
+
+using namespace OpenRTI; /*FIXME*/
+
+class OPENRTI_LOCAL RTIambPrivateRefs : public OpenRTI::Ambassador<OpenRTI::RTI13Traits> {
 public:
-  RTI13Federate(SharedPtr<AbstractConnect> connect,
-                const OpenRTI::InsertFederationExecutionMessage& insertFederationExecution,
-                RTI::FederateAmbassador* federateAmbassador) :
-    Federate<OpenRTI::RTI13Traits, OpenRTI::RTI13LogicalTimeFactory>(connect, insertFederationExecution,
-                                                                     RTI13LogicalTimeFactory(insertFederationExecution.getLogicalTimeFactoryName())),
-    _federateAmbassador(federateAmbassador)
-  {
-  }
+  RTIambPrivateRefs() :
+    _concurrentAccess(false)
+  { }
 
   virtual void synchronizationPointRegistrationResponse(const std::string& label, OpenRTI::RegisterFederationSynchronizationPointResponseType reason)
     throw ()
@@ -557,7 +557,8 @@ public:
     }
   }
 
-  virtual void reflectAttributeValues(const ObjectClass& objectClass, const OpenRTI::AttributeUpdateMessage& message)
+  virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass,
+                                      const OpenRTI::AttributeUpdateMessage& message)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -583,7 +584,8 @@ public:
     }
   }
 
-  virtual void reflectAttributeValues(const ObjectClass& objectClass, const OpenRTI::TimeStampedAttributeUpdateMessage& message,
+  virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, bool flushQueueMode,
+                                      bool timeConstrainedEnabled, const OpenRTI::TimeStampedAttributeUpdateMessage& message,
                                       const RTI::FedTime& logicalTime)
     throw ()
   {
@@ -594,7 +596,7 @@ public:
     try {
       RTI::TransportType transportType = rti13TransportType(message.getTransportationType());
       RTI::OrderType orderType;
-      if (getTimeConstrainedEnabled())
+      if (timeConstrainedEnabled)
         orderType = rti13OrderType(OpenRTI::TIMESTAMP);
       else
         orderType = rti13OrderType(OpenRTI::RECEIVE);
@@ -635,7 +637,8 @@ public:
 
   virtual
   void
-    removeObjectInstance(const OpenRTI::TimeStampedDeleteObjectInstanceMessage& message, const RTI::FedTime& logicalTime)
+    removeObjectInstance(bool flushQueueMode, bool timeConstrainedEnabled,
+                         const OpenRTI::TimeStampedDeleteObjectInstanceMessage& message, const RTI::FedTime& logicalTime)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -644,7 +647,7 @@ public:
     }
     try {
       RTI::OrderType orderType;
-      if (getTimeConstrainedEnabled())
+      if (timeConstrainedEnabled)
         orderType = rti13OrderType(OpenRTI::TIMESTAMP);
       else
         orderType = rti13OrderType(OpenRTI::RECEIVE);
@@ -659,7 +662,7 @@ public:
 
   // 6.9
   virtual void
-  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const OpenRTI::InteractionMessage& message)
+  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const Federate::InteractionClass& interactionClass, const OpenRTI::InteractionMessage& message)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -667,7 +670,6 @@ public:
       return;
     }
     try {
-      const InteractionClass& interactionClass = getInteractionClass(interactionClassHandle);
       RTI::InteractionClassHandle rti13InteractionClassHandle = rti13Handle(interactionClassHandle);
       RTI::TransportType transportType = rti13TransportType(message.getTransportationType());
       RTI::OrderType orderType = rti13OrderType(OpenRTI::RECEIVE);
@@ -676,7 +678,7 @@ public:
       parameterHandleArray.getParameterValues().reserve(message.getParameterValues().size());
       for (std::vector<OpenRTI::ParameterValue>::const_iterator i = message.getParameterValues().begin();
            i != message.getParameterValues().end(); ++i) {
-        if (!interactionClass.isValidParameter(i->getParameterHandle()))
+        if (!interactionClass.getParameter(i->getParameterHandle()))
           continue;
         parameterHandleArray.getParameterValues().push_back(*i);
       }
@@ -687,7 +689,9 @@ public:
   }
 
   virtual void
-    receiveInteraction(const InteractionClassHandle& interactionClassHandle, const OpenRTI::TimeStampedInteractionMessage& message, const RTI::FedTime& logicalTime)
+    receiveInteraction(const InteractionClassHandle& interactionClassHandle, const Federate::InteractionClass& interactionClass, bool flushQueueMode,
+                       bool timeConstrainedEnabled, const OpenRTI::TimeStampedInteractionMessage& message,
+                       const RTI::FedTime& logicalTime)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -695,11 +699,10 @@ public:
       return;
     }
     try {
-      const InteractionClass& interactionClass = getInteractionClass(interactionClassHandle);
       RTI::InteractionClassHandle rti13InteractionClassHandle = rti13Handle(interactionClassHandle);
       RTI::TransportType transportType = rti13TransportType(message.getTransportationType());
       RTI::OrderType orderType;
-      if (getTimeConstrainedEnabled())
+      if (timeConstrainedEnabled)
         orderType = rti13OrderType(OpenRTI::TIMESTAMP);
       else
         orderType = rti13OrderType(OpenRTI::RECEIVE);
@@ -709,7 +712,7 @@ public:
       parameterHandleArray.getParameterValues().reserve(message.getParameterValues().size());
       for (std::vector<OpenRTI::ParameterValue>::const_iterator i = message.getParameterValues().begin();
            i != message.getParameterValues().end(); ++i) {
-        if (!interactionClass.isValidParameter(i->getParameterHandle()))
+        if (!interactionClass.getParameter(i->getParameterHandle()))
           continue;
         parameterHandleArray.getParameterValues().push_back(*i);
       }
@@ -1057,24 +1060,10 @@ public:
     _tagCache.assign(tag.charData(), tag.size());
     return _tagCache.c_str();
   }
-  std::string _tagCache;
 
-  RTI::FederateAmbassador* _federateAmbassador;
-};
-
-} // namespace OpenRTI
-
-class OPENRTI_LOCAL RTIambPrivateRefs : public OpenRTI::Ambassador<OpenRTI::RTI13Traits> {
-public:
-  RTIambPrivateRefs() :
-    _concurrentAccess(false)
-  { }
-
-  virtual OpenRTI::AbstractFederate<Traits>*
-  createFederate(const OpenRTI::InsertFederationExecutionMessage& insertFederationExecution,
-                 OpenRTI::SharedPtr<OpenRTI::AbstractConnect> connect, RTI::FederateAmbassador* federateAmbassador)
+  virtual OpenRTI::TimeManagement<Traits>* createTimeManagement(OpenRTI::Federate& federate)
   {
-    return new OpenRTI::RTI13Federate(connect, insertFederationExecution, federateAmbassador);
+    return new OpenRTI::TemplateTimeManagement<Traits, OpenRTI::RTI13LogicalTimeFactory>(RTI13LogicalTimeFactory(federate.getLogicalTimeFactoryName()));
   }
 
   struct ConcurrentAccessGuard {
@@ -1116,6 +1105,10 @@ public:
   OpenRTI::StringMap _connectParameters;
 
   bool _concurrentAccess;
+
+  std::string _tagCache;
+
+  RTI::FederateAmbassador* _federateAmbassador;
 };
 
 RTI::RTIambassador::RTIambassador()
@@ -1206,6 +1199,7 @@ RTI::RTIambassador::joinFederationExecution(const char* federateType,
   FederateHandle federateHandle = privateRefs->joinFederationExecution(std::string(), utf8FederateType,
                                                                        OpenRTI::getFilePart(utf8FederationExecutionName),
                                                                        OpenRTI::FOMStringModuleList(), federateAmbassadorPointer);
+  privateRefs->_federateAmbassador = federateAmbassadorPointer;
   return federateHandle;
 }
 
@@ -1235,6 +1229,7 @@ RTI::RTIambassador::resignFederationExecution(RTI::ResignAction RTI13resignActio
   default:
     throw RTI::InvalidResignAction("Except");
   }
+  privateRefs->_federateAmbassador = 0;
   privateRefs->resignFederationExecution(resignAction);
 }
 
@@ -1249,7 +1244,8 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char* label,
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   std::string utf8Label = OpenRTI::localeToUtf8(label);
-  privateRefs->registerFederationSynchronizationPoint(utf8Label, toOpenRTITag(tag));
+  // According to the standard, an empty set also means all federates currently joined.
+  privateRefs->registerFederationSynchronizationPoint(utf8Label, toOpenRTITag(tag), OpenRTI::FederateHandleSet());
 }
 
 void

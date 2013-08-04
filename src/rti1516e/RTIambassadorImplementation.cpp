@@ -37,6 +37,7 @@
 #include "Ambassador.h"
 #include "FDD1516EFileReader.h"
 #include "LogStream.h"
+#include "TemplateTimeManagement.h"
 
 #include "HandleImplementation.h"
 #include "RTI1516ELogicalTimeFactory.h"
@@ -321,19 +322,113 @@ public:
 #undef MAP_EXCEPTION
 };
 
-template<typename LogicalTimeFactory>
-class OPENRTI_LOCAL RTI1516EFederate : public Federate<RTI1516ETraits, LogicalTimeFactory> {
+class OPENRTI_LOCAL RTIambassadorImplementation::RTI1516EAmbassadorInterface : public OpenRTI::Ambassador<RTI1516ETraits> {
 public:
-  using Federate<RTI1516ETraits, LogicalTimeFactory>::getTimeConstrainedEnabled;
-  using Federate<RTI1516ETraits, LogicalTimeFactory>::getFlushQueueMode;
-
-  RTI1516EFederate(SharedPtr<AbstractConnect> connect,
-                   const InsertFederationExecutionMessage& insertFederationExecution,
-                   const LogicalTimeFactory& logicalTimeFactory,
-                   rti1516e::FederateAmbassador* federateAmbassador) :
-    Federate<RTI1516ETraits, LogicalTimeFactory>(connect, insertFederationExecution, logicalTimeFactory),
-    _federateAmbassador(federateAmbassador)
+  RTI1516EAmbassadorInterface() :
+    Ambassador<RTI1516ETraits>(),
+    _federateAmbassador(0)
   { }
+
+  std::auto_ptr<rti1516e::LogicalTimeFactory> getTimeFactory()
+  {
+    // FIXME ask the time management about that
+    OpenRTI::Federate* federate = getFederate();
+    if (!federate)
+	std::auto_ptr<rti1516e::LogicalTimeFactory>();
+    return rti1516e::LogicalTimeFactoryFactory::makeLogicalTimeFactory(utf8ToUcs(federate->getLogicalTimeFactoryName()));
+  }
+
+  virtual TimeManagement<RTI1516ETraits>* createTimeManagement(Federate& federate)
+  {
+    std::string logicalTimeFactoryName = federate.getLogicalTimeFactoryName();
+    std::auto_ptr<rti1516e::LogicalTimeFactory> logicalTimeFactory;
+    logicalTimeFactory = rti1516e::LogicalTimeFactoryFactory::makeLogicalTimeFactory(utf8ToUcs(logicalTimeFactoryName));
+    if (!logicalTimeFactory.get())
+      return 0;
+
+    // Get logical time and logical time interval. If they are the well known ones,
+    // try to use the optimized implementation using the native time data types directly.
+    // An implementation is considered equal if the implementation name is the same and they are assignable in each direction,
+    // Also add a flag that forces the to use the opaque factory
+
+    // FIXME: make that again configurable
+    bool forceOpaqueTime = false;
+    if (!forceOpaqueTime) {
+      std::auto_ptr<rti1516e::LogicalTime> logicalTime = logicalTimeFactory->makeInitial();
+      std::auto_ptr<rti1516e::LogicalTimeInterval> logicalTimeInterval = logicalTimeFactory->makeZero();
+      try {
+        rti1516e::HLAinteger64Time time;
+        rti1516e::HLAinteger64Interval interval;
+        if (time.implementationName() == logicalTime->implementationName() &&
+            interval.implementationName() == logicalTimeInterval->implementationName()) {
+          time = *logicalTime;
+          interval = *logicalTimeInterval;
+          *logicalTime = time;
+          *logicalTimeInterval = interval;
+          if (*logicalTime == time && *logicalTimeInterval == interval) {
+            return new TemplateTimeManagement<RTI1516ETraits, RTI1516Einteger64TimeFactory>(RTI1516Einteger64TimeFactory(ucsToUtf8(time.implementationName())));
+          }
+        }
+      } catch (...) {
+      }
+
+      try {
+        rti1516e::HLAfloat64Time time;
+        rti1516e::HLAfloat64Interval interval;
+        if (time.implementationName() == logicalTime->implementationName() &&
+            interval.implementationName() == logicalTimeInterval->implementationName()) {
+          time = *logicalTime;
+          interval = *logicalTimeInterval;
+          *logicalTime = time;
+          *logicalTimeInterval = interval;
+          if (*logicalTime == time && *logicalTimeInterval == interval) {
+            return new TemplateTimeManagement<RTI1516ETraits, RTI1516Efloat64TimeFactory>(RTI1516Efloat64TimeFactory(ucsToUtf8(time.implementationName())));
+          }
+        }
+      } catch (...) {
+      }
+    }
+
+    // Ok, we will just need to use the opaque logical time factory
+    return new TemplateTimeManagement<RTI1516ETraits, RTI1516ELogicalTimeFactory>(RTI1516ELogicalTimeFactory(logicalTimeFactory));
+  }
+
+  virtual void connectionLost(const std::string& faultDescription)
+    throw ()
+  {
+    if (!_federateAmbassador) {
+      Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
+      return;
+    }
+    try {
+      _federateAmbassador->connectionLost(utf8ToUcs(faultDescription));
+    } catch (const rti1516e::Exception& e) {
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+    }
+  }
+
+  virtual void reportFederationExecutions(const OpenRTI::FederationExecutionInformationVector& federationExecutionInformationVector)
+    throw ()
+  {
+    if (!_federateAmbassador) {
+      Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
+      return;
+    }
+    try {
+      rti1516e::FederationExecutionInformationVector federationInformations;
+
+      federationInformations.reserve(federationExecutionInformationVector.size());
+      for (OpenRTI::FederationExecutionInformationVector::const_iterator i = federationExecutionInformationVector.begin();
+           i != federationExecutionInformationVector.end(); ++i) {
+        federationInformations.push_back(rti1516e::FederationExecutionInformation(utf8ToUcs(i->getFederationExecutionName()),
+                                                                                  utf8ToUcs(i->getLogicalTimeFactoryName())));
+      }
+
+      _federateAmbassador->reportFederationExecutions(federationInformations);
+    } catch (const rti1516e::Exception& e) {
+      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+    }
+  }
 
   virtual void synchronizationPointRegistrationResponse(const std::string& label, RegisterFederationSynchronizationPointResponseType reason)
     throw ()
@@ -743,7 +838,7 @@ public:
     }
   }
 
-  virtual void reflectAttributeValues(const typename RTI1516EFederate::ObjectClass& objectClass, const AttributeUpdateMessage& message)
+  virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, const AttributeUpdateMessage& message)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -778,8 +873,9 @@ public:
     }
   }
 
-  virtual void reflectAttributeValues(const typename RTI1516EFederate::ObjectClass& objectClass,
-                                      const TimeStampedAttributeUpdateMessage& message, const rti1516e::LogicalTime& logicalTime)
+  virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, bool flushQueueMode,
+                                      bool timeConstrainedEnabled, const TimeStampedAttributeUpdateMessage& message,
+                                      const rti1516e::LogicalTime& logicalTime)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -806,14 +902,14 @@ public:
 
         rti1516e::SupplementalReflectInfo rti1516SupplementalReflectInfo; // FIXME
 
-        if (getFlushQueueMode()) {
+        if (flushQueueMode) {
           rti1516e::MessageRetractionHandle rti1516MessageRetractionHandle;
           rti1516MessageRetractionHandle = rti1516e::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
           _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516e::TIMESTAMP,
                                                       rti1516TransportationType, logicalTime, rti1516e::TIMESTAMP,
                                                       rti1516MessageRetractionHandle, rti1516SupplementalReflectInfo);
         } else {
-          if (getTimeConstrainedEnabled()) {
+          if (timeConstrainedEnabled) {
             _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516e::TIMESTAMP,
                                                         rti1516TransportationType, logicalTime, rti1516e::TIMESTAMP,
                                                         rti1516SupplementalReflectInfo);
@@ -848,7 +944,8 @@ public:
     }
   }
 
-  virtual void removeObjectInstance(const TimeStampedDeleteObjectInstanceMessage& message, const rti1516e::LogicalTime& logicalTime)
+  virtual void removeObjectInstance(bool flushQueueMode, bool timeConstrainedEnabled,
+                                    const TimeStampedDeleteObjectInstanceMessage& message, const rti1516e::LogicalTime& logicalTime)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -860,14 +957,14 @@ public:
       rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(message.getObjectInstanceHandle());
       rti1516e::VariableLengthData rti1516Tag = rti1516e::VariableLengthDataFriend::create(message.getTag());
       rti1516e::SupplementalRemoveInfo rti1516SupplementalRemoveInfo; // FIXME
-      if (getFlushQueueMode()) {
+      if (flushQueueMode) {
         rti1516e::MessageRetractionHandle rti1516MessageRetractionHandle;
         rti1516MessageRetractionHandle = rti1516e::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
         _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516e::TIMESTAMP,
                                                   logicalTime, rti1516e::TIMESTAMP, rti1516MessageRetractionHandle,
                                                   rti1516SupplementalRemoveInfo);
       } else {
-        if (getTimeConstrainedEnabled()) {
+        if (timeConstrainedEnabled) {
           _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516e::TIMESTAMP,
                                                     logicalTime, rti1516e::TIMESTAMP, rti1516SupplementalRemoveInfo);
         } else {
@@ -883,7 +980,7 @@ public:
 
   // 6.9
   virtual void
-  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const InteractionMessage& message)
+  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const Federate::InteractionClass& interactionClass, const InteractionMessage& message)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -894,12 +991,10 @@ public:
       rti1516e::InteractionClassHandle rti1516InteractionClassHandle;
       rti1516InteractionClassHandle = rti1516e::InteractionClassHandleFriend::createHandle(interactionClassHandle);
 
-      const typename Federate<RTI1516ETraits, LogicalTimeFactory>::InteractionClass& interactionClass
-        = Federate<RTI1516ETraits, LogicalTimeFactory>::getInteractionClass(interactionClassHandle);
       rti1516e::ParameterHandleValueMap rti1516ParameterValues;
       for (std::vector<OpenRTI::ParameterValue>::const_iterator i = message.getParameterValues().begin();
            i != message.getParameterValues().end(); ++i) {
-        if (!interactionClass.isValidParameter(i->getParameterHandle()))
+        if (!interactionClass.getParameter(i->getParameterHandle()))
           continue;
         rti1516ParameterValues[rti1516e::ParameterHandleFriend::createHandle(i->getParameterHandle())]
           = rti1516e::VariableLengthDataFriend::create(i->getValue());
@@ -918,7 +1013,9 @@ public:
   }
 
   virtual void
-  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const TimeStampedInteractionMessage& message, const rti1516e::LogicalTime& logicalTime)
+  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const Federate::InteractionClass& interactionClass, bool flushQueueMode,
+                     bool timeConstrainedEnabled, const TimeStampedInteractionMessage& message,
+                     const rti1516e::LogicalTime& logicalTime)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -929,12 +1026,10 @@ public:
       rti1516e::InteractionClassHandle rti1516InteractionClassHandle;
       rti1516InteractionClassHandle = rti1516e::InteractionClassHandleFriend::createHandle(interactionClassHandle);
 
-      const typename Federate<RTI1516ETraits, LogicalTimeFactory>::InteractionClass& interactionClass
-        = Federate<RTI1516ETraits, LogicalTimeFactory>::getInteractionClass(interactionClassHandle);
       rti1516e::ParameterHandleValueMap rti1516ParameterValues;
       for (std::vector<OpenRTI::ParameterValue>::const_iterator i = message.getParameterValues().begin();
            i != message.getParameterValues().end(); ++i) {
-        if (!interactionClass.isValidParameter(i->getParameterHandle()))
+        if (!interactionClass.getParameter(i->getParameterHandle()))
           continue;
         rti1516ParameterValues[rti1516e::ParameterHandleFriend::createHandle(i->getParameterHandle())]
           = rti1516e::VariableLengthDataFriend::create(i->getValue());
@@ -948,14 +1043,14 @@ public:
       rti1516TransportationType = translate(message.getTransportationType());
       rti1516e::SupplementalReceiveInfo rti1516eSupplementalReceiveInfo; // FIXME
 
-      if (getFlushQueueMode()) {
+      if (flushQueueMode) {
         rti1516e::MessageRetractionHandle rti1516MessageRetractionHandle;
         rti1516MessageRetractionHandle = rti1516e::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
         _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516e::TIMESTAMP,
                                                 rti1516TransportationType, logicalTime, rti1516e::TIMESTAMP,
                                                 rti1516MessageRetractionHandle, rti1516eSupplementalReceiveInfo);
       } else {
-        if (getTimeConstrainedEnabled()) {
+        if (timeConstrainedEnabled) {
           _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516e::TIMESTAMP,
                                                   rti1516TransportationType, logicalTime, rti1516e::TIMESTAMP,
                                                   rti1516eSupplementalReceiveInfo);
@@ -1385,117 +1480,6 @@ public:
   rti1516e::FederateAmbassador* _federateAmbassador;
 };
 
-class OPENRTI_LOCAL RTIambassadorImplementation::RTI1516EAmbassadorInterface : public OpenRTI::Ambassador<RTI1516ETraits> {
-public:
-  RTI1516EAmbassadorInterface() :
-    Ambassador<RTI1516ETraits>(),
-    _federateAmbassador(0)
-  { }
-
-  std::auto_ptr<rti1516e::LogicalTimeFactory> getTimeFactory()
-  {
-    return rti1516e::LogicalTimeFactoryFactory::makeLogicalTimeFactory(utf8ToUcs(getFederate().getLogicalTimeFactoryName()));
-  }
-
-  virtual OpenRTI::AbstractFederate<Traits>*
-  createFederate(const InsertFederationExecutionMessage& insertFederationExecution,
-                 SharedPtr<AbstractConnect> connect, rti1516e::FederateAmbassador* federateAmbassador)
-  {
-    std::string logicalTimeFactoryName = insertFederationExecution.getLogicalTimeFactoryName();
-    std::auto_ptr<rti1516e::LogicalTimeFactory> logicalTimeFactory;
-    logicalTimeFactory = rti1516e::LogicalTimeFactoryFactory::makeLogicalTimeFactory(utf8ToUcs(logicalTimeFactoryName));
-    if (!logicalTimeFactory.get())
-      return 0;
-
-    // Get logical time and logical time interval. If they are the well known ones,
-    // try to use the optimized implementation using the native time data types directly.
-    // An implementation is considered equal if the implementation name is the same and they are assignable in each direction,
-    // Also add a flag that forces the to use the opaque factory
-
-    // FIXME: make that again configurable
-    bool forceOpaqueTime = false;
-    if (!forceOpaqueTime) {
-      std::auto_ptr<rti1516e::LogicalTime> logicalTime = logicalTimeFactory->makeInitial();
-      std::auto_ptr<rti1516e::LogicalTimeInterval> logicalTimeInterval = logicalTimeFactory->makeZero();
-      try {
-        rti1516e::HLAinteger64Time time;
-        rti1516e::HLAinteger64Interval interval;
-        if (time.implementationName() == logicalTime->implementationName() &&
-            interval.implementationName() == logicalTimeInterval->implementationName()) {
-          time = *logicalTime;
-          interval = *logicalTimeInterval;
-          *logicalTime = time;
-          *logicalTimeInterval = interval;
-          if (*logicalTime == time && *logicalTimeInterval == interval) {
-            return new RTI1516EFederate<RTI1516Einteger64TimeFactory>(connect, insertFederationExecution, RTI1516Einteger64TimeFactory(ucsToUtf8(time.implementationName())),
-                                       federateAmbassador);
-          }
-        }
-      } catch (...) {
-      }
-
-      try {
-        rti1516e::HLAfloat64Time time;
-        rti1516e::HLAfloat64Interval interval;
-        if (time.implementationName() == logicalTime->implementationName() &&
-            interval.implementationName() == logicalTimeInterval->implementationName()) {
-          time = *logicalTime;
-          interval = *logicalTimeInterval;
-          *logicalTime = time;
-          *logicalTimeInterval = interval;
-          if (*logicalTime == time && *logicalTimeInterval == interval) {
-            return new RTI1516EFederate<RTI1516Efloat64TimeFactory>(connect, insertFederationExecution, RTI1516Efloat64TimeFactory(ucsToUtf8(time.implementationName())),
-                                       federateAmbassador);
-          }
-        }
-      } catch (...) {
-      }
-    }
-
-    // Ok, we will just need to use the opaque logical time factory
-    return new RTI1516EFederate<RTI1516ELogicalTimeFactory>(connect, insertFederationExecution, RTI1516ELogicalTimeFactory(logicalTimeFactory), federateAmbassador);
-  }
-
-  virtual void connectionLost(const std::string& faultDescription)
-    throw ()
-  {
-    if (!_federateAmbassador) {
-      Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
-      return;
-    }
-    try {
-      _federateAmbassador->connectionLost(utf8ToUcs(faultDescription));
-    } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
-    }
-  }
-
-  virtual void reportFederationExecutions(const OpenRTI::FederationExecutionInformationVector& federationExecutionInformationVector)
-    throw ()
-  {
-    if (!_federateAmbassador) {
-      Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
-      return;
-    }
-    try {
-      rti1516e::FederationExecutionInformationVector federationInformations;
-
-      federationInformations.reserve(federationExecutionInformationVector.size());
-      for (OpenRTI::FederationExecutionInformationVector::const_iterator i = federationExecutionInformationVector.begin();
-           i != federationExecutionInformationVector.end(); ++i) {
-        federationInformations.push_back(rti1516e::FederationExecutionInformation(utf8ToUcs(i->getFederationExecutionName()),
-                                                                                  utf8ToUcs(i->getLogicalTimeFactoryName())));
-      }
-
-      _federateAmbassador->reportFederationExecutions(federationInformations);
-    } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
-    }
-  }
-
-  rti1516e::FederateAmbassador* _federateAmbassador;
-};
-
 RTIambassadorImplementation::RTIambassadorImplementation() throw () :
   _ambassadorInterface(new RTI1516EAmbassadorInterface)
 {
@@ -1796,7 +1780,8 @@ RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring
          rti1516e::RTIinternalError)
 {
   OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
-  _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag);
+  // According to the standard, an empty set also means all federates currently joined.
+  _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, OpenRTI::FederateHandleSet());
 }
 
 void
