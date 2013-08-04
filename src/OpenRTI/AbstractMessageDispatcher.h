@@ -85,128 +85,6 @@ class OPENRTI_LOCAL AbstractMessageDispatcher {
 public:
   virtual ~AbstractMessageDispatcher() {}
 
-  virtual void accept(ConnectionLostMessage&) = 0;
-  virtual void accept(CreateFederationExecutionRequestMessage&) = 0;
-  virtual void accept(CreateFederationExecutionResponseMessage&) = 0;
-  virtual void accept(DestroyFederationExecutionRequestMessage&) = 0;
-  virtual void accept(DestroyFederationExecutionResponseMessage&) = 0;
-  virtual void accept(EnumerateFederationExecutionsRequestMessage&) = 0;
-  virtual void accept(EnumerateFederationExecutionsResponseMessage&) = 0;
-  virtual void accept(InsertFederationExecutionMessage&) = 0;
-  virtual void accept(ShutdownFederationExecutionMessage&) = 0;
-  virtual void accept(EraseFederationExecutionMessage&) = 0;
-  virtual void accept(ReleaseFederationHandleMessage&) = 0;
-  virtual void accept(JoinFederationExecutionRequestMessage&) = 0;
-  virtual void accept(JoinFederationExecutionResponseMessage&) = 0;
-  virtual void accept(ResignFederationExecutionRequestMessage&) = 0;
-  virtual void accept(JoinFederateNotifyMessage&) = 0;
-  virtual void accept(ResignFederateNotifyMessage&) = 0;
-  virtual void accept(RegisterFederationSynchronizationPointMessage&) = 0;
-  virtual void accept(RegisterFederationSynchronizationPointResponseMessage&) = 0;
-  virtual void accept(AnnounceSynchronizationPointMessage&) = 0;
-  virtual void accept(SynchronizationPointAchievedMessage&) = 0;
-  virtual void accept(FederationSynchronizedMessage&) = 0;
-  virtual void accept(EnableTimeRegulationRequestMessage&) = 0;
-  virtual void accept(EnableTimeRegulationResponseMessage&) = 0;
-  virtual void accept(DisableTimeRegulationRequestMessage&) = 0;
-  virtual void accept(CommitLowerBoundTimeStampMessage&) = 0;
-  virtual void accept(TimeConstrainedEnabledMessage&) = 0;
-  virtual void accept(TimeRegulationEnabledMessage&) = 0;
-  virtual void accept(TimeAdvanceGrantedMessage&) = 0;
-  virtual void accept(InsertRegionMessage&) = 0;
-  virtual void accept(CommitRegionMessage&) = 0;
-  virtual void accept(EraseRegionMessage&) = 0;
-  virtual void accept(ChangeInteractionClassPublicationMessage&) = 0;
-  virtual void accept(ChangeObjectClassPublicationMessage&) = 0;
-  virtual void accept(ChangeInteractionClassSubscriptionMessage&) = 0;
-  virtual void accept(ChangeObjectClassSubscriptionMessage&) = 0;
-  virtual void accept(RegistrationForObjectClassMessage&) = 0;
-  virtual void accept(TurnInteractionsOnMessage&) = 0;
-  virtual void accept(InteractionMessage&) = 0;
-  virtual void accept(TimeStampedInteractionMessage&) = 0;
-  virtual void accept(ObjectInstanceHandlesRequestMessage&) = 0;
-  virtual void accept(ObjectInstanceHandlesResponseMessage&) = 0;
-  virtual void accept(ReleaseMultipleObjectInstanceNameHandlePairsMessage&) = 0;
-  virtual void accept(ReserveObjectInstanceNameRequestMessage&) = 0;
-  virtual void accept(ReserveObjectInstanceNameResponseMessage&) = 0;
-  virtual void accept(ReserveMultipleObjectInstanceNameRequestMessage&) = 0;
-  virtual void accept(ReserveMultipleObjectInstanceNameResponseMessage&) = 0;
-  virtual void accept(InsertObjectInstanceMessage&) = 0;
-  virtual void accept(DeleteObjectInstanceMessage&) = 0;
-  virtual void accept(TimeStampedDeleteObjectInstanceMessage&) = 0;
-  virtual void accept(AttributeUpdateMessage&) = 0;
-  virtual void accept(TimeStampedAttributeUpdateMessage&) = 0;
-  virtual void accept(RequestAttributeUpdateMessage&) = 0;
-  virtual void accept(RequestClassAttributeUpdateMessage&) = 0;
-};
-
-template<typename T>
-class OPENRTI_LOCAL FunctorMessageDispatcher : public AbstractMessageDispatcher {
-public:
-  FunctorMessageDispatcher(const T& t) : _t(t) {}
-  virtual ~FunctorMessageDispatcher() {}
-
-  virtual void accept(ConnectionLostMessage& message) { _t(message); }
-  virtual void accept(CreateFederationExecutionRequestMessage& message) { _t(message); }
-  virtual void accept(CreateFederationExecutionResponseMessage& message) { _t(message); }
-  virtual void accept(DestroyFederationExecutionRequestMessage& message) { _t(message); }
-  virtual void accept(DestroyFederationExecutionResponseMessage& message) { _t(message); }
-  virtual void accept(EnumerateFederationExecutionsRequestMessage& message) { _t(message); }
-  virtual void accept(EnumerateFederationExecutionsResponseMessage& message) { _t(message); }
-  virtual void accept(InsertFederationExecutionMessage& message) { _t(message); }
-  virtual void accept(ShutdownFederationExecutionMessage& message) { _t(message); }
-  virtual void accept(EraseFederationExecutionMessage& message) { _t(message); }
-  virtual void accept(ReleaseFederationHandleMessage& message) { _t(message); }
-  virtual void accept(JoinFederationExecutionRequestMessage& message) { _t(message); }
-  virtual void accept(JoinFederationExecutionResponseMessage& message) { _t(message); }
-  virtual void accept(ResignFederationExecutionRequestMessage& message) { _t(message); }
-  virtual void accept(JoinFederateNotifyMessage& message) { _t(message); }
-  virtual void accept(ResignFederateNotifyMessage& message) { _t(message); }
-  virtual void accept(RegisterFederationSynchronizationPointMessage& message) { _t(message); }
-  virtual void accept(RegisterFederationSynchronizationPointResponseMessage& message) { _t(message); }
-  virtual void accept(AnnounceSynchronizationPointMessage& message) { _t(message); }
-  virtual void accept(SynchronizationPointAchievedMessage& message) { _t(message); }
-  virtual void accept(FederationSynchronizedMessage& message) { _t(message); }
-  virtual void accept(EnableTimeRegulationRequestMessage& message) { _t(message); }
-  virtual void accept(EnableTimeRegulationResponseMessage& message) { _t(message); }
-  virtual void accept(DisableTimeRegulationRequestMessage& message) { _t(message); }
-  virtual void accept(CommitLowerBoundTimeStampMessage& message) { _t(message); }
-  virtual void accept(TimeConstrainedEnabledMessage& message) { _t(message); }
-  virtual void accept(TimeRegulationEnabledMessage& message) { _t(message); }
-  virtual void accept(TimeAdvanceGrantedMessage& message) { _t(message); }
-  virtual void accept(InsertRegionMessage& message) { _t(message); }
-  virtual void accept(CommitRegionMessage& message) { _t(message); }
-  virtual void accept(EraseRegionMessage& message) { _t(message); }
-  virtual void accept(ChangeInteractionClassPublicationMessage& message) { _t(message); }
-  virtual void accept(ChangeObjectClassPublicationMessage& message) { _t(message); }
-  virtual void accept(ChangeInteractionClassSubscriptionMessage& message) { _t(message); }
-  virtual void accept(ChangeObjectClassSubscriptionMessage& message) { _t(message); }
-  virtual void accept(RegistrationForObjectClassMessage& message) { _t(message); }
-  virtual void accept(TurnInteractionsOnMessage& message) { _t(message); }
-  virtual void accept(InteractionMessage& message) { _t(message); }
-  virtual void accept(TimeStampedInteractionMessage& message) { _t(message); }
-  virtual void accept(ObjectInstanceHandlesRequestMessage& message) { _t(message); }
-  virtual void accept(ObjectInstanceHandlesResponseMessage& message) { _t(message); }
-  virtual void accept(ReleaseMultipleObjectInstanceNameHandlePairsMessage& message) { _t(message); }
-  virtual void accept(ReserveObjectInstanceNameRequestMessage& message) { _t(message); }
-  virtual void accept(ReserveObjectInstanceNameResponseMessage& message) { _t(message); }
-  virtual void accept(ReserveMultipleObjectInstanceNameRequestMessage& message) { _t(message); }
-  virtual void accept(ReserveMultipleObjectInstanceNameResponseMessage& message) { _t(message); }
-  virtual void accept(InsertObjectInstanceMessage& message) { _t(message); }
-  virtual void accept(DeleteObjectInstanceMessage& message) { _t(message); }
-  virtual void accept(TimeStampedDeleteObjectInstanceMessage& message) { _t(message); }
-  virtual void accept(AttributeUpdateMessage& message) { _t(message); }
-  virtual void accept(TimeStampedAttributeUpdateMessage& message) { _t(message); }
-  virtual void accept(RequestAttributeUpdateMessage& message) { _t(message); }
-  virtual void accept(RequestClassAttributeUpdateMessage& message) { _t(message); }
-private:
-  const T& _t;
-};
-
-class OPENRTI_LOCAL ConstAbstractMessageDispatcher {
-public:
-  virtual ~ConstAbstractMessageDispatcher() {}
-
   virtual void accept(const ConnectionLostMessage&) = 0;
   virtual void accept(const CreateFederationExecutionRequestMessage&) = 0;
   virtual void accept(const CreateFederationExecutionResponseMessage&) = 0;
@@ -263,10 +141,10 @@ public:
 };
 
 template<typename T>
-class OPENRTI_LOCAL FunctorConstMessageDispatcher : public ConstAbstractMessageDispatcher {
+class OPENRTI_LOCAL FunctorMessageDispatcher : public AbstractMessageDispatcher {
 public:
-  FunctorConstMessageDispatcher(const T& t) : _t(t) {}
-  virtual ~FunctorConstMessageDispatcher() {}
+  FunctorMessageDispatcher(const T& t) : _t(t) {}
+  virtual ~FunctorMessageDispatcher() {}
 
   virtual void accept(const ConnectionLostMessage& message) { _t(message); }
   virtual void accept(const CreateFederationExecutionRequestMessage& message) { _t(message); }

@@ -51,13 +51,7 @@ ConnectionLostMessage::out(std::ostream& os) const
 }
 
 void
-ConnectionLostMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ConnectionLostMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ConnectionLostMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -84,13 +78,7 @@ CreateFederationExecutionRequestMessage::out(std::ostream& os) const
 }
 
 void
-CreateFederationExecutionRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-CreateFederationExecutionRequestMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+CreateFederationExecutionRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -117,13 +105,7 @@ CreateFederationExecutionResponseMessage::out(std::ostream& os) const
 }
 
 void
-CreateFederationExecutionResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-CreateFederationExecutionResponseMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+CreateFederationExecutionResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -150,13 +132,7 @@ DestroyFederationExecutionRequestMessage::out(std::ostream& os) const
 }
 
 void
-DestroyFederationExecutionRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-DestroyFederationExecutionRequestMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+DestroyFederationExecutionRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -183,13 +159,7 @@ DestroyFederationExecutionResponseMessage::out(std::ostream& os) const
 }
 
 void
-DestroyFederationExecutionResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-DestroyFederationExecutionResponseMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+DestroyFederationExecutionResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -216,13 +186,7 @@ EnumerateFederationExecutionsRequestMessage::out(std::ostream& os) const
 }
 
 void
-EnumerateFederationExecutionsRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-EnumerateFederationExecutionsRequestMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+EnumerateFederationExecutionsRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -249,13 +213,7 @@ EnumerateFederationExecutionsResponseMessage::out(std::ostream& os) const
 }
 
 void
-EnumerateFederationExecutionsResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-EnumerateFederationExecutionsResponseMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+EnumerateFederationExecutionsResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -282,13 +240,7 @@ InsertFederationExecutionMessage::out(std::ostream& os) const
 }
 
 void
-InsertFederationExecutionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-InsertFederationExecutionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+InsertFederationExecutionMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -315,13 +267,7 @@ ShutdownFederationExecutionMessage::out(std::ostream& os) const
 }
 
 void
-ShutdownFederationExecutionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ShutdownFederationExecutionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ShutdownFederationExecutionMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -348,13 +294,7 @@ EraseFederationExecutionMessage::out(std::ostream& os) const
 }
 
 void
-EraseFederationExecutionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-EraseFederationExecutionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+EraseFederationExecutionMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -381,13 +321,7 @@ ReleaseFederationHandleMessage::out(std::ostream& os) const
 }
 
 void
-ReleaseFederationHandleMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ReleaseFederationHandleMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ReleaseFederationHandleMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -414,13 +348,7 @@ JoinFederationExecutionRequestMessage::out(std::ostream& os) const
 }
 
 void
-JoinFederationExecutionRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-JoinFederationExecutionRequestMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+JoinFederationExecutionRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -447,13 +375,7 @@ JoinFederationExecutionResponseMessage::out(std::ostream& os) const
 }
 
 void
-JoinFederationExecutionResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-JoinFederationExecutionResponseMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+JoinFederationExecutionResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -480,13 +402,7 @@ ResignFederationExecutionRequestMessage::out(std::ostream& os) const
 }
 
 void
-ResignFederationExecutionRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ResignFederationExecutionRequestMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ResignFederationExecutionRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -513,13 +429,7 @@ JoinFederateNotifyMessage::out(std::ostream& os) const
 }
 
 void
-JoinFederateNotifyMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-JoinFederateNotifyMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+JoinFederateNotifyMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -546,13 +456,7 @@ ResignFederateNotifyMessage::out(std::ostream& os) const
 }
 
 void
-ResignFederateNotifyMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ResignFederateNotifyMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ResignFederateNotifyMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -579,13 +483,7 @@ RegisterFederationSynchronizationPointMessage::out(std::ostream& os) const
 }
 
 void
-RegisterFederationSynchronizationPointMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-RegisterFederationSynchronizationPointMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+RegisterFederationSynchronizationPointMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -612,13 +510,7 @@ RegisterFederationSynchronizationPointResponseMessage::out(std::ostream& os) con
 }
 
 void
-RegisterFederationSynchronizationPointResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-RegisterFederationSynchronizationPointResponseMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+RegisterFederationSynchronizationPointResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -645,13 +537,7 @@ AnnounceSynchronizationPointMessage::out(std::ostream& os) const
 }
 
 void
-AnnounceSynchronizationPointMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-AnnounceSynchronizationPointMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+AnnounceSynchronizationPointMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -678,13 +564,7 @@ SynchronizationPointAchievedMessage::out(std::ostream& os) const
 }
 
 void
-SynchronizationPointAchievedMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-SynchronizationPointAchievedMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+SynchronizationPointAchievedMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -711,13 +591,7 @@ FederationSynchronizedMessage::out(std::ostream& os) const
 }
 
 void
-FederationSynchronizedMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-FederationSynchronizedMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+FederationSynchronizedMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -744,13 +618,7 @@ EnableTimeRegulationRequestMessage::out(std::ostream& os) const
 }
 
 void
-EnableTimeRegulationRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-EnableTimeRegulationRequestMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+EnableTimeRegulationRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -777,13 +645,7 @@ EnableTimeRegulationResponseMessage::out(std::ostream& os) const
 }
 
 void
-EnableTimeRegulationResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-EnableTimeRegulationResponseMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+EnableTimeRegulationResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -810,13 +672,7 @@ DisableTimeRegulationRequestMessage::out(std::ostream& os) const
 }
 
 void
-DisableTimeRegulationRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-DisableTimeRegulationRequestMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+DisableTimeRegulationRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -843,13 +699,7 @@ CommitLowerBoundTimeStampMessage::out(std::ostream& os) const
 }
 
 void
-CommitLowerBoundTimeStampMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-CommitLowerBoundTimeStampMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+CommitLowerBoundTimeStampMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -876,13 +726,7 @@ TimeConstrainedEnabledMessage::out(std::ostream& os) const
 }
 
 void
-TimeConstrainedEnabledMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-TimeConstrainedEnabledMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+TimeConstrainedEnabledMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -909,13 +753,7 @@ TimeRegulationEnabledMessage::out(std::ostream& os) const
 }
 
 void
-TimeRegulationEnabledMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-TimeRegulationEnabledMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+TimeRegulationEnabledMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -942,13 +780,7 @@ TimeAdvanceGrantedMessage::out(std::ostream& os) const
 }
 
 void
-TimeAdvanceGrantedMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-TimeAdvanceGrantedMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+TimeAdvanceGrantedMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -975,13 +807,7 @@ InsertRegionMessage::out(std::ostream& os) const
 }
 
 void
-InsertRegionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-InsertRegionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+InsertRegionMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1008,13 +834,7 @@ CommitRegionMessage::out(std::ostream& os) const
 }
 
 void
-CommitRegionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-CommitRegionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+CommitRegionMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1041,13 +861,7 @@ EraseRegionMessage::out(std::ostream& os) const
 }
 
 void
-EraseRegionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-EraseRegionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+EraseRegionMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1074,13 +888,7 @@ ChangeInteractionClassPublicationMessage::out(std::ostream& os) const
 }
 
 void
-ChangeInteractionClassPublicationMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ChangeInteractionClassPublicationMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ChangeInteractionClassPublicationMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1107,13 +915,7 @@ ChangeObjectClassPublicationMessage::out(std::ostream& os) const
 }
 
 void
-ChangeObjectClassPublicationMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ChangeObjectClassPublicationMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ChangeObjectClassPublicationMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1140,13 +942,7 @@ ChangeInteractionClassSubscriptionMessage::out(std::ostream& os) const
 }
 
 void
-ChangeInteractionClassSubscriptionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ChangeInteractionClassSubscriptionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ChangeInteractionClassSubscriptionMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1173,13 +969,7 @@ ChangeObjectClassSubscriptionMessage::out(std::ostream& os) const
 }
 
 void
-ChangeObjectClassSubscriptionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ChangeObjectClassSubscriptionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ChangeObjectClassSubscriptionMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1206,13 +996,7 @@ RegistrationForObjectClassMessage::out(std::ostream& os) const
 }
 
 void
-RegistrationForObjectClassMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-RegistrationForObjectClassMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+RegistrationForObjectClassMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1239,13 +1023,7 @@ TurnInteractionsOnMessage::out(std::ostream& os) const
 }
 
 void
-TurnInteractionsOnMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-TurnInteractionsOnMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+TurnInteractionsOnMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1272,13 +1050,7 @@ InteractionMessage::out(std::ostream& os) const
 }
 
 void
-InteractionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-InteractionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+InteractionMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1311,13 +1083,7 @@ TimeStampedInteractionMessage::out(std::ostream& os) const
 }
 
 void
-TimeStampedInteractionMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-TimeStampedInteractionMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+TimeStampedInteractionMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1350,13 +1116,7 @@ ObjectInstanceHandlesRequestMessage::out(std::ostream& os) const
 }
 
 void
-ObjectInstanceHandlesRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ObjectInstanceHandlesRequestMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ObjectInstanceHandlesRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1383,13 +1143,7 @@ ObjectInstanceHandlesResponseMessage::out(std::ostream& os) const
 }
 
 void
-ObjectInstanceHandlesResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ObjectInstanceHandlesResponseMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ObjectInstanceHandlesResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1416,13 +1170,7 @@ ReleaseMultipleObjectInstanceNameHandlePairsMessage::out(std::ostream& os) const
 }
 
 void
-ReleaseMultipleObjectInstanceNameHandlePairsMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ReleaseMultipleObjectInstanceNameHandlePairsMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ReleaseMultipleObjectInstanceNameHandlePairsMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1449,13 +1197,7 @@ ReserveObjectInstanceNameRequestMessage::out(std::ostream& os) const
 }
 
 void
-ReserveObjectInstanceNameRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ReserveObjectInstanceNameRequestMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ReserveObjectInstanceNameRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1482,13 +1224,7 @@ ReserveObjectInstanceNameResponseMessage::out(std::ostream& os) const
 }
 
 void
-ReserveObjectInstanceNameResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ReserveObjectInstanceNameResponseMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ReserveObjectInstanceNameResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1515,13 +1251,7 @@ ReserveMultipleObjectInstanceNameRequestMessage::out(std::ostream& os) const
 }
 
 void
-ReserveMultipleObjectInstanceNameRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ReserveMultipleObjectInstanceNameRequestMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ReserveMultipleObjectInstanceNameRequestMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1548,13 +1278,7 @@ ReserveMultipleObjectInstanceNameResponseMessage::out(std::ostream& os) const
 }
 
 void
-ReserveMultipleObjectInstanceNameResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-ReserveMultipleObjectInstanceNameResponseMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+ReserveMultipleObjectInstanceNameResponseMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1581,13 +1305,7 @@ InsertObjectInstanceMessage::out(std::ostream& os) const
 }
 
 void
-InsertObjectInstanceMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-InsertObjectInstanceMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+InsertObjectInstanceMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1614,13 +1332,7 @@ DeleteObjectInstanceMessage::out(std::ostream& os) const
 }
 
 void
-DeleteObjectInstanceMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-DeleteObjectInstanceMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+DeleteObjectInstanceMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1647,13 +1359,7 @@ TimeStampedDeleteObjectInstanceMessage::out(std::ostream& os) const
 }
 
 void
-TimeStampedDeleteObjectInstanceMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-TimeStampedDeleteObjectInstanceMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+TimeStampedDeleteObjectInstanceMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1680,13 +1386,7 @@ AttributeUpdateMessage::out(std::ostream& os) const
 }
 
 void
-AttributeUpdateMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-AttributeUpdateMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+AttributeUpdateMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1719,13 +1419,7 @@ TimeStampedAttributeUpdateMessage::out(std::ostream& os) const
 }
 
 void
-TimeStampedAttributeUpdateMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-TimeStampedAttributeUpdateMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+TimeStampedAttributeUpdateMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1758,13 +1452,7 @@ RequestAttributeUpdateMessage::out(std::ostream& os) const
 }
 
 void
-RequestAttributeUpdateMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-RequestAttributeUpdateMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+RequestAttributeUpdateMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }
@@ -1791,13 +1479,7 @@ RequestClassAttributeUpdateMessage::out(std::ostream& os) const
 }
 
 void
-RequestClassAttributeUpdateMessage::dispatch(AbstractMessageDispatcher& dispatcher)
-{
-  dispatcher.accept(*this);
-}
-
-void
-RequestClassAttributeUpdateMessage::dispatch(ConstAbstractMessageDispatcher& dispatcher) const
+RequestClassAttributeUpdateMessage::dispatch(AbstractMessageDispatcher& dispatcher) const
 {
   dispatcher.accept(*this);
 }

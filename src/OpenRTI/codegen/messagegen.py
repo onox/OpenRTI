@@ -628,8 +628,7 @@ class MessageDataType(StructDataType):
         sourceStream.writeline()
         sourceStream.writeline('virtual const char* getTypeName() const;')
         sourceStream.writeline('virtual void out(std::ostream& os) const;')
-        sourceStream.writeline('virtual void dispatch(AbstractMessageDispatcher& dispatcher);')
-        sourceStream.writeline('virtual void dispatch(ConstAbstractMessageDispatcher& dispatcher) const;')
+        sourceStream.writeline('virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;')
         sourceStream.writeline()
 
         if self.getReliableExpression():
@@ -676,13 +675,7 @@ class MessageDataType(StructDataType):
         sourceStream.writeline()
 
         sourceStream.writeline('void')
-        sourceStream.writeline('{name}::dispatch(AbstractMessageDispatcher& dispatcher)'.format(name = self.getName()))
-        sourceStream.writeline('{')
-        sourceStream.writeline('  dispatcher.accept(*this);')
-        sourceStream.writeline('}')
-        sourceStream.writeline()
-        sourceStream.writeline('void')
-        sourceStream.writeline('{name}::dispatch(ConstAbstractMessageDispatcher& dispatcher) const'.format(name = self.getName()))
+        sourceStream.writeline('{name}::dispatch(AbstractMessageDispatcher& dispatcher) const'.format(name = self.getName()))
         sourceStream.writeline('{')
         sourceStream.writeline('  dispatcher.accept(*this);')
         sourceStream.writeline('}')
@@ -1477,7 +1470,7 @@ class TypeMap(object):
         for t in self.__typeList:
             if not t.isMessage():
                 continue
-            sourceStream.writeline('virtual void accept({name}&) = 0;'.format(name = t.getName()))
+            sourceStream.writeline('virtual void accept(const {name}&) = 0;'.format(name = t.getName()))
 
         sourceStream.popIndent()
         sourceStream.writeline('};')
@@ -1489,42 +1482,6 @@ class TypeMap(object):
         sourceStream.pushIndent()
         sourceStream.writeline('FunctorMessageDispatcher(const T& t) : _t(t) {}')
         sourceStream.writeline('virtual ~FunctorMessageDispatcher() {}')
-        sourceStream.writeline()
-
-        for t in self.__typeList:
-            if not t.isMessage():
-                continue
-            sourceStream.writeline('virtual void accept({name}& message) {{ _t(message); }}'.format(name = t.getName()))
-
-        sourceStream.popIndent()
-        sourceStream.writeline('private:')
-        sourceStream.pushIndent()
-        sourceStream.writeline('const T& _t;')
-        sourceStream.popIndent()
-        sourceStream.writeline('};')
-        sourceStream.writeline()
-
-        sourceStream.writeline('class OPENRTI_LOCAL ConstAbstractMessageDispatcher {')
-        sourceStream.writeline('public:')
-        sourceStream.pushIndent()
-        sourceStream.writeline('virtual ~ConstAbstractMessageDispatcher() {}')
-        sourceStream.writeline()
-
-        for t in self.__typeList:
-            if not t.isMessage():
-                continue
-            sourceStream.writeline('virtual void accept(const {name}&) = 0;'.format(name = t.getName()))
-
-        sourceStream.popIndent()
-        sourceStream.writeline('};')
-        sourceStream.writeline()
-
-        sourceStream.writeline('template<typename T>')
-        sourceStream.writeline('class OPENRTI_LOCAL FunctorConstMessageDispatcher : public ConstAbstractMessageDispatcher {')
-        sourceStream.writeline('public:')
-        sourceStream.pushIndent()
-        sourceStream.writeline('FunctorConstMessageDispatcher(const T& t) : _t(t) {}')
-        sourceStream.writeline('virtual ~FunctorConstMessageDispatcher() {}')
         sourceStream.writeline()
 
         for t in self.__typeList:
