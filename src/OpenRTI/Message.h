@@ -1968,7 +1968,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFaultDescription(const String& value)
   { _faultDescription = value; }
@@ -1988,7 +1988,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationExecution(const String& value)
   { _federationExecution = value; }
@@ -2032,7 +2032,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setCreateFederationExecutionResponseType(const CreateFederationExecutionResponseType& value)
   { _createFederationExecutionResponseType = value; }
@@ -2060,7 +2060,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationExecution(const String& value)
   { _federationExecution = value; }
@@ -2080,7 +2080,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setDestroyFederationExecutionResponseType(const DestroyFederationExecutionResponseType& value)
   { _destroyFederationExecutionResponseType = value; }
@@ -2100,7 +2100,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
 private:
 };
@@ -2112,7 +2112,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationExecutionInformationVector(const FederationExecutionInformationVector& value)
   { _federationExecutionInformationVector = value; }
@@ -2132,7 +2132,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2184,7 +2184,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2204,7 +2204,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2224,7 +2224,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2244,7 +2244,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationExecution(const String& value)
   { _federationExecution = value; }
@@ -2296,7 +2296,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2364,7 +2364,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2392,7 +2392,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2436,7 +2436,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2464,7 +2464,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2516,7 +2516,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2560,7 +2560,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2612,7 +2612,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2648,7 +2648,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2684,7 +2684,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2720,7 +2720,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2772,7 +2772,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2800,7 +2800,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2836,7 +2836,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setLogicalTime(const VariableLengthData& value)
   { _logicalTime = value; }
@@ -2856,7 +2856,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setLogicalTime(const VariableLengthData& value)
   { _logicalTime = value; }
@@ -2876,7 +2876,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setLogicalTime(const VariableLengthData& value)
   { _logicalTime = value; }
@@ -2896,7 +2896,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2924,7 +2924,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2952,7 +2952,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2980,7 +2980,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3016,7 +3016,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3060,7 +3060,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3096,7 +3096,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3140,7 +3140,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setObjectClassHandle(const ObjectClassHandle& value)
   { _objectClassHandle = value; }
@@ -3168,7 +3168,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
@@ -3196,7 +3196,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   virtual bool getReliable() const;
 
@@ -3250,7 +3250,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   virtual bool getReliable() const;
 
@@ -3320,7 +3320,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3356,7 +3356,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3392,7 +3392,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3420,7 +3420,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3456,7 +3456,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3500,7 +3500,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3536,7 +3536,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3580,7 +3580,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3632,7 +3632,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3668,7 +3668,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3720,7 +3720,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   virtual bool getReliable() const;
 
@@ -3774,7 +3774,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   virtual bool getReliable() const;
 
@@ -3844,7 +3844,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3888,7 +3888,7 @@ public:
 
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
-  virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }

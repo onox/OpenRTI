@@ -30,6 +30,8 @@ class AbstractMessageDispatcher;
 
 template<typename F>
 class FunctorMessageDispatcher;
+template<typename F>
+class ConstFunctorMessageDispatcher;
 
 class OPENRTI_API AbstractMessage : public Referenced {
 public:
@@ -37,14 +39,14 @@ public:
 
   virtual const char* getTypeName() const = 0;
   virtual void out(std::ostream& os) const = 0;
-  virtual void dispatch(AbstractMessageDispatcher&) const = 0;
+  virtual void dispatch(const AbstractMessageDispatcher&) const = 0;
 
   template<typename F>
+  void dispatchFunctor(F& functor) const
+  { dispatch(FunctorMessageDispatcher<F>(functor)); }
+  template<typename F>
   void dispatchFunctor(const F& functor) const
-  {
-    FunctorMessageDispatcher<F> dispatcher(functor);
-    dispatch(dispatcher);
-  }
+  { dispatch(ConstFunctorMessageDispatcher<F>(functor)); }
 
   // Returns true if the message needs to be reliably sent or not.
   // The default implementation returns true. Interaction and attribute

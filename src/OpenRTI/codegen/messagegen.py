@@ -628,7 +628,7 @@ class MessageDataType(StructDataType):
         sourceStream.writeline()
         sourceStream.writeline('virtual const char* getTypeName() const;')
         sourceStream.writeline('virtual void out(std::ostream& os) const;')
-        sourceStream.writeline('virtual void dispatch(AbstractMessageDispatcher& dispatcher) const;')
+        sourceStream.writeline('virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;')
         sourceStream.writeline()
 
         if self.getReliableExpression():
@@ -675,7 +675,7 @@ class MessageDataType(StructDataType):
         sourceStream.writeline()
 
         sourceStream.writeline('void')
-        sourceStream.writeline('{name}::dispatch(AbstractMessageDispatcher& dispatcher) const'.format(name = self.getName()))
+        sourceStream.writeline('{name}::dispatch(const AbstractMessageDispatcher& dispatcher) const'.format(name = self.getName()))
         sourceStream.writeline('{')
         sourceStream.writeline('  dispatcher.accept(*this);')
         sourceStream.writeline('}')
@@ -1470,7 +1470,7 @@ class TypeMap(object):
         for t in self.__typeList:
             if not t.isMessage():
                 continue
-            sourceStream.writeline('virtual void accept(const {name}&) = 0;'.format(name = t.getName()))
+            sourceStream.writeline('virtual void accept(const {name}&) const = 0;'.format(name = t.getName()))
 
         sourceStream.popIndent()
         sourceStream.writeline('};')
@@ -1480,14 +1480,35 @@ class TypeMap(object):
         sourceStream.writeline('class OPENRTI_LOCAL FunctorMessageDispatcher : public AbstractMessageDispatcher {')
         sourceStream.writeline('public:')
         sourceStream.pushIndent()
-        sourceStream.writeline('FunctorMessageDispatcher(const T& t) : _t(t) {}')
+        sourceStream.writeline('FunctorMessageDispatcher(T& t) : _t(t) {}')
         sourceStream.writeline('virtual ~FunctorMessageDispatcher() {}')
         sourceStream.writeline()
 
         for t in self.__typeList:
             if not t.isMessage():
                 continue
-            sourceStream.writeline('virtual void accept(const {name}& message) {{ _t(message); }}'.format(name = t.getName()))
+            sourceStream.writeline('virtual void accept(const {name}& message) const {{ _t(message); }}'.format(name = t.getName()))
+
+        sourceStream.popIndent()
+        sourceStream.writeline('private:')
+        sourceStream.pushIndent()
+        sourceStream.writeline('T& _t;')
+        sourceStream.popIndent()
+        sourceStream.writeline('};')
+        sourceStream.writeline()
+
+        sourceStream.writeline('template<typename T>')
+        sourceStream.writeline('class OPENRTI_LOCAL ConstFunctorMessageDispatcher : public AbstractMessageDispatcher {')
+        sourceStream.writeline('public:')
+        sourceStream.pushIndent()
+        sourceStream.writeline('ConstFunctorMessageDispatcher(const T& t) : _t(t) {}')
+        sourceStream.writeline('virtual ~ConstFunctorMessageDispatcher() {}')
+        sourceStream.writeline()
+
+        for t in self.__typeList:
+            if not t.isMessage():
+                continue
+            sourceStream.writeline('virtual void accept(const {name}& message) const {{ _t(message); }}'.format(name = t.getName()))
 
         sourceStream.popIndent()
         sourceStream.writeline('private:')
