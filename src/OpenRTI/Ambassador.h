@@ -406,10 +406,7 @@ public:
           insertFederationMessage = static_cast<const InsertFederationExecutionMessage*>(response.get());
           // Put that into a factory into the ambassador FIXME
           //// FIXME: instead of a connect we need to cache message filters???
-          std::string federateName; // FIXME
-          FederateHandle federateHandle; // FIXME
-          _federate = createFederate(federateType, federateName, federateHandle, federationExecutionName,
-                                     *insertFederationMessage, _connect, federateAmbassador);
+          _federate = createFederate(*insertFederationMessage, _connect, federateAmbassador);
         } else if (_federate.valid()) {
 
           _federate->dispatchInternalMessage(*response);
@@ -2675,9 +2672,7 @@ public:
     }
   }
 
-  virtual AbstractFederate<Traits>* createFederate(const std::string& federateType, const std::string& federateName,
-                                                   const FederateHandle& federateHandle, const std::string& federationName,
-                                                   const InsertFederationExecutionMessage& insertFederationExecution,
+  virtual AbstractFederate<Traits>* createFederate(const InsertFederationExecutionMessage& insertFederationExecution,
                                                    SharedPtr<AbstractConnect> connect, FederateAmbassador* federateAmbassador) = 0;
 
   virtual void connectionLost(const std::string& faultDescription)

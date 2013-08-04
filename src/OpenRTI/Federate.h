@@ -327,14 +327,10 @@ public:
   };
   typedef std::map<ObjectInstanceHandle, ObjectInstance> ObjectInstanceHandleMap;
 
-  Federate(const std::string& federateType, const std::string& federateName,
-           const FederateHandle& federateHandle, SharedPtr<AbstractConnect> connect,
+  Federate(SharedPtr<AbstractConnect> connect,
            const InsertFederationExecutionMessage& insertFederationExecution,
            const LogicalTimeFactory& logicalTimeFactory) :
     _federationConnect(connect),
-    _federateType(federateType),
-    _federateName(federateName),
-    _federateHandle(federateHandle),
     _federationHandle(insertFederationExecution.getFederationHandle()),
     _defaultResignAction(CANCEL_THEN_DELETE_THEN_DIVEST),
     _objectClassRelevanceAdvisorySwitchEnabled(false),

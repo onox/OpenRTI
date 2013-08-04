@@ -276,13 +276,11 @@ public:
   using Federate<RTI1516Traits, LogicalTimeFactory>::getTimeConstrainedEnabled;
   using Federate<RTI1516Traits, LogicalTimeFactory>::getFlushQueueMode;
 
-  RTI1516Federate(const std::string& federateType, const std::string& federateName,
-                  const FederateHandle& federateHandle, SharedPtr<AbstractConnect> connect,
+  RTI1516Federate(SharedPtr<AbstractConnect> connect,
                   const InsertFederationExecutionMessage& insertFederationExecution,
                   const LogicalTimeFactory& logicalTimeFactory,
                   rti1516::FederateAmbassador* federateAmbassador) :
-    Federate<RTI1516Traits, LogicalTimeFactory>(federateType, federateName, federateHandle, connect,
-                                                insertFederationExecution, logicalTimeFactory),
+    Federate<RTI1516Traits, LogicalTimeFactory>(connect, insertFederationExecution, logicalTimeFactory),
     _federateAmbassador(federateAmbassador)
   { }
 
@@ -1331,9 +1329,7 @@ public:
   }
 
   virtual OpenRTI::AbstractFederate<Traits>*
-  createFederate(const std::string& federateType, const std::string& federateName,
-                 const FederateHandle& federateHandle, const std::string& federationName,
-                 const InsertFederationExecutionMessage& insertFederationExecution,
+  createFederate(const InsertFederationExecutionMessage& insertFederationExecution,
                  SharedPtr<AbstractConnect> connect, rti1516::FederateAmbassador* federateAmbassador)
   {
     std::string logicalTimeFactoryName = insertFederationExecution.getLogicalTimeFactoryName();
@@ -1360,7 +1356,7 @@ public:
           *logicalTime = time;
           *logicalTimeInterval = interval;
           if (*logicalTime == time && *logicalTimeInterval == interval) {
-            return new RTI1516Federate<RTI1516integer64TimeFactory>(federateType, federateName, federateHandle, connect, insertFederationExecution, RTI1516integer64TimeFactory(ucsToUtf8(time.implementationName())),
+            return new RTI1516Federate<RTI1516integer64TimeFactory>(connect, insertFederationExecution, RTI1516integer64TimeFactory(ucsToUtf8(time.implementationName())),
                                        federateAmbassador);
           }
         }
@@ -1377,7 +1373,7 @@ public:
           *logicalTime = time;
           *logicalTimeInterval = interval;
           if (*logicalTime == time && *logicalTimeInterval == interval) {
-            return new RTI1516Federate<RTI1516float64TimeFactory>(federateType, federateName, federateHandle, connect, insertFederationExecution, RTI1516float64TimeFactory(ucsToUtf8(time.implementationName())),
+            return new RTI1516Federate<RTI1516float64TimeFactory>(connect, insertFederationExecution, RTI1516float64TimeFactory(ucsToUtf8(time.implementationName())),
                                        federateAmbassador);
           }
         }
@@ -1386,7 +1382,7 @@ public:
     }
 
     // Ok, we will just need to use the opaque logical time factory
-    return new RTI1516Federate<RTI1516LogicalTimeFactory>(federateType, federateName, federateHandle, connect, insertFederationExecution, RTI1516LogicalTimeFactory(logicalTimeFactory), federateAmbassador);
+    return new RTI1516Federate<RTI1516LogicalTimeFactory>(connect, insertFederationExecution, RTI1516LogicalTimeFactory(logicalTimeFactory), federateAmbassador);
   }
 
   void ensureConnected(const std::string& federationExecutionName)

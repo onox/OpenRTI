@@ -229,11 +229,10 @@ public:
 
 class OPENRTI_LOCAL RTI13Federate : public OpenRTI::Federate<OpenRTI::RTI13Traits, OpenRTI::RTI13LogicalTimeFactory> {
 public:
-  RTI13Federate(const std::string& federateType, const std::string& federateName,
-                const OpenRTI::FederateHandle& federateHandle, SharedPtr<AbstractConnect> connect,
+  RTI13Federate(SharedPtr<AbstractConnect> connect,
                 const OpenRTI::InsertFederationExecutionMessage& insertFederationExecution,
                 RTI::FederateAmbassador* federateAmbassador) :
-    Federate<OpenRTI::RTI13Traits, OpenRTI::RTI13LogicalTimeFactory>(federateType, federateName, federateHandle, connect, insertFederationExecution,
+    Federate<OpenRTI::RTI13Traits, OpenRTI::RTI13LogicalTimeFactory>(connect, insertFederationExecution,
                                                                      RTI13LogicalTimeFactory(insertFederationExecution.getLogicalTimeFactoryName())),
     _federateAmbassador(federateAmbassador)
   {
@@ -1072,12 +1071,10 @@ public:
   { }
 
   virtual OpenRTI::AbstractFederate<Traits>*
-  createFederate(const std::string& federateType, const std::string& federateName,
-                 const OpenRTI::FederateHandle& federateHandle, const std::string& federationName,
-                 const OpenRTI::InsertFederationExecutionMessage& insertFederationExecution,
+  createFederate(const OpenRTI::InsertFederationExecutionMessage& insertFederationExecution,
                  OpenRTI::SharedPtr<OpenRTI::AbstractConnect> connect, RTI::FederateAmbassador* federateAmbassador)
   {
-    return new OpenRTI::RTI13Federate(federateType, federateName, federateHandle, connect, insertFederationExecution, federateAmbassador);
+    return new OpenRTI::RTI13Federate(connect, insertFederationExecution, federateAmbassador);
   }
 
   struct ConcurrentAccessGuard {
