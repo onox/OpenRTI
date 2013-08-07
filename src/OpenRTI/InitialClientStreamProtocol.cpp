@@ -47,9 +47,9 @@ InitialClientStreamProtocol::~InitialClientStreamProtocol()
 void
 InitialClientStreamProtocol::setConnectOptions(StringStringListMap connectOptions)
 {
-  // The rti version we support. This is currently fixed "3"
+  // The rti version we support. This is currently fixed "4beta"
   connectOptions["version"].clear();
-  connectOptions["version"].push_back("3");
+  connectOptions["version"].push_back("4beta");
   // The servers configuration might have configured compression algorithms
   // that are not available in this current version. Make sure these are
   // not announced to the server.
