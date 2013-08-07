@@ -631,6 +631,7 @@
   <message type="TimeStampedInteraction">
     <field name="FederationHandle" type="FederationHandle"/>
     <field name="InteractionClassHandle" type="InteractionClassHandle"/>
+    <field name="OrderType" type="OrderType"/>
     <field name="TransportationType" type="TransportationType"/>
     <field name="Tag" type="VariableLengthData"/>
     <field name="TimeStamp" type="VariableLengthData"/>
@@ -715,6 +716,7 @@
   <message type="TimeStampedDeleteObjectInstance">
     <field name="FederationHandle" type="FederationHandle"/>
     <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
+    <field name="OrderType" type="OrderType"/>
     <field name="Tag" type="VariableLengthData"/>
     <field name="TimeStamp" type="VariableLengthData"/>
     <field name="MessageRetractionHandle" type="MessageRetractionHandle"/>
@@ -749,6 +751,7 @@
     <field name="Tag" type="VariableLengthData"/>
     <field name="TimeStamp" type="VariableLengthData"/>
     <field name="MessageRetractionHandle" type="MessageRetractionHandle"/>
+    <field name="OrderType" type="OrderType"/>
     <field name="TransportationType" type="TransportationType"/>
     <field name="AttributeValues" type="AttributeValueVector"/>
     <reliable expression="getTransportationType() == RELIABLE"/>

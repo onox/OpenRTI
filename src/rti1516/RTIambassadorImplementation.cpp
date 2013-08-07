@@ -746,19 +746,20 @@ public:
         rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle;
         rti1516ObjectInstanceHandle = rti1516::ObjectInstanceHandleFriend::createHandle(message.getObjectInstanceHandle());
 
+        rti1516::OrderType rti1516OrderType = translate(message.getOrderType());
         rti1516::TransportationType rti1516TransportationType = translate(message.getTransportationType());
 
         if (flushQueueMode) {
           rti1516::MessageRetractionHandle rti1516MessageRetractionHandle;
           rti1516MessageRetractionHandle = rti1516::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
-          _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516::TIMESTAMP,
+          _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516OrderType,
                                                       rti1516TransportationType, logicalTime, rti1516::TIMESTAMP, rti1516MessageRetractionHandle);
         } else {
           if (timeConstrainedEnabled) {
-            _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516::TIMESTAMP,
+            _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516OrderType,
                                                         rti1516TransportationType, logicalTime, rti1516::TIMESTAMP);
           } else {
-            _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516::TIMESTAMP,
+            _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516OrderType,
                                                         rti1516TransportationType, logicalTime, rti1516::RECEIVE);
           }
         }
@@ -798,17 +799,18 @@ public:
       rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle;
       rti1516ObjectInstanceHandle = rti1516::ObjectInstanceHandleFriend::createHandle(message.getObjectInstanceHandle());
       rti1516::VariableLengthData rti1516Tag = rti1516::VariableLengthDataFriend::create(message.getTag());
+      rti1516::OrderType rti1516OrderType = translate(message.getOrderType());
       if (flushQueueMode) {
         rti1516::MessageRetractionHandle rti1516MessageRetractionHandle;
         rti1516MessageRetractionHandle = rti1516::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
-        _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516::TIMESTAMP,
+        _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516OrderType,
                                                   logicalTime, rti1516::TIMESTAMP, rti1516MessageRetractionHandle);
       } else {
         if (timeConstrainedEnabled) {
-          _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516::TIMESTAMP,
+          _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516OrderType,
                                                     logicalTime, rti1516::TIMESTAMP);
         } else {
-          _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516::TIMESTAMP,
+          _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516OrderType,
                                                     logicalTime, rti1516::RECEIVE);
         }
       }
@@ -876,21 +878,21 @@ public:
       rti1516::VariableLengthData rti1516Tag;
       rti1516Tag = rti1516::VariableLengthDataFriend::create(message.getTag());
       rti1516::OrderType rti1516OrderType;
-      rti1516OrderType = translate(OpenRTI::TIMESTAMP);
+      rti1516OrderType = translate(message.getOrderType());
       rti1516::TransportationType rti1516TransportationType;
       rti1516TransportationType = translate(message.getTransportationType());
 
       if (flushQueueMode) {
         rti1516::MessageRetractionHandle rti1516MessageRetractionHandle;
         rti1516MessageRetractionHandle = rti1516::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
-        _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516::TIMESTAMP,
+        _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516OrderType,
                                                 rti1516TransportationType, logicalTime, rti1516::TIMESTAMP, rti1516MessageRetractionHandle);
       } else {
         if (timeConstrainedEnabled) {
-          _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516::TIMESTAMP,
+          _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516OrderType,
                                                   rti1516TransportationType, logicalTime, rti1516::TIMESTAMP);
         } else {
-          _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516::TIMESTAMP,
+          _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516OrderType,
                                                   rti1516TransportationType, logicalTime, rti1516::RECEIVE);
         }
       }

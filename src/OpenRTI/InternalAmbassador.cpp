@@ -327,7 +327,10 @@ InternalAmbassador::acceptInternalMessage(const InteractionMessage& message)
 void
 InternalAmbassador::acceptInternalMessage(const TimeStampedInteractionMessage& message)
 {
-  queueTimeStampedMessage(message.getTimeStamp(), message);
+  if (message.getOrderType() == TIMESTAMP)
+    queueTimeStampedMessage(message.getTimeStamp(), message);
+  else
+    queueReceiveOrderCallback(message);
 }
 
 void
@@ -386,7 +389,10 @@ InternalAmbassador::acceptInternalMessage(const DeleteObjectInstanceMessage& mes
 void
 InternalAmbassador::acceptInternalMessage(const TimeStampedDeleteObjectInstanceMessage& message)
 {
-  queueTimeStampedMessage(message.getTimeStamp(), message);
+  if (message.getOrderType() == TIMESTAMP)
+    queueTimeStampedMessage(message.getTimeStamp(), message);
+  else
+    queueReceiveOrderCallback(message);
 }
 
 void
@@ -398,7 +404,10 @@ InternalAmbassador::acceptInternalMessage(const AttributeUpdateMessage& message)
 void
 InternalAmbassador::acceptInternalMessage(const TimeStampedAttributeUpdateMessage& message)
 {
-  queueTimeStampedMessage(message.getTimeStamp(), message);
+  if (message.getOrderType() == TIMESTAMP)
+    queueTimeStampedMessage(message.getTimeStamp(), message);
+  else
+    queueReceiveOrderCallback(message);
 }
 
 void

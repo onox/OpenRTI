@@ -3268,6 +3268,13 @@ public:
   const InteractionClassHandle& getInteractionClassHandle() const
   { return _interactionClassHandle; }
 
+  void setOrderType(const OrderType& value)
+  { _orderType = value; }
+  OrderType& getOrderType()
+  { return _orderType; }
+  const OrderType& getOrderType() const
+  { return _orderType; }
+
   void setTransportationType(const TransportationType& value)
   { _transportationType = value; }
   TransportationType& getTransportationType()
@@ -3306,6 +3313,7 @@ public:
 private:
   FederationHandle _federationHandle;
   InteractionClassHandle _interactionClassHandle;
+  OrderType _orderType;
   TransportationType _transportationType;
   VariableLengthData _tag;
   VariableLengthData _timeStamp;
@@ -3684,6 +3692,13 @@ public:
   const ObjectInstanceHandle& getObjectInstanceHandle() const
   { return _objectInstanceHandle; }
 
+  void setOrderType(const OrderType& value)
+  { _orderType = value; }
+  OrderType& getOrderType()
+  { return _orderType; }
+  const OrderType& getOrderType() const
+  { return _orderType; }
+
   void setTag(const VariableLengthData& value)
   { _tag = value; }
   VariableLengthData& getTag()
@@ -3708,6 +3723,7 @@ public:
 private:
   FederationHandle _federationHandle;
   ObjectInstanceHandle _objectInstanceHandle;
+  OrderType _orderType;
   VariableLengthData _tag;
   VariableLengthData _timeStamp;
   MessageRetractionHandle _messageRetractionHandle;
@@ -3813,6 +3829,13 @@ public:
   const MessageRetractionHandle& getMessageRetractionHandle() const
   { return _messageRetractionHandle; }
 
+  void setOrderType(const OrderType& value)
+  { _orderType = value; }
+  OrderType& getOrderType()
+  { return _orderType; }
+  const OrderType& getOrderType() const
+  { return _orderType; }
+
   void setTransportationType(const TransportationType& value)
   { _transportationType = value; }
   TransportationType& getTransportationType()
@@ -3833,6 +3856,7 @@ private:
   VariableLengthData _tag;
   VariableLengthData _timeStamp;
   MessageRetractionHandle _messageRetractionHandle;
+  OrderType _orderType;
   TransportationType _transportationType;
   AttributeValueVector _attributeValues;
 };
@@ -5773,6 +5797,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeStampedInte
   os << ", ";
   os << "interactionClassHandle: " << value.getInteractionClassHandle();
   os << ", ";
+  os << "orderType: " << value.getOrderType();
+  os << ", ";
   os << "transportationType: " << value.getTransportationType();
   os << ", ";
   os << "tag: " << value.getTag();
@@ -5927,6 +5953,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeStampedDele
   os << ", ";
   os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
   os << ", ";
+  os << "orderType: " << value.getOrderType();
+  os << ", ";
   os << "tag: " << value.getTag();
   os << ", ";
   os << "timeStamp: " << value.getTimeStamp();
@@ -5968,6 +5996,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeStampedAttr
   os << "timeStamp: " << value.getTimeStamp();
   os << ", ";
   os << "messageRetractionHandle: " << value.getMessageRetractionHandle();
+  os << ", ";
+  os << "orderType: " << value.getOrderType();
   os << ", ";
   os << "transportationType: " << value.getTransportationType();
   os << ", ";

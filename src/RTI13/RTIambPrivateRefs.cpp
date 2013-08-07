@@ -595,11 +595,7 @@ public:
     }
     try {
       RTI::TransportType transportType = rti13TransportType(message.getTransportationType());
-      RTI::OrderType orderType;
-      if (timeConstrainedEnabled)
-        orderType = rti13OrderType(OpenRTI::TIMESTAMP);
-      else
-        orderType = rti13OrderType(OpenRTI::RECEIVE);
+      RTI::OrderType orderType = rti13OrderType(message.getOrderType());
 
       AttributeHandleValuePairSetCallback attributeHandleValues(transportType, orderType);
       RTI::EventRetractionHandle eventRetractionHandle = rti13MessageRetractionHandle(message.getMessageRetractionHandle());
@@ -646,11 +642,7 @@ public:
       return;
     }
     try {
-      RTI::OrderType orderType;
-      if (timeConstrainedEnabled)
-        orderType = rti13OrderType(OpenRTI::TIMESTAMP);
-      else
-        orderType = rti13OrderType(OpenRTI::RECEIVE);
+      RTI::OrderType orderType = rti13OrderType(message.getOrderType());
 
       RTI::EventRetractionHandle eventRetractionHandle = rti13MessageRetractionHandle(message.getMessageRetractionHandle());
       _federateAmbassador->removeObjectInstance(rti13Handle(message.getObjectInstanceHandle()), logicalTime,
@@ -701,11 +693,7 @@ public:
     try {
       RTI::InteractionClassHandle rti13InteractionClassHandle = rti13Handle(interactionClassHandle);
       RTI::TransportType transportType = rti13TransportType(message.getTransportationType());
-      RTI::OrderType orderType;
-      if (timeConstrainedEnabled)
-        orderType = rti13OrderType(OpenRTI::TIMESTAMP);
-      else
-        orderType = rti13OrderType(OpenRTI::RECEIVE);
+      RTI::OrderType orderType = rti13OrderType(message.getOrderType());
       RTI::EventRetractionHandle eventRetractionHandle = rti13MessageRetractionHandle(message.getMessageRetractionHandle());
       // FIXME no regions so far
       ParameterHandleValuePairSetCallback parameterHandleArray(transportType, orderType, 0);

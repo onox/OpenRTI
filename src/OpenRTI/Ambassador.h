@@ -1511,42 +1511,42 @@ public:
       if (!_federate.valid())
         Traits::throwFederateNotExecutionMember();
 
-      if (!getTimeManagement()->getTimeRegulationEnabled()) {
-        updateAttributeValues(objectInstanceHandle, attributeValues, tag);
-        return MessageRetractionHandle();
-      } else {
-        Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
-        if (!objectInstance)
-          Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-        /// FIXME divide into 4 parcels!!!
-        TransportationType transportationType = BEST_EFFORT;
-        for (std::vector<OpenRTI::AttributeValue>::const_iterator j = attributeValues.begin(); j != attributeValues.end(); ++j) {
-          const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(j->getAttributeHandle());
-          if (!instanceAttribute)
-            Traits::throwAttributeNotDefined(j->getAttributeHandle().toString());
-          if (!instanceAttribute->getIsOwnedByFederate())
-            Traits::throwAttributeNotOwned(j->getAttributeHandle().toString());
-          if (instanceAttribute->getTransportationType() == RELIABLE)
-            transportationType = RELIABLE;
-        }
-        if (getTimeManagement()->logicalTimeAlreadyPassed(nativeLogicalTime))
-          Traits::throwInvalidLogicalTime(getTimeManagement()->logicalTimeToString(nativeLogicalTime));
-
-        MessageRetractionHandle messageRetractionHandle = getNextMessageRetractionHandle();
-
-        SharedPtr<TimeStampedAttributeUpdateMessage> request;
-        request = new TimeStampedAttributeUpdateMessage;
-        request->setFederationHandle(getFederationHandle());
-        request->setObjectInstanceHandle(objectInstanceHandle);
-        request->getAttributeValues().swap(attributeValues);
-        request->setTimeStamp(getTimeManagement()->encodeLogicalTime(nativeLogicalTime));
-        request->setTag(tag);
-        request->setTransportationType(transportationType);
-        request->setMessageRetractionHandle(messageRetractionHandle);
-        send(request);
-
-        return messageRetractionHandle;
+      Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+      if (!objectInstance)
+        Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
+      /// FIXME divide into 4 parcels!!!
+      TransportationType transportationType = BEST_EFFORT;
+      for (std::vector<OpenRTI::AttributeValue>::const_iterator j = attributeValues.begin(); j != attributeValues.end(); ++j) {
+        const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(j->getAttributeHandle());
+        if (!instanceAttribute)
+          Traits::throwAttributeNotDefined(j->getAttributeHandle().toString());
+        if (!instanceAttribute->getIsOwnedByFederate())
+          Traits::throwAttributeNotOwned(j->getAttributeHandle().toString());
+        if (instanceAttribute->getTransportationType() == RELIABLE)
+          transportationType = RELIABLE;
       }
+      bool timeRegulationEnabled = getTimeManagement()->getTimeRegulationEnabled();
+      if (timeRegulationEnabled && getTimeManagement()->logicalTimeAlreadyPassed(nativeLogicalTime))
+        Traits::throwInvalidLogicalTime(getTimeManagement()->logicalTimeToString(nativeLogicalTime));
+
+      MessageRetractionHandle messageRetractionHandle = getNextMessageRetractionHandle();
+
+      SharedPtr<TimeStampedAttributeUpdateMessage> request;
+      request = new TimeStampedAttributeUpdateMessage;
+      request->setFederationHandle(getFederationHandle());
+      request->setObjectInstanceHandle(objectInstanceHandle);
+      request->getAttributeValues().swap(attributeValues);
+      request->setTimeStamp(getTimeManagement()->encodeLogicalTime(nativeLogicalTime));
+      request->setTag(tag);
+      if (timeRegulationEnabled)
+        request->setOrderType(TIMESTAMP);
+      else
+        request->setOrderType(RECEIVE);
+      request->setTransportationType(transportationType);
+      request->setMessageRetractionHandle(messageRetractionHandle);
+      send(request);
+
+      return messageRetractionHandle;
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::Exception& e) {
@@ -1610,36 +1610,36 @@ public:
       if (!_federate.valid())
         Traits::throwFederateNotExecutionMember();
 
-      if (!getTimeManagement()->getTimeRegulationEnabled()) {
-        sendInteraction(interactionClassHandle, parameterValues, tag);
-        return MessageRetractionHandle();
-      } else {
-        const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
-        if (!interactionClass)
-          Traits::throwInteractionClassNotDefined(interactionClassHandle.toString());
-        if (!interactionClass->isPublished())
-          Traits::throwInteractionClassNotPublished(interactionClassHandle.toString());
-        for (std::vector<ParameterValue>::const_iterator i = parameterValues.begin(); i != parameterValues.end(); ++i)
-          if (!interactionClass->getParameter(i->getParameterHandle()))
-            Traits::throwInteractionParameterNotDefined(i->getParameterHandle().toString());
-        if (getTimeManagement()->logicalTimeAlreadyPassed(logicalTime))
-          Traits::throwInvalidLogicalTime(getTimeManagement()->logicalTimeToString(logicalTime));
+      const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
+      if (!interactionClass)
+        Traits::throwInteractionClassNotDefined(interactionClassHandle.toString());
+      if (!interactionClass->isPublished())
+        Traits::throwInteractionClassNotPublished(interactionClassHandle.toString());
+      for (std::vector<ParameterValue>::const_iterator i = parameterValues.begin(); i != parameterValues.end(); ++i)
+        if (!interactionClass->getParameter(i->getParameterHandle()))
+          Traits::throwInteractionParameterNotDefined(i->getParameterHandle().toString());
+      bool timeRegulationEnabled = getTimeManagement()->getTimeRegulationEnabled();
+      if (timeRegulationEnabled && getTimeManagement()->logicalTimeAlreadyPassed(logicalTime))
+        Traits::throwInvalidLogicalTime(getTimeManagement()->logicalTimeToString(logicalTime));
 
-        MessageRetractionHandle messageRetractionHandle = getNextMessageRetractionHandle();
+      MessageRetractionHandle messageRetractionHandle = getNextMessageRetractionHandle();
 
-        SharedPtr<TimeStampedInteractionMessage> request;
-        request = new TimeStampedInteractionMessage;
-        request->setFederationHandle(getFederationHandle());
-        request->setInteractionClassHandle(interactionClassHandle);
-        request->setTransportationType(interactionClass->getTransportationType());
-        request->setTag(tag);
-        request->setTimeStamp(getTimeManagement()->encodeLogicalTime(logicalTime));
-        request->setMessageRetractionHandle(messageRetractionHandle);
-        request->getParameterValues().swap(parameterValues);
-        send(request);
+      SharedPtr<TimeStampedInteractionMessage> request;
+      request = new TimeStampedInteractionMessage;
+      request->setFederationHandle(getFederationHandle());
+      request->setInteractionClassHandle(interactionClassHandle);
+      if (timeRegulationEnabled)
+        request->setOrderType(TIMESTAMP);
+      else
+        request->setOrderType(RECEIVE);
+      request->setTransportationType(interactionClass->getTransportationType());
+      request->setTag(tag);
+      request->setTimeStamp(getTimeManagement()->encodeLogicalTime(logicalTime));
+      request->setMessageRetractionHandle(messageRetractionHandle);
+      request->getParameterValues().swap(parameterValues);
+      send(request);
 
-        return messageRetractionHandle;
-      }
+      return messageRetractionHandle;
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::Exception& e) {
@@ -1694,37 +1694,37 @@ public:
     try {
       if (!_federate.valid())
         Traits::throwFederateNotExecutionMember();
-      if (!getTimeManagement()->getTimeRegulationEnabled()) {
-        deleteObjectInstance(objectInstanceHandle, tag);
-        return MessageRetractionHandle();
-      } else {
-        Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
-        if (!objectInstance)
-          Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-        if (!objectInstance->isOwnedByFederate())
-          Traits::throwDeletePrivilegeNotHeld(objectInstanceHandle.toString());
-        if (getTimeManagement()->logicalTimeAlreadyPassed(logicalTime))
-          Traits::throwInvalidLogicalTime(getTimeManagement()->logicalTimeToString(logicalTime));
+      Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+      if (!objectInstance)
+        Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
+      if (!objectInstance->isOwnedByFederate())
+        Traits::throwDeletePrivilegeNotHeld(objectInstanceHandle.toString());
+      bool timeRegulationEnabled = getTimeManagement()->getTimeRegulationEnabled();
+      if (timeRegulationEnabled && getTimeManagement()->logicalTimeAlreadyPassed(logicalTime))
+        Traits::throwInvalidLogicalTime(getTimeManagement()->logicalTimeToString(logicalTime));
 
-        MessageRetractionHandle messageRetractionHandle = getNextMessageRetractionHandle();
+      MessageRetractionHandle messageRetractionHandle = getNextMessageRetractionHandle();
 
-        SharedPtr<TimeStampedDeleteObjectInstanceMessage> request;
-        request = new TimeStampedDeleteObjectInstanceMessage;
-        request->setFederationHandle(getFederationHandle());
-        request->setObjectInstanceHandle(objectInstanceHandle);
-        request->setTag(tag);
-        request->setTimeStamp(getTimeManagement()->encodeLogicalTime(logicalTime));
-        request->setMessageRetractionHandle(messageRetractionHandle);
+      SharedPtr<TimeStampedDeleteObjectInstanceMessage> request;
+      request = new TimeStampedDeleteObjectInstanceMessage;
+      request->setFederationHandle(getFederationHandle());
+      request->setObjectInstanceHandle(objectInstanceHandle);
+      if (timeRegulationEnabled)
+        request->setOrderType(TIMESTAMP);
+      else
+        request->setOrderType(RECEIVE);
+      request->setTag(tag);
+      request->setTimeStamp(getTimeManagement()->encodeLogicalTime(logicalTime));
+      request->setMessageRetractionHandle(messageRetractionHandle);
 
-        send(request);
+      send(request);
 
-        // FIXME do this once the logical time has passed
-        // When implementing message retraction this needs to be delayed probably ...
-        // Note that this also sends the unreference message just past the delete
-        // _releaseObjectInstance(objectInstanceHandle);
+      // FIXME do this once the logical time has passed
+      // When implementing message retraction this needs to be delayed probably ...
+      // Note that this also sends the unreference message just past the delete
+      // _releaseObjectInstance(objectInstanceHandle);
 
-        return messageRetractionHandle;
-      }
+      return messageRetractionHandle;
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::Exception& e) {

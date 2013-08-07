@@ -1288,6 +1288,7 @@ public:
   {
     writeFederationHandle(value.getFederationHandle());
     writeInteractionClassHandle(value.getInteractionClassHandle());
+    writeOrderType(value.getOrderType());
     writeTransportationType(value.getTransportationType());
     writeVariableLengthData(value.getTag());
     writeVariableLengthData(value.getTimeStamp());
@@ -1365,6 +1366,7 @@ public:
   {
     writeFederationHandle(value.getFederationHandle());
     writeObjectInstanceHandle(value.getObjectInstanceHandle());
+    writeOrderType(value.getOrderType());
     writeVariableLengthData(value.getTag());
     writeVariableLengthData(value.getTimeStamp());
     writeMessageRetractionHandle(value.getMessageRetractionHandle());
@@ -1386,6 +1388,7 @@ public:
     writeVariableLengthData(value.getTag());
     writeVariableLengthData(value.getTimeStamp());
     writeMessageRetractionHandle(value.getMessageRetractionHandle());
+    writeOrderType(value.getOrderType());
     writeTransportationType(value.getTransportationType());
     writeAttributeValueVector(value.getAttributeValues());
   }
@@ -3181,6 +3184,7 @@ public:
   {
     readFederationHandle(value.getFederationHandle());
     readInteractionClassHandle(value.getInteractionClassHandle());
+    readOrderType(value.getOrderType());
     readTransportationType(value.getTransportationType());
     readVariableLengthData(value.getTag());
     readVariableLengthData(value.getTimeStamp());
@@ -3258,6 +3262,7 @@ public:
   {
     readFederationHandle(value.getFederationHandle());
     readObjectInstanceHandle(value.getObjectInstanceHandle());
+    readOrderType(value.getOrderType());
     readVariableLengthData(value.getTag());
     readVariableLengthData(value.getTimeStamp());
     readMessageRetractionHandle(value.getMessageRetractionHandle());
@@ -3279,6 +3284,7 @@ public:
     readVariableLengthData(value.getTag());
     readVariableLengthData(value.getTimeStamp());
     readMessageRetractionHandle(value.getMessageRetractionHandle());
+    readOrderType(value.getOrderType());
     readTransportationType(value.getTransportationType());
     readAttributeValueVector(value.getAttributeValues());
   }
