@@ -1449,7 +1449,7 @@ public:
   }
 
   void updateAttributeValues(ObjectInstanceHandle objectInstanceHandle,
-                             std::vector<OpenRTI::AttributeValue>& attributeValues,
+                             AttributeValueVector& attributeValues,
                              const VariableLengthData& tag)
     throw (ObjectInstanceNotKnown,
            AttributeNotDefined,
@@ -1465,26 +1465,33 @@ public:
       Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
       if (!objectInstance)
         Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      /// FIXME divide into 2 parcels!!!
-      TransportationType transportationType = BEST_EFFORT;
-      for (std::vector<OpenRTI::AttributeValue>::const_iterator j = attributeValues.begin(); j != attributeValues.end(); ++j) {
-        const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(j->getAttributeHandle());
+      // passels
+      AttributeValueVector passels[2];
+      for (std::vector<OpenRTI::AttributeValue>::iterator i = attributeValues.begin(); i != attributeValues.end(); ++i) {
+        const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(i->getAttributeHandle());
         if (!instanceAttribute)
-          Traits::throwAttributeNotDefined(j->getAttributeHandle().toString());
+          Traits::throwAttributeNotDefined(i->getAttributeHandle().toString());
         if (!instanceAttribute->getIsOwnedByFederate())
-          Traits::throwAttributeNotOwned(j->getAttributeHandle().toString());
-        if (instanceAttribute->getTransportationType() == RELIABLE)
-          transportationType = RELIABLE;
+          Traits::throwAttributeNotOwned(i->getAttributeHandle().toString());
+        unsigned index = instanceAttribute->getTransportationType();
+        passels[index].reserve(attributeValues.size());
+        passels[index].push_back(AttributeValue());
+        passels[index].back().setAttributeHandle(i->getAttributeHandle());
+        passels[index].back().getValue().swap(i->getValue());
       }
 
-      SharedPtr<AttributeUpdateMessage> request;
-      request = new AttributeUpdateMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectInstanceHandle(objectInstanceHandle);
-      request->getAttributeValues().swap(attributeValues);
-      request->setTransportationType(transportationType);
-      request->setTag(tag);
-      send(request);
+      for (unsigned i = 0; i < 2; ++i) {
+        if (passels[i].empty())
+          continue;
+        SharedPtr<AttributeUpdateMessage> request;
+        request = new AttributeUpdateMessage;
+        request->setFederationHandle(getFederationHandle());
+        request->setObjectInstanceHandle(objectInstanceHandle);
+        request->getAttributeValues().swap(passels[i]);
+        request->setTransportationType(TransportationType(i));
+        request->setTag(tag);
+        send(request);
+      }
 
     } catch (const typename Traits::Exception&) {
       throw;
@@ -1495,7 +1502,7 @@ public:
   }
 
   MessageRetractionHandle updateAttributeValues(ObjectInstanceHandle objectInstanceHandle,
-                                                std::vector<OpenRTI::AttributeValue>& attributeValues,
+                                                AttributeValueVector& attributeValues,
                                                 const VariableLengthData& tag,
                                                 const NativeLogicalTime& nativeLogicalTime)
     throw (ObjectInstanceNotKnown,
@@ -1510,41 +1517,50 @@ public:
     try {
       if (!_federate.valid())
         Traits::throwFederateNotExecutionMember();
-
       Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
       if (!objectInstance)
         Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      /// FIXME divide into 4 parcels!!!
-      TransportationType transportationType = BEST_EFFORT;
-      for (std::vector<OpenRTI::AttributeValue>::const_iterator j = attributeValues.begin(); j != attributeValues.end(); ++j) {
-        const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(j->getAttributeHandle());
-        if (!instanceAttribute)
-          Traits::throwAttributeNotDefined(j->getAttributeHandle().toString());
-        if (!instanceAttribute->getIsOwnedByFederate())
-          Traits::throwAttributeNotOwned(j->getAttributeHandle().toString());
-        if (instanceAttribute->getTransportationType() == RELIABLE)
-          transportationType = RELIABLE;
-      }
       bool timeRegulationEnabled = getTimeManagement()->getTimeRegulationEnabled();
+      // passels
+      AttributeValueVector passels[2][2];
+      for (std::vector<OpenRTI::AttributeValue>::iterator i = attributeValues.begin(); i != attributeValues.end(); ++i) {
+        const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(i->getAttributeHandle());
+        if (!instanceAttribute)
+          Traits::throwAttributeNotDefined(i->getAttributeHandle().toString());
+        if (!instanceAttribute->getIsOwnedByFederate())
+          Traits::throwAttributeNotOwned(i->getAttributeHandle().toString());
+        unsigned index0 = instanceAttribute->getTransportationType();
+        unsigned index1 = RECEIVE;
+        if (timeRegulationEnabled)
+          index1 = instanceAttribute->getOrderType();
+        passels[index0][index1].reserve(attributeValues.size());
+        passels[index0][index1].push_back(AttributeValue());
+        passels[index0][index1].back().setAttributeHandle(i->getAttributeHandle());
+        passels[index0][index1].back().getValue().swap(i->getValue());
+      }
       if (timeRegulationEnabled && getTimeManagement()->logicalTimeAlreadyPassed(nativeLogicalTime))
         Traits::throwInvalidLogicalTime(getTimeManagement()->logicalTimeToString(nativeLogicalTime));
 
       MessageRetractionHandle messageRetractionHandle = getNextMessageRetractionHandle();
+      VariableLengthData timeStamp = getTimeManagement()->encodeLogicalTime(nativeLogicalTime);
 
-      SharedPtr<TimeStampedAttributeUpdateMessage> request;
-      request = new TimeStampedAttributeUpdateMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectInstanceHandle(objectInstanceHandle);
-      request->getAttributeValues().swap(attributeValues);
-      request->setTimeStamp(getTimeManagement()->encodeLogicalTime(nativeLogicalTime));
-      request->setTag(tag);
-      if (timeRegulationEnabled)
-        request->setOrderType(TIMESTAMP);
-      else
-        request->setOrderType(RECEIVE);
-      request->setTransportationType(transportationType);
-      request->setMessageRetractionHandle(messageRetractionHandle);
-      send(request);
+      for (unsigned i = 0; i < 2; ++i) {
+        for (unsigned j = 0; j < 2; ++j) {
+          if (passels[i][j].empty())
+            continue;
+          SharedPtr<TimeStampedAttributeUpdateMessage> request;
+          request = new TimeStampedAttributeUpdateMessage;
+          request->setFederationHandle(getFederationHandle());
+          request->setObjectInstanceHandle(objectInstanceHandle);
+          request->getAttributeValues().swap(passels[i][j]);
+          request->setTimeStamp(timeStamp);
+          request->setTransportationType(TransportationType(i));
+          request->setOrderType(OrderType(j));
+          request->setTag(tag);
+          request->setMessageRetractionHandle(messageRetractionHandle);
+          send(request);
+        }
+      }
 
       return messageRetractionHandle;
     } catch (const typename Traits::Exception&) {
