@@ -20,10 +20,11 @@
 #ifndef ValueImplementation_h
 #define ValueImplementation_h
 
+#include "Export.h"
 #include "Referenced.h"
 
 #define DECLARE_VALUE_IMPLEMENTATION(ValueImpl, ValueType)              \
-  class ValueImpl : public OpenRTI::Referenced {                        \
+  class OPENRTI_LOCAL ValueImpl : public OpenRTI::Referenced {          \
   public:                                                               \
     ValueImpl(const ValueType& value) :                                 \
       _value(value)                                                     \
