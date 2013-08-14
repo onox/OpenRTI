@@ -31,6 +31,8 @@
 #include <RTI/HLAinteger64Time.h>
 #include <RTI/HLAinteger64Interval.h>
 
+#include <limits>
+
 namespace OpenRTI {
 
 // Interface to build up an optimized OpenRTI::Federate for the builtin
@@ -50,6 +52,8 @@ public:
 
   LogicalTime initialLogicalTime() const
   { return LogicalTime(0); }
+  LogicalTime finalLogicalTime() const
+  { return LogicalTime(std::numeric_limits<LogicalTime>::max()); }
   LogicalTimeInterval zeroLogicalTimeInterval() const
   { return LogicalTimeInterval(0); }
 

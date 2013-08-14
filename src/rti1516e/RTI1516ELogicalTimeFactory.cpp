@@ -38,6 +38,7 @@ public:
 
   std::string getName() const;
   LogicalTimeImplementation* initialLogicalTime() const;
+  LogicalTimeImplementation* finalLogicalTime() const;
   LogicalTimeImplementation* decodeLogicalTime(const VariableLengthData& variableLengthData) const;
   LogicalTimeIntervalImplementation* zeroLogicalTimeInterval() const;
 
@@ -229,6 +230,15 @@ RTI1516ELogicalTimeFactory::LogicalTimeFactoryImplementation::initialLogicalTime
   if (!_logicalTimeFactory.get())
     return 0;
   std::auto_ptr<rti1516e::LogicalTime> logicalTime = _logicalTimeFactory->makeInitial();
+  return new LogicalTimeImplementation(logicalTime, this);
+}
+
+RTI1516ELogicalTimeFactory::LogicalTimeImplementation*
+RTI1516ELogicalTimeFactory::LogicalTimeFactoryImplementation::finalLogicalTime() const
+{
+  if (!_logicalTimeFactory.get())
+    return 0;
+  std::auto_ptr<rti1516e::LogicalTime> logicalTime = _logicalTimeFactory->makeFinal();
   return new LogicalTimeImplementation(logicalTime, this);
 }
 
@@ -489,6 +499,12 @@ RTI1516ELogicalTimeFactory::LogicalTime
 RTI1516ELogicalTimeFactory::initialLogicalTime() const
 {
   return LogicalTime(_implementation->initialLogicalTime());
+}
+
+RTI1516ELogicalTimeFactory::LogicalTime
+RTI1516ELogicalTimeFactory::finalLogicalTime() const
+{
+  return LogicalTime(_implementation->finalLogicalTime());
 }
 
 RTI1516ELogicalTimeFactory::LogicalTimeInterval

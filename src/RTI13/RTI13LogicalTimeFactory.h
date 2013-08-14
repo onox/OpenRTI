@@ -94,6 +94,7 @@ public:
   std::string getName() const;
 
   LogicalTime initialLogicalTime() const;
+  LogicalTime finalLogicalTime() const;
   LogicalTimeInterval zeroLogicalTimeInterval() const;
 
   LogicalTime getLogicalTime(const RTI::FedTime& fedTime);

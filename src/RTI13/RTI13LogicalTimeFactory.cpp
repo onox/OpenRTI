@@ -342,6 +342,14 @@ RTI13LogicalTimeFactory::initialLogicalTime() const
   return LogicalTime(new FedTimeImplementation);
 }
 
+RTI13LogicalTimeFactory::LogicalTime
+RTI13LogicalTimeFactory::finalLogicalTime() const
+{
+  FedTimeImplementation* implementation = new FedTimeImplementation;
+  implementation->_fedTime->setPositiveInfinity();
+  return LogicalTime(implementation);
+}
+
 RTI13LogicalTimeFactory::LogicalTimeInterval
 RTI13LogicalTimeFactory::zeroLogicalTimeInterval() const
 {
