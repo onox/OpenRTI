@@ -533,7 +533,7 @@
     <field name="FederateHandle" type="FederateHandle"/>
     <field name="RespondingFederateHandle" type="FederateHandle"/>
     <field name="TimeStampValid" type="Bool"/>
-    <field name="TimeStamp" type="TimeStamp"/>
+    <field name="TimeStamp" type="VariableLengthData"/>
   </message>
   <message type="DisableTimeRegulationRequest">
     <field name="FederationHandle" type="FederationHandle"/>

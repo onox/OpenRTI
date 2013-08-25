@@ -82,10 +82,6 @@ public:
   { return _permitTimeRegulation; }
   void setPermitTimeRegulation(bool permitTimeRegulation);
 
-  bool getAsynchronousDeliveryEnabled() const
-  { return _asynchronousDeliveryEnabled; }
-  void setAsynchronousDeliveryEnabled(bool asynchronousDeliveryEnabled);
-
   /// TransportationTypes
   const TransportationType* getTransportationType(const std::string& name) const;
   const std::string* getTransportationName(TransportationType transportationType) const;
@@ -466,7 +462,6 @@ private:
   bool _interactionRelevanceAdvisorySwitchEnabled;
 
   bool _permitTimeRegulation;
-  bool _asynchronousDeliveryEnabled;
 
   typedef std::map<std::string, TransportationType> NameTransportationTypeMap;
   NameTransportationTypeMap _nameTransportationTypeMap;

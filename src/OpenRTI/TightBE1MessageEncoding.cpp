@@ -1184,7 +1184,7 @@ public:
     writeFederateHandle(value.getFederateHandle());
     writeFederateHandle(value.getRespondingFederateHandle());
     writeBool(value.getTimeStampValid());
-    writeTimeStamp(value.getTimeStamp());
+    writeVariableLengthData(value.getTimeStamp());
   }
 
   void writeDisableTimeRegulationRequestMessage(const DisableTimeRegulationRequestMessage& value)
@@ -3080,7 +3080,7 @@ public:
     readFederateHandle(value.getFederateHandle());
     readFederateHandle(value.getRespondingFederateHandle());
     readBool(value.getTimeStampValid());
-    readTimeStamp(value.getTimeStamp());
+    readVariableLengthData(value.getTimeStamp());
   }
 
   void readDisableTimeRegulationRequestMessage(DisableTimeRegulationRequestMessage& value)
@@ -3368,7 +3368,7 @@ public:
 
   void readPayloadEnableTimeRegulationResponseMessage(EnableTimeRegulationResponseMessage& value)
   {
-    readPayloadTimeStamp(value.getTimeStamp());
+    readPayloadVariableLengthData(value.getTimeStamp());
   }
 
   void readPayloadCommitLowerBoundTimeStampMessage(CommitLowerBoundTimeStampMessage& value)

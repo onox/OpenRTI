@@ -41,8 +41,8 @@ public:
   typedef typename LogicalTimeFactory::LogicalTime LogicalTime;
   typedef typename LogicalTimeFactory::LogicalTimeInterval LogicalTimeInterval;
 
-  // Do the maps with keys like std::pair<LogicalTime, bool>, where the unsigned is 0 when comparing with
-  // strictly less and 1 when comparing with less equal. FIXME does this work??
+  // Do the maps with keys like std::pair<LogicalTime, bool>, where the bool is false when comparing with
+  // strictly less and true when comparing with less equal.
   typedef std::pair<LogicalTime, bool> LogicalTimePair;
 
   using TimeManagement<T>::_timeRegulationEnablePending;
@@ -58,7 +58,7 @@ public:
   {
     _logicalTime = _logicalTimeFactory.initialLogicalTime();
     _pendingLogicalTime.first = _logicalTime;
-    _pendingLogicalTime.second = true;
+    _pendingLogicalTime.second = false;
     _localLowerBoundTimeStamp.first = _logicalTime;
     _localLowerBoundTimeStamp.second = true;
     _currentLookahead = _logicalTimeFactory.zeroLogicalTimeInterval();
@@ -86,29 +86,36 @@ public:
 
 
 
-  virtual void enableTimeRegulation(Ambassador<T>& ambassador, const NativeLogicalTimeInterval& nativeLookahead)
+  virtual void enableTimeRegulation(InternalAmbassador& ambassador, const NativeLogicalTimeInterval& nativeLookahead)
   {
-    _enableTimeRegulation(ambassador, _logicalTimeFactory.getLogicalTime(_logicalTime), nativeLookahead);
+    LogicalTimeInterval lookahead = _logicalTimeFactory.getLogicalTimeInterval(nativeLookahead);
+    _enableTimeRegulation(ambassador, _logicalTime, lookahead);
   }
 
   // the RTI13 variant
-  virtual void enableTimeRegulation(Ambassador<T>& ambassador, const NativeLogicalTime& nativeLogicalTime, const NativeLogicalTimeInterval& nativeLookahead)
+  virtual void enableTimeRegulation(InternalAmbassador& ambassador, const NativeLogicalTime& nativeLogicalTime, const NativeLogicalTimeInterval& nativeLookahead)
   {
-    _enableTimeRegulation(ambassador, nativeLogicalTime, nativeLookahead);
+    LogicalTime logicalTime = _logicalTimeFactory.getLogicalTime(nativeLogicalTime);
+    LogicalTimeInterval lookahead = _logicalTimeFactory.getLogicalTimeInterval(nativeLookahead);
+    _enableTimeRegulation(ambassador, logicalTime, lookahead);
   }
 
-  void _enableTimeRegulation(Ambassador<T>& ambassador, const NativeLogicalTime& nativeLogicalTime, const NativeLogicalTimeInterval& nativeLookahead)
+  void _enableTimeRegulation(InternalAmbassador& ambassador, const LogicalTime& logicalTime, const LogicalTimeInterval& lookahead)
   {
     _timeRegulationEnablePending = true;
 
-    _currentLookahead = _logicalTimeFactory.getLogicalTimeInterval(nativeLookahead);
+    _currentLookahead = lookahead;
     _targetLookahead = _currentLookahead;
 
-    _pendingLogicalTime.first = _logicalTimeFactory.getLogicalTime(nativeLogicalTime);
-    _pendingLogicalTime.second = _logicalTimeFactory.isZeroTimeInterval(_currentLookahead);
+    _pendingLogicalTime.first = logicalTime;
+    _pendingLogicalTime.second = false;
 
-    _localLowerBoundTimeStamp = _pendingLogicalTime;
+    _localLowerBoundTimeStamp.first = _pendingLogicalTime.first;
     _localLowerBoundTimeStamp.first += _currentLookahead;
+    _localLowerBoundTimeStamp.second = _logicalTimeFactory.isZeroTimeInterval(_currentLookahead);
+
+    OpenRTIAssert(_timeRegulationEnableFederateHandleTimeStampMap.empty());
+    OpenRTIAssert(_timeRegulationEnableFederateHandleSet.empty());
 
     _timeRegulationEnableFederateHandleSet = ambassador.getFederate()->getFederateHandleSet();
     // Make sure we wait for the request looping back through the root server.
@@ -125,7 +132,7 @@ public:
     ambassador.send(request);
   }
 
-  virtual void disableTimeRegulation(Ambassador<T>& ambassador)
+  virtual void disableTimeRegulation(InternalAmbassador& ambassador)
   {
     _timeRegulationEnabled = false;
 
@@ -136,36 +143,33 @@ public:
     ambassador.send(request);
   }
 
-  virtual void enableTimeConstrained(Ambassador<T>& ambassador)
+  virtual void enableTimeConstrained(InternalAmbassador& ambassador)
   {
     _timeConstrainedEnablePending = true;
 
-    // If we wait for getting time constrained we need to wait until the federations lower bound
-    // passes our logical time. Unleach this if we get beyond.
-    if (_federateLowerBoundMap.canAdvanceTo(_logicalTime))
-      queueTimeConstrainedEnabled(ambassador, _logicalTime);
+    SharedPtr<TimeConstrainedEnabledMessage> message = new TimeConstrainedEnabledMessage;
+    message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_logicalTime));
+    _logicalTimeMessageListMap[LogicalTimePair(_logicalTime, true)].push_back(message);
   }
 
-  virtual void disableTimeConstrained(Ambassador<T>& ambassador)
+  virtual void disableTimeConstrained(InternalAmbassador& ambassador)
   {
     _timeConstrainedEnabled = false;
-    // If we are in time advance pending, we are now able to advance immediately
-    if (_timeAdvancePending)
-      queueTimeAdvanceGranted(ambassador, _pendingLogicalTime.first);
-    for (typename LogicalTimeMessageListMap::iterator i = _logicalTimeMessageListMap.begin();
-         i != _logicalTimeMessageListMap.end();) {
-      ambassador.queueCallbacks(i->second);
-      _logicalTimeMessageListMap.erase(i++);
-    }
   }
 
-  virtual void timeAdvanceRequest(InternalAmbassador& ambassador, const NativeLogicalTime& nativeLogicalTime, bool availableMode, bool nextMessageMode)
+  virtual void timeAdvanceRequest(InternalAmbassador& ambassador, const NativeLogicalTime& nativeLogicalTime, bool availableMode, bool nextMessageMode, bool flushQueue)
   {
     LogicalTime logicalTime = _logicalTimeFactory.getLogicalTime(nativeLogicalTime);
+    /// FIXME no next message mode implemented as of today!!!
     _nextMessageMode = nextMessageMode;
+    _flushQueueMode = flushQueue;
     _timeAdvancePending = true;
     _pendingLogicalTime.first = logicalTime;
     _pendingLogicalTime.second = !availableMode;
+
+#ifndef _NDEBUG
+    LogicalTimePair oldLBTS = _localLowerBoundTimeStamp;
+#endif
 
     // If we need to advance to match the new requested lookahead, try to increase that one
     if (_targetLookahead < _currentLookahead) {
@@ -187,39 +191,23 @@ public:
       _localLowerBoundTimeStamp.second = false;
     }
 
+#ifndef _NDEBUG
+    OpenRTIAssert(oldLBTS <= _localLowerBoundTimeStamp);
+#endif
+
     if (_timeRegulationEnabled)
       sendCommitLowerBoundTimeStamp(ambassador, _localLowerBoundTimeStamp);
 
-    if (_timeConstrainedEnabled) {
-      // Case, time advance pending
-      if (_nextMessageMode && !_logicalTimeMessageListMap.empty()) {
-        _pendingLogicalTime.first = std::min(_pendingLogicalTime.first, _logicalTimeMessageListMap.begin()->first);
-      }
-      if (_federateLowerBoundMap.canAdvanceTo(_pendingLogicalTime)) {
-        // Ok, nobody holding us back
-        queueTimeAdvanceGranted(ambassador, _pendingLogicalTime.first);
-      }
-    } else {
-      // If we are not time constrained, just schedule the time advance
-      queueTimeAdvanceGranted(ambassador, _pendingLogicalTime.first);
-    }
+    // Queue the time advance granted
+    SharedPtr<TimeAdvanceGrantedMessage> message = new TimeAdvanceGrantedMessage;
+    message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_pendingLogicalTime.first));
+    if (flushQueue)
+      _logicalTimeMessageListMap[LogicalTimePair(_logicalTimeFactory.finalLogicalTime(), true)].push_back(message);
+    else
+      _logicalTimeMessageListMap[_pendingLogicalTime].push_back(message);
   }
 
-  virtual void flushQueueRequest(Ambassador<T>& ambassador, const NativeLogicalTime& nativeLogicalTime)
-  {
-    Traits::throwRTIinternalError("FQR not implemented");
-
-    LogicalTime logicalTime = _logicalTimeFactory.getLogicalTime(nativeLogicalTime);
-    _timeAdvancePending = true;
-    _flushQueueMode = true;
-
-    for (typename LogicalTimeMessageListMap::iterator i = _logicalTimeMessageListMap.begin(); i != _logicalTimeMessageListMap.end();) {
-      ambassador.queueCallbacks(i->second);
-      _logicalTimeMessageListMap.erase(i++);
-    }
-  }
-
-  virtual bool queryGALT(Ambassador<T>& ambassador, NativeLogicalTime& logicalTime)
+  virtual bool queryGALT(InternalAmbassador& ambassador, NativeLogicalTime& logicalTime)
   {
     if (_federateLowerBoundMap.empty())
       return false;
@@ -227,12 +215,12 @@ public:
     return true;
   }
 
-  virtual void queryLogicalTime(Ambassador<T>& ambassador, NativeLogicalTime& logicalTime)
+  virtual void queryLogicalTime(InternalAmbassador& ambassador, NativeLogicalTime& logicalTime)
   {
     logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTime);
   }
 
-  virtual bool queryLITS(Ambassador<T>& ambassador, NativeLogicalTime& logicalTime)
+  virtual bool queryLITS(InternalAmbassador& ambassador, NativeLogicalTime& logicalTime)
   {
     if (_logicalTimeMessageListMap.empty()) {
       if (_federateLowerBoundMap.empty()) {
@@ -243,19 +231,19 @@ public:
       }
     } else {
       if (_federateLowerBoundMap.empty()) {
-        logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeMessageListMap.begin()->first);
+        logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeMessageListMap.begin()->first.first);
         return true;
       } else {
-        if (_federateLowerBoundMap.getGALT() < _logicalTimeMessageListMap.begin()->first)
+        if (_federateLowerBoundMap.getGALT() < _logicalTimeMessageListMap.begin()->first.first)
           logicalTime = _logicalTimeFactory.getLogicalTime(_federateLowerBoundMap.getGALT());
         else
-          logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeMessageListMap.begin()->first);
+          logicalTime = _logicalTimeFactory.getLogicalTime(_logicalTimeMessageListMap.begin()->first.first);
         return true;
       }
     }
   }
 
-  virtual void modifyLookahead(Ambassador<T>& ambassador, const NativeLogicalTimeInterval& nativeLookahead)
+  virtual void modifyLookahead(InternalAmbassador& ambassador, const NativeLogicalTimeInterval& nativeLookahead)
   {
     LogicalTimeInterval lookahead = _logicalTimeFactory.getLogicalTimeInterval(nativeLookahead);
     _targetLookahead = lookahead;
@@ -275,7 +263,7 @@ public:
     }
   }
 
-  virtual void queryLookahead(Ambassador<T>& ambassador, NativeLogicalTimeInterval& logicalTimeInterval)
+  virtual void queryLookahead(InternalAmbassador& ambassador, NativeLogicalTimeInterval& logicalTimeInterval)
   {
     logicalTimeInterval = _logicalTimeFactory.getLogicalTimeInterval(_currentLookahead);
   }
@@ -331,7 +319,7 @@ public:
       // joined federates who either reply with a response if and only if they joined the
       // root server before the enable time regulation request broadcast was started from
       // the root server due to our request.
-      // The responses juse take the direct route back.
+      // The responses just takes the direct route back.
 
       if (!_timeRegulationEnablePending) {
         Log(Network, Warning) << "Recieved own EnableTimeRegulationRequestMessage without waiting for that to happen!" << std::endl;
@@ -346,8 +334,7 @@ public:
 
     } else {
       LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp().getLogicalTime());
-      bool zeroLookahead = message.getTimeStamp().getZeroLookahead(); /* FIXME ?? */
-      LogicalTimePair logicalTimePair(logicalTime, zeroLookahead);
+      LogicalTimePair logicalTimePair(logicalTime, message.getTimeStamp().getZeroLookahead());
 
       // If we are in the state of a fresh joined federate which is still collecting initial information
       // we should skip sending the response.
@@ -362,10 +349,10 @@ public:
         if (_timeConstrainedEnabled || _timeConstrainedEnablePending) {
           // The originating ambassador sends an initial proposal for the logical time,
           // We respond with a corrected logical time if this proposal is not sufficient
-          if (logicalTime < _logicalTime) {
-            logicalTime = _logicalTime;
-            response->getTimeStamp().setLogicalTime(_logicalTimeFactory.encodeLogicalTime(logicalTime));
-            response->getTimeStamp().setZeroLookahead(false /*FIXME*/);
+          if (logicalTime <= _logicalTime) {
+            logicalTimePair.first = _logicalTime;
+            logicalTimePair.second = true;
+            response->setTimeStamp(_logicalTimeFactory.encodeLogicalTime(_logicalTime));
             response->setTimeStampValid(true);
           }
         }
@@ -374,6 +361,8 @@ public:
       }
 
       _federateLowerBoundMap.insert(message.getFederateHandle(), logicalTimePair);
+      OpenRTIAssert(!_federateLowerBoundMap.empty());
+      OpenRTIAssert(!(_timeConstrainedEnabled || _timeConstrainedEnablePending) || _federateLowerBoundMap.canAdvanceTo(_logicalTime));
     }
   }
   virtual void acceptInternalMessage(InternalAmbassador& ambassador, const EnableTimeRegulationResponseMessage& message)
@@ -384,7 +373,8 @@ public:
     }
 
     if (message.getTimeStampValid()) {
-      _timeRegulationEnableFederateHandleTimeStampMap.insert(std::make_pair(message.getRespondingFederateHandle(), message.getTimeStamp()));
+      LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp());
+      _timeRegulationEnableFederateHandleTimeStampMap[message.getRespondingFederateHandle()] = logicalTime;
     }
 
     _timeRegulationEnableFederateHandleSet.erase(message.getRespondingFederateHandle());
@@ -396,69 +386,61 @@ public:
   }
   virtual void acceptInternalMessage(InternalAmbassador& ambassador, const DisableTimeRegulationRequestMessage& message)
   {
-    removeFederateFromTimeManagement(ambassador, message.getFederateHandle());
+    _federateLowerBoundMap.erase(message.getFederateHandle());
+    _timeRegulationEnableFederateHandleTimeStampMap.erase(message.getFederateHandle());
   }
   virtual void acceptInternalMessage(InternalAmbassador& ambassador, const CommitLowerBoundTimeStampMessage& message)
   {
     LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp().getLogicalTime());
-    bool zeroLookahead = message.getTimeStamp().getZeroLookahead(); /* FIXME*/
-
-    if (!_federateLowerBoundMap.commit(message.getFederateHandle(), LogicalTimePair(logicalTime, zeroLookahead)))
-      return;
-
-    // See if we could safely advance to the pending logical time
-    if (_timeConstrainedEnablePending) {
-      // If we wait for getting time constrained we need to wait until the federations lower bound
-      // passes our logical time. Unleach this if we get beyond.
-      if (_federateLowerBoundMap.canAdvanceTo(_logicalTime))
-        queueTimeConstrainedEnabled(ambassador, _logicalTime);
-    } else if (_timeConstrainedEnabled && _timeAdvancePending) {
-      // Case, time advance pending
-      if (_nextMessageMode && !_logicalTimeMessageListMap.empty()) {
-        _pendingLogicalTime.first = std::min(_pendingLogicalTime.first, _logicalTimeMessageListMap.begin()->first);
-      }
-      if (_federateLowerBoundMap.canAdvanceTo(_pendingLogicalTime)) {
-        // Ok, nobody holding us back
-        queueTimeAdvanceGranted(ambassador, _pendingLogicalTime.first);
-      }
-    }
+    bool zeroLookahead = message.getTimeStamp().getZeroLookahead();
+    OpenRTIAssert(!_timeConstrainedEnabled || _federateLowerBoundMap.empty() || _federateLowerBoundMap.canAdvanceTo(_logicalTime));
+    _federateLowerBoundMap.commit(message.getFederateHandle(), LogicalTimePair(logicalTime, zeroLookahead));
+    OpenRTIAssert(!_timeConstrainedEnabled || _federateLowerBoundMap.empty() || _federateLowerBoundMap.canAdvanceTo(_logicalTime));
   }
-
 
   virtual void queueTimeStampedMessage(InternalAmbassador& ambassador, const VariableLengthData& timeStamp, const AbstractMessage& message)
   {
-    _logicalTimeMessageListMap[_logicalTimeFactory.decodeLogicalTime(timeStamp)].push_back(&message);
+    queueTimeStampedMessage(_logicalTimeFactory.decodeLogicalTime(timeStamp), message);
+  }
+  void queueTimeStampedMessage(const LogicalTime& logicalTime, const AbstractMessage& message)
+  {
+    // Well potentially we can savely skip both tests since only a buggy federate can send this messages
+    // under these circumstance. But since we cannot rely on this on a public network, we are kind and
+    // drop these messages.
+    if (_federateLowerBoundMap.empty() || _federateLowerBoundMap.canAdvanceTo(logicalTime)) {
+      Log(Network, Warning) << "Dropping illegal time stamp order message!\n"
+                            << "You may communicate with a buggy federate ambassador." << std::endl;
+      return;
+    }
+    OpenRTIAssert(!_timeConstrainedEnabled || _logicalTime < logicalTime);
+    if (_timeConstrainedEnabled && logicalTime <= _logicalTime) {
+      Log(Network, Warning) << "Dropping illegal time stamp order message!\n"
+                            << "You may communicate with a buggy federate ambassador." << std::endl;
+      return;
+    }
+    _logicalTimeMessageListMap[LogicalTimePair(logicalTime, false)].push_back(&message);
+  }
+  virtual void queueReceiveOrderMessage(InternalAmbassador& ambassador, const AbstractMessage& message)
+  {
+    _receiveOrderMessages.push_back(&message);
   }
 
   void removeFederateFromTimeManagement(InternalAmbassador& ambassador, const FederateHandle& federateHandle)
   {
-    _timeRegulationEnableFederateHandleSet.erase(federateHandle);
-    _timeRegulationEnableFederateHandleTimeStampMap.erase(federateHandle);
-
     _federateLowerBoundMap.erase(federateHandle);
+    _timeRegulationEnableFederateHandleTimeStampMap.erase(federateHandle);
+    FederateHandleSet::iterator i = _timeRegulationEnableFederateHandleSet.find(federateHandle);
+    if (i == _timeRegulationEnableFederateHandleSet.end())
+      return;
+    _timeRegulationEnableFederateHandleSet.erase(i);
 
-    if (_timeRegulationEnablePending) {
-      // This one checks if we are the last one this ambassador is waiting for
-      // and if so, queues the callback and informs the other federates about our
-      // new logical time
-      checkTimeRegulationEnabled(ambassador);
-    }
-    if (_timeConstrainedEnablePending) {
-      // If we wait for getting time constrained we need to wait until the federations lower bound
-      // passes our logical time. Unleach this if we get beyond.
-      if (_federateLowerBoundMap.canAdvanceTo(_logicalTime))
-        queueTimeConstrainedEnabled(ambassador, _logicalTime);
-    }
-    if (_timeAdvancePending) {
-      // Case, time advance pending
-      if (_nextMessageMode && !_logicalTimeMessageListMap.empty()) {
-        _pendingLogicalTime.first = std::min(_pendingLogicalTime.first, _logicalTimeMessageListMap.begin()->first);
-      }
-      if (_federateLowerBoundMap.canAdvanceTo(_pendingLogicalTime)) {
-        // Ok, nobody holding us back
-        queueTimeAdvanceGranted(ambassador, _pendingLogicalTime.first);
-      }
-    }
+    // Now we should really know that we had time regulation enabled
+    OpenRTIAssert(_timeRegulationEnablePending);
+
+    // This one checks if we are the last one this ambassador is waiting for
+    // and if so, queues the callback and informs the other federates about our
+    // new logical time
+    checkTimeRegulationEnabled(ambassador);
   }
 
   void checkTimeRegulationEnabled(InternalAmbassador& ambassador)
@@ -467,30 +449,42 @@ public:
     if (!_timeRegulationEnableFederateHandleSet.empty())
       return;
 
+#ifndef _NDEBUG
+    LogicalTimePair oldLBTS = _localLowerBoundTimeStamp;
+#endif
+
     // Now, collect all logical times that other federates sent to us
     for (typename FederateHandleTimeStampMap::const_iterator i = _timeRegulationEnableFederateHandleTimeStampMap.begin();
          i != _timeRegulationEnableFederateHandleTimeStampMap.end(); ++i) {
-      LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(i->second.getLogicalTime());
-      bool zeroLookahead = i->second.getZeroLookahead(); /* FIXME*/
-      LogicalTimePair logicalTimePair(logicalTime, zeroLookahead);
-      if (logicalTimePair <= _localLowerBoundTimeStamp)
+      // This federate sent us just its logical time.
+      // That means we need to make sure that all messages we send are strictly
+      // in the future wrt this sent timestep.
+      LogicalTimePair logicalTimePair(i->second, true);
+      if (logicalTimePair < _localLowerBoundTimeStamp)
         continue;
 
-      _localLowerBoundTimeStamp = logicalTimePair;
-      _pendingLogicalTime.first = logicalTime;
-      _pendingLogicalTime.first -= _currentLookahead;
-      _pendingLogicalTime.second = zeroLookahead;
+      // Ok, here is some room in between, but for now this is ok by the standard
+      _localLowerBoundTimeStamp.first = logicalTimePair.first;
+      _localLowerBoundTimeStamp.first += _currentLookahead;
+      _pendingLogicalTime.first = logicalTimePair.first;
     }
 
     _timeRegulationEnableFederateHandleTimeStampMap.clear();
+
+#ifndef _NDEBUG
+    OpenRTIAssert(oldLBTS <= _localLowerBoundTimeStamp);
+#endif
 
     // If somebody has corrected the logical time, then there might be several
     // federates who have a too little committed time, so tell all about them
     sendCommitLowerBoundTimeStamp(ambassador, _localLowerBoundTimeStamp);
 
     // Ok, now go on ...
-    queueTimeRegulationEnabled(ambassador, _pendingLogicalTime.first);
+    SharedPtr<TimeRegulationEnabledMessage> message = new TimeRegulationEnabledMessage;
+    message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_pendingLogicalTime.first));
+    _logicalTimeMessageListMap[LogicalTimePair(_pendingLogicalTime.first, true)].push_back(message);
   }
+
   void sendCommitLowerBoundTimeStamp(InternalAmbassador& ambassador, const LogicalTimePair& logicalTimePair)
   {
     SharedPtr<CommitLowerBoundTimeStampMessage> request;
@@ -501,79 +495,130 @@ public:
     request->getTimeStamp().setZeroLookahead(logicalTimePair.second);
     ambassador.send(request);
   }
-  void queueTimeConstrainedEnabled(InternalAmbassador& ambassador, const LogicalTime& logicalTime)
-  {
-    SharedPtr<TimeConstrainedEnabledMessage> message = new TimeConstrainedEnabledMessage;
-    message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(logicalTime));
-    ambassador.queueCallback(message);
-  }
-  void queueTimeRegulationEnabled(InternalAmbassador& ambassador, const LogicalTime& logicalTime)
-  {
-    SharedPtr<TimeRegulationEnabledMessage> message = new TimeRegulationEnabledMessage;
-    message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(logicalTime));
-    ambassador.queueCallback(message);
-  }
-  void queueTimeAdvanceGranted(InternalAmbassador& ambassador, const LogicalTime& logicalTime)
-  {
-    // Flush all timestamped messages up to the given logical time
-    for (typename LogicalTimeMessageListMap::iterator i = _logicalTimeMessageListMap.begin(); i != _logicalTimeMessageListMap.end();) {
-      if (logicalTime < i->first)
-        break;
-      ambassador.queueCallbacks(i->second);
-      _logicalTimeMessageListMap.erase(i++);
-    }
-    // Queue the time advance granted
-    SharedPtr<TimeAdvanceGrantedMessage> message = new TimeAdvanceGrantedMessage;
-    message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(logicalTime));
-    ambassador.queueCallback(message);
-    // Queue the may be accumulated ro callbacks that are hold back until now
-    ambassador.flushReceiveOrderMessages();
-  }
 
   virtual void acceptCallbackMessage(Ambassador<T>& ambassador, const TimeConstrainedEnabledMessage& message)
   {
     _timeConstrainedEnablePending = false;
     _timeConstrainedEnabled = true;
+    OpenRTIAssert(_logicalTime <= _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime()));
     _logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime());
+    OpenRTIAssert(_pendingLogicalTime.first == _logicalTime);
+    OpenRTIAssert(_federateLowerBoundMap.empty() || _federateLowerBoundMap.canAdvanceTo(_logicalTime));
+    OpenRTIAssert(_logicalTimeMessageListMap.empty() || _logicalTime < _logicalTimeMessageListMap.begin()->first.first || _logicalTimeMessageListMap.begin()->second.size() <= 1);
     ambassador.timeConstrainedEnabled(_logicalTimeFactory.getLogicalTime(_logicalTime));
   }
   virtual void acceptCallbackMessage(Ambassador<T>& ambassador, const TimeRegulationEnabledMessage& message)
   {
+    OpenRTIAssert(_logicalTime <= _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime()));
     _timeRegulationEnablePending = false;
     _timeRegulationEnabled = true;
+    OpenRTIAssert(_logicalTime <= _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime()));
     _logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime());
+    OpenRTIAssert(_pendingLogicalTime.first == _logicalTime);
     ambassador.timeRegulationEnabled(_logicalTimeFactory.getLogicalTime(_logicalTime));
   }
   virtual void acceptCallbackMessage(Ambassador<T>& ambassador, const TimeAdvanceGrantedMessage& message)
   {
+    OpenRTIAssert(_logicalTime <= _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime()));
     _logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime());
-    _pendingLogicalTime.first = _logicalTime;
+    OpenRTIAssert(_pendingLogicalTime.first == _logicalTime);
     _timeAdvancePending = false;
     _flushQueueMode = false;
+    OpenRTIAssert(_flushQueueMode || _federateLowerBoundMap.empty() || _federateLowerBoundMap.canAdvanceTo(_logicalTime));
     ambassador.timeAdvanceGrant(_logicalTimeFactory.getLogicalTime(_logicalTime));
   }
 
-  virtual void reflectAttributeValues(Ambassador<T>& ambassador, const Federate::ObjectClass& objectClass, bool flushQueueMode,
-                                      bool timeConstrainedEnabled, const TimeStampedAttributeUpdateMessage& message)
+  virtual void reflectAttributeValues(Ambassador<T>& ambassador, const Federate::ObjectClass& objectClass,
+                                      const TimeStampedAttributeUpdateMessage& message)
   {
-    ambassador.reflectAttributeValues(objectClass, flushQueueMode, timeConstrainedEnabled, message,
-                                    _logicalTimeFactory.getLogicalTime(_logicalTimeFactory.decodeLogicalTime(message.getTimeStamp())));
+    LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp());
+    ambassador.reflectAttributeValues(objectClass, _flushQueueMode, _timeConstrainedEnabled && message.getOrderType() == TIMESTAMP, message,
+                                    _logicalTimeFactory.getLogicalTime(logicalTime));
   }
 
-  virtual void removeObjectInstance(Ambassador<T>& ambassador, bool flushQueueMode, bool timeConstrainedEnabled,
-                                    const TimeStampedDeleteObjectInstanceMessage& message)
+  virtual void removeObjectInstance(Ambassador<T>& ambassador, const TimeStampedDeleteObjectInstanceMessage& message)
   {
-    ambassador.removeObjectInstance(flushQueueMode, timeConstrainedEnabled, message,
-                                    _logicalTimeFactory.getLogicalTime(_logicalTimeFactory.decodeLogicalTime(message.getTimeStamp())));
+    LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp());
+    ambassador.removeObjectInstance(_flushQueueMode, _timeConstrainedEnabled && message.getOrderType() == TIMESTAMP, message,
+                                    _logicalTimeFactory.getLogicalTime(logicalTime));
   }
 
   virtual void receiveInteraction(Ambassador<T>& ambassador, const InteractionClassHandle& interactionClassHandle,
-                                  const Federate::InteractionClass& interactionClass, bool flushQueueMode,
-                                  bool timeConstrainedEnabled, const TimeStampedInteractionMessage& message)
+                                  const Federate::InteractionClass& interactionClass, const TimeStampedInteractionMessage& message)
   {
-    ambassador.receiveInteraction(interactionClassHandle, interactionClass, flushQueueMode,
-                                  timeConstrainedEnabled, message,
-                                  _logicalTimeFactory.getLogicalTime(_logicalTimeFactory.decodeLogicalTime(message.getTimeStamp())));
+    LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp());
+
+    OpenRTIAssert(!_timeConstrainedEnabled || message.getOrderType() != TIMESTAMP || _logicalTime < logicalTime);
+
+    ambassador.receiveInteraction(interactionClassHandle, interactionClass, _flushQueueMode,
+                                  _timeConstrainedEnabled && message.getOrderType() == TIMESTAMP, message,
+                                  _logicalTimeFactory.getLogicalTime(logicalTime));
+  }
+
+  virtual bool dispatchCallback(const AbstractMessageDispatcher& dispatcher)
+  {
+    if (_receiveOrderMessagesPermitted()) {
+      if (!_receiveOrderMessages.empty()) {
+        _receiveOrderMessages.front()->dispatch(dispatcher);
+        _receiveOrderMessages.pop_front();
+        return true;
+      }
+    }
+    while (!_logicalTimeMessageListMap.empty()) {
+      if (_logicalTimeMessageListMap.begin()->second.empty()) {
+        _logicalTimeMessageListMap.erase(_logicalTimeMessageListMap.begin());
+        continue;
+      }
+      if (!_timeStampOrderMessagesPermitted())
+        break;
+      _logicalTimeMessageListMap.begin()->second.front()->dispatch(dispatcher);
+      _logicalTimeMessageListMap.begin()->second.pop_front();
+      if (_logicalTimeMessageListMap.begin()->second.empty())
+        _logicalTimeMessageListMap.erase(_logicalTimeMessageListMap.begin());
+      return true;
+    }
+    return false;
+  }
+
+  virtual bool callbackMessageAvailable()
+  {
+    if (_receiveOrderMessagesPermitted()) {
+      if (!_receiveOrderMessages.empty()) {
+        return true;
+      }
+    }
+    while (!_logicalTimeMessageListMap.empty()) {
+      if (_logicalTimeMessageListMap.begin()->second.empty()) {
+        _logicalTimeMessageListMap.erase(_logicalTimeMessageListMap.begin());
+        continue;
+      }
+      if (!_timeStampOrderMessagesPermitted())
+        break;
+      return true;
+    }
+    return false;
+  }
+
+  bool _timeStampOrderMessagesPermitted() const
+  {
+    if (_flushQueueMode)
+      return true;
+    if (!InternalTimeManagement::getTimeConstrainedEnabled())
+      return true;
+    if (_pendingLogicalTime.first < _logicalTimeMessageListMap.begin()->first.first)
+      return false;
+    return _federateLowerBoundMap.canAdvanceTo(_logicalTimeMessageListMap.begin()->first);
+  }
+
+  bool _receiveOrderMessagesPermitted() const
+  {
+    if (!InternalTimeManagement::getTimeConstrainedEnabled())
+      return true;
+    if (InternalTimeManagement::getAsynchronousDeliveryEnabled())
+      return true;
+    if (InternalTimeManagement::getTimeAdvancePending())
+      return true;
+    return false;
   }
 
   // The current logical time of this federate
@@ -592,7 +637,7 @@ public:
   // When we are in time regulation enable pending state, this contains the federates we need to
   // wait for to complete time regulation enabled
   FederateHandleSet _timeRegulationEnableFederateHandleSet;
-  typedef std::map<FederateHandle, TimeStamp> FederateHandleTimeStampMap;
+  typedef std::map<FederateHandle, LogicalTime> FederateHandleTimeStampMap;
   FederateHandleTimeStampMap _timeRegulationEnableFederateHandleTimeStampMap;
 
   // map containing all the committed logical times of all known time regulating federates
@@ -601,8 +646,11 @@ public:
 
   // The timestamped queued messages
   typedef std::list<SharedPtr<const AbstractMessage> > MessageList2;
-  typedef std::map<LogicalTime, MessageList2> LogicalTimeMessageListMap;
+  typedef std::map<LogicalTimePair, MessageList2> LogicalTimeMessageListMap;
   LogicalTimeMessageListMap _logicalTimeMessageListMap;
+
+  // List of receive order messages ready to be queued for callback
+  MessageList2 _receiveOrderMessages;
 };
 
 } // namespace OpenRTI

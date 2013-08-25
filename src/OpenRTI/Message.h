@@ -2750,11 +2750,11 @@ public:
   const Bool& getTimeStampValid() const
   { return _timeStampValid; }
 
-  void setTimeStamp(const TimeStamp& value)
+  void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
-  TimeStamp& getTimeStamp()
+  VariableLengthData& getTimeStamp()
   { return _timeStamp; }
-  const TimeStamp& getTimeStamp() const
+  const VariableLengthData& getTimeStamp() const
   { return _timeStamp; }
 
 private:
@@ -2762,7 +2762,7 @@ private:
   FederateHandle _federateHandle;
   FederateHandle _respondingFederateHandle;
   Bool _timeStampValid;
-  TimeStamp _timeStamp;
+  VariableLengthData _timeStamp;
 };
 
 class OPENRTI_API DisableTimeRegulationRequestMessage : public AbstractMessage {

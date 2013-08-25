@@ -321,7 +321,7 @@ InternalAmbassador::acceptInternalMessage(const TurnInteractionsOnMessage& messa
 void
 InternalAmbassador::acceptInternalMessage(const InteractionMessage& message)
 {
-  queueReceiveOrderCallback(message);
+  queueReceiveOrderMessage(message);
 }
 
 void
@@ -330,7 +330,7 @@ InternalAmbassador::acceptInternalMessage(const TimeStampedInteractionMessage& m
   if (message.getOrderType() == TIMESTAMP)
     queueTimeStampedMessage(message.getTimeStamp(), message);
   else
-    queueReceiveOrderCallback(message);
+    queueReceiveOrderMessage(message);
 }
 
 void
@@ -383,7 +383,7 @@ InternalAmbassador::acceptInternalMessage(const InsertObjectInstanceMessage& mes
 void
 InternalAmbassador::acceptInternalMessage(const DeleteObjectInstanceMessage& message)
 {
-  queueReceiveOrderCallback(message);
+  queueReceiveOrderMessage(message);
 }
 
 void
@@ -392,13 +392,13 @@ InternalAmbassador::acceptInternalMessage(const TimeStampedDeleteObjectInstanceM
   if (message.getOrderType() == TIMESTAMP)
     queueTimeStampedMessage(message.getTimeStamp(), message);
   else
-    queueReceiveOrderCallback(message);
+    queueReceiveOrderMessage(message);
 }
 
 void
 InternalAmbassador::acceptInternalMessage(const AttributeUpdateMessage& message)
 {
-  queueReceiveOrderCallback(message);
+  queueReceiveOrderMessage(message);
 }
 
 void
@@ -407,7 +407,7 @@ InternalAmbassador::acceptInternalMessage(const TimeStampedAttributeUpdateMessag
   if (message.getOrderType() == TIMESTAMP)
     queueTimeStampedMessage(message.getTimeStamp(), message);
   else
-    queueReceiveOrderCallback(message);
+    queueReceiveOrderMessage(message);
 }
 
 void
@@ -649,30 +649,45 @@ InternalAmbassador::dispatchWaitReserveObjectInstanceName(const Clock& abstime, 
 }
 
 void
-InternalAmbassador::queueReceiveOrderCallback(const AbstractMessage& message)
-{
-  // If we are in time advancing state and recieve order is not allowed
-  Federate* federate = getFederate();
-  if (!federate)
-    return;
-  if (!federate->getAsynchronousDeliveryEnabled() && getTimeManagement()->getTimeAdvancePending()) {
-    _receiveOrderMessages.push_back(&message);
-  } else {
-    queueCallback(message);
-  }
-}
-
-void
 InternalAmbassador::queueTimeStampedMessage(const VariableLengthData& timeStamp, const AbstractMessage& message)
 {
   InternalTimeManagement* timeManagement = getTimeManagement();
-  if (!timeManagement)
-    return;
-  if (timeManagement->getTimeConstrainedEnabledOrPending()) {
-    timeManagement->queueTimeStampedMessage(*this, timeStamp, message);
-  } else {
-    queueCallback(message);
+  OpenRTIAssert(timeManagement);
+  timeManagement->queueTimeStampedMessage(*this, timeStamp, message);
+}
+
+void
+InternalAmbassador::queueReceiveOrderMessage(const AbstractMessage& message)
+{
+  InternalTimeManagement* timeManagement = getTimeManagement();
+  OpenRTIAssert(timeManagement);
+  timeManagement->queueReceiveOrderMessage(*this, message);
+}
+
+bool
+InternalAmbassador::_dispatchCallbackMessage(AbstractMessageDispatcher& messageDispatcher)
+{
+  if (!_callbackMessageList.empty()) {
+    _callbackMessageList.front()->dispatch(messageDispatcher);
+    _callbackMessageList.pop_front();
+    return true;
   }
+  InternalTimeManagement* timeManagement = getTimeManagement();
+  if (timeManagement && timeManagement->dispatchCallback(messageDispatcher)) {
+    return true;
+  }
+  return false;
+}
+
+bool
+InternalAmbassador::_callbackMessageAvailable()
+{
+  if (!_callbackMessageList.empty())
+    return true;
+  InternalTimeManagement* timeManagement = getTimeManagement();
+  if (timeManagement && timeManagement->callbackMessageAvailable())
+    return true;
+  return false;
 }
 
 }

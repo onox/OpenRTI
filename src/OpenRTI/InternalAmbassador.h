@@ -130,28 +130,15 @@ public:
   ///////////////////////////////////////////////////////////////////
   // processing of callback messages - this is what the ambassador user sees
   typedef std::list<SharedPtr<const AbstractMessage> > MessageList2;
-  void queueCallback(SharedPtr<const AbstractMessage> message)
+  void queueCallback(const SharedPtr<const AbstractMessage>& message)
   { _callbackMessageList.push_back(message); }
   void queueCallback(const AbstractMessage& message)
   { _callbackMessageList.push_back(&message); }
-  // Append the whole list to the callback list /// FIXME throw out; needs to go into a timestamp message queue
-  void queueCallbacks(MessageList2& messageList)
-  { _callbackMessageList.splice(_callbackMessageList.end(), messageList); }
-  void queueReceiveOrderCallback(const AbstractMessage& message);
   void queueTimeStampedMessage(const VariableLengthData& timeStamp, const AbstractMessage& message);
-  void flushReceiveOrderMessages()
-  { queueCallbacks(_receiveOrderMessages); }
+  void queueReceiveOrderMessage(const AbstractMessage& message);
 
-  bool _dispatchCallbackMessage(AbstractMessageDispatcher& messageDispatcher)
-  {
-    if (_callbackMessageList.empty())
-      return false;
-    _callbackMessageList.front()->dispatch(messageDispatcher);
-    _callbackMessageList.pop_front();
-    return true;
-  }
-  bool _callbackMessageAvailable() const
-  { return !_callbackMessageList.empty(); }
+  bool _dispatchCallbackMessage(AbstractMessageDispatcher& messageDispatcher);
+  bool _callbackMessageAvailable();
 
 private:
   InternalAmbassador(const InternalAmbassador&);
@@ -169,9 +156,6 @@ private:
 
   // List for receive order messages already queued for callback
   MessageList2 _callbackMessageList;
-
-  // FIXME organize queues differently should vanish
-  MessageList2 _receiveOrderMessages;
 };
 
 } // namespace OpenRTI

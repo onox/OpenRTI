@@ -45,21 +45,19 @@ public:
   virtual bool isLogicalTimeStrictlyInThePast(const NativeLogicalTime& logicalTime) = 0;
   virtual bool logicalTimeAlreadyPassed(const NativeLogicalTime& logicalTime) = 0;
 
-  virtual void enableTimeRegulation(Ambassador<T>& ambassador, const NativeLogicalTimeInterval& nativeLookahead) = 0;
-  virtual void enableTimeRegulation(Ambassador<T>& ambassador, const NativeLogicalTime& nativeLogicalTime, const NativeLogicalTimeInterval& nativeLookahead) = 0;
-  virtual void disableTimeRegulation(Ambassador<T>& ambassador) = 0;
+  virtual void enableTimeRegulation(InternalAmbassador& ambassador, const NativeLogicalTimeInterval& nativeLookahead) = 0;
+  virtual void enableTimeRegulation(InternalAmbassador& ambassador, const NativeLogicalTime& nativeLogicalTime, const NativeLogicalTimeInterval& nativeLookahead) = 0;
+  virtual void disableTimeRegulation(InternalAmbassador& ambassador) = 0;
 
-  virtual void enableTimeConstrained(Ambassador<T>& ambassador) = 0;
-  virtual void disableTimeConstrained(Ambassador<T>& ambassador) = 0;
+  virtual void enableTimeConstrained(InternalAmbassador& ambassador) = 0;
+  virtual void disableTimeConstrained(InternalAmbassador& ambassador) = 0;
 
-  virtual void timeAdvanceRequest(InternalAmbassador& ambassador, const NativeLogicalTime& nativeLogicalTime, bool availableMode, bool nextMessageMode) = 0;
-  virtual void flushQueueRequest(Ambassador<T>& ambassador, const NativeLogicalTime& nativeLogicalTime) = 0;
-
-  virtual bool queryGALT(Ambassador<T>& ambassador, NativeLogicalTime& logicalTime) = 0;
-  virtual void queryLogicalTime(Ambassador<T>& ambassador, NativeLogicalTime& logicalTime) = 0;
-  virtual bool queryLITS(Ambassador<T>& ambassador, NativeLogicalTime& logicalTime) = 0;
-  virtual void modifyLookahead(Ambassador<T>& ambassador, const NativeLogicalTimeInterval& nativeLookahead) = 0;
-  virtual void queryLookahead(Ambassador<T>& ambassador, NativeLogicalTimeInterval& logicalTimeInterval) = 0;
+  virtual void timeAdvanceRequest(InternalAmbassador& ambassador, const NativeLogicalTime& nativeLogicalTime, bool availableMode, bool nextMessageMode, bool flushQueue) = 0;
+  virtual bool queryGALT(InternalAmbassador& ambassador, NativeLogicalTime& logicalTime) = 0;
+  virtual void queryLogicalTime(InternalAmbassador& ambassador, NativeLogicalTime& logicalTime) = 0;
+  virtual bool queryLITS(InternalAmbassador& ambassador, NativeLogicalTime& logicalTime) = 0;
+  virtual void modifyLookahead(InternalAmbassador& ambassador, const NativeLogicalTimeInterval& nativeLookahead) = 0;
+  virtual void queryLookahead(InternalAmbassador& ambassador, NativeLogicalTimeInterval& logicalTimeInterval) = 0;
 
   virtual std::string logicalTimeToString(const NativeLogicalTime& nativeLogicalTime) = 0;
   virtual std::string logicalTimeIntervalToString(const NativeLogicalTimeInterval& nativeLogicalTimeInterval) = 0;
@@ -71,13 +69,10 @@ public:
   virtual void acceptCallbackMessage(Ambassador<T>& ambassador, const TimeRegulationEnabledMessage& message) = 0;
   virtual void acceptCallbackMessage(Ambassador<T>& ambassador, const TimeAdvanceGrantedMessage& message) = 0;
   virtual void reflectAttributeValues(Ambassador<T>& ambassador, const Federate::ObjectClass& objectClass,
-                                      bool flushQueueMode, bool timeConstrainedEnabled,
                                       const TimeStampedAttributeUpdateMessage& message) = 0;
-  virtual void removeObjectInstance(Ambassador<T>& ambassador, bool flushQueueMode, bool timeConstrainedEnabled,
-                                    const TimeStampedDeleteObjectInstanceMessage& message) = 0;
+  virtual void removeObjectInstance(Ambassador<T>& ambassador, const TimeStampedDeleteObjectInstanceMessage& message) = 0;
   virtual void receiveInteraction(Ambassador<T>& ambassador, const InteractionClassHandle& interactionClassHandle,
-                                  const Federate::InteractionClass& interactionClass, bool flushQueueMode,
-                                  bool timeConstrainedEnabled, const TimeStampedInteractionMessage& message) = 0;
+                                  const Federate::InteractionClass& interactionClass, const TimeStampedInteractionMessage& message) = 0;
 };
 
 } // namespace OpenRTI

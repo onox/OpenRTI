@@ -34,6 +34,7 @@ public:
     _timeAdvancePending(false),
     _nextMessageMode(false),
     _flushQueueMode(false),
+    _asynchronousDeliveryEnabled(true),
     _messageRetractionSerial(0)
   { }
   virtual ~InternalTimeManagement() {}
@@ -58,6 +59,11 @@ public:
   bool getFlushQueueMode() const
   { return _flushQueueMode; }
 
+  bool getAsynchronousDeliveryEnabled() const
+  { return _asynchronousDeliveryEnabled; }
+  void setAsynchronousDeliveryEnabled(bool asynchronousDeliveryEnabled)
+  { _asynchronousDeliveryEnabled = asynchronousDeliveryEnabled; }
+
   uint32_t getNextMessageRetractionSerial()
   { return _messageRetractionSerial++; }
 
@@ -69,6 +75,10 @@ public:
   virtual void acceptInternalMessage(InternalAmbassador& ambassador, const CommitLowerBoundTimeStampMessage& message) = 0;
 
   virtual void queueTimeStampedMessage(InternalAmbassador& ambassador, const VariableLengthData& timeStamp, const AbstractMessage& message) = 0;
+  virtual void queueReceiveOrderMessage(InternalAmbassador& ambassador, const AbstractMessage& message) = 0;
+
+  virtual bool dispatchCallback(const AbstractMessageDispatcher& dispatcher) = 0;
+  virtual bool callbackMessageAvailable() = 0;
 
 protected:
 
@@ -80,6 +90,7 @@ protected:
   bool _timeAdvancePending;
   bool _nextMessageMode;
   bool _flushQueueMode;
+  bool _asynchronousDeliveryEnabled;
   // Serial number for message retraction
   uint32_t _messageRetractionSerial;
 };

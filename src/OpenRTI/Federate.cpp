@@ -472,8 +472,7 @@ Federate::Federate() :
   _attributeRelevanceAdvisorySwitchEnabled(false),
   _attributeScopeAdvisorySwitchEnabled(false),
   _interactionRelevanceAdvisorySwitchEnabled(false),
-  _permitTimeRegulation(true),
-  _asynchronousDeliveryEnabled(true)
+  _permitTimeRegulation(true)
 {
 }
 
@@ -545,12 +544,6 @@ void
 Federate::setPermitTimeRegulation(bool permitTimeRegulation)
 {
   _permitTimeRegulation = permitTimeRegulation;
-}
-
-void
-Federate::setAsynchronousDeliveryEnabled(bool asynchronousDeliveryEnabled)
-{
-  _asynchronousDeliveryEnabled = asynchronousDeliveryEnabled;
 }
 
 const TransportationType*

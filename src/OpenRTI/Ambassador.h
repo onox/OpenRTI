@@ -2306,7 +2306,7 @@ public:
         Traits::throwRequestForTimeRegulationPending();
       if (_timeManagement->getTimeConstrainedEnablePending())
         Traits::throwRequestForTimeConstrainedPending();
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, false, false);
+      _timeManagement->timeAdvanceRequest(*this, logicalTime, false, false, false);
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {
@@ -2337,7 +2337,7 @@ public:
         Traits::throwRequestForTimeRegulationPending();
       if (_timeManagement->getTimeConstrainedEnablePending())
         Traits::throwRequestForTimeConstrainedPending();
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, true, false);
+      _timeManagement->timeAdvanceRequest(*this, logicalTime, true, false, false);
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {
@@ -2368,7 +2368,9 @@ public:
         Traits::throwRequestForTimeRegulationPending();
       if (_timeManagement->getTimeConstrainedEnablePending())
         Traits::throwRequestForTimeConstrainedPending();
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, false, true);
+      // FIXME
+      Traits::throwRTIinternalError("nextMessageRequest is not implemented!");
+      _timeManagement->timeAdvanceRequest(*this, logicalTime, false, true, false);
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {
@@ -2399,7 +2401,9 @@ public:
         Traits::throwRequestForTimeRegulationPending();
       if (_timeManagement->getTimeConstrainedEnablePending())
         Traits::throwRequestForTimeConstrainedPending();
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, true, true);
+      // FIXME
+      Traits::throwRTIinternalError("nextMessageRequest is not implemented!");
+      _timeManagement->timeAdvanceRequest(*this, logicalTime, true, true, false);
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {
@@ -2430,7 +2434,7 @@ public:
         Traits::throwRequestForTimeRegulationPending();
       if (_timeManagement->getTimeConstrainedEnablePending())
         Traits::throwRequestForTimeConstrainedPending();
-      _timeManagement->flushQueueRequest(*this, logicalTime);
+      _timeManagement->timeAdvanceRequest(*this, logicalTime, false, false, true);
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {
@@ -2447,14 +2451,11 @@ public:
            RTIinternalError)
   {
     try {
-      if (!_federate.valid())
+      if (!_timeManagement.valid())
         Traits::throwFederateNotExecutionMember();
-      if (_federate->getAsynchronousDeliveryEnabled())
+      if (_timeManagement->getAsynchronousDeliveryEnabled())
         Traits::throwAsynchronousDeliveryAlreadyEnabled();
-      _federate->setAsynchronousDeliveryEnabled(true);
-      // FIXME: cannot do so. Can only do that in the general callback dispatcher.
-      // This way, we can check after each callback if asyncronous delivery is still enabled!!!!
-      flushReceiveOrderMessages();
+      _timeManagement->setAsynchronousDeliveryEnabled(true);
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {
@@ -2471,11 +2472,11 @@ public:
            RTIinternalError)
   {
     try {
-      if (!_federate.valid())
+      if (!_timeManagement.valid())
         Traits::throwFederateNotExecutionMember();
-      if (!_federate->getAsynchronousDeliveryEnabled())
+      if (!_timeManagement->getAsynchronousDeliveryEnabled())
         Traits::throwAsynchronousDeliveryAlreadyDisabled();
-      _federate->setAsynchronousDeliveryEnabled(false);
+      _timeManagement->setAsynchronousDeliveryEnabled(false);
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {
@@ -4062,7 +4063,7 @@ public:
       return;
     if (Federate::ObjectClass* objectClass = _federate->getObjectClass(objectInstance->getObjectClassHandle())) {
       if (Unsubscribed != objectClass->getEffectiveSubscriptionType()) {
-        _timeManagement->removeObjectInstance(*this, _timeManagement->getFlushQueueMode(), _timeManagement->getTimeConstrainedEnabled(), message);
+        _timeManagement->removeObjectInstance(*this, message);
       }
     }
     _releaseObjectInstance(message.getObjectInstanceHandle());
@@ -4097,7 +4098,7 @@ public:
     Federate::ObjectClass* objectClass = _federate->getObjectClass(objectInstance->getObjectClassHandle());
     if (!objectClass)
       return;
-    _timeManagement->reflectAttributeValues(*this, *objectClass, _timeManagement->getFlushQueueMode(), _timeManagement->getTimeConstrainedEnabled(), message);
+    _timeManagement->reflectAttributeValues(*this, *objectClass, message);
   }
   void acceptCallbackMessage(const InteractionMessage& message)
   {
@@ -4137,9 +4138,7 @@ public:
       if (!interactionClass)
         return;
     }
-    _timeManagement->receiveInteraction(*this, interactionClassHandle, *interactionClass,
-                                        _timeManagement->getFlushQueueMode(),
-                                        _timeManagement->getTimeConstrainedEnabled(), message);
+    _timeManagement->receiveInteraction(*this, interactionClassHandle, *interactionClass, message);
   }
   void acceptCallbackMessage(const TimeConstrainedEnabledMessage& message)
   {

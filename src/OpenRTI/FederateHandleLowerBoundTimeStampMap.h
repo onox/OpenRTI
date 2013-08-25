@@ -94,6 +94,8 @@ public:
     std::swap(j->second, i);
     // and erase the old logical time
     i->second.erase(federateHandle);
+    // Only allow an advance while committing
+    OpenRTIAssert(i->first <= logicalTimePair);
 
     // Check if we have with this commit now enabled a time advance in some sense.
     // If this map entry has no federate handle left, then this is the case
@@ -115,14 +117,22 @@ public:
   {
     if (empty())
       return true;
-    return logicalTime <= _logicalTimeFederateHandleSetMap.begin()->first.first;
+    // If the committed timestamp has zero lookahead, we know that future
+    // messages will have a logical, time greater than the committed one.
+    // So we can savely advance also to the time equal to the committed logical timestamp.
+    // This should be aequivalent to
+    //   return canAdvanceTo(LogicalTimePair(logicalTime, false));
+    if (_logicalTimeFederateHandleSetMap.begin()->first.second)
+      return logicalTime <= _logicalTimeFederateHandleSetMap.begin()->first.first;
+    else
+      return logicalTime < _logicalTimeFederateHandleSetMap.begin()->first.first;
   }
 
   bool canAdvanceTo(const LogicalTimePair& logicalTimePair) const
   {
     if (empty())
       return true;
-    return logicalTimePair <= _logicalTimeFederateHandleSetMap.begin()->first;
+    return logicalTimePair < _logicalTimeFederateHandleSetMap.begin()->first;
   }
 
   bool empty() const
