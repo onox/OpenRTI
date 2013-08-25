@@ -36,7 +36,7 @@
          name="InteractionClass0"
          sharing="PublishSubscribe"
          transportation="HLAreliable"
-         order="Receive">
+         order="TimeStamp">
         <parameter name="parameter0"
                    dataType="HLAopaqueData"/>
         <interactionClass

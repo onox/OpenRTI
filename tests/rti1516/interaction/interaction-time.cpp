@@ -144,12 +144,6 @@ public:
       return false;
     }
 
-    // FIXME currently the test only passes with this.
-    // The reason is that some timestamped messages are already queued for callback
-    // when time constrained is not yet switched on.
-    if (!waitForAllFederates(ambassador))
-      return false;
-
     // Now that we are regulating, publish
     try {
       ambassador.publishInteractionClass(interactionClassHandle0);
@@ -197,6 +191,20 @@ public:
           rti1516::VariableLengthData tag = toVariableLengthData("withTimestamp");
           parameterValues[class0Parameter0Handle] = _logicalTime.encode();
           ambassador.sendInteraction(interactionClassHandle0, parameterValues, tag, logicalTime);
+
+          // It's not ok to succees if we try with an already passed logical time.
+          if (_lookahead == HLAinteger64Interval(0)) {
+            if (logicalTime <= _logicalTime) {
+              std::wcout << L"Accepted logical time in the past for message delivery!" << std::endl;
+              return false;
+            }
+          } else {
+            if (logicalTime < _logicalTime + _lookahead) {
+              std::wcout << L"Accepted logical time in the past for message delivery!" << std::endl;
+              return false;
+            }
+          }
+
         } catch (const rti1516::InvalidLogicalTime& e) {
           // It's ok to fail if we try with an already passed logical time.
           // But if the timestamp is valid this is fatal!!!
@@ -312,6 +320,10 @@ public:
   {
     _logicalTime = logicalTime;
     _timeAdvancePending = false;
+    if (_logicalTime != _advanceLogicalTime) {
+        _fail = true;
+        std::wcout << L"Time advance grant time does not match the requested time!" << std::endl;
+    }
   }
 
   virtual void
@@ -324,7 +336,7 @@ public:
   {
     if (strncmp("withoutTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;
-        std::wcout << L"Got timest order message that was recieved as receive order!" << std::endl;
+        std::wcout << L"Got timestamp order message that was recieved as receive order!" << std::endl;
     }
     if (sentOrder != rti1516::RECEIVE) {
         _fail = true;
@@ -349,15 +361,12 @@ public:
         _fail = true;
         std::wcout << L"Got recieve order message that was recieved as timestamp order!" << std::endl;
     }
-    if (sentOrder != rti1516::TIMESTAMP) {
+    if (receivedOrder == rti1516::TIMESTAMP && sentOrder != rti1516::TIMESTAMP) {
         _fail = true;
-        std::wcout << L"Got timestamp order message that was incorrectly marked as being sent as recieved order!" << std::endl;
+        std::wcout << L"Received timestamp order message that was sent as receive order!" << std::endl;
     }
-    if (receivedOrder != rti1516::TIMESTAMP) {
-        _fail = true;
-        std::wcout << L"Got timestamp order message that was incorrectly marked as being received as recieved order!" << std::endl;
-    }
-    checkLogicalTime(theTime);
+    if (receivedOrder == rti1516::TIMESTAMP)
+      checkLogicalTime(theTime);
   }
 
   virtual void
@@ -379,37 +388,25 @@ public:
         std::wcout << L"Got recieve order message over timestamped delivery!" << std::endl;
         _fail = true;
     }
-    if (sentOrder != rti1516::TIMESTAMP) {
+    if (receivedOrder == rti1516::TIMESTAMP && sentOrder != rti1516::TIMESTAMP) {
         _fail = true;
-        std::wcout << L"Got timestamp order message that was incorrectly marked as being sent as recieved order!" << std::endl;
+        std::wcout << L"Received timestamp order message that was sent as receive order!" << std::endl;
     }
-    if (receivedOrder != rti1516::TIMESTAMP) {
-        _fail = true;
-        std::wcout << L"Got timestamp order message that was incorrectly marked as being received as recieved order!" << std::endl;
-    }
-    checkLogicalTime(theTime);
+    if (receivedOrder == rti1516::TIMESTAMP)
+      checkLogicalTime(theTime);
   }
 
   void checkLogicalTime(rti1516::LogicalTime const & logicalTime)
   {
-    if (_lookahead == HLAinteger64Interval(0)) {
-      if (logicalTime <= _logicalTime) {
-        _fail = true;
-        std::wcout << L"Received timestamp order message with timestamp in the past: " << logicalTime << " " << _logicalTime << std::endl;
-      }
-      if (_advanceLogicalTime < logicalTime) {
-        _fail = true;
-        std::wcout << L"Received timestamp order message with timestamp in the past: " << logicalTime << " " << _logicalTime << std::endl;
-      }
-    } else {
-      if (logicalTime <= _logicalTime) {
-        _fail = true;
-        std::wcout << L"Received timestamp order message with timestamp in the past: " << logicalTime << " " << _logicalTime << std::endl;
-      }
-      if (_advanceLogicalTime < logicalTime) {
-        _fail = true;
-        std::wcout << L"Received timestamp order message with timestamp in the past: " << logicalTime << " " << _logicalTime << std::endl;
-      }
+    if (logicalTime <= _logicalTime) {
+      _fail = true;
+      std::wcout << L"Received timestamp order message with timestamp in the past: ["
+                 << _logicalTime << ", " << _advanceLogicalTime << "] " << logicalTime << std::endl;
+    }
+    if (_advanceLogicalTime < logicalTime) {
+      _fail = true;
+      std::wcout << L"Received timestamp order message with timestamp in the future: ["
+                 << _logicalTime << ", " << _advanceLogicalTime << "] " << logicalTime << std::endl;
     }
   }
 
