@@ -1650,7 +1650,7 @@ public:
       request->setFederationHandle(getFederationHandle());
       request->setInteractionClassHandle(interactionClassHandle);
       if (timeRegulationEnabled)
-        request->setOrderType(TIMESTAMP);
+        request->setOrderType(interactionClass->getOrderType());
       else
         request->setOrderType(RECEIVE);
       request->setTransportationType(interactionClass->getTransportationType());
