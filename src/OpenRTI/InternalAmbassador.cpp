@@ -651,17 +651,15 @@ InternalAmbassador::dispatchWaitReserveObjectInstanceName(const Clock& abstime, 
 void
 InternalAmbassador::queueTimeStampedMessage(const VariableLengthData& timeStamp, const AbstractMessage& message)
 {
-  InternalTimeManagement* timeManagement = getTimeManagement();
-  OpenRTIAssert(timeManagement);
-  timeManagement->queueTimeStampedMessage(*this, timeStamp, message);
+  if (InternalTimeManagement* timeManagement = getTimeManagement())
+    timeManagement->queueTimeStampedMessage(*this, timeStamp, message);
 }
 
 void
 InternalAmbassador::queueReceiveOrderMessage(const AbstractMessage& message)
 {
-  InternalTimeManagement* timeManagement = getTimeManagement();
-  OpenRTIAssert(timeManagement);
-  timeManagement->queueReceiveOrderMessage(*this, message);
+  if (InternalTimeManagement* timeManagement = getTimeManagement())
+    timeManagement->queueReceiveOrderMessage(*this, message);
 }
 
 bool

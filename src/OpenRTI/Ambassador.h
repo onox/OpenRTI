@@ -430,6 +430,12 @@ public:
       }
     }
 
+    // disable time regulation, for now from here
+    if (_timeManagement.valid() && _timeManagement->getTimeRegulationEnabledOrPending())
+      _timeManagement->disableTimeRegulation(*this);
+    // We should no longer respond to time regulation requests.
+    _timeManagement = 0;
+
     // delete object instances if requested
     bool deleteObjects = resignAction == DELETE_OBJECTS ||
       resignAction == DELETE_OBJECTS_THEN_DIVEST || resignAction == CANCEL_THEN_DELETE_THEN_DIVEST;
@@ -496,7 +502,6 @@ public:
     send(request3);
 
     _federate = 0;
-    _timeManagement = 0;
   }
 
 
