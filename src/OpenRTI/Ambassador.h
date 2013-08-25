@@ -1718,7 +1718,8 @@ public:
       Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
       if (!objectInstance)
         Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      if (!objectInstance->isOwnedByFederate())
+      const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(AttributeHandle(0));
+      if (!instanceAttribute || !objectInstance->isOwnedByFederate())
         Traits::throwDeletePrivilegeNotHeld(objectInstanceHandle.toString());
       bool timeRegulationEnabled = getTimeManagement()->getTimeRegulationEnabled();
       if (timeRegulationEnabled && getTimeManagement()->logicalTimeAlreadyPassed(logicalTime))
@@ -1731,7 +1732,7 @@ public:
       request->setFederationHandle(getFederationHandle());
       request->setObjectInstanceHandle(objectInstanceHandle);
       if (timeRegulationEnabled)
-        request->setOrderType(TIMESTAMP);
+        request->setOrderType(instanceAttribute->getOrderType());
       else
         request->setOrderType(RECEIVE);
       request->setTag(tag);
