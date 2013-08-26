@@ -116,7 +116,8 @@ LeafServerThread::_Registry::erase(LeafServerThread& serverThread)
 SharedPtr<AbstractServer>
 LeafServerThread::_Registry::createServer(const URL& url, const SharedPtr<AbstractServerNode>& serverNode)
 {
-  if (url.getProtocol() == "thread") {
+  // Thread server is still the default.
+  if (url.getProtocol().empty() || url.getProtocol() == "thread") {
     return new ThreadServer(serverNode);
   } else if (url.getProtocol() == "rti" || url.getProtocol() == "pipe") {
     SharedPtr<NetworkServer> server = new NetworkServer(serverNode);

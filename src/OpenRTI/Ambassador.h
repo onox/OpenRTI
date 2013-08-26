@@ -29,6 +29,7 @@
 #include "LogStream.h"
 #include "Message.h"
 #include "MessageList.h"
+#include "URL.h"
 #include "StringUtils.h"
 #include "TimeManagement.h"
 
@@ -155,7 +156,7 @@ public:
   const FederationHandle& getFederationHandle() const
   { return _federate->getFederationHandle(); }
 
-  void connect(const StringMap& parameterMap, const Clock& abstime)
+  void connect(const URL& url, const StringStringListMap& stringStringListMap)
     throw (ConnectionFailed,
            AlreadyConnected,
            CallNotAllowedFromWithinCallback,
@@ -165,7 +166,7 @@ public:
       if (isConnected())
         Traits::throwAlreadyConnected("Ambassador is already connected!");
 
-      InternalAmbassador::connect(parameterMap, abstime);
+      InternalAmbassador::connect(url, stringStringListMap);
 
       if (!isConnected())
         Traits::throwConnectionFailed("Connection failed!");

@@ -28,6 +28,7 @@ namespace OpenRTI {
 
 class InternalTimeManagement;
 class Federate;
+class URL;
 
 class OPENRTI_API InternalAmbassador {
 public:
@@ -35,11 +36,8 @@ public:
   virtual ~InternalAmbassador();
 
   /// Handle the connection to the ServerNodes.
-  /// FIXME in the long term, avoid the abstime here.
-  /// Just resond with a ConnectRespnose message and wait for that in the ambassador.
   bool isConnected() const;
-  void connect(const StringMap& parameterMap, const Clock& abstime);
-  void connect(const StringStringListMap& parameterMap, const Clock& abstime);
+  void connect(const URL& url, const StringStringListMap& parameterMap);
   void disconnect();
 
   /// Send a message

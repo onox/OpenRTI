@@ -59,40 +59,8 @@ InternalAmbassador::isConnected() const
 }
 
 void
-InternalAmbassador::connect(const StringMap& parameterMap, const Clock& abstime)
+InternalAmbassador::connect(const URL& url, const StringStringListMap& parameterMap)
 {
-  StringStringListMap stringStringListMap;
-  for (StringMap::const_iterator j = parameterMap.begin(); j != parameterMap.end(); ++j)
-    stringStringListMap[j->first].push_back(j->second);
-
-  connect(stringStringListMap, abstime);
-}
-
-void
-InternalAmbassador::connect(const StringStringListMap& parameterMap, const Clock& abstime)
-{
-  StringStringListMap::const_iterator i = parameterMap.find("protocol");
-  std::string protocol;
-  if (i != parameterMap.end() && !i->second.empty())
-    protocol = i->second.front();
-  else
-    protocol = "thread";
-
-  URL url;
-  if (protocol == "rti") {
-    i = parameterMap.find("address");
-    if (i != parameterMap.end() && !i->second.empty())
-      url = URL::fromProtocolAddress("rti", i->second.front());
-    else
-      url = URL::fromProtocolAddress("rti", "localhost");
-  } else if (protocol == "pipe") {
-    i = parameterMap.find("file");
-    if (i != parameterMap.end() && !i->second.empty())
-      url = URL::fromProtocolPath("pipe", i->second.front());
-  } else if (protocol == "thread") {
-    url = URL::fromProtocolAddress("thread", std::string());
-  }
-
   _connect = LeafServerThread::connect(url, parameterMap);
 }
 

@@ -1506,15 +1506,9 @@ RTIambassadorImplementation::connect(rti1516e::FederateAmbassador & federateAmba
   if (rti1516CallbackModel != rti1516e::HLA_EVOKED)
     throw rti1516e::UnsupportedCallbackModel(L"Only HLA_EVOKED supported!");
 
-  // FIXME make that again configurable
-  Clock abstime = Clock::now() + Clock::fromSeconds(70);
+  URL url = URL::fromUrl(ucsToUtf8(localSettingsDesignator));
 
-  // FIXME allow the local settings stuff to be a configuration file and others
-  StringMap defaults;
-  defaults["protocol"] = "thread";
-  StringMap stringMap = getStringMapFromUrl(defaults, ucsToUtf8(localSettingsDesignator));
-
-  _ambassadorInterface->connect(stringMap, abstime);
+  _ambassadorInterface->connect(url, StringStringListMap());
   _ambassadorInterface->_federateAmbassador = &federateAmbassador;
 }
 

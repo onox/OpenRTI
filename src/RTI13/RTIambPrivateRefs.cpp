@@ -1071,26 +1071,19 @@ public:
 
   void ensureConnected(const std::string& federationExecutionName)
   {
-    // FIXME allow the local settings stuff to be a configuration file and others
-    OpenRTI::StringMap defaults;
-    defaults["protocol"] = "thread";
-    OpenRTI::StringMap stringMap = OpenRTI::getStringMapFromUrl(defaults, federationExecutionName);
-    stringMap.erase("federationExecutionName");
+    URL url = URL::fromUrl(federationExecutionName);
 
     if (!isConnected()) {
-      // FIXME make that again configurable
-      OpenRTI::Clock abstime = OpenRTI::Clock::now() + OpenRTI::Clock::fromSeconds(70);
+      connect(url, StringStringListMap());
 
-      connect(stringMap, abstime);
-
-      _connectParameters = stringMap;
-    } else if (_connectParameters != stringMap) {
+      _connectedUrl = url;
+    } else if (_connectedUrl != url) {
       throw RTI::RTIinternalError("Connect url does not point to the same connection.");
     }
   }
 
   // The instantiation time argument list
-  OpenRTI::StringMap _connectParameters;
+  URL _connectedUrl;
 
   bool _concurrentAccess;
 

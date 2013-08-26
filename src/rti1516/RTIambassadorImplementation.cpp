@@ -278,8 +278,6 @@ public:
     _federateAmbassador(0),
     _forceOpaqueLogicalTime(false)
   {
-    _parameterMap["protocol"] = "thread";
-
     for (unsigned i = 0; i < args.size(); ++i) {
       if (args[i] == L"force-opaque-time") {
         _forceOpaqueLogicalTime = true;
@@ -291,7 +289,15 @@ public:
           continue;
         std::string key = ucsToUtf8(args[i].substr(0, pos));
         std::string value = ucsToUtf8(args[i].substr(pos + 1));
-        _parameterMap[key] = value;
+        if (key == "address") {
+          URL url = URL::fromProtocolAddress(_defaultUrl.getProtocol(), value);
+          _defaultUrl.setHost(url.getHost());
+          _defaultUrl.setService(url.getService());
+        } else if (key == "protocol") {
+          _defaultUrl.setProtocol(value);
+        } else {
+          _stringStringListMap[key].push_back(value);
+        }
       }
     }
   }
@@ -1368,26 +1374,30 @@ public:
 
   void ensureConnected(const std::string& federationExecutionName)
   {
-    // FIXME allow the local settings stuff to be a configuration file and others
-    StringMap stringMap = getStringMapFromUrl(_parameterMap, federationExecutionName);
-    stringMap.erase("federationExecutionName");
+    URL url = URL::fromUrl(federationExecutionName);
+    if (url.getProtocol().empty())
+      url.setProtocol(_defaultUrl.getProtocol());
+    if (url.getHost().empty())
+      url.setHost(_defaultUrl.getHost());
+    if (url.getService().empty())
+      url.setService(_defaultUrl.getService());
+    if (url.getPath().empty())
+      url.setPath(_defaultUrl.getPath());
 
     if (!isConnected()) {
-      // FIXME make that again configurable
-      Clock abstime = Clock::now() + Clock::fromSeconds(70);
+      Ambassador<RTI1516Traits>::connect(url, _stringStringListMap);
 
-      Ambassador<RTI1516Traits>::connect(stringMap, abstime);
-
-      _connectParameters = stringMap;
-    } else if (_connectParameters != stringMap) {
+      _connectedUrl = url;;
+    } else if (_connectedUrl != url) {
       throw rti1516::RTIinternalError(L"Connect url does not point to the same connection.");
     }
   }
 
   // The instantiation time argument list
   rti1516::FederateAmbassador* _federateAmbassador;
-  StringMap _parameterMap;
-  StringMap _connectParameters;
+  URL _defaultUrl;
+  StringStringListMap _stringStringListMap;
+  URL _connectedUrl;
   bool _forceOpaqueLogicalTime;
 };
 
