@@ -22,6 +22,7 @@
 #include "MessageQueue.h"
 #include "Mutex.h"
 #include "NetworkServer.h"
+#include "ScopeUnlock.h"
 #include "ServerNode.h"
 #include "ServerOptions.h"
 #include "SingletonPtr.h"
@@ -57,9 +58,15 @@ LeafServerThread::_Registry::_Registry()
 
 LeafServerThread::_Registry::~_Registry()
 {
+  ScopeLock scopeLock(_mutex);
   for (UrlServerMap::iterator i = _urlServerMap.begin(); i != _urlServerMap.end();) {
     /// Need to be safe for map erase during shutdown
-    (i++)->second->postShutdown();
+    SharedPtr<LeafServerThread> leafServerThread;
+    leafServerThread.swap((i++)->second);
+    if (!leafServerThread.valid())
+      continue;
+    ScopeUnlock scopeUnlock(_mutex);
+    leafServerThread->postShutdown();
   }
 }
 
