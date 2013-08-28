@@ -41,6 +41,9 @@ public:
   virtual void out(std::ostream& os) const = 0;
   virtual void dispatch(const AbstractMessageDispatcher&) const = 0;
 
+  // For testing of the transport implementation
+  virtual bool operator==(const AbstractMessage&) const = 0;
+
   template<typename F>
   void dispatchFunctor(F& functor) const
   { dispatch(FunctorMessageDispatcher<F>(functor)); }

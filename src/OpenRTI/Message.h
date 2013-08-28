@@ -668,11 +668,15 @@ public:
 
   bool operator==(const FOMStringTransportationType& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     return true;
   }
   bool operator<(const FOMStringTransportationType& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     return false;
@@ -728,12 +732,16 @@ public:
 
   bool operator==(const FOMStringDimension& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     if (getUpperBound() != rhs.getUpperBound()) return false;
     return true;
   }
   bool operator<(const FOMStringDimension& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     if (getUpperBound() < rhs.getUpperBound()) return true;
@@ -792,12 +800,16 @@ public:
 
   bool operator==(const FOMStringRoutingSpace& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     if (getDimensionSet() != rhs.getDimensionSet()) return false;
     return true;
   }
   bool operator<(const FOMStringRoutingSpace& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     if (getDimensionSet() < rhs.getDimensionSet()) return true;
@@ -849,11 +861,15 @@ public:
 
   bool operator==(const FOMStringParameter& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     return true;
   }
   bool operator<(const FOMStringParameter& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     return false;
@@ -937,6 +953,8 @@ public:
 
   bool operator==(const FOMStringInteractionClass& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     if (getOrderType() != rhs.getOrderType()) return false;
     if (getTransportationType() != rhs.getTransportationType()) return false;
@@ -947,6 +965,8 @@ public:
   }
   bool operator<(const FOMStringInteractionClass& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     if (getOrderType() < rhs.getOrderType()) return true;
@@ -1038,6 +1058,8 @@ public:
 
   bool operator==(const FOMStringAttribute& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     if (getOrderType() != rhs.getOrderType()) return false;
     if (getTransportationType() != rhs.getTransportationType()) return false;
@@ -1047,6 +1069,8 @@ public:
   }
   bool operator<(const FOMStringAttribute& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     if (getOrderType() < rhs.getOrderType()) return true;
@@ -1114,12 +1138,16 @@ public:
 
   bool operator==(const FOMStringObjectClass& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     if (getAttributeList() != rhs.getAttributeList()) return false;
     return true;
   }
   bool operator<(const FOMStringObjectClass& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     if (getAttributeList() < rhs.getAttributeList()) return true;
@@ -1199,6 +1227,8 @@ public:
 
   bool operator==(const FOMStringModule& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getTransportationTypeList() != rhs.getTransportationTypeList()) return false;
     if (getDimensionList() != rhs.getDimensionList()) return false;
     if (getRoutingSpaceList() != rhs.getRoutingSpaceList()) return false;
@@ -1208,6 +1238,8 @@ public:
   }
   bool operator<(const FOMStringModule& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getTransportationTypeList() < rhs.getTransportationTypeList()) return true;
     if (rhs.getTransportationTypeList() < getTransportationTypeList()) return false;
     if (getDimensionList() < rhs.getDimensionList()) return true;
@@ -1275,12 +1307,16 @@ public:
 
   bool operator==(const FOMTransportationType& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     if (getTransportationType() != rhs.getTransportationType()) return false;
     return true;
   }
   bool operator<(const FOMTransportationType& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     if (getTransportationType() < rhs.getTransportationType()) return true;
@@ -1348,6 +1384,8 @@ public:
 
   bool operator==(const FOMDimension& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     if (getDimensionHandle() != rhs.getDimensionHandle()) return false;
     if (getUpperBound() != rhs.getUpperBound()) return false;
@@ -1355,6 +1393,8 @@ public:
   }
   bool operator<(const FOMDimension& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     if (getDimensionHandle() < rhs.getDimensionHandle()) return true;
@@ -1425,6 +1465,8 @@ public:
 
   bool operator==(const FOMRoutingSpace& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     if (getSpaceHandle() != rhs.getSpaceHandle()) return false;
     if (getDimensionHandleSet() != rhs.getDimensionHandleSet()) return false;
@@ -1432,6 +1474,8 @@ public:
   }
   bool operator<(const FOMRoutingSpace& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     if (getSpaceHandle() < rhs.getSpaceHandle()) return true;
@@ -1495,12 +1539,16 @@ public:
 
   bool operator==(const FOMParameter& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     if (getParameterHandle() != rhs.getParameterHandle()) return false;
     return true;
   }
   bool operator<(const FOMParameter& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     if (getParameterHandle() < rhs.getParameterHandle()) return true;
@@ -1596,6 +1644,8 @@ public:
 
   bool operator==(const FOMInteractionClass& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     if (getInteractionClassHandle() != rhs.getInteractionClassHandle()) return false;
     if (getParentInteractionClassHandle() != rhs.getParentInteractionClassHandle()) return false;
@@ -1607,6 +1657,8 @@ public:
   }
   bool operator<(const FOMInteractionClass& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     if (getInteractionClassHandle() < rhs.getInteractionClassHandle()) return true;
@@ -1701,6 +1753,8 @@ public:
 
   bool operator==(const FOMAttribute& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     if (getAttributeHandle() != rhs.getAttributeHandle()) return false;
     if (getOrderType() != rhs.getOrderType()) return false;
@@ -1710,6 +1764,8 @@ public:
   }
   bool operator<(const FOMAttribute& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     if (getAttributeHandle() < rhs.getAttributeHandle()) return true;
@@ -1791,6 +1847,8 @@ public:
 
   bool operator==(const FOMObjectClass& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getName() != rhs.getName()) return false;
     if (getObjectClassHandle() != rhs.getObjectClassHandle()) return false;
     if (getParentObjectClassHandle() != rhs.getParentObjectClassHandle()) return false;
@@ -1799,6 +1857,8 @@ public:
   }
   bool operator<(const FOMObjectClass& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
     if (getObjectClassHandle() < rhs.getObjectClassHandle()) return true;
@@ -1898,6 +1958,8 @@ public:
 
   bool operator==(const FOMModule& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return true;
     if (getFOMModuleHandle() != rhs.getFOMModuleHandle()) return false;
     if (getRequiredFOMModuleHandleSet() != rhs.getRequiredFOMModuleHandleSet()) return false;
     if (getTransportationTypeList() != rhs.getTransportationTypeList()) return false;
@@ -1909,6 +1971,8 @@ public:
   }
   bool operator<(const FOMModule& rhs) const
   {
+    if (_impl.get() == rhs._impl.get())
+      return false;
     if (getFOMModuleHandle() < rhs.getFOMModuleHandle()) return true;
     if (rhs.getFOMModuleHandle() < getFOMModuleHandle()) return false;
     if (getRequiredFOMModuleHandleSet() < rhs.getRequiredFOMModuleHandleSet()) return true;
@@ -1970,6 +2034,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ConnectionLostMessage& rhs) const;
+  bool operator<(const ConnectionLostMessage& rhs) const;
+  bool operator!=(const ConnectionLostMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ConnectionLostMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ConnectionLostMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ConnectionLostMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFaultDescription(const String& value)
   { _faultDescription = value; }
   String& getFaultDescription()
@@ -1989,6 +2065,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const CreateFederationExecutionRequestMessage& rhs) const;
+  bool operator<(const CreateFederationExecutionRequestMessage& rhs) const;
+  bool operator!=(const CreateFederationExecutionRequestMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const CreateFederationExecutionRequestMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const CreateFederationExecutionRequestMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const CreateFederationExecutionRequestMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationExecution(const String& value)
   { _federationExecution = value; }
@@ -2034,6 +2122,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const CreateFederationExecutionResponseMessage& rhs) const;
+  bool operator<(const CreateFederationExecutionResponseMessage& rhs) const;
+  bool operator!=(const CreateFederationExecutionResponseMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const CreateFederationExecutionResponseMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const CreateFederationExecutionResponseMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const CreateFederationExecutionResponseMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setCreateFederationExecutionResponseType(const CreateFederationExecutionResponseType& value)
   { _createFederationExecutionResponseType = value; }
   CreateFederationExecutionResponseType& getCreateFederationExecutionResponseType()
@@ -2062,6 +2162,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const DestroyFederationExecutionRequestMessage& rhs) const;
+  bool operator<(const DestroyFederationExecutionRequestMessage& rhs) const;
+  bool operator!=(const DestroyFederationExecutionRequestMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const DestroyFederationExecutionRequestMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const DestroyFederationExecutionRequestMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const DestroyFederationExecutionRequestMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationExecution(const String& value)
   { _federationExecution = value; }
   String& getFederationExecution()
@@ -2081,6 +2193,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const DestroyFederationExecutionResponseMessage& rhs) const;
+  bool operator<(const DestroyFederationExecutionResponseMessage& rhs) const;
+  bool operator!=(const DestroyFederationExecutionResponseMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const DestroyFederationExecutionResponseMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const DestroyFederationExecutionResponseMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const DestroyFederationExecutionResponseMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setDestroyFederationExecutionResponseType(const DestroyFederationExecutionResponseType& value)
   { _destroyFederationExecutionResponseType = value; }
@@ -2102,6 +2226,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const EnumerateFederationExecutionsRequestMessage& rhs) const;
+  bool operator<(const EnumerateFederationExecutionsRequestMessage& rhs) const;
+  bool operator!=(const EnumerateFederationExecutionsRequestMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const EnumerateFederationExecutionsRequestMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const EnumerateFederationExecutionsRequestMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const EnumerateFederationExecutionsRequestMessage& rhs) const
+  { return !operator>(rhs); }
+
 private:
 };
 
@@ -2113,6 +2249,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const EnumerateFederationExecutionsResponseMessage& rhs) const;
+  bool operator<(const EnumerateFederationExecutionsResponseMessage& rhs) const;
+  bool operator!=(const EnumerateFederationExecutionsResponseMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const EnumerateFederationExecutionsResponseMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const EnumerateFederationExecutionsResponseMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const EnumerateFederationExecutionsResponseMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationExecutionInformationVector(const FederationExecutionInformationVector& value)
   { _federationExecutionInformationVector = value; }
@@ -2133,6 +2281,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const InsertFederationExecutionMessage& rhs) const;
+  bool operator<(const InsertFederationExecutionMessage& rhs) const;
+  bool operator!=(const InsertFederationExecutionMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const InsertFederationExecutionMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const InsertFederationExecutionMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const InsertFederationExecutionMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2186,6 +2346,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ShutdownFederationExecutionMessage& rhs) const;
+  bool operator<(const ShutdownFederationExecutionMessage& rhs) const;
+  bool operator!=(const ShutdownFederationExecutionMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ShutdownFederationExecutionMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ShutdownFederationExecutionMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ShutdownFederationExecutionMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -2205,6 +2377,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const EraseFederationExecutionMessage& rhs) const;
+  bool operator<(const EraseFederationExecutionMessage& rhs) const;
+  bool operator!=(const EraseFederationExecutionMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const EraseFederationExecutionMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const EraseFederationExecutionMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const EraseFederationExecutionMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2226,6 +2410,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ReleaseFederationHandleMessage& rhs) const;
+  bool operator<(const ReleaseFederationHandleMessage& rhs) const;
+  bool operator!=(const ReleaseFederationHandleMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ReleaseFederationHandleMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ReleaseFederationHandleMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ReleaseFederationHandleMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -2245,6 +2441,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const JoinFederationExecutionRequestMessage& rhs) const;
+  bool operator<(const JoinFederationExecutionRequestMessage& rhs) const;
+  bool operator!=(const JoinFederationExecutionRequestMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const JoinFederationExecutionRequestMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const JoinFederationExecutionRequestMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const JoinFederationExecutionRequestMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationExecution(const String& value)
   { _federationExecution = value; }
@@ -2297,6 +2505,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const JoinFederationExecutionResponseMessage& rhs) const;
+  bool operator<(const JoinFederationExecutionResponseMessage& rhs) const;
+  bool operator!=(const JoinFederationExecutionResponseMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const JoinFederationExecutionResponseMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const JoinFederationExecutionResponseMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const JoinFederationExecutionResponseMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2366,6 +2586,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ResignFederationExecutionRequestMessage& rhs) const;
+  bool operator<(const ResignFederationExecutionRequestMessage& rhs) const;
+  bool operator!=(const ResignFederationExecutionRequestMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ResignFederationExecutionRequestMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ResignFederationExecutionRequestMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ResignFederationExecutionRequestMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -2393,6 +2625,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const JoinFederateNotifyMessage& rhs) const;
+  bool operator<(const JoinFederateNotifyMessage& rhs) const;
+  bool operator!=(const JoinFederateNotifyMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const JoinFederateNotifyMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const JoinFederateNotifyMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const JoinFederateNotifyMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2438,6 +2682,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ResignFederateNotifyMessage& rhs) const;
+  bool operator<(const ResignFederateNotifyMessage& rhs) const;
+  bool operator!=(const ResignFederateNotifyMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ResignFederateNotifyMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ResignFederateNotifyMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ResignFederateNotifyMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -2465,6 +2721,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const RegisterFederationSynchronizationPointMessage& rhs) const;
+  bool operator<(const RegisterFederationSynchronizationPointMessage& rhs) const;
+  bool operator!=(const RegisterFederationSynchronizationPointMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const RegisterFederationSynchronizationPointMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const RegisterFederationSynchronizationPointMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const RegisterFederationSynchronizationPointMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2518,6 +2786,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const RegisterFederationSynchronizationPointResponseMessage& rhs) const;
+  bool operator<(const RegisterFederationSynchronizationPointResponseMessage& rhs) const;
+  bool operator!=(const RegisterFederationSynchronizationPointResponseMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const RegisterFederationSynchronizationPointResponseMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const RegisterFederationSynchronizationPointResponseMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const RegisterFederationSynchronizationPointResponseMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -2561,6 +2841,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const AnnounceSynchronizationPointMessage& rhs) const;
+  bool operator<(const AnnounceSynchronizationPointMessage& rhs) const;
+  bool operator!=(const AnnounceSynchronizationPointMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const AnnounceSynchronizationPointMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const AnnounceSynchronizationPointMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const AnnounceSynchronizationPointMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2614,6 +2906,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const SynchronizationPointAchievedMessage& rhs) const;
+  bool operator<(const SynchronizationPointAchievedMessage& rhs) const;
+  bool operator!=(const SynchronizationPointAchievedMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const SynchronizationPointAchievedMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const SynchronizationPointAchievedMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const SynchronizationPointAchievedMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -2649,6 +2953,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const FederationSynchronizedMessage& rhs) const;
+  bool operator<(const FederationSynchronizedMessage& rhs) const;
+  bool operator!=(const FederationSynchronizedMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const FederationSynchronizedMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const FederationSynchronizedMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const FederationSynchronizedMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2686,6 +3002,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const EnableTimeRegulationRequestMessage& rhs) const;
+  bool operator<(const EnableTimeRegulationRequestMessage& rhs) const;
+  bool operator!=(const EnableTimeRegulationRequestMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const EnableTimeRegulationRequestMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const EnableTimeRegulationRequestMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const EnableTimeRegulationRequestMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -2721,6 +3049,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const EnableTimeRegulationResponseMessage& rhs) const;
+  bool operator<(const EnableTimeRegulationResponseMessage& rhs) const;
+  bool operator!=(const EnableTimeRegulationResponseMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const EnableTimeRegulationResponseMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const EnableTimeRegulationResponseMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const EnableTimeRegulationResponseMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2774,6 +3114,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const DisableTimeRegulationRequestMessage& rhs) const;
+  bool operator<(const DisableTimeRegulationRequestMessage& rhs) const;
+  bool operator!=(const DisableTimeRegulationRequestMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const DisableTimeRegulationRequestMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const DisableTimeRegulationRequestMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const DisableTimeRegulationRequestMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -2801,6 +3153,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const CommitLowerBoundTimeStampMessage& rhs) const;
+  bool operator<(const CommitLowerBoundTimeStampMessage& rhs) const;
+  bool operator!=(const CommitLowerBoundTimeStampMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const CommitLowerBoundTimeStampMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const CommitLowerBoundTimeStampMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const CommitLowerBoundTimeStampMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2838,6 +3202,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const TimeConstrainedEnabledMessage& rhs) const;
+  bool operator<(const TimeConstrainedEnabledMessage& rhs) const;
+  bool operator!=(const TimeConstrainedEnabledMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const TimeConstrainedEnabledMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const TimeConstrainedEnabledMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const TimeConstrainedEnabledMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setLogicalTime(const VariableLengthData& value)
   { _logicalTime = value; }
   VariableLengthData& getLogicalTime()
@@ -2857,6 +3233,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const TimeRegulationEnabledMessage& rhs) const;
+  bool operator<(const TimeRegulationEnabledMessage& rhs) const;
+  bool operator!=(const TimeRegulationEnabledMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const TimeRegulationEnabledMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const TimeRegulationEnabledMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const TimeRegulationEnabledMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setLogicalTime(const VariableLengthData& value)
   { _logicalTime = value; }
@@ -2878,6 +3266,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const TimeAdvanceGrantedMessage& rhs) const;
+  bool operator<(const TimeAdvanceGrantedMessage& rhs) const;
+  bool operator!=(const TimeAdvanceGrantedMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const TimeAdvanceGrantedMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const TimeAdvanceGrantedMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const TimeAdvanceGrantedMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setLogicalTime(const VariableLengthData& value)
   { _logicalTime = value; }
   VariableLengthData& getLogicalTime()
@@ -2897,6 +3297,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const InsertRegionMessage& rhs) const;
+  bool operator<(const InsertRegionMessage& rhs) const;
+  bool operator!=(const InsertRegionMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const InsertRegionMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const InsertRegionMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const InsertRegionMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -2926,6 +3338,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const CommitRegionMessage& rhs) const;
+  bool operator<(const CommitRegionMessage& rhs) const;
+  bool operator!=(const CommitRegionMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const CommitRegionMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const CommitRegionMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const CommitRegionMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -2954,6 +3378,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const EraseRegionMessage& rhs) const;
+  bool operator<(const EraseRegionMessage& rhs) const;
+  bool operator!=(const EraseRegionMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const EraseRegionMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const EraseRegionMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const EraseRegionMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -2981,6 +3417,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ChangeInteractionClassPublicationMessage& rhs) const;
+  bool operator<(const ChangeInteractionClassPublicationMessage& rhs) const;
+  bool operator!=(const ChangeInteractionClassPublicationMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ChangeInteractionClassPublicationMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ChangeInteractionClassPublicationMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ChangeInteractionClassPublicationMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3017,6 +3465,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ChangeObjectClassPublicationMessage& rhs) const;
+  bool operator<(const ChangeObjectClassPublicationMessage& rhs) const;
+  bool operator!=(const ChangeObjectClassPublicationMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ChangeObjectClassPublicationMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ChangeObjectClassPublicationMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ChangeObjectClassPublicationMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3062,6 +3522,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ChangeInteractionClassSubscriptionMessage& rhs) const;
+  bool operator<(const ChangeInteractionClassSubscriptionMessage& rhs) const;
+  bool operator!=(const ChangeInteractionClassSubscriptionMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ChangeInteractionClassSubscriptionMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ChangeInteractionClassSubscriptionMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ChangeInteractionClassSubscriptionMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -3097,6 +3569,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ChangeObjectClassSubscriptionMessage& rhs) const;
+  bool operator<(const ChangeObjectClassSubscriptionMessage& rhs) const;
+  bool operator!=(const ChangeObjectClassSubscriptionMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ChangeObjectClassSubscriptionMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ChangeObjectClassSubscriptionMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ChangeObjectClassSubscriptionMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3142,6 +3626,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const RegistrationForObjectClassMessage& rhs) const;
+  bool operator<(const RegistrationForObjectClassMessage& rhs) const;
+  bool operator!=(const RegistrationForObjectClassMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const RegistrationForObjectClassMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const RegistrationForObjectClassMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const RegistrationForObjectClassMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setObjectClassHandle(const ObjectClassHandle& value)
   { _objectClassHandle = value; }
   ObjectClassHandle& getObjectClassHandle()
@@ -3170,6 +3666,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const TurnInteractionsOnMessage& rhs) const;
+  bool operator<(const TurnInteractionsOnMessage& rhs) const;
+  bool operator!=(const TurnInteractionsOnMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const TurnInteractionsOnMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const TurnInteractionsOnMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const TurnInteractionsOnMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
   InteractionClassHandle& getInteractionClassHandle()
@@ -3197,6 +3705,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const InteractionMessage& rhs) const;
+  bool operator<(const InteractionMessage& rhs) const;
+  bool operator!=(const InteractionMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const InteractionMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const InteractionMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const InteractionMessage& rhs) const
+  { return !operator>(rhs); }
 
   virtual bool getReliable() const;
 
@@ -3251,6 +3771,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const TimeStampedInteractionMessage& rhs) const;
+  bool operator<(const TimeStampedInteractionMessage& rhs) const;
+  bool operator!=(const TimeStampedInteractionMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const TimeStampedInteractionMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const TimeStampedInteractionMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const TimeStampedInteractionMessage& rhs) const
+  { return !operator>(rhs); }
 
   virtual bool getReliable() const;
 
@@ -3330,6 +3862,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ObjectInstanceHandlesRequestMessage& rhs) const;
+  bool operator<(const ObjectInstanceHandlesRequestMessage& rhs) const;
+  bool operator!=(const ObjectInstanceHandlesRequestMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ObjectInstanceHandlesRequestMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ObjectInstanceHandlesRequestMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ObjectInstanceHandlesRequestMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -3365,6 +3909,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ObjectInstanceHandlesResponseMessage& rhs) const;
+  bool operator<(const ObjectInstanceHandlesResponseMessage& rhs) const;
+  bool operator!=(const ObjectInstanceHandlesResponseMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ObjectInstanceHandlesResponseMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ObjectInstanceHandlesResponseMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ObjectInstanceHandlesResponseMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3402,6 +3958,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ReleaseMultipleObjectInstanceNameHandlePairsMessage& rhs) const;
+  bool operator<(const ReleaseMultipleObjectInstanceNameHandlePairsMessage& rhs) const;
+  bool operator!=(const ReleaseMultipleObjectInstanceNameHandlePairsMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ReleaseMultipleObjectInstanceNameHandlePairsMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ReleaseMultipleObjectInstanceNameHandlePairsMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ReleaseMultipleObjectInstanceNameHandlePairsMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -3429,6 +3997,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ReserveObjectInstanceNameRequestMessage& rhs) const;
+  bool operator<(const ReserveObjectInstanceNameRequestMessage& rhs) const;
+  bool operator!=(const ReserveObjectInstanceNameRequestMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ReserveObjectInstanceNameRequestMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ReserveObjectInstanceNameRequestMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ReserveObjectInstanceNameRequestMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3465,6 +4045,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ReserveObjectInstanceNameResponseMessage& rhs) const;
+  bool operator<(const ReserveObjectInstanceNameResponseMessage& rhs) const;
+  bool operator!=(const ReserveObjectInstanceNameResponseMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ReserveObjectInstanceNameResponseMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ReserveObjectInstanceNameResponseMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ReserveObjectInstanceNameResponseMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3510,6 +4102,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ReserveMultipleObjectInstanceNameRequestMessage& rhs) const;
+  bool operator<(const ReserveMultipleObjectInstanceNameRequestMessage& rhs) const;
+  bool operator!=(const ReserveMultipleObjectInstanceNameRequestMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ReserveMultipleObjectInstanceNameRequestMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ReserveMultipleObjectInstanceNameRequestMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ReserveMultipleObjectInstanceNameRequestMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -3545,6 +4149,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ReserveMultipleObjectInstanceNameResponseMessage& rhs) const;
+  bool operator<(const ReserveMultipleObjectInstanceNameResponseMessage& rhs) const;
+  bool operator!=(const ReserveMultipleObjectInstanceNameResponseMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ReserveMultipleObjectInstanceNameResponseMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ReserveMultipleObjectInstanceNameResponseMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ReserveMultipleObjectInstanceNameResponseMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3589,6 +4205,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const InsertObjectInstanceMessage& rhs) const;
+  bool operator<(const InsertObjectInstanceMessage& rhs) const;
+  bool operator!=(const InsertObjectInstanceMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const InsertObjectInstanceMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const InsertObjectInstanceMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const InsertObjectInstanceMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3642,6 +4270,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const DeleteObjectInstanceMessage& rhs) const;
+  bool operator<(const DeleteObjectInstanceMessage& rhs) const;
+  bool operator!=(const DeleteObjectInstanceMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const DeleteObjectInstanceMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const DeleteObjectInstanceMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const DeleteObjectInstanceMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -3677,6 +4317,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const TimeStampedDeleteObjectInstanceMessage& rhs) const;
+  bool operator<(const TimeStampedDeleteObjectInstanceMessage& rhs) const;
+  bool operator!=(const TimeStampedDeleteObjectInstanceMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const TimeStampedDeleteObjectInstanceMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const TimeStampedDeleteObjectInstanceMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const TimeStampedDeleteObjectInstanceMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -3738,6 +4390,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const AttributeUpdateMessage& rhs) const;
+  bool operator<(const AttributeUpdateMessage& rhs) const;
+  bool operator!=(const AttributeUpdateMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const AttributeUpdateMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const AttributeUpdateMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const AttributeUpdateMessage& rhs) const
+  { return !operator>(rhs); }
+
   virtual bool getReliable() const;
 
   void setFederationHandle(const FederationHandle& value)
@@ -3791,6 +4455,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const TimeStampedAttributeUpdateMessage& rhs) const;
+  bool operator<(const TimeStampedAttributeUpdateMessage& rhs) const;
+  bool operator!=(const TimeStampedAttributeUpdateMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const TimeStampedAttributeUpdateMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const TimeStampedAttributeUpdateMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const TimeStampedAttributeUpdateMessage& rhs) const
+  { return !operator>(rhs); }
 
   virtual bool getReliable() const;
 
@@ -3870,6 +4546,18 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const RequestAttributeUpdateMessage& rhs) const;
+  bool operator<(const RequestAttributeUpdateMessage& rhs) const;
+  bool operator!=(const RequestAttributeUpdateMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const RequestAttributeUpdateMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const RequestAttributeUpdateMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const RequestAttributeUpdateMessage& rhs) const
+  { return !operator>(rhs); }
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
   FederationHandle& getFederationHandle()
@@ -3913,6 +4601,18 @@ public:
   virtual const char* getTypeName() const;
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const RequestClassAttributeUpdateMessage& rhs) const;
+  bool operator<(const RequestClassAttributeUpdateMessage& rhs) const;
+  bool operator!=(const RequestClassAttributeUpdateMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const RequestClassAttributeUpdateMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const RequestClassAttributeUpdateMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const RequestClassAttributeUpdateMessage& rhs) const
+  { return !operator>(rhs); }
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }

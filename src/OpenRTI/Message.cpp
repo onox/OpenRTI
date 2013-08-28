@@ -56,6 +56,29 @@ ConnectionLostMessage::dispatch(const AbstractMessageDispatcher& dispatcher) con
   dispatcher.accept(*this);
 }
 
+bool
+ConnectionLostMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ConnectionLostMessage* message = dynamic_cast<const ConnectionLostMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ConnectionLostMessage::operator==(const ConnectionLostMessage& rhs) const
+{
+  if (getFaultDescription() != rhs.getFaultDescription()) return false;
+  return true;
+}
+
+bool
+ConnectionLostMessage::operator<(const ConnectionLostMessage& rhs) const
+{
+  if (getFaultDescription() < rhs.getFaultDescription()) return true;
+  if (rhs.getFaultDescription() < getFaultDescription()) return false;
+  return false;
+}
 
 CreateFederationExecutionRequestMessage::CreateFederationExecutionRequestMessage()
 {
@@ -83,6 +106,38 @@ CreateFederationExecutionRequestMessage::dispatch(const AbstractMessageDispatche
   dispatcher.accept(*this);
 }
 
+bool
+CreateFederationExecutionRequestMessage::operator==(const AbstractMessage& rhs) const
+{
+  const CreateFederationExecutionRequestMessage* message = dynamic_cast<const CreateFederationExecutionRequestMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+CreateFederationExecutionRequestMessage::operator==(const CreateFederationExecutionRequestMessage& rhs) const
+{
+  if (getFederationExecution() != rhs.getFederationExecution()) return false;
+  if (getLogicalTimeFactoryName() != rhs.getLogicalTimeFactoryName()) return false;
+  if (getFOMModuleFileList() != rhs.getFOMModuleFileList()) return false;
+  if (getFOMStringModuleList() != rhs.getFOMStringModuleList()) return false;
+  return true;
+}
+
+bool
+CreateFederationExecutionRequestMessage::operator<(const CreateFederationExecutionRequestMessage& rhs) const
+{
+  if (getFederationExecution() < rhs.getFederationExecution()) return true;
+  if (rhs.getFederationExecution() < getFederationExecution()) return false;
+  if (getLogicalTimeFactoryName() < rhs.getLogicalTimeFactoryName()) return true;
+  if (rhs.getLogicalTimeFactoryName() < getLogicalTimeFactoryName()) return false;
+  if (getFOMModuleFileList() < rhs.getFOMModuleFileList()) return true;
+  if (rhs.getFOMModuleFileList() < getFOMModuleFileList()) return false;
+  if (getFOMStringModuleList() < rhs.getFOMStringModuleList()) return true;
+  if (rhs.getFOMStringModuleList() < getFOMStringModuleList()) return false;
+  return false;
+}
 
 CreateFederationExecutionResponseMessage::CreateFederationExecutionResponseMessage()
 {
@@ -110,6 +165,32 @@ CreateFederationExecutionResponseMessage::dispatch(const AbstractMessageDispatch
   dispatcher.accept(*this);
 }
 
+bool
+CreateFederationExecutionResponseMessage::operator==(const AbstractMessage& rhs) const
+{
+  const CreateFederationExecutionResponseMessage* message = dynamic_cast<const CreateFederationExecutionResponseMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+CreateFederationExecutionResponseMessage::operator==(const CreateFederationExecutionResponseMessage& rhs) const
+{
+  if (getCreateFederationExecutionResponseType() != rhs.getCreateFederationExecutionResponseType()) return false;
+  if (getExceptionString() != rhs.getExceptionString()) return false;
+  return true;
+}
+
+bool
+CreateFederationExecutionResponseMessage::operator<(const CreateFederationExecutionResponseMessage& rhs) const
+{
+  if (getCreateFederationExecutionResponseType() < rhs.getCreateFederationExecutionResponseType()) return true;
+  if (rhs.getCreateFederationExecutionResponseType() < getCreateFederationExecutionResponseType()) return false;
+  if (getExceptionString() < rhs.getExceptionString()) return true;
+  if (rhs.getExceptionString() < getExceptionString()) return false;
+  return false;
+}
 
 DestroyFederationExecutionRequestMessage::DestroyFederationExecutionRequestMessage()
 {
@@ -137,6 +218,29 @@ DestroyFederationExecutionRequestMessage::dispatch(const AbstractMessageDispatch
   dispatcher.accept(*this);
 }
 
+bool
+DestroyFederationExecutionRequestMessage::operator==(const AbstractMessage& rhs) const
+{
+  const DestroyFederationExecutionRequestMessage* message = dynamic_cast<const DestroyFederationExecutionRequestMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+DestroyFederationExecutionRequestMessage::operator==(const DestroyFederationExecutionRequestMessage& rhs) const
+{
+  if (getFederationExecution() != rhs.getFederationExecution()) return false;
+  return true;
+}
+
+bool
+DestroyFederationExecutionRequestMessage::operator<(const DestroyFederationExecutionRequestMessage& rhs) const
+{
+  if (getFederationExecution() < rhs.getFederationExecution()) return true;
+  if (rhs.getFederationExecution() < getFederationExecution()) return false;
+  return false;
+}
 
 DestroyFederationExecutionResponseMessage::DestroyFederationExecutionResponseMessage()
 {
@@ -164,6 +268,29 @@ DestroyFederationExecutionResponseMessage::dispatch(const AbstractMessageDispatc
   dispatcher.accept(*this);
 }
 
+bool
+DestroyFederationExecutionResponseMessage::operator==(const AbstractMessage& rhs) const
+{
+  const DestroyFederationExecutionResponseMessage* message = dynamic_cast<const DestroyFederationExecutionResponseMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+DestroyFederationExecutionResponseMessage::operator==(const DestroyFederationExecutionResponseMessage& rhs) const
+{
+  if (getDestroyFederationExecutionResponseType() != rhs.getDestroyFederationExecutionResponseType()) return false;
+  return true;
+}
+
+bool
+DestroyFederationExecutionResponseMessage::operator<(const DestroyFederationExecutionResponseMessage& rhs) const
+{
+  if (getDestroyFederationExecutionResponseType() < rhs.getDestroyFederationExecutionResponseType()) return true;
+  if (rhs.getDestroyFederationExecutionResponseType() < getDestroyFederationExecutionResponseType()) return false;
+  return false;
+}
 
 EnumerateFederationExecutionsRequestMessage::EnumerateFederationExecutionsRequestMessage()
 {
@@ -191,6 +318,26 @@ EnumerateFederationExecutionsRequestMessage::dispatch(const AbstractMessageDispa
   dispatcher.accept(*this);
 }
 
+bool
+EnumerateFederationExecutionsRequestMessage::operator==(const AbstractMessage& rhs) const
+{
+  const EnumerateFederationExecutionsRequestMessage* message = dynamic_cast<const EnumerateFederationExecutionsRequestMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+EnumerateFederationExecutionsRequestMessage::operator==(const EnumerateFederationExecutionsRequestMessage& rhs) const
+{
+  return true;
+}
+
+bool
+EnumerateFederationExecutionsRequestMessage::operator<(const EnumerateFederationExecutionsRequestMessage& rhs) const
+{
+  return false;
+}
 
 EnumerateFederationExecutionsResponseMessage::EnumerateFederationExecutionsResponseMessage()
 {
@@ -218,6 +365,29 @@ EnumerateFederationExecutionsResponseMessage::dispatch(const AbstractMessageDisp
   dispatcher.accept(*this);
 }
 
+bool
+EnumerateFederationExecutionsResponseMessage::operator==(const AbstractMessage& rhs) const
+{
+  const EnumerateFederationExecutionsResponseMessage* message = dynamic_cast<const EnumerateFederationExecutionsResponseMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+EnumerateFederationExecutionsResponseMessage::operator==(const EnumerateFederationExecutionsResponseMessage& rhs) const
+{
+  if (getFederationExecutionInformationVector() != rhs.getFederationExecutionInformationVector()) return false;
+  return true;
+}
+
+bool
+EnumerateFederationExecutionsResponseMessage::operator<(const EnumerateFederationExecutionsResponseMessage& rhs) const
+{
+  if (getFederationExecutionInformationVector() < rhs.getFederationExecutionInformationVector()) return true;
+  if (rhs.getFederationExecutionInformationVector() < getFederationExecutionInformationVector()) return false;
+  return false;
+}
 
 InsertFederationExecutionMessage::InsertFederationExecutionMessage()
 {
@@ -245,6 +415,41 @@ InsertFederationExecutionMessage::dispatch(const AbstractMessageDispatcher& disp
   dispatcher.accept(*this);
 }
 
+bool
+InsertFederationExecutionMessage::operator==(const AbstractMessage& rhs) const
+{
+  const InsertFederationExecutionMessage* message = dynamic_cast<const InsertFederationExecutionMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+InsertFederationExecutionMessage::operator==(const InsertFederationExecutionMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederationName() != rhs.getFederationName()) return false;
+  if (getLogicalTimeFactoryName() != rhs.getLogicalTimeFactoryName()) return false;
+  if (getConfigurationParameterMap() != rhs.getConfigurationParameterMap()) return false;
+  if (getFOMModuleList() != rhs.getFOMModuleList()) return false;
+  return true;
+}
+
+bool
+InsertFederationExecutionMessage::operator<(const InsertFederationExecutionMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederationName() < rhs.getFederationName()) return true;
+  if (rhs.getFederationName() < getFederationName()) return false;
+  if (getLogicalTimeFactoryName() < rhs.getLogicalTimeFactoryName()) return true;
+  if (rhs.getLogicalTimeFactoryName() < getLogicalTimeFactoryName()) return false;
+  if (getConfigurationParameterMap() < rhs.getConfigurationParameterMap()) return true;
+  if (rhs.getConfigurationParameterMap() < getConfigurationParameterMap()) return false;
+  if (getFOMModuleList() < rhs.getFOMModuleList()) return true;
+  if (rhs.getFOMModuleList() < getFOMModuleList()) return false;
+  return false;
+}
 
 ShutdownFederationExecutionMessage::ShutdownFederationExecutionMessage()
 {
@@ -272,6 +477,29 @@ ShutdownFederationExecutionMessage::dispatch(const AbstractMessageDispatcher& di
   dispatcher.accept(*this);
 }
 
+bool
+ShutdownFederationExecutionMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ShutdownFederationExecutionMessage* message = dynamic_cast<const ShutdownFederationExecutionMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ShutdownFederationExecutionMessage::operator==(const ShutdownFederationExecutionMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  return true;
+}
+
+bool
+ShutdownFederationExecutionMessage::operator<(const ShutdownFederationExecutionMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  return false;
+}
 
 EraseFederationExecutionMessage::EraseFederationExecutionMessage()
 {
@@ -299,6 +527,29 @@ EraseFederationExecutionMessage::dispatch(const AbstractMessageDispatcher& dispa
   dispatcher.accept(*this);
 }
 
+bool
+EraseFederationExecutionMessage::operator==(const AbstractMessage& rhs) const
+{
+  const EraseFederationExecutionMessage* message = dynamic_cast<const EraseFederationExecutionMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+EraseFederationExecutionMessage::operator==(const EraseFederationExecutionMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  return true;
+}
+
+bool
+EraseFederationExecutionMessage::operator<(const EraseFederationExecutionMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  return false;
+}
 
 ReleaseFederationHandleMessage::ReleaseFederationHandleMessage()
 {
@@ -326,6 +577,29 @@ ReleaseFederationHandleMessage::dispatch(const AbstractMessageDispatcher& dispat
   dispatcher.accept(*this);
 }
 
+bool
+ReleaseFederationHandleMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ReleaseFederationHandleMessage* message = dynamic_cast<const ReleaseFederationHandleMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ReleaseFederationHandleMessage::operator==(const ReleaseFederationHandleMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  return true;
+}
+
+bool
+ReleaseFederationHandleMessage::operator<(const ReleaseFederationHandleMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  return false;
+}
 
 JoinFederationExecutionRequestMessage::JoinFederationExecutionRequestMessage()
 {
@@ -353,6 +627,41 @@ JoinFederationExecutionRequestMessage::dispatch(const AbstractMessageDispatcher&
   dispatcher.accept(*this);
 }
 
+bool
+JoinFederationExecutionRequestMessage::operator==(const AbstractMessage& rhs) const
+{
+  const JoinFederationExecutionRequestMessage* message = dynamic_cast<const JoinFederationExecutionRequestMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+JoinFederationExecutionRequestMessage::operator==(const JoinFederationExecutionRequestMessage& rhs) const
+{
+  if (getFederationExecution() != rhs.getFederationExecution()) return false;
+  if (getFederateType() != rhs.getFederateType()) return false;
+  if (getFederateName() != rhs.getFederateName()) return false;
+  if (getFOMStringModuleList() != rhs.getFOMStringModuleList()) return false;
+  if (getConfigurationParameterMap() != rhs.getConfigurationParameterMap()) return false;
+  return true;
+}
+
+bool
+JoinFederationExecutionRequestMessage::operator<(const JoinFederationExecutionRequestMessage& rhs) const
+{
+  if (getFederationExecution() < rhs.getFederationExecution()) return true;
+  if (rhs.getFederationExecution() < getFederationExecution()) return false;
+  if (getFederateType() < rhs.getFederateType()) return true;
+  if (rhs.getFederateType() < getFederateType()) return false;
+  if (getFederateName() < rhs.getFederateName()) return true;
+  if (rhs.getFederateName() < getFederateName()) return false;
+  if (getFOMStringModuleList() < rhs.getFOMStringModuleList()) return true;
+  if (rhs.getFOMStringModuleList() < getFOMStringModuleList()) return false;
+  if (getConfigurationParameterMap() < rhs.getConfigurationParameterMap()) return true;
+  if (rhs.getConfigurationParameterMap() < getConfigurationParameterMap()) return false;
+  return false;
+}
 
 JoinFederationExecutionResponseMessage::JoinFederationExecutionResponseMessage()
 {
@@ -380,6 +689,47 @@ JoinFederationExecutionResponseMessage::dispatch(const AbstractMessageDispatcher
   dispatcher.accept(*this);
 }
 
+bool
+JoinFederationExecutionResponseMessage::operator==(const AbstractMessage& rhs) const
+{
+  const JoinFederationExecutionResponseMessage* message = dynamic_cast<const JoinFederationExecutionResponseMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+JoinFederationExecutionResponseMessage::operator==(const JoinFederationExecutionResponseMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getJoinFederationExecutionResponseType() != rhs.getJoinFederationExecutionResponseType()) return false;
+  if (getExceptionString() != rhs.getExceptionString()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getFederateType() != rhs.getFederateType()) return false;
+  if (getFederateName() != rhs.getFederateName()) return false;
+  if (getFOMModuleHandleList() != rhs.getFOMModuleHandleList()) return false;
+  return true;
+}
+
+bool
+JoinFederationExecutionResponseMessage::operator<(const JoinFederationExecutionResponseMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getJoinFederationExecutionResponseType() < rhs.getJoinFederationExecutionResponseType()) return true;
+  if (rhs.getJoinFederationExecutionResponseType() < getJoinFederationExecutionResponseType()) return false;
+  if (getExceptionString() < rhs.getExceptionString()) return true;
+  if (rhs.getExceptionString() < getExceptionString()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getFederateType() < rhs.getFederateType()) return true;
+  if (rhs.getFederateType() < getFederateType()) return false;
+  if (getFederateName() < rhs.getFederateName()) return true;
+  if (rhs.getFederateName() < getFederateName()) return false;
+  if (getFOMModuleHandleList() < rhs.getFOMModuleHandleList()) return true;
+  if (rhs.getFOMModuleHandleList() < getFOMModuleHandleList()) return false;
+  return false;
+}
 
 ResignFederationExecutionRequestMessage::ResignFederationExecutionRequestMessage()
 {
@@ -407,6 +757,32 @@ ResignFederationExecutionRequestMessage::dispatch(const AbstractMessageDispatche
   dispatcher.accept(*this);
 }
 
+bool
+ResignFederationExecutionRequestMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ResignFederationExecutionRequestMessage* message = dynamic_cast<const ResignFederationExecutionRequestMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ResignFederationExecutionRequestMessage::operator==(const ResignFederationExecutionRequestMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  return true;
+}
+
+bool
+ResignFederationExecutionRequestMessage::operator<(const ResignFederationExecutionRequestMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  return false;
+}
 
 JoinFederateNotifyMessage::JoinFederateNotifyMessage()
 {
@@ -434,6 +810,38 @@ JoinFederateNotifyMessage::dispatch(const AbstractMessageDispatcher& dispatcher)
   dispatcher.accept(*this);
 }
 
+bool
+JoinFederateNotifyMessage::operator==(const AbstractMessage& rhs) const
+{
+  const JoinFederateNotifyMessage* message = dynamic_cast<const JoinFederateNotifyMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+JoinFederateNotifyMessage::operator==(const JoinFederateNotifyMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getFederateType() != rhs.getFederateType()) return false;
+  if (getFederateName() != rhs.getFederateName()) return false;
+  return true;
+}
+
+bool
+JoinFederateNotifyMessage::operator<(const JoinFederateNotifyMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getFederateType() < rhs.getFederateType()) return true;
+  if (rhs.getFederateType() < getFederateType()) return false;
+  if (getFederateName() < rhs.getFederateName()) return true;
+  if (rhs.getFederateName() < getFederateName()) return false;
+  return false;
+}
 
 ResignFederateNotifyMessage::ResignFederateNotifyMessage()
 {
@@ -461,6 +869,32 @@ ResignFederateNotifyMessage::dispatch(const AbstractMessageDispatcher& dispatche
   dispatcher.accept(*this);
 }
 
+bool
+ResignFederateNotifyMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ResignFederateNotifyMessage* message = dynamic_cast<const ResignFederateNotifyMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ResignFederateNotifyMessage::operator==(const ResignFederateNotifyMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  return true;
+}
+
+bool
+ResignFederateNotifyMessage::operator<(const ResignFederateNotifyMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  return false;
+}
 
 RegisterFederationSynchronizationPointMessage::RegisterFederationSynchronizationPointMessage()
 {
@@ -488,6 +922,41 @@ RegisterFederationSynchronizationPointMessage::dispatch(const AbstractMessageDis
   dispatcher.accept(*this);
 }
 
+bool
+RegisterFederationSynchronizationPointMessage::operator==(const AbstractMessage& rhs) const
+{
+  const RegisterFederationSynchronizationPointMessage* message = dynamic_cast<const RegisterFederationSynchronizationPointMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+RegisterFederationSynchronizationPointMessage::operator==(const RegisterFederationSynchronizationPointMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getLabel() != rhs.getLabel()) return false;
+  if (getTag() != rhs.getTag()) return false;
+  if (getFederateHandleSet() != rhs.getFederateHandleSet()) return false;
+  return true;
+}
+
+bool
+RegisterFederationSynchronizationPointMessage::operator<(const RegisterFederationSynchronizationPointMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getLabel() < rhs.getLabel()) return true;
+  if (rhs.getLabel() < getLabel()) return false;
+  if (getTag() < rhs.getTag()) return true;
+  if (rhs.getTag() < getTag()) return false;
+  if (getFederateHandleSet() < rhs.getFederateHandleSet()) return true;
+  if (rhs.getFederateHandleSet() < getFederateHandleSet()) return false;
+  return false;
+}
 
 RegisterFederationSynchronizationPointResponseMessage::RegisterFederationSynchronizationPointResponseMessage()
 {
@@ -515,6 +984,38 @@ RegisterFederationSynchronizationPointResponseMessage::dispatch(const AbstractMe
   dispatcher.accept(*this);
 }
 
+bool
+RegisterFederationSynchronizationPointResponseMessage::operator==(const AbstractMessage& rhs) const
+{
+  const RegisterFederationSynchronizationPointResponseMessage* message = dynamic_cast<const RegisterFederationSynchronizationPointResponseMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+RegisterFederationSynchronizationPointResponseMessage::operator==(const RegisterFederationSynchronizationPointResponseMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getLabel() != rhs.getLabel()) return false;
+  if (getRegisterFederationSynchronizationPointResponseType() != rhs.getRegisterFederationSynchronizationPointResponseType()) return false;
+  return true;
+}
+
+bool
+RegisterFederationSynchronizationPointResponseMessage::operator<(const RegisterFederationSynchronizationPointResponseMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getLabel() < rhs.getLabel()) return true;
+  if (rhs.getLabel() < getLabel()) return false;
+  if (getRegisterFederationSynchronizationPointResponseType() < rhs.getRegisterFederationSynchronizationPointResponseType()) return true;
+  if (rhs.getRegisterFederationSynchronizationPointResponseType() < getRegisterFederationSynchronizationPointResponseType()) return false;
+  return false;
+}
 
 AnnounceSynchronizationPointMessage::AnnounceSynchronizationPointMessage()
 {
@@ -542,6 +1043,41 @@ AnnounceSynchronizationPointMessage::dispatch(const AbstractMessageDispatcher& d
   dispatcher.accept(*this);
 }
 
+bool
+AnnounceSynchronizationPointMessage::operator==(const AbstractMessage& rhs) const
+{
+  const AnnounceSynchronizationPointMessage* message = dynamic_cast<const AnnounceSynchronizationPointMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+AnnounceSynchronizationPointMessage::operator==(const AnnounceSynchronizationPointMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getLabel() != rhs.getLabel()) return false;
+  if (getTag() != rhs.getTag()) return false;
+  if (getAddJoiningFederates() != rhs.getAddJoiningFederates()) return false;
+  if (getFederateHandleSet() != rhs.getFederateHandleSet()) return false;
+  return true;
+}
+
+bool
+AnnounceSynchronizationPointMessage::operator<(const AnnounceSynchronizationPointMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getLabel() < rhs.getLabel()) return true;
+  if (rhs.getLabel() < getLabel()) return false;
+  if (getTag() < rhs.getTag()) return true;
+  if (rhs.getTag() < getTag()) return false;
+  if (getAddJoiningFederates() < rhs.getAddJoiningFederates()) return true;
+  if (rhs.getAddJoiningFederates() < getAddJoiningFederates()) return false;
+  if (getFederateHandleSet() < rhs.getFederateHandleSet()) return true;
+  if (rhs.getFederateHandleSet() < getFederateHandleSet()) return false;
+  return false;
+}
 
 SynchronizationPointAchievedMessage::SynchronizationPointAchievedMessage()
 {
@@ -569,6 +1105,35 @@ SynchronizationPointAchievedMessage::dispatch(const AbstractMessageDispatcher& d
   dispatcher.accept(*this);
 }
 
+bool
+SynchronizationPointAchievedMessage::operator==(const AbstractMessage& rhs) const
+{
+  const SynchronizationPointAchievedMessage* message = dynamic_cast<const SynchronizationPointAchievedMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+SynchronizationPointAchievedMessage::operator==(const SynchronizationPointAchievedMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getLabel() != rhs.getLabel()) return false;
+  if (getFederateHandleSet() != rhs.getFederateHandleSet()) return false;
+  return true;
+}
+
+bool
+SynchronizationPointAchievedMessage::operator<(const SynchronizationPointAchievedMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getLabel() < rhs.getLabel()) return true;
+  if (rhs.getLabel() < getLabel()) return false;
+  if (getFederateHandleSet() < rhs.getFederateHandleSet()) return true;
+  if (rhs.getFederateHandleSet() < getFederateHandleSet()) return false;
+  return false;
+}
 
 FederationSynchronizedMessage::FederationSynchronizedMessage()
 {
@@ -596,6 +1161,35 @@ FederationSynchronizedMessage::dispatch(const AbstractMessageDispatcher& dispatc
   dispatcher.accept(*this);
 }
 
+bool
+FederationSynchronizedMessage::operator==(const AbstractMessage& rhs) const
+{
+  const FederationSynchronizedMessage* message = dynamic_cast<const FederationSynchronizedMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+FederationSynchronizedMessage::operator==(const FederationSynchronizedMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getLabel() != rhs.getLabel()) return false;
+  if (getFederateHandleSet() != rhs.getFederateHandleSet()) return false;
+  return true;
+}
+
+bool
+FederationSynchronizedMessage::operator<(const FederationSynchronizedMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getLabel() < rhs.getLabel()) return true;
+  if (rhs.getLabel() < getLabel()) return false;
+  if (getFederateHandleSet() < rhs.getFederateHandleSet()) return true;
+  if (rhs.getFederateHandleSet() < getFederateHandleSet()) return false;
+  return false;
+}
 
 EnableTimeRegulationRequestMessage::EnableTimeRegulationRequestMessage()
 {
@@ -623,6 +1217,35 @@ EnableTimeRegulationRequestMessage::dispatch(const AbstractMessageDispatcher& di
   dispatcher.accept(*this);
 }
 
+bool
+EnableTimeRegulationRequestMessage::operator==(const AbstractMessage& rhs) const
+{
+  const EnableTimeRegulationRequestMessage* message = dynamic_cast<const EnableTimeRegulationRequestMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+EnableTimeRegulationRequestMessage::operator==(const EnableTimeRegulationRequestMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getTimeStamp() != rhs.getTimeStamp()) return false;
+  return true;
+}
+
+bool
+EnableTimeRegulationRequestMessage::operator<(const EnableTimeRegulationRequestMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getTimeStamp() < rhs.getTimeStamp()) return true;
+  if (rhs.getTimeStamp() < getTimeStamp()) return false;
+  return false;
+}
 
 EnableTimeRegulationResponseMessage::EnableTimeRegulationResponseMessage()
 {
@@ -650,6 +1273,41 @@ EnableTimeRegulationResponseMessage::dispatch(const AbstractMessageDispatcher& d
   dispatcher.accept(*this);
 }
 
+bool
+EnableTimeRegulationResponseMessage::operator==(const AbstractMessage& rhs) const
+{
+  const EnableTimeRegulationResponseMessage* message = dynamic_cast<const EnableTimeRegulationResponseMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+EnableTimeRegulationResponseMessage::operator==(const EnableTimeRegulationResponseMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getRespondingFederateHandle() != rhs.getRespondingFederateHandle()) return false;
+  if (getTimeStampValid() != rhs.getTimeStampValid()) return false;
+  if (getTimeStamp() != rhs.getTimeStamp()) return false;
+  return true;
+}
+
+bool
+EnableTimeRegulationResponseMessage::operator<(const EnableTimeRegulationResponseMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getRespondingFederateHandle() < rhs.getRespondingFederateHandle()) return true;
+  if (rhs.getRespondingFederateHandle() < getRespondingFederateHandle()) return false;
+  if (getTimeStampValid() < rhs.getTimeStampValid()) return true;
+  if (rhs.getTimeStampValid() < getTimeStampValid()) return false;
+  if (getTimeStamp() < rhs.getTimeStamp()) return true;
+  if (rhs.getTimeStamp() < getTimeStamp()) return false;
+  return false;
+}
 
 DisableTimeRegulationRequestMessage::DisableTimeRegulationRequestMessage()
 {
@@ -677,6 +1335,32 @@ DisableTimeRegulationRequestMessage::dispatch(const AbstractMessageDispatcher& d
   dispatcher.accept(*this);
 }
 
+bool
+DisableTimeRegulationRequestMessage::operator==(const AbstractMessage& rhs) const
+{
+  const DisableTimeRegulationRequestMessage* message = dynamic_cast<const DisableTimeRegulationRequestMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+DisableTimeRegulationRequestMessage::operator==(const DisableTimeRegulationRequestMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  return true;
+}
+
+bool
+DisableTimeRegulationRequestMessage::operator<(const DisableTimeRegulationRequestMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  return false;
+}
 
 CommitLowerBoundTimeStampMessage::CommitLowerBoundTimeStampMessage()
 {
@@ -704,6 +1388,35 @@ CommitLowerBoundTimeStampMessage::dispatch(const AbstractMessageDispatcher& disp
   dispatcher.accept(*this);
 }
 
+bool
+CommitLowerBoundTimeStampMessage::operator==(const AbstractMessage& rhs) const
+{
+  const CommitLowerBoundTimeStampMessage* message = dynamic_cast<const CommitLowerBoundTimeStampMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+CommitLowerBoundTimeStampMessage::operator==(const CommitLowerBoundTimeStampMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getTimeStamp() != rhs.getTimeStamp()) return false;
+  return true;
+}
+
+bool
+CommitLowerBoundTimeStampMessage::operator<(const CommitLowerBoundTimeStampMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getTimeStamp() < rhs.getTimeStamp()) return true;
+  if (rhs.getTimeStamp() < getTimeStamp()) return false;
+  return false;
+}
 
 TimeConstrainedEnabledMessage::TimeConstrainedEnabledMessage()
 {
@@ -731,6 +1444,29 @@ TimeConstrainedEnabledMessage::dispatch(const AbstractMessageDispatcher& dispatc
   dispatcher.accept(*this);
 }
 
+bool
+TimeConstrainedEnabledMessage::operator==(const AbstractMessage& rhs) const
+{
+  const TimeConstrainedEnabledMessage* message = dynamic_cast<const TimeConstrainedEnabledMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+TimeConstrainedEnabledMessage::operator==(const TimeConstrainedEnabledMessage& rhs) const
+{
+  if (getLogicalTime() != rhs.getLogicalTime()) return false;
+  return true;
+}
+
+bool
+TimeConstrainedEnabledMessage::operator<(const TimeConstrainedEnabledMessage& rhs) const
+{
+  if (getLogicalTime() < rhs.getLogicalTime()) return true;
+  if (rhs.getLogicalTime() < getLogicalTime()) return false;
+  return false;
+}
 
 TimeRegulationEnabledMessage::TimeRegulationEnabledMessage()
 {
@@ -758,6 +1494,29 @@ TimeRegulationEnabledMessage::dispatch(const AbstractMessageDispatcher& dispatch
   dispatcher.accept(*this);
 }
 
+bool
+TimeRegulationEnabledMessage::operator==(const AbstractMessage& rhs) const
+{
+  const TimeRegulationEnabledMessage* message = dynamic_cast<const TimeRegulationEnabledMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+TimeRegulationEnabledMessage::operator==(const TimeRegulationEnabledMessage& rhs) const
+{
+  if (getLogicalTime() != rhs.getLogicalTime()) return false;
+  return true;
+}
+
+bool
+TimeRegulationEnabledMessage::operator<(const TimeRegulationEnabledMessage& rhs) const
+{
+  if (getLogicalTime() < rhs.getLogicalTime()) return true;
+  if (rhs.getLogicalTime() < getLogicalTime()) return false;
+  return false;
+}
 
 TimeAdvanceGrantedMessage::TimeAdvanceGrantedMessage()
 {
@@ -785,6 +1544,29 @@ TimeAdvanceGrantedMessage::dispatch(const AbstractMessageDispatcher& dispatcher)
   dispatcher.accept(*this);
 }
 
+bool
+TimeAdvanceGrantedMessage::operator==(const AbstractMessage& rhs) const
+{
+  const TimeAdvanceGrantedMessage* message = dynamic_cast<const TimeAdvanceGrantedMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+TimeAdvanceGrantedMessage::operator==(const TimeAdvanceGrantedMessage& rhs) const
+{
+  if (getLogicalTime() != rhs.getLogicalTime()) return false;
+  return true;
+}
+
+bool
+TimeAdvanceGrantedMessage::operator<(const TimeAdvanceGrantedMessage& rhs) const
+{
+  if (getLogicalTime() < rhs.getLogicalTime()) return true;
+  if (rhs.getLogicalTime() < getLogicalTime()) return false;
+  return false;
+}
 
 InsertRegionMessage::InsertRegionMessage()
 {
@@ -812,6 +1594,32 @@ InsertRegionMessage::dispatch(const AbstractMessageDispatcher& dispatcher) const
   dispatcher.accept(*this);
 }
 
+bool
+InsertRegionMessage::operator==(const AbstractMessage& rhs) const
+{
+  const InsertRegionMessage* message = dynamic_cast<const InsertRegionMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+InsertRegionMessage::operator==(const InsertRegionMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getRegionHandleDimensionHandleSetPairVector() != rhs.getRegionHandleDimensionHandleSetPairVector()) return false;
+  return true;
+}
+
+bool
+InsertRegionMessage::operator<(const InsertRegionMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getRegionHandleDimensionHandleSetPairVector() < rhs.getRegionHandleDimensionHandleSetPairVector()) return true;
+  if (rhs.getRegionHandleDimensionHandleSetPairVector() < getRegionHandleDimensionHandleSetPairVector()) return false;
+  return false;
+}
 
 CommitRegionMessage::CommitRegionMessage()
 {
@@ -839,6 +1647,32 @@ CommitRegionMessage::dispatch(const AbstractMessageDispatcher& dispatcher) const
   dispatcher.accept(*this);
 }
 
+bool
+CommitRegionMessage::operator==(const AbstractMessage& rhs) const
+{
+  const CommitRegionMessage* message = dynamic_cast<const CommitRegionMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+CommitRegionMessage::operator==(const CommitRegionMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getRegionHandleRegionValuePairVector() != rhs.getRegionHandleRegionValuePairVector()) return false;
+  return true;
+}
+
+bool
+CommitRegionMessage::operator<(const CommitRegionMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getRegionHandleRegionValuePairVector() < rhs.getRegionHandleRegionValuePairVector()) return true;
+  if (rhs.getRegionHandleRegionValuePairVector() < getRegionHandleRegionValuePairVector()) return false;
+  return false;
+}
 
 EraseRegionMessage::EraseRegionMessage()
 {
@@ -866,6 +1700,32 @@ EraseRegionMessage::dispatch(const AbstractMessageDispatcher& dispatcher) const
   dispatcher.accept(*this);
 }
 
+bool
+EraseRegionMessage::operator==(const AbstractMessage& rhs) const
+{
+  const EraseRegionMessage* message = dynamic_cast<const EraseRegionMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+EraseRegionMessage::operator==(const EraseRegionMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getRegionHandleVector() != rhs.getRegionHandleVector()) return false;
+  return true;
+}
+
+bool
+EraseRegionMessage::operator<(const EraseRegionMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getRegionHandleVector() < rhs.getRegionHandleVector()) return true;
+  if (rhs.getRegionHandleVector() < getRegionHandleVector()) return false;
+  return false;
+}
 
 ChangeInteractionClassPublicationMessage::ChangeInteractionClassPublicationMessage()
 {
@@ -893,6 +1753,35 @@ ChangeInteractionClassPublicationMessage::dispatch(const AbstractMessageDispatch
   dispatcher.accept(*this);
 }
 
+bool
+ChangeInteractionClassPublicationMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ChangeInteractionClassPublicationMessage* message = dynamic_cast<const ChangeInteractionClassPublicationMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ChangeInteractionClassPublicationMessage::operator==(const ChangeInteractionClassPublicationMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getPublicationType() != rhs.getPublicationType()) return false;
+  if (getInteractionClassHandle() != rhs.getInteractionClassHandle()) return false;
+  return true;
+}
+
+bool
+ChangeInteractionClassPublicationMessage::operator<(const ChangeInteractionClassPublicationMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getPublicationType() < rhs.getPublicationType()) return true;
+  if (rhs.getPublicationType() < getPublicationType()) return false;
+  if (getInteractionClassHandle() < rhs.getInteractionClassHandle()) return true;
+  if (rhs.getInteractionClassHandle() < getInteractionClassHandle()) return false;
+  return false;
+}
 
 ChangeObjectClassPublicationMessage::ChangeObjectClassPublicationMessage()
 {
@@ -920,6 +1809,38 @@ ChangeObjectClassPublicationMessage::dispatch(const AbstractMessageDispatcher& d
   dispatcher.accept(*this);
 }
 
+bool
+ChangeObjectClassPublicationMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ChangeObjectClassPublicationMessage* message = dynamic_cast<const ChangeObjectClassPublicationMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ChangeObjectClassPublicationMessage::operator==(const ChangeObjectClassPublicationMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getPublicationType() != rhs.getPublicationType()) return false;
+  if (getObjectClassHandle() != rhs.getObjectClassHandle()) return false;
+  if (getAttributeHandles() != rhs.getAttributeHandles()) return false;
+  return true;
+}
+
+bool
+ChangeObjectClassPublicationMessage::operator<(const ChangeObjectClassPublicationMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getPublicationType() < rhs.getPublicationType()) return true;
+  if (rhs.getPublicationType() < getPublicationType()) return false;
+  if (getObjectClassHandle() < rhs.getObjectClassHandle()) return true;
+  if (rhs.getObjectClassHandle() < getObjectClassHandle()) return false;
+  if (getAttributeHandles() < rhs.getAttributeHandles()) return true;
+  if (rhs.getAttributeHandles() < getAttributeHandles()) return false;
+  return false;
+}
 
 ChangeInteractionClassSubscriptionMessage::ChangeInteractionClassSubscriptionMessage()
 {
@@ -947,6 +1868,35 @@ ChangeInteractionClassSubscriptionMessage::dispatch(const AbstractMessageDispatc
   dispatcher.accept(*this);
 }
 
+bool
+ChangeInteractionClassSubscriptionMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ChangeInteractionClassSubscriptionMessage* message = dynamic_cast<const ChangeInteractionClassSubscriptionMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ChangeInteractionClassSubscriptionMessage::operator==(const ChangeInteractionClassSubscriptionMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getSubscriptionType() != rhs.getSubscriptionType()) return false;
+  if (getInteractionClassHandle() != rhs.getInteractionClassHandle()) return false;
+  return true;
+}
+
+bool
+ChangeInteractionClassSubscriptionMessage::operator<(const ChangeInteractionClassSubscriptionMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getSubscriptionType() < rhs.getSubscriptionType()) return true;
+  if (rhs.getSubscriptionType() < getSubscriptionType()) return false;
+  if (getInteractionClassHandle() < rhs.getInteractionClassHandle()) return true;
+  if (rhs.getInteractionClassHandle() < getInteractionClassHandle()) return false;
+  return false;
+}
 
 ChangeObjectClassSubscriptionMessage::ChangeObjectClassSubscriptionMessage()
 {
@@ -974,6 +1924,38 @@ ChangeObjectClassSubscriptionMessage::dispatch(const AbstractMessageDispatcher& 
   dispatcher.accept(*this);
 }
 
+bool
+ChangeObjectClassSubscriptionMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ChangeObjectClassSubscriptionMessage* message = dynamic_cast<const ChangeObjectClassSubscriptionMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ChangeObjectClassSubscriptionMessage::operator==(const ChangeObjectClassSubscriptionMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getSubscriptionType() != rhs.getSubscriptionType()) return false;
+  if (getObjectClassHandle() != rhs.getObjectClassHandle()) return false;
+  if (getAttributeHandles() != rhs.getAttributeHandles()) return false;
+  return true;
+}
+
+bool
+ChangeObjectClassSubscriptionMessage::operator<(const ChangeObjectClassSubscriptionMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getSubscriptionType() < rhs.getSubscriptionType()) return true;
+  if (rhs.getSubscriptionType() < getSubscriptionType()) return false;
+  if (getObjectClassHandle() < rhs.getObjectClassHandle()) return true;
+  if (rhs.getObjectClassHandle() < getObjectClassHandle()) return false;
+  if (getAttributeHandles() < rhs.getAttributeHandles()) return true;
+  if (rhs.getAttributeHandles() < getAttributeHandles()) return false;
+  return false;
+}
 
 RegistrationForObjectClassMessage::RegistrationForObjectClassMessage()
 {
@@ -1001,6 +1983,32 @@ RegistrationForObjectClassMessage::dispatch(const AbstractMessageDispatcher& dis
   dispatcher.accept(*this);
 }
 
+bool
+RegistrationForObjectClassMessage::operator==(const AbstractMessage& rhs) const
+{
+  const RegistrationForObjectClassMessage* message = dynamic_cast<const RegistrationForObjectClassMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+RegistrationForObjectClassMessage::operator==(const RegistrationForObjectClassMessage& rhs) const
+{
+  if (getObjectClassHandle() != rhs.getObjectClassHandle()) return false;
+  if (getStart() != rhs.getStart()) return false;
+  return true;
+}
+
+bool
+RegistrationForObjectClassMessage::operator<(const RegistrationForObjectClassMessage& rhs) const
+{
+  if (getObjectClassHandle() < rhs.getObjectClassHandle()) return true;
+  if (rhs.getObjectClassHandle() < getObjectClassHandle()) return false;
+  if (getStart() < rhs.getStart()) return true;
+  if (rhs.getStart() < getStart()) return false;
+  return false;
+}
 
 TurnInteractionsOnMessage::TurnInteractionsOnMessage()
 {
@@ -1028,6 +2036,32 @@ TurnInteractionsOnMessage::dispatch(const AbstractMessageDispatcher& dispatcher)
   dispatcher.accept(*this);
 }
 
+bool
+TurnInteractionsOnMessage::operator==(const AbstractMessage& rhs) const
+{
+  const TurnInteractionsOnMessage* message = dynamic_cast<const TurnInteractionsOnMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+TurnInteractionsOnMessage::operator==(const TurnInteractionsOnMessage& rhs) const
+{
+  if (getInteractionClassHandle() != rhs.getInteractionClassHandle()) return false;
+  if (getOn() != rhs.getOn()) return false;
+  return true;
+}
+
+bool
+TurnInteractionsOnMessage::operator<(const TurnInteractionsOnMessage& rhs) const
+{
+  if (getInteractionClassHandle() < rhs.getInteractionClassHandle()) return true;
+  if (rhs.getInteractionClassHandle() < getInteractionClassHandle()) return false;
+  if (getOn() < rhs.getOn()) return true;
+  if (rhs.getOn() < getOn()) return false;
+  return false;
+}
 
 InteractionMessage::InteractionMessage()
 {
@@ -1055,6 +2089,41 @@ InteractionMessage::dispatch(const AbstractMessageDispatcher& dispatcher) const
   dispatcher.accept(*this);
 }
 
+bool
+InteractionMessage::operator==(const AbstractMessage& rhs) const
+{
+  const InteractionMessage* message = dynamic_cast<const InteractionMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+InteractionMessage::operator==(const InteractionMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getInteractionClassHandle() != rhs.getInteractionClassHandle()) return false;
+  if (getTransportationType() != rhs.getTransportationType()) return false;
+  if (getTag() != rhs.getTag()) return false;
+  if (getParameterValues() != rhs.getParameterValues()) return false;
+  return true;
+}
+
+bool
+InteractionMessage::operator<(const InteractionMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getInteractionClassHandle() < rhs.getInteractionClassHandle()) return true;
+  if (rhs.getInteractionClassHandle() < getInteractionClassHandle()) return false;
+  if (getTransportationType() < rhs.getTransportationType()) return true;
+  if (rhs.getTransportationType() < getTransportationType()) return false;
+  if (getTag() < rhs.getTag()) return true;
+  if (rhs.getTag() < getTag()) return false;
+  if (getParameterValues() < rhs.getParameterValues()) return true;
+  if (rhs.getParameterValues() < getParameterValues()) return false;
+  return false;
+}
 bool
 InteractionMessage::getReliable() const
 {
@@ -1089,6 +2158,50 @@ TimeStampedInteractionMessage::dispatch(const AbstractMessageDispatcher& dispatc
 }
 
 bool
+TimeStampedInteractionMessage::operator==(const AbstractMessage& rhs) const
+{
+  const TimeStampedInteractionMessage* message = dynamic_cast<const TimeStampedInteractionMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+TimeStampedInteractionMessage::operator==(const TimeStampedInteractionMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getInteractionClassHandle() != rhs.getInteractionClassHandle()) return false;
+  if (getOrderType() != rhs.getOrderType()) return false;
+  if (getTransportationType() != rhs.getTransportationType()) return false;
+  if (getTag() != rhs.getTag()) return false;
+  if (getTimeStamp() != rhs.getTimeStamp()) return false;
+  if (getMessageRetractionHandle() != rhs.getMessageRetractionHandle()) return false;
+  if (getParameterValues() != rhs.getParameterValues()) return false;
+  return true;
+}
+
+bool
+TimeStampedInteractionMessage::operator<(const TimeStampedInteractionMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getInteractionClassHandle() < rhs.getInteractionClassHandle()) return true;
+  if (rhs.getInteractionClassHandle() < getInteractionClassHandle()) return false;
+  if (getOrderType() < rhs.getOrderType()) return true;
+  if (rhs.getOrderType() < getOrderType()) return false;
+  if (getTransportationType() < rhs.getTransportationType()) return true;
+  if (rhs.getTransportationType() < getTransportationType()) return false;
+  if (getTag() < rhs.getTag()) return true;
+  if (rhs.getTag() < getTag()) return false;
+  if (getTimeStamp() < rhs.getTimeStamp()) return true;
+  if (rhs.getTimeStamp() < getTimeStamp()) return false;
+  if (getMessageRetractionHandle() < rhs.getMessageRetractionHandle()) return true;
+  if (rhs.getMessageRetractionHandle() < getMessageRetractionHandle()) return false;
+  if (getParameterValues() < rhs.getParameterValues()) return true;
+  if (rhs.getParameterValues() < getParameterValues()) return false;
+  return false;
+}
+bool
 TimeStampedInteractionMessage::getReliable() const
 {
   return getTransportationType() == RELIABLE;
@@ -1121,6 +2234,35 @@ ObjectInstanceHandlesRequestMessage::dispatch(const AbstractMessageDispatcher& d
   dispatcher.accept(*this);
 }
 
+bool
+ObjectInstanceHandlesRequestMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ObjectInstanceHandlesRequestMessage* message = dynamic_cast<const ObjectInstanceHandlesRequestMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ObjectInstanceHandlesRequestMessage::operator==(const ObjectInstanceHandlesRequestMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getCount() != rhs.getCount()) return false;
+  return true;
+}
+
+bool
+ObjectInstanceHandlesRequestMessage::operator<(const ObjectInstanceHandlesRequestMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getCount() < rhs.getCount()) return true;
+  if (rhs.getCount() < getCount()) return false;
+  return false;
+}
 
 ObjectInstanceHandlesResponseMessage::ObjectInstanceHandlesResponseMessage()
 {
@@ -1148,6 +2290,35 @@ ObjectInstanceHandlesResponseMessage::dispatch(const AbstractMessageDispatcher& 
   dispatcher.accept(*this);
 }
 
+bool
+ObjectInstanceHandlesResponseMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ObjectInstanceHandlesResponseMessage* message = dynamic_cast<const ObjectInstanceHandlesResponseMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ObjectInstanceHandlesResponseMessage::operator==(const ObjectInstanceHandlesResponseMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getObjectInstanceHandleNamePairVector() != rhs.getObjectInstanceHandleNamePairVector()) return false;
+  return true;
+}
+
+bool
+ObjectInstanceHandlesResponseMessage::operator<(const ObjectInstanceHandlesResponseMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getObjectInstanceHandleNamePairVector() < rhs.getObjectInstanceHandleNamePairVector()) return true;
+  if (rhs.getObjectInstanceHandleNamePairVector() < getObjectInstanceHandleNamePairVector()) return false;
+  return false;
+}
 
 ReleaseMultipleObjectInstanceNameHandlePairsMessage::ReleaseMultipleObjectInstanceNameHandlePairsMessage()
 {
@@ -1175,6 +2346,32 @@ ReleaseMultipleObjectInstanceNameHandlePairsMessage::dispatch(const AbstractMess
   dispatcher.accept(*this);
 }
 
+bool
+ReleaseMultipleObjectInstanceNameHandlePairsMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ReleaseMultipleObjectInstanceNameHandlePairsMessage* message = dynamic_cast<const ReleaseMultipleObjectInstanceNameHandlePairsMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ReleaseMultipleObjectInstanceNameHandlePairsMessage::operator==(const ReleaseMultipleObjectInstanceNameHandlePairsMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getObjectInstanceHandleVector() != rhs.getObjectInstanceHandleVector()) return false;
+  return true;
+}
+
+bool
+ReleaseMultipleObjectInstanceNameHandlePairsMessage::operator<(const ReleaseMultipleObjectInstanceNameHandlePairsMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getObjectInstanceHandleVector() < rhs.getObjectInstanceHandleVector()) return true;
+  if (rhs.getObjectInstanceHandleVector() < getObjectInstanceHandleVector()) return false;
+  return false;
+}
 
 ReserveObjectInstanceNameRequestMessage::ReserveObjectInstanceNameRequestMessage()
 {
@@ -1202,6 +2399,35 @@ ReserveObjectInstanceNameRequestMessage::dispatch(const AbstractMessageDispatche
   dispatcher.accept(*this);
 }
 
+bool
+ReserveObjectInstanceNameRequestMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ReserveObjectInstanceNameRequestMessage* message = dynamic_cast<const ReserveObjectInstanceNameRequestMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ReserveObjectInstanceNameRequestMessage::operator==(const ReserveObjectInstanceNameRequestMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getName() != rhs.getName()) return false;
+  return true;
+}
+
+bool
+ReserveObjectInstanceNameRequestMessage::operator<(const ReserveObjectInstanceNameRequestMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getName() < rhs.getName()) return true;
+  if (rhs.getName() < getName()) return false;
+  return false;
+}
 
 ReserveObjectInstanceNameResponseMessage::ReserveObjectInstanceNameResponseMessage()
 {
@@ -1229,6 +2455,38 @@ ReserveObjectInstanceNameResponseMessage::dispatch(const AbstractMessageDispatch
   dispatcher.accept(*this);
 }
 
+bool
+ReserveObjectInstanceNameResponseMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ReserveObjectInstanceNameResponseMessage* message = dynamic_cast<const ReserveObjectInstanceNameResponseMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ReserveObjectInstanceNameResponseMessage::operator==(const ReserveObjectInstanceNameResponseMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getObjectInstanceHandleNamePair() != rhs.getObjectInstanceHandleNamePair()) return false;
+  if (getSuccess() != rhs.getSuccess()) return false;
+  return true;
+}
+
+bool
+ReserveObjectInstanceNameResponseMessage::operator<(const ReserveObjectInstanceNameResponseMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getObjectInstanceHandleNamePair() < rhs.getObjectInstanceHandleNamePair()) return true;
+  if (rhs.getObjectInstanceHandleNamePair() < getObjectInstanceHandleNamePair()) return false;
+  if (getSuccess() < rhs.getSuccess()) return true;
+  if (rhs.getSuccess() < getSuccess()) return false;
+  return false;
+}
 
 ReserveMultipleObjectInstanceNameRequestMessage::ReserveMultipleObjectInstanceNameRequestMessage()
 {
@@ -1256,6 +2514,35 @@ ReserveMultipleObjectInstanceNameRequestMessage::dispatch(const AbstractMessageD
   dispatcher.accept(*this);
 }
 
+bool
+ReserveMultipleObjectInstanceNameRequestMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ReserveMultipleObjectInstanceNameRequestMessage* message = dynamic_cast<const ReserveMultipleObjectInstanceNameRequestMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ReserveMultipleObjectInstanceNameRequestMessage::operator==(const ReserveMultipleObjectInstanceNameRequestMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getNameList() != rhs.getNameList()) return false;
+  return true;
+}
+
+bool
+ReserveMultipleObjectInstanceNameRequestMessage::operator<(const ReserveMultipleObjectInstanceNameRequestMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getNameList() < rhs.getNameList()) return true;
+  if (rhs.getNameList() < getNameList()) return false;
+  return false;
+}
 
 ReserveMultipleObjectInstanceNameResponseMessage::ReserveMultipleObjectInstanceNameResponseMessage()
 {
@@ -1283,6 +2570,38 @@ ReserveMultipleObjectInstanceNameResponseMessage::dispatch(const AbstractMessage
   dispatcher.accept(*this);
 }
 
+bool
+ReserveMultipleObjectInstanceNameResponseMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ReserveMultipleObjectInstanceNameResponseMessage* message = dynamic_cast<const ReserveMultipleObjectInstanceNameResponseMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ReserveMultipleObjectInstanceNameResponseMessage::operator==(const ReserveMultipleObjectInstanceNameResponseMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getObjectInstanceHandleNamePairVector() != rhs.getObjectInstanceHandleNamePairVector()) return false;
+  if (getSuccess() != rhs.getSuccess()) return false;
+  return true;
+}
+
+bool
+ReserveMultipleObjectInstanceNameResponseMessage::operator<(const ReserveMultipleObjectInstanceNameResponseMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getObjectInstanceHandleNamePairVector() < rhs.getObjectInstanceHandleNamePairVector()) return true;
+  if (rhs.getObjectInstanceHandleNamePairVector() < getObjectInstanceHandleNamePairVector()) return false;
+  if (getSuccess() < rhs.getSuccess()) return true;
+  if (rhs.getSuccess() < getSuccess()) return false;
+  return false;
+}
 
 InsertObjectInstanceMessage::InsertObjectInstanceMessage()
 {
@@ -1310,6 +2629,41 @@ InsertObjectInstanceMessage::dispatch(const AbstractMessageDispatcher& dispatche
   dispatcher.accept(*this);
 }
 
+bool
+InsertObjectInstanceMessage::operator==(const AbstractMessage& rhs) const
+{
+  const InsertObjectInstanceMessage* message = dynamic_cast<const InsertObjectInstanceMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+InsertObjectInstanceMessage::operator==(const InsertObjectInstanceMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getObjectClassHandle() != rhs.getObjectClassHandle()) return false;
+  if (getObjectInstanceHandle() != rhs.getObjectInstanceHandle()) return false;
+  if (getName() != rhs.getName()) return false;
+  if (getAttributeStateVector() != rhs.getAttributeStateVector()) return false;
+  return true;
+}
+
+bool
+InsertObjectInstanceMessage::operator<(const InsertObjectInstanceMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getObjectClassHandle() < rhs.getObjectClassHandle()) return true;
+  if (rhs.getObjectClassHandle() < getObjectClassHandle()) return false;
+  if (getObjectInstanceHandle() < rhs.getObjectInstanceHandle()) return true;
+  if (rhs.getObjectInstanceHandle() < getObjectInstanceHandle()) return false;
+  if (getName() < rhs.getName()) return true;
+  if (rhs.getName() < getName()) return false;
+  if (getAttributeStateVector() < rhs.getAttributeStateVector()) return true;
+  if (rhs.getAttributeStateVector() < getAttributeStateVector()) return false;
+  return false;
+}
 
 DeleteObjectInstanceMessage::DeleteObjectInstanceMessage()
 {
@@ -1337,6 +2691,35 @@ DeleteObjectInstanceMessage::dispatch(const AbstractMessageDispatcher& dispatche
   dispatcher.accept(*this);
 }
 
+bool
+DeleteObjectInstanceMessage::operator==(const AbstractMessage& rhs) const
+{
+  const DeleteObjectInstanceMessage* message = dynamic_cast<const DeleteObjectInstanceMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+DeleteObjectInstanceMessage::operator==(const DeleteObjectInstanceMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getObjectInstanceHandle() != rhs.getObjectInstanceHandle()) return false;
+  if (getTag() != rhs.getTag()) return false;
+  return true;
+}
+
+bool
+DeleteObjectInstanceMessage::operator<(const DeleteObjectInstanceMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getObjectInstanceHandle() < rhs.getObjectInstanceHandle()) return true;
+  if (rhs.getObjectInstanceHandle() < getObjectInstanceHandle()) return false;
+  if (getTag() < rhs.getTag()) return true;
+  if (rhs.getTag() < getTag()) return false;
+  return false;
+}
 
 TimeStampedDeleteObjectInstanceMessage::TimeStampedDeleteObjectInstanceMessage()
 {
@@ -1364,6 +2747,44 @@ TimeStampedDeleteObjectInstanceMessage::dispatch(const AbstractMessageDispatcher
   dispatcher.accept(*this);
 }
 
+bool
+TimeStampedDeleteObjectInstanceMessage::operator==(const AbstractMessage& rhs) const
+{
+  const TimeStampedDeleteObjectInstanceMessage* message = dynamic_cast<const TimeStampedDeleteObjectInstanceMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+TimeStampedDeleteObjectInstanceMessage::operator==(const TimeStampedDeleteObjectInstanceMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getObjectInstanceHandle() != rhs.getObjectInstanceHandle()) return false;
+  if (getOrderType() != rhs.getOrderType()) return false;
+  if (getTag() != rhs.getTag()) return false;
+  if (getTimeStamp() != rhs.getTimeStamp()) return false;
+  if (getMessageRetractionHandle() != rhs.getMessageRetractionHandle()) return false;
+  return true;
+}
+
+bool
+TimeStampedDeleteObjectInstanceMessage::operator<(const TimeStampedDeleteObjectInstanceMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getObjectInstanceHandle() < rhs.getObjectInstanceHandle()) return true;
+  if (rhs.getObjectInstanceHandle() < getObjectInstanceHandle()) return false;
+  if (getOrderType() < rhs.getOrderType()) return true;
+  if (rhs.getOrderType() < getOrderType()) return false;
+  if (getTag() < rhs.getTag()) return true;
+  if (rhs.getTag() < getTag()) return false;
+  if (getTimeStamp() < rhs.getTimeStamp()) return true;
+  if (rhs.getTimeStamp() < getTimeStamp()) return false;
+  if (getMessageRetractionHandle() < rhs.getMessageRetractionHandle()) return true;
+  if (rhs.getMessageRetractionHandle() < getMessageRetractionHandle()) return false;
+  return false;
+}
 
 AttributeUpdateMessage::AttributeUpdateMessage()
 {
@@ -1391,6 +2812,41 @@ AttributeUpdateMessage::dispatch(const AbstractMessageDispatcher& dispatcher) co
   dispatcher.accept(*this);
 }
 
+bool
+AttributeUpdateMessage::operator==(const AbstractMessage& rhs) const
+{
+  const AttributeUpdateMessage* message = dynamic_cast<const AttributeUpdateMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+AttributeUpdateMessage::operator==(const AttributeUpdateMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getObjectInstanceHandle() != rhs.getObjectInstanceHandle()) return false;
+  if (getTag() != rhs.getTag()) return false;
+  if (getTransportationType() != rhs.getTransportationType()) return false;
+  if (getAttributeValues() != rhs.getAttributeValues()) return false;
+  return true;
+}
+
+bool
+AttributeUpdateMessage::operator<(const AttributeUpdateMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getObjectInstanceHandle() < rhs.getObjectInstanceHandle()) return true;
+  if (rhs.getObjectInstanceHandle() < getObjectInstanceHandle()) return false;
+  if (getTag() < rhs.getTag()) return true;
+  if (rhs.getTag() < getTag()) return false;
+  if (getTransportationType() < rhs.getTransportationType()) return true;
+  if (rhs.getTransportationType() < getTransportationType()) return false;
+  if (getAttributeValues() < rhs.getAttributeValues()) return true;
+  if (rhs.getAttributeValues() < getAttributeValues()) return false;
+  return false;
+}
 bool
 AttributeUpdateMessage::getReliable() const
 {
@@ -1425,6 +2881,50 @@ TimeStampedAttributeUpdateMessage::dispatch(const AbstractMessageDispatcher& dis
 }
 
 bool
+TimeStampedAttributeUpdateMessage::operator==(const AbstractMessage& rhs) const
+{
+  const TimeStampedAttributeUpdateMessage* message = dynamic_cast<const TimeStampedAttributeUpdateMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+TimeStampedAttributeUpdateMessage::operator==(const TimeStampedAttributeUpdateMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getObjectInstanceHandle() != rhs.getObjectInstanceHandle()) return false;
+  if (getTag() != rhs.getTag()) return false;
+  if (getTimeStamp() != rhs.getTimeStamp()) return false;
+  if (getMessageRetractionHandle() != rhs.getMessageRetractionHandle()) return false;
+  if (getOrderType() != rhs.getOrderType()) return false;
+  if (getTransportationType() != rhs.getTransportationType()) return false;
+  if (getAttributeValues() != rhs.getAttributeValues()) return false;
+  return true;
+}
+
+bool
+TimeStampedAttributeUpdateMessage::operator<(const TimeStampedAttributeUpdateMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getObjectInstanceHandle() < rhs.getObjectInstanceHandle()) return true;
+  if (rhs.getObjectInstanceHandle() < getObjectInstanceHandle()) return false;
+  if (getTag() < rhs.getTag()) return true;
+  if (rhs.getTag() < getTag()) return false;
+  if (getTimeStamp() < rhs.getTimeStamp()) return true;
+  if (rhs.getTimeStamp() < getTimeStamp()) return false;
+  if (getMessageRetractionHandle() < rhs.getMessageRetractionHandle()) return true;
+  if (rhs.getMessageRetractionHandle() < getMessageRetractionHandle()) return false;
+  if (getOrderType() < rhs.getOrderType()) return true;
+  if (rhs.getOrderType() < getOrderType()) return false;
+  if (getTransportationType() < rhs.getTransportationType()) return true;
+  if (rhs.getTransportationType() < getTransportationType()) return false;
+  if (getAttributeValues() < rhs.getAttributeValues()) return true;
+  if (rhs.getAttributeValues() < getAttributeValues()) return false;
+  return false;
+}
+bool
 TimeStampedAttributeUpdateMessage::getReliable() const
 {
   return getTransportationType() == RELIABLE;
@@ -1457,6 +2957,38 @@ RequestAttributeUpdateMessage::dispatch(const AbstractMessageDispatcher& dispatc
   dispatcher.accept(*this);
 }
 
+bool
+RequestAttributeUpdateMessage::operator==(const AbstractMessage& rhs) const
+{
+  const RequestAttributeUpdateMessage* message = dynamic_cast<const RequestAttributeUpdateMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+RequestAttributeUpdateMessage::operator==(const RequestAttributeUpdateMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getObjectInstanceHandle() != rhs.getObjectInstanceHandle()) return false;
+  if (getAttributeHandles() != rhs.getAttributeHandles()) return false;
+  if (getTag() != rhs.getTag()) return false;
+  return true;
+}
+
+bool
+RequestAttributeUpdateMessage::operator<(const RequestAttributeUpdateMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getObjectInstanceHandle() < rhs.getObjectInstanceHandle()) return true;
+  if (rhs.getObjectInstanceHandle() < getObjectInstanceHandle()) return false;
+  if (getAttributeHandles() < rhs.getAttributeHandles()) return true;
+  if (rhs.getAttributeHandles() < getAttributeHandles()) return false;
+  if (getTag() < rhs.getTag()) return true;
+  if (rhs.getTag() < getTag()) return false;
+  return false;
+}
 
 RequestClassAttributeUpdateMessage::RequestClassAttributeUpdateMessage()
 {
@@ -1484,5 +3016,37 @@ RequestClassAttributeUpdateMessage::dispatch(const AbstractMessageDispatcher& di
   dispatcher.accept(*this);
 }
 
+bool
+RequestClassAttributeUpdateMessage::operator==(const AbstractMessage& rhs) const
+{
+  const RequestClassAttributeUpdateMessage* message = dynamic_cast<const RequestClassAttributeUpdateMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+RequestClassAttributeUpdateMessage::operator==(const RequestClassAttributeUpdateMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getObjectClassHandle() != rhs.getObjectClassHandle()) return false;
+  if (getAttributeHandles() != rhs.getAttributeHandles()) return false;
+  if (getTag() != rhs.getTag()) return false;
+  return true;
+}
+
+bool
+RequestClassAttributeUpdateMessage::operator<(const RequestClassAttributeUpdateMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getObjectClassHandle() < rhs.getObjectClassHandle()) return true;
+  if (rhs.getObjectClassHandle() < getObjectClassHandle()) return false;
+  if (getAttributeHandles() < rhs.getAttributeHandles()) return true;
+  if (rhs.getAttributeHandles() < getAttributeHandles()) return false;
+  if (getTag() < rhs.getTag()) return true;
+  if (rhs.getTag() < getTag()) return false;
+  return false;
+}
 
 } // namespace OpenRTI

@@ -519,14 +519,20 @@ class StructDataType(DataType):
 
         sourceStream.writeline('bool operator==(const {name}& rhs) const'.format(name = self.getName()))
         sourceStream.writeline('{')
-        for field in self.__fieldList:
+        if self.__cow:
+            sourceStream.writeline('  if (_impl.get() == rhs._impl.get())')
+            sourceStream.writeline('    return true;')
+        for field in self.getFieldList():
             upperName = field.getUpperName()
             sourceStream.writeline('  if (get{upperName}() != rhs.get{upperName}()) return false;'.format(upperName = upperName))
         sourceStream.writeline('  return true;')
         sourceStream.writeline('}')
         sourceStream.writeline('bool operator<(const {name}& rhs) const'.format(name = self.getName()))
         sourceStream.writeline('{')
-        for field in self.__fieldList:
+        if self.__cow:
+            sourceStream.writeline('  if (_impl.get() == rhs._impl.get())')
+            sourceStream.writeline('    return false;')
+        for field in self.getFieldList():
             upperName = field.getUpperName()
             sourceStream.writeline('  if (get{upperName}() < rhs.get{upperName}()) return true;'.format(upperName = upperName))
             sourceStream.writeline('  if (rhs.get{upperName}() < get{upperName}()) return false;'.format(upperName = upperName))
@@ -631,6 +637,19 @@ class MessageDataType(StructDataType):
         sourceStream.writeline('virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;')
         sourceStream.writeline()
 
+        sourceStream.writeline('bool operator==(const AbstractMessage& rhs) const;')
+        sourceStream.writeline('bool operator==(const {name}& rhs) const;'.format(name = self.getName()))
+        sourceStream.writeline('bool operator<(const {name}& rhs) const;'.format(name = self.getName()))
+        sourceStream.writeline('bool operator!=(const {name}& rhs) const'.format(name = self.getName()))
+        sourceStream.writeline('{ return !operator==(rhs); }')
+        sourceStream.writeline('bool operator>(const {name}& rhs) const'.format(name = self.getName()))
+        sourceStream.writeline('{ return rhs.operator<(*this); }')
+        sourceStream.writeline('bool operator>=(const {name}& rhs) const'.format(name = self.getName()))
+        sourceStream.writeline('{ return !operator<(rhs); }')
+        sourceStream.writeline('bool operator<=(const {name}& rhs) const'.format(name = self.getName()))
+        sourceStream.writeline('{ return !operator>(rhs); }')
+        sourceStream.writeline()
+
         if self.getReliableExpression():
             sourceStream.writeline('virtual bool getReliable() const;')
             sourceStream.writeline()
@@ -680,6 +699,34 @@ class MessageDataType(StructDataType):
         sourceStream.writeline('  dispatcher.accept(*this);')
         sourceStream.writeline('}')
         sourceStream.writeline()
+
+        sourceStream.writeline('bool')
+        sourceStream.writeline('{name}::operator==(const AbstractMessage& rhs) const'.format(name = self.getName()))
+        sourceStream.writeline('{')
+        sourceStream.writeline('  const {name}* message = dynamic_cast<const {name}*>(&rhs);'.format(name = self.getName()))
+        sourceStream.writeline('  if (!message)')
+        sourceStream.writeline('    return false;')
+        sourceStream.writeline('  return operator==(*message);')
+        sourceStream.writeline('}')
+        sourceStream.writeline()
+        sourceStream.writeline('bool')
+        sourceStream.writeline('{name}::operator==(const {name}& rhs) const'.format(name = self.getName()))
+        sourceStream.writeline('{')
+        for field in self.getFieldList():
+            upperName = field.getUpperName()
+            sourceStream.writeline('  if (get{upperName}() != rhs.get{upperName}()) return false;'.format(upperName = upperName))
+        sourceStream.writeline('  return true;')
+        sourceStream.writeline('}')
+        sourceStream.writeline()
+        sourceStream.writeline('bool')
+        sourceStream.writeline('{name}::operator<(const {name}& rhs) const'.format(name = self.getName()))
+        sourceStream.writeline('{')
+        for field in self.getFieldList():
+            upperName = field.getUpperName()
+            sourceStream.writeline('  if (get{upperName}() < rhs.get{upperName}()) return true;'.format(upperName = upperName))
+            sourceStream.writeline('  if (rhs.get{upperName}() < get{upperName}()) return false;'.format(upperName = upperName))
+        sourceStream.writeline('  return false;')
+        sourceStream.writeline('}')
 
         if self.getReliableExpression():
             sourceStream.writeline('bool')
