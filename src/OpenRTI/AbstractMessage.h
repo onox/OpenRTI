@@ -43,6 +43,8 @@ public:
 
   // For testing of the transport implementation
   virtual bool operator==(const AbstractMessage&) const = 0;
+  bool operator!=(const AbstractMessage& message) const
+  { return ! operator==(message); }
 
   template<typename F>
   void dispatchFunctor(F& functor) const
