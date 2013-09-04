@@ -136,7 +136,11 @@ InitialClientStreamProtocol::readOptionMap(const StringStringListMap& optionMap)
 void
 InitialClientStreamProtocol::error(const Exception& e)
 {
+  // On error with the parent connect also stop the connect attempt
+  _networkServer.setDone(true);
+  // Store the error description
   _errorMessage = e.getReason();
+  _successfulConnect = false;
 }
 
 } // namespace OpenRTI
