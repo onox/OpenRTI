@@ -230,7 +230,13 @@ public:
   {
     OpenRTIAssert(offset <= size());
     _size -= offset;
-    _offset += offset;
+    if (_size) {
+      _offset += offset;
+    } else {
+      // If possible detach from the data element
+      _offset = 0;
+      _data.clear();
+    }
   }
 
   void
