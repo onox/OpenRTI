@@ -44,9 +44,8 @@ public:
   SocketAddress listenInet(const SocketAddress& socketAddress, int backlog);
   void listenPipe(const std::string& address, int backlog);
 
-  SharedPtr<SocketTCP> connectedTCPSocket(const SocketAddress& socketAddress);
-
   void connectParentServer(const std::string& url, const Clock& abstime);
+  void connectParentServer(const URL& url, const Clock& abstime);
   void connectParentInetServer(const std::string& name, const Clock& abstime);
   void connectParentInetServer(const std::pair<std::string, std::string>& hostPortPair, const Clock& abstime);
   void connectParentInetServer(const SocketAddress& socketAddress, const Clock& abstime);

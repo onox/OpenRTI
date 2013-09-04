@@ -129,13 +129,8 @@ LeafServerThread::_Registry::createServer(const URL& url, const SharedPtr<Abstra
   } else if (url.getProtocol() == "rti" || url.getProtocol() == "pipe") {
     SharedPtr<NetworkServer> server = new NetworkServer(serverNode);
 
-    if (url.getProtocol() == "rti") {
-      server->setServerName("INET leaf server");
-      server->connectParentInetServer(std::make_pair(url.getHost(), url.getService()), Clock::now() + Clock::fromSeconds(70));
-    } else {
-      server->setServerName("PIPE leaf server");
-      server->connectParentPipeServer(url.getPath(), Clock::now() + Clock::fromSeconds(70));
-    }
+    server->setServerName("Leaf server");
+    server->connectParentServer(url, Clock::now() + Clock::fromSeconds(70));
 
     return server;
   } else {

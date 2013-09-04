@@ -207,24 +207,21 @@ NetworkServer::listenPipe(const std::string& address, int backlog)
   _dispatcher.insert(new SocketServerAcceptEvent(socket, *this));
 }
 
-SharedPtr<SocketTCP>
-NetworkServer::connectedTCPSocket(const SocketAddress& socketAddress)
-{
-  SharedPtr<SocketTCP> socketStream = new SocketTCP;
-  socketStream->connect(socketAddress);
-  return socketStream;
-}
-
 void
 NetworkServer::connectParentServer(const std::string& url, const Clock& abstime)
 {
-  std::pair<std::string, std::string> protocolAddressPair = getProtocolRestPair(url);
-  if (protocolAddressPair.first == "rti") {
-    connectParentInetServer(parseInetAddress(protocolAddressPair.second), abstime);
-  } else if (protocolAddressPair.first == "pipe" || protocolAddressPair.first == "file" || protocolAddressPair.first.empty()) {
-    connectParentPipeServer(protocolAddressPair.second, abstime);
+  connectParentServer(URL::fromUrl(url), abstime);
+}
+
+void
+NetworkServer::connectParentServer(const URL& url, const Clock& abstime)
+{
+  if (url.getProtocol() == "rti") {
+    connectParentInetServer(std::make_pair(url.getHost(), url.getService()), abstime);
+  } else if (url.getProtocol() == "pipe" || url.getProtocol() == "file") {
+    connectParentPipeServer(url.getPath(), abstime);
   } else {
-    throw RTIinternalError(std::string("Trying to listen on \"") + url + "\": Unknown protocol type!");
+    throw RTIinternalError(std::string("Trying to connect to \"") + url.str() + "\": Unknown protocol type!");
   }
 }
 
@@ -256,7 +253,9 @@ NetworkServer::connectParentInetServer(const std::pair<std::string, std::string>
 void
 NetworkServer::connectParentInetServer(const SocketAddress& socketAddress, const Clock& abstime)
 {
-  connectParentStreamServer(connectedTCPSocket(socketAddress), abstime, socketAddress.isLocal());
+  SharedPtr<SocketTCP> socketStream = new SocketTCP;
+  socketStream->connect(socketAddress);
+  connectParentStreamServer(socketStream, abstime, socketAddress.isLocal());
 }
 
 void
