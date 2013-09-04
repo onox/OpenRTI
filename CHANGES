@@ -9,6 +9,7 @@ OpenRTI-0.5.0 (development)
  * Rework timestamped queues.
  * Fix timestamped message delivery just past getting time constrained.
  * Fix order type of messages sent as timestamped.
+ * Handle ConnectionLostMessage.
 
 OpenRTI-0.4.1 2013-??-??
 ------------------------

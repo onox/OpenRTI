@@ -105,6 +105,7 @@ InternalAmbassador::acceptInternalMessage(const AbstractMessage&)
 void
 InternalAmbassador::acceptInternalMessage(const ConnectionLostMessage& message)
 {
+  queueCallback(message);
 }
 
 void
@@ -397,6 +398,13 @@ public:
     _responseTypeStringPair(CreateFederationExecutionResponseRTIinternalError, std::string()),
     _basicAmbassador(basicAmbassador)
   { }
+  void operator()(const ConnectionLostMessage& message)
+  {
+    _basicAmbassador.acceptInternalMessage(message);
+    _responseTypeStringPair.first = CreateFederationExecutionResponseRTIinternalError;
+    _responseTypeStringPair.second = message.getFaultDescription();
+    _done = true;
+  }
   void operator()(const CreateFederationExecutionResponseMessage& message)
   {
     _responseTypeStringPair.first = message.getCreateFederationExecutionResponseType();
@@ -430,6 +438,12 @@ public:
     _responseType(DestroyFederationExecutionResponseRTIinternalError),
     _basicAmbassador(basicAmbassador)
   { }
+  void operator()(const ConnectionLostMessage& message)
+  {
+    _basicAmbassador.acceptInternalMessage(message);
+    _responseType = DestroyFederationExecutionResponseRTIinternalError;
+    _done = true;
+  }
   void operator()(const DestroyFederationExecutionResponseMessage& message)
   {
     _responseType = message.getDestroyFederationExecutionResponseType();
@@ -462,6 +476,12 @@ public:
     _response(JoinFederationExecutionResponseFederationExecutionDoesNotExist),
     _basicAmbassador(basicAmbassador)
   { }
+  void operator()(const ConnectionLostMessage& message)
+  {
+    _basicAmbassador.acceptInternalMessage(message);
+    _response = JoinFederationExecutionResponseFederationExecutionDoesNotExist;
+    _done = true;
+  }
   void operator()(const InsertFederationExecutionMessage& message)
   {
     _basicAmbassador.acceptInternalMessage(message);
@@ -498,6 +518,10 @@ public:
     _done(false),
     _basicAmbassador(basicAmbassador)
   { }
+  void operator()(const ConnectionLostMessage& message)
+  {
+    _done = true;
+  }
   void operator()(const EraseFederationExecutionMessage& message)
   {
     _done = true;
@@ -573,6 +597,11 @@ public:
     _basicAmbassador(basicAmbassador),
     _objectInstanceName(objectInstanceName)
   { }
+  void operator()(const ConnectionLostMessage& message)
+  {
+    _basicAmbassador.acceptInternalMessage(message);
+    _done = true;
+  }
   void operator()(const ReserveObjectInstanceNameResponseMessage& message)
   {
     // Intercept only those responses which match our name.

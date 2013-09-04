@@ -4192,13 +4192,10 @@ public:
 
 
   // The callback into the binding concrete implementation.
-  virtual void connectionLost(const std::string& faultDescription)
-    throw ()
-  { }
+  virtual void connectionLost(const std::string& faultDescription) = 0;
 
   virtual void reportFederationExecutions(const FederationExecutionInformationVector& theFederationExecutionInformationList)
-    throw ()
-  { }
+    throw () = 0;
 
   virtual void synchronizationPointRegistrationResponse(const std::string& label, RegisterFederationSynchronizationPointResponseType reason)
     throw () = 0;

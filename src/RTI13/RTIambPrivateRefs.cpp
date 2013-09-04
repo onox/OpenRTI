@@ -238,6 +238,15 @@ public:
     _concurrentAccess(false)
   { }
 
+  virtual void connectionLost(const std::string& faultDescription)
+  {
+    throw RTI::RTIinternalError(faultDescription.c_str());
+  }
+
+  virtual void reportFederationExecutions(const FederationExecutionInformationVector& theFederationExecutionInformationList)
+    throw ()
+  { }
+
   virtual void synchronizationPointRegistrationResponse(const std::string& label, OpenRTI::RegisterFederationSynchronizationPointResponseType reason)
     throw ()
   {

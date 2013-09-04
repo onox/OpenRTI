@@ -302,6 +302,15 @@ public:
     }
   }
 
+  virtual void connectionLost(const std::string& faultDescription)
+  {
+    throw rti1516::RTIinternalError(utf8ToUcs(faultDescription));
+  }
+
+  virtual void reportFederationExecutions(const FederationExecutionInformationVector& theFederationExecutionInformationList)
+    throw ()
+  { }
+
   virtual void synchronizationPointRegistrationResponse(const std::string& label, RegisterFederationSynchronizationPointResponseType reason)
     throw ()
   {

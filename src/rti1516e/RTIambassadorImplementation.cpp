@@ -394,7 +394,6 @@ public:
   }
 
   virtual void connectionLost(const std::string& faultDescription)
-    throw ()
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
