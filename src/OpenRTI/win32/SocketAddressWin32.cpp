@@ -24,8 +24,10 @@
 #include <sstream>
 
 #include "Exception.h"
-#include "SocketAddressPrivateDataWin32.h"
 #include "StringUtils.h"
+#include "VariableLengthData.h"
+
+#include "SocketAddressPrivateDataWin32.h"
 
 namespace OpenRTI {
 
@@ -188,6 +190,74 @@ SocketAddress::resolve(const std::string& address, bool passive)
   std::pair<std::string, std::string> addressServicePair;
   addressServicePair = parseInetAddress(address);
   return resolve(addressServicePair.first, addressServicePair.second, passive);
+}
+
+VariableLengthData
+SocketAddress::getNetworkAddressData() const
+{
+  if (isInet4()) {
+    const struct sockaddr_in* addr = (const struct sockaddr_in*)SocketAddress::PrivateData::sockaddr(_privateData.get());
+    return VariableLengthData(&addr->sin_addr, sizeof(addr->sin_addr));
+  } else if (isInet6()) {
+    const struct sockaddr_in6* addr = (const struct sockaddr_in6*)SocketAddress::PrivateData::sockaddr(_privateData.get());
+    return VariableLengthData(&addr->sin6_addr, sizeof(addr->sin6_addr));
+  } else {
+    return VariableLengthData();
+  }
+}
+
+VariableLengthData
+SocketAddress::getNetworkPortData() const
+{
+  if (isInet4()) {
+    const struct sockaddr_in* addr = (const struct sockaddr_in*)SocketAddress::PrivateData::sockaddr(_privateData.get());
+    return VariableLengthData(&addr->sin_port, sizeof(addr->sin_port));
+  } else if (isInet6()) {
+    const struct sockaddr_in6* addr = (const struct sockaddr_in6*)SocketAddress::PrivateData::sockaddr(_privateData.get());
+    return VariableLengthData(&addr->sin6_port, sizeof(addr->sin6_port));
+  } else {
+    return VariableLengthData();
+  }
+}
+
+SocketAddress
+SocketAddress::fromInet4Network(const SocketAddress& socketAddress, const VariableLengthData& networkAddressData, const VariableLengthData& networkPortData)
+{
+  struct sockaddr_in addr;
+  std::memset(&addr, 0, sizeof(addr));
+  addr.sin_family = AF_INET;
+
+  if (networkAddressData.size() != sizeof(addr.sin_addr))
+    throw TransportError("Invalid INET4 network address!");
+  std::memcpy(&addr.sin_addr, networkAddressData.data(), sizeof(addr.sin_addr));
+
+  if (networkPortData.size() != sizeof(addr.sin_port))
+    throw TransportError("Invalid INET4 network port!");
+  std::memcpy(&addr.sin_port, networkPortData.data(), sizeof(addr.sin_port));
+
+  return SocketAddress(new PrivateData((const struct sockaddr*)&addr, sizeof(addr)));
+}
+
+SocketAddress
+SocketAddress::fromInet6Network(const SocketAddress& socketAddress, const VariableLengthData& networkAddressData, const VariableLengthData& networkPortData)
+{
+  struct sockaddr_in6 addr;
+  std::memset(&addr, 0, sizeof(addr));
+  addr.sin6_family = AF_INET6;
+  if (socketAddress.isInet6()) {
+    const struct sockaddr_in6* addr1 = (const struct sockaddr_in6*)PrivateData::sockaddr(socketAddress._privateData.get());
+    addr.sin6_scope_id = addr1->sin6_scope_id;
+  }
+
+  if (networkAddressData.size() != sizeof(addr.sin6_addr))
+    throw TransportError("Invalid INET6 network address!");
+  std::memcpy(&addr.sin6_addr, networkAddressData.data(), sizeof(addr.sin6_addr));
+
+  if (networkPortData.size() != sizeof(addr.sin6_port))
+    throw TransportError("Invalid INET6 network port!");
+  std::memcpy(&addr.sin6_port, networkPortData.data(), sizeof(addr.sin6_port));
+
+  return SocketAddress(new PrivateData((const struct sockaddr*)&addr, sizeof(addr)));
 }
 
 SocketAddress::SocketAddress(PrivateData* privateData) :

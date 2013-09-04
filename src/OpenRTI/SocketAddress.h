@@ -34,6 +34,8 @@ class SocketServer;
 class SocketServerTCP;
 class SocketStream;
 class SocketTCP;
+class SocketUDP;
+class VariableLengthData;
 
 typedef std::list<SocketAddress> SocketAddressList;
 
@@ -71,6 +73,14 @@ public:
   resolve(const std::string& address, const std::string& service, bool passive);
   static SocketAddressList
   resolve(const std::string& address, bool passive);
+
+  VariableLengthData getNetworkAddressData() const;
+  VariableLengthData getNetworkPortData() const;
+
+  static SocketAddress
+  fromInet4Network(const SocketAddress& socketAddress, const VariableLengthData& networkAddressData, const VariableLengthData& networkPortData);
+  static SocketAddress
+  fromInet6Network(const SocketAddress& socketAddress, const VariableLengthData& networkAddressData, const VariableLengthData& networkPortData);
 
 private:
   struct PrivateData;
