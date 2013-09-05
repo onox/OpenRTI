@@ -42,31 +42,37 @@ URL::~URL()
 }
 
 URL
-URL::fromUrl(const std::string& url)
+URL::fromUrl(const std::string& s)
 {
-  URL _url;
+  URL url;
 
   /// Seperate this into:
   /// <protocol>://<address>/...
-  std::string::size_type pos = url.find("://");
+  std::string::size_type pos = s.find("://");
   if (pos != std::string::npos) {
-    _url._protocol = url.substr(0, pos);
-
-    std::string::size_type pos0 = pos + 3;
-    // Find the slach terminating the address field
-    pos = url.find('/', pos0);
-    if (pos != std::string::npos) {
-
-      std::pair<std::string, std::string> addressPortPair;
-      addressPortPair = parseInetAddress(url.substr(pos0, pos - pos0));
-      _url._host = addressPortPair.first;
-      _url._service = addressPortPair.second;
-
-      _url._path = url.substr(pos);
-    }
+    url._protocol = s.substr(0, pos);
+    // skip '://' and let pos point to the begin of the <address> part
+    pos += 3;
+  } else {
+    // pos points to the potential begin of the <address> part
+    pos = 0;
   }
 
-  return _url;
+  std::string::size_type addressBegin = pos;
+  // Find the slach terminating the address field
+  pos = s.find('/', addressBegin);
+  if (pos != std::string::npos) {
+    url._path = s.substr(pos);
+  } else {
+    pos = s.size();
+  }
+
+  std::pair<std::string, std::string> addressPortPair;
+  addressPortPair = parseInetAddress(s.substr(addressBegin, pos - addressBegin));
+  url._host = addressPortPair.first;
+  url._service = addressPortPair.second;
+
+  return url;
 }
 
 URL

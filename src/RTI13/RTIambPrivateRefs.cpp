@@ -1080,7 +1080,9 @@ public:
 
   void ensureConnected(const std::string& federationExecutionName)
   {
-    URL url = URL::fromUrl(federationExecutionName);
+    URL url;
+    if (federationExecutionName.find("://") != std::string::npos)
+      url = URL::fromUrl(federationExecutionName);
 
     if (!isConnected()) {
       connect(url, StringStringListMap());

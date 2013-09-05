@@ -102,7 +102,8 @@ main(int argc, char* argv[])
       break;
     case 'p':
       try {
-        networkServer.connectParentInetServer(localeToUtf8(options.getArgument()), Clock::now() + Clock::fromSeconds(75));
+        URL url = URL::fromUrl(localeToUtf8(options.getArgument()));
+        networkServer.connectParentServer(url, Clock::now() + Clock::fromSeconds(75));
       } catch (const Exception& e) {
         std::cerr << "Could not connect parent server:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;
