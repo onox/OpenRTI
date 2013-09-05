@@ -11,6 +11,7 @@ OpenRTI-0.5.0 (development)
  * Fix order type of messages sent as timestamped.
  * Handle ConnectionLostMessage.
  * Fix timeout on connection refused.
+ * Use much more efficient WSASend/WSARecv in win32.
 
 OpenRTI-0.4.1 2013-??-??
 ------------------------

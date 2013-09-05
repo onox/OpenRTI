@@ -28,18 +28,48 @@ namespace OpenRTI {
 ssize_t
 SocketStream::send(const ConstBufferRange& bufferRange, bool more)
 {
-  const char* data = (const char*)bufferRange.first.data();
-  size_t len = bufferRange.first.chunk_size(bufferRange.second);
+  size_t bytelen = 0;
+  size_t sendBufferSize = 64*1024; /* FIXME Use the real send buffer size instead */
+  // Currently fixed to max of 100
+  // For stream sockets it does not matter: If we could not send all in one chunk, the next chunk will send the rest.
+  WSABUF buffers[100];
+  DWORD bufferCount = 0;
+  DWORD maxBufferCount = sizeof(buffers)/sizeof(buffers[0]);
+  Buffer::const_byte_iterator i = bufferRange.first;
+  i.skip_empty_chunks(bufferRange.second);
+  for (; i != bufferRange.second; i.skip_empty_chunks(bufferRange.second)) {
+    size_t size = i.chunk_size(bufferRange.second);
+    if (!size)
+      continue;
 
-  // If not already set, check if we have more then one chunk pending
-  if (!more && 0 < len) {
-    Buffer::const_iterator i = bufferRange.first.iterator();
-    more = ++i != bufferRange.second.iterator();
+#ifdef DEBUG2_ASSEMBLY
+    size = 1;
+#endif
+
+    buffers[bufferCount].buf = (char*)i.data();
+    buffers[bufferCount].len = size;
+    bytelen += size;
+    i += size;
+    ++bufferCount;
+
+#if defined DEBUG_ASSEMBLY || defined DEBUG2_ASSEMBLY
+    break;
+#endif
+
+    // Stop processing stuff here if we run out of space in the buffers ...
+    if (maxBufferCount <= bufferCount)
+      break;
+    // ... and when we expect to fail at this amount of memory anyway.
+    if (sendBufferSize < bytelen)
+      break;
   }
+
   if (more)
     cork(true);
 
-  ssize_t ret = ::send(_privateData->_socket, data, len, 0);
+  DWORD flags = 0;
+  DWORD numBytesSent = 0;
+  int ret = WSASend(_privateData->_socket, buffers, bufferCount, &numBytesSent, flags, NULL, NULL);
   // get the error of the send call before trying setsocketopt
   int errorNumber = WSAGetLastError();
 
@@ -48,7 +78,7 @@ SocketStream::send(const ConstBufferRange& bufferRange, bool more)
     cork(false);
 
   if (ret != SOCKET_ERROR)
-    return ret;
+    return numBytesSent;
 
   // errors that just mean 'please try again' which is mapped to 'return nothing written'
   if (errorNumber == WSAEINTR || errorNumber == WSAEINPROGRESS || errorNumber == WSAENOBUFS || errorNumber == WSAEWOULDBLOCK)
@@ -70,14 +100,50 @@ SocketStream::send(const ConstBufferRange& bufferRange, bool more)
 ssize_t
 SocketStream::recv(const BufferRange& bufferRange, bool peek)
 {
-  char* data = (char*)bufferRange.first.data();
-  size_t len = bufferRange.first.chunk_size(bufferRange.second);
-  int flags = 0;
+  size_t bytelen = 0;
+  size_t readBufferSize = 64*1024; /* FIXME Use the real read buffer size instead */
+  // Currently fixed to max of 100
+  // For stream sockets it does not matter: If we could not receive all in one chunk, the next chunk will receive the rest.
+  WSABUF buffers[100];
+  DWORD bufferCount = 0;
+  DWORD maxBufferCount = sizeof(buffers)/sizeof(buffers[0]);
+  Buffer::byte_iterator i = bufferRange.first;
+  i.skip_empty_chunks(bufferRange.second);
+  for (;i != bufferRange.second; i.skip_empty_chunks(bufferRange.second)) {
+    size_t size = i.chunk_size(bufferRange.second);
+    if (!size)
+      continue;
+
+#ifdef DEBUG2_ASSEMBLY
+    size = 1;
+#endif
+
+    buffers[bufferCount].buf = (char*)i.data();
+    buffers[bufferCount].len = size;
+    bytelen += size;
+    i += size;
+    ++bufferCount;
+
+#if defined DEBUG_ASSEMBLY || defined DEBUG2_ASSEMBLY
+    break;
+#endif
+
+    // Stop processing stuff here if we run out of space in the buffers ...
+    if (maxBufferCount <= bufferCount)
+      break;
+    // ... and when we expect to fail at this amount of memory anyway.
+    if (readBufferSize < bytelen)
+      break;
+  }
+
+  DWORD flags = 0;
   if (peek)
     flags |= MSG_PEEK;
-  ssize_t ret = ::recv(_privateData->_socket, data, len, flags);
+
+  DWORD numBytesRecvd = 0;
+  int ret = WSARecv(_privateData->_socket, buffers, bufferCount, &numBytesRecvd, &flags, NULL, NULL);
   if (ret != SOCKET_ERROR)
-    return ret;
+    return numBytesRecvd;
 
   int errorNumber = WSAGetLastError();
   // errors that just mean 'please try again' which is mapped to the traditional return path for read.
