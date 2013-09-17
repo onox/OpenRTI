@@ -63,8 +63,7 @@ public:
     _logicalTimeFactory(logicalTimeFactory)
   {
     _logicalTime = _logicalTimeFactory.initialLogicalTime();
-    _pendingLogicalTime.first = _logicalTime;
-    _pendingLogicalTime.second = false;
+    _pendingLogicalTime = _logicalTime;
     _localLowerBoundTimeStamp.first = _logicalTime;
     _localLowerBoundTimeStamp.second = true;
     _currentLookahead = _logicalTimeFactory.zeroLogicalTimeInterval();
@@ -113,10 +112,9 @@ public:
     _currentLookahead = lookahead;
     _targetLookahead = _currentLookahead;
 
-    _pendingLogicalTime.first = logicalTime;
-    _pendingLogicalTime.second = false;
+    _pendingLogicalTime = logicalTime;
 
-    _localLowerBoundTimeStamp.first = _pendingLogicalTime.first;
+    _localLowerBoundTimeStamp.first = _pendingLogicalTime;
     _localLowerBoundTimeStamp.first += _currentLookahead;
     _localLowerBoundTimeStamp.second = _logicalTimeFactory.isZeroTimeInterval(_currentLookahead);
 
@@ -170,11 +168,7 @@ public:
     _nextMessageMode = nextMessageMode;
     _flushQueueMode = flushQueue;
     _timeAdvancePending = true;
-    _pendingLogicalTime.first = logicalTime;
-    if (availableMode)
-      _pendingLogicalTime.second = 0;
-    else
-      _pendingLogicalTime.second = 1;
+    _pendingLogicalTime = logicalTime;
 
 #ifndef _NDEBUG
     LogicalTimePair oldLBTS = _localLowerBoundTimeStamp;
@@ -194,10 +188,10 @@ public:
 
     _localLowerBoundTimeStamp.first = logicalTime;
     if (_logicalTimeFactory.isZeroTimeInterval(_currentLookahead)) {
-      _localLowerBoundTimeStamp.second = true;
+      _localLowerBoundTimeStamp.second = 1;
     } else {
       _localLowerBoundTimeStamp.first += _currentLookahead;
-      _localLowerBoundTimeStamp.second = false;
+      _localLowerBoundTimeStamp.second = 0;
     }
 
 #ifndef _NDEBUG
@@ -209,11 +203,13 @@ public:
 
     // Queue the time advance granted
     SharedPtr<TimeAdvanceGrantedMessage> message = new TimeAdvanceGrantedMessage;
-    message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_pendingLogicalTime.first));
+    message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_pendingLogicalTime));
     if (flushQueue)
       _logicalTimeMessageListMap[LogicalTimePair(_logicalTimeFactory.finalLogicalTime(), 1)].push_back(message);
+    else if (availableMode)
+      _logicalTimeMessageListMap[LogicalTimePair(_pendingLogicalTime, 0)].push_back(message);
     else
-      _logicalTimeMessageListMap[_pendingLogicalTime].push_back(message);
+      _logicalTimeMessageListMap[LogicalTimePair(_pendingLogicalTime, 1)].push_back(message);
   }
 
   virtual bool queryGALT(InternalAmbassador& ambassador, NativeLogicalTime& logicalTime)
@@ -402,9 +398,9 @@ public:
   {
     LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp().getLogicalTime());
     bool zeroLookahead = message.getTimeStamp().getZeroLookahead();
-    OpenRTIAssert(!_timeConstrainedEnabled || _federateLowerBoundMap.empty() || _federateLowerBoundMap.canAdvanceTo(_logicalTime));
+    OpenRTIAssert(!_timeConstrainedEnabled || _federateLowerBoundMap.canAdvanceTo(_logicalTime));
     _federateLowerBoundMap.commit(message.getFederateHandle(), LogicalTimePair(logicalTime, zeroLookahead));
-    OpenRTIAssert(!_timeConstrainedEnabled || _federateLowerBoundMap.empty() || _federateLowerBoundMap.canAdvanceTo(_logicalTime));
+    OpenRTIAssert(!_timeConstrainedEnabled || _federateLowerBoundMap.canAdvanceTo(_logicalTime));
   }
 
   virtual void queueTimeStampedMessage(InternalAmbassador& ambassador, const VariableLengthData& timeStamp, const AbstractMessage& message)
@@ -418,7 +414,7 @@ public:
     // drop these messages.
     // Except in debug mode, where we wat the test to fail under this conditions!
 #ifdef _NDEBUG
-    if (_federateLowerBoundMap.empty() || _federateLowerBoundMap.canAdvanceTo(logicalTime)) {
+    if (_federateLowerBoundMap.canAdvanceTo(logicalTime)) {
       Log(Network, Warning) << "Dropping illegal time stamp order message!\n"
                             << "You may communicate with a buggy federate ambassador." << std::endl;
       return;
@@ -471,14 +467,14 @@ public:
       // This federate sent us just its logical time.
       // That means we need to make sure that all messages we send are strictly
       // in the future wrt this sent timestep.
-      LogicalTimePair logicalTimePair(i->second, 1);
+      LogicalTimePair logicalTimePair(i->second, 0);
       if (logicalTimePair < _localLowerBoundTimeStamp)
         continue;
 
       // Ok, here is some room in between, but for now this is ok by the standard
       _localLowerBoundTimeStamp.first = logicalTimePair.first;
       _localLowerBoundTimeStamp.first += _currentLookahead;
-      _pendingLogicalTime.first = logicalTimePair.first;
+      _pendingLogicalTime = logicalTimePair.first;
     }
 
     _timeRegulationEnableFederateHandleTimeStampMap.clear();
@@ -493,8 +489,8 @@ public:
 
     // Ok, now go on ...
     SharedPtr<TimeRegulationEnabledMessage> message = new TimeRegulationEnabledMessage;
-    message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_pendingLogicalTime.first));
-    _logicalTimeMessageListMap[LogicalTimePair(_pendingLogicalTime.first, 1)].push_back(message);
+    message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_pendingLogicalTime));
+    _logicalTimeMessageListMap[LogicalTimePair(_pendingLogicalTime, 1)].push_back(message);
   }
 
   void sendCommitLowerBoundTimeStamp(InternalAmbassador& ambassador, const LogicalTimePair& logicalTimePair)
@@ -514,8 +510,8 @@ public:
     _timeConstrainedEnabled = true;
     OpenRTIAssert(_logicalTime <= _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime()));
     _logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime());
-    OpenRTIAssert(_pendingLogicalTime.first == _logicalTime);
-    OpenRTIAssert(_federateLowerBoundMap.empty() || _federateLowerBoundMap.canAdvanceTo(_logicalTime));
+    OpenRTIAssert(_pendingLogicalTime == _logicalTime);
+    OpenRTIAssert(_federateLowerBoundMap.canAdvanceTo(_logicalTime));
     OpenRTIAssert(_logicalTimeMessageListMap.empty() || _logicalTime < _logicalTimeMessageListMap.begin()->first.first || _logicalTimeMessageListMap.begin()->second.size() <= 1);
     ambassador.timeConstrainedEnabled(_logicalTimeFactory.getLogicalTime(_logicalTime));
   }
@@ -526,17 +522,17 @@ public:
     _timeRegulationEnabled = true;
     OpenRTIAssert(_logicalTime <= _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime()));
     _logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime());
-    OpenRTIAssert(_pendingLogicalTime.first == _logicalTime);
+    OpenRTIAssert(_pendingLogicalTime == _logicalTime);
     ambassador.timeRegulationEnabled(_logicalTimeFactory.getLogicalTime(_logicalTime));
   }
   virtual void acceptCallbackMessage(Ambassador<T>& ambassador, const TimeAdvanceGrantedMessage& message)
   {
     OpenRTIAssert(_logicalTime <= _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime()));
     _logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime());
-    OpenRTIAssert(_pendingLogicalTime.first == _logicalTime);
+    OpenRTIAssert(_pendingLogicalTime == _logicalTime);
     _timeAdvancePending = false;
     _flushQueueMode = false;
-    OpenRTIAssert(_flushQueueMode || _federateLowerBoundMap.empty() || _federateLowerBoundMap.canAdvanceTo(_logicalTime));
+    OpenRTIAssert(_flushQueueMode || _federateLowerBoundMap.canAdvanceTo(_logicalTime));
     ambassador.timeAdvanceGrant(_logicalTimeFactory.getLogicalTime(_logicalTime));
   }
 
@@ -617,9 +613,9 @@ public:
       return true;
     if (!InternalTimeManagement::getTimeConstrainedEnabled())
       return true;
-    if (_pendingLogicalTime.first < _logicalTimeMessageListMap.begin()->first.first)
+    if (_pendingLogicalTime < _logicalTimeMessageListMap.begin()->first.first)
       return false;
-    return _federateLowerBoundMap.canAdvanceTo(_logicalTimeMessageListMap.begin()->first);
+    return _federateLowerBoundMap.canAdvanceTo(_logicalTimeMessageListMap.begin()->first.first);
   }
 
   bool _receiveOrderMessagesPermitted() const
@@ -636,7 +632,7 @@ public:
   // The current logical time of this federate
   LogicalTime _logicalTime;
   // If a time advance is pending, this contains the logical time of the advance call.
-  LogicalTimePair _pendingLogicalTime;
+  LogicalTime _pendingLogicalTime;
   // The smallest allowed logical time for sending messages
   LogicalTimePair _localLowerBoundTimeStamp;
   // The lookahead of this federate
