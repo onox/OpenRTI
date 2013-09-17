@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -34,14 +34,24 @@
 
 using namespace OpenRTI;
 
+enum TimeAdvanceMode {
+  TimeAdvanceRequest = 0,
+  TimeAdvanceRequestAvailable = 1,
+  NextMessageRequest = 2,
+  NextMessageRequestAvailable = 3,
+  FlushQueueRequest = 4
+};
+
 class TestAmbassador : public RTI1516TestAmbassador {
 public:
-  TestAmbassador(const RTITest::ConstructorArgs& constructorArgs) :
+  TestAmbassador(const RTITest::ConstructorArgs& constructorArgs,
+                 const HLAinteger64Interval& lookahead, TimeAdvanceMode timeAdvanceMode) :
     RTI1516TestAmbassador(constructorArgs),
+    _lookahead(lookahead),
+    _timeAdvanceMode(timeAdvanceMode),
     _timeRegulationEnabled(false),
     _timeConstrainedEnabled(false),
     _timeAdvancePending(false),
-    _lookahead(1),
     _fail(false)
   { }
   virtual ~TestAmbassador()
@@ -75,6 +85,9 @@ public:
 
     // Enable time constrained
     try {
+      // Potentuially we could end up with any logical time in this step,
+      // tell the message delivery timestamp check code that we expect this.
+      _advanceLogicalTime.setFinal();
       ambassador.enableTimeConstrained();
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -116,6 +129,9 @@ public:
 
     // Enable time regulation
     try {
+      // Potentuially we could end up with any logical time in this step,
+      // tell the message delivery timestamp check code that we expect this.
+      _advanceLogicalTime.setFinal();
       ambassador.enableTimeRegulation(_lookahead);
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -166,8 +182,7 @@ public:
       return false;
     }
 
-    unsigned maxSteps = 300;
-    for (unsigned i = 0; i < maxSteps; ++i) {
+    for (unsigned i = 0; i < 100; ++i) {
       /// Send some interactions.
 
       try {
@@ -183,7 +198,7 @@ public:
         return false;
       }
 
-      for (unsigned j = 0; j < 10 && i + j < maxSteps; ++j) {
+      for (unsigned j = 0; j < 3; ++j) {
         HLAinteger64Time logicalTime = _logicalTime + HLAinteger64Interval(j);
 
         try {
@@ -231,7 +246,23 @@ public:
       // Do the time advance
       try {
         _advanceLogicalTime = _logicalTime + HLAinteger64Interval(1);
-        ambassador.timeAdvanceRequest(_advanceLogicalTime);
+        switch (_timeAdvanceMode) {
+        case TimeAdvanceRequest:
+          ambassador.timeAdvanceRequest(_advanceLogicalTime);
+          break;
+        case TimeAdvanceRequestAvailable:
+          ambassador.timeAdvanceRequestAvailable(_advanceLogicalTime);
+          break;
+        case NextMessageRequest:
+          ambassador.nextMessageRequest(_advanceLogicalTime);
+          break;
+        case NextMessageRequestAvailable:
+          ambassador.nextMessageRequestAvailable(_advanceLogicalTime);
+          break;
+        case FlushQueueRequest:
+          ambassador.flushQueueRequest(_advanceLogicalTime);
+          break;
+        }
         _timeAdvancePending = true;
       } catch (const rti1516::Exception& e) {
         std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -259,9 +290,23 @@ public:
         return false;
       }
 
-      if (_advanceLogicalTime != _logicalTime) {
-        std::wcout << L"Times do not match" << std::endl;
-        return false;
+      switch (_timeAdvanceMode) {
+      case NextMessageRequest:
+      case NextMessageRequestAvailable:
+        if (_advanceLogicalTime < _logicalTime) {
+          std::wcout << L"Times do not match" << std::endl;
+          return false;
+        }
+        _advanceLogicalTime = _logicalTime;
+        break;
+      case TimeAdvanceRequest:
+      case TimeAdvanceRequestAvailable:
+      case FlushQueueRequest:
+        if (_advanceLogicalTime != _logicalTime) {
+          std::wcout << L"Times do not match" << std::endl;
+          return false;
+        }
+        break;
       }
     }
 
@@ -320,9 +365,23 @@ public:
   {
     _logicalTime = logicalTime;
     _timeAdvancePending = false;
-    if (_logicalTime != _advanceLogicalTime) {
-        _fail = true;
+    switch (_timeAdvanceMode) {
+    case NextMessageRequest:
+    case NextMessageRequestAvailable:
+      if (_advanceLogicalTime < _logicalTime) {
         std::wcout << L"Time advance grant time does not match the requested time!" << std::endl;
+        _fail = true;
+      }
+      _advanceLogicalTime = _logicalTime;
+      break;
+    case TimeAdvanceRequest:
+    case TimeAdvanceRequestAvailable:
+    case FlushQueueRequest:
+      if (_advanceLogicalTime != _logicalTime) {
+        std::wcout << L"Time advance grant time does not match the requested time!" << std::endl;
+        _fail = true;
+      }
+      break;
     }
   }
 
@@ -365,8 +424,14 @@ public:
         _fail = true;
         std::wcout << L"Received timestamp order message that was sent as receive order!" << std::endl;
     }
-    if (receivedOrder == rti1516::TIMESTAMP)
-      checkLogicalTime(theTime);
+    if (receivedOrder == rti1516::TIMESTAMP) {
+      if (_timeConstrainedEnabled) {
+        checkLogicalTime(theTime);
+      } else {
+        _fail = true;
+        std::wcout << L"Received timestamp order message while time constrained disabled!" << std::endl;
+      }
+    }
   }
 
   virtual void
@@ -392,43 +457,98 @@ public:
         _fail = true;
         std::wcout << L"Received timestamp order message that was sent as receive order!" << std::endl;
     }
-    if (receivedOrder == rti1516::TIMESTAMP)
-      checkLogicalTime(theTime);
+    if (receivedOrder == rti1516::TIMESTAMP) {
+      if (_timeConstrainedEnabled) {
+        checkLogicalTime(theTime);
+      } else {
+        _fail = true;
+        std::wcout << L"Received timestamp order message while time constrained disabled!" << std::endl;
+      }
+    }
   }
 
   void checkLogicalTime(rti1516::LogicalTime const & logicalTime)
   {
-    if (logicalTime <= _logicalTime) {
-      _fail = true;
-      std::wcout << L"Received timestamp order message with timestamp in the past: ["
-                 << _logicalTime << ", " << _advanceLogicalTime << "] " << logicalTime << std::endl;
+    switch (_timeAdvanceMode) {
+    case TimeAdvanceRequest:
+    case NextMessageRequest:
+    case FlushQueueRequest:
+      if (logicalTime <= _logicalTime) {
+        _fail = true;
+        std::wcout << L"Received timestamp order message with timestamp in the past: ["
+                   << _logicalTime << ", " << _advanceLogicalTime << "] " << logicalTime << std::endl;
+      }
+      break;
+    case TimeAdvanceRequestAvailable:
+    case NextMessageRequestAvailable:
+      if (logicalTime < _logicalTime) {
+        _fail = true;
+        std::wcout << L"Received timestamp order message with timestamp in the past: ["
+                   << _logicalTime << ", " << _advanceLogicalTime << "] " << logicalTime << std::endl;
+      }
+      break;
     }
-    if (_advanceLogicalTime < logicalTime) {
-      _fail = true;
-      std::wcout << L"Received timestamp order message with timestamp in the future: ["
-                 << _logicalTime << ", " << _advanceLogicalTime << "] " << logicalTime << std::endl;
+
+    switch (_timeAdvanceMode) {
+    case TimeAdvanceRequest:
+    case TimeAdvanceRequestAvailable:
+    case NextMessageRequest:
+    case NextMessageRequestAvailable:
+      if (_advanceLogicalTime < logicalTime) {
+        _fail = true;
+        std::wcout << L"Received timestamp order message with timestamp in the future: ["
+                   << _logicalTime << ", " << _advanceLogicalTime << "] " << logicalTime << std::endl;
+      }
+      break;
+    case FlushQueueRequest:
+      break;
     }
   }
 
 private:
+  HLAinteger64Interval _lookahead;
+  TimeAdvanceMode _timeAdvanceMode;
+
   bool _timeRegulationEnabled;
   bool _timeConstrainedEnabled;
   bool _timeAdvancePending;
   HLAinteger64Time _logicalTime;
   HLAinteger64Time _advanceLogicalTime;
-  HLAinteger64Interval _lookahead;
   bool _fail;
 };
 
 class Test : public RTITest {
 public:
   Test(int argc, const char* const argv[]) :
-    RTITest(argc, argv, false)
-  { }
+    RTITest(argc, argv, false),
+    _lookahead(1),
+    _timeAdvanceMode(TimeAdvanceRequest)
+  {
+    insertOptionString("L:M:");
+  }
+
+  virtual bool processOption(char optchar, const std::string& argument)
+  {
+    switch (optchar) {
+    case 'L':
+      _lookahead = HLAinteger64Interval(atoi(argument.c_str()));
+      return true;
+    case 'M':
+      _timeAdvanceMode = TimeAdvanceMode(atoi(argument.c_str()));
+      return true;
+    default:
+      return RTITest::processOption(optchar, argument);
+    }
+  }
+
   virtual Ambassador* createAmbassador(const ConstructorArgs& constructorArgs)
   {
-    return new TestAmbassador(constructorArgs);
+    return new TestAmbassador(constructorArgs, _lookahead, _timeAdvanceMode);
   }
+
+private:
+  HLAinteger64Interval _lookahead;
+  TimeAdvanceMode _timeAdvanceMode;
 };
 
 int

@@ -34,10 +34,21 @@
 
 using namespace OpenRTI;
 
+enum TimeAdvanceMode {
+  TimeAdvanceRequest = 0,
+  TimeAdvanceRequestAvailable = 1,
+  NextMessageRequest = 2,
+  NextMessageRequestAvailable = 3,
+  FlushQueueRequest = 4
+};
+
 class TestAmbassador : public RTI1516TestAmbassador {
 public:
-  TestAmbassador(const RTITest::ConstructorArgs& constructorArgs) :
+  TestAmbassador(const RTITest::ConstructorArgs& constructorArgs,
+                 const HLAinteger64Interval& lookahead, TimeAdvanceMode timeAdvanceMode) :
     RTI1516TestAmbassador(constructorArgs),
+    _lookahead(lookahead),
+    _timeAdvanceMode(timeAdvanceMode),
     _timeRegulationEnabled(false),
     _timeConstrainedEnabled(false),
     _timeAdvancePending(false)
@@ -135,9 +146,8 @@ public:
       return false;
     }
 
-    HLAinteger64Interval lookahead(1);
     try {
-      ambassador.enableTimeRegulation(lookahead);
+      ambassador.enableTimeRegulation(_lookahead);
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -147,7 +157,7 @@ public:
     }
 
     try {
-      ambassador.enableTimeRegulation(lookahead);
+      ambassador.enableTimeRegulation(_lookahead);
       std::wcout << L"enableTimeRegulation does not fail as required!" << std::endl;
       return false;
     } catch (const rti1516::RequestForTimeRegulationPending&) {
@@ -180,7 +190,7 @@ public:
     }
 
     try {
-      ambassador.enableTimeRegulation(lookahead);
+      ambassador.enableTimeRegulation(_lookahead);
       std::wcout << L"enableTimeRegulation does not fail as required!" << std::endl;
       return false;
     } catch (const rti1516::TimeRegulationAlreadyEnabled&) {
@@ -205,10 +215,26 @@ public:
     }
 
     for (unsigned i = 0; i < 300; ++i) {
-      _logicalTime += lookahead;
+      _logicalTime += HLAinteger64Interval(1);
       setLBTS(_logicalTime.getTime());
       try {
-        ambassador.timeAdvanceRequest(_logicalTime);
+        switch (_timeAdvanceMode) {
+        case TimeAdvanceRequest:
+          ambassador.timeAdvanceRequest(_logicalTime);
+          break;
+        case TimeAdvanceRequestAvailable:
+          ambassador.timeAdvanceRequestAvailable(_logicalTime);
+          break;
+        case NextMessageRequest:
+          ambassador.nextMessageRequest(_logicalTime);
+          break;
+        case NextMessageRequestAvailable:
+          ambassador.nextMessageRequestAvailable(_logicalTime);
+          break;
+        case FlushQueueRequest:
+          ambassador.flushQueueRequest(_logicalTime);
+          break;
+        }
         _timeAdvancePending = true;
       } catch (const rti1516::Exception& e) {
         std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -337,6 +363,8 @@ public:
   }
 
 private:
+  HLAinteger64Interval _lookahead;
+  TimeAdvanceMode _timeAdvanceMode;
   bool _timeRegulationEnabled;
   bool _timeConstrainedEnabled;
   bool _timeAdvancePending;
@@ -346,12 +374,35 @@ private:
 class Test : public RTITest {
 public:
   Test(int argc, const char* const argv[]) :
-    RTITest(argc, argv, false)
-  { }
+    RTITest(argc, argv, false),
+    _lookahead(1),
+    _timeAdvanceMode(TimeAdvanceRequest)
+  {
+    insertOptionString("L:M:");
+  }
+
+  virtual bool processOption(char optchar, const std::string& argument)
+  {
+    switch (optchar) {
+    case 'L':
+      _lookahead = HLAinteger64Interval(atoi(argument.c_str()));
+      return true;
+    case 'M':
+      _timeAdvanceMode = TimeAdvanceMode(atoi(argument.c_str()));
+      return true;
+    default:
+      return RTITest::processOption(optchar, argument);
+    }
+  }
+
   virtual Ambassador* createAmbassador(const ConstructorArgs& constructorArgs)
   {
-    return new TestAmbassador(constructorArgs);
+    return new TestAmbassador(constructorArgs, _lookahead, _timeAdvanceMode);
   }
+
+private:
+  HLAinteger64Interval _lookahead;
+  TimeAdvanceMode _timeAdvanceMode;
 };
 
 int
