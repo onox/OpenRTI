@@ -416,6 +416,8 @@ public:
     // Well potentially we can savely skip both tests since only a buggy federate can send this messages
     // under these circumstance. But since we cannot rely on this on a public network, we are kind and
     // drop these messages.
+    // Except in debug mode, where we wat the test to fail under this conditions!
+#ifdef _NDEBUG
     if (_federateLowerBoundMap.empty() || _federateLowerBoundMap.canAdvanceTo(logicalTime)) {
       Log(Network, Warning) << "Dropping illegal time stamp order message!\n"
                             << "You may communicate with a buggy federate ambassador." << std::endl;
@@ -427,6 +429,7 @@ public:
                             << "You may communicate with a buggy federate ambassador." << std::endl;
       return;
     }
+#endif
     _logicalTimeMessageListMap[LogicalTimePair(logicalTime, -1)].push_back(&message);
   }
   virtual void queueReceiveOrderMessage(InternalAmbassador& ambassador, const AbstractMessage& message)
