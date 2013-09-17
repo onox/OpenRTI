@@ -282,6 +282,11 @@ public:
     writeUInt32Compressed(value);
   }
 
+  void writeInt(const int32_t& value)
+  {
+    writeInt32Compressed(value);
+  }
+
   void writeSizeType(const size_t& value)
   {
     writeSizeTCompressed(value);
@@ -586,7 +591,7 @@ public:
   void writeTimeStamp(const TimeStamp& value)
   {
     writeVariableLengthData(value.getLogicalTime());
-    writeBool(value.getZeroLookahead());
+    writeInt(value.getZeroLookahead());
   }
 
   void writeFederateHandleSaveStatusPair(const FederateHandleSaveStatusPair& value)
@@ -2164,6 +2169,11 @@ public:
     value = readUInt32Compressed();
   }
 
+  void readInt(int32_t& value)
+  {
+    value = readInt32Compressed();
+  }
+
   void readSizeType(size_t& value)
   {
     value = readSizeTCompressed();
@@ -2477,7 +2487,7 @@ public:
   void readTimeStamp(TimeStamp& value)
   {
     readVariableLengthData(value.getLogicalTime());
-    readBool(value.getZeroLookahead());
+    readInt(value.getZeroLookahead());
   }
 
   void readFederateHandleSaveStatusPair(FederateHandleSaveStatusPair& value)

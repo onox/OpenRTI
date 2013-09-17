@@ -85,6 +85,7 @@
   <type name="Bool" ctype="bool" encoding="Bool"/>
   <type name="String" ctype="std::string" encoding="String"/>
   <type name="Unsigned" ctype="uint32_t" encoding="UInt32"/>
+  <type name="Int" ctype="int32_t" encoding="Int32"/>
   <!-- FIXME Make that UInt64 -->
   <type name="SizeType" ctype="size_t" encoding="SizeT"/>
 
@@ -162,7 +163,7 @@
   <!-- For the enable time regulation request -->
   <type name="TimeStamp" type="struct">
     <field name="LogicalTime" type="VariableLengthData"/>
-    <field name="ZeroLookahead" type="Bool"/>
+    <field name="ZeroLookahead" type="Int"/>
   </type>
 
   <type name="FederateHandleSaveStatusPair" type="pair" first="FederateHandle" second="SaveStatus"/>

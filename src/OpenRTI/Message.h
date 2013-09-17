@@ -115,6 +115,8 @@ typedef std::string String;
 
 typedef uint32_t Unsigned;
 
+typedef int32_t Int;
+
 typedef size_t SizeType;
 
 typedef std::vector<AttributeHandle> AttributeHandleVector;
@@ -336,6 +338,8 @@ typedef bool Bool;
 typedef std::string String;
 
 typedef uint32_t Unsigned;
+
+typedef int32_t Int;
 
 typedef size_t SizeType;
 
@@ -561,11 +565,11 @@ public:
   const VariableLengthData& getLogicalTime() const
   { return _logicalTime; }
 
-  void setZeroLookahead(const Bool& value)
+  void setZeroLookahead(const Int& value)
   { _zeroLookahead = value; }
-  Bool& getZeroLookahead()
+  Int& getZeroLookahead()
   { return _zeroLookahead; }
-  const Bool& getZeroLookahead() const
+  const Int& getZeroLookahead() const
   { return _zeroLookahead; }
 
   bool operator==(const TimeStamp& rhs) const
@@ -592,7 +596,7 @@ public:
   { return !operator>(rhs); }
 private:
   VariableLengthData _logicalTime;
-  Bool _zeroLookahead;
+  Int _zeroLookahead;
 };
 
 typedef std::pair<FederateHandle, SaveStatus> FederateHandleSaveStatusPair;

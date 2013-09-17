@@ -32,7 +32,7 @@ template<typename T>
 class OPENRTI_LOCAL FederateHandleLowerBoundTimeStampMap {
 public:
   typedef T LogicalTime;
-  typedef std::pair<LogicalTime, bool> LogicalTimePair;
+  typedef std::pair<LogicalTime, int> LogicalTimePair;
 
   void insert(const FederateHandle& federateHandle, const LogicalTimePair& logicalTimePair)
   {
@@ -121,7 +121,7 @@ public:
     // messages will have a logical, time greater than the committed one.
     // So we can savely advance also to the time equal to the committed logical timestamp.
     // This should be aequivalent to
-    //   return canAdvanceTo(LogicalTimePair(logicalTime, false));
+    //   return canAdvanceTo(LogicalTimePair(logicalTime, 0));
     if (_logicalTimeFederateHandleSetMap.begin()->first.second)
       return logicalTime <= _logicalTimeFederateHandleSetMap.begin()->first.first;
     else

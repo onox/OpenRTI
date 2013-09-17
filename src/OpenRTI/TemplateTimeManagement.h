@@ -41,9 +41,15 @@ public:
   typedef typename LogicalTimeFactory::LogicalTime LogicalTime;
   typedef typename LogicalTimeFactory::LogicalTimeInterval LogicalTimeInterval;
 
-  // Do the maps with keys like std::pair<LogicalTime, bool>, where the bool is false when comparing with
-  // strictly less and true when comparing with less equal.
-  typedef std::pair<LogicalTime, bool> LogicalTimePair;
+  // The int contains an apropriate number so that the std::less comparison on this
+  // pair helps to sort messages and even thje time advance requests in a appropriate way.
+  // Normal time stamp order messages are scheduled in the message queues with the second
+  // entry set to -1. That way they are guaranteed to happen before any tar message
+  // which are scheduled with 0 for the time advance available variants and with 1 for the
+  // compete time advance modes.
+  // Committed lower bound timestamps are sent with the int set to wether the committed value
+  // is meant to work for zero lookahead or not.
+  typedef std::pair<LogicalTime, int> LogicalTimePair;
 
   using TimeManagement<T>::_timeRegulationEnablePending;
   using TimeManagement<T>::_timeRegulationEnabled;
@@ -149,7 +155,7 @@ public:
 
     SharedPtr<TimeConstrainedEnabledMessage> message = new TimeConstrainedEnabledMessage;
     message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_logicalTime));
-    _logicalTimeMessageListMap[LogicalTimePair(_logicalTime, true)].push_back(message);
+    _logicalTimeMessageListMap[LogicalTimePair(_logicalTime, 1)].push_back(message);
   }
 
   virtual void disableTimeConstrained(InternalAmbassador& ambassador)
@@ -165,7 +171,10 @@ public:
     _flushQueueMode = flushQueue;
     _timeAdvancePending = true;
     _pendingLogicalTime.first = logicalTime;
-    _pendingLogicalTime.second = !availableMode;
+    if (availableMode)
+      _pendingLogicalTime.second = 0;
+    else
+      _pendingLogicalTime.second = 1;
 
 #ifndef _NDEBUG
     LogicalTimePair oldLBTS = _localLowerBoundTimeStamp;
@@ -202,7 +211,7 @@ public:
     SharedPtr<TimeAdvanceGrantedMessage> message = new TimeAdvanceGrantedMessage;
     message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_pendingLogicalTime.first));
     if (flushQueue)
-      _logicalTimeMessageListMap[LogicalTimePair(_logicalTimeFactory.finalLogicalTime(), true)].push_back(message);
+      _logicalTimeMessageListMap[LogicalTimePair(_logicalTimeFactory.finalLogicalTime(), 1)].push_back(message);
     else
       _logicalTimeMessageListMap[_pendingLogicalTime].push_back(message);
   }
@@ -418,7 +427,7 @@ public:
                             << "You may communicate with a buggy federate ambassador." << std::endl;
       return;
     }
-    _logicalTimeMessageListMap[LogicalTimePair(logicalTime, false)].push_back(&message);
+    _logicalTimeMessageListMap[LogicalTimePair(logicalTime, -1)].push_back(&message);
   }
   virtual void queueReceiveOrderMessage(InternalAmbassador& ambassador, const AbstractMessage& message)
   {
@@ -459,7 +468,7 @@ public:
       // This federate sent us just its logical time.
       // That means we need to make sure that all messages we send are strictly
       // in the future wrt this sent timestep.
-      LogicalTimePair logicalTimePair(i->second, true);
+      LogicalTimePair logicalTimePair(i->second, 1);
       if (logicalTimePair < _localLowerBoundTimeStamp)
         continue;
 
@@ -482,7 +491,7 @@ public:
     // Ok, now go on ...
     SharedPtr<TimeRegulationEnabledMessage> message = new TimeRegulationEnabledMessage;
     message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_pendingLogicalTime.first));
-    _logicalTimeMessageListMap[LogicalTimePair(_pendingLogicalTime.first, true)].push_back(message);
+    _logicalTimeMessageListMap[LogicalTimePair(_pendingLogicalTime.first, 1)].push_back(message);
   }
 
   void sendCommitLowerBoundTimeStamp(InternalAmbassador& ambassador, const LogicalTimePair& logicalTimePair)
