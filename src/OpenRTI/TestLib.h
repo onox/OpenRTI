@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -427,54 +427,74 @@ public:
   };
 
   RTITest(int argc, const char* const argv[], bool disjointFederations) :
+    _optionString("A:C:F:JO:S:T"),
     _federationExecution(L"FederationExecution"),
+    _numServers(1),
+    _numClientsPerServers(2),
     _numAmbassadorThreads(1),
     _disjointFederations(disjointFederations),
     _traceAmbassadors(false),
-    _joinOnce(false)
-  {
-    unsigned numServers = 1;
-    unsigned numClientsPerServers = 2;
-    OpenRTI::Options options(argc, argv);
-    while (options.next("A:C:F:JO:S:T")) {
-      switch (options.getOptChar()) {
-      case 'A':
-        _numAmbassadorThreads = atoi(options.getArgument().c_str());
-        break;
-      case 'C':
-        numClientsPerServers = atoi(options.getArgument().c_str());
-        break;
-      case 'F':
-        _federationExecution = localeToUcs(options.getArgument());
-        break;
-      case 'O':
-        _fddFile = localeToUcs(options.getArgument());
-        break;
-      case 'S':
-        numServers = atoi(options.getArgument().c_str());
-        break;
-      case 'T':
-        _traceAmbassadors = true;
-        break;
-      case 'J':
-        _joinOnce = true;
-        break;
-      case '\0':
-        _globalArgumentList.push_back(localeToUcs(options.getArgument()));
-        break;
-      }
-    }
-
-    // Start up the requested server tree.
-    _serverPool.startServerPool(numServers, numClientsPerServers);
-  }
+    _joinOnce(false),
+    _options(argc, argv)
+  { }
   virtual ~RTITest()
   { }
 
   virtual Ambassador* createAmbassador(const ConstructorArgs&) = 0;
 
+  void insertOptionString(const std::string& optionString)
+  {
+    for (std::string::size_type i = 0; i < optionString.size(); ++i) {
+      if (optionString[i] == ':')
+        continue;
+      if (_optionString.find(optionString[i]) != std::string::npos)
+        std::cerr << "Duplicate option string for test arguments!" << std::endl;
+    }
+    _optionString.append(optionString);
+  }
+
+  virtual bool processOption(char optchar, const std::string& argument)
+  {
+    switch (optchar) {
+    case 'A':
+      _numAmbassadorThreads = atoi(argument.c_str());
+      return true;
+    case 'C':
+      _numClientsPerServers = atoi(argument.c_str());
+      return true;
+    case 'F':
+      _federationExecution = localeToUcs(argument);
+      return true;
+    case 'O':
+      _fddFile = localeToUcs(argument);
+      return true;
+    case 'S':
+      _numServers = atoi(argument.c_str());
+      return true;
+    case 'T':
+      _traceAmbassadors = true;
+      return true;
+    case 'J':
+      _joinOnce = true;
+      return true;
+    case '\0':
+      _globalArgumentList.push_back(localeToUcs(argument));
+      return true;
+    default:
+      return false;
+    }
+  }
+
   int exec()
   {
+    while (_options.next(_optionString.c_str())) {
+      if (!processOption(_options.getOptChar(), _options.getArgument()))
+        return EXIT_FAILURE;
+    }
+
+    // Start up the requested server tree.
+    _serverPool.startServerPool(_numServers, _numClientsPerServers);
+
     if (_numAmbassadorThreads < 1)
       return EXIT_SUCCESS;
 
@@ -559,11 +579,15 @@ private:
 
   ServerPool _serverPool;
 
+  std::string _optionString;
+  OpenRTI::Options _options;
   ArgumentList _globalArgumentList;
 
   std::wstring _fddFile;
   std::wstring _federationExecution;
 
+  unsigned _numServers;
+  unsigned _numClientsPerServers;
   unsigned _numAmbassadorThreads;
   bool _disjointFederations;
   bool _traceAmbassadors;
