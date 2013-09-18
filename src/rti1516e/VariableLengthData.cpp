@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -68,7 +68,7 @@ VariableLengthData::data() const
 {
   if (!_impl)
     return 0;
-  return _impl->_variableLengthData.data();
+  return _impl->_variableLengthData.constData();
 }
 
 size_t
