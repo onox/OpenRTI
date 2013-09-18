@@ -153,7 +153,7 @@ public:
 
     SharedPtr<TimeConstrainedEnabledMessage> message = new TimeConstrainedEnabledMessage;
     message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_logicalTime));
-    _logicalTimeMessageListMap[LogicalTimePair(_logicalTime, 1)].push_back(message);
+    queueTimeStampedMessage(LogicalTimePair(_logicalTime, 1), *message);
   }
 
   virtual void disableTimeConstrained(InternalAmbassador& ambassador)
@@ -205,11 +205,11 @@ public:
     SharedPtr<TimeAdvanceGrantedMessage> message = new TimeAdvanceGrantedMessage;
     message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_pendingLogicalTime));
     if (flushQueue)
-      _logicalTimeMessageListMap[LogicalTimePair(_logicalTimeFactory.finalLogicalTime(), 1)].push_back(message);
+      queueTimeStampedMessage(LogicalTimePair(_logicalTimeFactory.finalLogicalTime(), 1), *message);
     else if (availableMode)
-      _logicalTimeMessageListMap[LogicalTimePair(_pendingLogicalTime, 0)].push_back(message);
+      queueTimeStampedMessage(LogicalTimePair(_pendingLogicalTime, 0), *message);
     else
-      _logicalTimeMessageListMap[LogicalTimePair(_pendingLogicalTime, 1)].push_back(message);
+      queueTimeStampedMessage(LogicalTimePair(_pendingLogicalTime, 1), *message);
   }
 
   virtual bool queryGALT(InternalAmbassador& ambassador, NativeLogicalTime& logicalTime)
@@ -426,11 +426,26 @@ public:
       return;
     }
 #endif
-    _logicalTimeMessageListMap[LogicalTimePair(logicalTime, -1)].push_back(&message);
+    queueTimeStampedMessage(LogicalTimePair(logicalTime, -1), message);
+  }
+  void queueTimeStampedMessage(const LogicalTimePair& logicalTimePair, const AbstractMessage& message)
+  {
+    if (_messageListPool.empty()) {
+      _logicalTimeMessageListMap[logicalTimePair].push_back(&message);
+    } else {
+      MessageList& messageList = _logicalTimeMessageListMap[logicalTimePair];
+      messageList.splice(messageList.end(), _messageListPool, _messageListPool.begin());
+      messageList.back() = &message;
+    }
   }
   virtual void queueReceiveOrderMessage(InternalAmbassador& ambassador, const AbstractMessage& message)
   {
-    _receiveOrderMessages.push_back(&message);
+    if (_messageListPool.empty()) {
+      _receiveOrderMessages.push_back(&message);
+    } else {
+      _receiveOrderMessages.splice(_receiveOrderMessages.end(), _messageListPool, _messageListPool.begin());
+      _receiveOrderMessages.back() = &message;
+    }
   }
 
   void removeFederateFromTimeManagement(InternalAmbassador& ambassador, const FederateHandle& federateHandle)
@@ -490,7 +505,7 @@ public:
     // Ok, now go on ...
     SharedPtr<TimeRegulationEnabledMessage> message = new TimeRegulationEnabledMessage;
     message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_pendingLogicalTime));
-    _logicalTimeMessageListMap[LogicalTimePair(_pendingLogicalTime, 1)].push_back(message);
+    queueTimeStampedMessage(LogicalTimePair(_pendingLogicalTime, 1), *message);
   }
 
   void sendCommitLowerBoundTimeStamp(InternalAmbassador& ambassador, const LogicalTimePair& logicalTimePair)
@@ -567,8 +582,10 @@ public:
   {
     if (_receiveOrderMessagesPermitted()) {
       if (!_receiveOrderMessages.empty()) {
-        _receiveOrderMessages.front()->dispatch(dispatcher);
-        _receiveOrderMessages.pop_front();
+        SharedPtr<const AbstractMessage> message;
+        message.swap(_receiveOrderMessages.front());
+        _messageListPool.splice(_messageListPool.begin(), _receiveOrderMessages, _receiveOrderMessages.begin());
+        message->dispatch(dispatcher);
         return true;
       }
     }
@@ -579,8 +596,10 @@ public:
       }
       if (!_timeStampOrderMessagesPermitted())
         break;
-      _logicalTimeMessageListMap.begin()->second.front()->dispatch(dispatcher);
-      _logicalTimeMessageListMap.begin()->second.pop_front();
+      SharedPtr<const AbstractMessage> message;
+      message.swap(_logicalTimeMessageListMap.begin()->second.front());
+      _messageListPool.splice(_messageListPool.begin(), _logicalTimeMessageListMap.begin()->second, _logicalTimeMessageListMap.begin()->second.begin());
+      message->dispatch(dispatcher);
       if (_logicalTimeMessageListMap.begin()->second.empty())
         _logicalTimeMessageListMap.erase(_logicalTimeMessageListMap.begin());
       return true;
@@ -658,6 +677,9 @@ public:
 
   // List of receive order messages ready to be queued for callback
   MessageList _receiveOrderMessages;
+
+  // List elements for reuse
+  MessageList _messageListPool;
 };
 
 } // namespace OpenRTI

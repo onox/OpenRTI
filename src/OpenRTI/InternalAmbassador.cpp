@@ -663,8 +663,10 @@ bool
 InternalAmbassador::_dispatchCallbackMessage(AbstractMessageDispatcher& messageDispatcher)
 {
   if (!_callbackMessageList.empty()) {
-    _callbackMessageList.front()->dispatch(messageDispatcher);
-    _callbackMessageList.pop_front();
+    SharedPtr<const AbstractMessage> message;
+    message.swap(_callbackMessageList.front());
+    _messageListPool.splice(_messageListPool.begin(), _callbackMessageList, _callbackMessageList.begin());
+    message->dispatch(messageDispatcher);
     return true;
   }
   InternalTimeManagement* timeManagement = getTimeManagement();

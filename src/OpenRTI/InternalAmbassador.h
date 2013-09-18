@@ -128,9 +128,23 @@ public:
   ///////////////////////////////////////////////////////////////////
   // processing of callback messages - this is what the ambassador user sees
   void queueCallback(const SharedPtr<const AbstractMessage>& message)
-  { _callbackMessageList.push_back(message); }
+  {
+    if (_messageListPool.empty()) {
+      _callbackMessageList.push_back(message);
+    } else {
+      _callbackMessageList.splice(_callbackMessageList.end(), _messageListPool, _messageListPool.begin());
+      _callbackMessageList.back() = message;
+    }
+  }
   void queueCallback(const AbstractMessage& message)
-  { _callbackMessageList.push_back(&message); }
+  {
+    if (_messageListPool.empty()) {
+      _callbackMessageList.push_back(&message);
+    } else {
+      _callbackMessageList.splice(_callbackMessageList.end(), _messageListPool, _messageListPool.begin());
+      _callbackMessageList.back() = &message;
+    }
+  }
   void queueTimeStampedMessage(const VariableLengthData& timeStamp, const AbstractMessage& message);
   void queueReceiveOrderMessage(const AbstractMessage& message);
 
@@ -153,6 +167,9 @@ private:
 
   // List for receive order messages already queued for callback
   MessageList _callbackMessageList;
+
+  // List elements for reuse
+  MessageList _messageListPool;
 };
 
 } // namespace OpenRTI
