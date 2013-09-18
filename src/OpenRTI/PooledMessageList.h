@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -17,15 +17,15 @@
  *
  */
 
-#ifndef OpenRTI_MessageList_h
-#define OpenRTI_MessageList_h
+#ifndef OpenRTI_PooledMessageList_h
+#define OpenRTI_PooledMessageList_h
 
 #include <list>
 #include "AbstractMessage.h"
 
 namespace OpenRTI {
 
-class OPENRTI_API MessageList {
+class OPENRTI_API PooledMessageList {
 public:
   bool empty() const
   { return _list.empty(); }

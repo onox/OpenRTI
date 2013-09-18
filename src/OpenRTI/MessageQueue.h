@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -22,7 +22,7 @@
 
 #include "AbstractMessageQueue.h"
 #include "Condition.h"
-#include "MessageList.h"
+#include "PooledMessageList.h"
 #include "Mutex.h"
 #include "ScopeLock.h"
 
@@ -52,7 +52,7 @@ protected:
   { _isClosed = true; }
 
 private:
-  MessageList _messageList;
+  PooledMessageList _messageList;
   bool _isClosed;
 };
 
@@ -104,7 +104,7 @@ protected:
 private:
   Mutex _mutex;
   Condition _condition;
-  MessageList _messageList;
+  PooledMessageList _messageList;
   bool _isClosed;
 };
 

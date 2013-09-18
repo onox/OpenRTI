@@ -127,7 +127,6 @@ public:
 
   ///////////////////////////////////////////////////////////////////
   // processing of callback messages - this is what the ambassador user sees
-  typedef std::list<SharedPtr<const AbstractMessage> > MessageList2;
   void queueCallback(const SharedPtr<const AbstractMessage>& message)
   { _callbackMessageList.push_back(message); }
   void queueCallback(const AbstractMessage& message)
@@ -153,7 +152,7 @@ private:
   SharedPtr<AbstractConnect> _connect;
 
   // List for receive order messages already queued for callback
-  MessageList2 _callbackMessageList;
+  MessageList _callbackMessageList;
 };
 
 } // namespace OpenRTI

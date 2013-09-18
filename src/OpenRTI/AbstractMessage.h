@@ -21,6 +21,7 @@
 #define OpenRTI_AbstractMessage_h
 
 #include <iosfwd>
+#include <list>
 #include "Export.h"
 #include "Referenced.h"
 
@@ -32,6 +33,9 @@ template<typename F>
 class FunctorMessageDispatcher;
 template<typename F>
 class ConstFunctorMessageDispatcher;
+
+template<typename T>
+class SharedPtr;
 
 class OPENRTI_API AbstractMessage : public Referenced {
 public:
@@ -62,6 +66,8 @@ public:
 inline std::ostream&
 operator<<(std::ostream& os, const AbstractMessage& message)
 { message.out(os); return os; }
+
+typedef std::list<SharedPtr<const AbstractMessage> > MessageList;
 
 } // namespace OpenRTI
 

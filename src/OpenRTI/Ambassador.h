@@ -28,7 +28,6 @@
 #include "Federate.h"
 #include "LogStream.h"
 #include "Message.h"
-#include "MessageList.h"
 #include "URL.h"
 #include "StringUtils.h"
 #include "TimeManagement.h"

@@ -653,12 +653,11 @@ public:
   FederateLowerBoundMap _federateLowerBoundMap;
 
   // The timestamped queued messages
-  typedef std::list<SharedPtr<const AbstractMessage> > MessageList2;
-  typedef std::map<LogicalTimePair, MessageList2> LogicalTimeMessageListMap;
+  typedef std::map<LogicalTimePair, MessageList> LogicalTimeMessageListMap;
   LogicalTimeMessageListMap _logicalTimeMessageListMap;
 
   // List of receive order messages ready to be queued for callback
-  MessageList2 _receiveOrderMessages;
+  MessageList _receiveOrderMessages;
 };
 
 } // namespace OpenRTI

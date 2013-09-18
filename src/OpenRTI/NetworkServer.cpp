@@ -28,7 +28,6 @@
 #include "ExpatXMLReader.h"
 #include "InitialClientStreamProtocol.h"
 #include "MessageEncodingRegistry.h"
-#include "MessageList.h"
 #include "ScopeLock.h"
 #include "ScopeUnlock.h"
 #include "ServerNode.h"
