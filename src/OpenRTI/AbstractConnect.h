@@ -45,7 +45,7 @@ public:
   { return getMessageReceiver()->receive(abstime); }
   /// Returns the next message if there is one.
   SharedPtr<const AbstractMessage> receive()
-  { return getMessageReceiver()->receive(Clock::initial()); }
+  { return getMessageReceiver()->receive(); }
 
   /// Close the message sender
   void close()

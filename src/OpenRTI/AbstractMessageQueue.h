@@ -37,6 +37,7 @@ namespace OpenRTI {
 class OPENRTI_LOCAL AbstractMessageQueue : public AbstractMessageReceiver {
 public:
   virtual ~AbstractMessageQueue() {}
+  virtual SharedPtr<const AbstractMessage> receive() = 0;
   virtual SharedPtr<const AbstractMessage> receive(const Clock& timeout) = 0;
   virtual bool isOpen() const = 0;
 

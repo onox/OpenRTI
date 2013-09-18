@@ -38,6 +38,8 @@ public:
   LocalMessageQueue() :
     _isClosed(false)
   { }
+  virtual SharedPtr<const AbstractMessage> receive()
+  { return _messageList.pop_front(); }
   virtual SharedPtr<const AbstractMessage> receive(const Clock&)
   { return _messageList.pop_front(); }
   virtual bool isOpen() const
@@ -62,6 +64,13 @@ public:
   ThreadMessageQueue() :
     _isClosed(false)
   { }
+  virtual SharedPtr<const AbstractMessage> receive()
+  {
+    ScopeLock scopeLock(_mutex);
+    if (_messageList.empty())
+      return 0;
+    return _messageList.pop_front();
+  }
   virtual SharedPtr<const AbstractMessage> receive(const Clock& timeout)
   {
     ScopeLock scopeLock(_mutex);
