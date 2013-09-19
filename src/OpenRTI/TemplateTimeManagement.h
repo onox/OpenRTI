@@ -74,10 +74,6 @@ public:
 
   virtual bool isLogicalTimeInThePast(const NativeLogicalTime& logicalTime)
   {
-    return logicalTime <= _logicalTimeFactory.getLogicalTime(_logicalTime);
-  }
-  virtual bool isLogicalTimeStrictlyInThePast(const NativeLogicalTime& logicalTime)
-  {
     return logicalTime < _logicalTimeFactory.getLogicalTime(_logicalTime);
   }
   virtual bool logicalTimeAlreadyPassed(const NativeLogicalTime& logicalTime)

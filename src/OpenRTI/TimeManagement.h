@@ -42,7 +42,6 @@ public:
   { }
 
   virtual bool isLogicalTimeInThePast(const NativeLogicalTime& logicalTime) = 0;
-  virtual bool isLogicalTimeStrictlyInThePast(const NativeLogicalTime& logicalTime) = 0;
   virtual bool logicalTimeAlreadyPassed(const NativeLogicalTime& logicalTime) = 0;
 
   virtual void enableTimeRegulation(InternalAmbassador& ambassador, const NativeLogicalTimeInterval& nativeLookahead) = 0;

@@ -2206,7 +2206,7 @@ public:
         Traits::throwRequestForTimeRegulationPending();
       if (_timeManagement->getTimeAdvancePending())
         Traits::throwInTimeAdvancingState();
-      if (_timeManagement->isLogicalTimeStrictlyInThePast(logicalTime))
+      if (_timeManagement->isLogicalTimeInThePast(logicalTime))
         Traits::throwInvalidLogicalTime(_timeManagement->logicalTimeToString(logicalTime));
       if (!_timeManagement->isPositiveLogicalTimeInterval(lookahead))
         Traits::throwInvalidLookahead(_timeManagement->logicalTimeIntervalToString(lookahead));
