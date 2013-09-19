@@ -66,6 +66,7 @@ public:
     _pendingLogicalTime = _logicalTime;
     _localLowerBoundTimeStamp.first = _logicalTime;
     _localLowerBoundTimeStamp.second = true;
+    _committedLowerBoundTimeStamp = _localLowerBoundTimeStamp;
     _currentLookahead = _logicalTimeFactory.zeroLogicalTimeInterval();
     _targetLookahead = _currentLookahead;
   }
@@ -74,10 +75,12 @@ public:
 
   virtual bool isLogicalTimeInThePast(const NativeLogicalTime& logicalTime)
   {
+    OpenRTIAssert(_committedLowerBoundTimeStamp <= _localLowerBoundTimeStamp);
     return logicalTime < _logicalTimeFactory.getLogicalTime(_logicalTime);
   }
   virtual bool logicalTimeAlreadyPassed(const NativeLogicalTime& logicalTime)
   {
+    OpenRTIAssert(_committedLowerBoundTimeStamp <= _localLowerBoundTimeStamp);
     if (_localLowerBoundTimeStamp.second) {
       return logicalTime <= _logicalTimeFactory.getLogicalTime(_localLowerBoundTimeStamp.first);
     } else {
@@ -506,6 +509,10 @@ public:
 
   void sendCommitLowerBoundTimeStamp(InternalAmbassador& ambassador, const LogicalTimePair& logicalTimePair)
   {
+    OpenRTIAssert(_committedLowerBoundTimeStamp <= _localLowerBoundTimeStamp);
+    if (logicalTimePair <= _committedLowerBoundTimeStamp)
+      return;
+    _committedLowerBoundTimeStamp = logicalTimePair;
     SharedPtr<CommitLowerBoundTimeStampMessage> request;
     request = new CommitLowerBoundTimeStampMessage;
     request->setFederationHandle(ambassador.getFederate()->getFederationHandle());
@@ -650,6 +657,7 @@ public:
   LogicalTime _pendingLogicalTime;
   // The smallest allowed logical time for sending messages
   LogicalTimePair _localLowerBoundTimeStamp;
+  LogicalTimePair _committedLowerBoundTimeStamp;
   // The lookahead of this federate
   LogicalTimeInterval _currentLookahead;
   LogicalTimeInterval _targetLookahead;
