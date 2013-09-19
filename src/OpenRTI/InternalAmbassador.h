@@ -53,6 +53,11 @@ public:
   bool receiveAndDispatch(const Clock& abstime, const F& functor)
   { return _receiveAndDispatch(abstime, ConstFunctorMessageDispatcher<F>(functor)); }
   bool _receiveAndDispatch(const Clock& abstime, const AbstractMessageDispatcher& dispatcher);
+  void flushAndDispatchInternalMessage();
+  template<typename F>
+  void flushReceiveAndDispatch(const F& functor)
+  { _flushReceiveAndDispatch(ConstFunctorMessageDispatcher<F>(functor)); }
+  void _flushReceiveAndDispatch(const AbstractMessageDispatcher& dispatcher);
   //// FIXME rethink this all?!
 
   /// Default internal message processing method

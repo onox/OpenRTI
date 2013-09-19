@@ -3950,6 +3950,7 @@ public:
     Ambassador& _ambassador;
   };
 
+  // Returns true if a callback has been dispatched
   bool _dispatchCallbackMessage()
   {
     _CallbackDispatchFunctor callbackDispatchfunctor(*this);
@@ -3960,15 +3961,12 @@ public:
   // Here we just should see messages which do callbacks in the ambassador
   bool dispatchCallback(const Clock& clock)
   {
+    flushAndDispatchInternalMessage();
     while (!_dispatchCallbackMessage()) {
       if (!receiveAndDispatchInternalMessage(clock))
         return false;
     }
-    while (!_callbackMessageAvailable()) {
-      if (!receiveAndDispatchInternalMessage(Clock::initial()))
-        return false;
-    }
-    return true;
+    return _callbackMessageAvailable();
   }
 
   /// Default internal message processing method

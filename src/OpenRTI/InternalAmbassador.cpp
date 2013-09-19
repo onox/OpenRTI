@@ -93,7 +93,25 @@ InternalAmbassador::_receiveAndDispatch(const Clock& abstime, const AbstractMess
   if (!message.valid())
     return false;
   message->dispatch(dispatcher);
-  return !_connect->empty();
+  return true;
+}
+
+void
+InternalAmbassador::flushAndDispatchInternalMessage()
+{
+  _InternalMessageDispatchFunctor functor(*this);
+  flushReceiveAndDispatch(functor);
+}
+
+void
+InternalAmbassador::_flushReceiveAndDispatch(const AbstractMessageDispatcher& dispatcher)
+{
+  for (;;) {
+    SharedPtr<const AbstractMessage> message = _connect->receive();
+    if (!message.valid())
+      return;
+    message->dispatch(dispatcher);
+  }
 }
 
 void
