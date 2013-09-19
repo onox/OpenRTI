@@ -140,10 +140,11 @@ public:
   {
     if (!_size)
       return 0;
+    OpenRTIAssert(offset < _size);
     if (!_data.valid())
       reserve(_size);
-    OpenRTIAssert(offset < _size);
-    ensurePrivate();
+    else
+      ensurePrivate();
     return _data->data(_offset + offset);
   }
 
