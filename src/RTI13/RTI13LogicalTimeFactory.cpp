@@ -402,7 +402,7 @@ RTI13LogicalTimeFactory::getLogicalTimeInterval(const RTI13LogicalTimeFactory::L
 RTI13LogicalTimeFactory::LogicalTime
 RTI13LogicalTimeFactory::decodeLogicalTime(const VariableLengthData& variableLengthData)
 {
-  RTI::FedTime* fedTime = RTI::FedTimeFactory::decode(static_cast<const char*>(variableLengthData.data()));
+  RTI::FedTime* fedTime = RTI::FedTimeFactory::decode(static_cast<const char*>(variableLengthData.constData()));
   return LogicalTime(new FedTimeImplementation(fedTime));
 }
 

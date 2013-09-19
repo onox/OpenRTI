@@ -65,7 +65,7 @@ ParameterHandleValuePairSetImplementation::getValue(RTI::ULong index, char* data
   if (std::numeric_limits<RTI::ULong>::max() < size)
     throw RTI::ArrayIndexOutOfBounds("Data size bigger than length data size");
   length = static_cast<RTI::ULong>(size);
-  memcpy(data, _parameterValues[index].getValue().data(), size);
+  memcpy(data, _parameterValues[index].getValue().constData(), size);
 }
 
 char*
