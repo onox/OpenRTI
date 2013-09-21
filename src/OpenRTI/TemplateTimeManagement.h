@@ -190,7 +190,7 @@ public:
     setLocalLowerBoundTimeStampAndCurrentLookahead(_pendingLogicalTime, _targetLookahead);
 
     if (_timeRegulationEnabled)
-      sendCommitLowerBoundTimeStamp(ambassador, _localLowerBoundTimeStamp);
+      sendCommitLowerBoundTimeStampIfNewer(ambassador, _localLowerBoundTimeStamp);
 
     // Queue the time advance granted
     SharedPtr<TimeAdvanceGrantedMessage> message = new TimeAdvanceGrantedMessage;
@@ -244,7 +244,7 @@ public:
     LogicalTimeInterval lookahead = _logicalTimeFactory.getLogicalTimeInterval(nativeLookahead);
     _targetLookahead = lookahead;
     setLocalLowerBoundTimeStampAndCurrentLookahead(_logicalTime, _targetLookahead);
-    sendCommitLowerBoundTimeStamp(ambassador, _localLowerBoundTimeStamp);
+    sendCommitLowerBoundTimeStampIfNewer(ambassador, _localLowerBoundTimeStamp);
   }
 
   virtual void queryLookahead(InternalAmbassador& ambassador, NativeLogicalTimeInterval& logicalTimeInterval)
@@ -479,7 +479,7 @@ public:
 
     // If somebody has corrected the logical time, then there might be several
     // federates who have a too little committed time, so tell all about them
-    sendCommitLowerBoundTimeStamp(ambassador, _localLowerBoundTimeStamp);
+    sendCommitLowerBoundTimeStampIfNewer(ambassador, _localLowerBoundTimeStamp);
 
     // Ok, now go on ...
     SharedPtr<TimeRegulationEnabledMessage> message = new TimeRegulationEnabledMessage;
@@ -487,7 +487,7 @@ public:
     queueTimeStampedMessage(LogicalTimePair(_pendingLogicalTime, 1), *message);
   }
 
-  void sendCommitLowerBoundTimeStamp(InternalAmbassador& ambassador, const LogicalTimePair& logicalTimePair)
+  void sendCommitLowerBoundTimeStampIfNewer(InternalAmbassador& ambassador, const LogicalTimePair& logicalTimePair)
   {
     OpenRTIAssert(_committedLowerBoundTimeStamp <= _localLowerBoundTimeStamp);
     if (logicalTimePair <= _committedLowerBoundTimeStamp)
