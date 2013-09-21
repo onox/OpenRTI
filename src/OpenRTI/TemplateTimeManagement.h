@@ -176,10 +176,10 @@ public:
     // If we need to advance to match the new requested lookahead, try to increase that one
     if (_targetLookahead < _currentLookahead) {
       // Check if we would violate a previously given promise about our lower bound time stamp
-      LogicalTimePair logicalTimePair(_logicalTime, _logicalTimeFactory.isZeroTimeInterval(_targetLookahead));
-      logicalTimePair.first += _targetLookahead;
-      if (logicalTimePair < _localLowerBoundTimeStamp) {
-        _currentLookahead = _localLowerBoundTimeStamp.first - logicalTime;
+      LogicalTime logicalTime(_logicalTime);
+      logicalTime += _targetLookahead;
+      if (logicalTime < _localLowerBoundTimeStamp.first) {
+        _currentLookahead = _localLowerBoundTimeStamp.first - _pendingLogicalTime;
       } else {
         _currentLookahead = _targetLookahead;
       }
