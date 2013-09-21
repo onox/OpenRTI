@@ -52,6 +52,7 @@ public:
     _timeRegulationEnabled(false),
     _timeConstrainedEnabled(false),
     _timeAdvancePending(false),
+    _nextMessageTimestampSet(false),
     _fail(false)
   { }
   virtual ~TestAmbassador()
@@ -245,7 +246,7 @@ public:
 
       // Do the time advance
       try {
-        _advanceLogicalTime = _logicalTime + HLAinteger64Interval(1);
+        _advanceLogicalTime = _logicalTime + HLAinteger64Interval(1 + i%2);
         switch (_timeAdvanceMode) {
         case TimeAdvanceRequest:
           ambassador.timeAdvanceRequest(_advanceLogicalTime);
@@ -264,6 +265,7 @@ public:
           break;
         }
         _timeAdvancePending = true;
+        _nextMessageTimestampSet = false;
       } catch (const rti1516::Exception& e) {
         std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
         return false;
@@ -371,6 +373,12 @@ public:
       if (_advanceLogicalTime < _logicalTime) {
         std::wcout << L"Time advance grant time does not match the requested time!" << std::endl;
         _fail = true;
+      }
+      if (_nextMessageTimestampSet) {
+        if (_advanceLogicalTime != _logicalTime) {
+          std::wcout << L"Time advance grant time does not match the requested time!" << std::endl;
+          _fail = true;
+        }
       }
       _advanceLogicalTime = _logicalTime;
       break;
@@ -503,6 +511,26 @@ public:
     case FlushQueueRequest:
       break;
     }
+
+    switch (_timeAdvanceMode) {
+    case NextMessageRequest:
+    case NextMessageRequestAvailable:
+      if (_nextMessageTimestampSet) {
+        if (!(_advanceLogicalTime == logicalTime)) {
+          std::wcout << L"Received timestamp order message in next message mode with timestamp "
+                     << logicalTime << " different than " << _advanceLogicalTime << "!" << std::endl;
+          _fail = true;
+        }
+      } else {
+        _advanceLogicalTime = logicalTime;
+        _nextMessageTimestampSet = true;
+      }
+      break;
+    case TimeAdvanceRequest:
+    case TimeAdvanceRequestAvailable:
+    case FlushQueueRequest:
+      break;
+    }
   }
 
 private:
@@ -512,6 +540,7 @@ private:
   bool _timeRegulationEnabled;
   bool _timeConstrainedEnabled;
   bool _timeAdvancePending;
+  bool _nextMessageTimestampSet;
   HLAinteger64Time _logicalTime;
   HLAinteger64Time _advanceLogicalTime;
   bool _fail;
