@@ -160,6 +160,24 @@ public:
     _timeConstrainedEnabled = false;
   }
 
+  void setLocalLowerBoundTimeStampAndCurrentLookahead(const LogicalTime& logicalTime, const LogicalTimeInterval& lookahead)
+  {
+    LogicalTimePair localLowerBoundTimeStamp(logicalTime, _logicalTimeFactory.isZeroTimeInterval(lookahead));
+    if (!localLowerBoundTimeStamp.second) {
+      localLowerBoundTimeStamp.first += lookahead;
+    }
+
+    // Check if we would violate a previously given guarantee about the lower bound timestamp
+    if (localLowerBoundTimeStamp < _localLowerBoundTimeStamp) {
+      // if so, adjust the _current lookahead and leave the lower bound timestamp alone
+      _currentLookahead = _localLowerBoundTimeStamp.first - localLowerBoundTimeStamp.first;
+    } else {
+      if (_currentLookahead != lookahead)
+        _currentLookahead = lookahead;
+      _localLowerBoundTimeStamp = localLowerBoundTimeStamp;
+    }
+  }
+
   virtual void timeAdvanceRequest(InternalAmbassador& ambassador, const NativeLogicalTime& nativeLogicalTime, bool availableMode, bool nextMessageMode, bool flushQueue)
   {
     LogicalTime logicalTime = _logicalTimeFactory.getLogicalTime(nativeLogicalTime);
@@ -169,33 +187,7 @@ public:
     _timeAdvancePending = true;
     _pendingLogicalTime = logicalTime;
 
-#ifndef _NDEBUG
-    LogicalTimePair oldLBTS = _localLowerBoundTimeStamp;
-#endif
-
-    // If we need to advance to match the new requested lookahead, try to increase that one
-    if (_targetLookahead < _currentLookahead) {
-      // Check if we would violate a previously given promise about our lower bound time stamp
-      LogicalTime logicalTime(_logicalTime);
-      logicalTime += _targetLookahead;
-      if (logicalTime < _localLowerBoundTimeStamp.first) {
-        _currentLookahead = _localLowerBoundTimeStamp.first - _pendingLogicalTime;
-      } else {
-        _currentLookahead = _targetLookahead;
-      }
-    }
-
-    _localLowerBoundTimeStamp.first = logicalTime;
-    if (_logicalTimeFactory.isZeroTimeInterval(_currentLookahead)) {
-      _localLowerBoundTimeStamp.second = 1;
-    } else {
-      _localLowerBoundTimeStamp.first += _currentLookahead;
-      _localLowerBoundTimeStamp.second = 0;
-    }
-
-#ifndef _NDEBUG
-    OpenRTIAssert(oldLBTS <= _localLowerBoundTimeStamp);
-#endif
+    setLocalLowerBoundTimeStampAndCurrentLookahead(_pendingLogicalTime, _targetLookahead);
 
     if (_timeRegulationEnabled)
       sendCommitLowerBoundTimeStamp(ambassador, _localLowerBoundTimeStamp);
@@ -251,20 +243,8 @@ public:
   {
     LogicalTimeInterval lookahead = _logicalTimeFactory.getLogicalTimeInterval(nativeLookahead);
     _targetLookahead = lookahead;
-    if (_currentLookahead < lookahead) {
-      _currentLookahead = lookahead;
-
-      // Now tell the other federates about or now message lower bound timestamp
-      _localLowerBoundTimeStamp.first = _logicalTime;
-      if (_logicalTimeFactory.isZeroTimeInterval(_currentLookahead)) {
-        _localLowerBoundTimeStamp.second = true;
-      } else {
-        _localLowerBoundTimeStamp.first += _currentLookahead;
-        _localLowerBoundTimeStamp.second = false;
-      }
-
-      sendCommitLowerBoundTimeStamp(ambassador, _localLowerBoundTimeStamp);
-    }
+    setLocalLowerBoundTimeStampAndCurrentLookahead(_logicalTime, _targetLookahead);
+    sendCommitLowerBoundTimeStamp(ambassador, _localLowerBoundTimeStamp);
   }
 
   virtual void queryLookahead(InternalAmbassador& ambassador, NativeLogicalTimeInterval& logicalTimeInterval)
