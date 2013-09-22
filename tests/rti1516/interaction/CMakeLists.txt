@@ -54,12 +54,12 @@ ADD_TEST(rti1516/interaction-time-1516-14 ${CMAKE_CURRENT_BINARY_DIR}/interactio
 ADD_TEST(rti1516/interaction-time-1516-15 ${CMAKE_CURRENT_BINARY_DIR}/interaction-time -L0 -M1 -S5 -A10 -J -O ${CMAKE_CURRENT_SOURCE_DIR}/fdd.xml)
 
 # No server - thread protocol, one ambassador
-ADD_TEST(rti1516/interaction-time-1516-11 ${CMAKE_CURRENT_BINARY_DIR}/interaction-time -L1 -M1 -S0 -A1 -J -O ${CMAKE_CURRENT_SOURCE_DIR}/fdd.xml)
+ADD_TEST(rti1516/interaction-time-1516-16 ${CMAKE_CURRENT_BINARY_DIR}/interaction-time -L1 -M1 -S0 -A1 -J -O ${CMAKE_CURRENT_SOURCE_DIR}/fdd.xml)
 # No server - thread protocol, 10 ambassadors
-ADD_TEST(rti1516/interaction-time-1516-12 ${CMAKE_CURRENT_BINARY_DIR}/interaction-time -L1 -M1 -S0 -A10 -J -O ${CMAKE_CURRENT_SOURCE_DIR}/fdd.xml)
+ADD_TEST(rti1516/interaction-time-1516-17 ${CMAKE_CURRENT_BINARY_DIR}/interaction-time -L1 -M1 -S0 -A10 -J -O ${CMAKE_CURRENT_SOURCE_DIR}/fdd.xml)
 # 1 server - rti protocol, one ambassador
-ADD_TEST(rti1516/interaction-time-1516-13 ${CMAKE_CURRENT_BINARY_DIR}/interaction-time -L1 -M1 -S1 -A1 -J -O ${CMAKE_CURRENT_SOURCE_DIR}/fdd.xml)
+ADD_TEST(rti1516/interaction-time-1516-18 ${CMAKE_CURRENT_BINARY_DIR}/interaction-time -L1 -M1 -S1 -A1 -J -O ${CMAKE_CURRENT_SOURCE_DIR}/fdd.xml)
 # 1 server - rti protocol, 10 ambassadors
-ADD_TEST(rti1516/interaction-time-1516-14 ${CMAKE_CURRENT_BINARY_DIR}/interaction-time -L1 -M1 -S1 -A10 -J -O ${CMAKE_CURRENT_SOURCE_DIR}/fdd.xml)
+ADD_TEST(rti1516/interaction-time-1516-19 ${CMAKE_CURRENT_BINARY_DIR}/interaction-time -L1 -M1 -S1 -A10 -J -O ${CMAKE_CURRENT_SOURCE_DIR}/fdd.xml)
 # 5 servers - rti protocol, 10 ambassadors
-ADD_TEST(rti1516/interaction-time-1516-15 ${CMAKE_CURRENT_BINARY_DIR}/interaction-time -L1 -M1 -S5 -A10 -J -O ${CMAKE_CURRENT_SOURCE_DIR}/fdd.xml)
+ADD_TEST(rti1516/interaction-time-1516-20 ${CMAKE_CURRENT_BINARY_DIR}/interaction-time -L1 -M1 -S5 -A10 -J -O ${CMAKE_CURRENT_SOURCE_DIR}/fdd.xml)
