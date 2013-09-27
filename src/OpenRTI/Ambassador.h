@@ -4174,7 +4174,7 @@ public:
     AttributeHandleVector attributeHandleSet;
     for (AttributeHandleVector::const_iterator j = message.getAttributeHandles().begin(); j != message.getAttributeHandles().end(); ++j) {
       Federate::InstanceAttribute* attribute = objectInstance->getInstanceAttribute(j->getHandle());
-      if (attribute)
+      if (!attribute)
         continue;
       if (!attribute->getIsOwnedByFederate())
         continue;
