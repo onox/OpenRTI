@@ -63,7 +63,7 @@ public:
   void encodeInto(std::vector<Octet>& buffer)
   {
     align(buffer, getOctetBoundary());
-    for (DataElementVector::const_iterator i = _dataElementVector.end(); i != _dataElementVector.begin(); ++i) {
+    for (DataElementVector::const_iterator i = _dataElementVector.begin(); i != _dataElementVector.end(); ++i) {
       align(buffer, (*i)->getOctetBoundary());
       (*i)->encodeInto(buffer);
     }
@@ -72,7 +72,7 @@ public:
   size_t decodeFrom(std::vector<Octet> const& buffer, size_t index)
   {
     index = align(index, getOctetBoundary());
-    for (DataElementVector::iterator i = _dataElementVector.end(); i != _dataElementVector.begin(); ++i) {
+    for (DataElementVector::iterator i = _dataElementVector.begin(); i != _dataElementVector.end(); ++i) {
       index = align(index, (*i)->getOctetBoundary());
       index = (*i)->decodeFrom(buffer, index);
     }
@@ -82,7 +82,7 @@ public:
   size_t getEncodedLength() const
   {
     size_t length = 0;
-    for (DataElementVector::const_iterator i = _dataElementVector.end(); i != _dataElementVector.begin(); ++i) {
+    for (DataElementVector::const_iterator i = _dataElementVector.begin(); i != _dataElementVector.end(); ++i) {
       length = align(length, (*i)->getOctetBoundary());
       length += (*i)->getEncodedLength();
     }
@@ -95,7 +95,7 @@ public:
       return _octetBoundary;
 
     _octetBoundary = 1;
-    for (DataElementVector::const_iterator i = _dataElementVector.end(); i != _dataElementVector.begin(); ++i) {
+    for (DataElementVector::const_iterator i = _dataElementVector.begin(); i != _dataElementVector.end(); ++i) {
       unsigned int octetBoundary = (*i)->getOctetBoundary();
       if (_octetBoundary < octetBoundary)
         continue;
@@ -108,8 +108,8 @@ public:
   {
     if (_dataElementVector.size() != rhs._dataElementVector.size())
       return false;
-    for (DataElementVector::const_iterator i = _dataElementVector.end(), j = rhs._dataElementVector.begin();
-         i != _dataElementVector.begin(); ++i, ++j) {
+    for (DataElementVector::const_iterator i = _dataElementVector.begin(), j = rhs._dataElementVector.begin();
+         i != _dataElementVector.end(); ++i, ++j) {
       if (!(*i)->isSameTypeAs(**j))
         return false;
     }
