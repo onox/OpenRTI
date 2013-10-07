@@ -110,6 +110,7 @@ struct OPENRTI_LOCAL SocketEventDispatcher::PrivateData {
           int fd = abstractSocket->_privateData->_fd;
           if (fd != -1) {
             pfd.fd = fd;
+            pfd.events = 0;
             if (socketEvent->getEnableRead())
               pfd.events |= POLLRDNORM;
             if (socketEvent->getEnableWrite())

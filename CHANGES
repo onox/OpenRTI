@@ -19,6 +19,7 @@ OpenRTI-0.4.1 2013-??-??
 * Fix an assert with visual c++ 2012
 * Fix decoding of handles for rti1516/rti1516e
 * Fix an iterator problem with rti1516e::HLAfixedRecord
+* Fix rtinode pulling 100% cpu time under some circumstance.
 
 OpenRTI-0.4.0 2013-04-06
 ------------------------
