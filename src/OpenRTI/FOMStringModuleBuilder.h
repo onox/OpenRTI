@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -246,7 +246,7 @@ public:
     if (_module.getInteractionClassList().empty() || _module.getInteractionClassList()[0].getName() != interactionRootName) {
       _module.getInteractionClassList().insert(_module.getInteractionClassList().begin(), FOMStringInteractionClass());
       for (size_t i = 0; i < _module.getInteractionClassList().size(); ++i) {
-        _module.getInteractionClassList()[i].getName().insert(_module.getInteractionClassList()[i].getName().begin(), "HLAinteractionRoot");
+        _module.getInteractionClassList()[i].getName().insert(_module.getInteractionClassList()[i].getName().begin(), std::string());
       }
     }
 
@@ -271,7 +271,7 @@ public:
     if (_module.getObjectClassList().empty() || _module.getObjectClassList()[0].getName() != objectRootName) {
       _module.getObjectClassList().insert(_module.getObjectClassList().begin(), FOMStringObjectClass());
       for (size_t i = 0; i < _module.getObjectClassList().size(); ++i) {
-        _module.getObjectClassList()[i].getName().insert(_module.getObjectClassList()[i].getName().begin(), "HLAobjectRoot");
+        _module.getObjectClassList()[i].getName().insert(_module.getObjectClassList()[i].getName().begin(), std::string());
       }
     }
     // on any price this may be artificial object class must have exactly this single attribute

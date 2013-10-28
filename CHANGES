@@ -20,6 +20,7 @@ OpenRTI-0.4.1 2013-??-??
 * Fix decoding of handles for rti1516/rti1516e
 * Fix an iterator problem with rti1516e::HLAfixedRecord
 * Fix rtinode pulling 100% cpu time under some circumstance.
+* Hide artificial HLA{interaction,object}Root in full qualified name lookup.
 
 OpenRTI-0.4.0 2013-04-06
 ------------------------

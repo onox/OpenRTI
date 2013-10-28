@@ -766,18 +766,28 @@ Federate::insertInteractionClass(const FOMInteractionClass& module)
 
   InteractionClassHandle parentHandle = module.getParentInteractionClassHandle();
 
+  // If we have invented an internal HLAinteractionRoot, the name of this one is empty.
   std::string fqName;
   if (parentHandle.valid()) {
-    fqName = getInteractionClass(parentHandle)->getFQName() + "." + module.getName();
+    fqName = getInteractionClass(parentHandle)->getFQName();
+    if (!fqName.empty())
+      fqName.append(".");
+  }
+  fqName.append(module.getName());
+
+  if (!fqName.empty()) {
+    _nameInteractionClassHandleMap[module.getName()] = module.getInteractionClassHandle();
+    _nameInteractionClassHandleMap[fqName] = module.getInteractionClassHandle();
   } else {
-    fqName = module.getName();
+    OpenRTIAssert(!parentHandle.valid());
+    _nameInteractionClassHandleMap["HLAinteractionRoot"] = module.getInteractionClassHandle();
   }
 
-  _nameInteractionClassHandleMap[module.getName()] = module.getInteractionClassHandle();
-  _nameInteractionClassHandleMap[fqName] = module.getInteractionClassHandle();
-
   InteractionClass* interactionClass = _interactionClassVector[index].get();
-  interactionClass->setName(module.getName());
+  if (fqName.empty())
+    interactionClass->setName("HLAinteractionRoot");
+  else
+    interactionClass->setName(module.getName());
   interactionClass->setFQName(fqName);
   interactionClass->setParentInteractionClassHandle(parentHandle);
   interactionClass->setOrderType(module.getOrderType());
@@ -831,17 +841,27 @@ Federate::insertObjectClass(const FOMObjectClass& module)
 
   ObjectClassHandle parentHandle = module.getParentObjectClassHandle();
 
+  // If we have invented an internal HLAobjectRoot, the name of this one is empty.
   std::string fqName;
   if (parentHandle.valid()) {
-    fqName = getObjectClass(parentHandle)->getFQName() + "." + module.getName();
+    fqName = getObjectClass(parentHandle)->getFQName();
+    if (!fqName.empty())
+      fqName.append(".");
+  }
+  fqName.append(module.getName());
+
+  if (!fqName.empty()) {
+    _nameObjectClassHandleMap[module.getName()] = module.getObjectClassHandle();
+    _nameObjectClassHandleMap[fqName] = module.getObjectClassHandle();
   } else {
-    fqName = module.getName();
+    OpenRTIAssert(!parentHandle.valid());
+    _nameObjectClassHandleMap["HLAobjectRoot"] = module.getObjectClassHandle();
   }
 
-  _nameObjectClassHandleMap[module.getName()] = module.getObjectClassHandle();
-  _nameObjectClassHandleMap[fqName] = module.getObjectClassHandle();
-
-  objectClass->setName(module.getName());
+  if (fqName.empty())
+    objectClass->setName("HLAobjectRoot");
+  else
+    objectClass->setName(module.getName());
   objectClass->setFQName(fqName);
   objectClass->setParentObjectClassHandle(parentHandle);
 
