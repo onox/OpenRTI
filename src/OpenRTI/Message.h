@@ -3218,15 +3218,7 @@ public:
   bool operator<=(const TimeConstrainedEnabledMessage& rhs) const
   { return !operator>(rhs); }
 
-  void setLogicalTime(const VariableLengthData& value)
-  { _logicalTime = value; }
-  VariableLengthData& getLogicalTime()
-  { return _logicalTime; }
-  const VariableLengthData& getLogicalTime() const
-  { return _logicalTime; }
-
 private:
-  VariableLengthData _logicalTime;
 };
 
 class OPENRTI_API TimeRegulationEnabledMessage : public AbstractMessage {
@@ -3250,15 +3242,7 @@ public:
   bool operator<=(const TimeRegulationEnabledMessage& rhs) const
   { return !operator>(rhs); }
 
-  void setLogicalTime(const VariableLengthData& value)
-  { _logicalTime = value; }
-  VariableLengthData& getLogicalTime()
-  { return _logicalTime; }
-  const VariableLengthData& getLogicalTime() const
-  { return _logicalTime; }
-
 private:
-  VariableLengthData _logicalTime;
 };
 
 class OPENRTI_API TimeAdvanceGrantedMessage : public AbstractMessage {
@@ -3282,15 +3266,7 @@ public:
   bool operator<=(const TimeAdvanceGrantedMessage& rhs) const
   { return !operator>(rhs); }
 
-  void setLogicalTime(const VariableLengthData& value)
-  { _logicalTime = value; }
-  VariableLengthData& getLogicalTime()
-  { return _logicalTime; }
-  const VariableLengthData& getLogicalTime() const
-  { return _logicalTime; }
-
 private:
-  VariableLengthData _logicalTime;
 };
 
 class OPENRTI_API InsertRegionMessage : public AbstractMessage {
@@ -6329,7 +6305,6 @@ std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeConstrainedEnabledMessage& value)
 {
   os << "{ ";
-  os << "logicalTime: " << value.getLogicalTime();
   os << " }";
   return os;
 }
@@ -6339,7 +6314,6 @@ std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeRegulationEnabledMessage& value)
 {
   os << "{ ";
-  os << "logicalTime: " << value.getLogicalTime();
   os << " }";
   return os;
 }
@@ -6349,7 +6323,6 @@ std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeAdvanceGrantedMessage& value)
 {
   os << "{ ";
-  os << "logicalTime: " << value.getLogicalTime();
   os << " }";
   return os;
 }

@@ -1207,17 +1207,14 @@ public:
 
   void writeTimeConstrainedEnabledMessage(const TimeConstrainedEnabledMessage& value)
   {
-    writeVariableLengthData(value.getLogicalTime());
   }
 
   void writeTimeRegulationEnabledMessage(const TimeRegulationEnabledMessage& value)
   {
-    writeVariableLengthData(value.getLogicalTime());
   }
 
   void writeTimeAdvanceGrantedMessage(const TimeAdvanceGrantedMessage& value)
   {
-    writeVariableLengthData(value.getLogicalTime());
   }
 
   void writeInsertRegionMessage(const InsertRegionMessage& value)
@@ -3108,17 +3105,14 @@ public:
 
   void readTimeConstrainedEnabledMessage(TimeConstrainedEnabledMessage& value)
   {
-    readVariableLengthData(value.getLogicalTime());
   }
 
   void readTimeRegulationEnabledMessage(TimeRegulationEnabledMessage& value)
   {
-    readVariableLengthData(value.getLogicalTime());
   }
 
   void readTimeAdvanceGrantedMessage(TimeAdvanceGrantedMessage& value)
   {
-    readVariableLengthData(value.getLogicalTime());
   }
 
   void readInsertRegionMessage(InsertRegionMessage& value)
@@ -3384,21 +3378,6 @@ public:
   void readPayloadCommitLowerBoundTimeStampMessage(CommitLowerBoundTimeStampMessage& value)
   {
     readPayloadTimeStamp(value.getTimeStamp());
-  }
-
-  void readPayloadTimeConstrainedEnabledMessage(TimeConstrainedEnabledMessage& value)
-  {
-    readPayloadVariableLengthData(value.getLogicalTime());
-  }
-
-  void readPayloadTimeRegulationEnabledMessage(TimeRegulationEnabledMessage& value)
-  {
-    readPayloadVariableLengthData(value.getLogicalTime());
-  }
-
-  void readPayloadTimeAdvanceGrantedMessage(TimeAdvanceGrantedMessage& value)
-  {
-    readPayloadVariableLengthData(value.getLogicalTime());
   }
 
   void readPayloadInteractionMessage(InteractionMessage& value)

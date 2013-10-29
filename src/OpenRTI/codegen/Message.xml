@@ -557,13 +557,10 @@
   </message>
   <!-- Just lookback messages that never leave the ambassador -->
   <message type="TimeConstrainedEnabled">
-    <field name="LogicalTime" type="VariableLengthData"/>
   </message>
   <message type="TimeRegulationEnabled">
-    <field name="LogicalTime" type="VariableLengthData"/>
   </message>
   <message type="TimeAdvanceGranted">
-    <field name="LogicalTime" type="VariableLengthData"/>
   </message>
 
   <!-- Region modification -->

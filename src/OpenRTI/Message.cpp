@@ -1456,15 +1456,12 @@ TimeConstrainedEnabledMessage::operator==(const AbstractMessage& rhs) const
 bool
 TimeConstrainedEnabledMessage::operator==(const TimeConstrainedEnabledMessage& rhs) const
 {
-  if (getLogicalTime() != rhs.getLogicalTime()) return false;
   return true;
 }
 
 bool
 TimeConstrainedEnabledMessage::operator<(const TimeConstrainedEnabledMessage& rhs) const
 {
-  if (getLogicalTime() < rhs.getLogicalTime()) return true;
-  if (rhs.getLogicalTime() < getLogicalTime()) return false;
   return false;
 }
 
@@ -1506,15 +1503,12 @@ TimeRegulationEnabledMessage::operator==(const AbstractMessage& rhs) const
 bool
 TimeRegulationEnabledMessage::operator==(const TimeRegulationEnabledMessage& rhs) const
 {
-  if (getLogicalTime() != rhs.getLogicalTime()) return false;
   return true;
 }
 
 bool
 TimeRegulationEnabledMessage::operator<(const TimeRegulationEnabledMessage& rhs) const
 {
-  if (getLogicalTime() < rhs.getLogicalTime()) return true;
-  if (rhs.getLogicalTime() < getLogicalTime()) return false;
   return false;
 }
 
@@ -1556,15 +1550,12 @@ TimeAdvanceGrantedMessage::operator==(const AbstractMessage& rhs) const
 bool
 TimeAdvanceGrantedMessage::operator==(const TimeAdvanceGrantedMessage& rhs) const
 {
-  if (getLogicalTime() != rhs.getLogicalTime()) return false;
   return true;
 }
 
 bool
 TimeAdvanceGrantedMessage::operator<(const TimeAdvanceGrantedMessage& rhs) const
 {
-  if (getLogicalTime() < rhs.getLogicalTime()) return true;
-  if (rhs.getLogicalTime() < getLogicalTime()) return false;
   return false;
 }
 

@@ -151,7 +151,6 @@ public:
     _timeConstrainedEnablePending = true;
 
     SharedPtr<TimeConstrainedEnabledMessage> message = new TimeConstrainedEnabledMessage;
-    message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_logicalTime));
     queueTimeStampedMessage(LogicalTimePair(_logicalTime, 1), *message);
   }
 
@@ -194,7 +193,6 @@ public:
 
     // Queue the time advance granted
     SharedPtr<TimeAdvanceGrantedMessage> message = new TimeAdvanceGrantedMessage;
-    message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_pendingLogicalTime));
     if (flushQueue)
       queueTimeStampedMessage(LogicalTimePair(_logicalTimeFactory.finalLogicalTime(), 1), *message);
     else if (availableMode)
@@ -483,7 +481,6 @@ public:
 
     // Ok, now go on ...
     SharedPtr<TimeRegulationEnabledMessage> message = new TimeRegulationEnabledMessage;
-    message->setLogicalTime(_logicalTimeFactory.encodeLogicalTime(_pendingLogicalTime));
     queueTimeStampedMessage(LogicalTimePair(_pendingLogicalTime, 1), *message);
   }
 
@@ -506,28 +503,21 @@ public:
   {
     _timeConstrainedEnablePending = false;
     _timeConstrainedEnabled = true;
-    OpenRTIAssert(_logicalTime <= _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime()));
-    _logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime());
-    OpenRTIAssert(_pendingLogicalTime == _logicalTime);
+    _logicalTime = _pendingLogicalTime;
     OpenRTIAssert(_federateLowerBoundMap.canAdvanceTo(_logicalTime));
     OpenRTIAssert(_logicalTimeMessageListMap.empty() || _logicalTime < _logicalTimeMessageListMap.begin()->first.first || _logicalTimeMessageListMap.begin()->second.size() <= 1);
     ambassador.timeConstrainedEnabled(_logicalTimeFactory.getLogicalTime(_logicalTime));
   }
   virtual void acceptCallbackMessage(Ambassador<T>& ambassador, const TimeRegulationEnabledMessage& message)
   {
-    OpenRTIAssert(_logicalTime <= _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime()));
     _timeRegulationEnablePending = false;
     _timeRegulationEnabled = true;
-    OpenRTIAssert(_logicalTime <= _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime()));
-    _logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime());
-    OpenRTIAssert(_pendingLogicalTime == _logicalTime);
+    _logicalTime = _pendingLogicalTime;
     ambassador.timeRegulationEnabled(_logicalTimeFactory.getLogicalTime(_logicalTime));
   }
   virtual void acceptCallbackMessage(Ambassador<T>& ambassador, const TimeAdvanceGrantedMessage& message)
   {
-    OpenRTIAssert(_logicalTime <= _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime()));
-    _logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getLogicalTime());
-    OpenRTIAssert(_pendingLogicalTime == _logicalTime);
+    _logicalTime = _pendingLogicalTime;
     _timeAdvancePending = false;
     _flushQueueMode = false;
     OpenRTIAssert(_flushQueueMode || _federateLowerBoundMap.canAdvanceTo(_logicalTime));
