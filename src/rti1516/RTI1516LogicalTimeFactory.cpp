@@ -44,6 +44,7 @@ public:
 
   std::auto_ptr<rti1516::LogicalTimeFactory> _logicalTimeFactory;
   std::auto_ptr<rti1516::LogicalTimeInterval> _zeroTimeInterval;
+  std::auto_ptr<rti1516::LogicalTimeInterval> _epsilonTimeInterval;
 };
 
 class OPENRTI_LOCAL RTI1516LogicalTimeFactory::LogicalTimeIntervalImplementation : public Referenced {
@@ -214,6 +215,9 @@ RTI1516LogicalTimeFactory::LogicalTimeFactoryImplementation::LogicalTimeFactoryI
   _zeroTimeInterval = _logicalTimeFactory->makeLogicalTimeInterval();
   if (_zeroTimeInterval.get())
     _zeroTimeInterval->setZero();
+  _epsilonTimeInterval = _logicalTimeFactory->makeLogicalTimeInterval();
+  if (_epsilonTimeInterval.get())
+    _epsilonTimeInterval->setEpsilon();
 }
 
 RTI1516LogicalTimeFactory::LogicalTimeFactoryImplementation::~LogicalTimeFactoryImplementation()
@@ -520,6 +524,18 @@ RTI1516LogicalTimeFactory::LogicalTimeInterval
 RTI1516LogicalTimeFactory::zeroLogicalTimeInterval() const
 {
   return LogicalTimeInterval(_implementation->zeroLogicalTimeInterval());
+}
+
+void
+RTI1516LogicalTimeFactory::nextAfter(RTI1516LogicalTimeFactory::LogicalTime& logicalTime) const
+{
+  if (!_implementation.valid())
+    return;
+  if (!_implementation->_epsilonTimeInterval.get())
+    return;
+  if (!logicalTime._implementation->_logicalTime.get())
+    return;
+  (*logicalTime._implementation->_logicalTime) += *_implementation->_epsilonTimeInterval;
 }
 
 RTI1516LogicalTimeFactory::LogicalTime

@@ -103,6 +103,7 @@ public:
   LogicalTime initialLogicalTime() const;
   LogicalTime finalLogicalTime() const;
   LogicalTimeInterval zeroLogicalTimeInterval() const;
+  void nextAfter(LogicalTime& logicalTime) const;
 
   LogicalTime getLogicalTime(const rti1516::LogicalTime& rti1516LogicalTime);
   LogicalTimeInterval getLogicalTimeInterval(const rti1516::LogicalTimeInterval& rti1516LogicalTimeInterval);

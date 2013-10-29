@@ -32,6 +32,7 @@
 #include <RTI/time/HLAfloat64Interval.h>
 
 #include <limits>
+#include <math.h>
 
 namespace OpenRTI {
 
@@ -56,6 +57,14 @@ public:
   { return LogicalTime(std::numeric_limits<LogicalTime>::max()); }
   LogicalTimeInterval zeroLogicalTimeInterval() const
   { return LogicalTimeInterval(0); }
+  void nextAfter(LogicalTime& logicalTime) const
+  {
+#ifdef _WIN32
+    logicalTime = _nextafter(logicalTime, std::numeric_limits<double>::infinity());
+#else
+    logicalTime = nextafter(logicalTime, std::numeric_limits<double>::infinity());
+#endif
+  }
 
   LogicalTime getLogicalTime(const rti1516e::LogicalTime& rti1516LogicalTime)
   { _float64Time = rti1516LogicalTime; return LogicalTime(_float64Time.getTime()); }

@@ -96,6 +96,7 @@ public:
   LogicalTime initialLogicalTime() const;
   LogicalTime finalLogicalTime() const;
   LogicalTimeInterval zeroLogicalTimeInterval() const;
+  void nextAfter(LogicalTime& logicalTime) const;
 
   LogicalTime getLogicalTime(const RTI::FedTime& fedTime);
   LogicalTimeInterval getLogicalTimeInterval(const RTI::FedTime& fedTime);
