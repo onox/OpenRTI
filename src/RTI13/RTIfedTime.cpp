@@ -120,7 +120,7 @@ RTI::Boolean
 RTIfedTime::isZero()
 {
   if (isNaN(_fedTime))
-    throw RTI::InvalidFederationTime("Can not comare with NaN!");
+    throw RTI::InvalidFederationTime("Can not compare with NaN!");
   return toBoolean(_fedTime == 0);
 }
 
@@ -140,7 +140,7 @@ RTI::Boolean
 RTIfedTime::isPositiveInfinity()
 {
   if (isNaN(_fedTime))
-    throw RTI::InvalidFederationTime("Can not comare with NaN!");
+    throw RTI::InvalidFederationTime("Can not compare with NaN!");
   return toBoolean(_fedTime == std::numeric_limits<double>::infinity());
 }
 
@@ -292,7 +292,7 @@ bool
 RTIfedTime::isEpsilon() const
 {
   if (isNaN(_fedTime))
-    throw RTI::InvalidFederationTime("Can not comare with NaN!");
+    throw RTI::InvalidFederationTime("Can not compare with NaN!");
   return _fedTime == std::numeric_limits<double>::denorm_min();
 }
 

@@ -134,7 +134,7 @@ HLAfloat64Interval::isZero() const
 {
   double value = HLAfloat64IntervalImpl::getValue(_impl);
   if (isNaN(value))
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
+    throw rti1516::InvalidLogicalTimeInterval(L"Can not compare with NaN!");
   return 0 == value;
 }
 
@@ -149,7 +149,7 @@ HLAfloat64Interval::isEpsilon() const
 {
   double value = HLAfloat64IntervalImpl::getValue(_impl);
   if (isNaN(value))
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
+    throw rti1516::InvalidLogicalTimeInterval(L"Can not compare with NaN!");
   return value == std::numeric_limits<double>::denorm_min();
 }
 
@@ -233,10 +233,10 @@ HLAfloat64Interval::operator>(const rti1516::LogicalTimeInterval& logicalTimeInt
 {
   double left = HLAfloat64IntervalImpl::getValue(_impl);
   if (isNaN(left))
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
+    throw rti1516::InvalidLogicalTimeInterval(L"Can not compare with NaN!");
   double right = HLAfloat64IntervalImpl::getValue(toHLAfloat64Interval(logicalTimeInterval)._impl);
   if (isNaN(right))
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
+    throw rti1516::InvalidLogicalTimeInterval(L"Can not compare with NaN!");
   return left > right;
 }
 
@@ -246,10 +246,10 @@ HLAfloat64Interval::operator<(const rti1516::LogicalTimeInterval& logicalTimeInt
 {
   double left = HLAfloat64IntervalImpl::getValue(_impl);
   if (isNaN(left))
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
+    throw rti1516::InvalidLogicalTimeInterval(L"Can not compare with NaN!");
   double right = HLAfloat64IntervalImpl::getValue(toHLAfloat64Interval(logicalTimeInterval)._impl);
   if (isNaN(right))
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
+    throw rti1516::InvalidLogicalTimeInterval(L"Can not compare with NaN!");
   return left < right;
 }
 
@@ -259,10 +259,10 @@ HLAfloat64Interval::operator==(const rti1516::LogicalTimeInterval& logicalTimeIn
 {
   double left = HLAfloat64IntervalImpl::getValue(_impl);
   if (isNaN(left))
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
+    throw rti1516::InvalidLogicalTimeInterval(L"Can not compare with NaN!");
   double right = HLAfloat64IntervalImpl::getValue(toHLAfloat64Interval(logicalTimeInterval)._impl);
   if (isNaN(right))
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
+    throw rti1516::InvalidLogicalTimeInterval(L"Can not compare with NaN!");
   return left == right;
 }
 
@@ -272,10 +272,10 @@ HLAfloat64Interval::operator>=(const rti1516::LogicalTimeInterval& logicalTimeIn
 {
   double left = HLAfloat64IntervalImpl::getValue(_impl);
   if (isNaN(left))
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
+    throw rti1516::InvalidLogicalTimeInterval(L"Can not compare with NaN!");
   double right = HLAfloat64IntervalImpl::getValue(toHLAfloat64Interval(logicalTimeInterval)._impl);
   if (isNaN(right))
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
+    throw rti1516::InvalidLogicalTimeInterval(L"Can not compare with NaN!");
   return left >= right;
 }
 
@@ -285,10 +285,10 @@ HLAfloat64Interval::operator<=(const rti1516::LogicalTimeInterval& logicalTimeIn
 {
   double left = HLAfloat64IntervalImpl::getValue(_impl);
   if (isNaN(left))
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
+    throw rti1516::InvalidLogicalTimeInterval(L"Can not compare with NaN!");
   double right = HLAfloat64IntervalImpl::getValue(toHLAfloat64Interval(logicalTimeInterval)._impl);
   if (isNaN(right))
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
+    throw rti1516::InvalidLogicalTimeInterval(L"Can not compare with NaN!");
   return left <= right;
 }
 
