@@ -1,3 +1,14 @@
+ADD_EXECUTABLE(logical-time-1516 logical-time.cpp)
+SET_PROPERTY(TARGET logical-time-1516 PROPERTY OUTPUT_NAME logical-time)
+TARGET_LINK_LIBRARIES(logical-time-1516 fedtime1516 OpenRTI)
+
+# Test the different logical times by getting the values form the logical time factory
+ADD_TEST(rti1516/logical-time-1516-1 ${CMAKE_CURRENT_BINARY_DIR}/logical-time)
+ADD_TEST(rti1516/logical-time-1516-2 ${CMAKE_CURRENT_BINARY_DIR}/logical-time -F HLAfloat64Time)
+ADD_TEST(rti1516/logical-time-1516-3 ${CMAKE_CURRENT_BINARY_DIR}/logical-time -F HLAinteger64Time)
+ADD_TEST(rti1516/logical-time-1516-4 ${CMAKE_CURRENT_BINARY_DIR}/logical-time -F certiFedTime1516)
+ADD_TEST(rti1516/logical-time-1516-5 ${CMAKE_CURRENT_BINARY_DIR}/logical-time -F CERTI)
+
 ADD_EXECUTABLE(concurrent-time-1516 concurrent-time.cpp)
 SET_PROPERTY(TARGET concurrent-time-1516 PROPERTY OUTPUT_NAME concurrent-time)
 TARGET_LINK_LIBRARIES(concurrent-time-1516 rti1516 fedtime1516 OpenRTI)
