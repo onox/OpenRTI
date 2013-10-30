@@ -12,6 +12,7 @@ OpenRTI-0.5.0 (development)
  * Handle ConnectionLostMessage.
  * Fix timeout on connection refused.
  * Use much more efficient WSASend/WSARecv in win32.
+ * Change epsilon handling in double logical times.
 
 OpenRTI-0.4.1 2013-??-??
 ------------------------

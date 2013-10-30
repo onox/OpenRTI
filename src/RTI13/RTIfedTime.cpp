@@ -81,29 +81,6 @@ static inline double nextAfter(const double& fedTime, const double& direction)
 #endif
 }
 
-static inline bool signbitSet(const double& fedTime)
-{
-#ifdef HAVE_SIGNBIT
-  return signbit(fedTime);
-#else
-  union {
-    uint64_t i;
-    double d;
-  } u;
-  u.d = fedTime;
-  return 0 != (u.i & (uint64_t(1) << 63));
-#endif
-}
-
-// We treat -0 as epsilon, so if we set from a double value we need to ensure that the sign bit is not set
-// Note that this comparison also preserves nan's
-static inline double clearSign(const double& fedTime)
-{
-  if (fedTime == 0 && signbitSet(fedTime))
-    return 0;
-  return fedTime;
-}
-
 static inline RTI::Boolean toBoolean(bool b)
 {
   return b ? RTI::RTI_TRUE : RTI::RTI_FALSE;
@@ -115,7 +92,7 @@ RTIfedTime::RTIfedTime() :
 }
 
 RTIfedTime::RTIfedTime(const double& fedTime) :
-  _fedTime(clearSign(fedTime))
+  _fedTime(fedTime)
 {
 }
 
@@ -144,13 +121,13 @@ RTIfedTime::isZero()
 {
   if (isNaN(_fedTime))
     throw RTI::InvalidFederationTime("Can not comare with NaN!");
-  return toBoolean(_fedTime == 0 && !signbitSet(_fedTime));
+  return toBoolean(_fedTime == 0);
 }
 
 void
 RTIfedTime::setEpsilon()
 {
-  _fedTime = -0;
+  _fedTime = std::numeric_limits<double>::denorm_min();
 }
 
 void
@@ -171,13 +148,27 @@ RTI::FedTime&
 RTIfedTime::operator+=(const RTI::FedTime& fedTime)
   throw (RTI::InvalidFederationTime)
 {
-  if (isEpsilon())
-    throw RTI::InvalidFederationTime("Can not change epsilon value!");
-  const RTIfedTime& rtiFedTime = toRTIfedTime(fedTime);
-  if (rtiFedTime.isEpsilon()) {
-    _fedTime = clearSign(nextAfter(_fedTime, std::numeric_limits<double>::infinity()));
-  } else {
-    _fedTime = clearSign(_fedTime + toRTIfedTime(fedTime)._fedTime);
+  double interval = toRTIfedTime(fedTime)._fedTime;
+  if (isNaN(interval))
+    throw RTI::InvalidFederationTime("RTIfedTime is NaN!");
+  double value = _fedTime;
+  if (isNaN(value))
+    throw RTI::InvalidFederationTime("RTIfedTime is NaN!");
+  // Since we do not know which one is the interval and which one the value, assume the smaller one is the interval
+  if (fabs(value) < fabs(interval))
+    std::swap(value, interval);
+  if (0 < interval) {
+    double next = nextAfter(value, std::numeric_limits<double>::infinity());
+    double sum = value + interval;
+    value = std::max(sum, next);
+    _fedTime = value;
+  } else if (interval < 0) {
+    double next = nextAfter(value, -std::numeric_limits<double>::infinity());
+    double sum = value + interval;
+    value = std::min(sum, next);
+    _fedTime = value;
+  } else /* if (interval == 0) */ {
+    // Nothing on zero
   }
   return *this;
 }
@@ -186,13 +177,28 @@ RTI::FedTime&
 RTIfedTime::operator-=(const RTI::FedTime& fedTime)
   throw (RTI::InvalidFederationTime)
 {
-  if (isEpsilon())
-    throw RTI::InvalidFederationTime("Can not change epsilon value!");
-  const RTIfedTime& rtiFedTime = toRTIfedTime(fedTime);
-  if (rtiFedTime.isEpsilon()) {
-    _fedTime = clearSign(nextAfter(_fedTime, -std::numeric_limits<double>::infinity()));
-  } else {
-    _fedTime = clearSign(_fedTime - toRTIfedTime(fedTime)._fedTime);
+  // Note that we change the sign of the interval already here, so below you find just the code for the += operator
+  double interval = -toRTIfedTime(fedTime)._fedTime;
+  if (isNaN(interval))
+    throw RTI::InvalidFederationTime("RTIfedTime is NaN!");
+  double value = _fedTime;
+  if (isNaN(value))
+    throw RTI::InvalidFederationTime("RTIfedTime is NaN!");
+  // Since we do not know which one is the interval and which one the value, assume the smaller one is the interval
+  if (fabs(value) < fabs(interval))
+    std::swap(value, interval);
+  if (0 < interval) {
+    double next = nextAfter(value, std::numeric_limits<double>::infinity());
+    double sum = value + interval;
+    value = std::max(sum, next);
+    _fedTime = value;
+  } else if (interval < 0) {
+    double next = nextAfter(value, -std::numeric_limits<double>::infinity());
+    double sum = value + interval;
+    value = std::min(sum, next);
+    _fedTime = value;
+  } else /* if (interval == 0) */ {
+    // Nothing on zero
   }
   return *this;
 }
@@ -287,7 +293,7 @@ RTIfedTime::isEpsilon() const
 {
   if (isNaN(_fedTime))
     throw RTI::InvalidFederationTime("Can not comare with NaN!");
-  return _fedTime == 0 && signbitSet(_fedTime);
+  return _fedTime == std::numeric_limits<double>::denorm_min();
 }
 
 double
@@ -381,7 +387,7 @@ RTI::FedTime&
 RTIfedTime::operator=(const double& fedTime)
   throw (RTI::InvalidFederationTime)
 {
-  _fedTime = clearSign(fedTime);
+  _fedTime = fedTime;
   return *this;
 }
 
@@ -389,7 +395,7 @@ RTI::FedTime&
 RTIfedTime::operator*=(const RTI::FedTime& fedTime)
   throw (RTI::InvalidFederationTime)
 {
-  _fedTime = clearSign(_fedTime * toRTIfedTime(fedTime)._fedTime);
+  _fedTime = _fedTime * toRTIfedTime(fedTime)._fedTime;
   return *this;
 }
 
@@ -397,7 +403,7 @@ RTI::FedTime&
 RTIfedTime::operator/=(const RTI::FedTime& fedTime)
   throw (RTI::InvalidFederationTime)
 {
-  _fedTime = clearSign(_fedTime / toRTIfedTime(fedTime)._fedTime);
+  _fedTime = _fedTime / toRTIfedTime(fedTime)._fedTime;
   return *this;
 }
 
@@ -405,7 +411,7 @@ RTI::FedTime&
 RTIfedTime::operator+=(const double& fedTime)
   throw (RTI::InvalidFederationTime)
 {
-  _fedTime = clearSign(_fedTime + fedTime);
+  _fedTime = _fedTime + fedTime;
   return *this;
 }
 
@@ -413,7 +419,7 @@ RTI::FedTime&
 RTIfedTime::operator-=(const double& fedTime)
   throw (RTI::InvalidFederationTime)
 {
-  _fedTime = clearSign(_fedTime - fedTime);
+  _fedTime = _fedTime - fedTime;
   return *this;
 }
 
@@ -421,7 +427,7 @@ RTI::FedTime&
 RTIfedTime::operator*=(const double& fedTime)
   throw (RTI::InvalidFederationTime)
 {
-  _fedTime = clearSign(_fedTime * fedTime);
+  _fedTime = _fedTime * fedTime;
   return *this;
 }
 
@@ -429,7 +435,7 @@ RTI::FedTime&
 RTIfedTime::operator/=(const double& fedTime)
   throw (RTI::InvalidFederationTime)
 {
-  _fedTime = clearSign(_fedTime / fedTime);
+  _fedTime = _fedTime / fedTime;
   return *this;
 }
 

@@ -64,7 +64,7 @@ static inline bool isNaN(const double& fedTime)
   // and look for the sign of t.
   // If the exponent is not 0x7f800000 (that is less than 0x7f800000), the
   // resulting t value will be >= 0.
-  
+
   union {
     double d;
     uint64_t u;
@@ -95,29 +95,6 @@ static inline double nextAfter(const double& fedTime, const double& direction)
 #endif
 }
 
-static inline bool signbitSet(const double& fedTime)
-{
-#ifdef HAVE_SIGNBIT
-  return signbit(fedTime);
-#else
-  union {
-    uint64_t i;
-    double d;
-  } u;
-  u.d = fedTime;
-  return 0 != (u.i & (uint64_t(1) << 63));
-#endif
-}
-
-// We treat -0 as epsilon, so if we set from a double value we need to ensure that the sign bit is not set
-// Note that this comparison also preserves nan's
-static inline double clearSign(const double& fedTime)
-{
-  if (fedTime == 0 && signbitSet(fedTime))
-    return 0;
-  return fedTime;
-}
-
 HLAfloat64Interval::HLAfloat64Interval() :
   _impl(0)
 {
@@ -126,7 +103,7 @@ HLAfloat64Interval::HLAfloat64Interval() :
 HLAfloat64Interval::HLAfloat64Interval(double time) :
   _impl(0)
 {
-  HLAfloat64IntervalImpl::setValue(_impl, clearSign(time));
+  HLAfloat64IntervalImpl::setValue(_impl, time);
 }
 
 HLAfloat64Interval::HLAfloat64Interval(const rti1516::LogicalTimeInterval& logicalTimeInterval) :
@@ -158,13 +135,13 @@ HLAfloat64Interval::isZero() const
   double value = HLAfloat64IntervalImpl::getValue(_impl);
   if (isNaN(value))
     throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
-  return 0 == value && !signbitSet(value);
+  return 0 == value;
 }
 
 void
 HLAfloat64Interval::setEpsilon()
 {
-  HLAfloat64IntervalImpl::setValue(_impl, -0);
+  HLAfloat64IntervalImpl::setValue(_impl, std::numeric_limits<double>::denorm_min());
 }
 
 bool
@@ -173,7 +150,7 @@ HLAfloat64Interval::isEpsilon() const
   double value = HLAfloat64IntervalImpl::getValue(_impl);
   if (isNaN(value))
     throw rti1516::InvalidLogicalTimeInterval(L"Can not comare with NaN!");
-  return value == 0 && signbitSet(value);
+  return value == std::numeric_limits<double>::denorm_min();
 }
 
 HLAfloat64Interval&
@@ -188,21 +165,34 @@ void
 HLAfloat64Interval::setToDifference(const rti1516::LogicalTime& minuend, const rti1516::LogicalTime& subtrahend)
   throw (rti1516::InvalidLogicalTime)
 {
-  HLAfloat64IntervalImpl::setValue(_impl, clearSign(toHLAfloat64Time(minuend).getTime() - toHLAfloat64Time(subtrahend).getTime()));
+  HLAfloat64IntervalImpl::setValue(_impl, toHLAfloat64Time(minuend).getTime() - toHLAfloat64Time(subtrahend).getTime());
 }
 
 HLAfloat64Interval&
 HLAfloat64Interval::operator+=(const rti1516::LogicalTimeInterval& logicalTimeInterval)
   throw (rti1516::InvalidLogicalTimeInterval)
 {
-  if (isEpsilon())
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not change an epsilon LogicalTimeInterval!");
-  if (logicalTimeInterval.isEpsilon()) {
-    double value = nextAfter(HLAfloat64IntervalImpl::getValue(_impl), std::numeric_limits<double>::infinity());
-    HLAfloat64IntervalImpl::setValue(_impl, clearSign(value));
-  } else {
-    double value = HLAfloat64IntervalImpl::getValue(_impl) + HLAfloat64IntervalImpl::getValue(toHLAfloat64Interval(logicalTimeInterval)._impl);
-    HLAfloat64IntervalImpl::setValue(_impl, clearSign(value));
+  double interval = HLAfloat64IntervalImpl::getValue(toHLAfloat64Interval(logicalTimeInterval)._impl);
+  if (isNaN(interval))
+    throw rti1516::InvalidLogicalTimeInterval(L"Logical time interval is NaN!");
+  double value = HLAfloat64IntervalImpl::getValue(_impl);
+  if (isNaN(value))
+    throw rti1516::InvalidLogicalTimeInterval(L"Logical time interval is NaN!");
+  // Since we do not know which one is the interval and which one the value, assume the smaller one is the interval
+  if (fabs(value) < fabs(interval))
+    std::swap(value, interval);
+  if (0 < interval) {
+    double next = nextAfter(value, std::numeric_limits<double>::infinity());
+    double sum = value + interval;
+    value = std::max(sum, next);
+    HLAfloat64IntervalImpl::setValue(_impl, value);
+  } else if (interval < 0) {
+    double next = nextAfter(value, -std::numeric_limits<double>::infinity());
+    double sum = value + interval;
+    value = std::min(sum, next);
+    HLAfloat64IntervalImpl::setValue(_impl, value);
+  } else /* if (interval == 0) */ {
+    // Nothing on zero
   }
   return *this;
 }
@@ -211,14 +201,28 @@ HLAfloat64Interval&
 HLAfloat64Interval::operator-=(const rti1516::LogicalTimeInterval& logicalTimeInterval)
   throw (rti1516::InvalidLogicalTimeInterval)
 {
-  if (isEpsilon())
-    throw rti1516::InvalidLogicalTimeInterval(L"Can not change an epsilon LogicalTimeInterval!");
-  if (logicalTimeInterval.isEpsilon()) {
-    double value = nextAfter(HLAfloat64IntervalImpl::getValue(_impl), -std::numeric_limits<double>::infinity());
-    HLAfloat64IntervalImpl::setValue(_impl, clearSign(value));
-  } else {
-    double value = HLAfloat64IntervalImpl::getValue(_impl) - HLAfloat64IntervalImpl::getValue(toHLAfloat64Interval(logicalTimeInterval)._impl);
-    HLAfloat64IntervalImpl::setValue(_impl, clearSign(value));
+  // Note that we change the sign of the interval already here, so below you find just the code for the += operator
+  double interval = -HLAfloat64IntervalImpl::getValue(toHLAfloat64Interval(logicalTimeInterval)._impl);
+  if (isNaN(interval))
+    throw rti1516::InvalidLogicalTimeInterval(L"Logical time interval is NaN!");
+  double value = HLAfloat64IntervalImpl::getValue(_impl);
+  if (isNaN(value))
+    throw rti1516::InvalidLogicalTimeInterval(L"Logical time interval is NaN!");
+  // Since we do not know which one is the interval and which one the value, assume the smaller one is the interval
+  if (fabs(value) < fabs(interval))
+    std::swap(value, interval);
+  if (0 < interval) {
+    double next = nextAfter(value, std::numeric_limits<double>::infinity());
+    double sum = value + interval;
+    value = std::max(sum, next);
+    HLAfloat64IntervalImpl::setValue(_impl, value);
+  } else if (interval < 0) {
+    double next = nextAfter(value, -std::numeric_limits<double>::infinity());
+    double sum = value + interval;
+    value = std::min(sum, next);
+    HLAfloat64IntervalImpl::setValue(_impl, value);
+  } else /* if (interval == 0) */ {
+    // Nothing on zero
   }
   return *this;
 }
@@ -380,7 +384,7 @@ HLAfloat64Interval::getInterval() const
 void
 HLAfloat64Interval::setInterval(double value)
 {
-  HLAfloat64IntervalImpl::setValue(_impl, clearSign(value));
+  HLAfloat64IntervalImpl::setValue(_impl, value);
 }
 
 HLAfloat64Interval&
@@ -394,4 +398,3 @@ HLAfloat64Interval::operator double() const
 {
   return getInterval();
 }
-

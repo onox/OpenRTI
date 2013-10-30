@@ -64,7 +64,7 @@ static inline bool isNaN(const double& fedTime)
   // and look for the sign of t.
   // If the exponent is not 0x7f800000 (that is less than 0x7f800000), the
   // resulting t value will be >= 0.
-  
+
   union {
     double d;
     uint64_t u;
@@ -159,10 +159,24 @@ HLAfloat64Time&
 HLAfloat64Time::operator+=(const rti1516::LogicalTimeInterval& logicalTimeInterval)
   throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
 {
-  if (logicalTimeInterval.isEpsilon()) {
-    HLAfloat64TimeImpl::setValue(_impl, nextAfter(HLAfloat64TimeImpl::getValue(_impl), std::numeric_limits<double>::infinity()));
-  } else {
-    HLAfloat64TimeImpl::setValue(_impl, HLAfloat64TimeImpl::getValue(_impl) + toHLAfloat64Interval(logicalTimeInterval).getInterval());
+  double interval = toHLAfloat64Interval(logicalTimeInterval).getInterval();
+  if (isNaN(interval))
+    throw rti1516::InvalidLogicalTimeInterval(L"Logical time interval is NaN!");
+  double value = HLAfloat64TimeImpl::getValue(_impl);
+  if (isNaN(value))
+    throw rti1516::IllegalTimeArithmetic(L"Logical time is NaN!");
+  if (0 < interval) {
+    double next = nextAfter(value, std::numeric_limits<double>::infinity());
+    double sum = value + interval;
+    value = std::max(sum, next);
+    HLAfloat64TimeImpl::setValue(_impl, value);
+  } else if (interval < 0) {
+    double next = nextAfter(value, -std::numeric_limits<double>::infinity());
+    double sum = value + interval;
+    value = std::min(sum, next);
+    HLAfloat64TimeImpl::setValue(_impl, value);
+  } else /* if (interval == 0) */ {
+    // Nothing on zero
   }
   return *this;
 }
@@ -171,10 +185,24 @@ HLAfloat64Time&
 HLAfloat64Time::operator-=(const rti1516::LogicalTimeInterval& logicalTimeInterval)
   throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
 {
-  if (logicalTimeInterval.isEpsilon()) {
-    HLAfloat64TimeImpl::setValue(_impl, nextAfter(HLAfloat64TimeImpl::getValue(_impl), -std::numeric_limits<double>::infinity()));
-  } else {
-    HLAfloat64TimeImpl::setValue(_impl, HLAfloat64TimeImpl::getValue(_impl) - toHLAfloat64Interval(logicalTimeInterval).getInterval());
+  double interval = toHLAfloat64Interval(logicalTimeInterval).getInterval();
+  if (isNaN(interval))
+    throw rti1516::InvalidLogicalTimeInterval(L"Logical time interval is NaN!");
+  double value = HLAfloat64TimeImpl::getValue(_impl);
+  if (isNaN(value))
+    throw rti1516::IllegalTimeArithmetic(L"Logical time is NaN!");
+  if (0 < interval) {
+    double next = nextAfter(value, -std::numeric_limits<double>::infinity());
+    double sum = value - interval;
+    value = std::min(sum, next);
+    HLAfloat64TimeImpl::setValue(_impl, value);
+  } else if (interval < 0) {
+    double next = nextAfter(value, std::numeric_limits<double>::infinity());
+    double sum = value - interval;
+    value = std::max(sum, next);
+    HLAfloat64TimeImpl::setValue(_impl, value);
+  } else /* if (interval == 0) */ {
+    // Nothing on zero
   }
   return *this;
 }
@@ -350,4 +378,3 @@ HLAfloat64Time::operator double() const
 {
   return getTime();
 }
-
