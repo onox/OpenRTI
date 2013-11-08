@@ -21,7 +21,6 @@
 #define OpenRTI_FederateHandleLowerBoundTimeStampMap_h
 
 #include <map>
-#include <set>
 
 #include "Handle.h"
 #include "LogStream.h"
@@ -38,13 +37,12 @@ public:
   {
     // Store that in the time map, so that we cannot advance more than that until this federate
     // commits a new lbts in the rti. This will usually happen in immediate response to that sent message.
-    typename LogicalTimeFederateHandleSetMap::iterator i;
+    typename LogicalTimeFederateCountMap::iterator i;
     // only inserts if the entry is new
-    i = _logicalTimeFederateHandleSetMap.insert(std::make_pair(logicalTimePair, FederateHandleSet())).first;
-    OpenRTIAssert(i->second.find(federateHandle) == i->second.end());
-    i->second.insert(federateHandle);
+    i = _logicalTimeFederateCountMap.insert(typename LogicalTimeFederateCountMap::value_type(logicalTimePair, 0)).first;
+    ++(i->second);
     OpenRTIAssert(_federateHandleLogicalTimeMap.find(federateHandle) == _federateHandleLogicalTimeMap.end());
-    _federateHandleLogicalTimeMap.insert(std::make_pair(federateHandle, i));
+    _federateHandleLogicalTimeMap.insert(typename FederateHandleLogicalTimeMap::value_type(federateHandle, i));
   }
 
   /// Returns true if this unleaches a new logical time
@@ -56,15 +54,13 @@ public:
     if (i == _federateHandleLogicalTimeMap.end())
       return false;
 
-    typename LogicalTimeFederateHandleSetMap::iterator j = i->second;
-    OpenRTIAssert(j->second.find(federateHandle) != j->second.end());
-    j->second.erase(federateHandle);
+    typename LogicalTimeFederateCountMap::iterator j = i->second;
     _federateHandleLogicalTimeMap.erase(i);
-    if (!j->second.empty())
+    if (0 != --(j->second))
       return false;
 
-    bool isFirstLogicalTime = (j == _logicalTimeFederateHandleSetMap.begin());
-    _logicalTimeFederateHandleSetMap.erase(j);
+    bool isFirstLogicalTime = (j == _logicalTimeFederateCountMap.begin());
+    _logicalTimeFederateCountMap.erase(j);
     return isFirstLogicalTime;
   }
 
@@ -72,42 +68,47 @@ public:
   bool commit(const FederateHandle& federateHandle, const LogicalTimePair& logicalTimePair)
   {
     // Once we receive these commits, the federate must have registered as some regulating, this must be here
-    OpenRTIAssert(!_logicalTimeFederateHandleSetMap.empty());
+    OpenRTIAssert(!_logicalTimeFederateCountMap.empty());
     OpenRTIAssert(!_federateHandleLogicalTimeMap.empty());
+
+    typename FederateHandleLogicalTimeMap::iterator i;
+    i = _federateHandleLogicalTimeMap.find(federateHandle);
+    OpenRTIAssert(i != _federateHandleLogicalTimeMap.end());
+
+    // Only continue if this is a real advance
+    typename LogicalTimeFederateCountMap::iterator j = i->second;
+    // Only allow an advance while committing
+    // OpenRTIAssert(j->first <= logicalTimePair);
+    // And don't do something if its not a real advance!
+    if (logicalTimePair <= j->first)
+      return false;
 
     // Register the new logical time for this federate.
     // If this one is federate handle is already registered at this given time, just return.
     // This case where nothing new is in this commit might happen when a federate started
     // being time regulating and got a correction from this current federate. Then we
     // have already noted this corrected time in the map.
-    typename LogicalTimeFederateHandleSetMap::iterator i;
+    typename LogicalTimeFederateCountMap::iterator k;
     // only inserts if the entry is new
-    i = _logicalTimeFederateHandleSetMap.insert(std::make_pair(logicalTimePair, FederateHandleSet())).first;
-    if (!i->second.insert(federateHandle).second)
-      return false;
+    k = _logicalTimeFederateCountMap.insert(typename LogicalTimeFederateCountMap::value_type(logicalTimePair, 0)).first;
+    ++(k->second);
 
-    typename FederateHandleLogicalTimeMap::iterator j;
-    j = _federateHandleLogicalTimeMap.find(federateHandle);
-    OpenRTIAssert(j != _federateHandleLogicalTimeMap.end());
     // The federate has a new timestamp, complete that change and remove the reference to the old timestamp now
     // store the new logical time for the federate handle
-    std::swap(j->second, i);
-    // and erase the old logical time
-    i->second.erase(federateHandle);
-    // Only allow an advance while committing
-    OpenRTIAssert(i->first <= logicalTimePair);
+    std::swap(i->second, k);
 
-    // Check if we have with this commit now enabled a time advance in some sense.
+    // Erase the old logical time and
+    // check if we have with this commit now enabled a time advance in some sense.
     // If this map entry has no federate handle left, then this is the case
-    if (!i->second.empty())
+    if (0 != --(j->second))
       return false;
 
-    bool isFirstLogicalTime = (i == _logicalTimeFederateHandleSetMap.begin());
+    bool isFirstLogicalTime = (j == _logicalTimeFederateCountMap.begin());
 
     // This map entry could then be erased ...
-    _logicalTimeFederateHandleSetMap.erase(i);
+    _logicalTimeFederateCountMap.erase(j);
 
-    OpenRTIAssert(!_logicalTimeFederateHandleSetMap.empty());
+    OpenRTIAssert(!_logicalTimeFederateCountMap.empty());
     OpenRTIAssert(!_federateHandleLogicalTimeMap.empty());
 
     return isFirstLogicalTime;
@@ -122,37 +123,37 @@ public:
     // So we can savely advance also to the time equal to the committed logical timestamp.
     // This should be aequivalent to
     //   return canAdvanceTo(LogicalTimePair(logicalTime, 0));
-    if (_logicalTimeFederateHandleSetMap.begin()->first.second)
-      return logicalTime <= _logicalTimeFederateHandleSetMap.begin()->first.first;
+    if (_logicalTimeFederateCountMap.begin()->first.second)
+      return logicalTime <= _logicalTimeFederateCountMap.begin()->first.first;
     else
-      return logicalTime < _logicalTimeFederateHandleSetMap.begin()->first.first;
+      return logicalTime < _logicalTimeFederateCountMap.begin()->first.first;
   }
 
   bool canAdvanceTo(const LogicalTimePair& logicalTimePair) const
   {
     if (empty())
       return true;
-    return logicalTimePair < _logicalTimeFederateHandleSetMap.begin()->first;
+    return logicalTimePair < _logicalTimeFederateCountMap.begin()->first;
   }
 
   bool empty() const
   {
-    OpenRTIAssert(_logicalTimeFederateHandleSetMap.empty() == _federateHandleLogicalTimeMap.empty());
-    return _logicalTimeFederateHandleSetMap.empty();
+    OpenRTIAssert(_logicalTimeFederateCountMap.empty() == _federateHandleLogicalTimeMap.empty());
+    return _logicalTimeFederateCountMap.empty();
   }
 
   const LogicalTime& getGALT() const
   {
-    OpenRTIAssert(!_logicalTimeFederateHandleSetMap.empty());
+    OpenRTIAssert(!_logicalTimeFederateCountMap.empty());
     OpenRTIAssert(!_federateHandleLogicalTimeMap.empty());
-    return _logicalTimeFederateHandleSetMap.begin()->first.first;
+    return _logicalTimeFederateCountMap.begin()->first.first;
   }
 
 private:
-  typedef std::map<LogicalTimePair, FederateHandleSet> LogicalTimeFederateHandleSetMap;
-  LogicalTimeFederateHandleSetMap _logicalTimeFederateHandleSetMap;
+  typedef std::map<LogicalTimePair, FederateHandle::value_type> LogicalTimeFederateCountMap;
+  LogicalTimeFederateCountMap _logicalTimeFederateCountMap;
 
-  typedef std::map<FederateHandle, typename LogicalTimeFederateHandleSetMap::iterator> FederateHandleLogicalTimeMap;
+  typedef std::map<FederateHandle, typename LogicalTimeFederateCountMap::iterator> FederateHandleLogicalTimeMap;
   FederateHandleLogicalTimeMap _federateHandleLogicalTimeMap;
 };
 
