@@ -335,7 +335,6 @@ public:
     std::wstring _federateType;
     std::wstring _fddFile;
     std::wstring _address;
-    bool _traceAmbassadors;
     std::vector<std::wstring> _argumentList;
     std::vector<std::wstring> _federateList;
     bool _joinOnce;
@@ -370,22 +369,11 @@ public:
     std::vector<std::wstring> getArgumentList() const
     {
       std::vector<std::wstring> argumentList = _constructorArgs._argumentList;
-      if (_constructorArgs._traceAmbassadors) {
-        argumentList.push_back(L"protocol=trace");
-        if (_constructorArgs._address.empty()) {
-          argumentList.push_back(L"traceProtocol=thread");
-        } else {
-          argumentList.push_back(L"traceProtocol=rti");
-          argumentList.push_back(std::wstring(L"address=") + _constructorArgs._address);
-        }
-        argumentList.push_back(std::wstring(L"traceFile=") + _constructorArgs._federateType + std::wstring(L".txt"));
+      if (_constructorArgs._address.empty()) {
+        argumentList.push_back(L"protocol=thread");
       } else {
-        if (_constructorArgs._address.empty()) {
-          argumentList.push_back(L"protocol=thread");
-        } else {
-          argumentList.push_back(L"protocol=rti");
-          argumentList.push_back(std::wstring(L"address=") + _constructorArgs._address);
-        }
+        argumentList.push_back(L"protocol=rti");
+        argumentList.push_back(std::wstring(L"address=") + _constructorArgs._address);
       }
       return argumentList;
     }
@@ -427,13 +415,12 @@ public:
   };
 
   RTITest(int argc, const char* const argv[], bool disjointFederations) :
-    _optionString("A:C:F:JO:S:T"),
+    _optionString("A:C:F:JO:S:"),
     _federationExecution(L"FederationExecution"),
     _numServers(1),
     _numClientsPerServers(2),
     _numAmbassadorThreads(1),
     _disjointFederations(disjointFederations),
-    _traceAmbassadors(false),
     _joinOnce(false),
     _options(argc, argv)
   { }
@@ -470,9 +457,6 @@ public:
       return true;
     case 'S':
       _numServers = atoi(argument.c_str());
-      return true;
-    case 'T':
-      _traceAmbassadors = true;
       return true;
     case 'J':
       _joinOnce = true;
@@ -524,7 +508,6 @@ public:
         constructorArgs._federationExecution = _federationExecution;
       }
       constructorArgs._address = utf8ToUcs(_serverPool.getAddress(i));
-      constructorArgs._traceAmbassadors = _traceAmbassadors;
 
       SharedPtr<Ambassador> testAmbassador;
       testAmbassador = createAmbassador(constructorArgs);
@@ -539,7 +522,6 @@ public:
     std::wstring federateType = constructorArgs._federateList[0];
     constructorArgs._federateType = federateType;
     constructorArgs._address = utf8ToUcs(_serverPool.getAddress(0));
-    constructorArgs._traceAmbassadors = _traceAmbassadors;
     constructorArgs._federationExecution = _federationExecution;
 
     SharedPtr<Ambassador> testAmbassador;
@@ -590,7 +572,6 @@ private:
   unsigned _numClientsPerServers;
   unsigned _numAmbassadorThreads;
   bool _disjointFederations;
-  bool _traceAmbassadors;
   bool _joinOnce;
 };
 
