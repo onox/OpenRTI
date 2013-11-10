@@ -118,6 +118,20 @@ trim(const char* s, const char* c = " \t\n")
 OPENRTI_API std::string
 fqClassName(const StringVector& name);
 
+inline std::string
+classNamePart(const StringVector& name)
+{
+  if (name.empty())
+    return std::string();
+  return name.back();
+}
+
+inline std::string
+classNamePart(const std::string& name)
+{
+  return classNamePart(split(name, "."));
+}
+
 OPENRTI_API std::pair<std::string, std::string>
 parseInetAddress(const std::string& address);
 
