@@ -2559,7 +2559,7 @@ public:
         Traits::throwTimeRegulationIsNotEnabled();
       if (!_timeManagement->isPositiveLogicalTimeInterval(lookahead))
         Traits::throwInvalidLookahead(_timeManagement->logicalTimeIntervalToString(lookahead));
-      if (_timeManagement->getTimeAdvancePending())
+      if (_timeManagement->getTimeAdvancePending() || _timeManagement->getTimeConstrainedEnablePending())
         Traits::throwInTimeAdvancingState();
       _timeManagement->modifyLookahead(*this, lookahead);
     } catch (const typename Traits::Exception&) {
