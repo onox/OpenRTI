@@ -2312,7 +2312,7 @@ public:
         Traits::throwRequestForTimeRegulationPending();
       if (_timeManagement->getTimeConstrainedEnablePending())
         Traits::throwRequestForTimeConstrainedPending();
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, false, false, false);
+      _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::TimeAdvanceRequest);
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {
@@ -2343,7 +2343,7 @@ public:
         Traits::throwRequestForTimeRegulationPending();
       if (_timeManagement->getTimeConstrainedEnablePending())
         Traits::throwRequestForTimeConstrainedPending();
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, true, false, false);
+      _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::TimeAdvanceRequestAvailable);
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {
@@ -2374,9 +2374,7 @@ public:
         Traits::throwRequestForTimeRegulationPending();
       if (_timeManagement->getTimeConstrainedEnablePending())
         Traits::throwRequestForTimeConstrainedPending();
-      // FIXME
-      Traits::throwRTIinternalError("nextMessageRequest is not implemented!");
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, false, true, false);
+      _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::NextMessageRequest);
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {
@@ -2407,9 +2405,7 @@ public:
         Traits::throwRequestForTimeRegulationPending();
       if (_timeManagement->getTimeConstrainedEnablePending())
         Traits::throwRequestForTimeConstrainedPending();
-      // FIXME
-      Traits::throwRTIinternalError("nextMessageRequest is not implemented!");
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, true, true, false);
+      _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::NextMessageRequestAvailable);
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {
@@ -2440,7 +2436,7 @@ public:
         Traits::throwRequestForTimeRegulationPending();
       if (_timeManagement->getTimeConstrainedEnablePending())
         Traits::throwRequestForTimeConstrainedPending();
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, false, false, true);
+      _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::FlushQueueRequest);
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {

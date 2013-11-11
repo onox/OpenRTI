@@ -129,6 +129,7 @@ SET(OpenRTI_SOURCES
   AbstractSocketEvent.cpp
   Attributes.cpp
   InternalAmbassador.cpp
+  InternalTimeManagement.cpp
   Federate.cpp
   ContentHandler.cpp
   DefaultErrorHandler.cpp

@@ -20,49 +20,80 @@
 #ifndef OpenRTI_InternalTimeManagement_h
 #define OpenRTI_InternalTimeManagement_h
 
+#include "Export.h"
 #include "Referenced.h"
+#include "Message.h"
 
 namespace OpenRTI {
 
-class InternalTimeManagement : public Referenced {
+class InternalAmbassador;
+
+class OPENRTI_API InternalTimeManagement : public Referenced {
 public:
-  InternalTimeManagement() :
-    _timeRegulationEnablePending(false),
-    _timeRegulationEnabled(false),
-    _timeConstrainedEnablePending(false),
-    _timeConstrainedEnabled(false),
-    _timeAdvancePending(false),
-    _nextMessageMode(false),
-    _flushQueueMode(false),
-    _asynchronousDeliveryEnabled(true),
-    _messageRetractionSerial(0)
-  { }
-  virtual ~InternalTimeManagement() {}
+  enum TimeRegulationMode {
+    TimeRegulationDisabled,
+    TimeRegulationEnablePending,
+    TimeRegulationEnabled
+  };
+  enum TimeConstrainedMode {
+    TimeConstrainedDisabled,
+    TimeConstrainedEnablePending,
+    TimeConstrainedEnabled
+  };
+  enum TimeAdvanceMode {
+    TimeAdvanceGranted,
+    TimeAdvanceRequest,
+    TimeAdvanceRequestAvailable,
+    NextMessageRequest,
+    NextMessageRequestAvailable,
+    FlushQueueRequest
+  };
 
+  InternalTimeManagement();
+  virtual ~InternalTimeManagement();
+
+  void setTimeRegulationMode(TimeRegulationMode timeRegulationMode)
+  { _timeRegulationMode = timeRegulationMode; }
+  TimeRegulationMode getTimeRegulationMode() const
+  { return _timeRegulationMode; }
+  bool getTimeRegulationDisabled() const
+  { return _timeRegulationMode == TimeRegulationDisabled; }
   bool getTimeRegulationEnabled() const
-  { return _timeRegulationEnabled; }
+  { return _timeRegulationMode == TimeRegulationEnabled; }
   bool getTimeRegulationEnablePending() const
-  { return _timeRegulationEnablePending; }
+  { return _timeRegulationMode == TimeRegulationEnablePending; }
   bool getTimeRegulationEnabledOrPending() const
-  { return _timeRegulationEnabled || _timeRegulationEnablePending; }
+  { return !getTimeRegulationDisabled(); }
 
+  void setTimeConstrainedMode(TimeConstrainedMode timeConstrainedMode)
+  { _timeConstrainedMode = timeConstrainedMode; }
+  TimeConstrainedMode getTimeConstrainedMode() const
+  { return _timeConstrainedMode; }
+  bool getTimeConstrainedDisabled() const
+  { return _timeConstrainedMode == TimeConstrainedDisabled; }
   bool getTimeConstrainedEnabled() const
-  { return _timeConstrainedEnabled; }
+  { return _timeConstrainedMode == TimeConstrainedEnabled; }
   bool getTimeConstrainedEnablePending() const
-  { return _timeConstrainedEnablePending; }
+  { return _timeConstrainedMode == TimeConstrainedEnablePending; }
   bool getTimeConstrainedEnabledOrPending() const
-  { return _timeConstrainedEnabled || _timeConstrainedEnablePending; }
+  { return !getTimeConstrainedDisabled(); }
 
+  void setTimeAdvanceMode(TimeAdvanceMode timeAdvanceMode)
+  { _timeAdvanceMode = timeAdvanceMode; }
+  TimeAdvanceMode getTimeAdvanceMode() const
+  { return _timeAdvanceMode; }
   bool getTimeAdvancePending() const
-  { return _timeAdvancePending; }
-
+  { return _timeAdvanceMode != TimeAdvanceGranted; }
   bool getFlushQueueMode() const
-  { return _flushQueueMode; }
+  { return _timeAdvanceMode == FlushQueueRequest; }
 
   bool getAsynchronousDeliveryEnabled() const
   { return _asynchronousDeliveryEnabled; }
   void setAsynchronousDeliveryEnabled(bool asynchronousDeliveryEnabled)
   { _asynchronousDeliveryEnabled = asynchronousDeliveryEnabled; }
+
+  bool getTimeStampedOrderDelivery(OrderType orderType) const
+  { return getTimeConstrainedEnabled() && orderType == TIMESTAMP; }
 
   uint32_t getNextMessageRetractionSerial()
   { return _messageRetractionSerial++; }
@@ -83,13 +114,9 @@ public:
 protected:
 
   // State values
-  bool _timeRegulationEnablePending;
-  bool _timeRegulationEnabled;
-  bool _timeConstrainedEnablePending;
-  bool _timeConstrainedEnabled;
-  bool _timeAdvancePending;
-  bool _nextMessageMode;
-  bool _flushQueueMode;
+  TimeRegulationMode _timeRegulationMode;
+  TimeConstrainedMode _timeConstrainedMode;
+  TimeAdvanceMode _timeAdvanceMode;
   bool _asynchronousDeliveryEnabled;
   // Serial number for message retraction
   uint32_t _messageRetractionSerial;

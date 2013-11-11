@@ -29,7 +29,7 @@ class Ambassador;
 class InternalAmbassador;
 
 template<typename T>
-class TimeManagement : public InternalTimeManagement {
+class OPENRTI_API TimeManagement : public InternalTimeManagement {
 public:
   typedef T Traits;
 
@@ -51,7 +51,7 @@ public:
   virtual void enableTimeConstrained(InternalAmbassador& ambassador) = 0;
   virtual void disableTimeConstrained(InternalAmbassador& ambassador) = 0;
 
-  virtual void timeAdvanceRequest(InternalAmbassador& ambassador, const NativeLogicalTime& nativeLogicalTime, bool availableMode, bool nextMessageMode, bool flushQueue) = 0;
+  virtual void timeAdvanceRequest(InternalAmbassador& ambassador, const NativeLogicalTime& nativeLogicalTime, InternalTimeManagement::TimeAdvanceMode timeAdvanceMode) = 0;
   virtual bool queryGALT(InternalAmbassador& ambassador, NativeLogicalTime& logicalTime) = 0;
   virtual void queryLogicalTime(InternalAmbassador& ambassador, NativeLogicalTime& logicalTime) = 0;
   virtual bool queryLITS(InternalAmbassador& ambassador, NativeLogicalTime& logicalTime) = 0;
