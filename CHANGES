@@ -13,6 +13,7 @@ OpenRTI-0.5.0 (development)
  * Fix timeout on connection refused.
  * Use much more efficient WSASend/WSARecv in win32.
  * Change epsilon handling in double logical times.
+ * Adapt to cmake upstream change regarding INTERFACE_LINK_LIBRARIES.
 
 OpenRTI-0.4.1 2013-??-??
 ------------------------
