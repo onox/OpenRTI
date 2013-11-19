@@ -57,12 +57,13 @@ public:
   { return LogicalTime(std::numeric_limits<LogicalTime>::max()); }
   LogicalTimeInterval zeroLogicalTimeInterval() const
   { return LogicalTimeInterval(0); }
-  void nextAfter(LogicalTime& logicalTime) const
+
+  static LogicalTime nextAfter(const LogicalTime& logicalTime)
   {
 #ifdef _WIN32
-    logicalTime = _nextafter(logicalTime, std::numeric_limits<double>::infinity());
+    return _nextafter(logicalTime, std::numeric_limits<double>::infinity());
 #else
-    logicalTime = nextafter(logicalTime, std::numeric_limits<double>::infinity());
+    return nextafter(logicalTime, std::numeric_limits<double>::infinity());
 #endif
   }
 

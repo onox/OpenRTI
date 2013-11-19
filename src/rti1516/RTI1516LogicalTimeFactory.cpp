@@ -526,16 +526,22 @@ RTI1516LogicalTimeFactory::zeroLogicalTimeInterval() const
   return LogicalTimeInterval(_implementation->zeroLogicalTimeInterval());
 }
 
-void
-RTI1516LogicalTimeFactory::nextAfter(RTI1516LogicalTimeFactory::LogicalTime& logicalTime) const
+RTI1516LogicalTimeFactory::LogicalTime
+RTI1516LogicalTimeFactory::nextAfter(const RTI1516LogicalTimeFactory::LogicalTime& logicalTime)
 {
-  if (!_implementation.valid())
-    return;
-  if (!_implementation->_epsilonTimeInterval.get())
-    return;
+  if (!logicalTime._implementation.valid())
+    return LogicalTime();
   if (!logicalTime._implementation->_logicalTime.get())
-    return;
-  (*logicalTime._implementation->_logicalTime) += *_implementation->_epsilonTimeInterval;
+    return LogicalTime();
+  if (!logicalTime._implementation->_logicalTimeFactory.valid())
+    return LogicalTime();
+  if (!logicalTime._implementation->_logicalTimeFactory->_epsilonTimeInterval.get())
+    return LogicalTime();
+  LogicalTimeImplementation* implementation;
+  implementation = logicalTime._implementation->_logicalTimeFactory->initialLogicalTime();
+  (*implementation->_logicalTime) = *logicalTime._implementation->_logicalTime;
+  (*implementation->_logicalTime) += *logicalTime._implementation->_logicalTimeFactory->_epsilonTimeInterval;
+  return LogicalTime(implementation);
 }
 
 RTI1516LogicalTimeFactory::LogicalTime

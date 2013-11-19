@@ -356,12 +356,15 @@ RTI13LogicalTimeFactory::zeroLogicalTimeInterval() const
   return LogicalTimeInterval(new FedTimeImplementation);
 }
 
-void
-RTI13LogicalTimeFactory::nextAfter(RTI13LogicalTimeFactory::LogicalTime& logicalTime) const
+RTI13LogicalTimeFactory::LogicalTime
+RTI13LogicalTimeFactory::nextAfter(const RTI13LogicalTimeFactory::LogicalTime& logicalTime)
 {
+  FedTimeImplementation* implementation = new FedTimeImplementation;
+  (*implementation->_fedTime) = *logicalTime._implementation->_fedTime;
   std::auto_ptr<RTI::FedTime> epsilonTime(RTI::FedTimeFactory::makeZero());
   epsilonTime->setEpsilon();
-  (*logicalTime._implementation->_fedTime) += *epsilonTime;
+  (*implementation->_fedTime) += *epsilonTime;
+  return LogicalTime(implementation);
 }
 
 RTI13LogicalTimeFactory::LogicalTime

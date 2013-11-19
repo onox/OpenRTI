@@ -56,8 +56,9 @@ public:
   { return LogicalTime(std::numeric_limits<LogicalTime>::max()); }
   LogicalTimeInterval zeroLogicalTimeInterval() const
   { return LogicalTimeInterval(0); }
-  void nextAfter(LogicalTime& logicalTime) const
-  { ++logicalTime; }
+
+  static LogicalTime nextAfter(const LogicalTime& logicalTime)
+  { return logicalTime + 1; }
 
   LogicalTime getLogicalTime(const rti1516e::LogicalTime& rti1516LogicalTime)
   { _integer64Time = rti1516LogicalTime; return LogicalTime(_integer64Time.getTime()); }
