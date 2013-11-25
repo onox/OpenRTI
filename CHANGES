@@ -24,6 +24,7 @@ OpenRTI-0.4.1 2013-??-??
 * Fix rtinode pulling 100% cpu time under some circumstance.
 * Hide artificial HLA{interaction,object}Root in full qualified name lookup.
 * Strip full qualified rti1516 parts from {interaction,object} fdd class names.
+* Fix BasicDataElements decoding
 
 OpenRTI-0.4.0 2013-04-06
 ------------------------

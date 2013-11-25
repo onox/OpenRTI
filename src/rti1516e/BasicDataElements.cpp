@@ -27,6 +27,7 @@
 #include <RTI/encoding/DataElement.h>
 
 #include <cstring>
+#include <limits>
 #include <vector>
 
 #include "Encoding.h"
@@ -332,16 +333,19 @@ IMPLEMENT_ENCODING_HELPER_CLASS( HLAunicodeChar, wchar_t,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 2);
-  _value = wchar_t(buffer[index]) << 8;
-  _value |= wchar_t(buffer[index + 1]);
+  uint16_t u;
+  u = uint16_t(uint8_t(buffer[index])) << 8;
+  u |= uint16_t(uint8_t(buffer[index + 1]));
+  _value = wchar_t(u);
   return index + 2;
 }
 
 void encodeInto(std::vector<Octet>& buffer) const
 {
   align(buffer, 2);
-  buffer.push_back(_value >> 8);
-  buffer.push_back(_value);
+  uint16_t u = uint16_t(_value);
+  buffer.push_back(uint8_t(u >> 8));
+  buffer.push_back(uint8_t(u));
 }
 
 size_t
@@ -367,16 +371,19 @@ IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger16BE, Integer16,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 2);
-  _value = Integer16(buffer[index]) << 8;
-  _value |= Integer16(buffer[index + 1]);
+  uint16_t u;
+  u = uint16_t(uint8_t(buffer[index])) << 8;
+  u |= uint16_t(uint8_t(buffer[index + 1]));
+  _value = Integer16(u);
   return index + 2;
 }
 
 void encodeInto(std::vector<Octet>& buffer) const
 {
   align(buffer, 2);
-  buffer.push_back(_value >> 8);
-  buffer.push_back(_value);
+  uint16_t u = _value;
+  buffer.push_back(uint8_t(u >> 8));
+  buffer.push_back(uint8_t(u));
 }
 
 size_t
@@ -400,16 +407,19 @@ IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger16LE, Integer16,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 2);
-  _value = Integer16(buffer[index]);
-  _value |= Integer16(buffer[index + 1]) << 8;
+  uint16_t u;
+  u = uint16_t(uint8_t(buffer[index]));
+  u |= uint16_t(uint8_t(buffer[index + 1])) << 8;
+  _value = Integer16(u);
   return index + 2;
 }
 
 void encodeInto(std::vector<Octet>& buffer) const
 {
   align(buffer, 2);
-  buffer.push_back(_value);
-  buffer.push_back(_value >> 8);
+  uint16_t u = uint16_t(_value);
+  buffer.push_back(uint8_t(u));
+  buffer.push_back(uint8_t(u >> 8));
 }
 
 size_t
@@ -433,20 +443,23 @@ IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger32BE, Integer32,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 4);
-  _value = Integer32(buffer[index]) << 24;
-  _value |= Integer32(buffer[index + 1]) << 16;
-  _value |= Integer32(buffer[index + 2]) << 8;
-  _value |= Integer32(buffer[index + 3]);
+  uint32_t u;
+  u = uint32_t(uint8_t(buffer[index])) << 24;
+  u |= uint32_t(uint8_t(buffer[index + 1])) << 16;
+  u |= uint32_t(uint8_t(buffer[index + 2])) << 8;
+  u |= uint32_t(uint8_t(buffer[index + 3]));
+  _value = Integer32(u);
   return index + 4;
 }
 
 void encodeInto(std::vector<Octet>& buffer) const
 {
   align(buffer, 4);
-  buffer.push_back(_value >> 24);
-  buffer.push_back(_value >> 16);
-  buffer.push_back(_value >> 8);
-  buffer.push_back(_value);
+  uint32_t u = uint32_t(_value);
+  buffer.push_back(uint8_t(u >> 24));
+  buffer.push_back(uint8_t(u >> 16));
+  buffer.push_back(uint8_t(u >> 8));
+  buffer.push_back(uint8_t(u));
 }
 
 size_t
@@ -470,20 +483,23 @@ IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger32LE, Integer32,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 4);
-  _value = Integer32(buffer[index]);
-  _value |= Integer32(buffer[index + 1]) << 8;
-  _value |= Integer32(buffer[index + 2]) << 16;
-  _value |= Integer32(buffer[index + 3]) << 24;
+  uint32_t u;
+  u = uint32_t(uint8_t(buffer[index]));
+  u |= uint32_t(uint8_t(buffer[index + 1])) << 8;
+  u |= uint32_t(uint8_t(buffer[index + 2])) << 16;
+  u |= uint32_t(uint8_t(buffer[index + 3])) << 24;
+  _value = Integer32(u);
   return index + 4;
 }
 
 void encodeInto(std::vector<Octet>& buffer) const
 {
   align(buffer, 4);
-  buffer.push_back(_value);
-  buffer.push_back(_value >> 8);
-  buffer.push_back(_value >> 16);
-  buffer.push_back(_value >> 24);
+  uint32_t u = uint32_t(_value);
+  buffer.push_back(uint8_t(u));
+  buffer.push_back(uint8_t(u >> 8));
+  buffer.push_back(uint8_t(u >> 16));
+  buffer.push_back(uint8_t(u >> 24));
 }
 
 size_t
@@ -507,28 +523,31 @@ IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger64BE, Integer64,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 8);
-  _value = Integer64(buffer[index]) << 56;
-  _value |= Integer64(buffer[index + 1]) << 48;
-  _value |= Integer64(buffer[index + 2]) << 40;
-  _value |= Integer64(buffer[index + 3]) << 32;
-  _value |= Integer64(buffer[index + 4]) << 24;
-  _value |= Integer64(buffer[index + 5]) << 16;
-  _value |= Integer64(buffer[index + 6]) << 8;
-  _value |= Integer64(buffer[index + 7]);
+  uint64_t u;
+  u = uint64_t(uint8_t(buffer[index])) << 56;
+  u |= uint64_t(uint8_t(buffer[index + 1])) << 48;
+  u |= uint64_t(uint8_t(buffer[index + 2])) << 40;
+  u |= uint64_t(uint8_t(buffer[index + 3])) << 32;
+  u |= uint64_t(uint8_t(buffer[index + 4])) << 24;
+  u |= uint64_t(uint8_t(buffer[index + 5])) << 16;
+  u |= uint64_t(uint8_t(buffer[index + 6])) << 8;
+  u |= uint64_t(uint8_t(buffer[index + 7]));
+  _value = Integer64(u);
   return index + 8;
 }
 
 void encodeInto(std::vector<Octet>& buffer) const
 {
   align(buffer, 8);
-  buffer.push_back(_value >> 56);
-  buffer.push_back(_value >> 48);
-  buffer.push_back(_value >> 40);
-  buffer.push_back(_value >> 32);
-  buffer.push_back(_value >> 24);
-  buffer.push_back(_value >> 16);
-  buffer.push_back(_value >> 8);
-  buffer.push_back(_value);
+  uint64_t u = uint64_t(_value);
+  buffer.push_back(uint8_t(u >> 56));
+  buffer.push_back(uint8_t(u >> 48));
+  buffer.push_back(uint8_t(u >> 40));
+  buffer.push_back(uint8_t(u >> 32));
+  buffer.push_back(uint8_t(u >> 24));
+  buffer.push_back(uint8_t(u >> 16));
+  buffer.push_back(uint8_t(u >> 8));
+  buffer.push_back(uint8_t(u));
 }
 
 size_t
@@ -552,28 +571,31 @@ IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger64LE, Integer64,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 8);
-  _value = Integer64(buffer[index]);
-  _value |= Integer64(buffer[index + 1]) << 8;
-  _value |= Integer64(buffer[index + 2]) << 16;
-  _value |= Integer64(buffer[index + 3]) << 24;
-  _value |= Integer64(buffer[index + 4]) << 32;
-  _value |= Integer64(buffer[index + 5]) << 40;
-  _value |= Integer64(buffer[index + 6]) << 48;
-  _value |= Integer64(buffer[index + 7]) << 56;
+  uint64_t u;
+  u = uint64_t(uint8_t(buffer[index]));
+  u |= uint64_t(uint8_t(buffer[index + 1])) << 8;
+  u |= uint64_t(uint8_t(buffer[index + 2])) << 16;
+  u |= uint64_t(uint8_t(buffer[index + 3])) << 24;
+  u |= uint64_t(uint8_t(buffer[index + 4])) << 32;
+  u |= uint64_t(uint8_t(buffer[index + 5])) << 40;
+  u |= uint64_t(uint8_t(buffer[index + 6])) << 48;
+  u |= uint64_t(uint8_t(buffer[index + 7])) << 56;
+  _value = Integer64(u);
   return index + 8;
 }
 
 void encodeInto(std::vector<Octet>& buffer) const
 {
   align(buffer, 8);
-  buffer.push_back(_value);
-  buffer.push_back(_value >> 8);
-  buffer.push_back(_value >> 16);
-  buffer.push_back(_value >> 24);
-  buffer.push_back(_value >> 32);
-  buffer.push_back(_value >> 40);
-  buffer.push_back(_value >> 48);
-  buffer.push_back(_value >> 56);
+  uint64_t u = uint64_t(_value);
+  buffer.push_back(uint8_t(u));
+  buffer.push_back(uint8_t(u >> 8));
+  buffer.push_back(uint8_t(u >> 16));
+  buffer.push_back(uint8_t(u >> 24));
+  buffer.push_back(uint8_t(u >> 32));
+  buffer.push_back(uint8_t(u >> 40));
+  buffer.push_back(uint8_t(u >> 48));
+  buffer.push_back(uint8_t(u >> 56));
 }
 
 size_t
@@ -669,10 +691,10 @@ size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
     uint32_t u;
     float s;
   } u;
-  u.u = uint32_t(buffer[index]) << 24;
-  u.u |= uint32_t(buffer[index + 1]) << 16;
-  u.u |= uint32_t(buffer[index + 2]) << 8;
-  u.u |= uint32_t(buffer[index + 3]);
+  u.u = uint32_t(uint8_t(buffer[index])) << 24;
+  u.u |= uint32_t(uint8_t(buffer[index + 1])) << 16;
+  u.u |= uint32_t(uint8_t(buffer[index + 2])) << 8;
+  u.u |= uint32_t(uint8_t(buffer[index + 3]));
   _value = u.s;
   return index + 4;
 }
@@ -685,10 +707,10 @@ void encodeInto(std::vector<Octet>& buffer) const
     float s;
   } u;
   u.s = _value;
-  buffer.push_back(u.u >> 24);
-  buffer.push_back(u.u >> 16);
-  buffer.push_back(u.u >> 8);
-  buffer.push_back(u.u);
+  buffer.push_back(uint8_t(u.u >> 24));
+  buffer.push_back(uint8_t(u.u >> 16));
+  buffer.push_back(uint8_t(u.u >> 8));
+  buffer.push_back(uint8_t(u.u));
 }
 
 size_t
@@ -721,10 +743,10 @@ size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
     uint32_t u;
     float s;
   } u;
-  u.u = uint32_t(buffer[index]);
-  u.u |= uint32_t(buffer[index + 1]) << 8;
-  u.u |= uint32_t(buffer[index + 2]) << 16;
-  u.u |= uint32_t(buffer[index + 3]) << 24;
+  u.u = uint32_t(uint8_t(buffer[index]));
+  u.u |= uint32_t(uint8_t(buffer[index + 1])) << 8;
+  u.u |= uint32_t(uint8_t(buffer[index + 2])) << 16;
+  u.u |= uint32_t(uint8_t(buffer[index + 3])) << 24;
   _value = u.s;
   return index + 4;
 }
@@ -737,10 +759,10 @@ void encodeInto(std::vector<Octet>& buffer) const
     float s;
   } u;
   u.s = _value;
-  buffer.push_back(u.u);
-  buffer.push_back(u.u >> 8);
-  buffer.push_back(u.u >> 16);
-  buffer.push_back(u.u >> 24);
+  buffer.push_back(uint8_t(u.u));
+  buffer.push_back(uint8_t(u.u >> 8));
+  buffer.push_back(uint8_t(u.u >> 16));
+  buffer.push_back(uint8_t(u.u >> 24));
 }
 
 size_t
@@ -773,14 +795,14 @@ size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
     uint64_t u;
     double s;
   } u;
-  u.u = uint64_t(buffer[index]) << 56;
-  u.u |= uint64_t(buffer[index + 1]) << 48;
-  u.u |= uint64_t(buffer[index + 2]) << 40;
-  u.u |= uint64_t(buffer[index + 3]) << 32;
-  u.u |= uint64_t(buffer[index + 4]) << 24;
-  u.u |= uint64_t(buffer[index + 5]) << 16;
-  u.u |= uint64_t(buffer[index + 6]) << 8;
-  u.u |= uint64_t(buffer[index + 7]);
+  u.u = uint64_t(uint8_t(buffer[index])) << 56;
+  u.u |= uint64_t(uint8_t(buffer[index + 1])) << 48;
+  u.u |= uint64_t(uint8_t(buffer[index + 2])) << 40;
+  u.u |= uint64_t(uint8_t(buffer[index + 3])) << 32;
+  u.u |= uint64_t(uint8_t(buffer[index + 4])) << 24;
+  u.u |= uint64_t(uint8_t(buffer[index + 5])) << 16;
+  u.u |= uint64_t(uint8_t(buffer[index + 6])) << 8;
+  u.u |= uint64_t(uint8_t(buffer[index + 7]));
   _value = u.s;
   return index + 8;
 }
@@ -793,14 +815,14 @@ void encodeInto(std::vector<Octet>& buffer) const
     double s;
   } u;
   u.s = _value;
-  buffer.push_back(u.u >> 56);
-  buffer.push_back(u.u >> 48);
-  buffer.push_back(u.u >> 40);
-  buffer.push_back(u.u >> 32);
-  buffer.push_back(u.u >> 24);
-  buffer.push_back(u.u >> 16);
-  buffer.push_back(u.u >> 8);
-  buffer.push_back(u.u);
+  buffer.push_back(uint8_t(u.u >> 56));
+  buffer.push_back(uint8_t(u.u >> 48));
+  buffer.push_back(uint8_t(u.u >> 40));
+  buffer.push_back(uint8_t(u.u >> 32));
+  buffer.push_back(uint8_t(u.u >> 24));
+  buffer.push_back(uint8_t(u.u >> 16));
+  buffer.push_back(uint8_t(u.u >> 8));
+  buffer.push_back(uint8_t(u.u));
 }
 
 size_t
@@ -833,14 +855,14 @@ size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
     uint64_t u;
     double s;
   } u;
-  u.u = uint64_t(buffer[index]);
-  u.u |= uint64_t(buffer[index + 1]) << 8;
-  u.u |= uint64_t(buffer[index + 2]) << 16;
-  u.u |= uint64_t(buffer[index + 3]) << 24;
-  u.u |= uint64_t(buffer[index + 4]) << 32;
-  u.u |= uint64_t(buffer[index + 5]) << 40;
-  u.u |= uint64_t(buffer[index + 6]) << 48;
-  u.u |= uint64_t(buffer[index + 7]) << 56;
+  u.u = uint64_t(uint8_t(buffer[index]));
+  u.u |= uint64_t(uint8_t(buffer[index + 1])) << 8;
+  u.u |= uint64_t(uint8_t(buffer[index + 2])) << 16;
+  u.u |= uint64_t(uint8_t(buffer[index + 3])) << 24;
+  u.u |= uint64_t(uint8_t(buffer[index + 4])) << 32;
+  u.u |= uint64_t(uint8_t(buffer[index + 5])) << 40;
+  u.u |= uint64_t(uint8_t(buffer[index + 6])) << 48;
+  u.u |= uint64_t(uint8_t(buffer[index + 7])) << 56;
   _value = u.s;
   return index + 8;
 }
@@ -853,14 +875,14 @@ void encodeInto(std::vector<Octet>& buffer) const
     double s;
   } u;
   u.s = _value;
-  buffer.push_back(u.u);
-  buffer.push_back(u.u >> 8);
-  buffer.push_back(u.u >> 16);
-  buffer.push_back(u.u >> 24);
-  buffer.push_back(u.u >> 32);
-  buffer.push_back(u.u >> 40);
-  buffer.push_back(u.u >> 48);
-  buffer.push_back(u.u >> 56);
+  buffer.push_back(uint8_t(u.u));
+  buffer.push_back(uint8_t(u.u >> 8));
+  buffer.push_back(uint8_t(u.u >> 16));
+  buffer.push_back(uint8_t(u.u >> 24));
+  buffer.push_back(uint8_t(u.u >> 32));
+  buffer.push_back(uint8_t(u.u >> 40));
+  buffer.push_back(uint8_t(u.u >> 48));
+  buffer.push_back(uint8_t(u.u >> 56));
 }
 
 size_t
@@ -891,10 +913,14 @@ IMPLEMENT_ENCODING_HELPER_CLASS(HLAASCIIstring, std::string,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 4);
-  size_t length = Integer32(buffer[index]) << 24;
-  length |= Integer32(buffer[index + 1]) << 16;
-  length |= Integer32(buffer[index + 2]) << 8;
-  length |= Integer32(buffer[index + 3]);
+  uint32_t u;
+  u = uint32_t(uint8_t(buffer[index])) << 24;
+  u |= uint32_t(uint8_t(buffer[index + 1])) << 16;
+  u |= uint32_t(uint8_t(buffer[index + 2])) << 8;
+  u |= uint32_t(uint8_t(buffer[index + 3]));
+  Integer32 length = Integer32(u);
+  if (length < 0)
+    length = 0;
   index += 4;
 
   _value.clear();
@@ -909,13 +935,16 @@ void encodeInto(std::vector<Octet>& buffer) const
 {
   align(buffer, 4);
   size_t length = _value.size();
-  buffer.push_back(length >> 24);
-  buffer.push_back(length >> 16);
-  buffer.push_back(length >> 8);
-  buffer.push_back(length);
+  if (std::numeric_limits<Integer32>::max() < length)
+    length = std::numeric_limits<Integer32>::max();
+  uint32_t u = uint32_t(length);
+  buffer.push_back(uint8_t(u >> 24));
+  buffer.push_back(uint8_t(u >> 16));
+  buffer.push_back(uint8_t(u >> 8));
+  buffer.push_back(uint8_t(u));
 
-  for (std::string::const_iterator i = _value.begin(); i != _value.end(); ++i)
-    buffer.push_back(*i);
+  for (size_t i = 0; i < length; ++i)
+    buffer.push_back(_value[i]);
 }
 
 size_t
@@ -942,16 +971,23 @@ IMPLEMENT_ENCODING_HELPER_CLASS( HLAunicodeString, std::wstring,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 4);
-  size_t length = Integer32(buffer[index]) << 24;
-  length |= Integer32(buffer[index + 1]) << 16;
-  length |= Integer32(buffer[index + 2]) << 8;
-  length |= Integer32(buffer[index + 3]);
+  uint32_t u;
+  u = uint32_t(uint8_t(buffer[index])) << 24;
+  u |= uint32_t(uint8_t(buffer[index + 1])) << 16;
+  u |= uint32_t(uint8_t(buffer[index + 2])) << 8;
+  u |= uint32_t(uint8_t(buffer[index + 3]));
+  Integer32 length = Integer32(u);
+  if (length < 0)
+    length = 0;
   index += 4;
 
   _value.clear();
   _value.reserve(length);
   while (0 < length--) {
-    _value.push_back((wchar_t(buffer[index]) << 8) | wchar_t(buffer[index + 1]));
+    uint16_t u;
+    u = uint16_t(uint8_t(buffer[index])) << 8;
+    u |= uint16_t(uint8_t(buffer[index + 1]));
+    _value.push_back(wchar_t(u));
     index += 2;
   }
 
@@ -962,14 +998,18 @@ void encodeInto(std::vector<Octet>& buffer) const
 {
   align(buffer, 4);
   size_t length = _value.size();
-  buffer.push_back(length >> 24);
-  buffer.push_back(length >> 16);
-  buffer.push_back(length >> 8);
-  buffer.push_back(length);
+  if (std::numeric_limits<Integer32>::max() < length)
+    length = std::numeric_limits<Integer32>::max();
+  uint32_t u = uint32_t(length);
+  buffer.push_back(uint8_t(u >> 24));
+  buffer.push_back(uint8_t(u >> 16));
+  buffer.push_back(uint8_t(u >> 8));
+  buffer.push_back(uint8_t(u));
 
-  for (std::wstring::const_iterator i = _value.begin(); i != _value.end(); ++i) {
-    buffer.push_back((*i) >> 8);
-    buffer.push_back(*i);
+  for (size_t i = 0; i < length; ++i) {
+    uint16_t u = uint16_t(_value[i]);
+    buffer.push_back(uint8_t(u >> 8));
+    buffer.push_back(uint8_t(u));
   }
 }
 
