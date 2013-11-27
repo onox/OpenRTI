@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
  *
  *
  * This file is part of OpenRTI.
@@ -378,6 +378,10 @@ class OPENRTI_API RangeBoundsValue {
 public:
   void setLowerBound(const Unsigned& value)
   { _lowerBound = value; }
+#if 201103L <= __cplusplus
+  void setLowerBound(Unsigned&& value)
+  { _lowerBound = value; }
+#endif
   Unsigned& getLowerBound()
   { return _lowerBound; }
   const Unsigned& getLowerBound() const
@@ -385,6 +389,10 @@ public:
 
   void setUpperBound(const Unsigned& value)
   { _upperBound = value; }
+#if 201103L <= __cplusplus
+  void setUpperBound(Unsigned&& value)
+  { _upperBound = value; }
+#endif
   Unsigned& getUpperBound()
   { return _upperBound; }
   const Unsigned& getUpperBound() const
@@ -443,6 +451,10 @@ class OPENRTI_API AttributeState {
 public:
   void setAttributeHandle(const AttributeHandle& value)
   { _attributeHandle = value; }
+#if 201103L <= __cplusplus
+  void setAttributeHandle(AttributeHandle&& value)
+  { _attributeHandle = value; }
+#endif
   AttributeHandle& getAttributeHandle()
   { return _attributeHandle; }
   const AttributeHandle& getAttributeHandle() const
@@ -477,6 +489,10 @@ class OPENRTI_API ParameterValue {
 public:
   void setParameterHandle(const ParameterHandle& value)
   { _parameterHandle = value; }
+#if 201103L <= __cplusplus
+  void setParameterHandle(ParameterHandle&& value)
+  { _parameterHandle = value; }
+#endif
   ParameterHandle& getParameterHandle()
   { return _parameterHandle; }
   const ParameterHandle& getParameterHandle() const
@@ -484,6 +500,10 @@ public:
 
   void setValue(const VariableLengthData& value)
   { _value = value; }
+#if 201103L <= __cplusplus
+  void setValue(VariableLengthData&& value)
+  { _value = value; }
+#endif
   VariableLengthData& getValue()
   { return _value; }
   const VariableLengthData& getValue() const
@@ -522,6 +542,10 @@ class OPENRTI_API AttributeValue {
 public:
   void setAttributeHandle(const AttributeHandle& value)
   { _attributeHandle = value; }
+#if 201103L <= __cplusplus
+  void setAttributeHandle(AttributeHandle&& value)
+  { _attributeHandle = value; }
+#endif
   AttributeHandle& getAttributeHandle()
   { return _attributeHandle; }
   const AttributeHandle& getAttributeHandle() const
@@ -529,6 +553,10 @@ public:
 
   void setValue(const VariableLengthData& value)
   { _value = value; }
+#if 201103L <= __cplusplus
+  void setValue(VariableLengthData&& value)
+  { _value = value; }
+#endif
   VariableLengthData& getValue()
   { return _value; }
   const VariableLengthData& getValue() const
@@ -575,6 +603,10 @@ class OPENRTI_API FederationExecutionInformation {
 public:
   void setFederationExecutionName(const String& value)
   { _federationExecutionName = value; }
+#if 201103L <= __cplusplus
+  void setFederationExecutionName(String&& value)
+  { _federationExecutionName = value; }
+#endif
   String& getFederationExecutionName()
   { return _federationExecutionName; }
   const String& getFederationExecutionName() const
@@ -582,6 +614,10 @@ public:
 
   void setLogicalTimeFactoryName(const String& value)
   { _logicalTimeFactoryName = value; }
+#if 201103L <= __cplusplus
+  void setLogicalTimeFactoryName(String&& value)
+  { _logicalTimeFactoryName = value; }
+#endif
   String& getLogicalTimeFactoryName()
   { return _logicalTimeFactoryName; }
   const String& getLogicalTimeFactoryName() const
@@ -629,6 +665,10 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
   String& getName()
   { return getImpl()._name; }
   const String& getName() const
@@ -686,6 +726,10 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
   String& getName()
   { return getImpl()._name; }
   const String& getName() const
@@ -693,6 +737,10 @@ public:
 
   void setUpperBound(const Unsigned& value)
   { getImpl()._upperBound = value; }
+#if 201103L <= __cplusplus
+  void setUpperBound(Unsigned&& value)
+  { getImpl()._upperBound = value; }
+#endif
   Unsigned& getUpperBound()
   { return getImpl()._upperBound; }
   const Unsigned& getUpperBound() const
@@ -754,6 +802,10 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
   String& getName()
   { return getImpl()._name; }
   const String& getName() const
@@ -761,6 +813,10 @@ public:
 
   void setDimensionSet(const StringSet& value)
   { getImpl()._dimensionSet = value; }
+#if 201103L <= __cplusplus
+  void setDimensionSet(StringSet&& value)
+  { getImpl()._dimensionSet = value; }
+#endif
   StringSet& getDimensionSet()
   { return getImpl()._dimensionSet; }
   const StringSet& getDimensionSet() const
@@ -822,6 +878,10 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
   String& getName()
   { return getImpl()._name; }
   const String& getName() const
@@ -879,6 +939,10 @@ public:
   { }
   void setName(const StringVector& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(StringVector&& value)
+  { getImpl()._name = value; }
+#endif
   StringVector& getName()
   { return getImpl()._name; }
   const StringVector& getName() const
@@ -886,6 +950,10 @@ public:
 
   void setOrderType(const String& value)
   { getImpl()._orderType = value; }
+#if 201103L <= __cplusplus
+  void setOrderType(String&& value)
+  { getImpl()._orderType = value; }
+#endif
   String& getOrderType()
   { return getImpl()._orderType; }
   const String& getOrderType() const
@@ -893,6 +961,10 @@ public:
 
   void setTransportationType(const String& value)
   { getImpl()._transportationType = value; }
+#if 201103L <= __cplusplus
+  void setTransportationType(String&& value)
+  { getImpl()._transportationType = value; }
+#endif
   String& getTransportationType()
   { return getImpl()._transportationType; }
   const String& getTransportationType() const
@@ -900,6 +972,10 @@ public:
 
   void setRoutingSpace(const String& value)
   { getImpl()._routingSpace = value; }
+#if 201103L <= __cplusplus
+  void setRoutingSpace(String&& value)
+  { getImpl()._routingSpace = value; }
+#endif
   String& getRoutingSpace()
   { return getImpl()._routingSpace; }
   const String& getRoutingSpace() const
@@ -907,6 +983,10 @@ public:
 
   void setDimensionSet(const StringSet& value)
   { getImpl()._dimensionSet = value; }
+#if 201103L <= __cplusplus
+  void setDimensionSet(StringSet&& value)
+  { getImpl()._dimensionSet = value; }
+#endif
   StringSet& getDimensionSet()
   { return getImpl()._dimensionSet; }
   const StringSet& getDimensionSet() const
@@ -914,6 +994,10 @@ public:
 
   void setParameterList(const FOMStringParameterList& value)
   { getImpl()._parameterList = value; }
+#if 201103L <= __cplusplus
+  void setParameterList(FOMStringParameterList&& value)
+  { getImpl()._parameterList = value; }
+#endif
   FOMStringParameterList& getParameterList()
   { return getImpl()._parameterList; }
   const FOMStringParameterList& getParameterList() const
@@ -991,6 +1075,10 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
   String& getName()
   { return getImpl()._name; }
   const String& getName() const
@@ -998,6 +1086,10 @@ public:
 
   void setOrderType(const String& value)
   { getImpl()._orderType = value; }
+#if 201103L <= __cplusplus
+  void setOrderType(String&& value)
+  { getImpl()._orderType = value; }
+#endif
   String& getOrderType()
   { return getImpl()._orderType; }
   const String& getOrderType() const
@@ -1005,6 +1097,10 @@ public:
 
   void setTransportationType(const String& value)
   { getImpl()._transportationType = value; }
+#if 201103L <= __cplusplus
+  void setTransportationType(String&& value)
+  { getImpl()._transportationType = value; }
+#endif
   String& getTransportationType()
   { return getImpl()._transportationType; }
   const String& getTransportationType() const
@@ -1012,6 +1108,10 @@ public:
 
   void setRoutingSpace(const String& value)
   { getImpl()._routingSpace = value; }
+#if 201103L <= __cplusplus
+  void setRoutingSpace(String&& value)
+  { getImpl()._routingSpace = value; }
+#endif
   String& getRoutingSpace()
   { return getImpl()._routingSpace; }
   const String& getRoutingSpace() const
@@ -1019,6 +1119,10 @@ public:
 
   void setDimensionSet(const StringSet& value)
   { getImpl()._dimensionSet = value; }
+#if 201103L <= __cplusplus
+  void setDimensionSet(StringSet&& value)
+  { getImpl()._dimensionSet = value; }
+#endif
   StringSet& getDimensionSet()
   { return getImpl()._dimensionSet; }
   const StringSet& getDimensionSet() const
@@ -1092,6 +1196,10 @@ public:
   { }
   void setName(const StringVector& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(StringVector&& value)
+  { getImpl()._name = value; }
+#endif
   StringVector& getName()
   { return getImpl()._name; }
   const StringVector& getName() const
@@ -1099,6 +1207,10 @@ public:
 
   void setAttributeList(const FOMStringAttributeList& value)
   { getImpl()._attributeList = value; }
+#if 201103L <= __cplusplus
+  void setAttributeList(FOMStringAttributeList&& value)
+  { getImpl()._attributeList = value; }
+#endif
   FOMStringAttributeList& getAttributeList()
   { return getImpl()._attributeList; }
   const FOMStringAttributeList& getAttributeList() const
@@ -1160,6 +1272,10 @@ public:
   { }
   void setTransportationTypeList(const FOMStringTransportationTypeList& value)
   { getImpl()._transportationTypeList = value; }
+#if 201103L <= __cplusplus
+  void setTransportationTypeList(FOMStringTransportationTypeList&& value)
+  { getImpl()._transportationTypeList = value; }
+#endif
   FOMStringTransportationTypeList& getTransportationTypeList()
   { return getImpl()._transportationTypeList; }
   const FOMStringTransportationTypeList& getTransportationTypeList() const
@@ -1167,6 +1283,10 @@ public:
 
   void setDimensionList(const FOMStringDimensionList& value)
   { getImpl()._dimensionList = value; }
+#if 201103L <= __cplusplus
+  void setDimensionList(FOMStringDimensionList&& value)
+  { getImpl()._dimensionList = value; }
+#endif
   FOMStringDimensionList& getDimensionList()
   { return getImpl()._dimensionList; }
   const FOMStringDimensionList& getDimensionList() const
@@ -1174,6 +1294,10 @@ public:
 
   void setRoutingSpaceList(const FOMStringRoutingSpaceList& value)
   { getImpl()._routingSpaceList = value; }
+#if 201103L <= __cplusplus
+  void setRoutingSpaceList(FOMStringRoutingSpaceList&& value)
+  { getImpl()._routingSpaceList = value; }
+#endif
   FOMStringRoutingSpaceList& getRoutingSpaceList()
   { return getImpl()._routingSpaceList; }
   const FOMStringRoutingSpaceList& getRoutingSpaceList() const
@@ -1181,6 +1305,10 @@ public:
 
   void setInteractionClassList(const FOMStringInteractionClassList& value)
   { getImpl()._interactionClassList = value; }
+#if 201103L <= __cplusplus
+  void setInteractionClassList(FOMStringInteractionClassList&& value)
+  { getImpl()._interactionClassList = value; }
+#endif
   FOMStringInteractionClassList& getInteractionClassList()
   { return getImpl()._interactionClassList; }
   const FOMStringInteractionClassList& getInteractionClassList() const
@@ -1188,6 +1316,10 @@ public:
 
   void setObjectClassList(const FOMStringObjectClassList& value)
   { getImpl()._objectClassList = value; }
+#if 201103L <= __cplusplus
+  void setObjectClassList(FOMStringObjectClassList&& value)
+  { getImpl()._objectClassList = value; }
+#endif
   FOMStringObjectClassList& getObjectClassList()
   { return getImpl()._objectClassList; }
   const FOMStringObjectClassList& getObjectClassList() const
@@ -1261,6 +1393,10 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
   String& getName()
   { return getImpl()._name; }
   const String& getName() const
@@ -1268,6 +1404,10 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { getImpl()._transportationType = value; }
+#if 201103L <= __cplusplus
+  void setTransportationType(TransportationType&& value)
+  { getImpl()._transportationType = value; }
+#endif
   TransportationType& getTransportationType()
   { return getImpl()._transportationType; }
   const TransportationType& getTransportationType() const
@@ -1331,6 +1471,10 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
   String& getName()
   { return getImpl()._name; }
   const String& getName() const
@@ -1338,6 +1482,10 @@ public:
 
   void setDimensionHandle(const DimensionHandle& value)
   { getImpl()._dimensionHandle = value; }
+#if 201103L <= __cplusplus
+  void setDimensionHandle(DimensionHandle&& value)
+  { getImpl()._dimensionHandle = value; }
+#endif
   DimensionHandle& getDimensionHandle()
   { return getImpl()._dimensionHandle; }
   const DimensionHandle& getDimensionHandle() const
@@ -1345,6 +1493,10 @@ public:
 
   void setUpperBound(const Unsigned& value)
   { getImpl()._upperBound = value; }
+#if 201103L <= __cplusplus
+  void setUpperBound(Unsigned&& value)
+  { getImpl()._upperBound = value; }
+#endif
   Unsigned& getUpperBound()
   { return getImpl()._upperBound; }
   const Unsigned& getUpperBound() const
@@ -1412,6 +1564,10 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
   String& getName()
   { return getImpl()._name; }
   const String& getName() const
@@ -1419,6 +1575,10 @@ public:
 
   void setSpaceHandle(const SpaceHandle& value)
   { getImpl()._spaceHandle = value; }
+#if 201103L <= __cplusplus
+  void setSpaceHandle(SpaceHandle&& value)
+  { getImpl()._spaceHandle = value; }
+#endif
   SpaceHandle& getSpaceHandle()
   { return getImpl()._spaceHandle; }
   const SpaceHandle& getSpaceHandle() const
@@ -1426,6 +1586,10 @@ public:
 
   void setDimensionHandleSet(const DimensionHandleSet& value)
   { getImpl()._dimensionHandleSet = value; }
+#if 201103L <= __cplusplus
+  void setDimensionHandleSet(DimensionHandleSet&& value)
+  { getImpl()._dimensionHandleSet = value; }
+#endif
   DimensionHandleSet& getDimensionHandleSet()
   { return getImpl()._dimensionHandleSet; }
   const DimensionHandleSet& getDimensionHandleSet() const
@@ -1493,6 +1657,10 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
   String& getName()
   { return getImpl()._name; }
   const String& getName() const
@@ -1500,6 +1668,10 @@ public:
 
   void setParameterHandle(const ParameterHandle& value)
   { getImpl()._parameterHandle = value; }
+#if 201103L <= __cplusplus
+  void setParameterHandle(ParameterHandle&& value)
+  { getImpl()._parameterHandle = value; }
+#endif
   ParameterHandle& getParameterHandle()
   { return getImpl()._parameterHandle; }
   const ParameterHandle& getParameterHandle() const
@@ -1563,6 +1735,10 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
   String& getName()
   { return getImpl()._name; }
   const String& getName() const
@@ -1570,6 +1746,10 @@ public:
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { getImpl()._interactionClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setInteractionClassHandle(InteractionClassHandle&& value)
+  { getImpl()._interactionClassHandle = value; }
+#endif
   InteractionClassHandle& getInteractionClassHandle()
   { return getImpl()._interactionClassHandle; }
   const InteractionClassHandle& getInteractionClassHandle() const
@@ -1577,6 +1757,10 @@ public:
 
   void setParentInteractionClassHandle(const InteractionClassHandle& value)
   { getImpl()._parentInteractionClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setParentInteractionClassHandle(InteractionClassHandle&& value)
+  { getImpl()._parentInteractionClassHandle = value; }
+#endif
   InteractionClassHandle& getParentInteractionClassHandle()
   { return getImpl()._parentInteractionClassHandle; }
   const InteractionClassHandle& getParentInteractionClassHandle() const
@@ -1584,6 +1768,10 @@ public:
 
   void setOrderType(const OrderType& value)
   { getImpl()._orderType = value; }
+#if 201103L <= __cplusplus
+  void setOrderType(OrderType&& value)
+  { getImpl()._orderType = value; }
+#endif
   OrderType& getOrderType()
   { return getImpl()._orderType; }
   const OrderType& getOrderType() const
@@ -1591,6 +1779,10 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { getImpl()._transportationType = value; }
+#if 201103L <= __cplusplus
+  void setTransportationType(TransportationType&& value)
+  { getImpl()._transportationType = value; }
+#endif
   TransportationType& getTransportationType()
   { return getImpl()._transportationType; }
   const TransportationType& getTransportationType() const
@@ -1598,6 +1790,10 @@ public:
 
   void setDimensionHandleSet(const DimensionHandleSet& value)
   { getImpl()._dimensionHandleSet = value; }
+#if 201103L <= __cplusplus
+  void setDimensionHandleSet(DimensionHandleSet&& value)
+  { getImpl()._dimensionHandleSet = value; }
+#endif
   DimensionHandleSet& getDimensionHandleSet()
   { return getImpl()._dimensionHandleSet; }
   const DimensionHandleSet& getDimensionHandleSet() const
@@ -1605,6 +1801,10 @@ public:
 
   void setParameterList(const FOMParameterList& value)
   { getImpl()._parameterList = value; }
+#if 201103L <= __cplusplus
+  void setParameterList(FOMParameterList&& value)
+  { getImpl()._parameterList = value; }
+#endif
   FOMParameterList& getParameterList()
   { return getImpl()._parameterList; }
   const FOMParameterList& getParameterList() const
@@ -1686,6 +1886,10 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
   String& getName()
   { return getImpl()._name; }
   const String& getName() const
@@ -1693,6 +1897,10 @@ public:
 
   void setAttributeHandle(const AttributeHandle& value)
   { getImpl()._attributeHandle = value; }
+#if 201103L <= __cplusplus
+  void setAttributeHandle(AttributeHandle&& value)
+  { getImpl()._attributeHandle = value; }
+#endif
   AttributeHandle& getAttributeHandle()
   { return getImpl()._attributeHandle; }
   const AttributeHandle& getAttributeHandle() const
@@ -1700,6 +1908,10 @@ public:
 
   void setOrderType(const OrderType& value)
   { getImpl()._orderType = value; }
+#if 201103L <= __cplusplus
+  void setOrderType(OrderType&& value)
+  { getImpl()._orderType = value; }
+#endif
   OrderType& getOrderType()
   { return getImpl()._orderType; }
   const OrderType& getOrderType() const
@@ -1707,6 +1919,10 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { getImpl()._transportationType = value; }
+#if 201103L <= __cplusplus
+  void setTransportationType(TransportationType&& value)
+  { getImpl()._transportationType = value; }
+#endif
   TransportationType& getTransportationType()
   { return getImpl()._transportationType; }
   const TransportationType& getTransportationType() const
@@ -1714,6 +1930,10 @@ public:
 
   void setDimensionHandleSet(const DimensionHandleSet& value)
   { getImpl()._dimensionHandleSet = value; }
+#if 201103L <= __cplusplus
+  void setDimensionHandleSet(DimensionHandleSet&& value)
+  { getImpl()._dimensionHandleSet = value; }
+#endif
   DimensionHandleSet& getDimensionHandleSet()
   { return getImpl()._dimensionHandleSet; }
   const DimensionHandleSet& getDimensionHandleSet() const
@@ -1787,6 +2007,10 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
   String& getName()
   { return getImpl()._name; }
   const String& getName() const
@@ -1794,6 +2018,10 @@ public:
 
   void setObjectClassHandle(const ObjectClassHandle& value)
   { getImpl()._objectClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectClassHandle(ObjectClassHandle&& value)
+  { getImpl()._objectClassHandle = value; }
+#endif
   ObjectClassHandle& getObjectClassHandle()
   { return getImpl()._objectClassHandle; }
   const ObjectClassHandle& getObjectClassHandle() const
@@ -1801,6 +2029,10 @@ public:
 
   void setParentObjectClassHandle(const ObjectClassHandle& value)
   { getImpl()._parentObjectClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setParentObjectClassHandle(ObjectClassHandle&& value)
+  { getImpl()._parentObjectClassHandle = value; }
+#endif
   ObjectClassHandle& getParentObjectClassHandle()
   { return getImpl()._parentObjectClassHandle; }
   const ObjectClassHandle& getParentObjectClassHandle() const
@@ -1808,6 +2040,10 @@ public:
 
   void setAttributeList(const FOMAttributeList& value)
   { getImpl()._attributeList = value; }
+#if 201103L <= __cplusplus
+  void setAttributeList(FOMAttributeList&& value)
+  { getImpl()._attributeList = value; }
+#endif
   FOMAttributeList& getAttributeList()
   { return getImpl()._attributeList; }
   const FOMAttributeList& getAttributeList() const
@@ -1877,6 +2113,10 @@ public:
   { }
   void setFOMModuleHandle(const FOMModuleHandle& value)
   { getImpl()._fOMModuleHandle = value; }
+#if 201103L <= __cplusplus
+  void setFOMModuleHandle(FOMModuleHandle&& value)
+  { getImpl()._fOMModuleHandle = value; }
+#endif
   FOMModuleHandle& getFOMModuleHandle()
   { return getImpl()._fOMModuleHandle; }
   const FOMModuleHandle& getFOMModuleHandle() const
@@ -1884,6 +2124,10 @@ public:
 
   void setRequiredFOMModuleHandleSet(const FOMModuleHandleSet& value)
   { getImpl()._requiredFOMModuleHandleSet = value; }
+#if 201103L <= __cplusplus
+  void setRequiredFOMModuleHandleSet(FOMModuleHandleSet&& value)
+  { getImpl()._requiredFOMModuleHandleSet = value; }
+#endif
   FOMModuleHandleSet& getRequiredFOMModuleHandleSet()
   { return getImpl()._requiredFOMModuleHandleSet; }
   const FOMModuleHandleSet& getRequiredFOMModuleHandleSet() const
@@ -1891,6 +2135,10 @@ public:
 
   void setTransportationTypeList(const FOMTransportationTypeList& value)
   { getImpl()._transportationTypeList = value; }
+#if 201103L <= __cplusplus
+  void setTransportationTypeList(FOMTransportationTypeList&& value)
+  { getImpl()._transportationTypeList = value; }
+#endif
   FOMTransportationTypeList& getTransportationTypeList()
   { return getImpl()._transportationTypeList; }
   const FOMTransportationTypeList& getTransportationTypeList() const
@@ -1898,6 +2146,10 @@ public:
 
   void setDimensionList(const FOMDimensionList& value)
   { getImpl()._dimensionList = value; }
+#if 201103L <= __cplusplus
+  void setDimensionList(FOMDimensionList&& value)
+  { getImpl()._dimensionList = value; }
+#endif
   FOMDimensionList& getDimensionList()
   { return getImpl()._dimensionList; }
   const FOMDimensionList& getDimensionList() const
@@ -1905,6 +2157,10 @@ public:
 
   void setRoutingSpaceList(const FOMRoutingSpaceList& value)
   { getImpl()._routingSpaceList = value; }
+#if 201103L <= __cplusplus
+  void setRoutingSpaceList(FOMRoutingSpaceList&& value)
+  { getImpl()._routingSpaceList = value; }
+#endif
   FOMRoutingSpaceList& getRoutingSpaceList()
   { return getImpl()._routingSpaceList; }
   const FOMRoutingSpaceList& getRoutingSpaceList() const
@@ -1912,6 +2168,10 @@ public:
 
   void setInteractionClassList(const FOMInteractionClassList& value)
   { getImpl()._interactionClassList = value; }
+#if 201103L <= __cplusplus
+  void setInteractionClassList(FOMInteractionClassList&& value)
+  { getImpl()._interactionClassList = value; }
+#endif
   FOMInteractionClassList& getInteractionClassList()
   { return getImpl()._interactionClassList; }
   const FOMInteractionClassList& getInteractionClassList() const
@@ -1919,6 +2179,10 @@ public:
 
   void setObjectClassList(const FOMObjectClassList& value)
   { getImpl()._objectClassList = value; }
+#if 201103L <= __cplusplus
+  void setObjectClassList(FOMObjectClassList&& value)
+  { getImpl()._objectClassList = value; }
+#endif
   FOMObjectClassList& getObjectClassList()
   { return getImpl()._objectClassList; }
   const FOMObjectClassList& getObjectClassList() const
@@ -2016,6 +2280,10 @@ public:
 
   void setFaultDescription(const String& value)
   { _faultDescription = value; }
+#if 201103L <= __cplusplus
+  void setFaultDescription(String&& value)
+  { _faultDescription = value; }
+#endif
   String& getFaultDescription()
   { return _faultDescription; }
   const String& getFaultDescription() const
@@ -2048,6 +2316,10 @@ public:
 
   void setFederationExecution(const String& value)
   { _federationExecution = value; }
+#if 201103L <= __cplusplus
+  void setFederationExecution(String&& value)
+  { _federationExecution = value; }
+#endif
   String& getFederationExecution()
   { return _federationExecution; }
   const String& getFederationExecution() const
@@ -2055,6 +2327,10 @@ public:
 
   void setLogicalTimeFactoryName(const String& value)
   { _logicalTimeFactoryName = value; }
+#if 201103L <= __cplusplus
+  void setLogicalTimeFactoryName(String&& value)
+  { _logicalTimeFactoryName = value; }
+#endif
   String& getLogicalTimeFactoryName()
   { return _logicalTimeFactoryName; }
   const String& getLogicalTimeFactoryName() const
@@ -2062,6 +2338,10 @@ public:
 
   void setFOMModuleFileList(const StringVector& value)
   { _fOMModuleFileList = value; }
+#if 201103L <= __cplusplus
+  void setFOMModuleFileList(StringVector&& value)
+  { _fOMModuleFileList = value; }
+#endif
   StringVector& getFOMModuleFileList()
   { return _fOMModuleFileList; }
   const StringVector& getFOMModuleFileList() const
@@ -2069,6 +2349,10 @@ public:
 
   void setFOMStringModuleList(const FOMStringModuleList& value)
   { _fOMStringModuleList = value; }
+#if 201103L <= __cplusplus
+  void setFOMStringModuleList(FOMStringModuleList&& value)
+  { _fOMStringModuleList = value; }
+#endif
   FOMStringModuleList& getFOMStringModuleList()
   { return _fOMStringModuleList; }
   const FOMStringModuleList& getFOMStringModuleList() const
@@ -2104,6 +2388,10 @@ public:
 
   void setCreateFederationExecutionResponseType(const CreateFederationExecutionResponseType& value)
   { _createFederationExecutionResponseType = value; }
+#if 201103L <= __cplusplus
+  void setCreateFederationExecutionResponseType(CreateFederationExecutionResponseType&& value)
+  { _createFederationExecutionResponseType = value; }
+#endif
   CreateFederationExecutionResponseType& getCreateFederationExecutionResponseType()
   { return _createFederationExecutionResponseType; }
   const CreateFederationExecutionResponseType& getCreateFederationExecutionResponseType() const
@@ -2111,6 +2399,10 @@ public:
 
   void setExceptionString(const String& value)
   { _exceptionString = value; }
+#if 201103L <= __cplusplus
+  void setExceptionString(String&& value)
+  { _exceptionString = value; }
+#endif
   String& getExceptionString()
   { return _exceptionString; }
   const String& getExceptionString() const
@@ -2144,6 +2436,10 @@ public:
 
   void setFederationExecution(const String& value)
   { _federationExecution = value; }
+#if 201103L <= __cplusplus
+  void setFederationExecution(String&& value)
+  { _federationExecution = value; }
+#endif
   String& getFederationExecution()
   { return _federationExecution; }
   const String& getFederationExecution() const
@@ -2176,6 +2472,10 @@ public:
 
   void setDestroyFederationExecutionResponseType(const DestroyFederationExecutionResponseType& value)
   { _destroyFederationExecutionResponseType = value; }
+#if 201103L <= __cplusplus
+  void setDestroyFederationExecutionResponseType(DestroyFederationExecutionResponseType&& value)
+  { _destroyFederationExecutionResponseType = value; }
+#endif
   DestroyFederationExecutionResponseType& getDestroyFederationExecutionResponseType()
   { return _destroyFederationExecutionResponseType; }
   const DestroyFederationExecutionResponseType& getDestroyFederationExecutionResponseType() const
@@ -2232,6 +2532,10 @@ public:
 
   void setFederationExecutionInformationVector(const FederationExecutionInformationVector& value)
   { _federationExecutionInformationVector = value; }
+#if 201103L <= __cplusplus
+  void setFederationExecutionInformationVector(FederationExecutionInformationVector&& value)
+  { _federationExecutionInformationVector = value; }
+#endif
   FederationExecutionInformationVector& getFederationExecutionInformationVector()
   { return _federationExecutionInformationVector; }
   const FederationExecutionInformationVector& getFederationExecutionInformationVector() const
@@ -2264,6 +2568,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2271,6 +2579,10 @@ public:
 
   void setFederationName(const String& value)
   { _federationName = value; }
+#if 201103L <= __cplusplus
+  void setFederationName(String&& value)
+  { _federationName = value; }
+#endif
   String& getFederationName()
   { return _federationName; }
   const String& getFederationName() const
@@ -2278,6 +2590,10 @@ public:
 
   void setLogicalTimeFactoryName(const String& value)
   { _logicalTimeFactoryName = value; }
+#if 201103L <= __cplusplus
+  void setLogicalTimeFactoryName(String&& value)
+  { _logicalTimeFactoryName = value; }
+#endif
   String& getLogicalTimeFactoryName()
   { return _logicalTimeFactoryName; }
   const String& getLogicalTimeFactoryName() const
@@ -2285,6 +2601,10 @@ public:
 
   void setConfigurationParameterMap(const ConfigurationParameterMap& value)
   { _configurationParameterMap = value; }
+#if 201103L <= __cplusplus
+  void setConfigurationParameterMap(ConfigurationParameterMap&& value)
+  { _configurationParameterMap = value; }
+#endif
   ConfigurationParameterMap& getConfigurationParameterMap()
   { return _configurationParameterMap; }
   const ConfigurationParameterMap& getConfigurationParameterMap() const
@@ -2292,6 +2612,10 @@ public:
 
   void setFOMModuleList(const FOMModuleList& value)
   { _fOMModuleList = value; }
+#if 201103L <= __cplusplus
+  void setFOMModuleList(FOMModuleList&& value)
+  { _fOMModuleList = value; }
+#endif
   FOMModuleList& getFOMModuleList()
   { return _fOMModuleList; }
   const FOMModuleList& getFOMModuleList() const
@@ -2328,6 +2652,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2360,6 +2688,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2392,6 +2724,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2424,6 +2760,10 @@ public:
 
   void setFederationExecution(const String& value)
   { _federationExecution = value; }
+#if 201103L <= __cplusplus
+  void setFederationExecution(String&& value)
+  { _federationExecution = value; }
+#endif
   String& getFederationExecution()
   { return _federationExecution; }
   const String& getFederationExecution() const
@@ -2431,6 +2771,10 @@ public:
 
   void setFederateType(const String& value)
   { _federateType = value; }
+#if 201103L <= __cplusplus
+  void setFederateType(String&& value)
+  { _federateType = value; }
+#endif
   String& getFederateType()
   { return _federateType; }
   const String& getFederateType() const
@@ -2438,6 +2782,10 @@ public:
 
   void setFederateName(const String& value)
   { _federateName = value; }
+#if 201103L <= __cplusplus
+  void setFederateName(String&& value)
+  { _federateName = value; }
+#endif
   String& getFederateName()
   { return _federateName; }
   const String& getFederateName() const
@@ -2445,6 +2793,10 @@ public:
 
   void setFOMStringModuleList(const FOMStringModuleList& value)
   { _fOMStringModuleList = value; }
+#if 201103L <= __cplusplus
+  void setFOMStringModuleList(FOMStringModuleList&& value)
+  { _fOMStringModuleList = value; }
+#endif
   FOMStringModuleList& getFOMStringModuleList()
   { return _fOMStringModuleList; }
   const FOMStringModuleList& getFOMStringModuleList() const
@@ -2452,6 +2804,10 @@ public:
 
   void setConfigurationParameterMap(const ConfigurationParameterMap& value)
   { _configurationParameterMap = value; }
+#if 201103L <= __cplusplus
+  void setConfigurationParameterMap(ConfigurationParameterMap&& value)
+  { _configurationParameterMap = value; }
+#endif
   ConfigurationParameterMap& getConfigurationParameterMap()
   { return _configurationParameterMap; }
   const ConfigurationParameterMap& getConfigurationParameterMap() const
@@ -2488,6 +2844,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2495,6 +2855,10 @@ public:
 
   void setJoinFederationExecutionResponseType(const JoinFederationExecutionResponseType& value)
   { _joinFederationExecutionResponseType = value; }
+#if 201103L <= __cplusplus
+  void setJoinFederationExecutionResponseType(JoinFederationExecutionResponseType&& value)
+  { _joinFederationExecutionResponseType = value; }
+#endif
   JoinFederationExecutionResponseType& getJoinFederationExecutionResponseType()
   { return _joinFederationExecutionResponseType; }
   const JoinFederationExecutionResponseType& getJoinFederationExecutionResponseType() const
@@ -2502,6 +2866,10 @@ public:
 
   void setExceptionString(const String& value)
   { _exceptionString = value; }
+#if 201103L <= __cplusplus
+  void setExceptionString(String&& value)
+  { _exceptionString = value; }
+#endif
   String& getExceptionString()
   { return _exceptionString; }
   const String& getExceptionString() const
@@ -2509,6 +2877,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -2516,6 +2888,10 @@ public:
 
   void setFederateType(const String& value)
   { _federateType = value; }
+#if 201103L <= __cplusplus
+  void setFederateType(String&& value)
+  { _federateType = value; }
+#endif
   String& getFederateType()
   { return _federateType; }
   const String& getFederateType() const
@@ -2523,6 +2899,10 @@ public:
 
   void setFederateName(const String& value)
   { _federateName = value; }
+#if 201103L <= __cplusplus
+  void setFederateName(String&& value)
+  { _federateName = value; }
+#endif
   String& getFederateName()
   { return _federateName; }
   const String& getFederateName() const
@@ -2530,6 +2910,10 @@ public:
 
   void setFOMModuleHandleList(const FOMModuleHandleVector& value)
   { _fOMModuleHandleList = value; }
+#if 201103L <= __cplusplus
+  void setFOMModuleHandleList(FOMModuleHandleVector&& value)
+  { _fOMModuleHandleList = value; }
+#endif
   FOMModuleHandleVector& getFOMModuleHandleList()
   { return _fOMModuleHandleList; }
   const FOMModuleHandleVector& getFOMModuleHandleList() const
@@ -2568,6 +2952,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2575,6 +2963,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -2608,6 +3000,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2615,6 +3011,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -2622,6 +3022,10 @@ public:
 
   void setFederateType(const String& value)
   { _federateType = value; }
+#if 201103L <= __cplusplus
+  void setFederateType(String&& value)
+  { _federateType = value; }
+#endif
   String& getFederateType()
   { return _federateType; }
   const String& getFederateType() const
@@ -2629,6 +3033,10 @@ public:
 
   void setFederateName(const String& value)
   { _federateName = value; }
+#if 201103L <= __cplusplus
+  void setFederateName(String&& value)
+  { _federateName = value; }
+#endif
   String& getFederateName()
   { return _federateName; }
   const String& getFederateName() const
@@ -2664,6 +3072,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2671,6 +3083,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -2704,6 +3120,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2711,6 +3131,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -2718,6 +3142,10 @@ public:
 
   void setLabel(const String& value)
   { _label = value; }
+#if 201103L <= __cplusplus
+  void setLabel(String&& value)
+  { _label = value; }
+#endif
   String& getLabel()
   { return _label; }
   const String& getLabel() const
@@ -2725,6 +3153,10 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
+#if 201103L <= __cplusplus
+  void setTag(VariableLengthData&& value)
+  { _tag = value; }
+#endif
   VariableLengthData& getTag()
   { return _tag; }
   const VariableLengthData& getTag() const
@@ -2732,6 +3164,10 @@ public:
 
   void setFederateHandleSet(const FederateHandleSet& value)
   { _federateHandleSet = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandleSet(FederateHandleSet&& value)
+  { _federateHandleSet = value; }
+#endif
   FederateHandleSet& getFederateHandleSet()
   { return _federateHandleSet; }
   const FederateHandleSet& getFederateHandleSet() const
@@ -2768,6 +3204,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2775,6 +3215,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -2782,6 +3226,10 @@ public:
 
   void setLabel(const String& value)
   { _label = value; }
+#if 201103L <= __cplusplus
+  void setLabel(String&& value)
+  { _label = value; }
+#endif
   String& getLabel()
   { return _label; }
   const String& getLabel() const
@@ -2789,6 +3237,10 @@ public:
 
   void setRegisterFederationSynchronizationPointResponseType(const RegisterFederationSynchronizationPointResponseType& value)
   { _registerFederationSynchronizationPointResponseType = value; }
+#if 201103L <= __cplusplus
+  void setRegisterFederationSynchronizationPointResponseType(RegisterFederationSynchronizationPointResponseType&& value)
+  { _registerFederationSynchronizationPointResponseType = value; }
+#endif
   RegisterFederationSynchronizationPointResponseType& getRegisterFederationSynchronizationPointResponseType()
   { return _registerFederationSynchronizationPointResponseType; }
   const RegisterFederationSynchronizationPointResponseType& getRegisterFederationSynchronizationPointResponseType() const
@@ -2824,6 +3276,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2831,6 +3287,10 @@ public:
 
   void setLabel(const String& value)
   { _label = value; }
+#if 201103L <= __cplusplus
+  void setLabel(String&& value)
+  { _label = value; }
+#endif
   String& getLabel()
   { return _label; }
   const String& getLabel() const
@@ -2838,6 +3298,10 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
+#if 201103L <= __cplusplus
+  void setTag(VariableLengthData&& value)
+  { _tag = value; }
+#endif
   VariableLengthData& getTag()
   { return _tag; }
   const VariableLengthData& getTag() const
@@ -2845,6 +3309,10 @@ public:
 
   void setAddJoiningFederates(const Bool& value)
   { _addJoiningFederates = value; }
+#if 201103L <= __cplusplus
+  void setAddJoiningFederates(Bool&& value)
+  { _addJoiningFederates = value; }
+#endif
   Bool& getAddJoiningFederates()
   { return _addJoiningFederates; }
   const Bool& getAddJoiningFederates() const
@@ -2852,6 +3320,10 @@ public:
 
   void setFederateHandleSet(const FederateHandleSet& value)
   { _federateHandleSet = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandleSet(FederateHandleSet&& value)
+  { _federateHandleSet = value; }
+#endif
   FederateHandleSet& getFederateHandleSet()
   { return _federateHandleSet; }
   const FederateHandleSet& getFederateHandleSet() const
@@ -2888,6 +3360,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2895,6 +3371,10 @@ public:
 
   void setLabel(const String& value)
   { _label = value; }
+#if 201103L <= __cplusplus
+  void setLabel(String&& value)
+  { _label = value; }
+#endif
   String& getLabel()
   { return _label; }
   const String& getLabel() const
@@ -2902,6 +3382,10 @@ public:
 
   void setFederateHandleSet(const FederateHandleSet& value)
   { _federateHandleSet = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandleSet(FederateHandleSet&& value)
+  { _federateHandleSet = value; }
+#endif
   FederateHandleSet& getFederateHandleSet()
   { return _federateHandleSet; }
   const FederateHandleSet& getFederateHandleSet() const
@@ -2936,6 +3420,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2943,6 +3431,10 @@ public:
 
   void setLabel(const String& value)
   { _label = value; }
+#if 201103L <= __cplusplus
+  void setLabel(String&& value)
+  { _label = value; }
+#endif
   String& getLabel()
   { return _label; }
   const String& getLabel() const
@@ -2950,6 +3442,10 @@ public:
 
   void setFederateHandleSet(const FederateHandleSet& value)
   { _federateHandleSet = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandleSet(FederateHandleSet&& value)
+  { _federateHandleSet = value; }
+#endif
   FederateHandleSet& getFederateHandleSet()
   { return _federateHandleSet; }
   const FederateHandleSet& getFederateHandleSet() const
@@ -2984,6 +3480,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -2991,6 +3491,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -2998,6 +3502,10 @@ public:
 
   void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
+#if 201103L <= __cplusplus
+  void setTimeStamp(VariableLengthData&& value)
+  { _timeStamp = value; }
+#endif
   VariableLengthData& getTimeStamp()
   { return _timeStamp; }
   const VariableLengthData& getTimeStamp() const
@@ -3005,6 +3513,10 @@ public:
 
   void setCommitId(const Unsigned& value)
   { _commitId = value; }
+#if 201103L <= __cplusplus
+  void setCommitId(Unsigned&& value)
+  { _commitId = value; }
+#endif
   Unsigned& getCommitId()
   { return _commitId; }
   const Unsigned& getCommitId() const
@@ -3040,6 +3552,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3047,6 +3563,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -3054,6 +3574,10 @@ public:
 
   void setRespondingFederateHandle(const FederateHandle& value)
   { _respondingFederateHandle = value; }
+#if 201103L <= __cplusplus
+  void setRespondingFederateHandle(FederateHandle&& value)
+  { _respondingFederateHandle = value; }
+#endif
   FederateHandle& getRespondingFederateHandle()
   { return _respondingFederateHandle; }
   const FederateHandle& getRespondingFederateHandle() const
@@ -3061,6 +3585,10 @@ public:
 
   void setTimeStampValid(const Bool& value)
   { _timeStampValid = value; }
+#if 201103L <= __cplusplus
+  void setTimeStampValid(Bool&& value)
+  { _timeStampValid = value; }
+#endif
   Bool& getTimeStampValid()
   { return _timeStampValid; }
   const Bool& getTimeStampValid() const
@@ -3068,6 +3596,10 @@ public:
 
   void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
+#if 201103L <= __cplusplus
+  void setTimeStamp(VariableLengthData&& value)
+  { _timeStamp = value; }
+#endif
   VariableLengthData& getTimeStamp()
   { return _timeStamp; }
   const VariableLengthData& getTimeStamp() const
@@ -3104,6 +3636,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3111,6 +3647,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -3144,6 +3684,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3151,6 +3695,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -3158,6 +3706,10 @@ public:
 
   void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
+#if 201103L <= __cplusplus
+  void setTimeStamp(VariableLengthData&& value)
+  { _timeStamp = value; }
+#endif
   VariableLengthData& getTimeStamp()
   { return _timeStamp; }
   const VariableLengthData& getTimeStamp() const
@@ -3165,6 +3717,10 @@ public:
 
   void setCommitType(const LowerBoundTimeStampCommitType& value)
   { _commitType = value; }
+#if 201103L <= __cplusplus
+  void setCommitType(LowerBoundTimeStampCommitType&& value)
+  { _commitType = value; }
+#endif
   LowerBoundTimeStampCommitType& getCommitType()
   { return _commitType; }
   const LowerBoundTimeStampCommitType& getCommitType() const
@@ -3172,6 +3728,10 @@ public:
 
   void setCommitId(const Unsigned& value)
   { _commitId = value; }
+#if 201103L <= __cplusplus
+  void setCommitId(Unsigned&& value)
+  { _commitId = value; }
+#endif
   Unsigned& getCommitId()
   { return _commitId; }
   const Unsigned& getCommitId() const
@@ -3208,6 +3768,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3215,6 +3779,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -3222,6 +3790,10 @@ public:
 
   void setSendingFederateHandle(const FederateHandle& value)
   { _sendingFederateHandle = value; }
+#if 201103L <= __cplusplus
+  void setSendingFederateHandle(FederateHandle&& value)
+  { _sendingFederateHandle = value; }
+#endif
   FederateHandle& getSendingFederateHandle()
   { return _sendingFederateHandle; }
   const FederateHandle& getSendingFederateHandle() const
@@ -3229,6 +3801,10 @@ public:
 
   void setCommitId(const Unsigned& value)
   { _commitId = value; }
+#if 201103L <= __cplusplus
+  void setCommitId(Unsigned&& value)
+  { _commitId = value; }
+#endif
   Unsigned& getCommitId()
   { return _commitId; }
   const Unsigned& getCommitId() const
@@ -3264,6 +3840,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3271,6 +3851,10 @@ public:
 
   void setSendingFederateHandle(const FederateHandle& value)
   { _sendingFederateHandle = value; }
+#if 201103L <= __cplusplus
+  void setSendingFederateHandle(FederateHandle&& value)
+  { _sendingFederateHandle = value; }
+#endif
   FederateHandle& getSendingFederateHandle()
   { return _sendingFederateHandle; }
   const FederateHandle& getSendingFederateHandle() const
@@ -3278,6 +3862,10 @@ public:
 
   void setLockedByNextMessage(const Bool& value)
   { _lockedByNextMessage = value; }
+#if 201103L <= __cplusplus
+  void setLockedByNextMessage(Bool&& value)
+  { _lockedByNextMessage = value; }
+#endif
   Bool& getLockedByNextMessage()
   { return _lockedByNextMessage; }
   const Bool& getLockedByNextMessage() const
@@ -3384,6 +3972,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3391,6 +3983,10 @@ public:
 
   void setRegionHandleDimensionHandleSetPairVector(const RegionHandleDimensionHandleSetPairVector& value)
   { _regionHandleDimensionHandleSetPairVector = value; }
+#if 201103L <= __cplusplus
+  void setRegionHandleDimensionHandleSetPairVector(RegionHandleDimensionHandleSetPairVector&& value)
+  { _regionHandleDimensionHandleSetPairVector = value; }
+#endif
   RegionHandleDimensionHandleSetPairVector& getRegionHandleDimensionHandleSetPairVector()
   { return _regionHandleDimensionHandleSetPairVector; }
   const RegionHandleDimensionHandleSetPairVector& getRegionHandleDimensionHandleSetPairVector() const
@@ -3424,6 +4020,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3431,6 +4031,10 @@ public:
 
   void setRegionHandleRegionValuePairVector(const RegionHandleRegionValuePairVector& value)
   { _regionHandleRegionValuePairVector = value; }
+#if 201103L <= __cplusplus
+  void setRegionHandleRegionValuePairVector(RegionHandleRegionValuePairVector&& value)
+  { _regionHandleRegionValuePairVector = value; }
+#endif
   RegionHandleRegionValuePairVector& getRegionHandleRegionValuePairVector()
   { return _regionHandleRegionValuePairVector; }
   const RegionHandleRegionValuePairVector& getRegionHandleRegionValuePairVector() const
@@ -3464,6 +4068,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3471,6 +4079,10 @@ public:
 
   void setRegionHandleVector(const RegionHandleVector& value)
   { _regionHandleVector = value; }
+#if 201103L <= __cplusplus
+  void setRegionHandleVector(RegionHandleVector&& value)
+  { _regionHandleVector = value; }
+#endif
   RegionHandleVector& getRegionHandleVector()
   { return _regionHandleVector; }
   const RegionHandleVector& getRegionHandleVector() const
@@ -3504,6 +4116,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3511,6 +4127,10 @@ public:
 
   void setPublicationType(const PublicationType& value)
   { _publicationType = value; }
+#if 201103L <= __cplusplus
+  void setPublicationType(PublicationType&& value)
+  { _publicationType = value; }
+#endif
   PublicationType& getPublicationType()
   { return _publicationType; }
   const PublicationType& getPublicationType() const
@@ -3518,6 +4138,10 @@ public:
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setInteractionClassHandle(InteractionClassHandle&& value)
+  { _interactionClassHandle = value; }
+#endif
   InteractionClassHandle& getInteractionClassHandle()
   { return _interactionClassHandle; }
   const InteractionClassHandle& getInteractionClassHandle() const
@@ -3552,6 +4176,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3559,6 +4187,10 @@ public:
 
   void setPublicationType(const PublicationType& value)
   { _publicationType = value; }
+#if 201103L <= __cplusplus
+  void setPublicationType(PublicationType&& value)
+  { _publicationType = value; }
+#endif
   PublicationType& getPublicationType()
   { return _publicationType; }
   const PublicationType& getPublicationType() const
@@ -3566,6 +4198,10 @@ public:
 
   void setObjectClassHandle(const ObjectClassHandle& value)
   { _objectClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectClassHandle(ObjectClassHandle&& value)
+  { _objectClassHandle = value; }
+#endif
   ObjectClassHandle& getObjectClassHandle()
   { return _objectClassHandle; }
   const ObjectClassHandle& getObjectClassHandle() const
@@ -3573,6 +4209,10 @@ public:
 
   void setAttributeHandles(const AttributeHandleVector& value)
   { _attributeHandles = value; }
+#if 201103L <= __cplusplus
+  void setAttributeHandles(AttributeHandleVector&& value)
+  { _attributeHandles = value; }
+#endif
   AttributeHandleVector& getAttributeHandles()
   { return _attributeHandles; }
   const AttributeHandleVector& getAttributeHandles() const
@@ -3608,6 +4248,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3615,6 +4259,10 @@ public:
 
   void setSubscriptionType(const SubscriptionType& value)
   { _subscriptionType = value; }
+#if 201103L <= __cplusplus
+  void setSubscriptionType(SubscriptionType&& value)
+  { _subscriptionType = value; }
+#endif
   SubscriptionType& getSubscriptionType()
   { return _subscriptionType; }
   const SubscriptionType& getSubscriptionType() const
@@ -3622,6 +4270,10 @@ public:
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setInteractionClassHandle(InteractionClassHandle&& value)
+  { _interactionClassHandle = value; }
+#endif
   InteractionClassHandle& getInteractionClassHandle()
   { return _interactionClassHandle; }
   const InteractionClassHandle& getInteractionClassHandle() const
@@ -3656,6 +4308,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3663,6 +4319,10 @@ public:
 
   void setSubscriptionType(const SubscriptionType& value)
   { _subscriptionType = value; }
+#if 201103L <= __cplusplus
+  void setSubscriptionType(SubscriptionType&& value)
+  { _subscriptionType = value; }
+#endif
   SubscriptionType& getSubscriptionType()
   { return _subscriptionType; }
   const SubscriptionType& getSubscriptionType() const
@@ -3670,6 +4330,10 @@ public:
 
   void setObjectClassHandle(const ObjectClassHandle& value)
   { _objectClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectClassHandle(ObjectClassHandle&& value)
+  { _objectClassHandle = value; }
+#endif
   ObjectClassHandle& getObjectClassHandle()
   { return _objectClassHandle; }
   const ObjectClassHandle& getObjectClassHandle() const
@@ -3677,6 +4341,10 @@ public:
 
   void setAttributeHandles(const AttributeHandleVector& value)
   { _attributeHandles = value; }
+#if 201103L <= __cplusplus
+  void setAttributeHandles(AttributeHandleVector&& value)
+  { _attributeHandles = value; }
+#endif
   AttributeHandleVector& getAttributeHandles()
   { return _attributeHandles; }
   const AttributeHandleVector& getAttributeHandles() const
@@ -3712,6 +4380,10 @@ public:
 
   void setObjectClassHandle(const ObjectClassHandle& value)
   { _objectClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectClassHandle(ObjectClassHandle&& value)
+  { _objectClassHandle = value; }
+#endif
   ObjectClassHandle& getObjectClassHandle()
   { return _objectClassHandle; }
   const ObjectClassHandle& getObjectClassHandle() const
@@ -3719,6 +4391,10 @@ public:
 
   void setStart(const Bool& value)
   { _start = value; }
+#if 201103L <= __cplusplus
+  void setStart(Bool&& value)
+  { _start = value; }
+#endif
   Bool& getStart()
   { return _start; }
   const Bool& getStart() const
@@ -3752,6 +4428,10 @@ public:
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setInteractionClassHandle(InteractionClassHandle&& value)
+  { _interactionClassHandle = value; }
+#endif
   InteractionClassHandle& getInteractionClassHandle()
   { return _interactionClassHandle; }
   const InteractionClassHandle& getInteractionClassHandle() const
@@ -3759,6 +4439,10 @@ public:
 
   void setOn(const Bool& value)
   { _on = value; }
+#if 201103L <= __cplusplus
+  void setOn(Bool&& value)
+  { _on = value; }
+#endif
   Bool& getOn()
   { return _on; }
   const Bool& getOn() const
@@ -3794,6 +4478,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3801,6 +4489,10 @@ public:
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setInteractionClassHandle(InteractionClassHandle&& value)
+  { _interactionClassHandle = value; }
+#endif
   InteractionClassHandle& getInteractionClassHandle()
   { return _interactionClassHandle; }
   const InteractionClassHandle& getInteractionClassHandle() const
@@ -3808,6 +4500,10 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { _transportationType = value; }
+#if 201103L <= __cplusplus
+  void setTransportationType(TransportationType&& value)
+  { _transportationType = value; }
+#endif
   TransportationType& getTransportationType()
   { return _transportationType; }
   const TransportationType& getTransportationType() const
@@ -3815,6 +4511,10 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
+#if 201103L <= __cplusplus
+  void setTag(VariableLengthData&& value)
+  { _tag = value; }
+#endif
   VariableLengthData& getTag()
   { return _tag; }
   const VariableLengthData& getTag() const
@@ -3822,6 +4522,10 @@ public:
 
   void setParameterValues(const ParameterValueVector& value)
   { _parameterValues = value; }
+#if 201103L <= __cplusplus
+  void setParameterValues(ParameterValueVector&& value)
+  { _parameterValues = value; }
+#endif
   ParameterValueVector& getParameterValues()
   { return _parameterValues; }
   const ParameterValueVector& getParameterValues() const
@@ -3860,6 +4564,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3867,6 +4575,10 @@ public:
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setInteractionClassHandle(InteractionClassHandle&& value)
+  { _interactionClassHandle = value; }
+#endif
   InteractionClassHandle& getInteractionClassHandle()
   { return _interactionClassHandle; }
   const InteractionClassHandle& getInteractionClassHandle() const
@@ -3874,6 +4586,10 @@ public:
 
   void setOrderType(const OrderType& value)
   { _orderType = value; }
+#if 201103L <= __cplusplus
+  void setOrderType(OrderType&& value)
+  { _orderType = value; }
+#endif
   OrderType& getOrderType()
   { return _orderType; }
   const OrderType& getOrderType() const
@@ -3881,6 +4597,10 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { _transportationType = value; }
+#if 201103L <= __cplusplus
+  void setTransportationType(TransportationType&& value)
+  { _transportationType = value; }
+#endif
   TransportationType& getTransportationType()
   { return _transportationType; }
   const TransportationType& getTransportationType() const
@@ -3888,6 +4608,10 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
+#if 201103L <= __cplusplus
+  void setTag(VariableLengthData&& value)
+  { _tag = value; }
+#endif
   VariableLengthData& getTag()
   { return _tag; }
   const VariableLengthData& getTag() const
@@ -3895,6 +4619,10 @@ public:
 
   void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
+#if 201103L <= __cplusplus
+  void setTimeStamp(VariableLengthData&& value)
+  { _timeStamp = value; }
+#endif
   VariableLengthData& getTimeStamp()
   { return _timeStamp; }
   const VariableLengthData& getTimeStamp() const
@@ -3902,6 +4630,10 @@ public:
 
   void setMessageRetractionHandle(const MessageRetractionHandle& value)
   { _messageRetractionHandle = value; }
+#if 201103L <= __cplusplus
+  void setMessageRetractionHandle(MessageRetractionHandle&& value)
+  { _messageRetractionHandle = value; }
+#endif
   MessageRetractionHandle& getMessageRetractionHandle()
   { return _messageRetractionHandle; }
   const MessageRetractionHandle& getMessageRetractionHandle() const
@@ -3909,6 +4641,10 @@ public:
 
   void setParameterValues(const ParameterValueVector& value)
   { _parameterValues = value; }
+#if 201103L <= __cplusplus
+  void setParameterValues(ParameterValueVector&& value)
+  { _parameterValues = value; }
+#endif
   ParameterValueVector& getParameterValues()
   { return _parameterValues; }
   const ParameterValueVector& getParameterValues() const
@@ -3948,6 +4684,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -3955,6 +4695,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -3962,6 +4706,10 @@ public:
 
   void setCount(const Unsigned& value)
   { _count = value; }
+#if 201103L <= __cplusplus
+  void setCount(Unsigned&& value)
+  { _count = value; }
+#endif
   Unsigned& getCount()
   { return _count; }
   const Unsigned& getCount() const
@@ -3996,6 +4744,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -4003,6 +4755,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -4010,6 +4766,10 @@ public:
 
   void setObjectInstanceHandleNamePairVector(const ObjectInstanceHandleNamePairVector& value)
   { _objectInstanceHandleNamePairVector = value; }
+#if 201103L <= __cplusplus
+  void setObjectInstanceHandleNamePairVector(ObjectInstanceHandleNamePairVector&& value)
+  { _objectInstanceHandleNamePairVector = value; }
+#endif
   ObjectInstanceHandleNamePairVector& getObjectInstanceHandleNamePairVector()
   { return _objectInstanceHandleNamePairVector; }
   const ObjectInstanceHandleNamePairVector& getObjectInstanceHandleNamePairVector() const
@@ -4044,6 +4804,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -4051,6 +4815,10 @@ public:
 
   void setObjectInstanceHandleVector(const ObjectInstanceHandleVector& value)
   { _objectInstanceHandleVector = value; }
+#if 201103L <= __cplusplus
+  void setObjectInstanceHandleVector(ObjectInstanceHandleVector&& value)
+  { _objectInstanceHandleVector = value; }
+#endif
   ObjectInstanceHandleVector& getObjectInstanceHandleVector()
   { return _objectInstanceHandleVector; }
   const ObjectInstanceHandleVector& getObjectInstanceHandleVector() const
@@ -4084,6 +4852,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -4091,6 +4863,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -4098,6 +4874,10 @@ public:
 
   void setName(const String& value)
   { _name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { _name = value; }
+#endif
   String& getName()
   { return _name; }
   const String& getName() const
@@ -4132,6 +4912,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -4139,6 +4923,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -4146,6 +4934,10 @@ public:
 
   void setObjectInstanceHandleNamePair(const ObjectInstanceHandleNamePair& value)
   { _objectInstanceHandleNamePair = value; }
+#if 201103L <= __cplusplus
+  void setObjectInstanceHandleNamePair(ObjectInstanceHandleNamePair&& value)
+  { _objectInstanceHandleNamePair = value; }
+#endif
   ObjectInstanceHandleNamePair& getObjectInstanceHandleNamePair()
   { return _objectInstanceHandleNamePair; }
   const ObjectInstanceHandleNamePair& getObjectInstanceHandleNamePair() const
@@ -4153,6 +4945,10 @@ public:
 
   void setSuccess(const Bool& value)
   { _success = value; }
+#if 201103L <= __cplusplus
+  void setSuccess(Bool&& value)
+  { _success = value; }
+#endif
   Bool& getSuccess()
   { return _success; }
   const Bool& getSuccess() const
@@ -4188,6 +4984,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -4195,6 +4995,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -4202,6 +5006,10 @@ public:
 
   void setNameList(const StringVector& value)
   { _nameList = value; }
+#if 201103L <= __cplusplus
+  void setNameList(StringVector&& value)
+  { _nameList = value; }
+#endif
   StringVector& getNameList()
   { return _nameList; }
   const StringVector& getNameList() const
@@ -4236,6 +5044,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -4243,6 +5055,10 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
   const FederateHandle& getFederateHandle() const
@@ -4250,6 +5066,10 @@ public:
 
   void setObjectInstanceHandleNamePairVector(const ObjectInstanceHandleNamePairVector& value)
   { _objectInstanceHandleNamePairVector = value; }
+#if 201103L <= __cplusplus
+  void setObjectInstanceHandleNamePairVector(ObjectInstanceHandleNamePairVector&& value)
+  { _objectInstanceHandleNamePairVector = value; }
+#endif
   ObjectInstanceHandleNamePairVector& getObjectInstanceHandleNamePairVector()
   { return _objectInstanceHandleNamePairVector; }
   const ObjectInstanceHandleNamePairVector& getObjectInstanceHandleNamePairVector() const
@@ -4257,6 +5077,10 @@ public:
 
   void setSuccess(const Bool& value)
   { _success = value; }
+#if 201103L <= __cplusplus
+  void setSuccess(Bool&& value)
+  { _success = value; }
+#endif
   Bool& getSuccess()
   { return _success; }
   const Bool& getSuccess() const
@@ -4292,6 +5116,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -4299,6 +5127,10 @@ public:
 
   void setObjectClassHandle(const ObjectClassHandle& value)
   { _objectClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectClassHandle(ObjectClassHandle&& value)
+  { _objectClassHandle = value; }
+#endif
   ObjectClassHandle& getObjectClassHandle()
   { return _objectClassHandle; }
   const ObjectClassHandle& getObjectClassHandle() const
@@ -4306,6 +5138,10 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectInstanceHandle(ObjectInstanceHandle&& value)
+  { _objectInstanceHandle = value; }
+#endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
   const ObjectInstanceHandle& getObjectInstanceHandle() const
@@ -4313,6 +5149,10 @@ public:
 
   void setName(const String& value)
   { _name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { _name = value; }
+#endif
   String& getName()
   { return _name; }
   const String& getName() const
@@ -4320,6 +5160,10 @@ public:
 
   void setAttributeStateVector(const AttributeStateVector& value)
   { _attributeStateVector = value; }
+#if 201103L <= __cplusplus
+  void setAttributeStateVector(AttributeStateVector&& value)
+  { _attributeStateVector = value; }
+#endif
   AttributeStateVector& getAttributeStateVector()
   { return _attributeStateVector; }
   const AttributeStateVector& getAttributeStateVector() const
@@ -4356,6 +5200,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -4363,6 +5211,10 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectInstanceHandle(ObjectInstanceHandle&& value)
+  { _objectInstanceHandle = value; }
+#endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
   const ObjectInstanceHandle& getObjectInstanceHandle() const
@@ -4370,6 +5222,10 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
+#if 201103L <= __cplusplus
+  void setTag(VariableLengthData&& value)
+  { _tag = value; }
+#endif
   VariableLengthData& getTag()
   { return _tag; }
   const VariableLengthData& getTag() const
@@ -4404,6 +5260,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -4411,6 +5271,10 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectInstanceHandle(ObjectInstanceHandle&& value)
+  { _objectInstanceHandle = value; }
+#endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
   const ObjectInstanceHandle& getObjectInstanceHandle() const
@@ -4418,6 +5282,10 @@ public:
 
   void setOrderType(const OrderType& value)
   { _orderType = value; }
+#if 201103L <= __cplusplus
+  void setOrderType(OrderType&& value)
+  { _orderType = value; }
+#endif
   OrderType& getOrderType()
   { return _orderType; }
   const OrderType& getOrderType() const
@@ -4425,6 +5293,10 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
+#if 201103L <= __cplusplus
+  void setTag(VariableLengthData&& value)
+  { _tag = value; }
+#endif
   VariableLengthData& getTag()
   { return _tag; }
   const VariableLengthData& getTag() const
@@ -4432,6 +5304,10 @@ public:
 
   void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
+#if 201103L <= __cplusplus
+  void setTimeStamp(VariableLengthData&& value)
+  { _timeStamp = value; }
+#endif
   VariableLengthData& getTimeStamp()
   { return _timeStamp; }
   const VariableLengthData& getTimeStamp() const
@@ -4439,6 +5315,10 @@ public:
 
   void setMessageRetractionHandle(const MessageRetractionHandle& value)
   { _messageRetractionHandle = value; }
+#if 201103L <= __cplusplus
+  void setMessageRetractionHandle(MessageRetractionHandle&& value)
+  { _messageRetractionHandle = value; }
+#endif
   MessageRetractionHandle& getMessageRetractionHandle()
   { return _messageRetractionHandle; }
   const MessageRetractionHandle& getMessageRetractionHandle() const
@@ -4478,6 +5358,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -4485,6 +5369,10 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectInstanceHandle(ObjectInstanceHandle&& value)
+  { _objectInstanceHandle = value; }
+#endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
   const ObjectInstanceHandle& getObjectInstanceHandle() const
@@ -4492,6 +5380,10 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
+#if 201103L <= __cplusplus
+  void setTag(VariableLengthData&& value)
+  { _tag = value; }
+#endif
   VariableLengthData& getTag()
   { return _tag; }
   const VariableLengthData& getTag() const
@@ -4499,6 +5391,10 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { _transportationType = value; }
+#if 201103L <= __cplusplus
+  void setTransportationType(TransportationType&& value)
+  { _transportationType = value; }
+#endif
   TransportationType& getTransportationType()
   { return _transportationType; }
   const TransportationType& getTransportationType() const
@@ -4506,6 +5402,10 @@ public:
 
   void setAttributeValues(const AttributeValueVector& value)
   { _attributeValues = value; }
+#if 201103L <= __cplusplus
+  void setAttributeValues(AttributeValueVector&& value)
+  { _attributeValues = value; }
+#endif
   AttributeValueVector& getAttributeValues()
   { return _attributeValues; }
   const AttributeValueVector& getAttributeValues() const
@@ -4544,6 +5444,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -4551,6 +5455,10 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectInstanceHandle(ObjectInstanceHandle&& value)
+  { _objectInstanceHandle = value; }
+#endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
   const ObjectInstanceHandle& getObjectInstanceHandle() const
@@ -4558,6 +5466,10 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
+#if 201103L <= __cplusplus
+  void setTag(VariableLengthData&& value)
+  { _tag = value; }
+#endif
   VariableLengthData& getTag()
   { return _tag; }
   const VariableLengthData& getTag() const
@@ -4565,6 +5477,10 @@ public:
 
   void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
+#if 201103L <= __cplusplus
+  void setTimeStamp(VariableLengthData&& value)
+  { _timeStamp = value; }
+#endif
   VariableLengthData& getTimeStamp()
   { return _timeStamp; }
   const VariableLengthData& getTimeStamp() const
@@ -4572,6 +5488,10 @@ public:
 
   void setMessageRetractionHandle(const MessageRetractionHandle& value)
   { _messageRetractionHandle = value; }
+#if 201103L <= __cplusplus
+  void setMessageRetractionHandle(MessageRetractionHandle&& value)
+  { _messageRetractionHandle = value; }
+#endif
   MessageRetractionHandle& getMessageRetractionHandle()
   { return _messageRetractionHandle; }
   const MessageRetractionHandle& getMessageRetractionHandle() const
@@ -4579,6 +5499,10 @@ public:
 
   void setOrderType(const OrderType& value)
   { _orderType = value; }
+#if 201103L <= __cplusplus
+  void setOrderType(OrderType&& value)
+  { _orderType = value; }
+#endif
   OrderType& getOrderType()
   { return _orderType; }
   const OrderType& getOrderType() const
@@ -4586,6 +5510,10 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { _transportationType = value; }
+#if 201103L <= __cplusplus
+  void setTransportationType(TransportationType&& value)
+  { _transportationType = value; }
+#endif
   TransportationType& getTransportationType()
   { return _transportationType; }
   const TransportationType& getTransportationType() const
@@ -4593,6 +5521,10 @@ public:
 
   void setAttributeValues(const AttributeValueVector& value)
   { _attributeValues = value; }
+#if 201103L <= __cplusplus
+  void setAttributeValues(AttributeValueVector&& value)
+  { _attributeValues = value; }
+#endif
   AttributeValueVector& getAttributeValues()
   { return _attributeValues; }
   const AttributeValueVector& getAttributeValues() const
@@ -4632,6 +5564,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -4639,6 +5575,10 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectInstanceHandle(ObjectInstanceHandle&& value)
+  { _objectInstanceHandle = value; }
+#endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
   const ObjectInstanceHandle& getObjectInstanceHandle() const
@@ -4646,6 +5586,10 @@ public:
 
   void setAttributeHandles(const AttributeHandleVector& value)
   { _attributeHandles = value; }
+#if 201103L <= __cplusplus
+  void setAttributeHandles(AttributeHandleVector&& value)
+  { _attributeHandles = value; }
+#endif
   AttributeHandleVector& getAttributeHandles()
   { return _attributeHandles; }
   const AttributeHandleVector& getAttributeHandles() const
@@ -4653,6 +5597,10 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
+#if 201103L <= __cplusplus
+  void setTag(VariableLengthData&& value)
+  { _tag = value; }
+#endif
   VariableLengthData& getTag()
   { return _tag; }
   const VariableLengthData& getTag() const
@@ -4688,6 +5636,10 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
@@ -4695,6 +5647,10 @@ public:
 
   void setObjectClassHandle(const ObjectClassHandle& value)
   { _objectClassHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectClassHandle(ObjectClassHandle&& value)
+  { _objectClassHandle = value; }
+#endif
   ObjectClassHandle& getObjectClassHandle()
   { return _objectClassHandle; }
   const ObjectClassHandle& getObjectClassHandle() const
@@ -4702,6 +5658,10 @@ public:
 
   void setAttributeHandles(const AttributeHandleVector& value)
   { _attributeHandles = value; }
+#if 201103L <= __cplusplus
+  void setAttributeHandles(AttributeHandleVector&& value)
+  { _attributeHandles = value; }
+#endif
   AttributeHandleVector& getAttributeHandles()
   { return _attributeHandles; }
   const AttributeHandleVector& getAttributeHandles() const
@@ -4709,6 +5669,10 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
+#if 201103L <= __cplusplus
+  void setTag(VariableLengthData&& value)
+  { _tag = value; }
+#endif
   VariableLengthData& getTag()
   { return _tag; }
   const VariableLengthData& getTag() const

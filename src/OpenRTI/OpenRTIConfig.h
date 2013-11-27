@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -34,28 +34,29 @@
 #define OpenRTI_DEPRECATED
 #endif
 
-// FIXME detect when to use this
-// #define OpenRTI_ATOMIC_USE_STD_ATOMIC
-
-#if defined _WIN32
+#if 201103L <= __cplusplus
+#define OpenRTI_ATOMIC_USE_STD_ATOMIC
+#else
+# if defined _WIN32
 // Neat old Win32 functions
-# define OpenRTI_ATOMIC_USE_WIN32_INTERLOCKED
-#elif defined(__GNUC__) && (4 <= __GNUC__) && (1 <= __GNUC_MINOR__) && defined(__x86_64__)
+#  define OpenRTI_ATOMIC_USE_WIN32_INTERLOCKED
+# elif defined(__GNUC__) && (4 <= __GNUC__) && (1 <= __GNUC_MINOR__) && defined(__x86_64__)
 // No need to include something. Is a Compiler API ...
-# define OpenRTI_ATOMIC_USE_GCC4_BUILTINS
-#elif defined(__GNUC__) && defined(__i386)
-# define OpenRTI_ATOMIC_USE_GCC_ASM
-#elif defined(__sgi) && defined(_COMPILER_VERSION) && (_COMPILER_VERSION>=730)
+#  define OpenRTI_ATOMIC_USE_GCC4_BUILTINS
+# elif defined(__GNUC__) && defined(__i386)
+#  define OpenRTI_ATOMIC_USE_GCC_ASM
+# elif defined(__sgi) && defined(_COMPILER_VERSION) && (_COMPILER_VERSION>=730)
 // No need to include something. Is a Compiler API ...
-# define OpenRTI_ATOMIC_USE_MIPSPRO_BUILTINS
+#  define OpenRTI_ATOMIC_USE_MIPSPRO_BUILTINS
 // FIXME
 // #elif defined(__sun)
 // # define OpenRTI_ATOMIC_USE_SUN
-#elif defined(__APPLE__)
-# define OpenRTI_ATOMIC_USE_BSD
-#else
+# elif defined(__APPLE__)
+#  define OpenRTI_ATOMIC_USE_BSD
+# else
 // The sledge hammer ...
-# define OpenRTI_ATOMIC_USE_MUTEX
+#  define OpenRTI_ATOMIC_USE_MUTEX
+# endif
 #endif
 
 #endif

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -93,6 +93,13 @@ public:
     _size(value._size),
     _offset(value._offset)
   { }
+#if 201103L <= __cplusplus
+  VariableLengthData(VariableLengthData&& value) :
+    _data(value._data),
+    _size(value._size),
+    _offset(value._offset)
+  { }
+#endif
   // Constructs a subrange of the given variable length data.
   // It references the same data than 'value', but it starts at offset in value and has the given size
   VariableLengthData(const VariableLengthData& value, size_t offset, size_t size) :
@@ -125,6 +132,16 @@ public:
     _offset = value._offset;
     return *this;
   }
+#if 201103L <= __cplusplus
+  VariableLengthData&
+  operator=(VariableLengthData&& value)
+  {
+    _data.swap(value._data);
+    _size = value._size;
+    _offset = value._offset;
+    return *this;
+  }
+#endif
 
   const void* data(size_t offset = 0) const
   { return constData(offset); }

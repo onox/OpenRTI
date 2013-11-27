@@ -39,8 +39,12 @@ class SourceStream(object):
             self.write(line)
         self.write('\n')
 
+    def writelineNoIndent(self, line = None):
+        self.write(line)
+        self.write('\n')
+
     def writeCopyright(self):
-        self.writeline('/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich')
+        self.writeline('/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich')
         self.writeline(' *')
         self.writeline(' *')
         self.writeline(' * This file is part of OpenRTI.')
@@ -437,6 +441,10 @@ class StructField(object):
         memberName = self.getMemberName()
         sourceStream.writeline('void set{upperName}(const {typeName}& value)'.format(upperName = upperName, typeName = typeName))
         sourceStream.writeline('{{ {prefix}{memberName} = value; }}'.format(memberName = memberName, prefix = valuePrefix))
+        sourceStream.writelineNoIndent('#if 201103L <= __cplusplus')
+        sourceStream.writeline('void set{upperName}({typeName}&& value)'.format(upperName = upperName, typeName = typeName))
+        sourceStream.writeline('{{ {prefix}{memberName} = value; }}'.format(memberName = memberName, prefix = valuePrefix))
+        sourceStream.writelineNoIndent('#endif')
 
     def writeGetter(self, sourceStream, valuePrefix):
         upperName = self.getUpperName()

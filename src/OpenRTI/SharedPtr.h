@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2013 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -37,6 +37,10 @@ public:
   { T::getFirst(_ptr); }
   SharedPtr(const SharedPtr& p) : _ptr(p.get())
   { T::get(_ptr); }
+#if 201103L <= __cplusplus
+  SharedPtr(SharedPtr&& p) : _ptr(0)
+  { swap(p); }
+#endif
   template<typename U>
   SharedPtr(const SharedPtr<U>& p) : _ptr(p.get())
   { T::get(_ptr); }
@@ -45,6 +49,10 @@ public:
 
   SharedPtr& operator=(const SharedPtr& p)
   { assign(p.get()); return *this; }
+#if 201103L <= __cplusplus
+  SharedPtr& operator=(SharedPtr&& p)
+  { swap(p); return *this; }
+#endif
   template<typename U>
   SharedPtr& operator=(const SharedPtr<U>& p)
   { assign(p.get()); return *this; }
