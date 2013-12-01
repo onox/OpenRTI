@@ -731,6 +731,62 @@ JoinFederationExecutionResponseMessage::operator<(const JoinFederationExecutionR
   return false;
 }
 
+ResignFederationExecutionLeafRequestMessage::ResignFederationExecutionLeafRequestMessage()
+{
+}
+
+ResignFederationExecutionLeafRequestMessage::~ResignFederationExecutionLeafRequestMessage()
+{
+}
+
+const char*
+ResignFederationExecutionLeafRequestMessage::getTypeName() const
+{
+  return "ResignFederationExecutionLeafRequestMessage";
+}
+
+void
+ResignFederationExecutionLeafRequestMessage::out(std::ostream& os) const
+{
+  os << "ResignFederationExecutionLeafRequestMessage " << *this;
+}
+
+void
+ResignFederationExecutionLeafRequestMessage::dispatch(const AbstractMessageDispatcher& dispatcher) const
+{
+  dispatcher.accept(*this);
+}
+
+bool
+ResignFederationExecutionLeafRequestMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ResignFederationExecutionLeafRequestMessage* message = dynamic_cast<const ResignFederationExecutionLeafRequestMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ResignFederationExecutionLeafRequestMessage::operator==(const ResignFederationExecutionLeafRequestMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getResignAction() != rhs.getResignAction()) return false;
+  return true;
+}
+
+bool
+ResignFederationExecutionLeafRequestMessage::operator<(const ResignFederationExecutionLeafRequestMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getResignAction() < rhs.getResignAction()) return true;
+  if (rhs.getResignAction() < getResignAction()) return false;
+  return false;
+}
+
 ResignFederationExecutionRequestMessage::ResignFederationExecutionRequestMessage()
 {
 }

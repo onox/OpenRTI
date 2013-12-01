@@ -251,11 +251,12 @@ public:
       send(requestConnectHandle, message);
 
     } else {
-      // if the connect is died in between, resign now again
-      SharedPtr<ResignFederationExecutionRequestMessage> resign = new ResignFederationExecutionRequestMessage;
+      // if the connect has died in between, resign now again
+      SharedPtr<ResignFederationExecutionLeafRequestMessage> resign = new ResignFederationExecutionLeafRequestMessage;
       resign->setFederationHandle(getHandle());
       resign->setFederateHandle(message->getFederateHandle());
-      send(connectHandle, resign);
+      resign->setResignAction(federate->_automaticResignDirective);
+      accept(connectHandle, resign.get());
     }
 
     // send all children the notification about the new federate except the one that gets the join response
@@ -293,6 +294,8 @@ public:
       broadcast(connectHandle, request);
     }
 
+    // May be we need to put object deletion and that here and remove the second resign message again
+
     // If we are a root server ...
     if (isRootServer()) {
       // ... and respond with Success
@@ -313,6 +316,27 @@ public:
     else {
       send(_parentServerConnectHandle, message);
     }
+  }
+
+  void accept(const ConnectHandle& connectHandle, const ResignFederationExecutionLeafRequestMessage* message)
+  {
+    // We can use asserts here since this message is only produced by a federate ambassador which is what we have with us in the same shared library
+    OpenRTIAssert(connectHandle.valid());
+    ConnectData* connect = getConnect(connectHandle);
+    OpenRTIAssert(connect);
+
+    FederateHandle federateHandle = message->getFederateHandle();
+    OpenRTIAssert(connect->_federateList.size() == 1);
+    OpenRTIAssert(connect->_federateList.front());
+    OpenRTIAssert(connect->_federateList.front()->getHandle() == federateHandle);
+
+    // Since this server node is executing the resign setting this here should
+    // be sufficient.
+    Federate* federate = getFederate(federateHandle);
+    OpenRTIAssert(federate);
+    federate->_automaticResignDirective = message->getResignAction();
+
+    resignConnect(connectHandle);
   }
 
   void pushPublications(const ConnectHandle& connectHandle)
@@ -1651,6 +1675,7 @@ public:
       return;
 
     resignConnect(connectHandle);
+    ServerObjectModel::removeConnect(connectHandle);
     eraseConnect(connectHandle);
   }
 
@@ -1672,6 +1697,8 @@ public:
         continue;
 
       // FIXME: currently we do not have ownership management - so, if the owner dies the object needs to die too
+      // bool deleteObjects = resignAction == DELETE_OBJECTS ||
+      //   resignAction == DELETE_OBJECTS_THEN_DIVEST || resignAction == CANCEL_THEN_DELETE_THEN_DIVEST;
       bool deleteObject = true;
 
       if (deleteObject) {
@@ -1689,6 +1716,7 @@ public:
       accept(connectHandle, request.get());
     }
 
+    // Release all object references
     if (connectHandle != _parentServerConnectHandle) {
       SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> releaseMessage;
       for (ObjectInstanceConnectList::iterator j = connect->_objectInstanceConnectList.begin();
@@ -1716,6 +1744,7 @@ public:
     // Unpublish this connect
     unpublishConnect(connectHandle);
 
+    // Release all region references
     {
       SharedPtr<EraseRegionMessage> eraseRegionMessage;
       for (RegionList::iterator j = connect->_ownedRegions.begin();
@@ -1730,7 +1759,7 @@ public:
       }
       if (eraseRegionMessage.valid())
         accept(connectHandle, eraseRegionMessage.get());
-      OpenRTIAssert(connect->_objectInstanceConnectList.empty());
+      OpenRTIAssert(connect->_ownedRegions.empty());
     }
 
     ConnectHandleConnectDataMap::iterator i = _connectHandleConnectDataMap.find(connectHandle);
@@ -1747,8 +1776,6 @@ public:
       }
       OpenRTIAssert(i->second->_federateList.empty());
     }
-
-    ServerObjectModel::removeConnect(connectHandle);
 
     // FIXME if the removed connection is the parent and we have a resign pending, respond as if we were the root
   }
@@ -2313,6 +2340,14 @@ public:
 
   void accept(const ConnectHandle& connectHandle, const ResignFederationExecutionRequestMessage* message)
   { acceptUpstreamFederationMessage(connectHandle, message); }
+  void accept(const ConnectHandle& connectHandle, const ResignFederationExecutionLeafRequestMessage* message)
+  {
+    acceptUpstreamFederationMessage(connectHandle, message);
+
+    SharedPtr<ShutdownFederationExecutionMessage> request = new ShutdownFederationExecutionMessage;
+    request->setFederationHandle(message->getFederationHandle());
+    accept(connectHandle, request.get());
+  }
 
   // Message to inform federates about newly joined federates
   void accept(const ConnectHandle& connectHandle, const JoinFederateNotifyMessage* message)

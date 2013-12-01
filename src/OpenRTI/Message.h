@@ -297,6 +297,7 @@ class EraseFederationExecutionMessage;
 class ReleaseFederationHandleMessage;
 class JoinFederationExecutionRequestMessage;
 class JoinFederationExecutionResponseMessage;
+class ResignFederationExecutionLeafRequestMessage;
 class ResignFederationExecutionRequestMessage;
 class JoinFederateNotifyMessage;
 class ResignFederateNotifyMessage;
@@ -2928,6 +2929,66 @@ private:
   String _federateType;
   String _federateName;
   FOMModuleHandleVector _fOMModuleHandleList;
+};
+
+class OPENRTI_API ResignFederationExecutionLeafRequestMessage : public AbstractMessage {
+public:
+  ResignFederationExecutionLeafRequestMessage();
+  virtual ~ResignFederationExecutionLeafRequestMessage();
+
+  virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const ResignFederationExecutionLeafRequestMessage& rhs) const;
+  bool operator<(const ResignFederationExecutionLeafRequestMessage& rhs) const;
+  bool operator!=(const ResignFederationExecutionLeafRequestMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const ResignFederationExecutionLeafRequestMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const ResignFederationExecutionLeafRequestMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const ResignFederationExecutionLeafRequestMessage& rhs) const
+  { return !operator>(rhs); }
+
+  void setFederationHandle(const FederationHandle& value)
+  { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
+  FederationHandle& getFederationHandle()
+  { return _federationHandle; }
+  const FederationHandle& getFederationHandle() const
+  { return _federationHandle; }
+
+  void setFederateHandle(const FederateHandle& value)
+  { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
+  FederateHandle& getFederateHandle()
+  { return _federateHandle; }
+  const FederateHandle& getFederateHandle() const
+  { return _federateHandle; }
+
+  void setResignAction(const ResignAction& value)
+  { _resignAction = value; }
+#if 201103L <= __cplusplus
+  void setResignAction(ResignAction&& value)
+  { _resignAction = value; }
+#endif
+  ResignAction& getResignAction()
+  { return _resignAction; }
+  const ResignAction& getResignAction() const
+  { return _resignAction; }
+
+private:
+  FederationHandle _federationHandle;
+  FederateHandle _federateHandle;
+  ResignAction _resignAction;
 };
 
 class OPENRTI_API ResignFederationExecutionRequestMessage : public AbstractMessage {
@@ -7235,6 +7296,20 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const JoinFederationE
   os << "federateName: " << value.getFederateName();
   os << ", ";
   os << "fOMModuleHandleList: " << value.getFOMModuleHandleList();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ResignFederationExecutionLeafRequestMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "resignAction: " << value.getResignAction();
   os << " }";
   return os;
 }

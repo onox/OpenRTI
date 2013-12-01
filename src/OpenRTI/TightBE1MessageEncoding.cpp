@@ -1128,6 +1128,13 @@ public:
     writeFOMModuleHandleVector(value.getFOMModuleHandleList());
   }
 
+  void writeResignFederationExecutionLeafRequestMessage(const ResignFederationExecutionLeafRequestMessage& value)
+  {
+    writeFederationHandle(value.getFederationHandle());
+    writeFederateHandle(value.getFederateHandle());
+    writeResignAction(value.getResignAction());
+  }
+
   void writeResignFederationExecutionRequestMessage(const ResignFederationExecutionRequestMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
@@ -3091,6 +3098,13 @@ public:
     readString(value.getFederateType());
     readString(value.getFederateName());
     readFOMModuleHandleVector(value.getFOMModuleHandleList());
+  }
+
+  void readResignFederationExecutionLeafRequestMessage(ResignFederationExecutionLeafRequestMessage& value)
+  {
+    readFederationHandle(value.getFederationHandle());
+    readFederateHandle(value.getFederateHandle());
+    readResignAction(value.getResignAction());
   }
 
   void readResignFederationExecutionRequestMessage(ResignFederationExecutionRequestMessage& value)

@@ -414,92 +414,19 @@ public:
     if (!_federate.valid())
       return;
 
-    Clock clock = Clock::now() + Clock::fromSeconds(70);
+    SharedPtr<ResignFederationExecutionLeafRequestMessage> resign;
+    resign = new ResignFederationExecutionLeafRequestMessage;
+    resign->setFederationHandle(getFederationHandle());
+    resign->setFederateHandle(getFederateHandle());
+    resign->setResignAction(resignAction);
+    send(resign);
 
-    // Puh FIXME: have a concept for this in the server nodes instead of relying on that here
-    for (size_t i = 0; i < _federate->getNumObjectClasses(); ++i) {
-      try {
-        unsubscribeObjectClass(i);
-      } catch (...) {
-      }
-    }
-    for (size_t i = 0; i < _federate->getNumInteractionClasses(); ++i) {
-      try {
-        unsubscribeInteractionClass(i);
-      } catch (...) {
-      }
-    }
-
-    // disable time regulation, for now from here
-    if (_timeManagement.valid() && _timeManagement->getTimeRegulationEnabledOrPending())
-      _timeManagement->disableTimeRegulation(*this);
     // We should no longer respond to time regulation requests.
     _timeManagement = 0;
 
-    // delete object instances if requested
-    bool deleteObjects = resignAction == DELETE_OBJECTS ||
-      resignAction == DELETE_OBJECTS_THEN_DIVEST || resignAction == CANCEL_THEN_DELETE_THEN_DIVEST;
-    // FIXME: currently we do not have ownership management - so, if the owner dies the object needs to die too
-    deleteObjects = true;
-
-    if (deleteObjects) {
-      ObjectInstanceHandleVector objectInstanceHandleVector = _federate->getOwnedObjectInstanceHandles();
-      for (ObjectInstanceHandleVector::iterator i = objectInstanceHandleVector.begin();
-           i != objectInstanceHandleVector.end(); ++i) {
-        try {
-          deleteObjectInstance(*i, VariableLengthData("Delete on resign FIXME!"));
-        } catch (...) {
-        }
-      }
-    }
-
-    for (size_t i = 0; i < _federate->getNumObjectClasses(); ++i) {
-      try {
-        unpublishObjectClass(i);
-      } catch (...) {
-      }
-    }
-    for (size_t i = 0; i < _federate->getNumInteractionClasses(); ++i) {
-      try {
-        unpublishInteractionClass(i);
-      } catch (...) {
-      }
-    }
-
-    // Now release the resources this federate owns
-    ObjectInstanceHandleVector objectInstanceHandleVector = _federate->getReferencedObjectInstanceHandles();
-    if (!objectInstanceHandleVector.empty()) {
-      SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message;
-      message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
-      message->setFederationHandle(getFederationHandle());
-      message->getObjectInstanceHandleVector().swap(objectInstanceHandleVector);
-      send(message);
-    }
-
-    RegionHandleVector regionHandleVector = _federate->getLocalRegionHandles();
-    if (!regionHandleVector.empty()) {
-      SharedPtr<EraseRegionMessage> eraseRegionRequest;
-      eraseRegionRequest = new EraseRegionMessage;
-      eraseRegionRequest->setFederationHandle(getFederationHandle());
-      eraseRegionRequest->getRegionHandleVector().swap(regionHandleVector);
-      send(eraseRegionRequest);
-    }
-
-    SharedPtr<ResignFederationExecutionRequestMessage> request = new ResignFederationExecutionRequestMessage;
-    request->setFederationHandle(getFederationHandle());
-    request->setFederateHandle(getFederateHandle());
-    send(request);
-
-    SharedPtr<ShutdownFederationExecutionMessage> request2 = new ShutdownFederationExecutionMessage;
-    request2->setFederationHandle(getFederationHandle());
-    send(request2);
-
+    Clock clock = Clock::now() + Clock::fromSeconds(70);
     if (!dispatchWaitEraseFederationExecutionResponse(clock))
       Traits::throwRTIinternalError("resignFederationExecution hit timeout!");
-
-    SharedPtr<ReleaseFederationHandleMessage> request3 = new ReleaseFederationHandleMessage;
-    request3->setFederationHandle(getFederationHandle());
-    send(request3);
 
     _federate = 0;
   }

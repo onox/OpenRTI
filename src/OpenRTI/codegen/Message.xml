@@ -451,7 +451,18 @@
     <field name="FOMModuleHandleList" type="FOMModuleHandleVector"/>
   </message>
 
-  <!-- Resign federation execution. The local ambassador is responsible for the policy tasks. -->
+  <!-- Resign federation execution as sent from the ambassador.
+       This is translated then in the server node to a usual
+       ResignFederationExecutionRequest below.
+  -->
+  <message type="ResignFederationExecutionLeafRequest">
+    <!-- The federation handle to identify packets -->
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+    <field name="ResignAction" type="ResignAction"/>
+  </message>
+
+  <!-- Resign federation execution inside the Federation. -->
   <message type="ResignFederationExecutionRequest">
     <!-- The federation handle to identify packets -->
     <field name="FederationHandle" type="FederationHandle"/>

@@ -152,11 +152,10 @@ public:
 
   virtual void disableTimeRegulation(InternalAmbassador& ambassador)
   {
-    // FIXME reenable these when we have server side resign
-    // OpenRTIAssert(InternalTimeManagement::getTimeRegulationEnabled());
-    // OpenRTIAssert(!InternalTimeManagement::getTimeRegulationEnablePending());
-    // OpenRTIAssert(!InternalTimeManagement::getTimeConstrainedEnablePending());
-    // OpenRTIAssert(!InternalTimeManagement::getTimeAdvancePending());
+    OpenRTIAssert(InternalTimeManagement::getTimeRegulationEnabled());
+    OpenRTIAssert(!InternalTimeManagement::getTimeRegulationEnablePending());
+    OpenRTIAssert(!InternalTimeManagement::getTimeConstrainedEnablePending());
+    OpenRTIAssert(!InternalTimeManagement::getTimeAdvancePending());
 
     InternalTimeManagement::setTimeRegulationMode(InternalTimeManagement::TimeRegulationDisabled);
 

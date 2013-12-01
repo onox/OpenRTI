@@ -557,59 +557,19 @@ public:
   { }
   void operator()(const ConnectionLostMessage& message)
   {
+    _basicAmbassador.acceptInternalMessage(message);
     _done = true;
   }
   void operator()(const EraseFederationExecutionMessage& message)
   {
+    SharedPtr<ReleaseFederationHandleMessage> release = new ReleaseFederationHandleMessage;
+    release->setFederationHandle(message.getFederationHandle());
+    _basicAmbassador.send(release);
     _done = true;
-  }
-  void operator()(const InsertObjectInstanceMessage& message)
-  {
-    SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> reply;
-    reply = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
-    reply->setFederationHandle(message.getFederationHandle());
-    reply->getObjectInstanceHandleVector().push_back(message.getObjectInstanceHandle());
-    _basicAmbassador.send(reply);
-  }
-  void operator()(const ObjectInstanceHandlesResponseMessage& message)
-  {
-    SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> reply;
-    reply = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
-    reply->setFederationHandle(message.getFederationHandle());
-    reply->getObjectInstanceHandleVector().reserve(message.getObjectInstanceHandleNamePairVector().size());
-    for (ObjectInstanceHandleNamePairVector::const_iterator k = message.getObjectInstanceHandleNamePairVector().begin();
-         k != message.getObjectInstanceHandleNamePairVector().end(); ++k) {
-      reply->getObjectInstanceHandleVector().push_back(k->first);
-    }
-    _basicAmbassador.send(reply);
-  }
-  void operator()(const ReserveObjectInstanceNameResponseMessage& message)
-  {
-    if (!message.getSuccess())
-      return;
-    SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> reply;
-    reply = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
-    reply->setFederationHandle(message.getFederationHandle());
-    reply->getObjectInstanceHandleVector().push_back(message.getObjectInstanceHandleNamePair().first);
-    _basicAmbassador.send(reply);
-  }
-  void operator()(const ReserveMultipleObjectInstanceNameResponseMessage& message) const
-  {
-    if (!message.getSuccess())
-      return;
-    SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> reply;
-    reply = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
-    reply->setFederationHandle(message.getFederationHandle());
-    reply->getObjectInstanceHandleVector().reserve(message.getObjectInstanceHandleNamePairVector().size());
-    for (ObjectInstanceHandleNamePairVector::const_iterator k = message.getObjectInstanceHandleNamePairVector().begin();
-         k != message.getObjectInstanceHandleNamePairVector().end(); ++k) {
-      reply->getObjectInstanceHandleVector().push_back(k->first);
-    }
-    _basicAmbassador.send(reply);
   }
   template<typename M>
   void operator()(const M& message) const
-  { _basicAmbassador.acceptInternalMessage(message); }
+  { }
 
   bool _done;
 
