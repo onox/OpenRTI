@@ -131,19 +131,23 @@ class CDataType(DataType):
 
 ###############################################################################
 class EnumLabel(object):
-    def __init__(self, name):
+    def __init__(self, name, value):
         self.__name = name
+        self.__value = value
 
     def getName(self):
         return self.__name
+
+    def getValue(self):
+        return self.__value
 
 class EnumDataType(DataType):
     def __init__(self, name):
         DataType.__init__(self, name)
         self.__enumList = []
 
-    def addEnum(self, name):
-        self.__enumList.append(EnumLabel(name))
+    def addEnum(self, name, value):
+        self.__enumList.append(EnumLabel(name, value))
 
     def getEnumList(self):
         return self.__enumList
@@ -153,13 +157,16 @@ class EnumDataType(DataType):
         sourceStream.writeline('enum {name} {{'.format(name = self.getName()))
         sourceStream.pushIndent()
 
-        value = 0
+        index = 0
         for enum in self.__enumList:
-            value = value + 1
-            if value == len(self.__enumList):
-                sourceStream.writeline('{enum}'.format(enum = enum.getName()))
-            else:
-                sourceStream.writeline('{enum},'.format(enum = enum.getName()))
+            line = '{enum}'.format(enum = enum.getName())
+            value = enum.getValue()
+            if value is not None:
+                line += ' = {value}'.format(value = value)
+            index = index + 1
+            if index < len(self.__enumList):
+                line += ','
+            sourceStream.writeline(line)
 
         sourceStream.popIndent()
         sourceStream.writeline('};')
@@ -1405,7 +1412,7 @@ class TypeMap(object):
                         enumerant = node.children
                         while enumerant:
                             if enumerant.type == 'element' and enumerant.name == 'enumerant':
-                                enum.addEnum(enumerant.prop('name'))
+                                enum.addEnum(enumerant.prop('name'), enumerant.prop('value'))
                             enumerant = enumerant.next
                         self.addType(enum)
 
