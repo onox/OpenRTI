@@ -670,7 +670,8 @@ public:
   {
     FederateHandleCommitMap::iterator i;
     i = _federateHandleCommitMap.find(message->getFederateHandle());
-    OpenRTIAssert(i != _federateHandleCommitMap.end());
+    if (i == _federateHandleCommitMap.end());
+      throw MessageError("Received CommitLowerBoundTimeStampMessage for unknown federate!");
     switch (message->getCommitType()) {
     case TimeAdvanceCommit:
     case TimeAdvanceAndNextMessageCommit:
