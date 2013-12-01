@@ -19,6 +19,7 @@
 
 #include "fedtime.hh"
 
+#include <algorithm>
 #include <cmath>
 #include <cstring>
 #include <limits>
