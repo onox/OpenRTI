@@ -86,6 +86,12 @@ public:
   { return _timeAdvanceMode != TimeAdvanceGranted; }
   bool getFlushQueueMode() const
   { return _timeAdvanceMode == FlushQueueRequest; }
+  bool getIsAnyAdvanceRequest() const
+  { return _timeAdvanceMode == TimeAdvanceRequest || _timeAdvanceMode == TimeAdvanceRequestAvailable; }
+  bool getIsAnyAvailableMode() const
+  { return _timeAdvanceMode == TimeAdvanceRequestAvailable || _timeAdvanceMode == NextMessageRequestAvailable || _timeAdvanceMode == FlushQueueRequest; }
+  bool getIsAnyNextMessageMode() const
+  { return _timeAdvanceMode == NextMessageRequest || _timeAdvanceMode == NextMessageRequestAvailable; }
 
   bool getAsynchronousDeliveryEnabled() const
   { return _asynchronousDeliveryEnabled; }

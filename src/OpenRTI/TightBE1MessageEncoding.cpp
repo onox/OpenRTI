@@ -588,12 +588,6 @@ public:
     }
   }
 
-  void writeTimeStamp(const TimeStamp& value)
-  {
-    writeVariableLengthData(value.getLogicalTime());
-    writeInt(value.getZeroLookahead());
-  }
-
   void writeFederateHandleSaveStatusPair(const FederateHandleSaveStatusPair& value)
   {
     writeFederateHandle(value.first);
@@ -1180,7 +1174,7 @@ public:
   {
     writeFederationHandle(value.getFederationHandle());
     writeFederateHandle(value.getFederateHandle());
-    writeTimeStamp(value.getTimeStamp());
+    writeVariableLengthData(value.getTimeStamp());
   }
 
   void writeEnableTimeRegulationResponseMessage(const EnableTimeRegulationResponseMessage& value)
@@ -1202,7 +1196,7 @@ public:
   {
     writeFederationHandle(value.getFederationHandle());
     writeFederateHandle(value.getFederateHandle());
-    writeTimeStamp(value.getTimeStamp());
+    writeVariableLengthData(value.getTimeStamp());
   }
 
   void writeTimeConstrainedEnabledMessage(const TimeConstrainedEnabledMessage& value)
@@ -2481,12 +2475,6 @@ public:
     }
   }
 
-  void readTimeStamp(TimeStamp& value)
-  {
-    readVariableLengthData(value.getLogicalTime());
-    readInt(value.getZeroLookahead());
-  }
-
   void readFederateHandleSaveStatusPair(FederateHandleSaveStatusPair& value)
   {
     readFederateHandle(value.first);
@@ -3078,7 +3066,7 @@ public:
   {
     readFederationHandle(value.getFederationHandle());
     readFederateHandle(value.getFederateHandle());
-    readTimeStamp(value.getTimeStamp());
+    readVariableLengthData(value.getTimeStamp());
   }
 
   void readEnableTimeRegulationResponseMessage(EnableTimeRegulationResponseMessage& value)
@@ -3100,7 +3088,7 @@ public:
   {
     readFederationHandle(value.getFederationHandle());
     readFederateHandle(value.getFederateHandle());
-    readTimeStamp(value.getTimeStamp());
+    readVariableLengthData(value.getTimeStamp());
   }
 
   void readTimeConstrainedEnabledMessage(TimeConstrainedEnabledMessage& value)
@@ -3350,11 +3338,6 @@ public:
     }
   }
 
-  void readPayloadTimeStamp(TimeStamp& value)
-  {
-    readPayloadVariableLengthData(value.getLogicalTime());
-  }
-
   void readPayloadRegisterFederationSynchronizationPointMessage(RegisterFederationSynchronizationPointMessage& value)
   {
     readPayloadVariableLengthData(value.getTag());
@@ -3367,7 +3350,7 @@ public:
 
   void readPayloadEnableTimeRegulationRequestMessage(EnableTimeRegulationRequestMessage& value)
   {
-    readPayloadTimeStamp(value.getTimeStamp());
+    readPayloadVariableLengthData(value.getTimeStamp());
   }
 
   void readPayloadEnableTimeRegulationResponseMessage(EnableTimeRegulationResponseMessage& value)
@@ -3377,7 +3360,7 @@ public:
 
   void readPayloadCommitLowerBoundTimeStampMessage(CommitLowerBoundTimeStampMessage& value)
   {
-    readPayloadTimeStamp(value.getTimeStamp());
+    readPayloadVariableLengthData(value.getTimeStamp());
   }
 
   void readPayloadInteractionMessage(InteractionMessage& value)

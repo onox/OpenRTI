@@ -175,7 +175,6 @@ typedef std::vector<ParameterValue> ParameterValueVector;
 class AttributeValue;
 typedef std::vector<AttributeValue> AttributeValueVector;
 
-class TimeStamp;
 typedef std::pair<FederateHandle, SaveStatus> FederateHandleSaveStatusPair;
 
 typedef std::vector<FederateHandleSaveStatusPair> FederateHandleSaveStatusPairVector;
@@ -555,49 +554,6 @@ private:
 };
 
 typedef std::vector<AttributeValue> AttributeValueVector;
-
-class OPENRTI_API TimeStamp {
-public:
-  void setLogicalTime(const VariableLengthData& value)
-  { _logicalTime = value; }
-  VariableLengthData& getLogicalTime()
-  { return _logicalTime; }
-  const VariableLengthData& getLogicalTime() const
-  { return _logicalTime; }
-
-  void setZeroLookahead(const Int& value)
-  { _zeroLookahead = value; }
-  Int& getZeroLookahead()
-  { return _zeroLookahead; }
-  const Int& getZeroLookahead() const
-  { return _zeroLookahead; }
-
-  bool operator==(const TimeStamp& rhs) const
-  {
-    if (getLogicalTime() != rhs.getLogicalTime()) return false;
-    if (getZeroLookahead() != rhs.getZeroLookahead()) return false;
-    return true;
-  }
-  bool operator<(const TimeStamp& rhs) const
-  {
-    if (getLogicalTime() < rhs.getLogicalTime()) return true;
-    if (rhs.getLogicalTime() < getLogicalTime()) return false;
-    if (getZeroLookahead() < rhs.getZeroLookahead()) return true;
-    if (rhs.getZeroLookahead() < getZeroLookahead()) return false;
-    return false;
-  }
-  bool operator!=(const TimeStamp& rhs) const
-  { return !operator==(rhs); }
-  bool operator>(const TimeStamp& rhs) const
-  { return rhs.operator<(*this); }
-  bool operator>=(const TimeStamp& rhs) const
-  { return !operator<(rhs); }
-  bool operator<=(const TimeStamp& rhs) const
-  { return !operator>(rhs); }
-private:
-  VariableLengthData _logicalTime;
-  Int _zeroLookahead;
-};
 
 typedef std::pair<FederateHandle, SaveStatus> FederateHandleSaveStatusPair;
 
@@ -3032,17 +2988,17 @@ public:
   const FederateHandle& getFederateHandle() const
   { return _federateHandle; }
 
-  void setTimeStamp(const TimeStamp& value)
+  void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
-  TimeStamp& getTimeStamp()
+  VariableLengthData& getTimeStamp()
   { return _timeStamp; }
-  const TimeStamp& getTimeStamp() const
+  const VariableLengthData& getTimeStamp() const
   { return _timeStamp; }
 
 private:
   FederationHandle _federationHandle;
   FederateHandle _federateHandle;
-  TimeStamp _timeStamp;
+  VariableLengthData _timeStamp;
 };
 
 class OPENRTI_API EnableTimeRegulationResponseMessage : public AbstractMessage {
@@ -3184,17 +3140,17 @@ public:
   const FederateHandle& getFederateHandle() const
   { return _federateHandle; }
 
-  void setTimeStamp(const TimeStamp& value)
+  void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
-  TimeStamp& getTimeStamp()
+  VariableLengthData& getTimeStamp()
   { return _timeStamp; }
-  const TimeStamp& getTimeStamp() const
+  const VariableLengthData& getTimeStamp() const
   { return _timeStamp; }
 
 private:
   FederationHandle _federationHandle;
   FederateHandle _federateHandle;
-  TimeStamp _timeStamp;
+  VariableLengthData _timeStamp;
 };
 
 class OPENRTI_API TimeConstrainedEnabledMessage : public AbstractMessage {
@@ -5200,18 +5156,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const AttributeValueV
       os << ", " << *i;
     }
   }
-  os << " }";
-  return os;
-}
-
-template<typename char_type, typename traits_type>
-std::basic_ostream<char_type, traits_type>&
-operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeStamp& value)
-{
-  os << "{ ";
-  os << "logicalTime: " << value.getLogicalTime();
-  os << ", ";
-  os << "zeroLookahead: " << value.getZeroLookahead();
   os << " }";
   return os;
 }

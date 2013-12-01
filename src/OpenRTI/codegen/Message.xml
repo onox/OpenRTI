@@ -160,12 +160,6 @@
   </type>
   <type name="AttributeValueVector" type="vector" scalar="AttributeValue"/>
 
-  <!-- For the enable time regulation request -->
-  <type name="TimeStamp" type="struct">
-    <field name="LogicalTime" type="VariableLengthData"/>
-    <field name="ZeroLookahead" type="Int"/>
-  </type>
-
   <type name="FederateHandleSaveStatusPair" type="pair" first="FederateHandle" second="SaveStatus"/>
   <type name="FederateHandleSaveStatusPairVector" type="vector" scalar="FederateHandleSaveStatusPair"/>
 
@@ -527,7 +521,7 @@
   <message type="EnableTimeRegulationRequest">
     <field name="FederationHandle" type="FederationHandle"/>
     <field name="FederateHandle" type="FederateHandle"/>
-    <field name="TimeStamp" type="TimeStamp"/>
+    <field name="TimeStamp" type="VariableLengthData"/>
   </message>
   <message type="EnableTimeRegulationResponse">
     <field name="FederationHandle" type="FederationHandle"/>
@@ -551,7 +545,7 @@
     <!-- May be a federate handle vector already? For the optimized case where we know the representation
          and handle collecting commits in the server tree? FIXME -->
     <field name="FederateHandle" type="FederateHandle"/>
-    <field name="TimeStamp" type="TimeStamp"/>
+    <field name="TimeStamp" type="VariableLengthData"/>
     <!-- Hmm, may be this is sufficient to flush objects when they have passed a specific number? -->
     <!-- <field name="MessageRetractionHandle" type="MessageRetractionHandle"/> -->
   </message>
