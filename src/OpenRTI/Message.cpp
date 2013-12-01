@@ -896,6 +896,62 @@ ResignFederateNotifyMessage::operator<(const ResignFederateNotifyMessage& rhs) c
   return false;
 }
 
+ChangeAutomaticResignDirectiveMessage::ChangeAutomaticResignDirectiveMessage()
+{
+}
+
+ChangeAutomaticResignDirectiveMessage::~ChangeAutomaticResignDirectiveMessage()
+{
+}
+
+const char*
+ChangeAutomaticResignDirectiveMessage::getTypeName() const
+{
+  return "ChangeAutomaticResignDirectiveMessage";
+}
+
+void
+ChangeAutomaticResignDirectiveMessage::out(std::ostream& os) const
+{
+  os << "ChangeAutomaticResignDirectiveMessage " << *this;
+}
+
+void
+ChangeAutomaticResignDirectiveMessage::dispatch(const AbstractMessageDispatcher& dispatcher) const
+{
+  dispatcher.accept(*this);
+}
+
+bool
+ChangeAutomaticResignDirectiveMessage::operator==(const AbstractMessage& rhs) const
+{
+  const ChangeAutomaticResignDirectiveMessage* message = dynamic_cast<const ChangeAutomaticResignDirectiveMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+ChangeAutomaticResignDirectiveMessage::operator==(const ChangeAutomaticResignDirectiveMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getResignAction() != rhs.getResignAction()) return false;
+  return true;
+}
+
+bool
+ChangeAutomaticResignDirectiveMessage::operator<(const ChangeAutomaticResignDirectiveMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getResignAction() < rhs.getResignAction()) return true;
+  if (rhs.getResignAction() < getResignAction()) return false;
+  return false;
+}
+
 RegisterFederationSynchronizationPointMessage::RegisterFederationSynchronizationPointMessage()
 {
 }

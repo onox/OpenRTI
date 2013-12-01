@@ -777,7 +777,7 @@ class MessageEncoding(object):
             'ResignFederationExecutionRequestMessage' : 14,
             'JoinFederateNotifyMessage' : 15,
             'ResignFederateNotifyMessage' : 16,
-            'UpdateFederationObjectModelRequestMessage' : 17,
+            'ChangeAutomaticResignDirectiveMessage' : 17,
             'RegisterFederationSynchronizationPointMessage' : 30,
             'RegisterFederationSynchronizationPointResponseMessage' : 31,
             'AnnounceSynchronizationPointMessage' : 32,

@@ -198,6 +198,11 @@ InternalAmbassador::acceptInternalMessage(const ResignFederateNotifyMessage& mes
 }
 
 void
+InternalAmbassador::acceptInternalMessage(const ChangeAutomaticResignDirectiveMessage& message)
+{
+}
+
+void
 InternalAmbassador::acceptInternalMessage(const RegisterFederationSynchronizationPointResponseMessage& message)
 {
   queueCallback(message);

@@ -429,6 +429,16 @@ public:
     eraseFederationExecutionAtConnect(federateConnectHandle);
   }
 
+  // Policy how to handle implicit resign
+  void accept(const ConnectHandle& connectHandle, const ChangeAutomaticResignDirectiveMessage* message)
+  {
+    Federate* federate = getFederate(message->getFederateHandle());
+    if (!federate)
+      throw MessageError("Got ChangeAutomaticResignDirectiveMessage for an unknown federate!");
+    federate->_automaticResignDirective = message->getResignAction();
+    broadcast(connectHandle, message);
+  }
+
   // Synchronization labels
   void accept(const ConnectHandle& connectHandle, const RegisterFederationSynchronizationPointMessage* message)
   {
@@ -2309,6 +2319,9 @@ public:
   { acceptDownstreamFederationMessage(connectHandle, message); }
   void accept(const ConnectHandle& connectHandle, const ResignFederateNotifyMessage* message)
   { acceptDownstreamFederationMessage(connectHandle, message); }
+  // How to proceed on implicit resign
+  void accept(const ConnectHandle& connectHandle, const ChangeAutomaticResignDirectiveMessage* message)
+  { acceptFederationMessage(connectHandle, message); }
 
   // Synchronization labels
   void accept(const ConnectHandle& connectHandle, const RegisterFederationSynchronizationPointMessage* message)

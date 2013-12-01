@@ -3087,7 +3087,18 @@ public:
       default:
         Traits::throwInvalidResignAction();
       }
+
+      if (_federate->getAutomaticResignDirective() == resignAction)
+        return;
+
       _federate->setAutomaticResignDirective(resignAction);
+
+      SharedPtr<ChangeAutomaticResignDirectiveMessage> message;
+      message = new ChangeAutomaticResignDirectiveMessage;
+      message->setFederationHandle(getFederationHandle());
+      message->setFederateHandle(getFederateHandle());
+      message->setResignAction(resignAction);
+      send(message);
 
     } catch (const typename Traits::Exception&) {
       throw;

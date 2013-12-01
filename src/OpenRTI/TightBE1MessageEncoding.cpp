@@ -1148,6 +1148,13 @@ public:
     writeFederateHandle(value.getFederateHandle());
   }
 
+  void writeChangeAutomaticResignDirectiveMessage(const ChangeAutomaticResignDirectiveMessage& value)
+  {
+    writeFederationHandle(value.getFederationHandle());
+    writeFederateHandle(value.getFederateHandle());
+    writeResignAction(value.getResignAction());
+  }
+
   void writeRegisterFederationSynchronizationPointMessage(const RegisterFederationSynchronizationPointMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
@@ -1617,6 +1624,16 @@ public:
     EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
     encodeStream.writeUInt16Compressed(16);
     encodeStream.writeResignFederateNotifyMessage(message);
+    headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
+  }
+
+  void
+  encode(TightBE1MessageEncoding& messageEncoding, const ChangeAutomaticResignDirectiveMessage& message) const
+  {
+    EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());
+    EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
+    encodeStream.writeUInt16Compressed(17);
+    encodeStream.writeChangeAutomaticResignDirectiveMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
 
@@ -3096,6 +3113,13 @@ public:
     readFederateHandle(value.getFederateHandle());
   }
 
+  void readChangeAutomaticResignDirectiveMessage(ChangeAutomaticResignDirectiveMessage& value)
+  {
+    readFederationHandle(value.getFederationHandle());
+    readFederateHandle(value.getFederateHandle());
+    readResignAction(value.getResignAction());
+  }
+
   void readRegisterFederationSynchronizationPointMessage(RegisterFederationSynchronizationPointMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
@@ -3605,6 +3629,10 @@ TightBE1MessageEncoding::decodeBody(const VariableLengthData& variableLengthData
   case 16:
     _message = new ResignFederateNotifyMessage;
     decodeStream.readResignFederateNotifyMessage(static_cast<ResignFederateNotifyMessage&>(*_message));
+    break;
+  case 17:
+    _message = new ChangeAutomaticResignDirectiveMessage;
+    decodeStream.readChangeAutomaticResignDirectiveMessage(static_cast<ChangeAutomaticResignDirectiveMessage&>(*_message));
     break;
   case 30:
     _message = new RegisterFederationSynchronizationPointMessage;

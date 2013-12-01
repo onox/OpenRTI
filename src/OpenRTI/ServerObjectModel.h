@@ -1085,7 +1085,8 @@ public:
       _federateHandleFederateMapIterator(federateHandleFederateMapIterator),
       _stringSetIterator(stringSetIterator),
       _connect(0),
-      _resignPending(false)
+      _resignPending(false),
+      _automaticResignDirective(CANCEL_THEN_DELETE_THEN_DIVEST)
     { }
     FederateHandleFederateMap::iterator _federateHandleFederateMapIterator;
     StringSet::iterator _stringSetIterator;
@@ -1102,6 +1103,7 @@ public:
       return _connect->getHandle();
     }
     bool _resignPending;
+    ResignAction _automaticResignDirective;
   };
   FederateHandleAllocator _federateHandleAllocator;
   FederateHandleFederateMap _federateHandleFederateMap;

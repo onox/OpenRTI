@@ -75,6 +75,7 @@ public:
   void acceptInternalMessage(const ResignFederationExecutionRequestMessage& message);
   void acceptInternalMessage(const JoinFederateNotifyMessage& message);
   void acceptInternalMessage(const ResignFederateNotifyMessage& message);
+  void acceptInternalMessage(const ChangeAutomaticResignDirectiveMessage& message);
   void acceptInternalMessage(const RegisterFederationSynchronizationPointResponseMessage& message);
   void acceptInternalMessage(const AnnounceSynchronizationPointMessage& message);
   void acceptInternalMessage(const SynchronizationPointAchievedMessage& message);

@@ -43,6 +43,7 @@ class JoinFederationExecutionResponseMessage;
 class ResignFederationExecutionRequestMessage;
 class JoinFederateNotifyMessage;
 class ResignFederateNotifyMessage;
+class ChangeAutomaticResignDirectiveMessage;
 class RegisterFederationSynchronizationPointMessage;
 class RegisterFederationSynchronizationPointResponseMessage;
 class AnnounceSynchronizationPointMessage;
@@ -103,6 +104,7 @@ public:
   virtual void accept(const ResignFederationExecutionRequestMessage&) const = 0;
   virtual void accept(const JoinFederateNotifyMessage&) const = 0;
   virtual void accept(const ResignFederateNotifyMessage&) const = 0;
+  virtual void accept(const ChangeAutomaticResignDirectiveMessage&) const = 0;
   virtual void accept(const RegisterFederationSynchronizationPointMessage&) const = 0;
   virtual void accept(const RegisterFederationSynchronizationPointResponseMessage&) const = 0;
   virtual void accept(const AnnounceSynchronizationPointMessage&) const = 0;
@@ -166,6 +168,7 @@ public:
   virtual void accept(const ResignFederationExecutionRequestMessage& message) const { _t(message); }
   virtual void accept(const JoinFederateNotifyMessage& message) const { _t(message); }
   virtual void accept(const ResignFederateNotifyMessage& message) const { _t(message); }
+  virtual void accept(const ChangeAutomaticResignDirectiveMessage& message) const { _t(message); }
   virtual void accept(const RegisterFederationSynchronizationPointMessage& message) const { _t(message); }
   virtual void accept(const RegisterFederationSynchronizationPointResponseMessage& message) const { _t(message); }
   virtual void accept(const AnnounceSynchronizationPointMessage& message) const { _t(message); }
@@ -231,6 +234,7 @@ public:
   virtual void accept(const ResignFederationExecutionRequestMessage& message) const { _t(message); }
   virtual void accept(const JoinFederateNotifyMessage& message) const { _t(message); }
   virtual void accept(const ResignFederateNotifyMessage& message) const { _t(message); }
+  virtual void accept(const ChangeAutomaticResignDirectiveMessage& message) const { _t(message); }
   virtual void accept(const RegisterFederationSynchronizationPointMessage& message) const { _t(message); }
   virtual void accept(const RegisterFederationSynchronizationPointResponseMessage& message) const { _t(message); }
   virtual void accept(const AnnounceSynchronizationPointMessage& message) const { _t(message); }

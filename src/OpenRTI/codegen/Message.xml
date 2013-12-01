@@ -476,6 +476,14 @@
     <field name="FederateHandle" type="FederateHandle"/>
   </message>
 
+  <!-- Change what happens when the federate connect just dies. -->
+  <message type="ChangeAutomaticResignDirective">
+    <!-- The federation handle to identify packets -->
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+    <field name="ResignAction" type="ResignAction"/>
+  </message>
+
   <!-- Syncronisation points.
     -->
   <message type="RegisterFederationSynchronizationPoint">
