@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -23,10 +23,13 @@
 #include <vector>
 #include <iostream>
 
+#include <RTI/HLAfloat64Time.h>
+#include <RTI/HLAfloat64Interval.h>
 #include <RTI/HLAinteger64Time.h>
 #include <RTI/HLAinteger64Interval.h>
 
 #include <Options.h>
+#include <Rand.h>
 #include <StringUtils.h>
 #include <Thread.h>
 
@@ -39,25 +42,244 @@ enum TimeAdvanceMode {
   TimeAdvanceRequestAvailable = 1,
   NextMessageRequest = 2,
   NextMessageRequestAvailable = 3,
-  FlushQueueRequest = 4
+  FlushQueueRequest = 4,
+  AllTimeAdvanceRequests = 5
 };
 
+template<typename LogicalTime, typename LogicalTimeInterval>
 class TestAmbassador : public RTI1516TestAmbassador {
 public:
-  TestAmbassador(const RTITest::ConstructorArgs& constructorArgs,
-                 const HLAinteger64Interval& lookahead, TimeAdvanceMode timeAdvanceMode) :
+  typedef std::pair<LogicalTime, bool> LogicalTimePair;
+
+  TestAmbassador(const RTITest::ConstructorArgs& constructorArgs, unsigned lookahead,
+                 TimeAdvanceMode timeAdvanceMode, unsigned numTimesteps, unsigned numInteractions) :
     RTI1516TestAmbassador(constructorArgs),
+    _testTimeAdvanceMode(timeAdvanceMode),
+    _numTimesteps(numTimesteps),
+    _numInteractions(numInteractions),
     _lookahead(lookahead),
-    _timeAdvanceMode(timeAdvanceMode),
     _timeRegulationEnabled(false),
     _timeConstrainedEnabled(false),
-    _timeAdvancePending(false)
-  { }
+    _timeAdvanceMode(timeAdvanceMode),
+    _timeAdvancePending(false),
+    _nextMessageTimePending(false),
+    _fail(false)
+  {
+    _lowerBoundSendTime.first.setInitial();
+    _lowerBoundSendTime.second = false;
+    _lastLowerBoundSendTime = _lowerBoundSendTime;
+    _lowerBoundReceiveTime = _lowerBoundSendTime;
+    _upperBoundReceiveTime.setFinal();
+    setLogicalTimeFactoryName(_logicalTime.implementationName());
+  }
   virtual ~TestAmbassador()
     throw ()
   { }
 
   virtual bool execJoined(rti1516::RTIambassador& ambassador)
+  {
+    _lowerBoundSendTime.first.setInitial();
+    _lowerBoundSendTime.second = false;
+    _lastLowerBoundSendTime = _lowerBoundSendTime;
+    _lowerBoundReceiveTime = _lowerBoundSendTime;
+    _upperBoundReceiveTime.setFinal();
+
+    _rand = Rand(ambassador.normalizeFederateHandle(getFederateHandle()) + 7*17, ambassador.normalizeFederateHandle(getFederateHandle()) + 17);
+
+    // Get some handles
+    try {
+      _interactionClassHandle0 = ambassador.getInteractionClassHandle(L"InteractionClass0");
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    try {
+      _class0Parameter0Handle = ambassador.getParameterHandle(_interactionClassHandle0, L"parameter0");
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    try {
+      ambassador.queryLogicalTime(_logicalTime);
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    // Enable time constrained
+    if (!enableTimeConstrained(ambassador))
+      return false;
+
+    // Now that we are constrained, subscribe
+    try {
+      ambassador.subscribeInteractionClass(_interactionClassHandle0);
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    // Enable time regulation
+    if (!enableTimeRegulation(ambassador))
+      return false;
+
+    // Now that we are regulating, publish
+    try {
+      ambassador.publishInteractionClass(_interactionClassHandle0);
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    // Ok, here time advance and so on
+    for (unsigned i = 0; i < _numTimesteps; ++i) {
+
+      // Send some interactions.
+      for (unsigned j = 0; j < _numInteractions; ++j) {
+        if (!sendTimeStampedInteraction(ambassador, _logicalTime + LogicalTimeInterval(j)))
+          return false;
+      }
+
+      // Do the time advance
+      try {
+        _advanceLogicalTime = _logicalTime;
+        _advanceLogicalTime += LogicalTimeInterval(i%10);
+        if (_testTimeAdvanceMode == AllTimeAdvanceRequests) {
+          // pessimize the flush queue somehow
+          if (_rand.get() % 10 == 0)
+            _timeAdvanceMode = FlushQueueRequest;
+          else
+            _timeAdvanceMode = TimeAdvanceMode(_rand.get() % unsigned(FlushQueueRequest));
+        } else {
+          _timeAdvanceMode = _testTimeAdvanceMode;
+        }
+        // FIXME This is a limitation of OpenRTI at this point
+        if (_advanceLogicalTime != _logicalTime && _timeAdvanceMode == NextMessageRequestAvailable)
+          _timeAdvanceMode = NextMessageRequest;
+
+        _lastLowerBoundSendTime = _lowerBoundSendTime;
+        _timeAdvancePending = true;
+        _nextMessageTimePending = true;
+        switch (_timeAdvanceMode) {
+        case TimeAdvanceRequest:
+          if (_timeRegulationEnabled) {
+            _lowerBoundSendTime = std::max(_lowerBoundSendTime, LogicalTimePair(_advanceLogicalTime + _lookahead, _lookahead.isZero()));
+            setLBTS(_lowerBoundSendTime);
+          }
+          if (_timeConstrainedEnabled)
+            _upperBoundReceiveTime = _advanceLogicalTime;
+          ambassador.timeAdvanceRequest(_advanceLogicalTime);
+          break;
+        case TimeAdvanceRequestAvailable:
+          if (_timeRegulationEnabled) {
+            _lowerBoundSendTime = std::max(_lowerBoundSendTime, LogicalTimePair(_advanceLogicalTime + _lookahead, false));
+            setLBTS(_lowerBoundSendTime);
+          }
+          if (_timeConstrainedEnabled)
+            _upperBoundReceiveTime = _advanceLogicalTime;
+          ambassador.timeAdvanceRequestAvailable(_advanceLogicalTime);
+          break;
+        case NextMessageRequest:
+          if (_timeRegulationEnabled) {
+            _lowerBoundSendTime = std::max(_lowerBoundSendTime, LogicalTimePair(_advanceLogicalTime + _lookahead, _lookahead.isZero()));
+            setLBTS(_lowerBoundSendTime);
+          }
+          if (_timeConstrainedEnabled)
+            _upperBoundReceiveTime = _advanceLogicalTime;
+          ambassador.nextMessageRequest(_advanceLogicalTime);
+          break;
+        case NextMessageRequestAvailable:
+          if (_timeRegulationEnabled) {
+            _lowerBoundSendTime = std::max(_lowerBoundSendTime, LogicalTimePair(_advanceLogicalTime + _lookahead, false));
+            setLBTS(_lowerBoundSendTime);
+          }
+          if (_timeConstrainedEnabled)
+            _upperBoundReceiveTime = _advanceLogicalTime;
+          ambassador.nextMessageRequestAvailable(_advanceLogicalTime);
+          break;
+        case FlushQueueRequest:
+          if (_timeRegulationEnabled) {
+            _lowerBoundSendTime = std::max(_lowerBoundSendTime, LogicalTimePair(_advanceLogicalTime + _lookahead, false));
+            setLBTS(_lowerBoundSendTime);
+          }
+          if (_timeConstrainedEnabled)
+            _upperBoundReceiveTime.setFinal();
+          ambassador.flushQueueRequest(_advanceLogicalTime);
+          break;
+        default:
+          std::wcout << L"Internal test error: cannot time advance on all requests!" << std::endl;
+          return false;
+        }
+      } catch (const rti1516::Exception& e) {
+        std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+        return false;
+      } catch (...) {
+        std::wcout << L"Unknown Exception!" << std::endl;
+        return false;
+      }
+
+      // Send some interactions while in time advance
+
+      for (unsigned j = 0; j < _numInteractions; ++j) {
+        if (!sendTimeStampedInteraction(ambassador, _logicalTime + LogicalTimeInterval(j)))
+          return false;
+      }
+
+      try {
+        Clock timeout = Clock::now() + Clock::fromSeconds(20);
+        while (_timeAdvancePending) {
+          if (ambassador.evokeCallback(20.0))
+            continue;
+          if (_fail)
+            return false;
+          if (timeout < Clock::now()) {
+            std::wcout << L"Timeout waiting for next message" << std::endl;
+            return false;
+          }
+        }
+      } catch (const rti1516::Exception& e) {
+        std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+        return false;
+      } catch (...) {
+        std::wcout << L"Unknown Exception!" << std::endl;
+        return false;
+      }
+    }
+
+    // Cleanup time management
+
+    // Disable time regulation
+    if (!disableTimeRegulation(ambassador))
+      return false;
+
+    // Disable time constrained
+    if (!disableTimeConstrained(ambassador))
+      return false;
+
+    return !_fail;
+  }
+
+  /////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////
+
+  bool enableTimeConstrained(rti1516::RTIambassador& ambassador)
   {
     // Enable time constrained
     try {
@@ -75,6 +297,7 @@ public:
     }
 
     try {
+      _lastLowerBoundSendTime = _lowerBoundSendTime;
       ambassador.enableTimeConstrained();
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -99,16 +322,33 @@ public:
     }
 
     try {
-      Clock timeout = Clock::now() + Clock::fromSeconds(10);
+      Clock timeout = Clock::now() + Clock::fromSeconds(20);
       while (!_timeConstrainedEnabled) {
-        if (ambassador.evokeCallback(60.0))
+        if (ambassador.evokeCallback(20.0))
           continue;
+        if (_fail)
+          return false;
         if (timeout < Clock::now()) {
           std::wcout << L"Timeout waiting for next message" << std::endl;
           return false;
         }
       }
 
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    try {
+      LogicalTime logicalTime;
+      ambassador.queryLogicalTime(logicalTime);
+      if (logicalTime != _logicalTime) {
+        std::wcout << L"Queried logical time does not match the one in timeConstrainedEnabled callback!" << std::endl;
+        return false;
+      }
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -131,7 +371,68 @@ public:
       return false;
     }
 
-    // Enable time regulation
+    return true;
+  }
+
+  bool disableTimeConstrained(rti1516::RTIambassador& ambassador)
+  {
+    try {
+      _lowerBoundReceiveTime.first.setInitial();
+      _lowerBoundReceiveTime.second = false;
+      _upperBoundReceiveTime.setFinal();
+      ambassador.disableTimeConstrained();
+      _timeConstrainedEnabled = false;
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+
+    try {
+      ambassador.disableTimeConstrained();
+      std::wcout << L"disableTimeConstrained does not fail as required!" << std::endl;
+      return false;
+    } catch (const rti1516::TimeConstrainedIsNotEnabled&) {
+      // Ok, must do that
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    return true;
+  }
+
+  virtual void
+  timeConstrainedEnabled(const rti1516::LogicalTime& logicalTime)
+    throw (rti1516::InvalidLogicalTime,
+           rti1516::NoRequestToEnableTimeConstrainedWasPending,
+           rti1516::FederateInternalError)
+  {
+    if (logicalTime < _logicalTime) {
+      std::wcout << L"Time constrained enabled time grants for a time in the past!" << std::endl;
+      _fail = true;
+    }
+    _logicalTime = logicalTime;
+    _timeConstrainedEnabled = true;
+    if (_timeRegulationEnabled) {
+      _lowerBoundSendTime = std::max(_lastLowerBoundSendTime, LogicalTimePair(_logicalTime + _lookahead, _lookahead.isZero()));
+      setLBTS(_lowerBoundSendTime);
+    }
+    _lowerBoundReceiveTime = std::max(_lowerBoundReceiveTime, LogicalTimePair(logicalTime, false));
+  }
+
+  /////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////
+
+  bool enableTimeRegulation(rti1516::RTIambassador& ambassador)
+  {
     try {
       ambassador.disableTimeRegulation();
       std::wcout << L"disableTimeRegulation does not fail as required!" << std::endl;
@@ -147,6 +448,10 @@ public:
     }
 
     try {
+      _lastLowerBoundSendTime.first.setInitial();
+      _lastLowerBoundSendTime.second = false;
+      _lowerBoundSendTime = std::max(_lowerBoundSendTime, LogicalTimePair(_logicalTime + _lookahead, false));
+      _upperBoundReceiveTime.setFinal();
       ambassador.enableTimeRegulation(_lookahead);
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -171,16 +476,48 @@ public:
     }
 
     try {
-      Clock timeout = Clock::now() + Clock::fromSeconds(60);
+      Clock timeout = Clock::now() + Clock::fromSeconds(20);
       while (!_timeRegulationEnabled) {
-        if (ambassador.evokeCallback(10.0))
+        if (ambassador.evokeCallback(20.0))
           continue;
+        if (_fail)
+          return false;
         if (timeout < Clock::now()) {
           std::wcout << L"Timeout waiting for next message" << std::endl;
           return false;
         }
       }
 
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    try {
+      LogicalTime logicalTime;
+      ambassador.queryLogicalTime(logicalTime);
+      if (logicalTime != _logicalTime) {
+        std::wcout << L"Queried logical time does not match the one in timeRegulationEnabled callback!" << std::endl;
+        return false;
+      }
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    try {
+      LogicalTimeInterval lookahead;
+      ambassador.queryLookahead(lookahead);
+      if (lookahead != _lookahead) {
+        std::wcout << L"Queried lookahead does not match the one in enableTimeRegulation!" << std::endl;
+        return false;
+      }
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -203,82 +540,18 @@ public:
       return false;
     }
 
-    // Ok, here time advance and so on
+    return true;
+  }
+
+  bool disableTimeRegulation(rti1516::RTIambassador& ambassador)
+  {
     try {
-      ambassador.queryLogicalTime(_logicalTime);
-    } catch (const rti1516::Exception& e) {
-      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
-      return false;
-    } catch (...) {
-      std::wcout << L"Unknown Exception!" << std::endl;
-      return false;
-    }
-
-    for (unsigned i = 0; i < 300; ++i) {
-      _logicalTime += HLAinteger64Interval(1);
-      setLBTS(_logicalTime.getTime());
-      try {
-        switch (_timeAdvanceMode) {
-        case TimeAdvanceRequest:
-          ambassador.timeAdvanceRequest(_logicalTime);
-          break;
-        case TimeAdvanceRequestAvailable:
-          ambassador.timeAdvanceRequestAvailable(_logicalTime);
-          break;
-        case NextMessageRequest:
-          ambassador.nextMessageRequest(_logicalTime);
-          break;
-        case NextMessageRequestAvailable:
-          ambassador.nextMessageRequestAvailable(_logicalTime);
-          break;
-        case FlushQueueRequest:
-          ambassador.flushQueueRequest(_logicalTime);
-          break;
-        }
-        _timeAdvancePending = true;
-      } catch (const rti1516::Exception& e) {
-        std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
-        return false;
-      } catch (...) {
-        std::wcout << L"Unknown Exception!" << std::endl;
-        return false;
-      }
-
-      try {
-        Clock timeout = Clock::now() + Clock::fromSeconds(10);
-        while (_timeAdvancePending) {
-          if (ambassador.evokeCallback(60.0))
-            continue;
-          if (timeout < Clock::now()) {
-            std::wcout << L"Timeout waiting for next message" << std::endl;
-            return false;
-          }
-        }
-      } catch (const rti1516::Exception& e) {
-        std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
-        return false;
-      } catch (...) {
-        std::wcout << L"Unknown Exception!" << std::endl;
-        return false;
-      }
-
-      unsigned commonStamp = getLBTS();
-      if (commonStamp < _logicalTime.getTime()) {
-        std::wcout << L"Time advance grant to early: i = " << i << ", lbts: " << commonStamp
-                   << ", our time: " << _logicalTime.getTime() << std::endl;
-        return false;
-      }
-
-      // std::wcout << _logicalTime.getTime() << std::endl;
-    }
-
-    // Cleanup time management
-
-    clearLBTS();
-
-    try {
+      if (getLogicalTimeFactoryName() == L"HLAinteger64Time")
+        clearLBTS();
       ambassador.disableTimeRegulation();
       _timeRegulationEnabled = false;
+      _lowerBoundSendTime.first.setInitial();
+      _lowerBoundSendTime.second = false;
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -301,24 +574,60 @@ public:
       return false;
     }
 
+    return true;
+  }
 
-    try {
-      ambassador.disableTimeConstrained();
-      _timeConstrainedEnabled = false;
-    } catch (const rti1516::Exception& e) {
-      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
-      return false;
-    } catch (...) {
-      std::wcout << L"Unknown Exception!" << std::endl;
-      return false;
+  virtual void
+  timeRegulationEnabled(const rti1516::LogicalTime& logicalTime)
+    throw (rti1516::InvalidLogicalTime,
+           rti1516::NoRequestToEnableTimeRegulationWasPending,
+           rti1516::FederateInternalError)
+  {
+    if (logicalTime < _logicalTime) {
+      std::wcout << L"Time regulation enabled time grants for a time in the past!" << std::endl;
+      _fail = true;
     }
+    _lowerBoundSendTime = std::max(_lowerBoundSendTime, LogicalTimePair(LogicalTime(logicalTime) + _lookahead, false));
+    if (_timeConstrainedEnabled)
+      _lowerBoundReceiveTime = std::max(_lowerBoundReceiveTime, LogicalTimePair(logicalTime, false));
+    _logicalTime = logicalTime;
+    _timeRegulationEnabled = true;
+  }
 
+  /////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////
+
+  bool sendTimeStampedInteraction(rti1516::RTIambassador& ambassador, const LogicalTime& logicalTime)
+  {
     try {
-      ambassador.disableTimeConstrained();
-      std::wcout << L"disableTimeConstrained does not fail as required!" << std::endl;
-      return false;
-    } catch (const rti1516::TimeConstrainedIsNotEnabled&) {
-      // Ok, must do that
+      rti1516::ParameterHandleValueMap parameterValues;
+      rti1516::VariableLengthData tag = toVariableLengthData("withTimestamp");
+      parameterValues[_class0Parameter0Handle] = _logicalTime.encode();
+      ambassador.sendInteraction(_interactionClassHandle0, parameterValues, tag, logicalTime);
+
+      if (_timeRegulationEnabled) {
+        // It's not ok to succeed if we try with an already passed logical time.
+        if (LogicalTimePair(logicalTime, false) < _lowerBoundSendTime) {
+          std::wcout << L"Accepted logical time in the past for message delivery!" << std::endl;
+          return false;
+        }
+      }
+
+    } catch (const rti1516::InvalidLogicalTime& e) {
+      if (_timeRegulationEnabled) {
+        // It's required to fail if we try with an already passed logical time.
+        if (_lowerBoundSendTime <= LogicalTimePair(logicalTime, false)) {
+          std::wcout << L"Not accepted message for logical time " << logicalTime
+                     << L" for a lower bound send time (" << _lowerBoundSendTime.first
+                     << L", " << _lowerBoundSendTime.second << L")!" << std::endl;
+          return false;
+        }
+      } else {
+        // No failure for non regulating federates
+        std::wcout << L"rti1516::InvalidLogicalTime: \"" << e.what() << L"\"" << std::endl;
+        return false;
+      }
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -331,64 +640,289 @@ public:
   }
 
   virtual void
-  timeRegulationEnabled(const rti1516::LogicalTime& logicalTime)
-    throw (rti1516::InvalidLogicalTime,
-           rti1516::NoRequestToEnableTimeRegulationWasPending,
-           rti1516::FederateInternalError)
-  {
-    _logicalTime = logicalTime;
-    _timeRegulationEnabled = true;
-    // std::wcout << "timeRegulationEnabled: " << logicalTime.toString() << std::endl;
-  }
-
-  virtual void
-  timeConstrainedEnabled(const rti1516::LogicalTime& logicalTime)
-    throw (rti1516::InvalidLogicalTime,
-           rti1516::NoRequestToEnableTimeConstrainedWasPending,
-           rti1516::FederateInternalError)
-  {
-    _logicalTime = logicalTime;
-    _timeConstrainedEnabled = true;
-    // std::wcout << "timeConstrainedEnabled: " << logicalTime.toString() << std::endl;
-  }
-
-  virtual void
   timeAdvanceGrant(const rti1516::LogicalTime& logicalTime)
     throw (rti1516::InvalidLogicalTime,
            rti1516::JoinedFederateIsNotInTimeAdvancingState,
            rti1516::FederateInternalError)
   {
+    if (!_timeAdvancePending) {
+      std::wcout << L"Time advance grant without time advance pending!" << std::endl;
+      _fail = true;
+    }
+    if (logicalTime < _logicalTime) {
+      std::wcout << L"Time advance grant time grants for a time in the past!" << std::endl;
+      _fail = true;
+    }
+
+    _logicalTime = logicalTime;
     _timeAdvancePending = false;
-    // std::wcout << "timeAdvanceGrant: " << logicalTime.toString() << std::endl;
+
+    switch (_timeAdvanceMode) {
+    case TimeAdvanceRequest:
+    case NextMessageRequest:
+      if (_timeRegulationEnabled)
+        _lowerBoundSendTime = std::max(_lastLowerBoundSendTime, LogicalTimePair(_logicalTime + _lookahead, _lookahead.isZero()));
+      if (_timeConstrainedEnabled)
+        _lowerBoundReceiveTime = std::max(_lowerBoundReceiveTime, LogicalTimePair(_logicalTime, true));
+      break;
+    case TimeAdvanceRequestAvailable:
+    case NextMessageRequestAvailable:
+    case FlushQueueRequest:
+      if (_timeRegulationEnabled)
+        _lowerBoundSendTime = std::max(_lastLowerBoundSendTime, LogicalTimePair(_logicalTime + _lookahead, false));
+      if (_timeConstrainedEnabled)
+        _lowerBoundReceiveTime = std::max(_lowerBoundReceiveTime, LogicalTimePair(_logicalTime, false));
+      break;
+    }
+
+    switch (_timeAdvanceMode) {
+    case NextMessageRequest:
+    case NextMessageRequestAvailable:
+      if (!_nextMessageTimePending) {
+        if (_logicalTime != _nextMessageTime) {
+          std::wcout << L"Time advance grant time grants for a time not equal to the next message time!" << std::endl;
+          _fail = true;
+        }
+      }
+      // fallthrough
+    case FlushQueueRequest:
+      if (_advanceLogicalTime < _logicalTime) {
+        std::wcout << L"Time advance grant time grants for a time beyond the requested advance time!" << std::endl;
+        _fail = true;
+      }
+      break;
+    case TimeAdvanceRequest:
+    case TimeAdvanceRequestAvailable:
+      if (_logicalTime != _advanceLogicalTime) {
+        std::wcout << L"Time advance grant time grants for a time not equal to the requested advance time!" << std::endl;
+        _fail = true;
+      }
+      break;
+    }
+
+    if (getLogicalTimeFactoryName() == L"HLAinteger64Time") {
+      if (_timeConstrainedEnabled) {
+        unsigned commonStamp = getLBTS();
+        if (_lowerBoundReceiveTime.second) {
+          if (commonStamp <= _lowerBoundReceiveTime.first.getTime()) {
+            std::wcout << L"Time advance grant too early: lbts: " << commonStamp
+                       << L", our time: " << _logicalTime.getTime() << std::endl;
+            _fail = true;
+          }
+        } else {
+          if (commonStamp < _lowerBoundReceiveTime.first.getTime()) {
+            std::wcout << L"Time advance grant too early: lbts: " << commonStamp
+                       << L", our time: " << _logicalTime.getTime() << std::endl;
+            _fail = true;
+          }
+        }
+      }
+    }
+  }
+
+  virtual void
+  receiveInteraction(rti1516::InteractionClassHandle, const rti1516::ParameterHandleValueMap&,
+                     const rti1516::VariableLengthData& tag, rti1516::OrderType sentOrder, rti1516::TransportationType)
+    throw (rti1516::InteractionClassNotRecognized,
+           rti1516::InteractionParameterNotRecognized,
+           rti1516::InteractionClassNotSubscribed,
+           rti1516::FederateInternalError)
+  {
+    if (strncmp("withoutTimestamp", (const char*)tag.data(), tag.size()) != 0) {
+        _fail = true;
+        std::wcout << L"Got timestamp order message that was recieved as receive order!" << std::endl;
+    }
+    if (sentOrder != rti1516::RECEIVE) {
+        _fail = true;
+        std::wcout << L"Got recieve order message that was recieved as timestamp order!" << std::endl;
+    }
+  }
+
+  virtual void
+  receiveInteraction(rti1516::InteractionClassHandle theInteraction,
+                     rti1516::ParameterHandleValueMap const & theParameterValues,
+                     rti1516::VariableLengthData const & tag,
+                     rti1516::OrderType sentOrder,
+                     rti1516::TransportationType theType,
+                     rti1516::LogicalTime const & theTime,
+                     rti1516::OrderType receivedOrder)
+    throw (rti1516::InteractionClassNotRecognized,
+           rti1516::InteractionParameterNotRecognized,
+           rti1516::InteractionClassNotSubscribed,
+           rti1516::FederateInternalError)
+  {
+    if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
+        _fail = true;
+        std::wcout << L"Got recieve order message that was recieved as timestamp order!" << std::endl;
+    }
+    if (receivedOrder == rti1516::TIMESTAMP && sentOrder != rti1516::TIMESTAMP) {
+        _fail = true;
+        std::wcout << L"Received timestamp order message that was sent as receive order!" << std::endl;
+    }
+    if (receivedOrder == rti1516::TIMESTAMP) {
+      if (_timeConstrainedEnabled) {
+        checkLogicalMessageTime(theTime);
+      } else {
+        _fail = true;
+        std::wcout << L"Received timestamp order message while time constrained disabled!" << std::endl;
+      }
+    }
+  }
+
+  virtual void
+  receiveInteraction(rti1516::InteractionClassHandle theInteraction,
+                     rti1516::ParameterHandleValueMap const & theParameterValues,
+                     rti1516::VariableLengthData const & tag,
+                     rti1516::OrderType sentOrder,
+                     rti1516::TransportationType theType,
+                     rti1516::LogicalTime const & theTime,
+                     rti1516::OrderType receivedOrder,
+                     rti1516::MessageRetractionHandle theHandle)
+    throw (rti1516::InteractionClassNotRecognized,
+           rti1516::InteractionParameterNotRecognized,
+           rti1516::InteractionClassNotSubscribed,
+           rti1516::InvalidLogicalTime,
+           rti1516::FederateInternalError)
+  {
+    if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
+        std::wcout << L"Got recieve order message over timestamped delivery!" << std::endl;
+        _fail = true;
+    }
+    if (receivedOrder == rti1516::TIMESTAMP && sentOrder != rti1516::TIMESTAMP) {
+        _fail = true;
+        std::wcout << L"Received timestamp order message that was sent as receive order!" << std::endl;
+    }
+    if (receivedOrder == rti1516::TIMESTAMP) {
+      if (_timeConstrainedEnabled) {
+        checkLogicalMessageTime(theTime);
+      } else {
+        _fail = true;
+        std::wcout << L"Received timestamp order message while time constrained disabled!" << std::endl;
+      }
+    }
+  }
+
+  void checkLogicalMessageTime(rti1516::LogicalTime const & logicalTime)
+  {
+    if (LogicalTimePair(logicalTime, false) < _lowerBoundReceiveTime) {
+      _fail = true;
+      std::wcout << L"Received timestamp order message with timestamp in the past: [("
+                 << _lowerBoundReceiveTime.first << L", " << _lowerBoundReceiveTime.second
+                 << L"), " << _upperBoundReceiveTime << L"] " << logicalTime << std::endl;
+    }
+    if (_upperBoundReceiveTime < logicalTime) {
+      _fail = true;
+      std::wcout << L"Received timestamp order message with timestamp in the future: [("
+                 << _lowerBoundReceiveTime.first << L", " << _lowerBoundReceiveTime.second
+                 << L"), " << _upperBoundReceiveTime << L"] " << logicalTime << std::endl;
+    }
+
+    if (_timeAdvancePending) {
+      switch (_timeAdvanceMode) {
+      case NextMessageRequest:
+      case NextMessageRequestAvailable:
+        // If in next message mode, we want only this first single messages
+        if (_nextMessageTimePending) {
+          _nextMessageTime = logicalTime;
+          _nextMessageTimePending = false;
+        } else {
+          if (!(_nextMessageTime == logicalTime)) {
+            std::wcout << L"Received timestamp order message in next message mode with timestamp "
+                       << logicalTime << L" different than " << _nextMessageTime << L"!" << std::endl;
+            _fail = true;
+          }
+        }
+        break;
+      case TimeAdvanceRequest:
+      case TimeAdvanceRequestAvailable:
+      case FlushQueueRequest:
+        break;
+      }
+    }
+  }
+
+  void setLBTS(const LogicalTimePair& logicalTimePair)
+  {
+    if (getLogicalTimeFactoryName() != L"HLAinteger64Time")
+      return;
+    if (logicalTimePair.second) {
+      // smallest allowed message is logical time + 1
+      RTI1516TestAmbassador::setLBTS(logicalTimePair.first.getTime() + 1);
+    } else {
+      // smallest allowed message is logical time
+      RTI1516TestAmbassador::setLBTS(logicalTimePair.first.getTime());
+    }
   }
 
 private:
-  HLAinteger64Interval _lookahead;
-  TimeAdvanceMode _timeAdvanceMode;
+  TimeAdvanceMode _testTimeAdvanceMode;
+  unsigned _numTimesteps;
+  unsigned _numInteractions;
+  LogicalTimeInterval _lookahead;
+
+  rti1516::InteractionClassHandle _interactionClassHandle0;
+  rti1516::ParameterHandle _class0Parameter0Handle;
+
+  LogicalTime _logicalTime;
+
   bool _timeRegulationEnabled;
+  LogicalTimePair _lowerBoundSendTime;
+  LogicalTimePair _lastLowerBoundSendTime;
+
   bool _timeConstrainedEnabled;
+  LogicalTimePair _lowerBoundReceiveTime;
+  LogicalTime _upperBoundReceiveTime;
+
+  TimeAdvanceMode _timeAdvanceMode;
   bool _timeAdvancePending;
-  HLAinteger64Time _logicalTime;
+  LogicalTime _advanceLogicalTime;
+  bool _nextMessageTimePending;
+  LogicalTime _nextMessageTime;
+
+  Rand _rand;
+  bool _fail;
 };
 
 class Test : public RTITest {
 public:
   Test(int argc, const char* const argv[]) :
     RTITest(argc, argv, false),
+    _float(false),
     _lookahead(1),
-    _timeAdvanceMode(TimeAdvanceRequest)
+    _timeAdvanceMode(AllTimeAdvanceRequests),
+    _numTimesteps(100),
+    _numInteractions(4)
   {
-    insertOptionString("L:M:");
+    insertOptionString("fI:L:M:T:");
   }
 
   virtual bool processOption(char optchar, const std::string& argument)
   {
     switch (optchar) {
+    case 'f':
+      _float = true;
+      return true;
+    case 'I':
+      _numInteractions = atoi(argument.c_str());
+      return true;
     case 'L':
       _lookahead = HLAinteger64Interval(atoi(argument.c_str()));
-      return true;
+      return HLAinteger64Interval(0) <= _lookahead;
     case 'M':
       _timeAdvanceMode = TimeAdvanceMode(atoi(argument.c_str()));
+      switch (_timeAdvanceMode) {
+      case TimeAdvanceRequest:
+      case TimeAdvanceRequestAvailable:
+      case NextMessageRequest:
+      case NextMessageRequestAvailable:
+      case FlushQueueRequest:
+      case AllTimeAdvanceRequests:
+        return true;
+      default:
+        return false;
+      }
+    case 'T':
+      _numTimesteps = atoi(argument.c_str());
       return true;
     default:
       return RTITest::processOption(optchar, argument);
@@ -397,12 +931,18 @@ public:
 
   virtual Ambassador* createAmbassador(const ConstructorArgs& constructorArgs)
   {
-    return new TestAmbassador(constructorArgs, _lookahead, _timeAdvanceMode);
+    if (_float)
+      return new TestAmbassador<HLAfloat64Time, HLAfloat64Interval>(constructorArgs, _lookahead, _timeAdvanceMode, _numTimesteps, _numInteractions);
+    else
+      return new TestAmbassador<HLAinteger64Time, HLAinteger64Interval>(constructorArgs, _lookahead, _timeAdvanceMode, _numTimesteps, _numInteractions);
   }
 
 private:
-  HLAinteger64Interval _lookahead;
+  bool _float;
+  unsigned _lookahead;
   TimeAdvanceMode _timeAdvanceMode;
+  unsigned _numTimesteps;
+  unsigned _numInteractions;
 };
 
 int

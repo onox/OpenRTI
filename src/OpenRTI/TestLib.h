@@ -314,15 +314,19 @@ public:
       if (i->second != 0)
         return;
 
-      if ((i->first % 100) == 0)
-        std::cout << i->first << std::endl;
+      // if ((i->first % 100) == 0)
+      //   std::cout << i->first << std::endl;
 
       _lbtsMap.erase(i);
     }
-    unsigned getLBTS() const
+    unsigned getLBTS(unsigned ownTime) const
     {
       ScopeLock scopeLock(_mutex);
-      return _lbtsMap.begin()->first;
+      for (std::map<unsigned, unsigned>::const_iterator i = _lbtsMap.begin(); i != _lbtsMap.end(); ++i) {
+        if (i->first != ownTime || 1 < i->second)
+          return i->first;
+      }
+      return ~0u;
     }
 
   private:
@@ -403,9 +407,14 @@ public:
     }
 
     unsigned getLBTS() const
-    { return _constructorArgs._lbts->getLBTS(); }
+    { return _constructorArgs._lbts->getLBTS(_ownTime); }
     void setLBTS(unsigned newTime)
-    { _constructorArgs._lbts->replaceLBTS(_ownTime, newTime); _ownTime = newTime; }
+    {
+      if (_ownTime == newTime)
+        return;
+      _constructorArgs._lbts->replaceLBTS(_ownTime, newTime);
+      _ownTime = newTime;
+    }
     void clearLBTS()
     { setLBTS(~0u); }
 

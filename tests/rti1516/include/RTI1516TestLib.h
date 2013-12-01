@@ -120,11 +120,20 @@ class RTI1516TestAmbassador : public RTITest::Ambassador, public rti1516::Federa
 public:
   RTI1516TestAmbassador(const RTITest::ConstructorArgs& constructorArgs) :
     RTITest::Ambassador(constructorArgs),
+    _logicalTimeFactoryName(L"HLAinteger64Time"),
     _synchronized(0)
   { }
   virtual ~RTI1516TestAmbassador()
     throw ()
   { }
+
+  const rti1516::FederateHandle& getFederateHandle() const
+  { return _federateHandle; }
+
+  const std::wstring& getLogicalTimeFactoryName() const
+  { return _logicalTimeFactoryName; }
+  void setLogicalTimeFactoryName(const std::wstring& logicalTimeFactoryName)
+  { _logicalTimeFactoryName = logicalTimeFactoryName; }
 
   virtual bool execJoined(rti1516::RTIambassador& ambassador) = 0;
 
@@ -206,7 +215,7 @@ public:
 
     // create, must work once
     try {
-      ambassador->createFederationExecution(getFederationExecution(), getFddFile(), std::wstring(L"HLAinteger64Time"));
+      ambassador->createFederationExecution(getFederationExecution(), getFddFile(), _logicalTimeFactoryName);
 
       if (!getFederationBarrier()->success())
         return false;
@@ -229,7 +238,7 @@ public:
 
       // join must work
       try {
-        ambassador->joinFederationExecution(getFederateType(), getFederationExecution(), *this);
+        _federateHandle = ambassador->joinFederationExecution(getFederateType(), getFederationExecution(), *this);
       } catch (const rti1516::Exception& e) {
         std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
         return false;
@@ -301,7 +310,7 @@ public:
 
       // create, must work once
       try {
-        ambassador->createFederationExecution(getFederationExecution(), getFddFile(), std::wstring(L"HLAinteger64Time"));
+        ambassador->createFederationExecution(getFederationExecution(), getFddFile(), _logicalTimeFactoryName);
 
         if (!getFederationBarrier()->success())
           return false;
@@ -320,7 +329,7 @@ public:
 
       // join must work
       try {
-        ambassador->joinFederationExecution(getFederateType(), getFederationExecution(), *this);
+        _federateHandle = ambassador->joinFederationExecution(getFederateType(), getFederationExecution(), *this);
       } catch (const rti1516::Exception& e) {
         std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
         return false;
@@ -850,6 +859,8 @@ public:
   }
 
 private:
+  std::wstring _logicalTimeFactoryName;
+  rti1516::FederateHandle _federateHandle;
   unsigned _synchronized;
   std::set<std::wstring> _federateSet;
 };
