@@ -169,9 +169,6 @@ public:
         } else {
           _timeAdvanceMode = _testTimeAdvanceMode;
         }
-        // FIXME This is a limitation of OpenRTI at this point
-        if (_advanceLogicalTime != _logicalTime && _timeAdvanceMode == NextMessageRequestAvailable)
-          _timeAdvanceMode = NextMessageRequest;
 
         _lastLowerBoundSendTime = _lowerBoundSendTime;
         _timeAdvancePending = true;
