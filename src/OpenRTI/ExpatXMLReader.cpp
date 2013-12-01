@@ -250,7 +250,7 @@ ExpatExternalEntityRefHandler(XML_Parser parentParser, const XML_Char *context,
     }
 
     stream.read(buf, bufSize);
-    if (!XML_Parse(parser, buf, stream.gcount(), false)) {
+    if (!XML_Parse(parser, buf, int(stream.gcount()), 0)) {
       // if (mErrorHandler.valid())
       //   mErrorHandler->fatalError("ExpatXMLReader: Error from Parser",
       //                             XML_GetCurrentLineNumber(parser),
@@ -261,7 +261,7 @@ ExpatExternalEntityRefHandler(XML_Parser parentParser, const XML_Char *context,
     }
   }
 
-  if (!XML_Parse(parser, buf, 0, true)) {
+  if (!XML_Parse(parser, buf, 0, 1)) {
     // if (mErrorHandler.valid())
     //   mErrorHandler->fatalError("ExpatXMLReader: Error from Parser",
     //                             XML_GetCurrentLineNumber(parser),
@@ -327,7 +327,7 @@ ExpatXMLReader::parse(std::istream& stream)
     }
 
     stream.read(buf, bufSize);
-    if (!XML_Parse(userData.parser, buf, stream.gcount(), false)) {
+    if (!XML_Parse(userData.parser, buf, int(stream.gcount()), 0)) {
       if (mErrorHandler.valid()) {
         std::string errorString("XML error: ");
         const char* e = XML_ErrorString(XML_GetErrorCode(userData.parser));
@@ -344,7 +344,7 @@ ExpatXMLReader::parse(std::istream& stream)
     }
   }
 
-  if (!XML_Parse(userData.parser, buf, 0, true)) {
+  if (!XML_Parse(userData.parser, buf, 0, 1)) {
     if (mErrorHandler.valid()) {
       std::string errorString("XML error: ");
       const char* e = XML_ErrorString(XML_GetErrorCode(userData.parser));
