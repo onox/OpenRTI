@@ -109,6 +109,12 @@ enum ServiceGroupIndicator {
   SUPPORT_SERVICES
 };
 
+enum LowerBoundTimeStampCommitType {
+  TimeAdvanceCommit = 1,
+  NextMessageCommit = 2,
+  TimeAdvanceAndNextMessageCommit = 3
+};
+
 typedef bool Bool;
 
 typedef std::string String;
@@ -303,6 +309,8 @@ class EnableTimeRegulationRequestMessage;
 class EnableTimeRegulationResponseMessage;
 class DisableTimeRegulationRequestMessage;
 class CommitLowerBoundTimeStampMessage;
+class CommitLowerBoundTimeStampResponseMessage;
+class LockedByNextMessageRequestMessage;
 class TimeConstrainedEnabledMessage;
 class TimeRegulationEnabledMessage;
 class TimeAdvanceGrantedMessage;
@@ -2995,10 +3003,18 @@ public:
   const VariableLengthData& getTimeStamp() const
   { return _timeStamp; }
 
+  void setCommitId(const Unsigned& value)
+  { _commitId = value; }
+  Unsigned& getCommitId()
+  { return _commitId; }
+  const Unsigned& getCommitId() const
+  { return _commitId; }
+
 private:
   FederationHandle _federationHandle;
   FederateHandle _federateHandle;
   VariableLengthData _timeStamp;
+  Unsigned _commitId;
 };
 
 class OPENRTI_API EnableTimeRegulationResponseMessage : public AbstractMessage {
@@ -3147,10 +3163,130 @@ public:
   const VariableLengthData& getTimeStamp() const
   { return _timeStamp; }
 
+  void setCommitType(const LowerBoundTimeStampCommitType& value)
+  { _commitType = value; }
+  LowerBoundTimeStampCommitType& getCommitType()
+  { return _commitType; }
+  const LowerBoundTimeStampCommitType& getCommitType() const
+  { return _commitType; }
+
+  void setCommitId(const Unsigned& value)
+  { _commitId = value; }
+  Unsigned& getCommitId()
+  { return _commitId; }
+  const Unsigned& getCommitId() const
+  { return _commitId; }
+
 private:
   FederationHandle _federationHandle;
   FederateHandle _federateHandle;
   VariableLengthData _timeStamp;
+  LowerBoundTimeStampCommitType _commitType;
+  Unsigned _commitId;
+};
+
+class OPENRTI_API CommitLowerBoundTimeStampResponseMessage : public AbstractMessage {
+public:
+  CommitLowerBoundTimeStampResponseMessage();
+  virtual ~CommitLowerBoundTimeStampResponseMessage();
+
+  virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const CommitLowerBoundTimeStampResponseMessage& rhs) const;
+  bool operator<(const CommitLowerBoundTimeStampResponseMessage& rhs) const;
+  bool operator!=(const CommitLowerBoundTimeStampResponseMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const CommitLowerBoundTimeStampResponseMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const CommitLowerBoundTimeStampResponseMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const CommitLowerBoundTimeStampResponseMessage& rhs) const
+  { return !operator>(rhs); }
+
+  void setFederationHandle(const FederationHandle& value)
+  { _federationHandle = value; }
+  FederationHandle& getFederationHandle()
+  { return _federationHandle; }
+  const FederationHandle& getFederationHandle() const
+  { return _federationHandle; }
+
+  void setFederateHandle(const FederateHandle& value)
+  { _federateHandle = value; }
+  FederateHandle& getFederateHandle()
+  { return _federateHandle; }
+  const FederateHandle& getFederateHandle() const
+  { return _federateHandle; }
+
+  void setSendingFederateHandle(const FederateHandle& value)
+  { _sendingFederateHandle = value; }
+  FederateHandle& getSendingFederateHandle()
+  { return _sendingFederateHandle; }
+  const FederateHandle& getSendingFederateHandle() const
+  { return _sendingFederateHandle; }
+
+  void setCommitId(const Unsigned& value)
+  { _commitId = value; }
+  Unsigned& getCommitId()
+  { return _commitId; }
+  const Unsigned& getCommitId() const
+  { return _commitId; }
+
+private:
+  FederationHandle _federationHandle;
+  FederateHandle _federateHandle;
+  FederateHandle _sendingFederateHandle;
+  Unsigned _commitId;
+};
+
+class OPENRTI_API LockedByNextMessageRequestMessage : public AbstractMessage {
+public:
+  LockedByNextMessageRequestMessage();
+  virtual ~LockedByNextMessageRequestMessage();
+
+  virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const LockedByNextMessageRequestMessage& rhs) const;
+  bool operator<(const LockedByNextMessageRequestMessage& rhs) const;
+  bool operator!=(const LockedByNextMessageRequestMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const LockedByNextMessageRequestMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const LockedByNextMessageRequestMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const LockedByNextMessageRequestMessage& rhs) const
+  { return !operator>(rhs); }
+
+  void setFederationHandle(const FederationHandle& value)
+  { _federationHandle = value; }
+  FederationHandle& getFederationHandle()
+  { return _federationHandle; }
+  const FederationHandle& getFederationHandle() const
+  { return _federationHandle; }
+
+  void setSendingFederateHandle(const FederateHandle& value)
+  { _sendingFederateHandle = value; }
+  FederateHandle& getSendingFederateHandle()
+  { return _sendingFederateHandle; }
+  const FederateHandle& getSendingFederateHandle() const
+  { return _sendingFederateHandle; }
+
+  void setLockedByNextMessage(const Bool& value)
+  { _lockedByNextMessage = value; }
+  Bool& getLockedByNextMessage()
+  { return _lockedByNextMessage; }
+  const Bool& getLockedByNextMessage() const
+  { return _lockedByNextMessage; }
+
+private:
+  FederationHandle _federationHandle;
+  FederateHandle _sendingFederateHandle;
+  Bool _lockedByNextMessage;
 };
 
 class OPENRTI_API TimeConstrainedEnabledMessage : public AbstractMessage {
@@ -4730,6 +4866,18 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const ServiceGroupInd
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const LowerBoundTimeStampCommitType& value)
+{
+  switch (value) {
+  case TimeAdvanceCommit: os << "TimeAdvanceCommit"; break;
+  case NextMessageCommit: os << "NextMessageCommit"; break;
+  case TimeAdvanceAndNextMessageCommit: os << "TimeAdvanceAndNextMessageCommit"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const AttributeHandleVector& value)
 {
   os << "{ ";
@@ -6196,6 +6344,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const EnableTimeRegul
   os << "federateHandle: " << value.getFederateHandle();
   os << ", ";
   os << "timeStamp: " << value.getTimeStamp();
+  os << ", ";
+  os << "commitId: " << value.getCommitId();
   os << " }";
   return os;
 }
@@ -6240,6 +6390,40 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const CommitLowerBoun
   os << "federateHandle: " << value.getFederateHandle();
   os << ", ";
   os << "timeStamp: " << value.getTimeStamp();
+  os << ", ";
+  os << "commitType: " << value.getCommitType();
+  os << ", ";
+  os << "commitId: " << value.getCommitId();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const CommitLowerBoundTimeStampResponseMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
+  os << "sendingFederateHandle: " << value.getSendingFederateHandle();
+  os << ", ";
+  os << "commitId: " << value.getCommitId();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const LockedByNextMessageRequestMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "sendingFederateHandle: " << value.getSendingFederateHandle();
+  os << ", ";
+  os << "lockedByNextMessage: " << value.getLockedByNextMessage();
   os << " }";
   return os;
 }

@@ -284,9 +284,9 @@ public:
     i->second->_resignPending = true;
 
     // remove from time management
-    FederateHandleTimeStampMap::iterator k = _federateHandleTimeStampMap.find(federateHandle);
-    if (k != _federateHandleTimeStampMap.end()) {
-      _federateHandleTimeStampMap.erase(k);
+    FederateHandleCommitMap::iterator k = _federateHandleCommitMap.find(federateHandle);
+    if (k != _federateHandleCommitMap.end()) {
+      _federateHandleCommitMap.erase(k);
       SharedPtr<DisableTimeRegulationRequestMessage> request = new DisableTimeRegulationRequestMessage;
       request->setFederationHandle(getHandle());
       request->setFederateHandle(federateHandle);
@@ -635,11 +635,17 @@ public:
       // Note that this message really loops back to the requestor.
       // The requestor needs to know which federates he needs to wait for.
       // see an explanation in the ambassaror's time management code
-      _federateHandleTimeStampMap[message->getFederateHandle()] = message->getTimeStamp();
+      FederateHandleCommitMap::iterator i;
+      i = _federateHandleCommitMap.insert(FederateHandleCommitMap::value_type(message->getFederateHandle(), CommitTimeStamps(message->getCommitId()))).first;
+      i->second._timeAdvanceTimeStamp = message->getTimeStamp();
+      i->second._nextMessageTimeStamp = message->getTimeStamp();
       broadcastToChildren(message);
     } else {
       if (connectHandle == _parentServerConnectHandle) {
-        _federateHandleTimeStampMap[message->getFederateHandle()] = message->getTimeStamp();
+        FederateHandleCommitMap::iterator i;
+        i = _federateHandleCommitMap.insert(FederateHandleCommitMap::value_type(message->getFederateHandle(), CommitTimeStamps(message->getCommitId()))).first;
+        i->second._timeAdvanceTimeStamp = message->getTimeStamp();
+        i->second._nextMessageTimeStamp = message->getTimeStamp();
         broadcastToChildren(message);
       } else {
         send(_parentServerConnectHandle, message);
@@ -658,16 +664,62 @@ public:
   {
     // Don't bail out on anything. If the federate dies in between, we might need to clean up somehow
     broadcast(connectHandle, message);
-    _federateHandleTimeStampMap.erase(message->getFederateHandle());
+    _federateHandleCommitMap.erase(message->getFederateHandle());
   }
   void accept(const ConnectHandle& connectHandle, const CommitLowerBoundTimeStampMessage* message)
   {
-    _federateHandleTimeStampMap[message->getFederateHandle()] = message->getTimeStamp();
+    FederateHandleCommitMap::iterator i;
+    i = _federateHandleCommitMap.find(message->getFederateHandle());
+    OpenRTIAssert(i != _federateHandleCommitMap.end());
+    switch (message->getCommitType()) {
+    case TimeAdvanceCommit:
+    case TimeAdvanceAndNextMessageCommit:
+      i->second._timeAdvanceTimeStamp = message->getTimeStamp();
+      i->second._commitId = message->getCommitId();
+      break;
+    case NextMessageCommit:
+      break;
+    }
+    switch (message->getCommitType()) {
+    case TimeAdvanceAndNextMessageCommit:
+    case NextMessageCommit:
+      i->second._nextMessageTimeStamp = message->getTimeStamp();
+      i->second._commitId = message->getCommitId();
+      break;
+    case TimeAdvanceCommit:
+      break;
+    }
+
     // send to all time constrainted connects except to where it originates
     // Hmm, send to all federates. The problem is that non time constrained federates
     // must be able to query the GALT for itself, which is only possible if they know the time advances
     // of each regulating federate, thus just broadcast
     broadcast(connectHandle, message);
+  }
+  void accept(const ConnectHandle& connectHandle, const CommitLowerBoundTimeStampResponseMessage* message)
+  {
+    send(message->getFederateHandle(), message);
+  }
+  void accept(const ConnectHandle& connectHandle, const LockedByNextMessageRequestMessage* message)
+  {
+    // Only time regulating federates are interrested in this message.
+    // May be we should at one point track and store this connect handle set.
+    ConnectHandleSet broadcastSet;
+    for (FederateHandleCommitMap::const_iterator i = _federateHandleCommitMap.begin(); i != _federateHandleCommitMap.end(); ++i) {
+      FederateHandleFederateMap::const_iterator j = _federateHandleFederateMap.find(i->first);
+      if (j == _federateHandleFederateMap.end())
+        continue;
+      Federate* federate = j->second.get();
+      if (!federate)
+        continue;
+      ConnectHandle federateConnectHandle = federate->getConnectHandle();
+      if (!federateConnectHandle.valid())
+        continue;
+      if (federateConnectHandle == connectHandle)
+        continue;
+      broadcastSet.insert(federateConnectHandle);
+    }
+    send(broadcastSet, message);
   }
 
   bool permitTimeRegulation(const ConnectHandle& connectHandle)
@@ -1541,13 +1593,22 @@ public:
       messageSender->send(notify);
     }
 
-    for (FederateHandleTimeStampMap::const_iterator i = _federateHandleTimeStampMap.begin();
-         i != _federateHandleTimeStampMap.end(); ++i) {
+    for (FederateHandleCommitMap::const_iterator i = _federateHandleCommitMap.begin();
+         i != _federateHandleCommitMap.end(); ++i) {
       SharedPtr<EnableTimeRegulationRequestMessage> enable = new EnableTimeRegulationRequestMessage;
       enable->setFederationHandle(getHandle());
       enable->setFederateHandle(i->first);
-      enable->setTimeStamp(i->second);
+      enable->setTimeStamp(i->second._timeAdvanceTimeStamp);
+      enable->setCommitId(i->second._commitId);
       messageSender->send(enable);
+
+      SharedPtr<CommitLowerBoundTimeStampMessage> commit = new CommitLowerBoundTimeStampMessage;
+      commit->setFederationHandle(getHandle());
+      commit->setFederateHandle(i->first);
+      commit->setTimeStamp(i->second._nextMessageTimeStamp);
+      commit->setCommitType(NextMessageCommit);
+      commit->setCommitId(i->second._commitId);
+      messageSender->send(commit);
     }
 
     pushPublications(connectHandle);
@@ -2268,6 +2329,10 @@ public:
   void accept(const ConnectHandle& connectHandle, const DisableTimeRegulationRequestMessage* message)
   { acceptFederationMessage(connectHandle, message); }
   void accept(const ConnectHandle& connectHandle, const CommitLowerBoundTimeStampMessage* message)
+  { acceptFederationMessage(connectHandle, message); }
+  void accept(const ConnectHandle& connectHandle, const CommitLowerBoundTimeStampResponseMessage* message)
+  { acceptFederationMessage(connectHandle, message); }
+  void accept(const ConnectHandle& connectHandle, const LockedByNextMessageRequestMessage* message)
   { acceptFederationMessage(connectHandle, message); }
 
   // Regions

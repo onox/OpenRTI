@@ -110,6 +110,8 @@ public:
   virtual void acceptInternalMessage(InternalAmbassador& ambassador, const EnableTimeRegulationResponseMessage& message) = 0;
   virtual void acceptInternalMessage(InternalAmbassador& ambassador, const DisableTimeRegulationRequestMessage& message) = 0;
   virtual void acceptInternalMessage(InternalAmbassador& ambassador, const CommitLowerBoundTimeStampMessage& message) = 0;
+  virtual void acceptInternalMessage(InternalAmbassador& ambassador, const CommitLowerBoundTimeStampResponseMessage& message) = 0;
+  virtual void acceptInternalMessage(InternalAmbassador& ambassador, const LockedByNextMessageRequestMessage& message) = 0;
 
   virtual void queueTimeStampedMessage(InternalAmbassador& ambassador, const VariableLengthData& timeStamp, const AbstractMessage& message) = 0;
   virtual void queueReceiveOrderMessage(InternalAmbassador& ambassador, const AbstractMessage& message) = 0;

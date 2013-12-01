@@ -349,7 +349,7 @@ ServerObjectModel::eraseFederate(ServerObjectModel::FederateHandleFederateMap::i
   OpenRTIAssert(i != _federateHandleFederateMap.end());
 
   // The time management stuff
-  _federateHandleTimeStampMap.erase(i->first);
+  _federateHandleCommitMap.erase(i->first);
 
   // Remove from syncronization state
   // FIXME: complete syncronization states if this is the last they wait for.

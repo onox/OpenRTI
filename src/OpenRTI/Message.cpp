@@ -1232,6 +1232,7 @@ EnableTimeRegulationRequestMessage::operator==(const EnableTimeRegulationRequest
   if (getFederationHandle() != rhs.getFederationHandle()) return false;
   if (getFederateHandle() != rhs.getFederateHandle()) return false;
   if (getTimeStamp() != rhs.getTimeStamp()) return false;
+  if (getCommitId() != rhs.getCommitId()) return false;
   return true;
 }
 
@@ -1244,6 +1245,8 @@ EnableTimeRegulationRequestMessage::operator<(const EnableTimeRegulationRequestM
   if (rhs.getFederateHandle() < getFederateHandle()) return false;
   if (getTimeStamp() < rhs.getTimeStamp()) return true;
   if (rhs.getTimeStamp() < getTimeStamp()) return false;
+  if (getCommitId() < rhs.getCommitId()) return true;
+  if (rhs.getCommitId() < getCommitId()) return false;
   return false;
 }
 
@@ -1403,6 +1406,8 @@ CommitLowerBoundTimeStampMessage::operator==(const CommitLowerBoundTimeStampMess
   if (getFederationHandle() != rhs.getFederationHandle()) return false;
   if (getFederateHandle() != rhs.getFederateHandle()) return false;
   if (getTimeStamp() != rhs.getTimeStamp()) return false;
+  if (getCommitType() != rhs.getCommitType()) return false;
+  if (getCommitId() != rhs.getCommitId()) return false;
   return true;
 }
 
@@ -1415,6 +1420,125 @@ CommitLowerBoundTimeStampMessage::operator<(const CommitLowerBoundTimeStampMessa
   if (rhs.getFederateHandle() < getFederateHandle()) return false;
   if (getTimeStamp() < rhs.getTimeStamp()) return true;
   if (rhs.getTimeStamp() < getTimeStamp()) return false;
+  if (getCommitType() < rhs.getCommitType()) return true;
+  if (rhs.getCommitType() < getCommitType()) return false;
+  if (getCommitId() < rhs.getCommitId()) return true;
+  if (rhs.getCommitId() < getCommitId()) return false;
+  return false;
+}
+
+CommitLowerBoundTimeStampResponseMessage::CommitLowerBoundTimeStampResponseMessage()
+{
+}
+
+CommitLowerBoundTimeStampResponseMessage::~CommitLowerBoundTimeStampResponseMessage()
+{
+}
+
+const char*
+CommitLowerBoundTimeStampResponseMessage::getTypeName() const
+{
+  return "CommitLowerBoundTimeStampResponseMessage";
+}
+
+void
+CommitLowerBoundTimeStampResponseMessage::out(std::ostream& os) const
+{
+  os << "CommitLowerBoundTimeStampResponseMessage " << *this;
+}
+
+void
+CommitLowerBoundTimeStampResponseMessage::dispatch(const AbstractMessageDispatcher& dispatcher) const
+{
+  dispatcher.accept(*this);
+}
+
+bool
+CommitLowerBoundTimeStampResponseMessage::operator==(const AbstractMessage& rhs) const
+{
+  const CommitLowerBoundTimeStampResponseMessage* message = dynamic_cast<const CommitLowerBoundTimeStampResponseMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+CommitLowerBoundTimeStampResponseMessage::operator==(const CommitLowerBoundTimeStampResponseMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
+  if (getSendingFederateHandle() != rhs.getSendingFederateHandle()) return false;
+  if (getCommitId() != rhs.getCommitId()) return false;
+  return true;
+}
+
+bool
+CommitLowerBoundTimeStampResponseMessage::operator<(const CommitLowerBoundTimeStampResponseMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
+  if (getSendingFederateHandle() < rhs.getSendingFederateHandle()) return true;
+  if (rhs.getSendingFederateHandle() < getSendingFederateHandle()) return false;
+  if (getCommitId() < rhs.getCommitId()) return true;
+  if (rhs.getCommitId() < getCommitId()) return false;
+  return false;
+}
+
+LockedByNextMessageRequestMessage::LockedByNextMessageRequestMessage()
+{
+}
+
+LockedByNextMessageRequestMessage::~LockedByNextMessageRequestMessage()
+{
+}
+
+const char*
+LockedByNextMessageRequestMessage::getTypeName() const
+{
+  return "LockedByNextMessageRequestMessage";
+}
+
+void
+LockedByNextMessageRequestMessage::out(std::ostream& os) const
+{
+  os << "LockedByNextMessageRequestMessage " << *this;
+}
+
+void
+LockedByNextMessageRequestMessage::dispatch(const AbstractMessageDispatcher& dispatcher) const
+{
+  dispatcher.accept(*this);
+}
+
+bool
+LockedByNextMessageRequestMessage::operator==(const AbstractMessage& rhs) const
+{
+  const LockedByNextMessageRequestMessage* message = dynamic_cast<const LockedByNextMessageRequestMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+LockedByNextMessageRequestMessage::operator==(const LockedByNextMessageRequestMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getSendingFederateHandle() != rhs.getSendingFederateHandle()) return false;
+  if (getLockedByNextMessage() != rhs.getLockedByNextMessage()) return false;
+  return true;
+}
+
+bool
+LockedByNextMessageRequestMessage::operator<(const LockedByNextMessageRequestMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getSendingFederateHandle() < rhs.getSendingFederateHandle()) return true;
+  if (rhs.getSendingFederateHandle() < getSendingFederateHandle()) return false;
+  if (getLockedByNextMessage() < rhs.getLockedByNextMessage()) return true;
+  if (rhs.getLockedByNextMessage() < getLockedByNextMessage()) return false;
   return false;
 }
 

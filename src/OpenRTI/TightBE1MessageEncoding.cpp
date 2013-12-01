@@ -264,6 +264,24 @@ public:
     }
   }
 
+  void writeLowerBoundTimeStampCommitType(const LowerBoundTimeStampCommitType& value)
+  {
+    switch (value) {
+    case TimeAdvanceCommit:
+      writeUInt32Compressed(0);
+      break;
+    case NextMessageCommit:
+      writeUInt32Compressed(1);
+      break;
+    case TimeAdvanceAndNextMessageCommit:
+      writeUInt32Compressed(2);
+      break;
+    default:
+      writeUInt32Compressed(3);
+      break;
+    }
+  }
+
   void writeBool(const bool& value)
   {
     writeBoolCompressed(value);
@@ -1175,6 +1193,7 @@ public:
     writeFederationHandle(value.getFederationHandle());
     writeFederateHandle(value.getFederateHandle());
     writeVariableLengthData(value.getTimeStamp());
+    writeUnsigned(value.getCommitId());
   }
 
   void writeEnableTimeRegulationResponseMessage(const EnableTimeRegulationResponseMessage& value)
@@ -1197,6 +1216,23 @@ public:
     writeFederationHandle(value.getFederationHandle());
     writeFederateHandle(value.getFederateHandle());
     writeVariableLengthData(value.getTimeStamp());
+    writeLowerBoundTimeStampCommitType(value.getCommitType());
+    writeUnsigned(value.getCommitId());
+  }
+
+  void writeCommitLowerBoundTimeStampResponseMessage(const CommitLowerBoundTimeStampResponseMessage& value)
+  {
+    writeFederationHandle(value.getFederationHandle());
+    writeFederateHandle(value.getFederateHandle());
+    writeFederateHandle(value.getSendingFederateHandle());
+    writeUnsigned(value.getCommitId());
+  }
+
+  void writeLockedByNextMessageRequestMessage(const LockedByNextMessageRequestMessage& value)
+  {
+    writeFederationHandle(value.getFederationHandle());
+    writeFederateHandle(value.getSendingFederateHandle());
+    writeBool(value.getLockedByNextMessage());
   }
 
   void writeTimeConstrainedEnabledMessage(const TimeConstrainedEnabledMessage& value)
@@ -1675,11 +1711,31 @@ public:
   }
 
   void
-  encode(TightBE1MessageEncoding& messageEncoding, const InsertRegionMessage& message) const
+  encode(TightBE1MessageEncoding& messageEncoding, const CommitLowerBoundTimeStampResponseMessage& message) const
   {
     EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());
     EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
     encodeStream.writeUInt16Compressed(44);
+    encodeStream.writeCommitLowerBoundTimeStampResponseMessage(message);
+    headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
+  }
+
+  void
+  encode(TightBE1MessageEncoding& messageEncoding, const LockedByNextMessageRequestMessage& message) const
+  {
+    EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());
+    EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
+    encodeStream.writeUInt16Compressed(45);
+    encodeStream.writeLockedByNextMessageRequestMessage(message);
+    headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
+  }
+
+  void
+  encode(TightBE1MessageEncoding& messageEncoding, const InsertRegionMessage& message) const
+  {
+    EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());
+    EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
+    encodeStream.writeUInt16Compressed(46);
     encodeStream.writeInsertRegionMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1689,7 +1745,7 @@ public:
   {
     EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());
     EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
-    encodeStream.writeUInt16Compressed(45);
+    encodeStream.writeUInt16Compressed(47);
     encodeStream.writeCommitRegionMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1699,7 +1755,7 @@ public:
   {
     EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());
     EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
-    encodeStream.writeUInt16Compressed(46);
+    encodeStream.writeUInt16Compressed(48);
     encodeStream.writeEraseRegionMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -2138,6 +2194,24 @@ public:
       break;
     default:
       value = SUPPORT_SERVICES;
+      break;
+    }
+  }
+
+  void readLowerBoundTimeStampCommitType(LowerBoundTimeStampCommitType& value)
+  {
+    switch (readUInt32Compressed()) {
+    case 0:
+      value = TimeAdvanceCommit;
+      break;
+    case 1:
+      value = NextMessageCommit;
+      break;
+    case 2:
+      value = TimeAdvanceAndNextMessageCommit;
+      break;
+    default:
+      value = TimeAdvanceAndNextMessageCommit;
       break;
     }
   }
@@ -3067,6 +3141,7 @@ public:
     readFederationHandle(value.getFederationHandle());
     readFederateHandle(value.getFederateHandle());
     readVariableLengthData(value.getTimeStamp());
+    readUnsigned(value.getCommitId());
   }
 
   void readEnableTimeRegulationResponseMessage(EnableTimeRegulationResponseMessage& value)
@@ -3089,6 +3164,23 @@ public:
     readFederationHandle(value.getFederationHandle());
     readFederateHandle(value.getFederateHandle());
     readVariableLengthData(value.getTimeStamp());
+    readLowerBoundTimeStampCommitType(value.getCommitType());
+    readUnsigned(value.getCommitId());
+  }
+
+  void readCommitLowerBoundTimeStampResponseMessage(CommitLowerBoundTimeStampResponseMessage& value)
+  {
+    readFederationHandle(value.getFederationHandle());
+    readFederateHandle(value.getFederateHandle());
+    readFederateHandle(value.getSendingFederateHandle());
+    readUnsigned(value.getCommitId());
+  }
+
+  void readLockedByNextMessageRequestMessage(LockedByNextMessageRequestMessage& value)
+  {
+    readFederationHandle(value.getFederationHandle());
+    readFederateHandle(value.getSendingFederateHandle());
+    readBool(value.getLockedByNextMessage());
   }
 
   void readTimeConstrainedEnabledMessage(TimeConstrainedEnabledMessage& value)
@@ -3551,14 +3643,22 @@ TightBE1MessageEncoding::decodeBody(const VariableLengthData& variableLengthData
     decodeStream.readCommitLowerBoundTimeStampMessage(static_cast<CommitLowerBoundTimeStampMessage&>(*_message));
     break;
   case 44:
+    _message = new CommitLowerBoundTimeStampResponseMessage;
+    decodeStream.readCommitLowerBoundTimeStampResponseMessage(static_cast<CommitLowerBoundTimeStampResponseMessage&>(*_message));
+    break;
+  case 45:
+    _message = new LockedByNextMessageRequestMessage;
+    decodeStream.readLockedByNextMessageRequestMessage(static_cast<LockedByNextMessageRequestMessage&>(*_message));
+    break;
+  case 46:
     _message = new InsertRegionMessage;
     decodeStream.readInsertRegionMessage(static_cast<InsertRegionMessage&>(*_message));
     break;
-  case 45:
+  case 47:
     _message = new CommitRegionMessage;
     decodeStream.readCommitRegionMessage(static_cast<CommitRegionMessage&>(*_message));
     break;
-  case 46:
+  case 48:
     _message = new EraseRegionMessage;
     decodeStream.readEraseRegionMessage(static_cast<EraseRegionMessage&>(*_message));
     break;

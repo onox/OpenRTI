@@ -82,6 +82,12 @@
     <enumerant name="SUPPORT_SERVICES"/>
   </type>
 
+  <type name="LowerBoundTimeStampCommitType" type="enum">
+    <enumerant name="TimeAdvanceCommit" value="1"/>
+    <enumerant name="NextMessageCommit" value="2"/>
+    <enumerant name="TimeAdvanceAndNextMessageCommit" value="3"/>
+  </type>
+
   <type name="Bool" ctype="bool" encoding="Bool"/>
   <type name="String" ctype="std::string" encoding="String"/>
   <type name="Unsigned" ctype="uint32_t" encoding="UInt32"/>
@@ -522,6 +528,7 @@
     <field name="FederationHandle" type="FederationHandle"/>
     <field name="FederateHandle" type="FederateHandle"/>
     <field name="TimeStamp" type="VariableLengthData"/>
+    <field name="CommitId" type="Unsigned"/>
   </message>
   <message type="EnableTimeRegulationResponse">
     <field name="FederationHandle" type="FederationHandle"/>
@@ -546,9 +553,22 @@
          and handle collecting commits in the server tree? FIXME -->
     <field name="FederateHandle" type="FederateHandle"/>
     <field name="TimeStamp" type="VariableLengthData"/>
-    <!-- Hmm, may be this is sufficient to flush objects when they have passed a specific number? -->
-    <!-- <field name="MessageRetractionHandle" type="MessageRetractionHandle"/> -->
+    <field name="CommitType" type="LowerBoundTimeStampCommitType"/>
+    <field name="CommitId" type="Unsigned"/>
   </message>
+  <message type="CommitLowerBoundTimeStampResponse">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
+    <field name="SendingFederateHandle" type="FederateHandle"/>
+    <field name="CommitId" type="Unsigned"/>
+  </message>
+  <message type="LockedByNextMessageRequest">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <!-- <field name="FederateHandle" type="FederateHandle"/> -->
+    <field name="SendingFederateHandle" type="FederateHandle"/>
+    <field name="LockedByNextMessage" type="Bool"/>
+  </message>
+
   <!-- Just lookback messages that never leave the ambassador -->
   <message type="TimeConstrainedEnabled">
   </message>

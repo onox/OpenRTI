@@ -52,6 +52,8 @@ class EnableTimeRegulationRequestMessage;
 class EnableTimeRegulationResponseMessage;
 class DisableTimeRegulationRequestMessage;
 class CommitLowerBoundTimeStampMessage;
+class CommitLowerBoundTimeStampResponseMessage;
+class LockedByNextMessageRequestMessage;
 class TimeConstrainedEnabledMessage;
 class TimeRegulationEnabledMessage;
 class TimeAdvanceGrantedMessage;
@@ -110,6 +112,8 @@ public:
   virtual void accept(const EnableTimeRegulationResponseMessage&) const = 0;
   virtual void accept(const DisableTimeRegulationRequestMessage&) const = 0;
   virtual void accept(const CommitLowerBoundTimeStampMessage&) const = 0;
+  virtual void accept(const CommitLowerBoundTimeStampResponseMessage&) const = 0;
+  virtual void accept(const LockedByNextMessageRequestMessage&) const = 0;
   virtual void accept(const TimeConstrainedEnabledMessage&) const = 0;
   virtual void accept(const TimeRegulationEnabledMessage&) const = 0;
   virtual void accept(const TimeAdvanceGrantedMessage&) const = 0;
@@ -171,6 +175,8 @@ public:
   virtual void accept(const EnableTimeRegulationResponseMessage& message) const { _t(message); }
   virtual void accept(const DisableTimeRegulationRequestMessage& message) const { _t(message); }
   virtual void accept(const CommitLowerBoundTimeStampMessage& message) const { _t(message); }
+  virtual void accept(const CommitLowerBoundTimeStampResponseMessage& message) const { _t(message); }
+  virtual void accept(const LockedByNextMessageRequestMessage& message) const { _t(message); }
   virtual void accept(const TimeConstrainedEnabledMessage& message) const { _t(message); }
   virtual void accept(const TimeRegulationEnabledMessage& message) const { _t(message); }
   virtual void accept(const TimeAdvanceGrantedMessage& message) const { _t(message); }
@@ -234,6 +240,8 @@ public:
   virtual void accept(const EnableTimeRegulationResponseMessage& message) const { _t(message); }
   virtual void accept(const DisableTimeRegulationRequestMessage& message) const { _t(message); }
   virtual void accept(const CommitLowerBoundTimeStampMessage& message) const { _t(message); }
+  virtual void accept(const CommitLowerBoundTimeStampResponseMessage& message) const { _t(message); }
+  virtual void accept(const LockedByNextMessageRequestMessage& message) const { _t(message); }
   virtual void accept(const TimeConstrainedEnabledMessage& message) const { _t(message); }
   virtual void accept(const TimeRegulationEnabledMessage& message) const { _t(message); }
   virtual void accept(const TimeAdvanceGrantedMessage& message) const { _t(message); }

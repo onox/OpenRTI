@@ -249,6 +249,20 @@ InternalAmbassador::acceptInternalMessage(const CommitLowerBoundTimeStampMessage
 }
 
 void
+InternalAmbassador::acceptInternalMessage(const CommitLowerBoundTimeStampResponseMessage& message)
+{
+  if (InternalTimeManagement* timeManagement = getTimeManagement())
+    timeManagement->acceptInternalMessage(*this, message);
+}
+
+void
+InternalAmbassador::acceptInternalMessage(const LockedByNextMessageRequestMessage& message)
+{
+  if (InternalTimeManagement* timeManagement = getTimeManagement())
+    timeManagement->acceptInternalMessage(*this, message);
+}
+
+void
 InternalAmbassador::acceptInternalMessage(const InsertRegionMessage& message)
 {
   Federate* federate = getFederate();

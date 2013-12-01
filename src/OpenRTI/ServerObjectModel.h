@@ -111,9 +111,15 @@ public:
   { _logicalTimeFactoryName = logicalTimeFactoryName; }
   std::string _logicalTimeFactoryName;
 
-  /// Contains the committed timestamps, we will need them for a join response
-  typedef std::map<FederateHandle, VariableLengthData> FederateHandleTimeStampMap;
-  FederateHandleTimeStampMap _federateHandleTimeStampMap;
+  // Contains the committed timestamps, we will need them for a join response
+  struct CommitTimeStamps {
+    CommitTimeStamps(const Unsigned& commitId) : _commitId(commitId) { }
+    VariableLengthData _timeAdvanceTimeStamp;
+    VariableLengthData _nextMessageTimeStamp;
+    Unsigned _commitId;
+  };
+  typedef std::map<FederateHandle, CommitTimeStamps> FederateHandleCommitMap;
+  FederateHandleCommitMap _federateHandleCommitMap;
 
 
   // Helper return type for some publish/subscribe stuff.

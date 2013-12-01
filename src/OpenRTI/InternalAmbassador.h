@@ -83,6 +83,8 @@ public:
   void acceptInternalMessage(const EnableTimeRegulationResponseMessage& message);
   void acceptInternalMessage(const DisableTimeRegulationRequestMessage& message);
   void acceptInternalMessage(const CommitLowerBoundTimeStampMessage& message);
+  void acceptInternalMessage(const CommitLowerBoundTimeStampResponseMessage& message);
+  void acceptInternalMessage(const LockedByNextMessageRequestMessage& message);
   void acceptInternalMessage(const InsertRegionMessage& message);
   void acceptInternalMessage(const CommitRegionMessage& message);
   void acceptInternalMessage(const EraseRegionMessage& message);
