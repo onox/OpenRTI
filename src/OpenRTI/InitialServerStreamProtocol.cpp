@@ -19,6 +19,7 @@
 
 #include "InitialServerStreamProtocol.h"
 
+#include "LogStream.h"
 #include "NetworkServer.h"
 #include "MessageEncodingRegistry.h"
 #include "NetworkServerConnect.h"
@@ -43,6 +44,10 @@ InitialServerStreamProtocol::~InitialServerStreamProtocol()
 void
 InitialServerStreamProtocol::readOptionMap(const StringStringListMap& clientOptionMap)
 {
+#if defined OPENRTI_ENCODING_DEVELOPMENT_WARNING
+  Log(MessageCoding, Warning) << OPENRTI_ENCODING_DEVELOPMENT_WARNING << std::endl;
+#endif
+
   // Given the clients values in value map, choose something sensible.
   // Here we might want to have something configurable to prefer something over the other??
   StringStringListMap::const_iterator i;
@@ -51,11 +56,11 @@ InitialServerStreamProtocol::readOptionMap(const StringStringListMap& clientOpti
     errorResponse("No version field in the connect header given.");
     return;
   }
-  // Currently only version "4beta" is supported on both sides, currently just something to be
+  // Currently only version OPENRTI_ENCODING_VERSION is supported on both sides, currently just something to be
   // extensible so that we can change something in the future without crashing clients or servers
   // by a wrong protocol or behavior.
-  if (!contains(i->second, "4beta")) {
-    errorResponse("Client does not support version 3 of the protocol.");
+  if (!contains(i->second, OPENRTI_ENCODING_VERSION)) {
+    errorResponse("Client does not support version " OPENRTI_ENCODING_VERSION " of the protocol.");
     return;
   }
 
@@ -92,7 +97,7 @@ InitialServerStreamProtocol::readOptionMap(const StringStringListMap& clientOpti
 
   // Survived, respond with a valid response packet
   responseValueMap["version"].clear();
-  responseValueMap["version"].push_back("4beta");
+  responseValueMap["version"].push_back(OPENRTI_ENCODING_VERSION);
   responseValueMap["encoding"].clear();
   responseValueMap["encoding"].push_back(encodingList.front());
   responseValueMap["compression"].clear();

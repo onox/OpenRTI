@@ -19,6 +19,7 @@
 
 #include "InitialClientStreamProtocol.h"
 
+#include "LogStream.h"
 #include "NetworkServer.h"
 #include "MessageEncodingRegistry.h"
 #include "NetworkServerConnect.h"
@@ -47,9 +48,13 @@ InitialClientStreamProtocol::~InitialClientStreamProtocol()
 void
 InitialClientStreamProtocol::setConnectOptions(StringStringListMap connectOptions)
 {
-  // The rti version we support. This is currently fixed "4beta"
+#if defined OPENRTI_ENCODING_DEVELOPMENT_WARNING
+  Log(MessageCoding, Warning) << OPENRTI_ENCODING_DEVELOPMENT_WARNING << std::endl;
+#endif
+
+  // The rti version we support.
   connectOptions["version"].clear();
-  connectOptions["version"].push_back("4beta");
+  connectOptions["version"].push_back(OPENRTI_ENCODING_VERSION);
   // The servers configuration might have configured compression algorithms
   // that are not available in this current version. Make sure these are
   // not announced to the server.
