@@ -48,7 +48,7 @@ private:
 template<typename T>
 class OPENRTI_API ThreadLocal : public AbstractThreadLocal {
 public:
-  T& instance()
+  T* instance()
   {
     _Data* value;
     value = static_cast<_Data*>(_get());
@@ -56,7 +56,7 @@ public:
       value = new _Data();
       _set(value);
     }
-    return value->_value;
+    return &value->_value;
   }
 private:
   struct _Data : public _AbstractData {

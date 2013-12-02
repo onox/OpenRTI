@@ -61,6 +61,8 @@ struct OPENRTI_LOCAL LogStream::StreamPair {
   protected:
     virtual int sync()
     {
+      if (!_referencedMutex.valid())
+        return 0;
       ScopeLock scopeLock(_referencedMutex->_mutex);
       const char* base = pbase();
       size_t count = pptr() - base;
@@ -93,7 +95,7 @@ struct OPENRTI_LOCAL LogStream::StreamPair {
     _errStream(std::cerr)
   { }
 
-  static StreamPair& getStreamPair()
+  static StreamPair* getStreamPair()
   {
     static ThreadLocal<StreamPair> streamPair;
     return streamPair.instance();
@@ -155,10 +157,13 @@ LogStream::getStream(Category category, LogStream::Priority priority)
   if (!getEnabled(category, priority))
     return 0;
 
+  StreamPair* streamPair = StreamPair::getStreamPair();
+  if (!streamPair)
+    return 0;
   if (Info <= priority)
-    return &StreamPair::getStreamPair()._outStream._stream;
+    return &streamPair->_outStream._stream;
   else
-    return &StreamPair::getStreamPair()._errStream._stream;
+    return &streamPair->_errStream._stream;
 }
 
 LogStream::LogStream() :
