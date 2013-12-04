@@ -29,7 +29,6 @@
 #include <RTI/HLAinteger64Interval.h>
 
 #include <Options.h>
-#include <Rand.h>
 #include <StringUtils.h>
 #include <Thread.h>
 
@@ -83,8 +82,6 @@ public:
     _lastLowerBoundSendTime = _lowerBoundSendTime;
     _lowerBoundReceiveTime = _lowerBoundSendTime;
     _upperBoundReceiveTime.setFinal();
-
-    _rand = Rand(ambassador.normalizeFederateHandle(getFederateHandle()) + 7*17, ambassador.normalizeFederateHandle(getFederateHandle()) + 17);
 
     // Get some handles
     try {
@@ -162,10 +159,10 @@ public:
         _advanceLogicalTime += LogicalTimeInterval(i%10);
         if (_testTimeAdvanceMode == AllTimeAdvanceRequests) {
           // pessimize the flush queue somehow
-          if (_rand.get() % 10 == 0)
+          if (getRandomNumber() % 10 == 0)
             _timeAdvanceMode = FlushQueueRequest;
           else
-            _timeAdvanceMode = TimeAdvanceMode(_rand.get() % unsigned(FlushQueueRequest));
+            _timeAdvanceMode = TimeAdvanceMode(getRandomNumber() % unsigned(FlushQueueRequest));
         } else {
           _timeAdvanceMode = _testTimeAdvanceMode;
         }
@@ -876,7 +873,6 @@ private:
   bool _nextMessageTimePending;
   LogicalTime _nextMessageTime;
 
-  Rand _rand;
   bool _fail;
 };
 

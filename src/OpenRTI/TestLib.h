@@ -32,6 +32,7 @@
 #include <ScopeLock.h>
 #include <ScopeUnlock.h>
 #include <NetworkServer.h>
+#include <Rand.h>
 #include <SharedPtr.h>
 #include <StringUtils.h>
 #include <Thread.h>
@@ -344,6 +345,7 @@ public:
     bool _joinOnce;
     SharedPtr<FederationBarrier> _federationBarrier;
     SharedPtr<LBTS> _lbts;
+    Rand _rand;
   };
   class Ambassador : public Referenced {
   public:
@@ -417,6 +419,9 @@ public:
     }
     void clearLBTS()
     { setLBTS(~0u); }
+
+    uint32_t getRandomNumber()
+    { return _constructorArgs._rand.get(); }
 
   protected:
     ConstructorArgs _constructorArgs;
@@ -494,6 +499,7 @@ public:
     typedef std::list<SharedPtr<AmbassadorThread> > AmbassadorThreadList;
     AmbassadorThreadList _ambassadorThreadList;
 
+    Rand rand;
     ConstructorArgs constructorArgs;
     constructorArgs._fddFile = _fddFile;
     constructorArgs._federationBarrier = new FederationBarrier(_numAmbassadorThreads);
@@ -517,6 +523,7 @@ public:
         constructorArgs._federationExecution = _federationExecution;
       }
       constructorArgs._address = utf8ToUcs(_serverPool.getAddress(i));
+      constructorArgs._rand = Rand(rand.get(), rand.get());
 
       SharedPtr<Ambassador> testAmbassador;
       testAmbassador = createAmbassador(constructorArgs);
@@ -531,6 +538,7 @@ public:
     std::wstring federateType = constructorArgs._federateList[0];
     constructorArgs._federateType = federateType;
     constructorArgs._address = utf8ToUcs(_serverPool.getAddress(0));
+    constructorArgs._rand = Rand(rand.get(), rand.get());
     constructorArgs._federationExecution = _federationExecution;
 
     SharedPtr<Ambassador> testAmbassador;
