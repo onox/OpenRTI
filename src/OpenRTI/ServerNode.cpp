@@ -1467,6 +1467,7 @@ public:
       update->setTag(message->getTag());
       update->setTimeStamp(message->getTimeStamp());
       update->setMessageRetractionHandle(message->getMessageRetractionHandle());
+      update->setOrderType(message->getOrderType());
       update->setTransportationType(message->getTransportationType());
       update->getAttributeValues().swap(i->second);
       send(i->first, update);
