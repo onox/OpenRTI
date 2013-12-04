@@ -85,6 +85,8 @@ public:
 
     bool enableConstrained = getRandomNumber() % 2;
     bool enableRegulation = getRandomNumber() % 2;
+    bool enableConstrainedPastRegulation = getRandomNumber() % 2;
+    bool disableRegulationPastConstrained = getRandomNumber() % 2;
 
     // Get some handles
     try {
@@ -117,6 +119,10 @@ public:
       return false;
     }
 
+    // Enable time regulation
+    if (enableConstrainedPastRegulation && enableRegulation && !enableTimeRegulation(ambassador))
+      return false;
+
     // Enable time constrained
     if (enableConstrained && !enableTimeConstrained(ambassador))
       return false;
@@ -133,7 +139,7 @@ public:
     }
 
     // Enable time regulation
-    if (enableRegulation && !enableTimeRegulation(ambassador))
+    if (!enableConstrainedPastRegulation && enableRegulation && !enableTimeRegulation(ambassador))
       return false;
 
     // Now that we are regulating, publish
@@ -262,11 +268,15 @@ public:
     // Cleanup time management
 
     // Disable time regulation
-    if (enableRegulation && !disableTimeRegulation(ambassador))
+    if (!disableRegulationPastConstrained && enableRegulation && !disableTimeRegulation(ambassador))
       return false;
 
     // Disable time constrained
     if (enableConstrained && !disableTimeConstrained(ambassador))
+      return false;
+
+    // Disable time regulation
+    if (disableRegulationPastConstrained && enableRegulation && !disableTimeRegulation(ambassador))
       return false;
 
     return !_fail;
@@ -417,10 +427,6 @@ public:
     }
     _logicalTime = logicalTime;
     _timeConstrainedEnabled = true;
-    if (_timeRegulationEnabled) {
-      _lowerBoundSendTime = std::max(_lastLowerBoundSendTime, LogicalTimePair(_logicalTime + _lookahead, _lookahead.isZero()));
-      setLBTS(_lowerBoundSendTime);
-    }
     _lowerBoundReceiveTime = std::max(_lowerBoundReceiveTime, LogicalTimePair(logicalTime, false));
   }
 
@@ -585,6 +591,7 @@ public:
       _fail = true;
     }
     _lowerBoundSendTime = std::max(_lowerBoundSendTime, LogicalTimePair(LogicalTime(logicalTime) + _lookahead, false));
+    setLBTS(_lowerBoundSendTime);
     if (_timeConstrainedEnabled)
       _lowerBoundReceiveTime = std::max(_lowerBoundReceiveTime, LogicalTimePair(logicalTime, false));
     _logicalTime = logicalTime;
