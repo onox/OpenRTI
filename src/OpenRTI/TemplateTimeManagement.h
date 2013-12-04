@@ -186,7 +186,7 @@ public:
     _pendingLogicalTime.first = _logicalTime.first;
     _pendingLogicalTime.second = 0;
 
-    _lastOutboundLowerBoundTimeStamp = _outboundLowerBoundTimeStamp;
+    // There are no changes to the bounds for outbound messages
 
     SharedPtr<TimeConstrainedEnabledMessage> message = new TimeConstrainedEnabledMessage;
     queueTimeStampedMessage(_pendingLogicalTime, *message);
@@ -240,8 +240,7 @@ public:
       queueTimeStampedMessage(_pendingLogicalTime, *message);
 
     } else if (InternalTimeManagement::getIsAnyNextMessageMode()) {
-      if (InternalTimeManagement::getTimeRegulationEnabled()) {
-
+      if (InternalTimeManagement::getTimeConstrainedEnabled()) {
         if (!_logicalTimeMessageListMap.empty()) {
           if (_logicalTimeMessageListMap.begin()->first.first < _pendingLogicalTime.first) {
             if (_logicalTimeMessageListMap.begin()->first.first < _logicalTime.first)
@@ -252,23 +251,24 @@ public:
         }
 
         _timeAdvanceToBeScheduled = true;
+      }
 
-        if (_timeAdvanceToBeScheduled) {
-          LogicalTimePair logicalTimePair(_pendingLogicalTime.first, _getOutboundLowerTimeStampSecondField(_targetLookahead));
-          logicalTimePair.first += _targetLookahead;
-          logicalTimePair = std::max(logicalTimePair, _committedOutboundLowerBoundTimeStamp);
-          _sendCommitLowerBoundTimeStampIfChanged(ambassador, logicalTimePair, NextMessageCommit);
-        }
+      if (InternalTimeManagement::getTimeRegulationEnabled() && _timeAdvanceToBeScheduled) {
+        LogicalTimePair logicalTimePair(_pendingLogicalTime.first, _getOutboundLowerTimeStampSecondField(_targetLookahead));
+        logicalTimePair.first += _targetLookahead;
+        logicalTimePair = std::max(logicalTimePair, _committedOutboundLowerBoundTimeStamp);
+        _sendCommitLowerBoundTimeStampIfChanged(ambassador, logicalTimePair, NextMessageCommit);
+      }
 
+      if (InternalTimeManagement::getTimeConstrainedEnabled()) {
         checkForPendingTimeAdvance(ambassador, false);
-
       } else {
         SharedPtr<TimeAdvanceGrantedMessage> message = new TimeAdvanceGrantedMessage;
         queueTimeStampedMessage(_pendingLogicalTime, *message);
       }
     } else if (InternalTimeManagement::getFlushQueueMode()) {
 
-      if (!canAdvanceTo(LogicalTimePair(_pendingLogicalTime.first, 0))) {
+      if (InternalTimeManagement::getTimeConstrainedEnabled() && !canAdvanceTo(LogicalTimePair(_pendingLogicalTime.first, 0))) {
         OpenRTIAssert(!_federateLowerBoundMap.empty());
         _pendingLogicalTime.first = _federateLowerBoundMap.getGALT();
         OpenRTIAssert(_pendingLogicalTime.second == 0);
@@ -282,7 +282,12 @@ public:
         _sendCommitLowerBoundTimeStampIfChanged(ambassador, logicalTimePair, TimeAdvanceAndNextMessageCommit);
       }
 
-      _timeAdvanceToBeScheduled = true;
+      if (InternalTimeManagement::getTimeConstrainedEnabled()) {
+        _timeAdvanceToBeScheduled = true;
+      } else {
+        SharedPtr<TimeAdvanceGrantedMessage> message = new TimeAdvanceGrantedMessage;
+        queueTimeStampedMessage(_pendingLogicalTime, *message);
+      }
 
     } else {
       OpenRTIAssert(!"Undefined time advance mode!");
@@ -570,13 +575,14 @@ public:
   void queueTimeStampedMessage(InternalAmbassador& ambassador, const LogicalTimePair& logicalTimePair, const AbstractMessage& message)
   {
     queueTimeStampedMessage(logicalTimePair, message);
-    if (InternalTimeManagement::getIsAnyNextMessageMode()) {
+    if (InternalTimeManagement::getIsAnyNextMessageMode() && InternalTimeManagement::getTimeConstrainedEnabled()) {
       if (logicalTimePair.first < _pendingLogicalTime.first) {
         OpenRTIAssert(_timeAdvanceToBeScheduled);
-        OpenRTIAssert(!InternalTimeManagement::getTimeRegulationEnabled() || _logicalTime.first <= logicalTimePair.first);
-        _pendingLogicalTime.first = logicalTimePair.first;
+        OpenRTIAssert(!InternalTimeManagement::getTimeConstrainedEnabled() || _logicalTime.first <= logicalTimePair.first);
+        if (_logicalTime.first <= logicalTimePair.first)
+          _pendingLogicalTime.first = logicalTimePair.first;
 
-        if (_timeAdvanceToBeScheduled) {
+        if (_timeAdvanceToBeScheduled && InternalTimeManagement::getTimeRegulationEnabled()) {
           LogicalTimePair logicalTimePair(_pendingLogicalTime.first, _getOutboundLowerTimeStampSecondField(_targetLookahead));
           logicalTimePair.first += _targetLookahead;
           logicalTimePair = std::max(logicalTimePair, _committedOutboundLowerBoundTimeStamp);
@@ -585,7 +591,7 @@ public:
 
         checkForPendingTimeAdvance(ambassador);
 
-        OpenRTIAssert(_pendingLogicalTime.first <= _logicalTimeMessageListMap.begin()->first.first);
+        OpenRTIAssert(!InternalTimeManagement::getTimeConstrainedEnabled() || _pendingLogicalTime.first <= _logicalTimeMessageListMap.begin()->first.first);
       }
     }
   }
@@ -677,10 +683,9 @@ public:
   {
     if (!_timeAdvanceToBeScheduled)
       return;
-
     if (InternalTimeManagement::getIsAnyNextMessageMode()) {
 
-      OpenRTIAssert(_logicalTimeMessageListMap.empty() || _pendingLogicalTime.first <= _logicalTimeMessageListMap.begin()->first.first);
+      OpenRTIAssert(!InternalTimeManagement::getTimeConstrainedEnabled() || _logicalTimeMessageListMap.empty() || _pendingLogicalTime.first <= _logicalTimeMessageListMap.begin()->first.first);
 
       if (allowNextMessage && getIsSaveToAdvanceToNextMessage()) {
         if (canAdvanceToNextMessage(LogicalTimePair(_pendingLogicalTime.first, 0))) {
@@ -688,11 +693,13 @@ public:
           SharedPtr<TimeAdvanceGrantedMessage> message = new TimeAdvanceGrantedMessage;
           queueTimeStampedMessage(_pendingLogicalTime, *message);
 
-          LogicalTimePair logicalTimePair(_pendingLogicalTime.first, _getOutboundLowerTimeStampSecondField(_targetLookahead));
-          logicalTimePair.first += _targetLookahead;
-          logicalTimePair = std::max(logicalTimePair, _committedOutboundLowerBoundTimeStamp);
-          _sendCommitLowerBoundTimeStampIfChanged(ambassador, logicalTimePair, TimeAdvanceAndNextMessageCommit);
-        } else {
+          if (InternalTimeManagement::getTimeRegulationEnabled()) {
+            LogicalTimePair logicalTimePair(_pendingLogicalTime.first, _getOutboundLowerTimeStampSecondField(_targetLookahead));
+            logicalTimePair.first += _targetLookahead;
+            logicalTimePair = std::max(logicalTimePair, _committedOutboundLowerBoundTimeStamp);
+            _sendCommitLowerBoundTimeStampIfChanged(ambassador, logicalTimePair, TimeAdvanceAndNextMessageCommit);
+          }
+        } else if (InternalTimeManagement::getTimeRegulationEnabled()) {
           OpenRTIAssert(!_federateLowerBoundMap.empty());
           OpenRTIAssert(_federateLowerBoundMap.getNextMessageGALT() <= _pendingLogicalTime.first);
           LogicalTimePair logicalTimePair(_federateLowerBoundMap.getNextMessageGALT(), _getOutboundLowerTimeStampSecondField(_targetLookahead));
@@ -706,11 +713,13 @@ public:
           SharedPtr<TimeAdvanceGrantedMessage> message = new TimeAdvanceGrantedMessage;
           queueTimeStampedMessage(_pendingLogicalTime, *message);
 
-          LogicalTimePair logicalTimePair(_pendingLogicalTime.first, _getOutboundLowerTimeStampSecondField(_targetLookahead));
-          logicalTimePair.first += _targetLookahead;
-          logicalTimePair = std::max(logicalTimePair, _committedOutboundLowerBoundTimeStamp);
-          _sendCommitLowerBoundTimeStampIfChanged(ambassador, logicalTimePair, TimeAdvanceAndNextMessageCommit);
-        } else {
+          if (InternalTimeManagement::getTimeRegulationEnabled()) {
+            LogicalTimePair logicalTimePair(_pendingLogicalTime.first, _getOutboundLowerTimeStampSecondField(_targetLookahead));
+            logicalTimePair.first += _targetLookahead;
+            logicalTimePair = std::max(logicalTimePair, _committedOutboundLowerBoundTimeStamp);
+            _sendCommitLowerBoundTimeStampIfChanged(ambassador, logicalTimePair, TimeAdvanceAndNextMessageCommit);
+          }
+        } else if (InternalTimeManagement::getTimeRegulationEnabled()) {
           OpenRTIAssert(!_federateLowerBoundMap.empty());
           OpenRTIAssert(_federateLowerBoundMap.getGALT() <= _pendingLogicalTime.first);
           LogicalTimePair logicalTimePair(_federateLowerBoundMap.getGALT(), _getOutboundLowerTimeStampSecondField(_targetLookahead));
@@ -727,7 +736,7 @@ public:
   void checkForPendingFlushQueue()
   {
     if (_logicalTimeMessageListMap.empty() && InternalTimeManagement::getFlushQueueMode() && _timeAdvanceToBeScheduled) {
-      OpenRTIAssert(canAdvanceTo(_pendingLogicalTime));
+      OpenRTIAssert(!InternalTimeManagement::getTimeConstrainedEnabled() || canAdvanceTo(_pendingLogicalTime));
       _timeAdvanceToBeScheduled = false;
       SharedPtr<TimeAdvanceGrantedMessage> message = new TimeAdvanceGrantedMessage;
       queueTimeStampedMessage(_pendingLogicalTime, *message);
@@ -744,6 +753,8 @@ public:
   }
   bool getLockedByNextMessage() const
   {
+    if (!InternalTimeManagement::getTimeConstrainedEnabled())
+      return false;
     if (!InternalTimeManagement::getIsAnyNextMessageMode())
       return false;
     return _federateLowerBoundMap.getLockedByNextMessage(_commitId);
@@ -895,7 +906,7 @@ public:
   virtual void acceptCallbackMessage(Ambassador<T>& ambassador, const TimeRegulationEnabledMessage& message)
   {
     OpenRTIAssert(InternalTimeManagement::getTimeRegulationEnablePending());
-    OpenRTIAssert(canAdvanceTo(_pendingLogicalTime));
+    OpenRTIAssert(!InternalTimeManagement::getTimeConstrainedEnabled() || canAdvanceTo(_pendingLogicalTime));
     OpenRTIAssert(!InternalTimeManagement::getTimeConstrainedEnabled() || _logicalTimeMessageListMap.empty() || _pendingLogicalTime <= _logicalTimeMessageListMap.begin()->first);
     OpenRTIAssert(_committedOutboundLowerBoundTimeStamp <= _outboundLowerBoundTimeStamp);
 
@@ -910,7 +921,7 @@ public:
   virtual void acceptCallbackMessage(Ambassador<T>& ambassador, const TimeAdvanceGrantedMessage& message)
   {
     OpenRTIAssert(InternalTimeManagement::getTimeAdvancePending());
-    OpenRTIAssert(canAdvanceTo(_pendingLogicalTime));
+    OpenRTIAssert(!InternalTimeManagement::getTimeConstrainedEnabled() || canAdvanceTo(_pendingLogicalTime));
     OpenRTIAssert(!InternalTimeManagement::getTimeConstrainedEnabled() || _logicalTimeMessageListMap.empty() || _pendingLogicalTime <= _logicalTimeMessageListMap.begin()->first);
     OpenRTIAssert(!InternalTimeManagement::getTimeRegulationEnabled() || _committedOutboundLowerBoundTimeStamp <= _outboundLowerBoundTimeStamp);
     OpenRTIAssert(!_timeAdvanceToBeScheduled);
