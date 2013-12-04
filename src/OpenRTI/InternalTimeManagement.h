@@ -98,8 +98,12 @@ public:
   void setAsynchronousDeliveryEnabled(bool asynchronousDeliveryEnabled)
   { _asynchronousDeliveryEnabled = asynchronousDeliveryEnabled; }
 
-  bool getTimeStampedOrderDelivery(OrderType orderType) const
-  { return getTimeConstrainedEnabled() && orderType == TIMESTAMP; }
+  OrderType getTimeStampOrderDelivery(OrderType orderType) const
+  {
+    if (!getTimeConstrainedEnabled())
+      return RECEIVE;
+    return orderType;
+  }
 
   uint32_t getNextMessageRetractionSerial()
   { return _messageRetractionSerial++; }

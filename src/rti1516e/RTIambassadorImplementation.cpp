@@ -873,7 +873,7 @@ public:
   }
 
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, bool flushQueueMode,
-                                      bool timeConstrainedEnabled, const TimeStampedAttributeUpdateMessage& message,
+                                      OrderType orderType, const TimeStampedAttributeUpdateMessage& message,
                                       const rti1516e::LogicalTime& logicalTime)
     throw ()
   {
@@ -897,7 +897,8 @@ public:
         rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle;
         rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(message.getObjectInstanceHandle());
 
-        rti1516e::OrderType rti1516OrderType = translate(message.getOrderType());
+        rti1516e::OrderType rti1516SentOrderType = translate(message.getOrderType());
+        rti1516e::OrderType rti1516ReceivedOrderType = translate(orderType);
         rti1516e::TransportationType rti1516TransportationType = translate(message.getTransportationType());
 
         rti1516e::SupplementalReflectInfo rti1516SupplementalReflectInfo; // FIXME
@@ -905,19 +906,13 @@ public:
         if (flushQueueMode) {
           rti1516e::MessageRetractionHandle rti1516MessageRetractionHandle;
           rti1516MessageRetractionHandle = rti1516e::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
-          _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516OrderType,
-                                                      rti1516TransportationType, logicalTime, rti1516e::TIMESTAMP,
+          _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516SentOrderType,
+                                                      rti1516TransportationType, logicalTime, rti1516ReceivedOrderType,
                                                       rti1516MessageRetractionHandle, rti1516SupplementalReflectInfo);
         } else {
-          if (timeConstrainedEnabled) {
-            _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516OrderType,
-                                                        rti1516TransportationType, logicalTime, rti1516e::TIMESTAMP,
-                                                        rti1516SupplementalReflectInfo);
-          } else {
-            _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516OrderType,
-                                                        rti1516TransportationType, logicalTime, rti1516e::RECEIVE,
-                                                        rti1516SupplementalReflectInfo);
-          }
+          _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516SentOrderType,
+                                                      rti1516TransportationType, logicalTime, rti1516ReceivedOrderType,
+                                                      rti1516SupplementalReflectInfo);
         }
       }
     } catch (const rti1516e::Exception& e) {
@@ -944,7 +939,7 @@ public:
     }
   }
 
-  virtual void removeObjectInstance(bool flushQueueMode, bool timeConstrainedEnabled,
+  virtual void removeObjectInstance(bool flushQueueMode, OrderType orderType,
                                     const TimeStampedDeleteObjectInstanceMessage& message, const rti1516e::LogicalTime& logicalTime)
     throw ()
   {
@@ -956,22 +951,18 @@ public:
       rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle;
       rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(message.getObjectInstanceHandle());
       rti1516e::VariableLengthData rti1516Tag = rti1516e::VariableLengthDataFriend::create(message.getTag());
-      rti1516e::OrderType rti1516OrderType = translate(message.getOrderType());
+      rti1516e::OrderType rti1516SentOrderType = translate(message.getOrderType());
+      rti1516e::OrderType rti1516ReceivedOrderType = translate(orderType);
       rti1516e::SupplementalRemoveInfo rti1516SupplementalRemoveInfo; // FIXME
       if (flushQueueMode) {
         rti1516e::MessageRetractionHandle rti1516MessageRetractionHandle;
         rti1516MessageRetractionHandle = rti1516e::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
-        _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516OrderType,
-                                                  logicalTime, rti1516e::TIMESTAMP, rti1516MessageRetractionHandle,
+        _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516SentOrderType,
+                                                  logicalTime, rti1516ReceivedOrderType, rti1516MessageRetractionHandle,
                                                   rti1516SupplementalRemoveInfo);
       } else {
-        if (timeConstrainedEnabled) {
-          _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516OrderType,
-                                                    logicalTime, rti1516e::TIMESTAMP, rti1516SupplementalRemoveInfo);
-        } else {
-          _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516OrderType,
-                                                    logicalTime, rti1516e::RECEIVE, rti1516SupplementalRemoveInfo);
-        }
+        _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516SentOrderType,
+                                                  logicalTime, rti1516ReceivedOrderType, rti1516SupplementalRemoveInfo);
       }
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1015,7 +1006,7 @@ public:
 
   virtual void
   receiveInteraction(const InteractionClassHandle& interactionClassHandle, const Federate::InteractionClass& interactionClass, bool flushQueueMode,
-                     bool timeConstrainedEnabled, const TimeStampedInteractionMessage& message,
+                     OrderType orderType, const TimeStampedInteractionMessage& message,
                      const rti1516e::LogicalTime& logicalTime)
     throw ()
   {
@@ -1038,8 +1029,8 @@ public:
 
       rti1516e::VariableLengthData rti1516Tag;
       rti1516Tag = rti1516e::VariableLengthDataFriend::create(message.getTag());
-      rti1516e::OrderType rti1516OrderType;
-      rti1516OrderType = translate(message.getOrderType());
+      rti1516e::OrderType rti1516SentOrderType = translate(message.getOrderType());
+      rti1516e::OrderType rti1516ReceivedOrderType = translate(orderType);
       rti1516e::TransportationType rti1516TransportationType;
       rti1516TransportationType = translate(message.getTransportationType());
       rti1516e::SupplementalReceiveInfo rti1516eSupplementalReceiveInfo; // FIXME
@@ -1047,19 +1038,13 @@ public:
       if (flushQueueMode) {
         rti1516e::MessageRetractionHandle rti1516MessageRetractionHandle;
         rti1516MessageRetractionHandle = rti1516e::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
-        _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516OrderType,
-                                                rti1516TransportationType, logicalTime, rti1516e::TIMESTAMP,
+        _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516SentOrderType,
+                                                rti1516TransportationType, logicalTime, rti1516ReceivedOrderType,
                                                 rti1516MessageRetractionHandle, rti1516eSupplementalReceiveInfo);
       } else {
-        if (timeConstrainedEnabled) {
-          _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516OrderType,
-                                                  rti1516TransportationType, logicalTime, rti1516e::TIMESTAMP,
-                                                  rti1516eSupplementalReceiveInfo);
-        } else {
-          _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516OrderType,
-                                                  rti1516TransportationType, logicalTime, rti1516e::RECEIVE,
-                                                  rti1516eSupplementalReceiveInfo);
-        }
+        _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516SentOrderType,
+                                                rti1516TransportationType, logicalTime, rti1516ReceivedOrderType,
+                                                rti1516eSupplementalReceiveInfo);
       }
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;

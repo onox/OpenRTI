@@ -4156,7 +4156,7 @@ public:
     throw () = 0;
 
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, bool flushQueueMode,
-                                      bool timeConstrainedEnabled, const TimeStampedAttributeUpdateMessage& message,
+                                      OrderType recievedOrder, const TimeStampedAttributeUpdateMessage& message,
                                       const NativeLogicalTime& logicalTime)
     throw () = 0;
 
@@ -4164,7 +4164,7 @@ public:
   virtual void removeObjectInstance(const DeleteObjectInstanceMessage& message)
     throw () = 0;
 
-  virtual void removeObjectInstance(bool flushQueueMode, bool timeConstrainedEnabled, const TimeStampedDeleteObjectInstanceMessage& message, const NativeLogicalTime& logicalTime)
+  virtual void removeObjectInstance(bool flushQueueMode, OrderType recievedOrder, const TimeStampedDeleteObjectInstanceMessage& message, const NativeLogicalTime& logicalTime)
     throw () = 0;
 
   // 6.9
@@ -4172,7 +4172,7 @@ public:
     throw () = 0;
 
   virtual void receiveInteraction(const InteractionClassHandle& interactionClassHandle, const Federate::InteractionClass& interactionClass, bool flushQueueMode,
-                                  bool timeConstrainedEnabled, const TimeStampedInteractionMessage& message,
+                                  OrderType recievedOrder, const TimeStampedInteractionMessage& message,
                                   const NativeLogicalTime& logicalTime)
     throw () = 0;
 

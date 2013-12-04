@@ -929,30 +929,30 @@ public:
   virtual void reflectAttributeValues(Ambassador<T>& ambassador, const Federate::ObjectClass& objectClass,
                                       const TimeStampedAttributeUpdateMessage& message)
   {
-    bool isTimeStampedOrderDelivery = InternalTimeManagement::getTimeStampedOrderDelivery(message.getOrderType());
+    OrderType orderType = InternalTimeManagement::getTimeStampOrderDelivery(message.getOrderType());
     LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp());
-    OpenRTIAssert(!isTimeStampedOrderDelivery || _logicalTime <= LogicalTimePair(logicalTime, 0));
-    ambassador.reflectAttributeValues(objectClass, InternalTimeManagement::getFlushQueueMode(), isTimeStampedOrderDelivery,
+    OpenRTIAssert(orderType == RECEIVE || _logicalTime <= LogicalTimePair(logicalTime, 0));
+    ambassador.reflectAttributeValues(objectClass, InternalTimeManagement::getFlushQueueMode(), orderType,
                                       message, _logicalTimeFactory.getLogicalTime(logicalTime));
   }
 
   virtual void removeObjectInstance(Ambassador<T>& ambassador, const TimeStampedDeleteObjectInstanceMessage& message)
   {
-    bool isTimeStampedOrderDelivery = InternalTimeManagement::getTimeStampedOrderDelivery(message.getOrderType());
+    OrderType orderType = InternalTimeManagement::getTimeStampOrderDelivery(message.getOrderType());
     LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp());
-    OpenRTIAssert(!isTimeStampedOrderDelivery || _logicalTime <= LogicalTimePair(logicalTime, 0));
-    ambassador.removeObjectInstance(InternalTimeManagement::getFlushQueueMode(), isTimeStampedOrderDelivery, message,
+    OpenRTIAssert(orderType == RECEIVE || _logicalTime <= LogicalTimePair(logicalTime, 0));
+    ambassador.removeObjectInstance(InternalTimeManagement::getFlushQueueMode(), orderType, message,
                                     _logicalTimeFactory.getLogicalTime(logicalTime));
   }
 
   virtual void receiveInteraction(Ambassador<T>& ambassador, const InteractionClassHandle& interactionClassHandle,
                                   const Federate::InteractionClass& interactionClass, const TimeStampedInteractionMessage& message)
   {
-    bool isTimeStampedOrderDelivery = InternalTimeManagement::getTimeStampedOrderDelivery(message.getOrderType());
+    OrderType orderType = InternalTimeManagement::getTimeStampOrderDelivery(message.getOrderType());
     LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp());
-    OpenRTIAssert(!isTimeStampedOrderDelivery || _logicalTime <= LogicalTimePair(logicalTime, 0));
+    OpenRTIAssert(orderType == RECEIVE || _logicalTime <= LogicalTimePair(logicalTime, 0));
     ambassador.receiveInteraction(interactionClassHandle, interactionClass, InternalTimeManagement::getFlushQueueMode(),
-                                  isTimeStampedOrderDelivery, message, _logicalTimeFactory.getLogicalTime(logicalTime));
+                                  orderType, message, _logicalTimeFactory.getLogicalTime(logicalTime));
   }
 
   virtual bool dispatchCallback(const AbstractMessageDispatcher& dispatcher)

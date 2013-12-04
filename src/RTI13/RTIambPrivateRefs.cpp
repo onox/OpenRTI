@@ -594,7 +594,7 @@ public:
   }
 
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, bool flushQueueMode,
-                                      bool timeConstrainedEnabled, const OpenRTI::TimeStampedAttributeUpdateMessage& message,
+                                      OrderType orderType, const OpenRTI::TimeStampedAttributeUpdateMessage& message,
                                       const RTI::FedTime& logicalTime)
     throw ()
   {
@@ -642,7 +642,7 @@ public:
 
   virtual
   void
-    removeObjectInstance(bool flushQueueMode, bool timeConstrainedEnabled,
+    removeObjectInstance(bool flushQueueMode, OrderType orderType,
                          const OpenRTI::TimeStampedDeleteObjectInstanceMessage& message, const RTI::FedTime& logicalTime)
     throw ()
   {
@@ -691,7 +691,7 @@ public:
 
   virtual void
     receiveInteraction(const InteractionClassHandle& interactionClassHandle, const Federate::InteractionClass& interactionClass, bool flushQueueMode,
-                       bool timeConstrainedEnabled, const OpenRTI::TimeStampedInteractionMessage& message,
+                       OrderType orderType, const OpenRTI::TimeStampedInteractionMessage& message,
                        const RTI::FedTime& logicalTime)
     throw ()
   {
