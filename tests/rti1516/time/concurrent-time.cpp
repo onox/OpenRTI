@@ -83,6 +83,9 @@ public:
     _lowerBoundReceiveTime = _lowerBoundSendTime;
     _upperBoundReceiveTime.setFinal();
 
+    bool enableConstrained = getRandomNumber() % 2;
+    bool enableRegulation = getRandomNumber() % 2;
+
     // Get some handles
     try {
       _interactionClassHandle0 = ambassador.getInteractionClassHandle(L"InteractionClass0");
@@ -115,7 +118,7 @@ public:
     }
 
     // Enable time constrained
-    if (!enableTimeConstrained(ambassador))
+    if (enableConstrained && !enableTimeConstrained(ambassador))
       return false;
 
     // Now that we are constrained, subscribe
@@ -130,7 +133,7 @@ public:
     }
 
     // Enable time regulation
-    if (!enableTimeRegulation(ambassador))
+    if (enableRegulation && !enableTimeRegulation(ambassador))
       return false;
 
     // Now that we are regulating, publish
@@ -259,11 +262,11 @@ public:
     // Cleanup time management
 
     // Disable time regulation
-    if (!disableTimeRegulation(ambassador))
+    if (enableRegulation && !disableTimeRegulation(ambassador))
       return false;
 
     // Disable time constrained
-    if (!disableTimeConstrained(ambassador))
+    if (enableConstrained && !disableTimeConstrained(ambassador))
       return false;
 
     return !_fail;
@@ -722,7 +725,7 @@ public:
            rti1516::InteractionClassNotSubscribed,
            rti1516::FederateInternalError)
   {
-    if (strncmp("withoutTimestamp", (const char*)tag.data(), tag.size()) != 0) {
+    if (_timeConstrainedEnabled && strncmp("withoutTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;
         std::wcout << L"Got timestamp order message that was recieved as receive order!" << std::endl;
     }
@@ -779,8 +782,8 @@ public:
            rti1516::FederateInternalError)
   {
     if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
-        std::wcout << L"Got recieve order message over timestamped delivery!" << std::endl;
         _fail = true;
+        std::wcout << L"Got recieve order message over timestamped delivery!" << std::endl;
     }
     if (receivedOrder == rti1516::TIMESTAMP && sentOrder != rti1516::TIMESTAMP) {
         _fail = true;
