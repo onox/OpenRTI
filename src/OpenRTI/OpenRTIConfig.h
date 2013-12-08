@@ -28,7 +28,7 @@
 #define OpenRTI_DEFAULT_PORT_STRING "14321"
 #define OpenRTI_DEFAULT_PIPE_PATH ".OpenRTI"
 
-#if defined(__GNUC__) && (4 <= __GNUC__) && (1 <= __GNUC_MINOR__)
+#if defined(__GNUC__) && (((4 <= __GNUC__) && (1 <= __GNUC_MINOR__)) || (5 <= __GNUC__))
 #define OpenRTI_DEPRECATED __attribute__ ((deprecated))
 #else
 #define OpenRTI_DEPRECATED
@@ -40,6 +40,9 @@
 # if defined _WIN32
 // Neat old Win32 functions
 #  define OpenRTI_ATOMIC_USE_WIN32_INTERLOCKED
+# elif defined(__GNUC__) && (((4 <= __GNUC__) && (7 <= __GNUC_MINOR__)) || (5 <= __GNUC__))
+// No need to include something. Is a Compiler API ...
+#  define OpenRTI_ATOMIC_USE_GCC47_BUILTINS
 # elif defined(__GNUC__) && (4 <= __GNUC__) && (1 <= __GNUC_MINOR__) && defined(__x86_64__)
 // No need to include something. Is a Compiler API ...
 #  define OpenRTI_ATOMIC_USE_GCC4_BUILTINS
