@@ -139,17 +139,6 @@ public:
   typedef typename Traits::TimeRegulationIsNotEnabled TimeRegulationIsNotEnabled;
   typedef typename Traits::UnsupportedCallbackModel UnsupportedCallbackModel;
 
-  ~Ambassador()
-  {
-    // FIXME: rethink
-    if (_federate.valid()) {
-      try {
-        resignFederationExecution(getAutomaticResignDirective());
-      } catch (...) {
-      }
-    }
-  }
-
   const FederateHandle& getFederateHandle() const
   { return _federate->getFederateHandle(); }
   const FederationHandle& getFederationHandle() const
