@@ -57,14 +57,14 @@ public:
   { }
 
   unsigned operator++()
-  { return fetchAdd(); }
+  { return incFetch(); }
   unsigned operator--()
-  { return fetchSub(); }
+  { return decFetch(); }
 
-  unsigned fetchAdd(MemoryOrder memoryOrder = MemoryOrderSeqCst)
-  { return fetch_add(1, _toStdMemoryOrder(memoryOrder)); }
-  unsigned fetchSub(MemoryOrder memoryOrder = MemoryOrderSeqCst)
-  { return fetch_sub(1, _toStdMemoryOrder(memoryOrder)); }
+  unsigned incFetch(MemoryOrder memoryOrder = MemoryOrderSeqCst)
+  { return fetch_add(1, _toStdMemoryOrder(memoryOrder)) + 1; }
+  unsigned decFetch(MemoryOrder memoryOrder = MemoryOrderSeqCst)
+  { return fetch_sub(1, _toStdMemoryOrder(memoryOrder)) - 1; }
 
   bool compareAndExchange(unsigned oldValue, unsigned newValue, MemoryOrder memoryOrder = MemoryOrderSeqCst)
   { return compare_exchange_weak(oldValue, newValue, _toStdMemoryOrder(memoryOrder)); }
@@ -109,11 +109,11 @@ public:
   { }
 
   unsigned operator++()
-  { return fetchAdd(); }
+  { return incFetch(); }
   unsigned operator--()
-  { return fetchSub(); }
+  { return decFetch(); }
 
-  unsigned fetchAdd(MemoryOrder memoryOrder = MemoryOrderSeqCst)
+  unsigned incFetch(MemoryOrder memoryOrder = MemoryOrderSeqCst)
   {
 #if defined OpenRTI_ATOMIC_USE_LIBRARY
     return inc();
@@ -130,7 +130,7 @@ public:
     return ++_value;
 #endif
   }
-  unsigned fetchSub(MemoryOrder memoryOrder = MemoryOrderSeqCst)
+  unsigned decFetch(MemoryOrder memoryOrder = MemoryOrderSeqCst)
   {
 #if defined OpenRTI_ATOMIC_USE_LIBRARY
     return dec();
