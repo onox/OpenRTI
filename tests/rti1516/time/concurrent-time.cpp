@@ -245,9 +245,9 @@ public:
       }
 
       try {
-        Clock timeout = Clock::now() + Clock::fromSeconds(20);
+        Clock timeout = Clock::now() + Clock::fromSeconds(50);
         while (_timeAdvancePending) {
-          if (ambassador.evokeCallback(20.0))
+          if (ambassador.evokeCallback(1.0))
             continue;
           if (_fail)
             return false;
@@ -329,9 +329,9 @@ public:
     }
 
     try {
-      Clock timeout = Clock::now() + Clock::fromSeconds(20);
+      Clock timeout = Clock::now() + Clock::fromSeconds(50);
       while (!_timeConstrainedEnabled) {
-        if (ambassador.evokeCallback(20.0))
+        if (ambassador.evokeCallback(1.0))
           continue;
         if (_fail)
           return false;
@@ -479,9 +479,9 @@ public:
     }
 
     try {
-      Clock timeout = Clock::now() + Clock::fromSeconds(20);
+      Clock timeout = Clock::now() + Clock::fromSeconds(50);
       while (!_timeRegulationEnabled) {
-        if (ambassador.evokeCallback(20.0))
+        if (ambassador.evokeCallback(1.0))
           continue;
         if (_fail)
           return false;
