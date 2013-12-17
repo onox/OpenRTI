@@ -35,14 +35,17 @@
 #endif
 
 #if 201103L <= __cplusplus
-#define OpenRTI_ATOMIC_USE_STD_ATOMIC
+# define OpenRTI_ATOMIC_USE_STD_ATOMIC
 #else
-# if defined _WIN32
-// Neat old Win32 functions
-#  define OpenRTI_ATOMIC_USE_WIN32_INTERLOCKED
-# elif defined(__GNUC__) && (((4 <= __GNUC__) && (7 <= __GNUC_MINOR__)) || (5 <= __GNUC__))
+# if defined(__GNUC__) && (((4 == __GNUC__) && (7 <= __GNUC_MINOR__)) || (5 <= __GNUC__))
 // No need to include something. Is a Compiler API ...
 #  define OpenRTI_ATOMIC_USE_GCC47_BUILTINS
+# elif defined(__clang__) && (((3 == __clang_major__) && (3 <= __clang_minor__)) || (4 <= __clang_major__))
+// No need to include something. Is a Compiler API. Note that clang aims to be gcc compatible ...
+#  define OpenRTI_ATOMIC_USE_GCC47_BUILTINS
+# elif defined _WIN32
+// Neat old Win32 functions
+#  define OpenRTI_ATOMIC_USE_WIN32_INTERLOCKED
 # elif defined(__GNUC__) && (4 <= __GNUC__) && (1 <= __GNUC_MINOR__) && defined(__x86_64__)
 // No need to include something. Is a Compiler API ...
 #  define OpenRTI_ATOMIC_USE_GCC4_BUILTINS
