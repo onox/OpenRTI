@@ -28,6 +28,9 @@
 #define OpenRTI_DEFAULT_PORT_STRING "14321"
 #define OpenRTI_DEFAULT_PIPE_PATH ".OpenRTI"
 
+#define OpenRTI_VERSION_CHECK(REQ_MAJ, REQ_MIN, AVAIL_MAJ, AVAIL_MIN) \
+  ((((REQ_MAJ) == (AVAIL_MAJ)) && ((REQ_MIN) <= (AVAIL_MIN))) || ((REQ_MAJ) < (AVAIL_MAJ)))
+
 #if defined(__GNUC__) && (((4 <= __GNUC__) && (1 <= __GNUC_MINOR__)) || (5 <= __GNUC__))
 #define OpenRTI_DEPRECATED __attribute__ ((deprecated))
 #else
@@ -35,18 +38,19 @@
 #endif
 
 #if 201103L <= __cplusplus
+// In any case this is the best choice as this provides a reliable api for any future
 # define OpenRTI_ATOMIC_USE_STD_ATOMIC
 #else
-# if defined(__GNUC__) && (((4 == __GNUC__) && (7 <= __GNUC_MINOR__)) || (5 <= __GNUC__))
+# if defined(__GNUC__) && OpenRTI_VERSION_CHECK(4, 7, __GNUC__, __GNUC_MINOR__)
 // No need to include something. Is a Compiler API ...
 #  define OpenRTI_ATOMIC_USE_GCC47_BUILTINS
-# elif defined(__clang__) && (((3 == __clang_major__) && (3 <= __clang_minor__)) || (4 <= __clang_major__))
+# elif defined(__clang__) && OpenRTI_VERSION_CHECK(3, 3, __clang_major__, __clang_minor__)
 // No need to include something. Is a Compiler API. Note that clang aims to be gcc compatible ...
 #  define OpenRTI_ATOMIC_USE_GCC47_BUILTINS
 # elif defined _WIN32
 // Neat old Win32 functions
 #  define OpenRTI_ATOMIC_USE_WIN32_INTERLOCKED
-# elif defined(__GNUC__) && (4 <= __GNUC__) && (1 <= __GNUC_MINOR__) && defined(__x86_64__)
+# elif defined(__GNUC__) && OpenRTI_VERSION_CHECK(4, 1, __GNUC__, __GNUC_MINOR__) && defined(__x86_64__)
 // No need to include something. Is a Compiler API ...
 #  define OpenRTI_ATOMIC_USE_GCC4_BUILTINS
 # elif defined(__GNUC__) && defined(__i386)
