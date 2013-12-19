@@ -6,6 +6,23 @@ INCLUDE(CheckCXXSourceCompiles)
 CHECK_INCLUDE_FILES(cstdint OpenRTI_HAVE_CSTDINT)
 CHECK_INCLUDE_FILES(stdint.h OpenRTI_HAVE_STDINT_H)
 CHECK_INCLUDE_FILES(inttypes.h OpenRTI_HAVE_INTTYPES_H)
+IF(NOT WIN32)
+  SET(CMAKE_REQUIRED_LIBRARIES dl)
+  CHECK_CXX_SOURCE_COMPILES("
+#define _GNU_SOURCE
+#include <dlfcn.h>
+int main(int argc, char* argv[])
+{
+  Dl_info info;
+  dladdr((void*)main, &info);
+  return 0;
+}
+" OpenRTI_HAVE_DLADDR)
+  SET(CMAKE_REQUIRED_LIBRARIES)
+  IF(OpenRTI_HAVE_DLADDR)
+    SET(DL_LIBRARIES dl)
+  ENDIF()
+ENDIF()
 CHECK_CXX_SOURCE_COMPILES("
 #include <alloca.h>
 int main(int argc, char* argv[])
@@ -48,6 +65,7 @@ IF(WIN32)
     win32/AtomicWin32.cpp
     win32/ClockWin32.cpp
     win32/ConditionWin32.cpp
+    win32/DynamicModuleWin32.cpp
     win32/ErrnoWin32.cpp
     win32/MutexWin32.cpp
     win32/SocketAddressWin32.cpp
@@ -70,6 +88,7 @@ ELSE(WIN32)
     posix/AtomicPosix.cpp
     posix/ClockPosix.cpp
     posix/ConditionPosix.cpp
+    posix/DynamicModulePosix.cpp
     posix/MutexPosix.cpp
     posix/SocketAddressPosix.cpp
     posix/SocketDataPosix.cpp
@@ -206,6 +225,9 @@ ELSE(WIN32)
   ENDIF()
   TARGET_LINK_LIBRARIES(OpenRTI m)
 ENDIF(WIN32)
+IF(DL_LIBRARIES)
+  TARGET_LINK_LIBRARIES(OpenRTI ${DL_LIBRARIES})
+ENDIF(DL_LIBRARIES)
 
 INSTALL(TARGETS OpenRTI
   PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"

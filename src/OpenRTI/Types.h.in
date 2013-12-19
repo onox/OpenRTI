@@ -124,6 +124,7 @@ typedef ::int64_t int64_t;
 } // namespace OpenRTI
 
 #cmakedefine OpenRTI_HAVE_ALLOCA
+#cmakedefine OpenRTI_HAVE_DLADDR
 #cmakedefine OPENRTI_DATAROOTDIR "@OPENRTI_DATAROOTDIR@"
 
 #endif
