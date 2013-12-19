@@ -15,6 +15,7 @@ OpenRTI-0.5.0 (development)
  * Change epsilon handling in double logical times.
  * Adapt to cmake upstream change regarding INTERFACE_LINK_LIBRARIES.
  * Make all time advance modes work with time management enabled.
+ * Make librti1516e find its management object model file relative to its own location.
 
 OpenRTI-0.4.1 2013-??-??
 ------------------------

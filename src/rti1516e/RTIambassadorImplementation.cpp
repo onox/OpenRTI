@@ -35,6 +35,7 @@
 #include <RTI/RangeBounds.h>
 
 #include "Ambassador.h"
+#include "DynamicModule.h"
 #include "FDD1516EFileReader.h"
 #include "LogStream.h"
 #include "TemplateTimeManagement.h"
@@ -46,6 +47,25 @@
 #include "VariableLengthDataImplementation.h"
 
 namespace OpenRTI {
+
+static std::list<std::string> findHLAstandardMIMCandidates()
+{
+  std::list<std::string> candidates;
+
+  std::string moduleName = DynamicModule::getFileNameForAddress((const void*)findHLAstandardMIMCandidates);
+  if (!moduleName.empty()) {
+    moduleName = getBasePart(moduleName);
+    // This gets us to the parent directory
+    moduleName = getBasePart(moduleName);
+    candidates.push_back(moduleName + std::string("/share/OpenRTI/rti1516e/HLAstandardMIM.xml"));
+  }
+
+  // Puh, don't know the encoding of this definition originating from cmake.
+  // The user of this result assumes this to be utf8
+  candidates.push_back(OPENRTI_DATAROOTDIR "/rti1516e/HLAstandardMIM.xml");
+
+  return candidates;
+}
 
 static OpenRTI::CallbackModel translate(rti1516e::CallbackModel callbackModel)
 {
@@ -1521,18 +1541,23 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
   // Make sure we can read the fdd file
   OpenRTI::FOMStringModuleList fomModuleList;
   {
-    std::wstring mim = utf8ToUcs(OPENRTI_DATAROOTDIR "/rti1516e/HLAstandardMIM.xml");
-    std::ifstream stream(ucsToLocale(mim).c_str());
-    if (!stream.is_open())
-      throw rti1516e::RTIinternalError(std::wstring(L"Could not open \"") + mim  + L"\".");
+    std::list<std::string> candidates = findHLAstandardMIMCandidates();
+    for (std::list<std::string>::const_iterator i = candidates.begin(); i != candidates.end(); ++i) {
+      std::ifstream stream(utf8ToLocale(*i).c_str());
+      if (!stream.is_open())
+        continue;
 
-    try {
-      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
-    } catch (const OpenRTI::Exception& e) {
-      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
-    } catch (...) {
-      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
+      try {
+        fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
+        break;
+      } catch (const OpenRTI::Exception& e) {
+        throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
+      } catch (...) {
+        throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
+      }
     }
+    if (fomModuleList.empty())
+      throw rti1516e::RTIinternalError(std::wstring(L"Could not find \"HLAstandardMIM.xml\"."));
   }
 
   {
@@ -1566,18 +1591,23 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
 {
   OpenRTI::FOMStringModuleList fomModuleList;
   {
-    std::wstring mim = utf8ToUcs(OPENRTI_DATAROOTDIR "/rti1516e/HLAstandardMIM.xml");
-    std::ifstream stream(ucsToLocale(mim).c_str());
-    if (!stream.is_open())
-      throw rti1516e::RTIinternalError(std::wstring(L"Could not open \"") + mim  + L"\".");
+    std::list<std::string> candidates = findHLAstandardMIMCandidates();
+    for (std::list<std::string>::const_iterator i = candidates.begin(); i != candidates.end(); ++i) {
+      std::ifstream stream(utf8ToLocale(*i).c_str());
+      if (!stream.is_open())
+        continue;
 
-    try {
-      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
-    } catch (const OpenRTI::Exception& e) {
-      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
-    } catch (...) {
-      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
+      try {
+        fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
+        break;
+      } catch (const OpenRTI::Exception& e) {
+        throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
+      } catch (...) {
+        throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
+      }
     }
+    if (fomModuleList.empty())
+      throw rti1516e::RTIinternalError(std::wstring(L"Could not find \"HLAstandardMIM.xml\"."));
   }
 
   for (std::vector<std::wstring>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i) {
