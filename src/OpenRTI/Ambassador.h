@@ -139,6 +139,10 @@ public:
   typedef typename Traits::TimeRegulationIsNotEnabled TimeRegulationIsNotEnabled;
   typedef typename Traits::UnsupportedCallbackModel UnsupportedCallbackModel;
 
+  Ambassador() :
+    _callbacksEnabled(true)
+  { }
+
   const FederateHandle& getFederateHandle() const
   { return _federate->getFederateHandle(); }
   const FederationHandle& getFederationHandle() const
@@ -3786,7 +3790,7 @@ public:
     try {
       if (!_federate.valid())
         Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
+      _callbacksEnabled = true;
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {
@@ -3804,7 +3808,7 @@ public:
     try {
       if (!_federate.valid())
         Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
+      _callbacksEnabled = false;
     } catch (const typename Traits::Exception&) {
       throw;
     } catch (const OpenRTI::IgnoredError&) {
@@ -3885,6 +3889,8 @@ public:
   bool dispatchCallback(const Clock& clock)
   {
     flushAndDispatchInternalMessage();
+    if (!_callbacksEnabled)
+      return false;
     while (!_dispatchCallbackMessage()) {
       if (!receiveAndDispatchInternalMessage(clock))
         return false;
@@ -4263,6 +4269,8 @@ public:
   }
 
 private:
+  // True if callbck dispatch is enabled or if callbacks are held back
+  bool _callbacksEnabled;
   // The federate if available
   SharedPtr<Federate> _federate;
   // The timestamped queues
