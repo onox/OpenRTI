@@ -684,9 +684,16 @@ public:
     case NextMessageRequestAvailable:
     case FlushQueueRequest:
       if (!_nextMessageTimePending) {
-        if (_logicalTime != _nextMessageTime) {
-          std::wcout << L"Time advance grant time grants for a time not equal to the next message time!" << std::endl;
-          _fail = true;
+        if (_timeAdvanceMode != FlushQueueRequest) {
+          if (_logicalTime != _nextMessageTime) {
+            std::wcout << L"Time advance grant time grants for a time not equal to the next message time!" << std::endl;
+            _fail = true;
+          }
+        } else {
+          if (_nextMessageTime < _logicalTime) {
+            std::wcout << L"Time advance grant time grants for a time that exceeds the next message time!" << std::endl;
+            _fail = true;
+          }
         }
       }
       if (_advanceLogicalTime < _logicalTime) {
