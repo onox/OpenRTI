@@ -682,14 +682,13 @@ public:
     switch (_timeAdvanceMode) {
     case NextMessageRequest:
     case NextMessageRequestAvailable:
+    case FlushQueueRequest:
       if (!_nextMessageTimePending) {
         if (_logicalTime != _nextMessageTime) {
           std::wcout << L"Time advance grant time grants for a time not equal to the next message time!" << std::endl;
           _fail = true;
         }
       }
-      // fallthrough
-    case FlushQueueRequest:
       if (_advanceLogicalTime < _logicalTime) {
         std::wcout << L"Time advance grant time grants for a time beyond the requested advance time!" << std::endl;
         _fail = true;
@@ -837,9 +836,18 @@ public:
           }
         }
         break;
+      case FlushQueueRequest:
+        // The rationale paragraph E8.12 explaines that we expect the time advance
+        // only up to the next delivered message in flush queue mode.
+        // The argument is there that the federate might want to send a response to
+        // this first message at the next possible time.
+        if (logicalTime < _nextMessageTime && logicalTime <= _advanceLogicalTime) {
+          _nextMessageTime = logicalTime;
+          _nextMessageTimePending = false;
+        }
+        break;
       case TimeAdvanceRequest:
       case TimeAdvanceRequestAvailable:
-      case FlushQueueRequest:
         break;
       }
     }
