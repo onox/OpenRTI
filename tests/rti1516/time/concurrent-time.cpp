@@ -924,8 +924,8 @@ public:
       _numInteractions = atoi(argument.c_str());
       return true;
     case 'L':
-      _lookahead = HLAinteger64Interval(atoi(argument.c_str()));
-      return HLAinteger64Interval(0) <= _lookahead;
+      _lookahead = atoi(argument.c_str());
+      return true;
     case 'M':
       _timeAdvanceMode = TimeAdvanceMode(atoi(argument.c_str()));
       switch (_timeAdvanceMode) {
