@@ -5,7 +5,6 @@ OpenRTI-0.5.0 (development)
  * Make every leaf server run in a thread.
  * Present each sent timestmp on reflectAttributeValues. 
  * Divide attribute updates into passels per order/transportation type.
- * For a more detailed list of changes see the git history.
  * Rework timestamped queues.
  * Fix timestamped message delivery just past getting time constrained.
  * Fix order type of messages sent as timestamped.
@@ -17,6 +16,8 @@ OpenRTI-0.5.0 (development)
  * Make all time advance modes work with time management enabled.
  * Make librti1516e find its management object model file relative to its own location.
  * Implement {enable,disable}Callbacks().
+
+ * For a more detailed list of changes see the git history.
 
 OpenRTI-0.4.1 2013-??-??
 ------------------------
