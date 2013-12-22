@@ -243,10 +243,8 @@ public:
       if (InternalTimeManagement::getTimeConstrainedEnabled()) {
         if (!_logicalTimeMessageListMap.empty()) {
           if (_logicalTimeMessageListMap.begin()->first.first < _pendingLogicalTime.first) {
-            if (_logicalTimeMessageListMap.begin()->first.first < _logicalTime.first)
-              _pendingLogicalTime.first = _logicalTime.first;
-            else
-              _pendingLogicalTime.first = _logicalTimeMessageListMap.begin()->first.first;
+            OpenRTIAssert(_logicalTime.first <= _logicalTimeMessageListMap.begin()->first.first);
+            _pendingLogicalTime.first = _logicalTimeMessageListMap.begin()->first.first;
           }
         }
 
@@ -267,6 +265,14 @@ public:
         queueTimeStampedMessage(_pendingLogicalTime, *message);
       }
     } else if (InternalTimeManagement::getFlushQueueMode()) {
+      if (InternalTimeManagement::getTimeConstrainedEnabled()) {
+        if (!_logicalTimeMessageListMap.empty()) {
+          if (_logicalTimeMessageListMap.begin()->first.first < _pendingLogicalTime.first) {
+            OpenRTIAssert(_logicalTime.first <= _logicalTimeMessageListMap.begin()->first.first);
+            _pendingLogicalTime.first = _logicalTimeMessageListMap.begin()->first.first;
+          }
+        }
+      }
 
       if (InternalTimeManagement::getTimeConstrainedEnabled() && !canAdvanceTo(LogicalTimePair(_pendingLogicalTime.first, 0))) {
         OpenRTIAssert(!_federateLowerBoundMap.empty());
