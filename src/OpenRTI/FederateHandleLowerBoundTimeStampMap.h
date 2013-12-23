@@ -88,11 +88,19 @@ public:
       i->second._nextMessageCommit = _nextMessageLogicalTimeFederateCountMap.move(i->second._nextMessageCommit, logicalTime).first;
     }
 
-    i->second._commitId = commitId;
-    bool nextMessageMode = i->second.isInNextMessageMode();
     // Forcefully clear this
+    bool nextMessageMode = i->second.isInNextMessageMode();
     if (!nextMessageMode)
       i->second._federateIsLocked = false;
+
+    bool commmitIdChangedAndNextMessageMode;
+    if (i->second._commitId != commitId) {
+      OpenRTIAssert(nextMessageMode);
+      i->second._commitId = commitId;
+      commmitIdChangedAndNextMessageMode = true;
+    } else {
+      commmitIdChangedAndNextMessageMode = false;
+    }
 
     OpenRTIAssert(!_timeAdvanceLogicalTimeFederateCountMap.empty());
     OpenRTIAssert(!_nextMessageLogicalTimeFederateCountMap.empty());
@@ -100,7 +108,7 @@ public:
     OpenRTIAssert(i->second._timeAdvanceCommit->first <= i->second._nextMessageCommit->first);
     OpenRTIAssert(_timeAdvanceLogicalTimeFederateCountMap.begin()->first <= _nextMessageLogicalTimeFederateCountMap.begin()->first);
 
-    return std::pair<bool, bool>(isFirstLogicalTime, nextMessageMode);
+    return std::pair<bool, bool>(isFirstLogicalTime, commmitIdChangedAndNextMessageMode);
   }
 
   // O(1)

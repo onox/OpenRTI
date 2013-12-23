@@ -144,7 +144,7 @@ public:
     request->setFederationHandle(ambassador.getFederate()->getFederationHandle());
     request->setFederateHandle(ambassador.getFederate()->getFederateHandle());
     request->setTimeStamp(_logicalTimeFactory.encodeLogicalTime(_outboundLowerBoundTimeStamp.first));
-    request->setCommitId(++_commitId);
+    request->setCommitId(_commitId);
     ambassador.send(request);
 
     // Once we get regulating, we need to account for being part of NextMessage deadlock detection.
@@ -811,8 +811,11 @@ public:
 
     if (commitType & TimeAdvanceCommit)
       _committedOutboundLowerBoundTimeStamp = logicalTime;
-    if (commitType & NextMessageCommit)
+    if (commitType & NextMessageCommit) {
       _committedNextMessageLowerBoundTimeStamp = logicalTime;
+      if (_committedOutboundLowerBoundTimeStamp != _committedNextMessageLowerBoundTimeStamp)
+        ++_commitId;
+    }
 
     OpenRTIAssert(!InternalTimeManagement::getTimeRegulationEnabled() || _committedOutboundLowerBoundTimeStamp <= _toLogicalTime(_outboundLowerBoundTimeStamp));
     OpenRTIAssert(!InternalTimeManagement::getTimeRegulationEnabled() || _committedOutboundLowerBoundTimeStamp <= _committedNextMessageLowerBoundTimeStamp);
@@ -824,7 +827,7 @@ public:
     request->setFederateHandle(ambassador.getFederate()->getFederateHandle());
     request->setTimeStamp(_logicalTimeFactory.encodeLogicalTime(logicalTime));
     request->setCommitType(commitType);
-    request->setCommitId(++_commitId);
+    request->setCommitId(_commitId);
     ambassador.send(request);
   }
 
