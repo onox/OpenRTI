@@ -63,6 +63,7 @@ public:
     _outboundLowerBoundTimeStamp = _logicalTime;
     _lastOutboundLowerBoundTimeStamp = _logicalTime;
     _committedOutboundLowerBoundTimeStamp = _logicalTime;
+    _committedNextMessageLowerBoundTimeStamp = _logicalTime;
     _currentLookahead = _logicalTimeFactory.zeroLogicalTimeInterval();
     _targetLookahead = _currentLookahead;
   }
@@ -127,6 +128,7 @@ public:
 
     // The sent out message effectively commits this
     _committedOutboundLowerBoundTimeStamp = _outboundLowerBoundTimeStamp;
+    _committedNextMessageLowerBoundTimeStamp = _outboundLowerBoundTimeStamp;
 
     OpenRTIAssert(_timeRegulationEnableFederateHandleTimeStampMap.empty());
     OpenRTIAssert(_timeRegulationEnableFederateHandleSet.empty());
@@ -162,8 +164,9 @@ public:
     _currentLookahead = _targetLookahead;
     _outboundLowerBoundTimeStamp.first = _logicalTimeFactory.initialLogicalTime();
     _outboundLowerBoundTimeStamp.second = 0;
-    _committedOutboundLowerBoundTimeStamp = _outboundLowerBoundTimeStamp;
     _lastOutboundLowerBoundTimeStamp = _outboundLowerBoundTimeStamp;
+    _committedOutboundLowerBoundTimeStamp = _outboundLowerBoundTimeStamp;
+    _committedNextMessageLowerBoundTimeStamp = _outboundLowerBoundTimeStamp;
 
     SharedPtr<DisableTimeRegulationRequestMessage> request;
     request = new DisableTimeRegulationRequestMessage;
