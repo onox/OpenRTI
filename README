@@ -2,7 +2,7 @@
 OpenRTI
 -------
 
-An rti library with an rti1516 as well as a RTI13 interface.
+An rti library with an rti1516, rti1516e as well as a RTI13 interface.
 
 The key features are:
 * Easy to use.
@@ -11,9 +11,55 @@ The key features are:
 * Extensible.
 * In process RTI.
 * Server tree hierarchy.
-* Delegates.
 * Shortest path is in memory without copying data.
-* Plugin like infrastructure - might extend to runtime extensibility.
+* Only depends on a c++98 compiler/stl.
+
+
+Installation
+------------
+
+It's a usual cmake project.
+
+Execute cmake from within a build directory of your choice, give this
+cmake the source directory, generate build files for your native build
+environment and compile the set of libraries/tests.
+
+Specifically under a UNIX like environment:
+
+cd <builddir>
+cmake -DCMAKE_INSTALL_PREFIX=<prefix> <srcdir>
+make
+make install
+
+Or depending on your c++ compile environment, you may need to take
+different steps. For details refer to www.cmake.org.
+
+
+Dependencies
+------------
+
+The 'dependency only on a c++ compiler' in the key features table
+means more specifically that:
+The rti libraries and all tool programs like the server process rtinode
+that are required to run a rti, the client rti libraries as well as
+the complete test suite depends on nothing but a working c++ compiler
+and a usually included stl implementation.
+This aims to ease the installation and should keep potential collisions
+with respect to run time libraries possible required by the calling
+application at a bare minimum.
+OpenRTI requires a c++98 implementation, but can be compiled also with
+a c++11 compiler and stl library.
+
+OpenRTI can make use of additional components like zlib for on the wire
+compression, that is used if it is avaialbe. OpenRTI's on the wire
+protocol negotiates if this is used or not. So, mixing different builds
+one with zlib and one without shall interact seamlessly.
+The python binding is obviously only available if python is available.
+
+That saied, much more specifically, there is no dependency on boost
+as of today and there will not be any in the future. The same goes for
+any other dependency library that is not strictly needed.
+
 
 Platforms
 ---------
@@ -22,9 +68,10 @@ Everywhere!
 Seriously, if it does not work yet on your platform, please
 provide patches to make it work.
 
-Development is done currently on Linux, Win32, MacOS, Solaris and HP-UX.
+Development is done currently on Linux, Win32, MacOS and Solaris.
+HP-UX did work at some time in the past but is no longer tested.
 
-Linux is tested on current fedora variants and centos 4 and 5.
+Linux is tested on current fedora variants and centos 4, 5 and 6.
 
 Windows is tested so far with 32 und 64 bits on XP with VS 2008.
 
@@ -104,7 +151,6 @@ protocol=<p>
   'rti' use the tcp/ip binary protocol on some custom port
   'http' use the http encapsulated tcp/ip binary protocol on port 80
   'pipe' use the binary protocol on a named pipe
-  'trace' chain the communication to an other protocol and dump messages
 
 address=<a>
   The interpretation depends on the protocol:
@@ -144,19 +190,54 @@ in the future to disable interpretation of federation execution names as urls.
 LogicalTime
 -----------
 
-As required by newer hla standards, we know about 64 bits integer and 64 bits
-float times.
+As required by rti1516e, OpenRTI knows about 64 bit integer and
+64 bit float times.
 
-The integer valued time behave as obvious.
+The provided logical time implementations should fulfill the table as found
+in paragraph 12.3 of the rti1516e standard document:
 
-The float valued time has some special behaviour. The epsilon value is encoded
-as -0. That means if you set a logical time interval/fed time to -0 you will
-get +0 back. With this special small value of epsilon, we can handle the
-rundoff problems that appear in logical time + lookahead well. The value of
-logical time, lookahead and lbts are always consistent in the sense that
-logical time + lookahead == lbts. Also, any attempt to compare or encode a
-NaN valued logical time or logical time interval will result in an invalid
-time exception. This is to avoid internal problems with NaN's.
+// let Iz = 0, Ie = epsilon, Iz < I
+// any T denotes a value of type time,
+// any I denotes a value of type interval:
+//
+// T' = T + I then T' > T                                    (*)
+// T' = T - I then T' < T
+// T' = T + Iz then T' == T
+// T' = T - Iz then T' == T
+// T1 != T2 then |T1 - T2| >= Ie
+// T1 == T2 then T1 - T2 == Iz
+//
+// I' = I + Iz then I' == I
+// I' = I - Iz then I' == I
+// I1 != I2 then |I1 - I2| >= Ie
+// I1 == I2 then I1 - I2 == Iz
+// I != Iz then I >= Ie
+//
+// T > T' then T' < T
+
+For integer valued logical times this properties are trivially valid.
+For float valued logical times this is reached by using the smallest
+representable double value > 0, which is the denormalized minimum as
+epsilon. The '+' operator used with a strictly positive and thus non
+zero time interval always results in a logical time that is strictly
+greater than the input time to this operation. This is property (*)
+in the above table.
+
+While the full set of properties may be needed for time management
+to work properly, the property (*) is critical and easily not valid
+for a naive implementation of float valued logical time.
+
+The tests/rti1516/time/logical-time test program can be used to test
+a logical time implementation for the required behavior.
+
+With included float valued logical time implementations, any attempt
+to compare or encode a NaN valued logical time or logical time
+interval will result in an invalid time exception. This is to avoid
+internal problems with NaN's, specifically the last property in the
+table cannot be fulfilled with NaN values but is needed for the use
+of logical times as key values in std::map which requires strong
+ordering on the key. Else the underlying implementation may behave
+undefined and with that OpenRTI may behave undefined also.
 
 
 Encoding
