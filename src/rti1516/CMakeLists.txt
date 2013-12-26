@@ -39,6 +39,7 @@ SET(LIB_RTI1516_SOURCES
 	RTIambassador.cpp
 	RTIambassadorFactory.cpp
 	RTIambassadorImplementation.cpp
+	RTI1516LogicalTimeFactory.cpp
 	VariableLengthData.cpp
 	VariableLengthDataImplementation.h
 	Version.cpp
@@ -57,7 +58,6 @@ SET(FEDTIME1516_PUBLIC_HEADERS
 
 SET(LIB_FEDTIME1516_SOURCES
         RTI1516fedTime.cpp
-        RTI1516LogicalTimeFactory.cpp
         HLAfloat64Interval.cpp
         HLAfloat64Time.cpp
         HLAfloat64TimeFactory.cpp
