@@ -353,7 +353,7 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
   }
   void insertInteractionClass(const FOMInteractionClass& module)
   {
-    InteractionClassHandle nextParameterHandle;
+    ParameterHandle nextParameterHandle;
     // FIXME
     for (NameInteractionDataMap::const_iterator i = _nameInteractionDataMap.begin(); i != _nameInteractionDataMap.end(); ++i) {
       if (i->second._interactionClass.getParentInteractionClassHandle() == module.getParentInteractionClassHandle())
