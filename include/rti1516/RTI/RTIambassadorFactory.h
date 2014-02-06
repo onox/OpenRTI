@@ -11,15 +11,11 @@ namespace rti1516
   class RTIambassador;
 }
 
-namespace std
-{
-  template <class T> class auto_ptr;
-}
-
 #include <RTI/SpecificConfig.h>
 #include <RTI/Exception.h>
 #include <vector>
 #include <string>
+#include <memory>
 
 namespace rti1516
 {
