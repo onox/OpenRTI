@@ -45,10 +45,6 @@ public:
   Handle(const T& handle) :
     _handle(handle)
   { }
-  template<typename S>
-  Handle(const S& handle) :
-    _handle((S(0) <= handle && T(handle) < invalid()) ? T(handle) : invalid())
-  { }
 
   bool valid() const
   { return _handle != invalid(); }
@@ -129,14 +125,10 @@ private:
 class OPENRTI_LOCAL HandleName : public Handle<Type> {            \
 public:                                                           \
   HandleName() {}                                                 \
-  HandleName(const HandleName& handle) :                          \
-    Handle<Type>(static_cast<const Handle<Type>&>(handle))        \
-  { }                                                             \
-  HandleName(const Type& handle) :                                \
+  HandleName(const Handle<Type>& handle) :                        \
     Handle<Type>(handle)                                          \
   { }                                                             \
-  template<typename S>                                            \
-  HandleName(const S& handle) :                                   \
+  HandleName(const Type& handle) :                                \
     Handle<Type>(handle)                                          \
   { }                                                             \
                                                                   \
