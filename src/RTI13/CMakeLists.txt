@@ -57,7 +57,7 @@ ELSE()
   ENDIF()
 ENDIF()
 IF(MACOS)
-  SET_PROPERTY(TARGET RTI-NG PROPERTY LINK_FLAGS "-Wl,-undefined,dynamic_lookup")
+  SET_PROPERTY(TARGET RTI-NG PROPERTY LINK_FLAGS "-Wl,-undefined,dynamic_lookup,-bind_at_load")
 ENDIF()
 
 # libFedTime
