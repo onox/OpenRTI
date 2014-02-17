@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2014 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -75,10 +75,14 @@ public:
   {
     ScopeLock scopeLock(_mutex);
     while (_messageList.empty()) {
-      // On timeout, the list must be empty, so return 0
-      if (!_condition.wait(_mutex, timeout))
+      // We must not rely on the timeout return before checking the predicate.
+      bool signaledOrSpurious = _condition.wait(_mutex, timeout);
+      if (!_messageList.empty())
+        break;
+      if (_isClosed)
         return 0;
-      if (_isClosed && _messageList.empty())
+      // Timeout was hit
+      if (!signaledOrSpurious)
         return 0;
     }
     return _messageList.pop_front();
