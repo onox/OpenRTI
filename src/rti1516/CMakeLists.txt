@@ -90,7 +90,7 @@ ELSE()
   ENDIF()
 ENDIF()
 IF(MACOS)
-  SET_PROPERTY(TARGET rti1516 PROPERTY LINK_FLAGS "-Wl,-undefined,dynamic_lookup,-bind_at_load")
+  SET_PROPERTY(TARGET rti1516 APPEND PROPERTY LINK_FLAGS "-Wl,-undefined,dynamic_lookup ${OPENRTI_BIND_AT_LOAD}")
 ENDIF()
 
 # libfedtime1516
