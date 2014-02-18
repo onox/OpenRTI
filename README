@@ -73,7 +73,16 @@ HP-UX did work at some time in the past but is no longer tested.
 
 Linux is tested on current fedora variants and centos 4, 5 and 6.
 
-Windows is tested so far with 32 und 64 bits on XP with VS 2008.
+Windows is tested so far with 32 und 64 bits on XP with VS 2010/VS2012.
+
+Macos X is fully supported starting with 10.6. Starting with this
+version a workaround for a problem originating from the
+standardized cyclic link dependency is available. On earlier macos
+versions OpenRTI triggers a race in resolving dynamic symbols from
+the logical time libraries. This problems shows up in a lot of the
+tests for OpenRTI. For single threaded HLA applications or applications
+having only a single thread accessing the RTIambassador this problem
+should not show up even on macos versions prior to 10.6.
 
 On Solaris, OpenRTI is tested with
 CC='cc -mt' CXX='CC -mt' cmake ...
