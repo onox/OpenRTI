@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2014 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -19,6 +19,10 @@
 
 #include "Socket.h"
 #include "SocketPrivateDataPosix.h"
+
+#ifdef __APPLE__
+# include <fstream>
+#endif
 
 namespace OpenRTI {
 
@@ -52,5 +56,22 @@ Socket::~Socket()
   delete _privateData;
   _privateData = 0;
 }
+
+#ifdef __APPLE__
+// Puh, it turns out that std::ifstream does some static initialization
+// that appears not to be thread safe. By that force creation of one such
+// instance, opening a file at shared object load time.
+// Putting this here is to make sure the object file can under no sensible
+// circumstance be optimized out by the linker. The assumption is that
+// a communication library just always pulls the socket implementation.
+class _DummyStreamInitializationSerializer {
+public:
+  _DummyStreamInitializationSerializer()
+  {
+    std::ifstream stream("/dev/zero");
+  }
+};
+static _DummyStreamInitializationSerializer dummyStreamInitializationSerializer;
+#endif
 
 } // namespace OpenRTI
