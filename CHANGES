@@ -16,6 +16,7 @@ OpenRTI-0.5.0 (development)
  * Make all time advance modes work with time management enabled.
  * Make librti1516e find its management object model file relative to its own location.
  * Implement {enable,disable}Callbacks().
+ * Improove compatibility with macos.
 
  * For a more detailed list of changes see the git history.
 
