@@ -19,12 +19,9 @@
 
 #include "Atomic.h"
 
+#if defined OpenRTI_ATOMIC_USE_LIBRARY
 #define NOMINMAX
 #include <windows.h>
-
-#if !defined OpenRTI_ATOMIC_USE_LIBRARY
-#error win32 atomics need a library implementation
-#endif
 
 namespace OpenRTI {
 
@@ -58,3 +55,5 @@ Atomic::cmpxch(unsigned oldValue, unsigned newValue)
 }
 
 }
+
+#endif
