@@ -1,6 +1,6 @@
 Summary: HLA/RTI runtime infrastructure
 Name: OpenRTI
-Version: 0.2
+Version: 0.5
 Release: 1%{?dist}
 License: LGPL
 Group: System Environment/Libraries
@@ -17,7 +17,7 @@ BuildRequires: expat-devel
 #BuildRequires: python-devel
 
 %description
-Direct Rendering Manager runtime library
+HLA/RTI runtime infrastructure package
 
 %package devel
 Summary: HLA/RTI runtime infrastructure development package
