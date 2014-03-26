@@ -23,7 +23,7 @@
 #include "Types.h"
 
 #include <vector>
-#include <Windows.h>
+#include <windows.h>
 
 namespace OpenRTI {
 
