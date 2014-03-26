@@ -24,7 +24,7 @@ namespace rti1516e
    typedef char      Integer8;
    typedef short     Integer16;
    typedef int       Integer32;
-   typedef _int64    Integer64;
+   typedef __int64    Integer64;
 #else
 #if defined(RTI_USE_64BIT_LONGS)
    typedef char      Integer8;
