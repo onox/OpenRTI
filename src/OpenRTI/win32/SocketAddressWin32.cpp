@@ -118,7 +118,7 @@ SocketAddress::getNumericName() const
   host[sizeof(host)-1] = 0;
   char serv[32];
   serv[sizeof(serv)-1] = 0;
-  while (int ret = ret = ::getnameinfo(addr, addrlen, host, sizeof(host)-1, serv, sizeof(serv)-1, NI_NUMERICHOST|NI_NUMERICSERV)) {
+  while (int ret = ::getnameinfo(addr, addrlen, host, sizeof(host)-1, serv, sizeof(serv)-1, NI_NUMERICHOST|NI_NUMERICSERV)) {
     if (ret == EAI_AGAIN)
       continue;
     WSACleanup();
