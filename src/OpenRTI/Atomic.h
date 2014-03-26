@@ -87,6 +87,7 @@ private:
     case MemoryOrderAcqRel:
       return std::memory_order_acq_rel;
     case MemoryOrderSeqCst:
+    default:
       return std::memory_order_seq_cst;
     }
   }
@@ -219,6 +220,7 @@ private:
     case MemoryOrderAcqRel:
       return __ATOMIC_ACQ_REL;
     case MemoryOrderSeqCst:
+    default:
       return __ATOMIC_SEQ_CST;
     }
   }
@@ -234,6 +236,7 @@ private:
     case MemoryOrderAcqRel:
       return __ATOMIC_ACQUIRE;
     case MemoryOrderSeqCst:
+    default:
       return __ATOMIC_SEQ_CST;
     }
   }
