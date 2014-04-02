@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2014 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -237,7 +237,7 @@ struct SocketEventDispatcher::PrivateData {
       if (FD_ISSET(_wakeupReadSocket, &readfds)) {
         char dummy[64];
         while (0 < ::recv(_wakeupReadSocket, dummy, sizeof(dummy), 0));
-        if (!_wokenUp.compareAndExchange(1, 0))
+        if (!_wokenUp.compareAndExchange(1, 0, Atomic::MemoryOrderAcqRel))
           Log(Network, Warning) << "Having something to read from the wakeup pipe, but the flag is not set?" << std::endl;
         retv = 0;
         break;
@@ -250,7 +250,7 @@ struct SocketEventDispatcher::PrivateData {
   void wakeUp()
   {
     // Check if we already have a wakeup pending
-    if (!_wokenUp.compareAndExchange(0, 1))
+    if (!_wokenUp.compareAndExchange(0, 1, Atomic::MemoryOrderAcqRel))
       return;
     // No, the first one, write to the pipe
     char data = 1;
