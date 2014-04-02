@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2012-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2012-2014 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -39,12 +39,12 @@ public:
     // If the pointer is not already initialized
     while (unsigned(_initialized) != 2) {
       // We expect 0 == uninitalized and write there 1 == initializing
-      if (!_initialized.compareAndExchange(0, 1)) {
+      if (!_initialized.compareAndExchange(0, 1, Atomic::MemoryOrderAcqRel)) {
         Clock::sleep(Clock::fromSeconds(1e-6));
       } else {
         _ptr = new T();
         // We know that it must be 1 and write 2 there
-        _initialized.compareAndExchange(1, 2);
+        _initialized.compareAndExchange(1, 2, Atomic::MemoryOrderAcqRel);
       }
     }
     return _ptr;
