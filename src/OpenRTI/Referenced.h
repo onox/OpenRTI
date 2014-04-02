@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2014 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -38,13 +38,13 @@ public:
   { return *this; }
 
   static void get(const Referenced* ref)
-  { if (!ref) return; ++(ref->_refcount); }
+  { if (!ref) return; ref->_refcount.incFetch(Atomic::MemoryOrderRelease); }
   static void getFirst(const Referenced* ref)
   { get(ref); }
   static unsigned put(const Referenced* ref)
-  { if (ref) return --(ref->_refcount); else return ~0u; }
+  { if (ref) return ref->_refcount.decFetch(Atomic::MemoryOrderAcqRel); else return ~0u; }
   static void release(const Referenced* ref)
-  { if (!ref) return; --(ref->_refcount); }
+  { if (!ref) return; ref->_refcount.decFetch(Atomic::MemoryOrderRelease); }
   static unsigned count(const Referenced* ref)
   { if (ref) return ref->_refcount; else return 0u; }
   static bool shared(const Referenced* ref)
