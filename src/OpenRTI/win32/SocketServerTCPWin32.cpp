@@ -71,7 +71,7 @@ SocketTCP*
 SocketServerTCP::accept()
 {
   SOCKET fd = ::accept(_privateData->_socket, 0, 0);
-  if (fd == -1) {
+  if (fd == INVALID_SOCKET) {
     int errorNumber = WSAGetLastError();
     throw TransportError(errnoToUtf8(errorNumber));
   }
