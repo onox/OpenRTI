@@ -64,6 +64,14 @@ IF(MSVC)
   ENDIF()
 ENDIF()
 
+IF(MINGW OR CYGWIN)
+  IF(DEFINED ENV{DLLTOOL})
+    SET(DLLTOOL "$ENV{DLLTOOL}")
+  ELSE()
+    SET(DLLTOOL dlltool)
+  ENDIF()
+ENDIF()
+
 # Change the default build type to something fast
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
