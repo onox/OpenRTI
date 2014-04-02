@@ -20,7 +20,9 @@
 #ifndef OpenRTI_ConditionPrivateDataWin32_h
 #define OpenRTI_ConditionPrivateDataWin32_h
 
-#define NOMINMAX
+#ifndef NOMINMAX
+# define NOMINMAX
+#endif
 #include <windows.h>
 #include <list>
 

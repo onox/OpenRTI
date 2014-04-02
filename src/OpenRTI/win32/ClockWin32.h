@@ -20,7 +20,9 @@
 #ifndef OpenRTI_ClockWin32_h
 #define OpenRTI_ClockWin32_h
 
-#define NOMINMAX
+#ifndef NOMINMAX
+# define NOMINMAX
+#endif
 #include <winsock2.h>
 #include <windows.h>
 

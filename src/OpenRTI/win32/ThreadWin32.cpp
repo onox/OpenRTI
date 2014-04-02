@@ -19,7 +19,9 @@
 
 #include "Thread.h"
 
-#define NOMINMAX
+#ifndef NOMINMAX
+# define NOMINMAX
+#endif
 #include <windows.h>
 #include "Exception.h"
 #include "Export.h"
