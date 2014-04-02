@@ -2,6 +2,7 @@ OpenRTI-0.6.0 (development)
 ---------------------------
 
  * Port to MinGW.
+ * Make use ot the memory model parameters in the atomic implementation.
 
  * For a more detailed list of changes see the git history.
 
