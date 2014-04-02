@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2014 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -105,11 +105,11 @@ private:
     ~WeakData();
 
     void weakReferencedGet()
-    { ++mRefcount; }
+    { mRefcount.incFetch(Atomic::MemoryOrderRelease); }
     void weakReferencedGetFirst();
 
     unsigned weakReferencedPut()
-    { return --mRefcount; }
+    { return mRefcount.decFetch(Atomic::MemoryOrderAcqRel); }
     void weakReferencedRelease();
     unsigned weakReferencedCount()
     { return mRefcount & (~lastbit()); }

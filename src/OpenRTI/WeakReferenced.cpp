@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2014 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -54,7 +54,7 @@ WeakReferenced::WeakData::weakReferencedRelease()
     unsigned newcount = count - 1;
     if (newcount == 0)
       newcount |= lastbit();
-    if (mRefcount.compareAndExchange(count, newcount))
+    if (mRefcount.compareAndExchange(count, newcount, Atomic::MemoryOrderAcqRel))
       return;
     count = mRefcount;
   }
@@ -72,7 +72,7 @@ WeakReferenced::WeakData::getWeakReferenced()
     count = mRefcount;
     if (count == 0)
       return 0;
-  } while (!mRefcount.compareAndExchange(count, count + 1));
+  } while (!mRefcount.compareAndExchange(count, count + 1, Atomic::MemoryOrderAcqRel));
   // We know that as long as the refcount is not zero, the pointer still
   // points to valid data. So it is safe to work on it.
   return mWeakReferenced;
