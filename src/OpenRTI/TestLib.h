@@ -430,13 +430,13 @@ public:
 
   RTITest(int argc, const char* const argv[], bool disjointFederations) :
     _optionString("A:C:F:JO:S:"),
+    _options(argc, argv),
     _federationExecution(L"FederationExecution"),
     _numServers(1),
     _numClientsPerServers(2),
     _numAmbassadorThreads(1),
     _disjointFederations(disjointFederations),
-    _joinOnce(false),
-    _options(argc, argv)
+    _joinOnce(false)
   { }
   virtual ~RTITest()
   { }
