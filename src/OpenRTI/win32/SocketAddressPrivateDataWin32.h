@@ -44,7 +44,7 @@ struct SocketAddress::PrivateData : public Referenced {
   PrivateData(const struct sockaddr* addr, socklen_t addrlen) :
     _addrlen(0)
   {
-    if (sizeof(_sockaddr) < addrlen) {
+    if (sizeof(_sockaddr) < size_t(addrlen)) {
       std::memset(&_sockaddr + addrlen, 0, sizeof(_sockaddr));
       Log(Network, Warning) << "Socket address is too long!" << std::endl;
       return;
