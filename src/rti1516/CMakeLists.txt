@@ -87,10 +87,10 @@ ELSEIF(MINGW OR CYGWIN)
   SET_PROPERTY(TARGET fedtime1516Stub APPEND PROPERTY COMPILE_DEFINITIONS BUILDING_FEDTIME)
   ADD_CUSTOM_COMMAND(TARGET fedtime1516Stub
           POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E remove -f libfedtime1516.dll.a
-          COMMAND ${DLLTOOL} -Dlibfedtime1516.dll -llibfedtime1516.dll.a libfedtime1516Stub.a
-          COMMAND ${CMAKE_COMMAND} -E remove -f libfedtime1516Stub.a
-          COMMAND ${CMAKE_COMMAND} -E rename libfedtime1516.dll.a libfedtime1516Stub.a
+          COMMAND "${CMAKE_COMMAND}" -E remove -f libfedtime1516.dll.a
+          COMMAND "${DLLTOOL}" -Dlibfedtime1516.dll -llibfedtime1516.dll.a libfedtime1516Stub.a
+          COMMAND "${CMAKE_COMMAND}" -E remove -f libfedtime1516Stub.a
+          COMMAND "${CMAKE_COMMAND}" -E rename libfedtime1516.dll.a libfedtime1516Stub.a
     )
   TARGET_LINK_LIBRARIES(rti1516 fedtime1516Stub OpenRTI)
 ELSE()

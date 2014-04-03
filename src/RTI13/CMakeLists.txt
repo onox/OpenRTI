@@ -54,10 +54,10 @@ ELSEIF(MINGW OR CYGWIN)
   SET_PROPERTY(TARGET FedTimeStub APPEND PROPERTY COMPILE_DEFINITIONS FedTime_EXPORTS)
   ADD_CUSTOM_COMMAND(TARGET FedTimeStub
           POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E remove -f libFedTime.dll.a
-          COMMAND ${DLLTOOL} -DlibFedTime.dll -llibFedTime.dll.a libFedTimeStub.a
-          COMMAND ${CMAKE_COMMAND} -E remove -f libFedTimeStub.a
-          COMMAND ${CMAKE_COMMAND} -E rename libFedTime.dll.a libFedTimeStub.a
+          COMMAND "${CMAKE_COMMAND}" -E remove -f libFedTime.dll.a
+          COMMAND "${DLLTOOL}" -DlibFedTime.dll -llibFedTime.dll.a libFedTimeStub.a
+          COMMAND "${CMAKE_COMMAND}" -E remove -f libFedTimeStub.a
+          COMMAND "${CMAKE_COMMAND}" -E rename libFedTime.dll.a libFedTimeStub.a
     )
   TARGET_LINK_LIBRARIES(RTI-NG FedTimeStub OpenRTI)
 ELSE()
