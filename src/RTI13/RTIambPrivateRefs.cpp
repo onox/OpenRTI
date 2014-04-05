@@ -230,8 +230,6 @@ public:
 
 } // namespace OpenRTI
 
-using namespace OpenRTI; /*FIXME*/
-
 class OPENRTI_LOCAL RTIambPrivateRefs : public OpenRTI::Ambassador<OpenRTI::RTI13Traits> {
 public:
   RTIambPrivateRefs() :
@@ -243,7 +241,7 @@ public:
     throw RTI::RTIinternalError(faultDescription.c_str());
   }
 
-  virtual void reportFederationExecutions(const FederationExecutionInformationVector& theFederationExecutionInformationList)
+  virtual void reportFederationExecutions(const OpenRTI::FederationExecutionInformationVector& theFederationExecutionInformationList)
     throw ()
   { }
 
@@ -513,7 +511,7 @@ public:
     }
   }
 
-  virtual void turnInteractionsOn(InteractionClassHandle interactionClassHandle, bool on)
+  virtual void turnInteractionsOn(OpenRTI::InteractionClassHandle interactionClassHandle, bool on)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -534,12 +532,12 @@ public:
   // Object Management Services //
   ////////////////////////////////
 
-  virtual void objectInstanceNameReservation(const ReserveObjectInstanceNameResponseMessage&)
+  virtual void objectInstanceNameReservation(const OpenRTI::ReserveObjectInstanceNameResponseMessage&)
     throw ()
   {
     /// No name reservation in RTI13, so we do not need a callback
   }
-  virtual void objectInstanceNameReservation(const ReserveMultipleObjectInstanceNameResponseMessage&)
+  virtual void objectInstanceNameReservation(const OpenRTI::ReserveMultipleObjectInstanceNameResponseMessage&)
     throw ()
   {
     /// No name reservation in RTI13, so we do not need a callback
@@ -566,7 +564,7 @@ public:
     }
   }
 
-  virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass,
+  virtual void reflectAttributeValues(const OpenRTI::Federate::ObjectClass& objectClass,
                                       const OpenRTI::AttributeUpdateMessage& message)
     throw ()
   {
@@ -581,7 +579,7 @@ public:
       attributeHandleValues.getAttributeValues().reserve(message.getAttributeValues().size());
       for (std::vector<OpenRTI::AttributeValue>::const_iterator i = message.getAttributeValues().begin();
            i != message.getAttributeValues().end(); ++i) {
-        if (objectClass.getAttributeSubscriptionType(i->getAttributeHandle()) == Unsubscribed)
+        if (objectClass.getAttributeSubscriptionType(i->getAttributeHandle()) == OpenRTI::Unsubscribed)
           continue;
         attributeHandleValues.getAttributeValues().push_back(*i);
       }
@@ -593,8 +591,8 @@ public:
     }
   }
 
-  virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, bool flushQueueMode,
-                                      OrderType orderType, const OpenRTI::TimeStampedAttributeUpdateMessage& message,
+  virtual void reflectAttributeValues(const OpenRTI::Federate::ObjectClass& objectClass, bool flushQueueMode,
+                                      OpenRTI::OrderType orderType, const OpenRTI::TimeStampedAttributeUpdateMessage& message,
                                       const RTI::FedTime& logicalTime)
     throw ()
   {
@@ -611,7 +609,7 @@ public:
       attributeHandleValues.getAttributeValues().reserve(message.getAttributeValues().size());
       for (std::vector<OpenRTI::AttributeValue>::const_iterator i = message.getAttributeValues().begin();
            i != message.getAttributeValues().end(); ++i) {
-        if (objectClass.getAttributeSubscriptionType(i->getAttributeHandle()) == Unsubscribed)
+        if (objectClass.getAttributeSubscriptionType(i->getAttributeHandle()) == OpenRTI::Unsubscribed)
           continue;
         attributeHandleValues.getAttributeValues().push_back(*i);
       }
@@ -642,7 +640,7 @@ public:
 
   virtual
   void
-    removeObjectInstance(bool flushQueueMode, OrderType orderType,
+    removeObjectInstance(bool flushQueueMode, OpenRTI::OrderType orderType,
                          const OpenRTI::TimeStampedDeleteObjectInstanceMessage& message, const RTI::FedTime& logicalTime)
     throw ()
   {
@@ -663,7 +661,7 @@ public:
 
   // 6.9
   virtual void
-  receiveInteraction(const InteractionClassHandle& interactionClassHandle, const Federate::InteractionClass& interactionClass, const OpenRTI::InteractionMessage& message)
+  receiveInteraction(const OpenRTI::InteractionClassHandle& interactionClassHandle, const OpenRTI::Federate::InteractionClass& interactionClass, const OpenRTI::InteractionMessage& message)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -690,8 +688,8 @@ public:
   }
 
   virtual void
-    receiveInteraction(const InteractionClassHandle& interactionClassHandle, const Federate::InteractionClass& interactionClass, bool flushQueueMode,
-                       OrderType orderType, const OpenRTI::TimeStampedInteractionMessage& message,
+    receiveInteraction(const OpenRTI::InteractionClassHandle& interactionClassHandle, const OpenRTI::Federate::InteractionClass& interactionClass, bool flushQueueMode,
+                       OpenRTI::OrderType orderType, const OpenRTI::TimeStampedInteractionMessage& message,
                        const RTI::FedTime& logicalTime)
     throw ()
   {
@@ -1060,7 +1058,7 @@ public:
 
   virtual OpenRTI::TimeManagement<Traits>* createTimeManagement(OpenRTI::Federate& federate)
   {
-    return new OpenRTI::TemplateTimeManagement<Traits, OpenRTI::RTI13LogicalTimeFactory>(RTI13LogicalTimeFactory(federate.getLogicalTimeFactoryName()));
+    return new OpenRTI::TemplateTimeManagement<Traits, OpenRTI::RTI13LogicalTimeFactory>(OpenRTI::RTI13LogicalTimeFactory(federate.getLogicalTimeFactoryName()));
   }
 
   struct ConcurrentAccessGuard {
@@ -1080,12 +1078,12 @@ public:
 
   void ensureConnected(const std::string& federationExecutionName)
   {
-    URL url;
+    OpenRTI::URL url;
     if (federationExecutionName.find("://") != std::string::npos)
-      url = URL::fromUrl(federationExecutionName);
+      url = OpenRTI::URL::fromUrl(federationExecutionName);
 
     if (!isConnected()) {
-      connect(url, StringStringListMap());
+      connect(url, OpenRTI::StringStringListMap());
 
       _connectedUrl = url;
     } else if (_connectedUrl != url) {
@@ -1094,7 +1092,7 @@ public:
   }
 
   // The instantiation time argument list
-  URL _connectedUrl;
+  OpenRTI::URL _connectedUrl;
 
   bool _concurrentAccess;
 
