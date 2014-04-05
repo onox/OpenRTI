@@ -97,8 +97,6 @@ public:
   typedef rti1516::LogicalTime NativeLogicalTime;
   typedef rti1516::LogicalTimeInterval NativeLogicalTimeInterval;
 
-  typedef rti1516::FederateAmbassador FederateAmbassador;
-
   // static OpenRTI::FederateHandle fromNative(const rti1516::FederateHandle& federateHandle)
   // { return rti1516::FederateHandleFriend::getOpenRTIHandle(federateHandle); }
   // static rti1516::FederateHandle toNative(const OpenRTI::FederateHandle& federateHandle)
@@ -1470,7 +1468,7 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
 
   FederateHandle federateHandle = _ambassadorInterface->joinFederationExecution(std::string(), ucsToUtf8(federateType),
                                                                                 getFilePart(ucsToUtf8(federationExecutionName)),
-                                                                                OpenRTI::FOMStringModuleList(), NULL /*FIXME*/);
+                                                                                OpenRTI::FOMStringModuleList());
   return rti1516::FederateHandleFriend::createHandle(federateHandle);
 }
 

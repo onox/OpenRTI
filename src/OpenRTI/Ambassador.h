@@ -43,9 +43,6 @@ public:
   typedef typename Traits::NativeLogicalTime NativeLogicalTime;
   typedef typename Traits::NativeLogicalTimeInterval NativeLogicalTimeInterval;
 
-  // The federate ambassador
-  typedef typename Traits::FederateAmbassador FederateAmbassador;
-
   // The exceptions
   typedef typename Traits::AlreadyConnected AlreadyConnected;
   typedef typename Traits::AsynchronousDeliveryAlreadyDisabled AsynchronousDeliveryAlreadyDisabled;
@@ -300,8 +297,7 @@ public:
 
   FederateHandle joinFederationExecution(const std::string& federateName, const std::string& federateType,
                                          const std::string& federationExecutionName,
-                                         const FOMStringModuleList& fomModules,
-                                         FederateAmbassador* federateAmbassador)
+                                         const FOMStringModuleList& fomModules)
     throw (CouldNotCreateLogicalTimeFactory,
            FederationExecutionDoesNotExist,
            FederateNameAlreadyInUse,

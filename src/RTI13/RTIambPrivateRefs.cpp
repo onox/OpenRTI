@@ -124,8 +124,6 @@ public:
   typedef RTI::FedTime NativeLogicalTime;
   typedef RTI::FedTime NativeLogicalTimeInterval;
 
-  typedef RTI::FederateAmbassador FederateAmbassador;
-
   // FIXME implement exceptions
   typedef RTI::Exception Exception;
 
@@ -1188,7 +1186,7 @@ RTI::RTIambassador::joinFederationExecution(const char* federateType,
   std::string utf8FederateType = OpenRTI::localeToUtf8(federateType);
   FederateHandle federateHandle = privateRefs->joinFederationExecution(std::string(), utf8FederateType,
                                                                        OpenRTI::getFilePart(utf8FederationExecutionName),
-                                                                       OpenRTI::FOMStringModuleList(), federateAmbassadorPointer);
+                                                                       OpenRTI::FOMStringModuleList());
   privateRefs->_federateAmbassador = federateAmbassadorPointer;
   return federateHandle;
 }
