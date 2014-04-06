@@ -35,7 +35,7 @@ int
 main(int argc, char* argv[])
 {
   std::wstring federationExecutionName(L"federationExecutionName");
-  std::wstring fullPathNameToTheFDDfile(L"fdd.xml");
+  std::vector<std::wstring> fomModules;
 
   std::wstring objectClassName;
   std::wstring objectClassAttributeName;
@@ -57,7 +57,7 @@ main(int argc, char* argv[])
       federationExecutionName = OpenRTI::localeToUcs(options.getArgument());
       break;
     case 'O':
-      fullPathNameToTheFDDfile = OpenRTI::localeToUcs(options.getArgument());
+      fomModules.push_back(OpenRTI::localeToUcs(options.getArgument()));
       break;
     case 'o':
       objectClassName = OpenRTI::localeToUcs(options.getArgument());
@@ -77,7 +77,7 @@ main(int argc, char* argv[])
 
   // create, must work
   try {
-    ambassador.createFederationExecution(federationExecutionName, fullPathNameToTheFDDfile);
+    ambassador.createFederationExecution(federationExecutionName, fomModules);
   } catch (const rti1516e::Exception& e) {
     std::wcout << L"rti1516e::Exception: \"" << e.what() << L"\"" << std::endl;
     return EXIT_FAILURE;

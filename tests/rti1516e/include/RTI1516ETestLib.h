@@ -835,6 +835,15 @@ public:
   {
     _ambassador->createFederationExecution(federationExecutionName, fddFile, _logicalTimeImplementationName);
   }
+  void createFederationExecution(const std::wstring& federationExecutionName, const std::vector<std::wstring>& fomModules)
+  {
+    _ambassador->createFederationExecution(federationExecutionName, fomModules, _logicalTimeImplementationName);
+  }
+  void createFederationExecutionWithMIM(const std::wstring& federationExecutionName, const std::vector<std::wstring>& fomModules,
+                                        const std::wstring& mimModule)
+  {
+    _ambassador->createFederationExecutionWithMIM(federationExecutionName, fomModules, mimModule, _logicalTimeImplementationName);
+  }
 
   void destroyFederationExecution(const std::wstring& federationExecutionName)
   {
