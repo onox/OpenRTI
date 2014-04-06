@@ -23,7 +23,9 @@
 
 #include <RTI/RTI1516.h>
 #include "OpenRTIConfig.h"
-#include "StringUtils.h"
+
+#define PASTE2(a, b) a##b
+#define PASTE(a, b) PASTE2(a, b)
 
 namespace rti1516e
 {
@@ -37,7 +39,7 @@ rtiName()
 std::wstring
 rtiVersion()
 {
-  return OpenRTI::localeToUcs(OpenRTI_VERSION_STRING);
+  return std::wstring(PASTE(L, OpenRTI_VERSION_STRING));
 }
 
 }
