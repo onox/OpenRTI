@@ -122,9 +122,9 @@ namespace rti1516
     handle = HandleKind##Implementation::getHandle(_impl);              \
     std::wstringstream stream;                                          \
     if (handle.valid())                                                 \
-      stream << #HandleKind "(" << handle << ")";                       \
+      stream << "rti1516::" #HandleKind "(" <<handle.getHandle()<< ")"; \
     else                                                                \
-      stream << #HandleKind << "(Invalid)";                             \
+      stream << "rti1516::" #HandleKind "(Invalid)";                    \
     return stream.str();                                                \
   }                                                                     \
                                                                         \
