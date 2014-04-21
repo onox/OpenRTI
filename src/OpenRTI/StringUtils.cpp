@@ -323,40 +323,4 @@ getBasePart(const std::string& path)
   return path.substr(0, pos);
 }
 
-OPENRTI_API std::pair<std::string, std::string>
-getProtocolAddressPair(const std::string& url)
-{
-  std::string protocol;
-  std::string address;
-
-  /// Seperate this into:
-  /// <protocol>://<address>/...
-  std::string::size_type pos = url.find("://");
-  if (pos == std::string::npos)
-    return std::make_pair(protocol, address);
-
-  protocol = url.substr(0, pos);
-
-  std::string::size_type pos0 = pos + 3;
-  // Find the slach terminating the address field
-  pos = url.find('/', pos0);
-  if (pos == std::string::npos)
-    return std::make_pair(protocol, address);
-
-  address = url.substr(pos0, pos - pos0);
-  return std::make_pair(protocol, address);
-}
-
-OPENRTI_API std::pair<std::string, std::string>
-getProtocolRestPair(const std::string& url)
-{
-  /// Seperate this into:
-  /// <protocol>://<address>
-  std::string::size_type pos = url.find("://");
-  if (pos == std::string::npos)
-    return std::make_pair(std::string(), url);
-
-  return std::make_pair(url.substr(0, pos), url.substr(pos + 3));
-}
-
 } // namespace OpenRTI

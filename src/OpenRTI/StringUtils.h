@@ -141,12 +141,6 @@ getFilePart(const std::string& path);
 OPENRTI_API std::string
 getBasePart(const std::string& path);
 
-OPENRTI_API std::pair<std::string, std::string>
-getProtocolAddressPair(const std::string& url);
-
-OPENRTI_API std::pair<std::string, std::string>
-getProtocolRestPair(const std::string& url);
-
 inline std::ostream&
 operator<<(std::ostream& stream, const std::wstring& s)
 { return stream << ucsToLocale(s); }
