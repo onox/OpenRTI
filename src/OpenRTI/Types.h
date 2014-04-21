@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2014 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -20,9 +20,7 @@
 #ifndef OpenRTI_Types_h
 #define OpenRTI_Types_h
 
-#cmakedefine OpenRTI_HAVE_CSTDINT
-#cmakedefine OpenRTI_HAVE_STDINT_H
-#cmakedefine OpenRTI_HAVE_INTTYPES_H
+#include "OpenRTIConfig.h"
 
 #include <cstdlib>
 #if defined(OpenRTI_HAVE_CSTDINT)
@@ -46,9 +44,6 @@ typedef __int8 int8_t;
 #if !(defined(_WIN32) && defined(_MSC_VER))
 # include <sys/types.h>
 #endif
-
-#cmakedefine OpenRTI_HOST_IS_BIG_ENDIAN
-#cmakedefine OpenRTI_HOST_IS_LITTLE_ENDIAN
 
 namespace OpenRTI {
 
@@ -122,9 +117,5 @@ typedef ::int64_t int64_t;
 // }
 
 } // namespace OpenRTI
-
-#cmakedefine OpenRTI_HAVE_ALLOCA
-#cmakedefine OpenRTI_HAVE_DLADDR
-#cmakedefine OPENRTI_DATAROOTDIR "@OPENRTI_DATAROOTDIR@"
 
 #endif

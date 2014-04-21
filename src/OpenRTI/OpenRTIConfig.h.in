@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2014 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -68,5 +68,16 @@
 #  define OpenRTI_ATOMIC_USE_MUTEX
 # endif
 #endif
+
+#cmakedefine OpenRTI_HAVE_CSTDINT
+#cmakedefine OpenRTI_HAVE_STDINT_H
+#cmakedefine OpenRTI_HAVE_INTTYPES_H
+
+#cmakedefine OpenRTI_HOST_IS_BIG_ENDIAN
+#cmakedefine OpenRTI_HOST_IS_LITTLE_ENDIAN
+
+#cmakedefine OpenRTI_HAVE_ALLOCA
+#cmakedefine OpenRTI_HAVE_DLADDR
+#cmakedefine OPENRTI_DATAROOTDIR "@OPENRTI_DATAROOTDIR@"
 
 #endif
