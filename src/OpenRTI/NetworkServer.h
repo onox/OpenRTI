@@ -27,6 +27,8 @@
 
 namespace OpenRTI {
 
+class URL;
+
 class OPENRTI_API NetworkServer : public AbstractServer {
 public:
   NetworkServer();
@@ -38,16 +40,13 @@ public:
   void setUpFromConfig(const std::string& config);
   void setUpFromConfig(std::istream& stream);
 
-  void listen(const std::string& url, int backlog);
-  void listenInet(const std::string& address, int backlog);
+  void listen(const URL& url, int backlog);
   void listenInet(const std::string& node, const std::string& service, int backlog);
   SocketAddress listenInet(const SocketAddress& socketAddress, int backlog);
   void listenPipe(const std::string& address, int backlog);
 
-  void connectParentServer(const std::string& url, const Clock& abstime);
   void connectParentServer(const URL& url, const Clock& abstime);
-  void connectParentInetServer(const std::string& name, const Clock& abstime);
-  void connectParentInetServer(const std::pair<std::string, std::string>& hostPortPair, const Clock& abstime);
+  void connectParentInetServer(const std::string& host, const std::string& service, const Clock& abstime);
   void connectParentInetServer(const SocketAddress& socketAddress, const Clock& abstime);
   void connectParentPipeServer(const std::string& name, const Clock& abstime);
   void connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool local);

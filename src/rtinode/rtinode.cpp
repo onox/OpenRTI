@@ -81,7 +81,9 @@ main(int argc, char* argv[])
     case 'f':
       try {
         defaultListen = false;
-        networkServer.listenPipe(localeToUtf8(options.getArgument()), 20);
+        URL url = URL::fromUrl(localeToUtf8(options.getArgument()));
+        url.setProtocol("pipe");
+        networkServer.listen(url, 20);
       } catch (const Exception& e) {
         std::cerr << "Could not set up pipe server transport:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;
@@ -94,7 +96,10 @@ main(int argc, char* argv[])
     case 'i':
       try {
         defaultListen = false;
-        networkServer.listenInet(localeToUtf8(options.getArgument()), 20);
+        URL url = URL::fromUrl(localeToUtf8(options.getArgument()));
+        if (url.getProtocol().empty())
+          url.setProtocol("rti");
+        networkServer.listen(url, 20);
       } catch (const Exception& e) {
         std::cerr << "Could not set up inet server transport:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;
@@ -103,6 +108,12 @@ main(int argc, char* argv[])
     case 'p':
       try {
         URL url = URL::fromUrl(localeToUtf8(options.getArgument()));
+        if (url.getProtocol().empty()) {
+          if (!url.getPath().empty())
+            url.setProtocol("pipe");
+          else
+            url.setProtocol("rti");
+        }
         networkServer.connectParentServer(url, Clock::now() + Clock::fromSeconds(75));
       } catch (const Exception& e) {
         std::cerr << "Could not connect parent server:" << std::endl;
@@ -115,10 +126,10 @@ main(int argc, char* argv[])
   if (defaultListen) {
     // Try to listen on all sockets by default
     try {
-      networkServer.listenInet("::", 20);
+      networkServer.listen(URL::fromUrl("rti://::"), 20);
     } catch (const Exception&) {
       try {
-        networkServer.listenInet("0.0.0.0", 20);
+        networkServer.listen(URL::fromUrl("rti://0.0.0.0"), 20);
       } catch (const Exception& e) {
         std::cerr << "Could not set up default inet server transport:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;

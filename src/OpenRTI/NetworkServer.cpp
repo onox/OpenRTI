@@ -101,20 +101,21 @@ NetworkServer::setServerName(const std::string& name)
 void
 NetworkServer::setUpFromConfig(const std::string& config)
 {
-  std::pair<std::string, std::string> protocolAddressPair = getProtocolRestPair(config);
-  if (protocolAddressPair.first == "file" || protocolAddressPair.first.empty()) {
-
-    std::ifstream stream(utf8ToLocale(protocolAddressPair.second).c_str());
-    if (!stream.is_open())
-      throw RTIinternalError("Could not open server config file: \"" + protocolAddressPair.second + "\"!");
-
+  // The server configutation file is an xml file which does start with a '<'.
+  // Where a protocol string cannot start with this character.
+  if (!config.empty() && config[0] == '<') {
+    std::stringstream stream(config);
     setUpFromConfig(stream);
-
   } else {
-
-    std::stringstream stream(protocolAddressPair.second);
-    setUpFromConfig(stream);
-
+    URL url = URL::fromUrl(config);
+    if (url.getProtocol() == "file" || url.getProtocol().empty()) {
+      std::ifstream stream(utf8ToLocale(url.getPath()).c_str());
+      if (!stream.is_open())
+        throw RTIinternalError("Could not open server config file: \"" + url.str() + "\"!");
+      setUpFromConfig(stream);
+    } else {
+      throw RTIinternalError("Unknown config file url: \"" + url.str() + "\"!");
+    }
   }
 }
 
@@ -139,32 +140,45 @@ NetworkServer::setUpFromConfig(std::istream& stream)
   getServerNode().getServerOptions()._preferCompression = contentHandler->getEnableZLibCompression();
   getServerNode().getServerOptions()._permitTimeRegulation = contentHandler->getPermitTimeRegulation();
 
-  if (!contentHandler->getParentServerUrl().empty())
-    connectParentServer(contentHandler->getParentServerUrl(), Clock::now() + Clock::fromSeconds(90));
+  if (!contentHandler->getParentServerUrl().empty()) {
+    URL url = URL::fromUrl(contentHandler->getParentServerUrl());
+    if (url.getProtocol().empty()) {
+      if (!url.getPath().empty())
+        url.setProtocol("pipe");
+      else
+        url.setProtocol("rti");
+    }
+    connectParentServer(url, Clock::now() + Clock::fromSeconds(90));
+  }
 
-  for (unsigned i = 0; i < contentHandler->getNumListenConfig(); ++i)
-    listen(contentHandler->getListenConfig(i).getUrl(), 20);
-}
-
-void
-NetworkServer::listen(const std::string& url, int backlog)
-{
-  std::pair<std::string, std::string> protocolAddressPair = getProtocolRestPair(url);
-  if (protocolAddressPair.first == "rti") {
-    listenInet(protocolAddressPair.second, backlog);
-  } else if (protocolAddressPair.first == "pipe" || protocolAddressPair.first == "file" || protocolAddressPair.first.empty()) {
-    listenPipe(protocolAddressPair.second, backlog);
-  } else {
-    throw RTIinternalError(std::string("Trying to listen on \"") + url + "\": Unknown protocol type!");
+  for (unsigned i = 0; i < contentHandler->getNumListenConfig(); ++i) {
+    URL url = URL::fromUrl(contentHandler->getListenConfig(i).getUrl());
+    if (url.getProtocol().empty()) {
+      if (!url.getService().empty())
+        url.setProtocol("rti");
+      else
+        url.setProtocol("pipe");
+    }
+    listen(url, 20);
   }
 }
 
 void
-NetworkServer::listenInet(const std::string& address, int backlog)
+NetworkServer::listen(const URL& url, int backlog)
 {
-  std::pair<std::string, std::string> hostPortPair;
-  hostPortPair = parseInetAddress(address);
-  listenInet(hostPortPair.first, hostPortPair.second, backlog);
+  if (url.getProtocol() == "rti") {
+    std::string host = url.getHost();
+    if (host.empty())
+      host = OpenRTI_DEFAULT_HOST_STRING;
+    std::string service = url.getService();
+    if (service.empty())
+      service = OpenRTI_DEFAULT_PORT_STRING;
+    listenInet(host, service, backlog);
+  } else if (url.getProtocol() == "pipe" || url.getProtocol() == "file") {
+    listenPipe(url.getPath(), backlog);
+  } else {
+    throw RTIinternalError(std::string("Trying to listen on \"") + url.str() + "\": Unknown protocol type!");
+  }
 }
 
 void
@@ -207,34 +221,31 @@ NetworkServer::listenPipe(const std::string& address, int backlog)
 }
 
 void
-NetworkServer::connectParentServer(const std::string& url, const Clock& abstime)
-{
-  connectParentServer(URL::fromUrl(url), abstime);
-}
-
-void
 NetworkServer::connectParentServer(const URL& url, const Clock& abstime)
 {
   if (url.getProtocol() == "rti") {
-    connectParentInetServer(std::make_pair(url.getHost(), url.getService()), abstime);
+    std::string host = url.getHost();
+    if (host.empty())
+      host = OpenRTI_DEFAULT_HOST_STRING;
+    std::string service = url.getService();
+    if (service.empty())
+      service = OpenRTI_DEFAULT_PORT_STRING;
+    connectParentInetServer(host, service, abstime);
   } else if (url.getProtocol() == "pipe" || url.getProtocol() == "file") {
-    connectParentPipeServer(url.getPath(), abstime);
+    std::string path = url.getPath();
+    if (path.empty())
+      path = OpenRTI_DEFAULT_PIPE_PATH;
+    connectParentPipeServer(path, abstime);
   } else {
     throw RTIinternalError(std::string("Trying to connect to \"") + url.str() + "\": Unknown protocol type!");
   }
 }
 
 void
-NetworkServer::connectParentInetServer(const std::string& name, const Clock& abstime)
-{
-  connectParentInetServer(parseInetAddress(name), abstime);
-}
-
-void
-NetworkServer::connectParentInetServer(const std::pair<std::string, std::string>& hostPortPair, const Clock& abstime)
+NetworkServer::connectParentInetServer(const std::string& host, const std::string& service, const Clock& abstime)
 {
   // Note that here the may be lenghty name lookup for the connection address happens
-  std::list<SocketAddress> addressList = SocketAddress::resolve(hostPortPair.first, hostPortPair.second, false);
+  std::list<SocketAddress> addressList = SocketAddress::resolve(host, service, false);
   while (!addressList.empty()) {
     try {
       connectParentInetServer(addressList.front(), abstime);
@@ -245,8 +256,8 @@ NetworkServer::connectParentInetServer(const std::pair<std::string, std::string>
         throw;
     }
   }
-  throw RTIinternalError(std::string("Can not resolve address: \"") + hostPortPair.first + std::string(":")
-                         + hostPortPair.second + std::string("\""));
+  throw RTIinternalError(std::string("Can not resolve address: \"") + host + std::string(":")
+                         + service + std::string("\""));
 }
 
 void
@@ -260,13 +271,9 @@ NetworkServer::connectParentInetServer(const SocketAddress& socketAddress, const
 void
 NetworkServer::connectParentPipeServer(const std::string& name, const Clock& abstime)
 {
-  std::string path = OpenRTI_DEFAULT_PIPE_PATH;
-  if (!name.empty())
-    path = name;
-
   // Try to connect to a pipe socket
   SharedPtr<SocketPipe> socketStream = new SocketPipe;
-  socketStream->connect(path);
+  socketStream->connect(name);
 
   connectParentStreamServer(socketStream, abstime, true);
 }

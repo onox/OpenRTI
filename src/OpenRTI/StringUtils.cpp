@@ -267,8 +267,8 @@ fqClassName(const StringVector& name)
 OPENRTI_API std::pair<std::string, std::string>
 parseInetAddress(const std::string& address)
 {
-  std::string hostname(OpenRTI_DEFAULT_HOST_STRING);
-  std::string port(OpenRTI_DEFAULT_PORT_STRING);
+  std::string hostname;
+  std::string port;
 
   if (!address.empty()) {
     if (address[0] == '[') {
