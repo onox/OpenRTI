@@ -36,6 +36,9 @@ namespace OpenRTI {
 typedef std::set<std::string> StringSet;
 typedef std::list<std::string> StringList;
 typedef std::vector<std::string> StringVector;
+typedef std::pair<std::string, std::string> StringPair;
+typedef std::list<StringPair> StringPairList;
+typedef std::vector<StringPair> StringPairVector;
 typedef std::map<std::string, std::string> StringMap;
 typedef std::map<std::string, StringList> StringStringListMap;
 

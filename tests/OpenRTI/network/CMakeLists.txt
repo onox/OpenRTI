@@ -5,3 +5,8 @@ ADD_EXECUTABLE(socketaddress socketaddress.cpp)
 TARGET_LINK_LIBRARIES(socketaddress OpenRTI)
 
 ADD_TEST(OpenRTI/socketaddress ${CMAKE_CURRENT_BINARY_DIR}/socketaddress)
+
+ADD_EXECUTABLE(url url.cpp)
+TARGET_LINK_LIBRARIES(url OpenRTI)
+
+ADD_TEST(OpenRTI/url ${CMAKE_CURRENT_BINARY_DIR}/url)

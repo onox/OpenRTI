@@ -23,6 +23,7 @@
 #include <string>
 
 #include "Export.h"
+#include "StringUtils.h"
 
 namespace OpenRTI {
 
@@ -50,6 +51,15 @@ public:
   const std::string& getPath() const;
   void setPath(const std::string& path);
 
+  const StringPairVector& getQuery() const;
+  void setQuery(const StringPairVector& query);
+  std::size_t getNumQueries() const;
+  StringPair getQuery(std::size_t index) const;
+  std::string getQuery(const std::string& key) const;
+
+  const std::string& getRef() const;
+  void setRef(const std::string& ref);
+
   std::string str() const;
 
   bool operator==(const URL& url) const;
@@ -61,8 +71,8 @@ private:
   std::string _host;
   std::string _service;
   std::string _path;
-  // std::string _query;
-  // std::string _ref;
+  StringPairVector _query;
+  std::string _ref;
 };
 
 } // namespace OpenRTI
