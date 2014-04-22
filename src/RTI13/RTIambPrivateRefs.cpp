@@ -123,107 +123,6 @@ public:
   // The bindings have different logical times
   typedef RTI::FedTime NativeLogicalTime;
   typedef RTI::FedTime NativeLogicalTimeInterval;
-
-  // FIXME implement exceptions
-  typedef RTI::Exception Exception;
-
-#define MAP_EXCEPTION(Exception, MappedException) \
-  typedef MappedException Exception; \
-  static void throw ## Exception(const std::string& reason) { throw MappedException(utf8ToLocale(reason).c_str()); } \
-  static void throw ## Exception() { throw MappedException(""); }
-
-  MAP_EXCEPTION(AlreadyConnected, OpenRTI::IgnoredError)
-  MAP_EXCEPTION(AsynchronousDeliveryAlreadyDisabled, RTI::AsynchronousDeliveryAlreadyDisabled)
-  MAP_EXCEPTION(AsynchronousDeliveryAlreadyEnabled, RTI::AsynchronousDeliveryAlreadyEnabled)
-  MAP_EXCEPTION(AttributeAcquisitionWasNotRequested, RTI::AttributeAcquisitionWasNotRequested)
-  MAP_EXCEPTION(AttributeAlreadyBeingAcquired, RTI::AttributeAlreadyBeingAcquired)
-  MAP_EXCEPTION(AttributeAlreadyBeingDivested, RTI::AttributeAlreadyBeingDivested)
-  MAP_EXCEPTION(AttributeAlreadyOwned, RTI::AttributeAlreadyOwned)
-  MAP_EXCEPTION(AttributeDivestitureWasNotRequested, RTI::AttributeDivestitureWasNotRequested)
-  MAP_EXCEPTION(AttributeNotDefined, RTI::AttributeNotDefined)
-  MAP_EXCEPTION(AttributeNotOwned, RTI::AttributeNotOwned)
-  MAP_EXCEPTION(AttributeNotPublished, RTI::AttributeNotPublished)
-  MAP_EXCEPTION(AttributeRelevanceAdvisorySwitchIsOff, OpenRTI::IgnoredError)
-  MAP_EXCEPTION(AttributeRelevanceAdvisorySwitchIsOn, OpenRTI::IgnoredError)
-  MAP_EXCEPTION(AttributeScopeAdvisorySwitchIsOff, OpenRTI::IgnoredError)
-  MAP_EXCEPTION(AttributeScopeAdvisorySwitchIsOn, OpenRTI::IgnoredError)
-  MAP_EXCEPTION(CallNotAllowedFromWithinCallback, RTI::RTIinternalError)
-  MAP_EXCEPTION(ConnectionFailed, RTI::RTIinternalError)
-  MAP_EXCEPTION(CouldNotCreateLogicalTimeFactory, OpenRTI::IgnoredError)
-  MAP_EXCEPTION(CouldNotOpenFDD, RTI::CouldNotOpenFED)
-  MAP_EXCEPTION(CouldNotOpenMIM, RTI::CouldNotOpenFED)
-  MAP_EXCEPTION(DeletePrivilegeNotHeld, RTI::DeletePrivilegeNotHeld)
-  MAP_EXCEPTION(ErrorReadingFDD, RTI::ErrorReadingFED)
-  MAP_EXCEPTION(ErrorReadingMIM, RTI::ErrorReadingFED)
-  MAP_EXCEPTION(FederateAlreadyExecutionMember, RTI::FederateAlreadyExecutionMember)
-  MAP_EXCEPTION(FederateNameAlreadyInUse, RTI::RTIinternalError)
-  MAP_EXCEPTION(FederateHasNotBegunSave, RTI::SaveNotInitiated)
-  MAP_EXCEPTION(FederateIsExecutionMember, RTI::FederateAlreadyExecutionMember)
-  MAP_EXCEPTION(FederateNotExecutionMember, RTI::FederateNotExecutionMember)
-  MAP_EXCEPTION(FederateOwnsAttributes, RTI::FederateOwnsAttributes)
-  MAP_EXCEPTION(FederatesCurrentlyJoined, RTI::FederatesCurrentlyJoined)
-  MAP_EXCEPTION(FederateServiceInvocationsAreBeingReportedViaMOM, RTI::RTIinternalError)
-  MAP_EXCEPTION(FederateUnableToUseTime, RTI::InvalidFederationTime)
-  MAP_EXCEPTION(FederationExecutionAlreadyExists, RTI::FederationExecutionAlreadyExists)
-  MAP_EXCEPTION(FederationExecutionDoesNotExist, RTI::FederationExecutionDoesNotExist)
-  MAP_EXCEPTION(IllegalName, RTI::RTIinternalError) // does not happen, since call is not available in rti13
-  MAP_EXCEPTION(InconsistentFDD, RTI::CouldNotOpenFED)
-  MAP_EXCEPTION(InteractionClassNotDefined, RTI::InteractionClassNotDefined)
-  MAP_EXCEPTION(InteractionClassNotPublished, RTI::InteractionClassNotPublished)
-  MAP_EXCEPTION(InteractionParameterNotDefined, RTI::InteractionParameterNotDefined)
-  MAP_EXCEPTION(InteractionRelevanceAdvisorySwitchIsOff, OpenRTI::IgnoredError)
-  MAP_EXCEPTION(InteractionRelevanceAdvisorySwitchIsOn, OpenRTI::IgnoredError)
-  MAP_EXCEPTION(InTimeAdvancingState, RTI::TimeAdvanceAlreadyInProgress)
-  MAP_EXCEPTION(InvalidAttributeHandle, RTI::AttributeNotDefined)
-  MAP_EXCEPTION(InvalidDimensionHandle, RTI::RTIinternalError)
-  MAP_EXCEPTION(InvalidFederateHandle, RTI::RTIinternalError) // does not happen, since call is not available in rti13
-  MAP_EXCEPTION(InvalidInteractionClassHandle, RTI::InteractionClassNotDefined)
-  MAP_EXCEPTION(InvalidLocalSettingsDesignator, RTI::RTIinternalError)
-  MAP_EXCEPTION(InvalidLogicalTime, RTI::InvalidFederationTime)
-  MAP_EXCEPTION(InvalidLookahead, RTI::InvalidLookahead)
-  MAP_EXCEPTION(InvalidObjectClassHandle, RTI::ObjectClassNotDefined)
-  MAP_EXCEPTION(InvalidOrderName, RTI::NameNotFound)
-  MAP_EXCEPTION(InvalidOrderType, RTI::InvalidOrderingHandle)
-  MAP_EXCEPTION(InvalidParameterHandle, RTI::InteractionParameterNotDefined)
-  MAP_EXCEPTION(InvalidRangeBound, RTI::RTIinternalError) // does not happen, since call is not available in rti13
-  MAP_EXCEPTION(InvalidRegion, RTI::RegionNotKnown)
-  MAP_EXCEPTION(InvalidRegionContext, RTI::InvalidRegionContext)
-  MAP_EXCEPTION(InvalidResignAction, RTI::RTIinternalError)
-  MAP_EXCEPTION(InvalidRetractionHandle, RTI::InvalidRetractionHandle)
-  MAP_EXCEPTION(InvalidServiceGroup, RTI::RTIinternalError) // does not happen, since call is not available in rti13
-  MAP_EXCEPTION(InvalidTransportationName, RTI::NameNotFound)
-  MAP_EXCEPTION(InvalidTransportationType, RTI::InvalidTransportationHandle)
-  MAP_EXCEPTION(LogicalTimeAlreadyPassed, RTI::FederationTimeAlreadyPassed)
-  MAP_EXCEPTION(MessageCanNoLongerBeRetracted, RTI::InvalidRetractionHandle)
-  MAP_EXCEPTION(NameNotFound, RTI::NameNotFound)
-  MAP_EXCEPTION(NameSetWasEmpty, RTI::RTIinternalError) // does not happen, since call is not available in rti13
-  MAP_EXCEPTION(NoAcquisitionPending, RTI::RTIinternalError)
-  MAP_EXCEPTION(NotConnected, RTI::FederateNotExecutionMember)
-  MAP_EXCEPTION(ObjectClassNotDefined, RTI::ObjectClassNotDefined)
-  MAP_EXCEPTION(ObjectClassNotPublished, RTI::ObjectClassNotPublished)
-  MAP_EXCEPTION(ObjectClassRelevanceAdvisorySwitchIsOff, OpenRTI::IgnoredError)
-  MAP_EXCEPTION(ObjectClassRelevanceAdvisorySwitchIsOn, OpenRTI::IgnoredError)
-  MAP_EXCEPTION(ObjectInstanceNameInUse, RTI::ObjectAlreadyRegistered)
-  MAP_EXCEPTION(ObjectInstanceNameNotReserved, RTI::ObjectAlreadyRegistered) // can happen for an rti13 federate during registration
-  MAP_EXCEPTION(ObjectInstanceNotKnown, RTI::ObjectNotKnown)
-  MAP_EXCEPTION(OwnershipAcquisitionPending, RTI::OwnershipAcquisitionPending)
-  MAP_EXCEPTION(RegionDoesNotContainSpecifiedDimension, RTI::RTIinternalError)
-  MAP_EXCEPTION(RegionInUseForUpdateOrSubscription, RTI::RegionInUse)
-  MAP_EXCEPTION(RegionNotCreatedByThisFederate, RTI::RegionNotKnown)
-  MAP_EXCEPTION(RequestForTimeConstrainedPending, RTI::EnableTimeConstrainedPending)
-  MAP_EXCEPTION(RequestForTimeRegulationPending, RTI::EnableTimeRegulationPending)
-  MAP_EXCEPTION(RestoreInProgress, RTI::RestoreInProgress)
-  MAP_EXCEPTION(RestoreNotRequested, RTI::RestoreNotRequested)
-  MAP_EXCEPTION(RTIinternalError, RTI::RTIinternalError)
-  MAP_EXCEPTION(SaveInProgress, RTI::SaveInProgress)
-  MAP_EXCEPTION(SaveNotInitiated, RTI::SaveNotInitiated)
-  MAP_EXCEPTION(SynchronizationPointLabelNotAnnounced, RTI::SynchronizationPointLabelWasNotAnnounced)
-  MAP_EXCEPTION(TimeConstrainedAlreadyEnabled, RTI::TimeConstrainedAlreadyEnabled)
-  MAP_EXCEPTION(TimeConstrainedIsNotEnabled, RTI::TimeConstrainedWasNotEnabled)
-  MAP_EXCEPTION(TimeRegulationAlreadyEnabled, RTI::TimeRegulationAlreadyEnabled)
-  MAP_EXCEPTION(TimeRegulationIsNotEnabled, RTI::TimeRegulationWasNotEnabled)
-  MAP_EXCEPTION(UnsupportedCallbackModel, RTI::RTIinternalError)
-#undef MAP_EXCEPTION
 };
 
 } // namespace OpenRTI
@@ -1138,57 +1037,87 @@ RTI::RTIambassador::createFederationExecution(const char* federationExecutionNam
     else
       fomModules.push_back(OpenRTI::FDD1516FileReader::read(stream));
   } catch (const OpenRTI::Exception& e) {
-    throw RTI::ErrorReadingFED(OpenRTI::utf8ToLocale(e.getReason()).c_str());
+    throw RTI::ErrorReadingFED(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (...) {
     throw RTI::RTIinternalError("Unknown error");
   }
 
-  std::string utf8FederationExecutionName = OpenRTI::localeToUtf8(federationExecutionName);
-  privateRefs->ensureConnected(utf8FederationExecutionName);
-  privateRefs->createFederationExecution(OpenRTI::getFilePart(utf8FederationExecutionName), fomModules, "HLAfloat64Time");
+  try {
+    std::string utf8FederationExecutionName = OpenRTI::localeToUtf8(federationExecutionName);
+    privateRefs->ensureConnected(utf8FederationExecutionName);
+    privateRefs->createFederationExecution(OpenRTI::getFilePart(utf8FederationExecutionName), fomModules, "HLAfloat64Time");
+  } catch (const OpenRTI::FederationExecutionAlreadyExists& e) {
+    throw RTI::FederationExecutionAlreadyExists(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
 RTI::RTIambassador::destroyFederationExecution(const char* federationExecutionName)
-    throw (RTI::FederatesCurrentlyJoined,
-           RTI::FederationExecutionDoesNotExist,
-	   RTI::ConcurrentAccessAttempted,
-           RTI::RTIinternalError)
+  throw (RTI::FederatesCurrentlyJoined,
+         RTI::FederationExecutionDoesNotExist,
+         RTI::ConcurrentAccessAttempted,
+         RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::string utf8FederationExecutionName = OpenRTI::localeToUtf8(federationExecutionName);
 
-  privateRefs->ensureConnected(utf8FederationExecutionName);
-
-  privateRefs->destroyFederationExecution(OpenRTI::getFilePart(utf8FederationExecutionName));
+  try {
+    std::string utf8FederationExecutionName = OpenRTI::localeToUtf8(federationExecutionName);
+    privateRefs->ensureConnected(utf8FederationExecutionName);
+    privateRefs->destroyFederationExecution(OpenRTI::getFilePart(utf8FederationExecutionName));
+  } catch (const OpenRTI::FederatesCurrentlyJoined& e) {
+    throw RTI::FederatesCurrentlyJoined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederationExecutionDoesNotExist& e) {
+    throw RTI::FederationExecutionDoesNotExist(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::FederateHandle
 RTI::RTIambassador::joinFederationExecution(const char* federateType,
                                             const char* federationExecutionName,
                                             RTI::FederateAmbassadorPtr federateAmbassadorPointer)
-    throw (RTI::FederateAlreadyExecutionMember,
-           RTI::FederationExecutionDoesNotExist,
-	   RTI::CouldNotOpenFED,
-           RTI::ErrorReadingFED,
-           RTI::ConcurrentAccessAttempted,
-	   RTI::SaveInProgress,
-           RTI::RestoreInProgress,
-           RTI::RTIinternalError)
+  throw (RTI::FederateAlreadyExecutionMember,
+         RTI::FederationExecutionDoesNotExist,
+         RTI::CouldNotOpenFED,
+         RTI::ErrorReadingFED,
+         RTI::ConcurrentAccessAttempted,
+         RTI::SaveInProgress,
+         RTI::RestoreInProgress,
+         RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!federateAmbassadorPointer)
     throw RTI::FederationExecutionDoesNotExist("Joining with a zero federate ambassador pointer!");
-  std::string utf8FederationExecutionName = OpenRTI::localeToUtf8(federationExecutionName);
 
-  privateRefs->ensureConnected(utf8FederationExecutionName);
-
-  std::string utf8FederateType = OpenRTI::localeToUtf8(federateType);
-  FederateHandle federateHandle = privateRefs->joinFederationExecution(std::string(), utf8FederateType,
-                                                                       OpenRTI::getFilePart(utf8FederationExecutionName),
-                                                                       OpenRTI::FOMStringModuleList());
-  privateRefs->_federateAmbassador = federateAmbassadorPointer;
-  return federateHandle;
+  try {
+    std::string utf8FederationExecutionName = OpenRTI::localeToUtf8(federationExecutionName);
+    privateRefs->ensureConnected(utf8FederationExecutionName);
+    std::string utf8FederateType = OpenRTI::localeToUtf8(federateType);
+    FederateHandle federateHandle = privateRefs->joinFederationExecution(std::string(), utf8FederateType,
+                                                                         OpenRTI::getFilePart(utf8FederationExecutionName),
+                                                                         OpenRTI::FOMStringModuleList());
+    privateRefs->_federateAmbassador = federateAmbassadorPointer;
+    return federateHandle;
+  } catch (const OpenRTI::FederationExecutionDoesNotExist& e) {
+    throw RTI::FederationExecutionDoesNotExist(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateAlreadyExecutionMember& e) {
+    throw RTI::FederateAlreadyExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1217,44 +1146,84 @@ RTI::RTIambassador::resignFederationExecution(RTI::ResignAction RTI13resignActio
   default:
     throw RTI::InvalidResignAction("Except");
   }
-  privateRefs->_federateAmbassador = 0;
-  privateRefs->resignFederationExecution(resignAction);
+
+  try {
+    privateRefs->_federateAmbassador = 0;
+    privateRefs->resignFederationExecution(resignAction);
+  } catch (const OpenRTI::OwnershipAcquisitionPending& e) {
+    throw RTI::OwnershipAcquisitionPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateOwnsAttributes& e) {
+    throw RTI::FederateOwnsAttributes(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
 RTI::RTIambassador::registerFederationSynchronizationPoint(const char* label,
                                                            const char* tag)
-    throw (RTI::FederateNotExecutionMember,
-           RTI::ConcurrentAccessAttempted,
-	   RTI::SaveInProgress,
-           RTI::RestoreInProgress,
-           RTI::RTIinternalError)
+  throw (RTI::FederateNotExecutionMember,
+         RTI::ConcurrentAccessAttempted,
+         RTI::SaveInProgress,
+         RTI::RestoreInProgress,
+         RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::string utf8Label = OpenRTI::localeToUtf8(label);
-  // According to the standard, an empty set also means all federates currently joined.
-  privateRefs->registerFederationSynchronizationPoint(utf8Label, toOpenRTITag(tag), OpenRTI::FederateHandleSet());
+  try {
+    // According to the standard, an empty set also means all federates currently joined.
+    privateRefs->registerFederationSynchronizationPoint(OpenRTI::localeToUtf8(label), toOpenRTITag(tag), OpenRTI::FederateHandleSet());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
 RTI::RTIambassador::registerFederationSynchronizationPoint(const char* label,
                                                            const char* tag,
                                                            const RTI::FederateHandleSet& syncSet)
-    throw (RTI::FederateNotExecutionMember,
-           RTI::ConcurrentAccessAttempted,
-           RTI::SaveInProgress,
-	   RTI::RestoreInProgress,
-           RTI::RTIinternalError)
+  throw (RTI::FederateNotExecutionMember,
+         RTI::ConcurrentAccessAttempted,
+         RTI::SaveInProgress,
+         RTI::RestoreInProgress,
+         RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::string utf8Label = OpenRTI::localeToUtf8(label);
+  try {
+    OpenRTI::FederateHandleSet federateHandleSet;
+    ULong syncSetSize = syncSet.size();
+    for (ULong i = 0; i < syncSetSize; ++i)
+      federateHandleSet.insert(syncSet.getHandle(i));
 
-  OpenRTI::FederateHandleSet federateHandleSet;
-  ULong syncSetSize = syncSet.size();
-  for (ULong i = 0; i < syncSetSize; ++i)
-    federateHandleSet.insert(syncSet.getHandle(i));
-
-  privateRefs->registerFederationSynchronizationPoint(utf8Label, toOpenRTITag(tag), federateHandleSet);
+    privateRefs->registerFederationSynchronizationPoint(OpenRTI::localeToUtf8(label), toOpenRTITag(tag), federateHandleSet);
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1267,8 +1236,23 @@ RTI::RTIambassador::synchronizationPointAchieved(const char* label)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::string utf8Label = OpenRTI::localeToUtf8(label);
-  privateRefs->synchronizationPointAchieved(utf8Label);
+  try {
+    privateRefs->synchronizationPointAchieved(OpenRTI::localeToUtf8(label), true/*successfully*/);
+  } catch (const OpenRTI::SynchronizationPointLabelNotAnnounced& e) {
+    throw RTI::SynchronizationPointLabelWasNotAnnounced(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1282,21 +1266,53 @@ RTI::RTIambassador::requestFederationSave(const char* label, const RTI::FedTime&
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::string utf8Label = OpenRTI::localeToUtf8(label);
-  privateRefs->requestFederationSave(utf8Label, fedTime);
+  try {
+    privateRefs->requestFederationSave(OpenRTI::localeToUtf8(label), fedTime);
+  } catch (const OpenRTI::LogicalTimeAlreadyPassed& e) {
+    throw RTI::FederationTimeAlreadyPassed(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw RTI::InvalidFederationTime(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateUnableToUseTime& e) {
+    throw RTI::InvalidFederationTime(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
 RTI::RTIambassador::requestFederationSave(const char* label)
-    throw (RTI::FederateNotExecutionMember,
-           RTI::ConcurrentAccessAttempted,
-           RTI::SaveInProgress,
-	   RTI::RestoreInProgress,
-           RTI::RTIinternalError)
+  throw (RTI::FederateNotExecutionMember,
+         RTI::ConcurrentAccessAttempted,
+         RTI::SaveInProgress,
+         RTI::RestoreInProgress,
+         RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::string utf8Label = OpenRTI::localeToUtf8(label);
-  privateRefs->requestFederationSave(utf8Label);
+  try {
+    privateRefs->requestFederationSave(OpenRTI::localeToUtf8(label));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1308,7 +1324,21 @@ RTI::RTIambassador::federateSaveBegun()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->federateSaveBegun();
+  try {
+    privateRefs->federateSaveBegun();
+  } catch (const OpenRTI::SaveNotInitiated& e) {
+    throw RTI::SaveNotInitiated(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1320,7 +1350,21 @@ RTI::RTIambassador::federateSaveComplete()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->federateSaveComplete();
+  try {
+    privateRefs->federateSaveComplete();
+  } catch (const OpenRTI::FederateHasNotBegunSave& e) {
+    throw RTI::SaveNotInitiated(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1332,7 +1376,21 @@ RTI::RTIambassador::federateSaveNotComplete()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->federateSaveNotComplete();
+  try {
+    privateRefs->federateSaveNotComplete();
+  } catch (const OpenRTI::FederateHasNotBegunSave& e) {
+    throw RTI::SaveNotInitiated(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1344,8 +1402,21 @@ RTI::RTIambassador::requestFederationRestore(const char* label)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::string utf8Label = OpenRTI::localeToUtf8(label);
-  privateRefs->requestFederationRestore(utf8Label);
+  try {
+    privateRefs->requestFederationRestore(OpenRTI::localeToUtf8(label));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1357,7 +1428,21 @@ RTI::RTIambassador::federateRestoreComplete()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->federateRestoreComplete();
+  try {
+    privateRefs->federateRestoreComplete();
+  } catch (const OpenRTI::RestoreNotRequested& e) {
+    throw RTI::RestoreNotRequested(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1369,10 +1454,22 @@ RTI::RTIambassador::federateRestoreNotComplete()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->federateRestoreNotComplete();
+  try {
+    privateRefs->federateRestoreNotComplete();
+  } catch (const OpenRTI::RestoreNotRequested& e) {
+    throw RTI::RestoreNotRequested(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
-
-// Declaration Management -------------------
 
 void
 RTI::RTIambassador::publishObjectClass(RTI::ObjectClassHandle objectClassHandle,
@@ -1387,12 +1484,30 @@ RTI::RTIambassador::publishObjectClass(RTI::ObjectClassHandle objectClassHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-  ULong attributeHandleSetSize = attributeHandleSet.size();
-  for (ULong i = 0; i < attributeHandleSetSize; ++i)
-    OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
+  try {
+    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
+    ULong attributeHandleSetSize = attributeHandleSet.size();
+    for (ULong i = 0; i < attributeHandleSetSize; ++i)
+      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
 
-  privateRefs->publishObjectClassAttributes(objectClassHandle, OpenRTIAttributeHandleSet);
+    privateRefs->publishObjectClassAttributes(objectClassHandle, OpenRTIAttributeHandleSet);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1407,7 +1522,25 @@ RTI::RTIambassador::unpublishObjectClass(RTI::ObjectClassHandle objectClassHandl
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->unpublishObjectClass(objectClassHandle);
+  try {
+    privateRefs->unpublishObjectClass(objectClassHandle);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::OwnershipAcquisitionPending& e) {
+    throw RTI::OwnershipAcquisitionPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1420,8 +1553,24 @@ RTI::RTIambassador::publishInteractionClass(RTI::InteractionClassHandle interact
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::InteractionClassHandle OpenRTIInteractionClassHandle = interactionClassHandle;
-  privateRefs->publishInteractionClass(OpenRTIInteractionClassHandle);
+  try {
+    OpenRTI::InteractionClassHandle OpenRTIInteractionClassHandle = interactionClassHandle;
+    privateRefs->publishInteractionClass(OpenRTIInteractionClassHandle);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1435,8 +1584,24 @@ RTI::RTIambassador::unpublishInteractionClass(RTI::InteractionClassHandle intera
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::InteractionClassHandle OpenRTIInteractionClassHandle = interactionClassHandle;
-  privateRefs->unpublishInteractionClass(OpenRTIInteractionClassHandle);
+  try {
+    OpenRTI::InteractionClassHandle OpenRTIInteractionClassHandle = interactionClassHandle;
+    privateRefs->unpublishInteractionClass(OpenRTIInteractionClassHandle);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1452,12 +1617,30 @@ RTI::RTIambassador::subscribeObjectClassAttributes(RTI::ObjectClassHandle object
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-  ULong attributeHandleSetSize = attributeHandleSet.size();
-  for (ULong i = 0; i < attributeHandleSetSize; ++i)
-    OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
+  try {
+    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
+    ULong attributeHandleSetSize = attributeHandleSet.size();
+    for (ULong i = 0; i < attributeHandleSetSize; ++i)
+      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
 
-  privateRefs->subscribeObjectClassAttributes(objectClassHandle, OpenRTIAttributeHandleSet, active == RTI::RTI_TRUE);
+    privateRefs->subscribeObjectClassAttributes(objectClassHandle, OpenRTIAttributeHandleSet, active == RTI::RTI_TRUE, std::string());
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1471,7 +1654,23 @@ RTI::RTIambassador::unsubscribeObjectClass(RTI::ObjectClassHandle objectClassHan
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->unsubscribeObjectClass(objectClassHandle);
+  try {
+    privateRefs->unsubscribeObjectClass(objectClassHandle);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1486,7 +1685,25 @@ RTI::RTIambassador::subscribeInteractionClass(RTI::InteractionClassHandle intera
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->subscribeInteractionClass(interactionClassHandle, active == RTI::RTI_TRUE);
+  try {
+    privateRefs->subscribeInteractionClass(interactionClassHandle, active == RTI::RTI_TRUE);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateServiceInvocationsAreBeingReportedViaMOM& e) {
+    throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1500,10 +1717,24 @@ RTI::RTIambassador::unsubscribeInteractionClass(RTI::InteractionClassHandle inte
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->unsubscribeInteractionClass(interactionClassHandle);
+  try {
+    privateRefs->unsubscribeInteractionClass(interactionClassHandle);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
-
-// Object Management -------------------
 
 RTI::ObjectHandle
 RTI::RTIambassador::registerObjectInstance(RTI::ObjectClassHandle objectClassHandle,
@@ -1518,7 +1749,27 @@ RTI::RTIambassador::registerObjectInstance(RTI::ObjectClassHandle objectClassHan
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  return privateRefs->registerObjectInstance(objectClassHandle, OpenRTI::localeToUtf8(name), true);
+  try {
+    return privateRefs->registerObjectInstance(objectClassHandle, OpenRTI::localeToUtf8(name), true);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::ObjectClassNotPublished& e) {
+    throw RTI::ObjectClassNotPublished(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::ObjectInstanceNameInUse& e) {
+    throw RTI::ObjectAlreadyRegistered(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::ObjectHandle
@@ -1532,7 +1783,25 @@ RTI::RTIambassador::registerObjectInstance(RTI::ObjectClassHandle objectClassHan
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  return privateRefs->registerObjectInstance(objectClassHandle);
+  try {
+    return privateRefs->registerObjectInstance(objectClassHandle);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::ObjectClassNotPublished& e) {
+    throw RTI::ObjectClassNotPublished(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::EventRetractionHandle
@@ -1551,19 +1820,41 @@ RTI::RTIambassador::updateAttributeValues(RTI::ObjectHandle objectHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::vector<OpenRTI::AttributeValue> attributeValueVector;
-  ULong attributeHandleArraySize = attributeHandleArray.size();
-  attributeValueVector.resize(attributeHandleArraySize);
-  for (ULong i = 0; i < attributeHandleArraySize; ++i) {
-    ULong length;
-    char* value = attributeHandleArray.getValuePointer(i, length);
-    attributeValueVector[i].setAttributeHandle(attributeHandleArray.getHandle(i));
-    attributeValueVector[i].getValue().setData(value, length);
-  }
+  try {
+    std::vector<OpenRTI::AttributeValue> attributeValueVector;
+    ULong attributeHandleArraySize = attributeHandleArray.size();
+    attributeValueVector.resize(attributeHandleArraySize);
+    for (ULong i = 0; i < attributeHandleArraySize; ++i) {
+      ULong length;
+      char* value = attributeHandleArray.getValuePointer(i, length);
+      attributeValueVector[i].setAttributeHandle(attributeHandleArray.getHandle(i));
+      attributeValueVector[i].getValue().setData(value, length);
+    }
 
-  OpenRTI::MessageRetractionHandle messageRetractionHandle;
-  messageRetractionHandle = privateRefs->updateAttributeValues(objectHandle, attributeValueVector, toOpenRTITag(tag), fedTime);
-  return rti13MessageRetractionHandle(messageRetractionHandle);
+    OpenRTI::MessageRetractionHandle messageRetractionHandle;
+    messageRetractionHandle = privateRefs->updateAttributeValues(objectHandle, attributeValueVector, toOpenRTITag(tag), fedTime);
+    return rti13MessageRetractionHandle(messageRetractionHandle);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw RTI::AttributeNotOwned(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw RTI::InvalidFederationTime(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1580,17 +1871,37 @@ RTI::RTIambassador::updateAttributeValues(RTI::ObjectHandle objectHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::vector<OpenRTI::AttributeValue> attributeValueVector;
-  ULong attributeHandleArraySize = attributeHandleArray.size();
-  attributeValueVector.resize(attributeHandleArraySize);
-  for (ULong i = 0; i < attributeHandleArraySize; ++i) {
-    ULong length;
-    char* value = attributeHandleArray.getValuePointer(i, length);
-    attributeValueVector[i].setAttributeHandle(attributeHandleArray.getHandle(i));
-    attributeValueVector[i].getValue().setData(value, length);
-  }
+  try {
+    std::vector<OpenRTI::AttributeValue> attributeValueVector;
+    ULong attributeHandleArraySize = attributeHandleArray.size();
+    attributeValueVector.resize(attributeHandleArraySize);
+    for (ULong i = 0; i < attributeHandleArraySize; ++i) {
+      ULong length;
+      char* value = attributeHandleArray.getValuePointer(i, length);
+      attributeValueVector[i].setAttributeHandle(attributeHandleArray.getHandle(i));
+      attributeValueVector[i].getValue().setData(value, length);
+    }
 
-  privateRefs->updateAttributeValues(objectHandle, attributeValueVector, toOpenRTITag(tag));
+    privateRefs->updateAttributeValues(objectHandle, attributeValueVector, toOpenRTITag(tag));
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw RTI::AttributeNotOwned(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::EventRetractionHandle
@@ -1609,23 +1920,45 @@ RTI::RTIambassador::sendInteraction(RTI::InteractionClassHandle interactionClass
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::InteractionClassHandle OpenRTIInteractionClassHandle = interactionClassHandle;
+  try {
+    OpenRTI::InteractionClassHandle OpenRTIInteractionClassHandle = interactionClassHandle;
 
-  std::vector<OpenRTI::ParameterValue> parameterValueVector;
-  ULong parameterHandleArraySize = parameterHandleArray.size();
-  parameterValueVector.resize(parameterHandleArraySize);
-  for (ULong i = 0; i < parameterHandleArraySize; ++i) {
-    ULong length;
-    char* value = parameterHandleArray.getValuePointer(i, length);
-    parameterValueVector[i].setParameterHandle(parameterHandleArray.getHandle(i));
-    parameterValueVector[i].getValue().setData(value, length);
+    std::vector<OpenRTI::ParameterValue> parameterValueVector;
+    ULong parameterHandleArraySize = parameterHandleArray.size();
+    parameterValueVector.resize(parameterHandleArraySize);
+    for (ULong i = 0; i < parameterHandleArraySize; ++i) {
+      ULong length;
+      char* value = parameterHandleArray.getValuePointer(i, length);
+      parameterValueVector[i].setParameterHandle(parameterHandleArray.getHandle(i));
+      parameterValueVector[i].getValue().setData(value, length);
+    }
+
+    // Note that the parametervaluevector is taken by the sendInteraction call. Thus on return it is empty
+    OpenRTI::MessageRetractionHandle messageRetractionHandle;
+    messageRetractionHandle = privateRefs->sendInteraction(OpenRTIInteractionClassHandle, parameterValueVector,
+                                                           toOpenRTITag(tag), fedTime);
+    return rti13MessageRetractionHandle(messageRetractionHandle);
+  } catch (const OpenRTI::InteractionClassNotPublished& e) {
+    throw RTI::InteractionClassNotPublished(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InteractionParameterNotDefined& e) {
+    throw RTI::InteractionParameterNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw RTI::InvalidFederationTime(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
   }
-
-  // Note that the parametervaluevector is taken by the sendInteraction call. Thus on return it is empty
-  OpenRTI::MessageRetractionHandle messageRetractionHandle;
-  messageRetractionHandle = privateRefs->sendInteraction(OpenRTIInteractionClassHandle, parameterValueVector,
-                                                         toOpenRTITag(tag), fedTime);
-  return rti13MessageRetractionHandle(messageRetractionHandle);
 }
 
 void
@@ -1642,20 +1975,40 @@ RTI::RTIambassador::sendInteraction(RTI::InteractionClassHandle interactionClass
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::InteractionClassHandle OpenRTIInteractionClassHandle = interactionClassHandle;
+  try {
+    OpenRTI::InteractionClassHandle OpenRTIInteractionClassHandle = interactionClassHandle;
 
-  std::vector<OpenRTI::ParameterValue> parameterValueVector;
-  ULong parameterHandleArraySize = parameterHandleArray.size();
-  parameterValueVector.resize(parameterHandleArraySize);
-  for (ULong i = 0; i < parameterHandleArraySize; ++i) {
-    ULong length;
-    char* value = parameterHandleArray.getValuePointer(i, length);
-    parameterValueVector[i].setParameterHandle(parameterHandleArray.getHandle(i));
-    parameterValueVector[i].getValue().setData(value, length);
+    std::vector<OpenRTI::ParameterValue> parameterValueVector;
+    ULong parameterHandleArraySize = parameterHandleArray.size();
+    parameterValueVector.resize(parameterHandleArraySize);
+    for (ULong i = 0; i < parameterHandleArraySize; ++i) {
+      ULong length;
+      char* value = parameterHandleArray.getValuePointer(i, length);
+      parameterValueVector[i].setParameterHandle(parameterHandleArray.getHandle(i));
+      parameterValueVector[i].getValue().setData(value, length);
+    }
+
+    // Note that the parametervaluevector is taken by the sendInteraction call. Thus on return it is empty
+    privateRefs->sendInteraction(OpenRTIInteractionClassHandle, parameterValueVector, toOpenRTITag(tag));
+  } catch (const OpenRTI::InteractionClassNotPublished& e) {
+    throw RTI::InteractionClassNotPublished(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InteractionParameterNotDefined& e) {
+    throw RTI::InteractionParameterNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
   }
-
-  // Note that the parametervaluevector is taken by the sendInteraction call. Thus on return it is empty
-  privateRefs->sendInteraction(OpenRTIInteractionClassHandle, parameterValueVector, toOpenRTITag(tag));
 }
 
 RTI::EventRetractionHandle
@@ -1672,9 +2025,29 @@ RTI::RTIambassador::deleteObjectInstance(RTI::ObjectHandle objectHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::MessageRetractionHandle messageRetractionHandle;
-  messageRetractionHandle = privateRefs->deleteObjectInstance(objectHandle, toOpenRTITag(tag), fedTime);
-  return rti13MessageRetractionHandle(messageRetractionHandle);
+  try {
+    OpenRTI::MessageRetractionHandle messageRetractionHandle;
+    messageRetractionHandle = privateRefs->deleteObjectInstance(objectHandle, toOpenRTITag(tag), fedTime);
+    return rti13MessageRetractionHandle(messageRetractionHandle);
+  } catch (const OpenRTI::DeletePrivilegeNotHeld& e) {
+    throw RTI::DeletePrivilegeNotHeld(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw RTI::InvalidFederationTime(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1689,7 +2062,25 @@ RTI::RTIambassador::deleteObjectInstance(RTI::ObjectHandle objectHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->deleteObjectInstance(objectHandle, toOpenRTITag(tag));
+  try {
+    privateRefs->deleteObjectInstance(objectHandle, toOpenRTITag(tag));
+  } catch (const OpenRTI::DeletePrivilegeNotHeld& e) {
+    throw RTI::DeletePrivilegeNotHeld(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1703,7 +2094,27 @@ RTI::RTIambassador::localDeleteObjectInstance(RTI::ObjectHandle objectHandle)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->localDeleteObjectInstance(objectHandle);
+  try {
+    privateRefs->localDeleteObjectInstance(objectHandle);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateOwnsAttributes& e) {
+    throw RTI::FederateOwnsAttributes(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::OwnershipAcquisitionPending& e) {
+    throw RTI::OwnershipAcquisitionPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1721,13 +2132,33 @@ RTI::RTIambassador::changeAttributeTransportationType(RTI::ObjectHandle objectHa
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::TransportationType transportationType = toOpenRTITransportationType(transportationHandle);
-  OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-  ULong attributeHandleSetSize = attributeHandleSet.size();
-  for (ULong i = 0; i < attributeHandleSetSize; ++i)
-    OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
+  try {
+    OpenRTI::TransportationType transportationType = toOpenRTITransportationType(transportationHandle);
+    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
+    ULong attributeHandleSetSize = attributeHandleSet.size();
+    for (ULong i = 0; i < attributeHandleSetSize; ++i)
+      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
 
-  privateRefs->changeAttributeTransportationType(objectHandle, OpenRTIAttributeHandleSet, transportationType);
+    privateRefs->changeAttributeTransportationType(objectHandle, OpenRTIAttributeHandleSet, transportationType);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw RTI::AttributeNotOwned(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1743,9 +2174,27 @@ RTI::RTIambassador::changeInteractionTransportationType(RTI::InteractionClassHan
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::InteractionClassHandle OpenRTIInteractionClassHandle = interactionClassHandle;
-  OpenRTI::TransportationType transportationType = toOpenRTITransportationType(transportationHandle);
-  privateRefs->changeInteractionTransportationType(OpenRTIInteractionClassHandle, transportationType);
+  try {
+    OpenRTI::InteractionClassHandle OpenRTIInteractionClassHandle = interactionClassHandle;
+    OpenRTI::TransportationType transportationType = toOpenRTITransportationType(transportationHandle);
+    privateRefs->changeInteractionTransportationType(OpenRTIInteractionClassHandle, transportationType);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InteractionClassNotPublished& e) {
+    throw RTI::InteractionClassNotPublished(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1760,12 +2209,30 @@ RTI::RTIambassador::requestObjectAttributeValueUpdate(RTI::ObjectHandle objectHa
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-  ULong attributeHandleSetSize = attributeHandleSet.size();
-  for (ULong i = 0; i < attributeHandleSetSize; ++i)
-    OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
+  try {
+    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
+    ULong attributeHandleSetSize = attributeHandleSet.size();
+    for (ULong i = 0; i < attributeHandleSetSize; ++i)
+      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
 
-  privateRefs->requestAttributeValueUpdate(OpenRTI::ObjectInstanceHandle(objectHandle), OpenRTIAttributeHandleSet, OpenRTI::VariableLengthData());
+    privateRefs->requestAttributeValueUpdate(OpenRTI::ObjectInstanceHandle(objectHandle), OpenRTIAttributeHandleSet, OpenRTI::VariableLengthData());
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1780,15 +2247,31 @@ RTI::RTIambassador::requestClassAttributeValueUpdate(RTI::ObjectClassHandle obje
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-  ULong attributeHandleSetSize = attributeHandleSet.size();
-  for (ULong i = 0; i < attributeHandleSetSize; ++i)
-    OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
+  try {
+    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
+    ULong attributeHandleSetSize = attributeHandleSet.size();
+    for (ULong i = 0; i < attributeHandleSetSize; ++i)
+      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
 
-  privateRefs->requestAttributeValueUpdate(OpenRTI::ObjectClassHandle(objectClassHandle), OpenRTIAttributeHandleSet, OpenRTI::VariableLengthData());
+    privateRefs->requestAttributeValueUpdate(OpenRTI::ObjectClassHandle(objectClassHandle), OpenRTIAttributeHandleSet, OpenRTI::VariableLengthData());
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
-
-// Ownership Management -------------------
 
 void
 RTI::RTIambassador::unconditionalAttributeOwnershipDivestiture(RTI::ObjectHandle objectHandle,
@@ -1803,12 +2286,32 @@ RTI::RTIambassador::unconditionalAttributeOwnershipDivestiture(RTI::ObjectHandle
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-  ULong attributeHandleSetSize = attributeHandleSet.size();
-  for (ULong i = 0; i < attributeHandleSetSize; ++i)
-    OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
+  try {
+    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
+    ULong attributeHandleSetSize = attributeHandleSet.size();
+    for (ULong i = 0; i < attributeHandleSetSize; ++i)
+      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
 
-  privateRefs->unconditionalAttributeOwnershipDivestiture(objectHandle, OpenRTIAttributeHandleSet);
+    privateRefs->unconditionalAttributeOwnershipDivestiture(objectHandle, OpenRTIAttributeHandleSet);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw RTI::AttributeNotOwned(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1826,12 +2329,34 @@ RTI::RTIambassador::negotiatedAttributeOwnershipDivestiture(RTI::ObjectHandle ob
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-  ULong attributeHandleSetSize = attributeHandleSet.size();
-  for (ULong i = 0; i < attributeHandleSetSize; ++i)
-    OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
+  try {
+    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
+    ULong attributeHandleSetSize = attributeHandleSet.size();
+    for (ULong i = 0; i < attributeHandleSetSize; ++i)
+      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
 
-  privateRefs->negotiatedAttributeOwnershipDivestiture(objectHandle, OpenRTIAttributeHandleSet, toOpenRTITag(tag));
+    privateRefs->negotiatedAttributeOwnershipDivestiture(objectHandle, OpenRTIAttributeHandleSet, toOpenRTITag(tag));
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw RTI::AttributeNotOwned(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeAlreadyBeingDivested& e) {
+    throw RTI::AttributeAlreadyBeingDivested(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1850,12 +2375,34 @@ RTI::RTIambassador::attributeOwnershipAcquisition(RTI::ObjectHandle objectHandle
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-  ULong attributeHandleSetSize = attributeHandleSet.size();
-  for (ULong i = 0; i < attributeHandleSetSize; ++i)
-    OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
+  try {
+    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
+    ULong attributeHandleSetSize = attributeHandleSet.size();
+    for (ULong i = 0; i < attributeHandleSetSize; ++i)
+      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
 
-  privateRefs->attributeOwnershipAcquisition(objectHandle, OpenRTIAttributeHandleSet, toOpenRTITag(tag));
+    privateRefs->attributeOwnershipAcquisition(objectHandle, OpenRTIAttributeHandleSet, toOpenRTITag(tag));
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::ObjectClassNotPublished& e) {
+    throw RTI::ObjectClassNotPublished(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotPublished& e) {
+    throw RTI::AttributeNotPublished(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1874,12 +2421,38 @@ RTI::RTIambassador::attributeOwnershipAcquisitionIfAvailable(RTI::ObjectHandle o
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-  ULong attributeHandleSetSize = attributeHandleSet.size();
-  for (ULong i = 0; i < attributeHandleSetSize; ++i)
-    OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
+  try {
+    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
+    ULong attributeHandleSetSize = attributeHandleSet.size();
+    for (ULong i = 0; i < attributeHandleSetSize; ++i)
+      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
 
-  privateRefs->attributeOwnershipAcquisitionIfAvailable(objectHandle, OpenRTIAttributeHandleSet);
+    privateRefs->attributeOwnershipAcquisitionIfAvailable(objectHandle, OpenRTIAttributeHandleSet);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::ObjectClassNotPublished& e) {
+    throw RTI::ObjectClassNotPublished(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotPublished& e) {
+    throw RTI::AttributeNotPublished(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateOwnsAttributes& e) {
+    throw RTI::FederateOwnsAttributes(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeAlreadyBeingAcquired& e) {
+    throw RTI::AttributeAlreadyBeingAcquired(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::AttributeHandleSet*
@@ -1896,18 +2469,39 @@ RTI::RTIambassador::attributeOwnershipReleaseResponse(RTI::ObjectHandle objectHa
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::AttributeHandleSet divestedAttributes;
+  try {
+    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
+    ULong attributeHandleSetSize = attributeHandleSet.size();
+    for (ULong i = 0; i < attributeHandleSetSize; ++i)
+      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
 
-  OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-  ULong attributeHandleSetSize = attributeHandleSet.size();
-  for (ULong i = 0; i < attributeHandleSetSize; ++i)
-    OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
+    OpenRTI::AttributeHandleSet divestedAttributes;
+    privateRefs->attributeOwnershipDivestitureIfWanted(objectHandle, OpenRTIAttributeHandleSet, divestedAttributes);
 
-  privateRefs->attributeOwnershipDivestitureIfWanted(objectHandle, OpenRTIAttributeHandleSet, divestedAttributes);
-
-  // FIXME, return getReason we got ...
-  throw RTI::RTIinternalError("Not iplemented????");
-  return 0;
+    std::vector<OpenRTI::AttributeHandle> attributeHandleVector;
+    for (OpenRTI::AttributeHandleSet::const_iterator i = divestedAttributes.begin();
+         i != divestedAttributes.end(); ++i)
+      attributeHandleVector.push_back(*i);
+    return new AttributeHandleSetCallback(attributeHandleVector);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw RTI::AttributeNotOwned(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1924,12 +2518,34 @@ RTI::RTIambassador::cancelNegotiatedAttributeOwnershipDivestiture(RTI::ObjectHan
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-  ULong attributeHandleSetSize = attributeHandleSet.size();
-  for (ULong i = 0; i < attributeHandleSetSize; ++i)
-    OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
+  try {
+    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
+    ULong attributeHandleSetSize = attributeHandleSet.size();
+    for (ULong i = 0; i < attributeHandleSetSize; ++i)
+      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
 
-  privateRefs->cancelNegotiatedAttributeOwnershipDivestiture(objectHandle, OpenRTIAttributeHandleSet);
+    privateRefs->cancelNegotiatedAttributeOwnershipDivestiture(objectHandle, OpenRTIAttributeHandleSet);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw RTI::AttributeNotOwned(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeDivestitureWasNotRequested& e) {
+    throw RTI::AttributeDivestitureWasNotRequested(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1946,12 +2562,34 @@ RTI::RTIambassador::cancelAttributeOwnershipAcquisition(RTI::ObjectHandle object
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-  ULong attributeHandleSetSize = attributeHandleSet.size();
-  for (ULong i = 0; i < attributeHandleSetSize; ++i)
-    OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
+  try {
+    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
+    ULong attributeHandleSetSize = attributeHandleSet.size();
+    for (ULong i = 0; i < attributeHandleSetSize; ++i)
+      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
 
-  privateRefs->cancelAttributeOwnershipAcquisition(objectHandle, OpenRTIAttributeHandleSet);
+    privateRefs->cancelAttributeOwnershipAcquisition(objectHandle, OpenRTIAttributeHandleSet);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeAlreadyOwned& e) {
+    throw RTI::AttributeAlreadyOwned(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeAcquisitionWasNotRequested& e) {
+    throw RTI::AttributeAcquisitionWasNotRequested(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -1966,7 +2604,25 @@ RTI::RTIambassador::queryAttributeOwnership(RTI::ObjectHandle objectHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->queryAttributeOwnership(objectHandle, attributeHandle);
+  try {
+    privateRefs->queryAttributeOwnership(objectHandle, attributeHandle);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::Boolean
@@ -1981,11 +2637,27 @@ RTI::RTIambassador::isAttributeOwnedByFederate(RTI::ObjectHandle objectHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  bool owned = privateRefs->isAttributeOwnedByFederate(objectHandle, attributeHandle);
-  return owned ? RTI::RTI_TRUE : RTI::RTI_FALSE;
+  try {
+    bool owned = privateRefs->isAttributeOwnedByFederate(objectHandle, attributeHandle);
+    return owned ? RTI::RTI_TRUE : RTI::RTI_FALSE;
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
-
-// Time Management -------------------
 
 void
 RTI::RTIambassador::enableTimeRegulation(const RTI::FedTime& time, const RTI::FedTime& lookahead)
@@ -2001,7 +2673,29 @@ RTI::RTIambassador::enableTimeRegulation(const RTI::FedTime& time, const RTI::Fe
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->enableTimeRegulation(time, lookahead);
+  try {
+    privateRefs->enableTimeRegulation(time, lookahead);
+  } catch (const OpenRTI::TimeRegulationAlreadyEnabled& e) {
+    throw RTI::TimeRegulationAlreadyEnabled(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InvalidLookahead& e) {
+    throw RTI::InvalidLookahead(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw RTI::TimeAdvanceAlreadyInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RequestForTimeRegulationPending& e) {
+    throw RTI::EnableTimeRegulationPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2014,7 +2708,23 @@ RTI::RTIambassador::disableTimeRegulation()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->disableTimeRegulation();
+  try {
+    privateRefs->disableTimeRegulation();
+  } catch (const OpenRTI::TimeRegulationIsNotEnabled& e) {
+    throw RTI::TimeRegulationWasNotEnabled(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2029,7 +2739,27 @@ RTI::RTIambassador::enableTimeConstrained()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->enableTimeConstrained();
+  try {
+    privateRefs->enableTimeConstrained();
+  } catch (const OpenRTI::TimeConstrainedAlreadyEnabled& e) {
+    throw RTI::TimeConstrainedAlreadyEnabled(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw RTI::TimeAdvanceAlreadyInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RequestForTimeConstrainedPending& e) {
+    throw RTI::EnableTimeConstrainedPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2042,7 +2772,23 @@ RTI::RTIambassador::disableTimeConstrained()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->disableTimeConstrained();
+  try {
+    privateRefs->disableTimeConstrained();
+  } catch (const OpenRTI::TimeConstrainedIsNotEnabled& e) {
+    throw RTI::TimeConstrainedWasNotEnabled(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2059,7 +2805,31 @@ RTI::RTIambassador::timeAdvanceRequest(const RTI::FedTime& fedTime)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->timeAdvanceRequest(fedTime);
+  try {
+    privateRefs->timeAdvanceRequest(fedTime);
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw RTI::InvalidFederationTime(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::LogicalTimeAlreadyPassed& e) {
+    throw RTI::FederationTimeAlreadyPassed(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw RTI::TimeAdvanceAlreadyInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RequestForTimeRegulationPending& e) {
+    throw RTI::EnableTimeRegulationPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RequestForTimeConstrainedPending& e) {
+    throw RTI::EnableTimeConstrainedPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2076,7 +2846,31 @@ RTI::RTIambassador::timeAdvanceRequestAvailable(const RTI::FedTime& fedTime)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->timeAdvanceRequestAvailable(fedTime);
+  try {
+    privateRefs->timeAdvanceRequestAvailable(fedTime);
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw RTI::InvalidFederationTime(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::LogicalTimeAlreadyPassed& e) {
+    throw RTI::FederationTimeAlreadyPassed(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw RTI::TimeAdvanceAlreadyInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RequestForTimeRegulationPending& e) {
+    throw RTI::EnableTimeRegulationPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RequestForTimeConstrainedPending& e) {
+    throw RTI::EnableTimeConstrainedPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2093,7 +2887,31 @@ RTI::RTIambassador::nextEventRequest(const RTI::FedTime& fedTime)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->nextMessageRequest(fedTime);
+  try {
+    privateRefs->nextMessageRequest(fedTime);
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw RTI::InvalidFederationTime(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::LogicalTimeAlreadyPassed& e) {
+    throw RTI::FederationTimeAlreadyPassed(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw RTI::TimeAdvanceAlreadyInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RequestForTimeRegulationPending& e) {
+    throw RTI::EnableTimeRegulationPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RequestForTimeConstrainedPending& e) {
+    throw RTI::EnableTimeConstrainedPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2110,7 +2928,31 @@ RTI::RTIambassador::nextEventRequestAvailable(const RTI::FedTime& fedTime)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->nextMessageRequestAvailable(fedTime);
+  try {
+    privateRefs->nextMessageRequestAvailable(fedTime);
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw RTI::InvalidFederationTime(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::LogicalTimeAlreadyPassed& e) {
+    throw RTI::FederationTimeAlreadyPassed(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw RTI::TimeAdvanceAlreadyInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RequestForTimeRegulationPending& e) {
+    throw RTI::EnableTimeRegulationPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RequestForTimeConstrainedPending& e) {
+    throw RTI::EnableTimeConstrainedPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2127,7 +2969,31 @@ RTI::RTIambassador::flushQueueRequest(const RTI::FedTime& fedTime)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->flushQueueRequest(fedTime);
+  try {
+    privateRefs->flushQueueRequest(fedTime);
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw RTI::InvalidFederationTime(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::LogicalTimeAlreadyPassed& e) {
+    throw RTI::FederationTimeAlreadyPassed(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw RTI::TimeAdvanceAlreadyInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RequestForTimeRegulationPending& e) {
+    throw RTI::EnableTimeRegulationPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RequestForTimeConstrainedPending& e) {
+    throw RTI::EnableTimeConstrainedPending(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2140,7 +3006,23 @@ RTI::RTIambassador::enableAsynchronousDelivery()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->enableAsynchronousDelivery();
+  try {
+    privateRefs->enableAsynchronousDelivery();
+  } catch (const OpenRTI::AsynchronousDeliveryAlreadyEnabled& e) {
+    throw RTI::AsynchronousDeliveryAlreadyEnabled(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2153,7 +3035,23 @@ RTI::RTIambassador::disableAsynchronousDelivery()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->disableAsynchronousDelivery();
+  try {
+    privateRefs->disableAsynchronousDelivery();
+  } catch (const OpenRTI::AsynchronousDeliveryAlreadyDisabled& e) {
+    throw RTI::AsynchronousDeliveryAlreadyDisabled(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2165,9 +3063,23 @@ RTI::RTIambassador::queryLBTS(RTI::FedTime& fedTime)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  if (privateRefs->queryGALT(fedTime))
-    return;
-  fedTime.setPositiveInfinity();
+  try {
+    if (privateRefs->queryGALT(fedTime))
+      return;
+    fedTime.setPositiveInfinity();
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2179,7 +3091,21 @@ RTI::RTIambassador::queryFederateTime(RTI::FedTime& fedTime)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->queryLogicalTime(fedTime);
+  try {
+    privateRefs->queryLogicalTime(fedTime);
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2191,9 +3117,23 @@ RTI::RTIambassador::queryMinNextEventTime(RTI::FedTime& fedTime)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  if (privateRefs->queryLITS(fedTime))
-    return;
-  fedTime.setPositiveInfinity();
+  try {
+    if (privateRefs->queryLITS(fedTime))
+      return;
+    fedTime.setPositiveInfinity();
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2206,7 +3146,25 @@ RTI::RTIambassador::modifyLookahead(const RTI::FedTime& fedTime)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->modifyLookahead(fedTime);
+  try {
+    privateRefs->modifyLookahead(fedTime, false/*checkForTimeRegulation*/);
+  } catch (const OpenRTI::InvalidLookahead& e) {
+    throw RTI::InvalidLookahead(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw RTI::ConcurrentAccessAttempted(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2218,7 +3176,21 @@ RTI::RTIambassador::queryLookahead(RTI::FedTime& fedTime)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->queryLookahead(fedTime);
+  try {
+    privateRefs->queryLookahead(fedTime, false/*checkForTimeRegulation*/);
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2231,7 +3203,26 @@ RTI::RTIambassador::retract(RTI::EventRetractionHandle theHandle)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->retract(toOpenRTIMessageRetractionHandle(theHandle));
+  try {
+    privateRefs->retract(toOpenRTIMessageRetractionHandle(theHandle));
+  } catch (const OpenRTI::InvalidMessageRetractionHandle& e) {
+    throw RTI::InvalidRetractionHandle(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::TimeRegulationIsNotEnabled& e) {
+  } catch (const OpenRTI::MessageCanNoLongerBeRetracted& e) {
+    throw RTI::InvalidRetractionHandle(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2249,13 +3240,33 @@ RTI::RTIambassador::changeAttributeOrderType(RTI::ObjectHandle objectHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::OrderType orderType = toOpenRTIOrderType(orderingHandle);
-  OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-  ULong attributeHandleSetSize = attributeHandleSet.size();
-  for (ULong i = 0; i < attributeHandleSetSize; ++i)
-    OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
+  try {
+    OpenRTI::OrderType orderType = toOpenRTIOrderType(orderingHandle);
+    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
+    ULong attributeHandleSetSize = attributeHandleSet.size();
+    for (ULong i = 0; i < attributeHandleSetSize; ++i)
+      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
 
-  privateRefs->changeAttributeOrderType(objectHandle, OpenRTIAttributeHandleSet, orderType);
+    privateRefs->changeAttributeOrderType(objectHandle, OpenRTIAttributeHandleSet, orderType);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw RTI::AttributeNotOwned(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2271,11 +3282,27 @@ RTI::RTIambassador::changeInteractionOrderType(RTI::InteractionClassHandle inter
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  OpenRTI::OrderType orderType = toOpenRTIOrderType(orderingHandle);
-  privateRefs->changeInteractionOrderType(interactionClassHandle, orderType);
+  try {
+    OpenRTI::OrderType orderType = toOpenRTIOrderType(orderingHandle);
+    privateRefs->changeInteractionOrderType(interactionClassHandle, orderType);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InteractionClassNotPublished& e) {
+    throw RTI::InteractionClassNotPublished(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
-
-// Data Distribution Management -------------------
 
 RTI::Region*
 RTI::RTIambassador::createRegion(RTI::SpaceHandle spaceHandle,
@@ -2525,8 +3552,6 @@ RTI::RTIambassador::requestClassAttributeValueUpdateWithRegion(RTI::ObjectClassH
   throw OpenRTI::RTIinternalError("ENOIMP");
 }
 
-// Support Services -------------------
-
 RTI::ObjectClassHandle
 RTI::RTIambassador::getObjectClassHandle(const char* name)
   throw (RTI::NameNotFound,
@@ -2537,10 +3562,22 @@ RTI::RTIambassador::getObjectClassHandle(const char* name)
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
-  // special casing for the root object
-  if (OpenRTI::caseCompare(name, "ObjectRoot"))
-    return privateRefs->getObjectClassHandle("HLAobjectRoot");
-  return privateRefs->getObjectClassHandle(OpenRTI::localeToUtf8(name));
+  try {
+    // special casing for the root object
+    if (OpenRTI::caseCompare(name, "ObjectRoot"))
+      return privateRefs->getObjectClassHandle("HLAobjectRoot");
+    return privateRefs->getObjectClassHandle(OpenRTI::localeToUtf8(name));
+  } catch (const OpenRTI::NameNotFound& e) {
+    throw RTI::NameNotFound(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 char*
@@ -2551,11 +3588,23 @@ RTI::RTIambassador::getObjectClassName(RTI::ObjectClassHandle objectClassHandle)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::string name = privateRefs->getObjectClassName(objectClassHandle);
-  // special casing for the root object
-  if (name == "HLAobjectRoot")
-    return newUtf8ToLocale("ObjectRoot");
-  return newUtf8ToLocale(name);
+  try {
+    std::string name = privateRefs->getObjectClassName(objectClassHandle);
+    // special casing for the root object
+    if (name == "HLAobjectRoot")
+      return newUtf8ToLocale("ObjectRoot");
+    return newUtf8ToLocale(name);
+  } catch (const OpenRTI::InvalidObjectClassHandle& e) {
+    throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::AttributeHandle
@@ -2570,10 +3619,24 @@ RTI::RTIambassador::getAttributeHandle(const char* name,
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
-  // special casing for the privilege to delete
-  if (OpenRTI::caseCompare(name, "privilegeToDelete"))
-    return privateRefs->getAttributeHandle(objectClassHandle, "HLAprivilegeToDeleteObject");
-  return privateRefs->getAttributeHandle(objectClassHandle, OpenRTI::localeToUtf8(name));
+  try {
+    // special casing for the privilege to delete
+    if (OpenRTI::caseCompare(name, "privilegeToDelete"))
+      return privateRefs->getAttributeHandle(objectClassHandle, "HLAprivilegeToDeleteObject");
+    return privateRefs->getAttributeHandle(objectClassHandle, OpenRTI::localeToUtf8(name));
+  } catch (const OpenRTI::InvalidObjectClassHandle& e) {
+    throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NameNotFound& e) {
+    throw RTI::NameNotFound(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 char*
@@ -2586,11 +3649,27 @@ RTI::RTIambassador::getAttributeName(RTI::AttributeHandle attributeHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::string name = privateRefs->getAttributeName(objectClassHandle, attributeHandle);
-  // special casing for the privilege to delete
-  if (name == "HLAprivilegeToDeleteObject")
-    return newUtf8ToLocale("privilegeToDelete");
-  return newUtf8ToLocale(name);
+  try {
+    std::string name = privateRefs->getAttributeName(objectClassHandle, attributeHandle);
+    // special casing for the privilege to delete
+    if (name == "HLAprivilegeToDeleteObject")
+      return newUtf8ToLocale("privilegeToDelete");
+    return newUtf8ToLocale(name);
+  } catch (const OpenRTI::InvalidObjectClassHandle& e) {
+    throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InvalidAttributeHandle& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw RTI::AttributeNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::InteractionClassHandle
@@ -2603,10 +3682,22 @@ RTI::RTIambassador::getInteractionClassHandle(const char* name)
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
-  // special casing for the root object
-  if (OpenRTI::caseCompare(name, "InteractionRoot"))
-    return privateRefs->getInteractionClassHandle("HLAinteractionRoot");
-  return privateRefs->getInteractionClassHandle(OpenRTI::localeToUtf8(name));
+  try {
+    // special casing for the root object
+    if (OpenRTI::caseCompare(name, "InteractionRoot"))
+      return privateRefs->getInteractionClassHandle("HLAinteractionRoot");
+    return privateRefs->getInteractionClassHandle(OpenRTI::localeToUtf8(name));
+  } catch (const OpenRTI::NameNotFound& e) {
+    throw RTI::NameNotFound(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 char*
@@ -2617,11 +3708,23 @@ RTI::RTIambassador::getInteractionClassName(RTI::InteractionClassHandle interact
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::string name = privateRefs->getInteractionClassName(interactionClassHandle);
-  // special casing for the root object
-  if (name == "HLAinteractionRoot")
-    return newUtf8ToLocale("InteractionRoot");
-  return newUtf8ToLocale(name);
+  try {
+    std::string name = privateRefs->getInteractionClassName(interactionClassHandle);
+    // special casing for the root object
+    if (name == "HLAinteractionRoot")
+      return newUtf8ToLocale("InteractionRoot");
+    return newUtf8ToLocale(name);
+  } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
+    throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::ParameterHandle
@@ -2636,7 +3739,21 @@ RTI::RTIambassador::getParameterHandle(const char* name,
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
-  return privateRefs->getParameterHandle(interactionClassHandle, OpenRTI::localeToUtf8(name));
+  try {
+    return privateRefs->getParameterHandle(interactionClassHandle, OpenRTI::localeToUtf8(name));
+  } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
+    throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NameNotFound& e) {
+    throw RTI::NameNotFound(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 char*
@@ -2649,7 +3766,23 @@ RTI::RTIambassador::getParameterName(RTI::ParameterHandle parameterHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  return newUtf8ToLocale(privateRefs->getParameterName(interactionClassHandle, parameterHandle));
+  try {
+    return newUtf8ToLocale(privateRefs->getParameterName(interactionClassHandle, parameterHandle));
+  } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
+    throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InvalidParameterHandle& e) {
+    throw RTI::InteractionParameterNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::InteractionParameterNotDefined& e) {
+    throw RTI::InteractionParameterNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::ObjectHandle
@@ -2662,7 +3795,19 @@ RTI::RTIambassador::getObjectInstanceHandle(const char* name)
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
-  return privateRefs->getObjectInstanceHandle(OpenRTI::localeToUtf8(name));
+  try {
+    return privateRefs->getObjectInstanceHandle(OpenRTI::localeToUtf8(name));
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 char*
@@ -2673,7 +3818,19 @@ RTI::RTIambassador::getObjectInstanceName(RTI::ObjectHandle objectHandle)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  return newUtf8ToLocale(privateRefs->getObjectInstanceName(objectHandle));
+  try {
+    return newUtf8ToLocale(privateRefs->getObjectInstanceName(objectHandle));
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::SpaceHandle
@@ -2686,7 +3843,7 @@ RTI::RTIambassador::getRoutingSpaceHandle(const char* name)
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
-  throw RTI::RTIinternalError("Unknown exception");
+  throw RTI::RTIinternalError("ENOIMP");
 }
 
 char*
@@ -2697,7 +3854,7 @@ RTI::RTIambassador::getRoutingSpaceName(RTI::SpaceHandle spaceHandle)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  throw RTI::RTIinternalError("Unknown exception");
+  throw RTI::RTIinternalError("ENOIMP");
 }
 
 RTI::DimensionHandle
@@ -2712,7 +3869,7 @@ RTI::RTIambassador::getDimensionHandle(const char* name,
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
-  throw RTI::RTIinternalError("Unknown exception");
+  throw RTI::RTIinternalError("ENOIMP");
 }
 
 char*
@@ -2725,7 +3882,7 @@ RTI::RTIambassador::getDimensionName(RTI::DimensionHandle dimensionHandle,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  throw RTI::RTIinternalError("Unknown exception");
+  throw RTI::RTIinternalError("ENOIMP");
 }
 
 RTI::SpaceHandle
@@ -2738,7 +3895,7 @@ RTI::RTIambassador::getAttributeRoutingSpaceHandle(RTI::AttributeHandle attribut
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  throw RTI::RTIinternalError("Unknown exception");
+  throw RTI::RTIinternalError("ENOIMP");
 }
 
 RTI::ObjectClassHandle
@@ -2749,7 +3906,19 @@ RTI::RTIambassador::getObjectClass(RTI::ObjectHandle objectHandle)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  return privateRefs->getKnownObjectClassHandle(objectHandle);
+  try {
+    return privateRefs->getKnownObjectClassHandle(objectHandle);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::SpaceHandle
@@ -2760,7 +3929,7 @@ RTI::RTIambassador::getInteractionRoutingSpaceHandle(InteractionClassHandle inte
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  throw RTI::RTIinternalError("Unknown exception");
+  throw RTI::RTIinternalError("ENOIMP");
 }
 
 RTI::TransportationHandle
@@ -2773,11 +3942,23 @@ RTI::RTIambassador::getTransportationHandle(const char* name)
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
-  if (OpenRTI::caseCompare(name, "reliable"))
-    return rti13TransportType(privateRefs->getTransportationType("HLAreliable"));
-  if (OpenRTI::caseCompare(name, "best_effort"))
-    return rti13TransportType(privateRefs->getTransportationType("HLAbestEffort"));
-  return rti13TransportType(privateRefs->getTransportationType(OpenRTI::localeToUtf8(name)));
+  try {
+    if (OpenRTI::caseCompare(name, "reliable"))
+      return rti13TransportType(privateRefs->getTransportationType("HLAreliable"));
+    if (OpenRTI::caseCompare(name, "best_effort"))
+      return rti13TransportType(privateRefs->getTransportationType("HLAbestEffort"));
+    return rti13TransportType(privateRefs->getTransportationType(OpenRTI::localeToUtf8(name)));
+  } catch (const OpenRTI::InvalidTransportationName& e) {
+    throw RTI::NameNotFound(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 char*
@@ -2788,13 +3969,25 @@ RTI::RTIambassador::getTransportationName(RTI::TransportationHandle transportati
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  std::string name = privateRefs->getTransportationName(toOpenRTITransportationType(transportationHandle));
-  // special casing for the builtin types, the rest just maps through
-  if (name == "HLAreliable")
-    return newUtf8ToLocale("reliable");
-  if (name == "HLAbestEffort")
-    return newUtf8ToLocale("best_effort");
-  return newUtf8ToLocale(name);
+  try {
+    std::string name = privateRefs->getTransportationName(toOpenRTITransportationType(transportationHandle));
+    // special casing for the builtin types, the rest just maps through
+    if (name == "HLAreliable")
+      return newUtf8ToLocale("reliable");
+    if (name == "HLAbestEffort")
+      return newUtf8ToLocale("best_effort");
+    return newUtf8ToLocale(name);
+  } catch (const OpenRTI::InvalidTransportationType& e) {
+    throw RTI::InvalidTransportationHandle(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::OrderingHandle
@@ -2807,11 +4000,23 @@ RTI::RTIambassador::getOrderingHandle(const char* name)
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   if (!name)
     throw RTI::NameNotFound("Zero name pointer.");
-  if (OpenRTI::caseCompare(name, "timestamp"))
-    return rti13OrderType(OpenRTI::TIMESTAMP);
-  if (OpenRTI::caseCompare(name, "receive"))
-    return rti13OrderType(OpenRTI::RECEIVE);
-  throw RTI::NameNotFound(name);
+  try {
+    if (OpenRTI::caseCompare(name, "timestamp"))
+      return rti13OrderType(OpenRTI::TIMESTAMP);
+    if (OpenRTI::caseCompare(name, "receive"))
+      return rti13OrderType(OpenRTI::RECEIVE);
+    throw RTI::NameNotFound(name);
+  } catch (const OpenRTI::InvalidOrderName& e) {
+    throw RTI::NameNotFound(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 char*
@@ -2822,13 +4027,25 @@ RTI::RTIambassador::getOrderingName(RTI::OrderingHandle orderingHandle)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  switch(toOpenRTIOrderType(orderingHandle)) {
-  case OpenRTI::TIMESTAMP:
-    return newUtf8ToLocale("timestamp");
-  case OpenRTI::RECEIVE:
-    return newUtf8ToLocale("receive");
-  default:
-    throw RTI::InvalidOrderingHandle("");
+  try {
+    switch(toOpenRTIOrderType(orderingHandle)) {
+    case OpenRTI::TIMESTAMP:
+      return newUtf8ToLocale("timestamp");
+    case OpenRTI::RECEIVE:
+      return newUtf8ToLocale("receive");
+    default:
+      throw OpenRTI::InvalidOrderType();
+    }
+  } catch (const OpenRTI::InvalidOrderType& e) {
+    throw RTI::InvalidOrderingHandle(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
   }
 }
 
@@ -2841,7 +4058,22 @@ RTI::RTIambassador::enableClassRelevanceAdvisorySwitch()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->enableObjectClassRelevanceAdvisorySwitch();
+  try {
+    privateRefs->enableObjectClassRelevanceAdvisorySwitch();
+  } catch (const OpenRTI::ObjectClassRelevanceAdvisorySwitchIsOn& e) {
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2853,7 +4085,22 @@ RTI::RTIambassador::disableClassRelevanceAdvisorySwitch()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->disableObjectClassRelevanceAdvisorySwitch();
+  try {
+    privateRefs->disableObjectClassRelevanceAdvisorySwitch();
+  } catch (const OpenRTI::ObjectClassRelevanceAdvisorySwitchIsOff& e) {
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2865,7 +4112,22 @@ RTI::RTIambassador::enableAttributeRelevanceAdvisorySwitch()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->enableAttributeRelevanceAdvisorySwitch();
+  try {
+    privateRefs->enableAttributeRelevanceAdvisorySwitch();
+  } catch (const OpenRTI::AttributeRelevanceAdvisorySwitchIsOn& e) {
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2877,7 +4139,22 @@ RTI::RTIambassador::disableAttributeRelevanceAdvisorySwitch()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->disableAttributeRelevanceAdvisorySwitch();
+  try {
+    privateRefs->disableAttributeRelevanceAdvisorySwitch();
+  } catch (const OpenRTI::AttributeRelevanceAdvisorySwitchIsOff& e) {
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2889,7 +4166,22 @@ RTI::RTIambassador::enableAttributeScopeAdvisorySwitch()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->enableAttributeScopeAdvisorySwitch();
+  try {
+    privateRefs->enableAttributeScopeAdvisorySwitch();
+  } catch (const OpenRTI::AttributeScopeAdvisorySwitchIsOn& e) {
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2901,7 +4193,22 @@ RTI::RTIambassador::disableAttributeScopeAdvisorySwitch()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->enableAttributeScopeAdvisorySwitch();
+  try {
+    privateRefs->disableAttributeScopeAdvisorySwitch();
+  } catch (const OpenRTI::AttributeScopeAdvisorySwitchIsOff& e) {
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2913,7 +4220,22 @@ RTI::RTIambassador::enableInteractionRelevanceAdvisorySwitch()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->enableInteractionRelevanceAdvisorySwitch();
+  try {
+    privateRefs->enableInteractionRelevanceAdvisorySwitch();
+  } catch (const OpenRTI::InteractionRelevanceAdvisorySwitchIsOn& e) {
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 void
@@ -2925,7 +4247,22 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  privateRefs->disableInteractionRelevanceAdvisorySwitch();
+  try {
+    privateRefs->disableInteractionRelevanceAdvisorySwitch();
+  } catch (const OpenRTI::InteractionRelevanceAdvisorySwitchIsOff& e) {
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw RTI::SaveInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw RTI::RestoreInProgress(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::NotConnected& e) {
+    throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown internal error!");
+  }
 }
 
 RTI::Boolean
@@ -2936,14 +4273,12 @@ RTI::RTIambassador::tick()
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    bool pendingCallback = privateRefs->evokeMultipleCallbacks(0, std::numeric_limits<double>::infinity());
+    bool pendingCallback = privateRefs->evokeMultipleCallbacks(0, std::numeric_limits<double>::infinity(), true);
     return pendingCallback ? RTI::RTI_TRUE : RTI::RTI_FALSE;
-  } catch (const RTI::FederateNotExecutionMember& e) {
-    throw RTI::RTIinternalError(e._reason);
-  } catch (const RTI::Exception& e) {
-    throw;
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (...) {
-    throw RTI::RTIinternalError("Unknown exception");
+    throw RTI::RTIinternalError("Unknown internal error!");
   }
 }
 
@@ -2956,14 +4291,12 @@ RTI::RTIambassador::tick(RTI::TickTime minTime,
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    bool pendingCallback = privateRefs->evokeMultipleCallbacks(minTime, maxTime);
+    bool pendingCallback = privateRefs->evokeMultipleCallbacks(minTime, maxTime, true);
     return pendingCallback ? RTI::RTI_TRUE : RTI::RTI_FALSE;
-  } catch (const RTI::FederateNotExecutionMember& e) {
-    throw RTI::RTIinternalError(e._reason);
-  } catch (const RTI::Exception& e) {
-    throw;
+  } catch (const std::exception& e) {
+    throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (...) {
-    throw RTI::RTIinternalError("Unknown exception");
+    throw RTI::RTIinternalError("Unknown internal error!");
   }
 }
 
@@ -2975,7 +4308,7 @@ RTI::RTIambassador::getRegionToken(RTI::Region*)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  throw RTI::RTIinternalError("Unknown exception");
+  throw RTI::RTIinternalError("ENOIMP");
 }
 
 RTI::Region*
@@ -2986,5 +4319,5 @@ RTI::RTIambassador::getRegion(RTI::RegionToken)
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  throw RTI::RTIinternalError("Unknown exception");
+  throw RTI::RTIinternalError("ENOIMP");
 }

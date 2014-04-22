@@ -25,6 +25,7 @@
 #include "AbstractConnect.h"
 #include "InternalAmbassador.h"
 #include "Clock.h"
+#include "Exception.h"
 #include "Federate.h"
 #include "LogStream.h"
 #include "Message.h"
@@ -43,99 +44,6 @@ public:
   typedef typename Traits::NativeLogicalTime NativeLogicalTime;
   typedef typename Traits::NativeLogicalTimeInterval NativeLogicalTimeInterval;
 
-  // The exceptions
-  typedef typename Traits::AlreadyConnected AlreadyConnected;
-  typedef typename Traits::AsynchronousDeliveryAlreadyDisabled AsynchronousDeliveryAlreadyDisabled;
-  typedef typename Traits::AsynchronousDeliveryAlreadyEnabled AsynchronousDeliveryAlreadyEnabled;
-  typedef typename Traits::AttributeAcquisitionWasNotRequested AttributeAcquisitionWasNotRequested;
-  typedef typename Traits::AttributeAlreadyBeingAcquired AttributeAlreadyBeingAcquired;
-  typedef typename Traits::AttributeAlreadyBeingDivested AttributeAlreadyBeingDivested;
-  typedef typename Traits::AttributeAlreadyOwned AttributeAlreadyOwned;
-  typedef typename Traits::AttributeDivestitureWasNotRequested AttributeDivestitureWasNotRequested;
-  typedef typename Traits::AttributeNotDefined AttributeNotDefined;
-  typedef typename Traits::AttributeNotOwned AttributeNotOwned;
-  typedef typename Traits::AttributeNotPublished AttributeNotPublished;
-  typedef typename Traits::AttributeRelevanceAdvisorySwitchIsOff AttributeRelevanceAdvisorySwitchIsOff;
-  typedef typename Traits::AttributeRelevanceAdvisorySwitchIsOn AttributeRelevanceAdvisorySwitchIsOn;
-  typedef typename Traits::AttributeScopeAdvisorySwitchIsOff AttributeScopeAdvisorySwitchIsOff;
-  typedef typename Traits::AttributeScopeAdvisorySwitchIsOn AttributeScopeAdvisorySwitchIsOn;
-  typedef typename Traits::CallNotAllowedFromWithinCallback CallNotAllowedFromWithinCallback;
-  typedef typename Traits::ConnectionFailed ConnectionFailed;
-  typedef typename Traits::CouldNotCreateLogicalTimeFactory CouldNotCreateLogicalTimeFactory;
-  typedef typename Traits::CouldNotOpenFDD CouldNotOpenFDD;
-  typedef typename Traits::CouldNotOpenMIM CouldNotOpenMIM;
-  typedef typename Traits::DeletePrivilegeNotHeld DeletePrivilegeNotHeld;
-  typedef typename Traits::ErrorReadingFDD ErrorReadingFDD;
-  typedef typename Traits::ErrorReadingMIM ErrorReadingMIM;
-  typedef typename Traits::FederateAlreadyExecutionMember FederateAlreadyExecutionMember;
-  typedef typename Traits::FederateNameAlreadyInUse FederateNameAlreadyInUse;
-  typedef typename Traits::FederateHasNotBegunSave FederateHasNotBegunSave;
-  typedef typename Traits::FederateIsExecutionMember FederateIsExecutionMember;
-  typedef typename Traits::FederateNotExecutionMember FederateNotExecutionMember;
-  typedef typename Traits::FederateOwnsAttributes FederateOwnsAttributes;
-  typedef typename Traits::FederatesCurrentlyJoined FederatesCurrentlyJoined;
-  typedef typename Traits::FederateServiceInvocationsAreBeingReportedViaMOM FederateServiceInvocationsAreBeingReportedViaMOM;
-  typedef typename Traits::FederateUnableToUseTime FederateUnableToUseTime;
-  typedef typename Traits::FederationExecutionAlreadyExists FederationExecutionAlreadyExists;
-  typedef typename Traits::FederationExecutionDoesNotExist FederationExecutionDoesNotExist;
-  typedef typename Traits::IllegalName IllegalName;
-  typedef typename Traits::InconsistentFDD InconsistentFDD;
-  typedef typename Traits::InteractionClassNotDefined InteractionClassNotDefined;
-  typedef typename Traits::InteractionClassNotPublished InteractionClassNotPublished;
-  typedef typename Traits::InteractionParameterNotDefined InteractionParameterNotDefined;
-  typedef typename Traits::InteractionRelevanceAdvisorySwitchIsOff InteractionRelevanceAdvisorySwitchIsOff;
-  typedef typename Traits::InteractionRelevanceAdvisorySwitchIsOn InteractionRelevanceAdvisorySwitchIsOn;
-  typedef typename Traits::InTimeAdvancingState InTimeAdvancingState;
-  typedef typename Traits::InvalidAttributeHandle InvalidAttributeHandle;
-  typedef typename Traits::InvalidDimensionHandle InvalidDimensionHandle;
-  typedef typename Traits::InvalidFederateHandle InvalidFederateHandle;
-  typedef typename Traits::InvalidInteractionClassHandle InvalidInteractionClassHandle;
-  typedef typename Traits::InvalidLocalSettingsDesignator InvalidLocalSettingsDesignator;
-  typedef typename Traits::InvalidLogicalTime InvalidLogicalTime;
-  typedef typename Traits::InvalidLookahead InvalidLookahead;
-  typedef typename Traits::InvalidObjectClassHandle InvalidObjectClassHandle;
-  typedef typename Traits::InvalidOrderName InvalidOrderName;
-  typedef typename Traits::InvalidOrderType InvalidOrderType;
-  typedef typename Traits::InvalidParameterHandle InvalidParameterHandle;
-  typedef typename Traits::InvalidRangeBound InvalidRangeBound;
-  typedef typename Traits::InvalidRegion InvalidRegion;
-  typedef typename Traits::InvalidRegionContext InvalidRegionContext;
-  typedef typename Traits::InvalidResignAction InvalidResignAction;
-  typedef typename Traits::InvalidRetractionHandle InvalidRetractionHandle;
-  typedef typename Traits::InvalidServiceGroup InvalidServiceGroup;
-  typedef typename Traits::InvalidTransportationName InvalidTransportationName;
-  typedef typename Traits::InvalidTransportationType InvalidTransportationType;
-  typedef typename Traits::LogicalTimeAlreadyPassed LogicalTimeAlreadyPassed;
-  typedef typename Traits::MessageCanNoLongerBeRetracted MessageCanNoLongerBeRetracted;
-  typedef typename Traits::NameNotFound NameNotFound;
-  typedef typename Traits::NameSetWasEmpty NameSetWasEmpty;
-  typedef typename Traits::NoAcquisitionPending NoAcquisitionPending;
-  typedef typename Traits::NotConnected NotConnected;
-  typedef typename Traits::ObjectClassNotDefined ObjectClassNotDefined;
-  typedef typename Traits::ObjectClassNotPublished ObjectClassNotPublished;
-  typedef typename Traits::ObjectClassRelevanceAdvisorySwitchIsOff ObjectClassRelevanceAdvisorySwitchIsOff;
-  typedef typename Traits::ObjectClassRelevanceAdvisorySwitchIsOn ObjectClassRelevanceAdvisorySwitchIsOn;
-  typedef typename Traits::ObjectInstanceNameInUse ObjectInstanceNameInUse;
-  typedef typename Traits::ObjectInstanceNameNotReserved ObjectInstanceNameNotReserved;
-  typedef typename Traits::ObjectInstanceNotKnown ObjectInstanceNotKnown;
-  typedef typename Traits::OwnershipAcquisitionPending OwnershipAcquisitionPending;
-  typedef typename Traits::RegionDoesNotContainSpecifiedDimension RegionDoesNotContainSpecifiedDimension;
-  typedef typename Traits::RegionInUseForUpdateOrSubscription RegionInUseForUpdateOrSubscription;
-  typedef typename Traits::RegionNotCreatedByThisFederate RegionNotCreatedByThisFederate;
-  typedef typename Traits::RequestForTimeConstrainedPending RequestForTimeConstrainedPending;
-  typedef typename Traits::RequestForTimeRegulationPending RequestForTimeRegulationPending;
-  typedef typename Traits::RestoreInProgress RestoreInProgress;
-  typedef typename Traits::RestoreNotRequested RestoreNotRequested;
-  typedef typename Traits::RTIinternalError RTIinternalError;
-  typedef typename Traits::SaveInProgress SaveInProgress;
-  typedef typename Traits::SaveNotInitiated SaveNotInitiated;
-  typedef typename Traits::SynchronizationPointLabelNotAnnounced SynchronizationPointLabelNotAnnounced;
-  typedef typename Traits::TimeConstrainedAlreadyEnabled TimeConstrainedAlreadyEnabled;
-  typedef typename Traits::TimeConstrainedIsNotEnabled TimeConstrainedIsNotEnabled;
-  typedef typename Traits::TimeRegulationAlreadyEnabled TimeRegulationAlreadyEnabled;
-  typedef typename Traits::TimeRegulationIsNotEnabled TimeRegulationIsNotEnabled;
-  typedef typename Traits::UnsupportedCallbackModel UnsupportedCallbackModel;
-
   Ambassador() :
     _callbacksEnabled(true)
   { }
@@ -146,256 +54,207 @@ public:
   { return _federate->getFederationHandle(); }
 
   void connect(const URL& url, const StringStringListMap& stringStringListMap)
-    throw (ConnectionFailed,
-           AlreadyConnected,
-           CallNotAllowedFromWithinCallback,
-           RTIinternalError)
+    // throw (ConnectionFailed,
+    //        InvalidLocalSettingsDesignator,
+    //        AlreadyConnected,
+    //        CallNotAllowedFromWithinCallback,
+    //        RTIinternalError)
   {
-    try {
-      if (isConnected())
-        Traits::throwAlreadyConnected("Ambassador is already connected!");
+    if (isConnected())
+      throw AlreadyConnected("Ambassador is already connected!");
 
-      InternalAmbassador::connect(url, stringStringListMap);
+    InternalAmbassador::connect(url, stringStringListMap);
 
-      if (!isConnected())
-        Traits::throwConnectionFailed("Connection failed!");
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw ConnectionFailed("Connection failed!");
   }
 
   void disconnect()
-    throw (FederateIsExecutionMember,
-           CallNotAllowedFromWithinCallback,
-           RTIinternalError)
+    // throw (FederateIsExecutionMember,
+    //        CallNotAllowedFromWithinCallback,
+    //        RTIinternalError)
   {
-    try {
-      if (_federate.valid())
-        Traits::throwFederateIsExecutionMember();
+    if (_federate.valid())
+      throw FederateIsExecutionMember();
 
-      if (!isConnected())
-        return;
-      InternalAmbassador::disconnect();
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      return;
+    InternalAmbassador::disconnect();
   }
 
   void createFederationExecution(const std::string& federationExecutionName,
                                  const FOMStringModuleList& fomModules,
                                  const std::string& logicalTimeFactoryName)
-    throw (FederationExecutionAlreadyExists,
-           // InconsistentFDD,
-           CouldNotOpenFDD,
-           ErrorReadingFDD,
-           // DesignatorIsHLAstandardMIM,
-           // ErrorReadingMIM,
-           // CouldNotOpenMIM,
-           CouldNotCreateLogicalTimeFactory,
-           NotConnected,
-           RTIinternalError)
+    // throw (FederationExecutionAlreadyExists,
+    //        // InconsistentFDD,
+    //        // CouldNotOpenFDD,
+    //        // ErrorReadingFDD,
+    //        // DesignatorIsHLAstandardMIM,
+    //        // ErrorReadingMIM,
+    //        // CouldNotOpenMIM,
+    //        CouldNotCreateLogicalTimeFactory,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!isConnected())
-        Traits::throwNotConnected(std::string("Could not get connect RTI of federation execution \"") +
-                                  federationExecutionName + std::string("\"."));
+    if (!isConnected())
+      throw NotConnected(std::string("Could not get connect RTI of federation execution \"") +
+                         federationExecutionName + std::string("\"."));
 
-      // The create request message
-      SharedPtr<CreateFederationExecutionRequestMessage> request = new CreateFederationExecutionRequestMessage;
-      request->setFederationExecution(federationExecutionName);
-      request->setLogicalTimeFactoryName(logicalTimeFactoryName);
-      request->setFOMStringModuleList(fomModules);
+    // The create request message
+    SharedPtr<CreateFederationExecutionRequestMessage> request = new CreateFederationExecutionRequestMessage;
+    request->setFederationExecution(federationExecutionName);
+    request->setLogicalTimeFactoryName(logicalTimeFactoryName);
+    request->setFOMStringModuleList(fomModules);
 
-      // The maximum abstime to try to connect
-      Clock abstime = Clock::now() + Clock::fromSeconds(70);
+    // The maximum abstime to try to connect
+    Clock abstime = Clock::now() + Clock::fromSeconds(70);
 
-      // Send this message and wait for the response
-      send(request);
+    // Send this message and wait for the response
+    send(request);
 
-      std::pair<CreateFederationExecutionResponseType, std::string> responseTypeStringPair;
-      responseTypeStringPair = dispatchWaitCreateFederationExecutionResponse(abstime);
-      if (responseTypeStringPair.first == CreateFederationExecutionResponseFederationExecutionAlreadyExists)
-        Traits::throwFederationExecutionAlreadyExists(federationExecutionName);
-      if (responseTypeStringPair.first == CreateFederationExecutionResponseCouldNotCreateLogicalTimeFactory)
-        Traits::throwCouldNotCreateLogicalTimeFactory(logicalTimeFactoryName);
-      if (responseTypeStringPair.first != CreateFederationExecutionResponseSuccess)
-        Traits::throwRTIinternalError(responseTypeStringPair.second);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    std::pair<CreateFederationExecutionResponseType, std::string> responseTypeStringPair;
+    responseTypeStringPair = dispatchWaitCreateFederationExecutionResponse(abstime);
+    if (responseTypeStringPair.first == CreateFederationExecutionResponseFederationExecutionAlreadyExists)
+      throw FederationExecutionAlreadyExists(federationExecutionName);
+    if (responseTypeStringPair.first == CreateFederationExecutionResponseCouldNotCreateLogicalTimeFactory)
+      throw CouldNotCreateLogicalTimeFactory(logicalTimeFactoryName);
+    if (responseTypeStringPair.first != CreateFederationExecutionResponseSuccess)
+      throw RTIinternalError(responseTypeStringPair.second);
   }
 
   void destroyFederationExecution(const std::string& federationExecutionName)
-    throw (FederatesCurrentlyJoined,
-           FederationExecutionDoesNotExist,
-           NotConnected,
-           RTIinternalError)
+    // throw (FederatesCurrentlyJoined,
+    //        FederationExecutionDoesNotExist,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!isConnected())
-        Traits::throwNotConnected(std::string("Could not get connect RTI of federation execution \"") +
-                                  federationExecutionName + std::string("\"."));
+    if (!isConnected())
+      throw NotConnected(std::string("Could not get connect RTI of federation execution \"") +
+                         federationExecutionName + std::string("\"."));
 
-      // The destroy request message
-      SharedPtr<DestroyFederationExecutionRequestMessage> request = new DestroyFederationExecutionRequestMessage;
-      request->setFederationExecution(federationExecutionName);
+    // The destroy request message
+    SharedPtr<DestroyFederationExecutionRequestMessage> request = new DestroyFederationExecutionRequestMessage;
+    request->setFederationExecution(federationExecutionName);
 
-      // The maximum abstime to try to connect
-      Clock abstime = Clock::now() + Clock::fromSeconds(70);
+    // The maximum abstime to try to connect
+    Clock abstime = Clock::now() + Clock::fromSeconds(70);
 
-      // Send this message and wait for the response
-      send(request);
+    // Send this message and wait for the response
+    send(request);
 
-      DestroyFederationExecutionResponseType responseType;
-      responseType = dispatchWaitDestroyFederationExecutionResponse(abstime);
-      if (responseType == DestroyFederationExecutionResponseFederatesCurrentlyJoined)
-        Traits::throwFederatesCurrentlyJoined(federationExecutionName);
-      if (responseType == DestroyFederationExecutionResponseFederationExecutionDoesNotExist)
-        Traits::throwFederationExecutionDoesNotExist(federationExecutionName);
-      if (responseType != DestroyFederationExecutionResponseSuccess)
-        Traits::throwRTIinternalError("Unspecified internal error FIXME");
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    DestroyFederationExecutionResponseType responseType;
+    responseType = dispatchWaitDestroyFederationExecutionResponse(abstime);
+    if (responseType == DestroyFederationExecutionResponseFederatesCurrentlyJoined)
+      throw FederatesCurrentlyJoined(federationExecutionName);
+    if (responseType == DestroyFederationExecutionResponseFederationExecutionDoesNotExist)
+      throw FederationExecutionDoesNotExist(federationExecutionName);
+    if (responseType != DestroyFederationExecutionResponseSuccess)
+      throw RTIinternalError("Unspecified internal error FIXME");
   }
 
   void listFederationExecutions()
-    throw (NotConnected,
-           RTIinternalError)
+    // throw (NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!isConnected())
-        Traits::throwNotConnected();
+    if (!isConnected())
+      throw NotConnected();
 
-      SharedPtr<EnumerateFederationExecutionsRequestMessage> request;
-      request = new EnumerateFederationExecutionsRequestMessage;
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    SharedPtr<EnumerateFederationExecutionsRequestMessage> request;
+    request = new EnumerateFederationExecutionsRequestMessage;
+    send(request);
   }
 
   FederateHandle joinFederationExecution(const std::string& federateName, const std::string& federateType,
                                          const std::string& federationExecutionName,
                                          const FOMStringModuleList& fomModules)
-    throw (CouldNotCreateLogicalTimeFactory,
-           FederationExecutionDoesNotExist,
-           FederateNameAlreadyInUse,
-           // InconsistentFDD,
-           // ErrorReadingFDD,
-           // CouldNotOpenFDD,
-           FederateAlreadyExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           NotConnected,
-           CallNotAllowedFromWithinCallback,
-           RTIinternalError)
+    // throw (CouldNotCreateLogicalTimeFactory,
+    //        FederationExecutionDoesNotExist,
+    //        FederateNameAlreadyInUse,
+    //        InconsistentFDD,
+    //        // ErrorReadingFDD,
+    //        // CouldNotOpenFDD,
+    //        FederateAlreadyExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        CallNotAllowedFromWithinCallback,
+    //        RTIinternalError)
   {
-    try {
-      if (!isConnected())
-        Traits::throwNotConnected(std::string("Could not get connect RTI of federation execution \"") +
-                                  federationExecutionName + std::string("\"."));
-      if (_federate.valid())
-        Traits::throwFederateAlreadyExecutionMember();
+    if (!isConnected())
+      throw NotConnected(std::string("Could not get connect RTI of federation execution \"") +
+                         federationExecutionName + std::string("\"."));
+    if (_federate.valid())
+      throw FederateAlreadyExecutionMember();
 
-      if (!fomModules.empty())
-        Traits::throwRTIinternalError("Additionaly FOM modules are not implemented yet!");
+    if (!fomModules.empty())
+      throw RTIinternalError("Additionaly FOM modules are not implemented yet!");
 
-      // The maximum abstime to try to connect
-      Clock abstime = Clock::now() + Clock::fromSeconds(70);
+    // The maximum abstime to try to connect
+    Clock abstime = Clock::now() + Clock::fromSeconds(70);
 
-      // The destroy request message
-      SharedPtr<JoinFederationExecutionRequestMessage> request;
-      request = new JoinFederationExecutionRequestMessage;
-      request->setFederationExecution(federationExecutionName);
-      request->setFederateType(federateType);
-      request->setFederateName(federateName);
+    // The destroy request message
+    SharedPtr<JoinFederationExecutionRequestMessage> request;
+    request = new JoinFederationExecutionRequestMessage;
+    request->setFederationExecution(federationExecutionName);
+    request->setFederateType(federateType);
+    request->setFederateName(federateName);
 
-      // Send this message and wait for the response
-      send(request);
-      JoinFederationExecutionResponseType responseType;
-      responseType = dispatchWaitJoinFederationExecutionResponse(abstime);
-      switch (responseType) {
-      case JoinFederationExecutionResponseFederateNameAlreadyInUse:
-        _federate = 0;
-        Traits::throwFederateNameAlreadyInUse(federateName);
-        break;
-      case JoinFederationExecutionResponseFederationExecutionDoesNotExist:
-        _federate = 0;
-        Traits::throwFederationExecutionDoesNotExist(federationExecutionName);
-        break;
-      case JoinFederationExecutionResponseSaveInProgress:
-        _federate = 0;
-        Traits::throwSaveInProgress();
-        break;
-      case JoinFederationExecutionResponseRestoreInProgress:
-        _federate = 0;
-        Traits::throwRestoreInProgress();
-        break;
-      default:
-        break;
-      }
-      if (!_federate.valid())
-        Traits::throwRTIinternalError("Federate is not valid!");
-
-      if (!_timeManagement.valid()) {
-        std::string logicalTimeFactoryName = _federate->getLogicalTimeFactoryName();
-
-        _resignFederationExecution(CANCEL_THEN_DELETE_THEN_DIVEST);
-
-        if (!logicalTimeFactoryName.empty())
-          Traits::throwCouldNotCreateLogicalTimeFactory(logicalTimeFactoryName);
-        else
-          Traits::throwRTIinternalError();
-      }
-
-      // Request new object instance handles, once we are here ...
-      _requestObjectInstanceHandles(16);
-
-      return getFederateHandle();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    // Send this message and wait for the response
+    send(request);
+    JoinFederationExecutionResponseType responseType;
+    responseType = dispatchWaitJoinFederationExecutionResponse(abstime);
+    switch (responseType) {
+    case JoinFederationExecutionResponseFederateNameAlreadyInUse:
+      _federate = 0;
+      throw FederateNameAlreadyInUse(federateName);
+      break;
+    case JoinFederationExecutionResponseFederationExecutionDoesNotExist:
+      _federate = 0;
+      throw FederationExecutionDoesNotExist(federationExecutionName);
+      break;
+    case JoinFederationExecutionResponseSaveInProgress:
+      _federate = 0;
+      throw SaveInProgress();
+      break;
+    case JoinFederationExecutionResponseRestoreInProgress:
+      _federate = 0;
+      throw RestoreInProgress();
+      break;
+    default:
+      break;
     }
+    if (!_federate.valid())
+      throw RTIinternalError("Federate is not valid!");
+
+    if (!_timeManagement.valid()) {
+      std::string logicalTimeFactoryName = _federate->getLogicalTimeFactoryName();
+
+      _resignFederationExecution(CANCEL_THEN_DELETE_THEN_DIVEST);
+
+      if (!logicalTimeFactoryName.empty())
+        throw CouldNotCreateLogicalTimeFactory(logicalTimeFactoryName);
+      else
+        throw RTIinternalError();
+    }
+
+    // Request new object instance handles, once we are here ...
+    _requestObjectInstanceHandles(16);
+
+    return getFederateHandle();
   }
 
   void resignFederationExecution(ResignAction resignAction)
-    throw (OwnershipAcquisitionPending,
-           FederateOwnsAttributes,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (OwnershipAcquisitionPending,
+    //        FederateOwnsAttributes,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      _resignFederationExecution(resignAction);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    _resignFederationExecution(resignAction);
   }
 
   void _resignFederationExecution(ResignAction resignAction)
@@ -415,557 +274,564 @@ public:
 
     Clock clock = Clock::now() + Clock::fromSeconds(70);
     if (!dispatchWaitEraseFederationExecutionResponse(clock))
-      Traits::throwRTIinternalError("resignFederationExecution hit timeout!");
+      throw RTIinternalError("resignFederationExecution hit timeout!");
 
     _federate = 0;
   }
 
 
   void registerFederationSynchronizationPoint(const std::string& label, const VariableLengthData& tag, const FederateHandleSet& syncSet)
-    throw (FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
 
-      // Tell all federates about that label
-      SharedPtr<RegisterFederationSynchronizationPointMessage> message;
-      message = new RegisterFederationSynchronizationPointMessage;
-      message->setFederationHandle(getFederationHandle());
-      message->setFederateHandle(getFederateHandle());
-      message->setLabel(label);
-      message->setTag(tag);
-      message->setFederateHandleSet(syncSet);
-      send(message);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    // Tell all federates about that label
+    SharedPtr<RegisterFederationSynchronizationPointMessage> message;
+    message = new RegisterFederationSynchronizationPointMessage;
+    message->setFederationHandle(getFederationHandle());
+    message->setFederateHandle(getFederateHandle());
+    message->setLabel(label);
+    message->setTag(tag);
+    message->setFederateHandleSet(syncSet);
+    send(message);
   }
 
-  void synchronizationPointAchieved(const std::string& label)
-    throw (SynchronizationPointLabelNotAnnounced,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+  void synchronizationPointAchieved(const std::string& label, bool successfully)
+    // throw (SynchronizationPointLabelNotAnnounced,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (!_federate->synchronizationLabelAnnounced(label))
-        Traits::throwSynchronizationPointLabelNotAnnounced();
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    if (!_federate->synchronizationLabelAnnounced(label))
+      throw SynchronizationPointLabelNotAnnounced();
+    if (!successfully)
+      throw RTIinternalError("unsuccessful synchronization point achieved!? not implemented");
 
-      // tell all federates about that label
-      SharedPtr<SynchronizationPointAchievedMessage> message;
-      message = new SynchronizationPointAchievedMessage;
-      message->setFederationHandle(getFederationHandle());
-      message->getFederateHandleSet().insert(getFederateHandle());
-      message->setLabel(label);
-      send(message);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    // tell all federates about that label
+    SharedPtr<SynchronizationPointAchievedMessage> message;
+    message = new SynchronizationPointAchievedMessage;
+    message->setFederationHandle(getFederationHandle());
+    message->getFederateHandleSet().insert(getFederateHandle());
+    message->setLabel(label);
+    send(message);
   }
 
   void requestFederationSave(const std::string& label)
-    throw (FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError("Save/Restore not implemented!");
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Save/Restore not implemented!");
   }
 
   void requestFederationSave(const std::string& label, const NativeLogicalTime& locicalTime)
-    throw (LogicalTimeAlreadyPassed,
-           InvalidLogicalTime,
-           FederateUnableToUseTime,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (LogicalTimeAlreadyPassed,
+    //        InvalidLogicalTime,
+    //        FederateUnableToUseTime,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError("Save/Restore not implemented!");
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Save/Restore not implemented!");
   }
 
   void federateSaveBegun()
-    throw (SaveNotInitiated,
-           FederateNotExecutionMember,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (SaveNotInitiated,
+    //        FederateNotExecutionMember,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError("Save/Restore not implemented!");
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Save/Restore not implemented!");
   }
 
   void federateSaveComplete()
-    throw (FederateHasNotBegunSave,
-           FederateNotExecutionMember,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (FederateHasNotBegunSave,
+    //        FederateNotExecutionMember,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError("Save/Restore not implemented!");
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Save/Restore not implemented!");
   }
 
   void federateSaveNotComplete()
-    throw (FederateHasNotBegunSave,
-           FederateNotExecutionMember,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (FederateHasNotBegunSave,
+    //        FederateNotExecutionMember,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError("Save/Restore not implemented!");
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Save/Restore not implemented!");
+  }
+
+  void abortFederationSave()
+    // throw (SaveNotInProgress,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
+  {
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Save/Restore not implemented!");
   }
 
   void queryFederationSaveStatus()
-    throw (FederateNotExecutionMember,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (FederateNotExecutionMember,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError("Save/Restore not implemented!");
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Save/Restore not implemented!");
   }
 
   void requestFederationRestore(const std::string& label)
-    throw (FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError("Save/Restore not implemented!");
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Save/Restore not implemented!");
   }
 
   void federateRestoreComplete()
-    throw (RestoreNotRequested,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RTIinternalError)
+    // throw (RestoreNotRequested,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError("Save/Restore not implemented!");
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Save/Restore not implemented!");
   }
 
   void federateRestoreNotComplete()
-    throw (RestoreNotRequested,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RTIinternalError)
+    // throw (RestoreNotRequested,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError("Save/Restore not implemented!");
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Save/Restore not implemented!");
+  }
+
+  void abortFederationRestore()
+    // throw (RestoreNotInProgress,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
+  {
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Save/Restore not implemented!");
   }
 
   void queryFederationRestoreStatus()
-    throw (FederateNotExecutionMember,
-           SaveInProgress,
-           RTIinternalError)
+    // throw (FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError("Save/Restore not implemented!");
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Save/Restore not implemented!");
   }
 
   void publishObjectClassAttributes(ObjectClassHandle objectClassHandle, const AttributeHandleSet& attributeList)
-    throw (ObjectClassNotDefined,
-           AttributeNotDefined,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectClassNotDefined,
+    //        AttributeNotDefined,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      // At first the complete error checks
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
-      if (!objectClass)
-        Traits::throwObjectClassNotDefined(objectClassHandle.toString());
-      for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i)
-        if (!objectClass->getAttribute(*i))
-          Traits::throwAttributeNotDefined(i->toString());
+    // At first the complete error checks
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
+    if (!objectClass)
+      throw ObjectClassNotDefined(objectClassHandle.toString());
+    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i)
+      if (!objectClass->getAttribute(*i))
+        throw AttributeNotDefined(i->toString());
 
-      SharedPtr<ChangeObjectClassPublicationMessage> request = new ChangeObjectClassPublicationMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectClassHandle(objectClassHandle);
+    SharedPtr<ChangeObjectClassPublicationMessage> request = new ChangeObjectClassPublicationMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectClassHandle(objectClassHandle);
 
-      // Alway one more because of the implicit privilege to delete
-      request->getAttributeHandles().reserve(1 + attributeList.size());
-      request->setPublicationType(Published);
+    // Alway one more because of the implicit privilege to delete
+    request->getAttributeHandles().reserve(1 + attributeList.size());
+    request->setPublicationType(Published);
 
-      // Mark the objectclass itself as published.
-      // Append this to the request if this publication has changed
-      if (objectClass->setPublicationType(Published))
-        request->getAttributeHandles().push_back(AttributeHandle(0));
-      for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i) {
-        // returns true if there is a change in the publication state
-        if (!objectClass->setAttributePublicationType(*i, Published))
-          continue;
-        request->getAttributeHandles().push_back(*i);
-      }
-      // If there has nothing changed, don't send anything.
-      if (request->getAttributeHandles().empty())
-        return;
-
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    // Mark the objectclass itself as published.
+    // Append this to the request if this publication has changed
+    if (objectClass->setPublicationType(Published))
+      request->getAttributeHandles().push_back(AttributeHandle(0));
+    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i) {
+      // returns true if there is a change in the publication state
+      if (!objectClass->setAttributePublicationType(*i, Published))
+        continue;
+      request->getAttributeHandles().push_back(*i);
     }
+    // If there has nothing changed, don't send anything.
+    if (request->getAttributeHandles().empty())
+      return;
+
+    send(request);
   }
 
   void unpublishObjectClass(ObjectClassHandle objectClassHandle)
-    throw (ObjectClassNotDefined,
-           OwnershipAcquisitionPending,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectClassNotDefined,
+    //        OwnershipAcquisitionPending,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      // At first the complete error checks
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
-      if (!objectClass)
-        Traits::throwObjectClassNotDefined(objectClassHandle.toString());
+    // At first the complete error checks
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
+    if (!objectClass)
+      throw ObjectClassNotDefined(objectClassHandle.toString());
 
-      // now that we know not to throw, handle the request
-      SharedPtr<ChangeObjectClassPublicationMessage> request = new ChangeObjectClassPublicationMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectClassHandle(objectClassHandle);
+    // now that we know not to throw, handle the request
+    SharedPtr<ChangeObjectClassPublicationMessage> request = new ChangeObjectClassPublicationMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectClassHandle(objectClassHandle);
 
-      // Alway one more because of the implicit privilege to delete
-      request->getAttributeHandles().reserve(objectClass->getNumAttributes());
-      request->setPublicationType(Unpublished);
+    // Alway one more because of the implicit privilege to delete
+    request->getAttributeHandles().reserve(objectClass->getNumAttributes());
+    request->setPublicationType(Unpublished);
 
-      // Mark the objectclass itself as unpublished.
-      // Append this to the request if this publication has changed
-      if (objectClass->setPublicationType(Unpublished))
-        request->getAttributeHandles().push_back(AttributeHandle(0));
-      for (size_t i = 0; i < objectClass->getNumAttributes(); ++i) {
-        // returns true if there is a change in the publication state
-        if (!objectClass->setAttributePublicationType(AttributeHandle(i), Unpublished))
-          continue;
-        request->getAttributeHandles().push_back(AttributeHandle(i));
-      }
-      // If there has nothing changed, don't send anything.
-      if (request->getAttributeHandles().empty())
-        return;
-
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    // Mark the objectclass itself as unpublished.
+    // Append this to the request if this publication has changed
+    if (objectClass->setPublicationType(Unpublished))
+      request->getAttributeHandles().push_back(AttributeHandle(0));
+    for (size_t i = 0; i < objectClass->getNumAttributes(); ++i) {
+      // returns true if there is a change in the publication state
+      if (!objectClass->setAttributePublicationType(AttributeHandle(i), Unpublished))
+        continue;
+      request->getAttributeHandles().push_back(AttributeHandle(i));
     }
+    // If there has nothing changed, don't send anything.
+    if (request->getAttributeHandles().empty())
+      return;
+
+    send(request);
   }
 
   void unpublishObjectClassAttributes(ObjectClassHandle objectClassHandle, const AttributeHandleSet& attributeList)
-    throw (ObjectClassNotDefined,
-           AttributeNotDefined,
-           OwnershipAcquisitionPending,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectClassNotDefined,
+    //        AttributeNotDefined,
+    //        OwnershipAcquisitionPending,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      // At first the complete error checks
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
-      if (!objectClass)
-        Traits::throwObjectClassNotDefined(objectClassHandle.toString());
-      for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i)
-        if (!objectClass->getAttribute(*i))
-          Traits::throwAttributeNotDefined(i->toString());
+    // At first the complete error checks
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
+    if (!objectClass)
+      throw ObjectClassNotDefined(objectClassHandle.toString());
+    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i)
+      if (!objectClass->getAttribute(*i))
+        throw AttributeNotDefined(i->toString());
 
-      // now that we know not to throw, handle the request
-      SharedPtr<ChangeObjectClassPublicationMessage> request = new ChangeObjectClassPublicationMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectClassHandle(objectClassHandle);
+    // now that we know not to throw, handle the request
+    SharedPtr<ChangeObjectClassPublicationMessage> request = new ChangeObjectClassPublicationMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectClassHandle(objectClassHandle);
 
-      // Alway one more because of the implicit privilege to delete
-      request->getAttributeHandles().reserve(attributeList.size());
-      request->setPublicationType(Unpublished);
+    // Alway one more because of the implicit privilege to delete
+    request->getAttributeHandles().reserve(attributeList.size());
+    request->setPublicationType(Unpublished);
 
-      for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i) {
-        // returns true if there is a change in the publication state
-        if (!objectClass->setAttributePublicationType(*i, Unpublished))
-          continue;
-        request->getAttributeHandles().push_back(*i);
-      }
-      // If there has nothing changed, don't send anything.
-      if (request->getAttributeHandles().empty())
-        return;
-
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i) {
+      // returns true if there is a change in the publication state
+      if (!objectClass->setAttributePublicationType(*i, Unpublished))
+        continue;
+      request->getAttributeHandles().push_back(*i);
     }
+    // If there has nothing changed, don't send anything.
+    if (request->getAttributeHandles().empty())
+      return;
+
+    send(request);
   }
 
   void publishInteractionClass(InteractionClassHandle interactionClassHandle)
-    throw (InteractionClassNotDefined,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InteractionClassNotDefined,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
-      if (!interactionClass)
-        Traits::throwInteractionClassNotDefined(interactionClassHandle.toString());
-      if (!interactionClass->setPublicationType(Published))
-        return;
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
+    if (!interactionClass)
+      throw InteractionClassNotDefined(interactionClassHandle.toString());
+    if (!interactionClass->setPublicationType(Published))
+      return;
 
-      SharedPtr<ChangeInteractionClassPublicationMessage> request = new ChangeInteractionClassPublicationMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setInteractionClassHandle(interactionClassHandle);
-      request->setPublicationType(Published);
+    SharedPtr<ChangeInteractionClassPublicationMessage> request = new ChangeInteractionClassPublicationMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setInteractionClassHandle(interactionClassHandle);
+    request->setPublicationType(Published);
 
-      send(request);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    send(request);
   }
 
   void unpublishInteractionClass(InteractionClassHandle interactionClassHandle)
-    throw (InteractionClassNotDefined,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InteractionClassNotDefined,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
 
-      Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
-      if (!interactionClass)
-        Traits::throwInteractionClassNotDefined(interactionClassHandle.toString());
-      if (!interactionClass->setPublicationType(Unpublished))
-        return;
+    Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
+    if (!interactionClass)
+      throw InteractionClassNotDefined(interactionClassHandle.toString());
+    if (!interactionClass->setPublicationType(Unpublished))
+      return;
 
-      SharedPtr<ChangeInteractionClassPublicationMessage> request = new ChangeInteractionClassPublicationMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setInteractionClassHandle(interactionClassHandle);
-      request->setPublicationType(Unpublished);
+    SharedPtr<ChangeInteractionClassPublicationMessage> request = new ChangeInteractionClassPublicationMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setInteractionClassHandle(interactionClassHandle);
+    request->setPublicationType(Unpublished);
 
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    send(request);
   }
 
-  void subscribeObjectClassAttributes(ObjectClassHandle objectClassHandle, const AttributeHandleSet& attributeList, bool active)
-    throw (ObjectClassNotDefined,
-           AttributeNotDefined,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+  void subscribeObjectClassAttributes(ObjectClassHandle objectClassHandle, const AttributeHandleSet& attributeList, bool active, const std::string& updateRateDesignator)
+    // throw (ObjectClassNotDefined,
+    //        AttributeNotDefined,
+    //        FederateNotExecutionMember,
+    //        InvalidUpdateRateDesignator,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      // At first the complete error checks
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
-      if (!objectClass)
-        Traits::throwObjectClassNotDefined(objectClassHandle.toString());
-      for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i)
-        if (!objectClass->getAttribute(*i))
-          Traits::throwAttributeNotDefined(i->toString());
+    // At first the complete error checks
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
+    if (!objectClass)
+      throw ObjectClassNotDefined(objectClassHandle.toString());
+    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i)
+      if (!objectClass->getAttribute(*i))
+        throw AttributeNotDefined(i->toString());
+    if (!updateRateDesignator.empty())
+      throw RTIinternalError("Non trvial update rate designators are not implemented yet!");
 
-      // now that we know not to throw, handle the request
-      SharedPtr<ChangeObjectClassSubscriptionMessage> request = new ChangeObjectClassSubscriptionMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectClassHandle(objectClassHandle);
+    // now that we know not to throw, handle the request
+    SharedPtr<ChangeObjectClassSubscriptionMessage> request = new ChangeObjectClassSubscriptionMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectClassHandle(objectClassHandle);
 
-      // Alway one more because of the implicit privilege to delete
-      request->getAttributeHandles().reserve(1 + attributeList.size());
+    // Alway one more because of the implicit privilege to delete
+    request->getAttributeHandles().reserve(1 + attributeList.size());
 
-      SubscriptionType subscriptionType;
-      if (active) {
-        subscriptionType = SubscribedActive;
-      } else {
-        subscriptionType = SubscribedPassive;
-      }
-      request->setSubscriptionType(subscriptionType);
-
-      // Mark the objectclass itself as subscribed.
-      // Append this to the request if this subscription has changed
-      if (objectClass->setSubscriptionType(subscriptionType))
-        request->getAttributeHandles().push_back(AttributeHandle(0));
-      for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i) {
-        // returns true if there is a change in the subscription state
-        if (!objectClass->setAttributeSubscriptionType(*i, subscriptionType))
-          continue;
-        request->getAttributeHandles().push_back(*i);
-      }
-      // If there has nothing changed, don't send anything.
-      if (request->getAttributeHandles().empty())
-        return;
-
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    SubscriptionType subscriptionType;
+    if (active) {
+      subscriptionType = SubscribedActive;
+    } else {
+      subscriptionType = SubscribedPassive;
     }
+    request->setSubscriptionType(subscriptionType);
+
+    // Mark the objectclass itself as subscribed.
+    // Append this to the request if this subscription has changed
+    if (objectClass->setSubscriptionType(subscriptionType))
+      request->getAttributeHandles().push_back(AttributeHandle(0));
+    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i) {
+      // returns true if there is a change in the subscription state
+      if (!objectClass->setAttributeSubscriptionType(*i, subscriptionType))
+        continue;
+      request->getAttributeHandles().push_back(*i);
+    }
+    // If there has nothing changed, don't send anything.
+    if (request->getAttributeHandles().empty())
+      return;
+
+    send(request);
   }
 
   void unsubscribeObjectClass(ObjectClassHandle objectClassHandle)
-    throw (ObjectClassNotDefined,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectClassNotDefined,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      // At first the complete error checks
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
-      if (!objectClass)
-        Traits::throwObjectClassNotDefined(objectClassHandle.toString());
+    // At first the complete error checks
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
+    if (!objectClass)
+      throw ObjectClassNotDefined(objectClassHandle.toString());
 
-      // now that we know not to throw, handle the request
-      SharedPtr<ChangeObjectClassSubscriptionMessage> request = new ChangeObjectClassSubscriptionMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectClassHandle(objectClassHandle);
-      request->setSubscriptionType(Unsubscribed);
-      request->getAttributeHandles().reserve(objectClass->getNumAttributes());
-      if (objectClass->setSubscriptionType(Unsubscribed))
-        request->getAttributeHandles().push_back(AttributeHandle(0));
-      for (size_t i = 0; i < objectClass->getNumAttributes(); ++i) {
-        // returns true if there is a change in the subscription state
-        if (!objectClass->setAttributeSubscriptionType(AttributeHandle(i), Unsubscribed))
-          continue;
-        request->getAttributeHandles().push_back(AttributeHandle(i));
+    // now that we know not to throw, handle the request
+    SharedPtr<ChangeObjectClassSubscriptionMessage> request = new ChangeObjectClassSubscriptionMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectClassHandle(objectClassHandle);
+    request->setSubscriptionType(Unsubscribed);
+    request->getAttributeHandles().reserve(objectClass->getNumAttributes());
+    if (objectClass->setSubscriptionType(Unsubscribed))
+      request->getAttributeHandles().push_back(AttributeHandle(0));
+    for (size_t i = 0; i < objectClass->getNumAttributes(); ++i) {
+      // returns true if there is a change in the subscription state
+      if (!objectClass->setAttributeSubscriptionType(AttributeHandle(i), Unsubscribed))
+        continue;
+      request->getAttributeHandles().push_back(AttributeHandle(i));
+    }
+    // If there has nothing changed, don't send anything.
+    if (request->getAttributeHandles().empty())
+      return;
+
+    send(request);
+
+    OpenRTIAssert(objectClass->getEffectiveSubscriptionType() == Unsubscribed);
+
+    for (Federate::ObjectInstanceHandleMap::const_iterator i = _federate->getObjectInstanceHandleMap().begin();
+         i != _federate->getObjectInstanceHandleMap().end();) {
+      if (i->second->getObjectClassHandle() != objectClassHandle) {
+        ++i;
+      } else if (i->second->isOwnedByFederate()) {
+        ++i;
+      } else {
+        _releaseObjectInstance(ObjectInstanceHandle((i++)->first));
       }
-      // If there has nothing changed, don't send anything.
-      if (request->getAttributeHandles().empty())
-        return;
+    }
+  }
 
-      send(request);
+  void unsubscribeObjectClassAttributes(ObjectClassHandle objectClassHandle, const AttributeHandleSet& attributeList)
+    // throw (ObjectClassNotDefined,
+    //        AttributeNotDefined,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
+  {
+    // At first the complete error checks
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
+    if (!objectClass)
+      throw ObjectClassNotDefined(objectClassHandle.toString());
+    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i)
+      if (!objectClass->getAttribute(*i))
+        throw AttributeNotDefined(i->toString());
 
-      OpenRTIAssert(objectClass->getEffectiveSubscriptionType() == Unsubscribed);
+    // now that we know not to throw, handle the request
+    SharedPtr<ChangeObjectClassSubscriptionMessage> request = new ChangeObjectClassSubscriptionMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectClassHandle(objectClassHandle);
+    request->setSubscriptionType(Unsubscribed);
 
+    request->getAttributeHandles().reserve(attributeList.size());
+    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i) {
+      // returns true if there is a change in the subscription state
+      if (!objectClass->setAttributeSubscriptionType(*i, Unsubscribed))
+        continue;
+      request->getAttributeHandles().push_back(*i);
+    }
+    // If there has nothing changed, don't send anything.
+    if (request->getAttributeHandles().empty())
+      return;
+
+    send(request);
+
+    if (objectClass->getEffectiveSubscriptionType() == Unsubscribed) {
       for (Federate::ObjectInstanceHandleMap::const_iterator i = _federate->getObjectInstanceHandleMap().begin();
            i != _federate->getObjectInstanceHandleMap().end();) {
         if (i->second->getObjectClassHandle() != objectClassHandle) {
@@ -976,449 +842,342 @@ public:
           _releaseObjectInstance(ObjectInstanceHandle((i++)->first));
         }
       }
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
-  }
-
-  void unsubscribeObjectClassAttributes(ObjectClassHandle objectClassHandle, const AttributeHandleSet& attributeList)
-    throw (ObjectClassNotDefined,
-           AttributeNotDefined,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
-  {
-    try {
-      // At first the complete error checks
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
-      if (!objectClass)
-        Traits::throwObjectClassNotDefined(objectClassHandle.toString());
-      for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i)
-        if (!objectClass->getAttribute(*i))
-          Traits::throwAttributeNotDefined(i->toString());
-
-      // now that we know not to throw, handle the request
-      SharedPtr<ChangeObjectClassSubscriptionMessage> request = new ChangeObjectClassSubscriptionMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectClassHandle(objectClassHandle);
-      request->setSubscriptionType(Unsubscribed);
-
-      request->getAttributeHandles().reserve(attributeList.size());
-      for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i) {
-        // returns true if there is a change in the subscription state
-        if (!objectClass->setAttributeSubscriptionType(*i, Unsubscribed))
-          continue;
-        request->getAttributeHandles().push_back(*i);
-      }
-      // If there has nothing changed, don't send anything.
-      if (request->getAttributeHandles().empty())
-        return;
-
-      send(request);
-
-      if (objectClass->getEffectiveSubscriptionType() == Unsubscribed) {
-        for (Federate::ObjectInstanceHandleMap::const_iterator i = _federate->getObjectInstanceHandleMap().begin();
-             i != _federate->getObjectInstanceHandleMap().end();) {
-          if (i->second->getObjectClassHandle() != objectClassHandle) {
-            ++i;
-          } else if (i->second->isOwnedByFederate()) {
-            ++i;
-          } else {
-            _releaseObjectInstance(ObjectInstanceHandle((i++)->first));
-          }
-        }
-      }
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
     }
   }
 
   void subscribeInteractionClass(InteractionClassHandle interactionClassHandle, bool active)
-    throw (InteractionClassNotDefined,
-           FederateServiceInvocationsAreBeingReportedViaMOM,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InteractionClassNotDefined,
+    //        FederateServiceInvocationsAreBeingReportedViaMOM,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
-      if (!interactionClass)
-        Traits::throwInteractionClassNotDefined(interactionClassHandle.toString());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
+    if (!interactionClass)
+      throw InteractionClassNotDefined(interactionClassHandle.toString());
 
-      SubscriptionType subscriptionType;
-      if (active) {
-        subscriptionType = SubscribedActive;
-      } else {
-        subscriptionType = SubscribedPassive;
-      }
-      if (!interactionClass->setSubscriptionType(subscriptionType))
-        return;
-
-      SharedPtr<ChangeInteractionClassSubscriptionMessage> request = new ChangeInteractionClassSubscriptionMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setInteractionClassHandle(interactionClassHandle);
-      request->setSubscriptionType(subscriptionType);
-
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    SubscriptionType subscriptionType;
+    if (active) {
+      subscriptionType = SubscribedActive;
+    } else {
+      subscriptionType = SubscribedPassive;
     }
+    if (!interactionClass->setSubscriptionType(subscriptionType))
+      return;
+
+    SharedPtr<ChangeInteractionClassSubscriptionMessage> request = new ChangeInteractionClassSubscriptionMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setInteractionClassHandle(interactionClassHandle);
+    request->setSubscriptionType(subscriptionType);
+
+    send(request);
   }
 
   void unsubscribeInteractionClass(InteractionClassHandle interactionClassHandle)
-    throw (InteractionClassNotDefined,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InteractionClassNotDefined,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
-      if (!interactionClass)
-        Traits::throwInteractionClassNotDefined(interactionClassHandle.toString());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
+    if (!interactionClass)
+      throw InteractionClassNotDefined(interactionClassHandle.toString());
 
-      if (!interactionClass->setSubscriptionType(Unsubscribed))
-        return;
+    if (!interactionClass->setSubscriptionType(Unsubscribed))
+      return;
 
-      SharedPtr<ChangeInteractionClassSubscriptionMessage> request = new ChangeInteractionClassSubscriptionMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setInteractionClassHandle(interactionClassHandle);
-      request->setSubscriptionType(Unsubscribed);
+    SharedPtr<ChangeInteractionClassSubscriptionMessage> request = new ChangeInteractionClassSubscriptionMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setInteractionClassHandle(interactionClassHandle);
+    request->setSubscriptionType(Unsubscribed);
 
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    send(request);
   }
 
   void reserveObjectInstanceName(const std::string& objectInstanceName)
-    throw (IllegalName,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (IllegalName,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (objectInstanceName.empty())
-        Traits::throwIllegalName("Empty object names are not allowed!");
-      if (objectInstanceName.compare(0, 3, "HLA") == 0)
-        Traits::throwIllegalName("Object instance names starting with \"HLA\" are reserved for the RTI.");
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    if (objectInstanceName.empty())
+      throw IllegalName("Empty object names are not allowed!");
+    if (objectInstanceName.compare(0, 3, "HLA") == 0)
+      throw IllegalName("Object instance names starting with \"HLA\" are reserved for the RTI.");
 
-      SharedPtr<ReserveObjectInstanceNameRequestMessage> request;
-      request = new ReserveObjectInstanceNameRequestMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setFederateHandle(getFederateHandle());
-      request->setName(objectInstanceName);
+    SharedPtr<ReserveObjectInstanceNameRequestMessage> request;
+    request = new ReserveObjectInstanceNameRequestMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setFederateHandle(getFederateHandle());
+    request->setName(objectInstanceName);
 
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    send(request);
   }
 
   void releaseObjectInstanceName(const std::string& objectInstanceName)
-    throw (ObjectInstanceNameNotReserved,
-           SaveInProgress,
-           RestoreInProgress,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (ObjectInstanceNameNotReserved,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      ObjectInstanceHandle objectInstanceHandle = _federate->takeReservedObjectInstanceName(objectInstanceName);
-      if (!objectInstanceHandle.valid())
-        Traits::throwObjectInstanceNameNotReserved(objectInstanceName);
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    ObjectInstanceHandle objectInstanceHandle = _federate->takeReservedObjectInstanceName(objectInstanceName);
+    if (!objectInstanceHandle.valid())
+      throw ObjectInstanceNameNotReserved(objectInstanceName);
 
-      // ... and send the release message to the rti
-      SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message;
-      message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
-      message->setFederationHandle(getFederationHandle());
-      message->getObjectInstanceHandleVector().push_back(objectInstanceHandle);
+    // ... and send the release message to the rti
+    SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message;
+    message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
+    message->setFederationHandle(getFederationHandle());
+    message->getObjectInstanceHandleVector().push_back(objectInstanceHandle);
 
-      send(message);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    send(message);
   }
 
   void reserveMultipleObjectInstanceName(const std::set<std::string>& objectInstanceNameSet)
-    throw (IllegalName,
-           NameSetWasEmpty,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (IllegalName,
+    //        NameSetWasEmpty,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (objectInstanceNameSet.empty())
-        Traits::throwNameSetWasEmpty("Empty object name set is not allowed!");
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    if (objectInstanceNameSet.empty())
+      throw NameSetWasEmpty("Empty object name set is not allowed!");
 
-      SharedPtr<ReserveMultipleObjectInstanceNameRequestMessage> request;
-      request = new ReserveMultipleObjectInstanceNameRequestMessage;
-      request->getNameList().reserve(objectInstanceNameSet.size());
-      for (std::set<std::string>::const_iterator i = objectInstanceNameSet.begin(); i != objectInstanceNameSet.end(); ++i) {
-        if (i->empty())
-          Traits::throwIllegalName("Empty object hames are not allowed!");
-        if (i->compare(0, 3, "HLA") == 0)
-          Traits::throwIllegalName("Object instance names starting with \"HLA\" are reserved for the RTI.");
-        request->getNameList().push_back(*i);
-      }
-      request->setFederationHandle(getFederationHandle());
-      request->setFederateHandle(getFederateHandle());
-
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    SharedPtr<ReserveMultipleObjectInstanceNameRequestMessage> request;
+    request = new ReserveMultipleObjectInstanceNameRequestMessage;
+    request->getNameList().reserve(objectInstanceNameSet.size());
+    for (std::set<std::string>::const_iterator i = objectInstanceNameSet.begin(); i != objectInstanceNameSet.end(); ++i) {
+      if (i->empty())
+        throw IllegalName("Empty object hames are not allowed!");
+      if (i->compare(0, 3, "HLA") == 0)
+        throw IllegalName("Object instance names starting with \"HLA\" are reserved for the RTI.");
+      request->getNameList().push_back(*i);
     }
+    request->setFederationHandle(getFederationHandle());
+    request->setFederateHandle(getFederateHandle());
+
+    send(request);
   }
 
   void releaseMultipleObjectInstanceName(const std::set<std::string>& objectInstanceNameSet)
-    throw (ObjectInstanceNameNotReserved,
-           SaveInProgress,
-           RestoreInProgress,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (ObjectInstanceNameNotReserved,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      for (std::set<std::string>::const_iterator i = objectInstanceNameSet.begin(); i != objectInstanceNameSet.end(); ++i) {
-        if (!_federate->objectInstanceNameReserved(*i))
-          Traits::throwObjectInstanceNameNotReserved(*i);
-      }
-
-      SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message;
-      message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
-      message->setFederationHandle(getFederationHandle());
-      message->getObjectInstanceHandleVector().reserve(objectInstanceNameSet.size());
-      for (std::set<std::string>::const_iterator i = objectInstanceNameSet.begin(); i != objectInstanceNameSet.end(); ++i) {
-        ObjectInstanceHandle objectInstanceHandle = _federate->takeReservedObjectInstanceName(*i);
-        OpenRTIAssert(objectInstanceHandle.valid());
-        message->getObjectInstanceHandleVector().push_back(objectInstanceHandle);
-      }
-      send(message);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    for (std::set<std::string>::const_iterator i = objectInstanceNameSet.begin(); i != objectInstanceNameSet.end(); ++i) {
+      if (!_federate->objectInstanceNameReserved(*i))
+        throw ObjectInstanceNameNotReserved(*i);
     }
+
+    SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> message;
+    message = new ReleaseMultipleObjectInstanceNameHandlePairsMessage;
+    message->setFederationHandle(getFederationHandle());
+    message->getObjectInstanceHandleVector().reserve(objectInstanceNameSet.size());
+    for (std::set<std::string>::const_iterator i = objectInstanceNameSet.begin(); i != objectInstanceNameSet.end(); ++i) {
+      ObjectInstanceHandle objectInstanceHandle = _federate->takeReservedObjectInstanceName(*i);
+      OpenRTIAssert(objectInstanceHandle.valid());
+      message->getObjectInstanceHandleVector().push_back(objectInstanceHandle);
+    }
+    send(message);
   }
 
   ObjectInstanceHandle registerObjectInstance(ObjectClassHandle objectClassHandle)
-    throw (ObjectClassNotDefined,
-           ObjectClassNotPublished,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectClassNotDefined,
+    //        ObjectClassNotPublished,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      // At first the complete error checks
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
-      if (!objectClass)
-        Traits::throwObjectClassNotDefined(objectClassHandle.toString());
-      if (Published != objectClass->getEffectivePublicationType())
-        Traits::throwObjectClassNotPublished(objectClass->getName());
+    // At first the complete error checks
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
+    if (!objectClass)
+      throw ObjectClassNotDefined(objectClassHandle.toString());
+    if (Published != objectClass->getEffectivePublicationType())
+      throw ObjectClassNotPublished(objectClass->getName());
 
-      ObjectInstanceHandleNamePair handleNamePair = _getFreeObjectInstanceHandleNamePair();
+    ObjectInstanceHandleNamePair handleNamePair = _getFreeObjectInstanceHandleNamePair();
 
-      _federate->insertObjectInstance(handleNamePair.first, handleNamePair.second, objectClassHandle, true);
+    _federate->insertObjectInstance(handleNamePair.first, handleNamePair.second, objectClassHandle, true);
 
-      SharedPtr<InsertObjectInstanceMessage> request;
-      request = new InsertObjectInstanceMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectClassHandle(objectClassHandle);
-      request->setObjectInstanceHandle(handleNamePair.first);
-      request->setName(handleNamePair.second);
-      request->getAttributeStateVector().reserve(objectClass->getNumAttributes());
-      for (size_t i = 0; i < objectClass->getNumAttributes(); ++i) {
-        if (!objectClass->isAttributePublished(AttributeHandle(i)))
-          continue;
-        AttributeState attributeState;
-        attributeState.setAttributeHandle(AttributeHandle(i));
-        request->getAttributeStateVector().push_back(attributeState);
-      }
-      send(request);
-
-      return handleNamePair.first;
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    SharedPtr<InsertObjectInstanceMessage> request;
+    request = new InsertObjectInstanceMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectClassHandle(objectClassHandle);
+    request->setObjectInstanceHandle(handleNamePair.first);
+    request->setName(handleNamePair.second);
+    request->getAttributeStateVector().reserve(objectClass->getNumAttributes());
+    for (size_t i = 0; i < objectClass->getNumAttributes(); ++i) {
+      if (!objectClass->isAttributePublished(AttributeHandle(i)))
+        continue;
+      AttributeState attributeState;
+      attributeState.setAttributeHandle(AttributeHandle(i));
+      request->getAttributeStateVector().push_back(attributeState);
     }
+    send(request);
+
+    return handleNamePair.first;
   }
 
   ObjectInstanceHandle registerObjectInstance(ObjectClassHandle objectClassHandle, const std::string& objectInstanceName,
                                               bool allowUnreservedObjectNames)
-    throw (ObjectClassNotDefined,
-           ObjectClassNotPublished,
-           ObjectInstanceNameNotReserved,
-           ObjectInstanceNameInUse,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectClassNotDefined,
+    //        ObjectClassNotPublished,
+    //        ObjectInstanceNameNotReserved,
+    //        ObjectInstanceNameInUse,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
     // Short circuit to invent an own name
     if (objectInstanceName.empty())
       return registerObjectInstance(objectClassHandle);
 
-    try {
-      // At first the complete error checks
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
-      if (!objectClass)
-        Traits::throwObjectClassNotDefined(objectClassHandle.toString());
-      if (Published != objectClass->getEffectivePublicationType())
-        Traits::throwObjectClassNotPublished(objectClass->getName());
+    // At first the complete error checks
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
+    if (!objectClass)
+      throw ObjectClassNotDefined(objectClassHandle.toString());
+    if (Published != objectClass->getEffectivePublicationType())
+      throw ObjectClassNotPublished(objectClass->getName());
 
-      // The already available objectInstanceHandle should be stored here.
-      ObjectInstanceHandle objectInstanceHandle;
-      objectInstanceHandle = _federate->takeReservedObjectInstanceName(objectInstanceName);
+    // The already available objectInstanceHandle should be stored here.
+    ObjectInstanceHandle objectInstanceHandle;
+    objectInstanceHandle = _federate->takeReservedObjectInstanceName(objectInstanceName);
 
-      // Check if we already have the object instance name reserved
-      if (!objectInstanceHandle.valid()) {
-        // If not, either policy tells us to just bail out - the standard rti1516 behaviour ...
-        if (!allowUnreservedObjectNames) {
-          Traits::throwObjectInstanceNameNotReserved(objectInstanceName);
-        } else {
-          // Or, we try to reserve this object name behind the scenes.
-          // Ok, if this is allowed, like for a rti13 federate or for the option
-          // of allowing that to emulate certi behavior, we need to do the reservation
-          // of the name now. This is the only syncronous operation in the rti.
-          Clock timeout = Clock::now() + Clock::fromSeconds(60); // FIXME???
-          objectInstanceHandle = dispatchWaitReserveObjectInstanceName(timeout, objectInstanceName);
-          if (!objectInstanceHandle.valid())
-            Traits::throwObjectInstanceNameInUse(objectInstanceName);
-        }
+    // Check if we already have the object instance name reserved
+    if (!objectInstanceHandle.valid()) {
+      // If not, either policy tells us to just bail out - the standard rti1516 behaviour ...
+      if (!allowUnreservedObjectNames) {
+        throw ObjectInstanceNameNotReserved(objectInstanceName);
+      } else {
+        // Or, we try to reserve this object name behind the scenes.
+        // Ok, if this is allowed, like for a rti13 federate or for the option
+        // of allowing that to emulate certi behavior, we need to do the reservation
+        // of the name now. This is the only syncronous operation in the rti.
+        Clock timeout = Clock::now() + Clock::fromSeconds(60); // FIXME???
+        objectInstanceHandle = dispatchWaitReserveObjectInstanceName(timeout, objectInstanceName);
+        if (!objectInstanceHandle.valid())
+          throw ObjectInstanceNameInUse(objectInstanceName);
       }
-
-      // Once we have survived, we know that the objectInstanceName given in the argument is unique and ours.
-      // Also the object instance handle in this local scope must be valid and ours.
-
-      _federate->insertObjectInstance(objectInstanceHandle, objectInstanceName, objectClassHandle, true);
-
-      SharedPtr<InsertObjectInstanceMessage> request;
-      request = new InsertObjectInstanceMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectClassHandle(objectClassHandle);
-      request->setObjectInstanceHandle(objectInstanceHandle);
-      request->setName(objectInstanceName);
-      request->getAttributeStateVector().reserve(objectClass->getNumAttributes());
-      for (size_t i = 0; i < objectClass->getNumAttributes(); ++i) {
-        if (!objectClass->isAttributePublished(AttributeHandle(i)))
-          continue;
-        AttributeState attributeState;
-        attributeState.setAttributeHandle(AttributeHandle(i));
-        request->getAttributeStateVector().push_back(attributeState);
-      }
-      send(request);
-
-      return objectInstanceHandle;
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
     }
+
+    // Once we have survived, we know that the objectInstanceName given in the argument is unique and ours.
+    // Also the object instance handle in this local scope must be valid and ours.
+
+    _federate->insertObjectInstance(objectInstanceHandle, objectInstanceName, objectClassHandle, true);
+
+    SharedPtr<InsertObjectInstanceMessage> request;
+    request = new InsertObjectInstanceMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectClassHandle(objectClassHandle);
+    request->setObjectInstanceHandle(objectInstanceHandle);
+    request->setName(objectInstanceName);
+    request->getAttributeStateVector().reserve(objectClass->getNumAttributes());
+    for (size_t i = 0; i < objectClass->getNumAttributes(); ++i) {
+      if (!objectClass->isAttributePublished(AttributeHandle(i)))
+        continue;
+      AttributeState attributeState;
+      attributeState.setAttributeHandle(AttributeHandle(i));
+      request->getAttributeStateVector().push_back(attributeState);
+    }
+    send(request);
+
+    return objectInstanceHandle;
   }
 
   void updateAttributeValues(ObjectInstanceHandle objectInstanceHandle,
                              AttributeValueVector& attributeValues,
                              const VariableLengthData& tag)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        AttributeNotOwned,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
-      if (!objectInstance)
-        Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      // passels
-      AttributeValueVector passels[2];
-      for (std::vector<OpenRTI::AttributeValue>::iterator i = attributeValues.begin(); i != attributeValues.end(); ++i) {
-        const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(i->getAttributeHandle());
-        if (!instanceAttribute)
-          Traits::throwAttributeNotDefined(i->getAttributeHandle().toString());
-        if (!instanceAttribute->getIsOwnedByFederate())
-          Traits::throwAttributeNotOwned(i->getAttributeHandle().toString());
-        unsigned index = instanceAttribute->getTransportationType();
-        passels[index].reserve(attributeValues.size());
-        passels[index].push_back(AttributeValue());
-        passels[index].back().setAttributeHandle(i->getAttributeHandle());
-        passels[index].back().getValue().swap(i->getValue());
-      }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+    if (!objectInstance)
+      throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
+    // passels
+    AttributeValueVector passels[2];
+    for (std::vector<OpenRTI::AttributeValue>::iterator i = attributeValues.begin(); i != attributeValues.end(); ++i) {
+      const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(i->getAttributeHandle());
+      if (!instanceAttribute)
+        throw AttributeNotDefined(i->getAttributeHandle().toString());
+      if (!instanceAttribute->getIsOwnedByFederate())
+        throw AttributeNotOwned(i->getAttributeHandle().toString());
+      unsigned index = instanceAttribute->getTransportationType();
+      passels[index].reserve(attributeValues.size());
+      passels[index].push_back(AttributeValue());
+      passels[index].back().setAttributeHandle(i->getAttributeHandle());
+      passels[index].back().getValue().swap(i->getValue());
+    }
 
-      for (unsigned i = 0; i < 2; ++i) {
-        if (passels[i].empty())
-          continue;
-        SharedPtr<AttributeUpdateMessage> request;
-        request = new AttributeUpdateMessage;
-        request->setFederationHandle(getFederationHandle());
-        request->setObjectInstanceHandle(objectInstanceHandle);
-        request->getAttributeValues().swap(passels[i]);
-        request->setTransportationType(TransportationType(i));
-        request->setTag(tag);
-        send(request);
-      }
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    for (unsigned i = 0; i < 2; ++i) {
+      if (passels[i].empty())
+        continue;
+      SharedPtr<AttributeUpdateMessage> request;
+      request = new AttributeUpdateMessage;
+      request->setFederationHandle(getFederationHandle());
+      request->setObjectInstanceHandle(objectInstanceHandle);
+      request->getAttributeValues().swap(passels[i]);
+      request->setTransportationType(TransportationType(i));
+      request->setTag(tag);
+      send(request);
     }
   }
 
@@ -1426,2391 +1185,2177 @@ public:
                                                 AttributeValueVector& attributeValues,
                                                 const VariableLengthData& tag,
                                                 const NativeLogicalTime& nativeLogicalTime)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           InvalidLogicalTime,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        AttributeNotOwned,
+    //        InvalidLogicalTime,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
-      if (!objectInstance)
-        Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      bool timeRegulationEnabled = getTimeManagement()->getTimeRegulationEnabled();
-      // passels
-      AttributeValueVector passels[2][2];
-      for (std::vector<OpenRTI::AttributeValue>::iterator i = attributeValues.begin(); i != attributeValues.end(); ++i) {
-        const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(i->getAttributeHandle());
-        if (!instanceAttribute)
-          Traits::throwAttributeNotDefined(i->getAttributeHandle().toString());
-        if (!instanceAttribute->getIsOwnedByFederate())
-          Traits::throwAttributeNotOwned(i->getAttributeHandle().toString());
-        unsigned index0 = instanceAttribute->getTransportationType();
-        unsigned index1 = RECEIVE;
-        if (timeRegulationEnabled)
-          index1 = instanceAttribute->getOrderType();
-        passels[index0][index1].reserve(attributeValues.size());
-        passels[index0][index1].push_back(AttributeValue());
-        passels[index0][index1].back().setAttributeHandle(i->getAttributeHandle());
-        passels[index0][index1].back().getValue().swap(i->getValue());
-      }
-      if (timeRegulationEnabled && getTimeManagement()->logicalTimeAlreadyPassed(nativeLogicalTime))
-        Traits::throwInvalidLogicalTime(getTimeManagement()->logicalTimeToString(nativeLogicalTime));
-
-      MessageRetractionHandle messageRetractionHandle = getNextMessageRetractionHandle();
-      VariableLengthData timeStamp = getTimeManagement()->encodeLogicalTime(nativeLogicalTime);
-
-      for (unsigned i = 0; i < 2; ++i) {
-        for (unsigned j = 0; j < 2; ++j) {
-          if (passels[i][j].empty())
-            continue;
-          SharedPtr<TimeStampedAttributeUpdateMessage> request;
-          request = new TimeStampedAttributeUpdateMessage;
-          request->setFederationHandle(getFederationHandle());
-          request->setObjectInstanceHandle(objectInstanceHandle);
-          request->getAttributeValues().swap(passels[i][j]);
-          request->setTimeStamp(timeStamp);
-          request->setTransportationType(TransportationType(i));
-          request->setOrderType(OrderType(j));
-          request->setTag(tag);
-          request->setMessageRetractionHandle(messageRetractionHandle);
-          send(request);
-        }
-      }
-
-      return messageRetractionHandle;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+    if (!objectInstance)
+      throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
+    bool timeRegulationEnabled = getTimeManagement()->getTimeRegulationEnabled();
+    // passels
+    AttributeValueVector passels[2][2];
+    for (std::vector<OpenRTI::AttributeValue>::iterator i = attributeValues.begin(); i != attributeValues.end(); ++i) {
+      const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(i->getAttributeHandle());
+      if (!instanceAttribute)
+        throw AttributeNotDefined(i->getAttributeHandle().toString());
+      if (!instanceAttribute->getIsOwnedByFederate())
+        throw AttributeNotOwned(i->getAttributeHandle().toString());
+      unsigned index0 = instanceAttribute->getTransportationType();
+      unsigned index1 = RECEIVE;
+      if (timeRegulationEnabled)
+        index1 = instanceAttribute->getOrderType();
+      passels[index0][index1].reserve(attributeValues.size());
+      passels[index0][index1].push_back(AttributeValue());
+      passels[index0][index1].back().setAttributeHandle(i->getAttributeHandle());
+      passels[index0][index1].back().getValue().swap(i->getValue());
     }
+    if (timeRegulationEnabled && getTimeManagement()->logicalTimeAlreadyPassed(nativeLogicalTime))
+      throw InvalidLogicalTime(getTimeManagement()->logicalTimeToString(nativeLogicalTime));
+
+    MessageRetractionHandle messageRetractionHandle = getNextMessageRetractionHandle();
+    VariableLengthData timeStamp = getTimeManagement()->encodeLogicalTime(nativeLogicalTime);
+
+    for (unsigned i = 0; i < 2; ++i) {
+      for (unsigned j = 0; j < 2; ++j) {
+        if (passels[i][j].empty())
+          continue;
+        SharedPtr<TimeStampedAttributeUpdateMessage> request;
+        request = new TimeStampedAttributeUpdateMessage;
+        request->setFederationHandle(getFederationHandle());
+        request->setObjectInstanceHandle(objectInstanceHandle);
+        request->getAttributeValues().swap(passels[i][j]);
+        request->setTimeStamp(timeStamp);
+        request->setTransportationType(TransportationType(i));
+        request->setOrderType(OrderType(j));
+        request->setTag(tag);
+        request->setMessageRetractionHandle(messageRetractionHandle);
+        send(request);
+      }
+    }
+
+    return messageRetractionHandle;
   }
 
   void sendInteraction(InteractionClassHandle interactionClassHandle, std::vector<ParameterValue>& parameterValues,
                        const VariableLengthData& tag)
-    throw (InteractionClassNotPublished,
-           InteractionClassNotDefined,
-           InteractionParameterNotDefined,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InteractionClassNotPublished,
+    //        InteractionClassNotDefined,
+    //        InteractionParameterNotDefined,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
-      if (!interactionClass)
-        Traits::throwInteractionClassNotDefined(interactionClassHandle.toString());
-      if (!interactionClass->isPublished())
-        Traits::throwInteractionClassNotPublished(interactionClassHandle.toString());
-      for (std::vector<ParameterValue>::const_iterator i = parameterValues.begin(); i != parameterValues.end(); ++i)
-        if (!interactionClass->getParameter(i->getParameterHandle()))
-          Traits::throwInteractionParameterNotDefined(i->getParameterHandle().toString());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
+    if (!interactionClass)
+      throw InteractionClassNotDefined(interactionClassHandle.toString());
+    if (!interactionClass->isPublished())
+      throw InteractionClassNotPublished(interactionClassHandle.toString());
+    for (std::vector<ParameterValue>::const_iterator i = parameterValues.begin(); i != parameterValues.end(); ++i)
+      if (!interactionClass->getParameter(i->getParameterHandle()))
+        throw InteractionParameterNotDefined(i->getParameterHandle().toString());
 
-      SharedPtr<InteractionMessage> request;
-      request = new InteractionMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setInteractionClassHandle(interactionClassHandle);
-      request->setTransportationType(interactionClass->getTransportationType());
-      request->setTag(tag);
-      request->getParameterValues().swap(parameterValues);
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    SharedPtr<InteractionMessage> request;
+    request = new InteractionMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setInteractionClassHandle(interactionClassHandle);
+    request->setTransportationType(interactionClass->getTransportationType());
+    request->setTag(tag);
+    request->getParameterValues().swap(parameterValues);
+    send(request);
   }
 
   MessageRetractionHandle sendInteraction(InteractionClassHandle interactionClassHandle,
                                           std::vector<ParameterValue>& parameterValues,
                                           const VariableLengthData& tag,
                                           const NativeLogicalTime& logicalTime)
-    throw (InteractionClassNotPublished,
-           InteractionClassNotDefined,
-           InteractionParameterNotDefined,
-           InvalidLogicalTime,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InteractionClassNotPublished,
+    //        InteractionClassNotDefined,
+    //        InteractionParameterNotDefined,
+    //        InvalidLogicalTime,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
 
-      const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
-      if (!interactionClass)
-        Traits::throwInteractionClassNotDefined(interactionClassHandle.toString());
-      if (!interactionClass->isPublished())
-        Traits::throwInteractionClassNotPublished(interactionClassHandle.toString());
-      for (std::vector<ParameterValue>::const_iterator i = parameterValues.begin(); i != parameterValues.end(); ++i)
-        if (!interactionClass->getParameter(i->getParameterHandle()))
-          Traits::throwInteractionParameterNotDefined(i->getParameterHandle().toString());
-      bool timeRegulationEnabled = getTimeManagement()->getTimeRegulationEnabled();
-      if (timeRegulationEnabled && getTimeManagement()->logicalTimeAlreadyPassed(logicalTime))
-        Traits::throwInvalidLogicalTime(getTimeManagement()->logicalTimeToString(logicalTime));
+    const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
+    if (!interactionClass)
+      throw InteractionClassNotDefined(interactionClassHandle.toString());
+    if (!interactionClass->isPublished())
+      throw InteractionClassNotPublished(interactionClassHandle.toString());
+    for (std::vector<ParameterValue>::const_iterator i = parameterValues.begin(); i != parameterValues.end(); ++i)
+      if (!interactionClass->getParameter(i->getParameterHandle()))
+        throw InteractionParameterNotDefined(i->getParameterHandle().toString());
+    bool timeRegulationEnabled = getTimeManagement()->getTimeRegulationEnabled();
+    if (timeRegulationEnabled && getTimeManagement()->logicalTimeAlreadyPassed(logicalTime))
+      throw InvalidLogicalTime(getTimeManagement()->logicalTimeToString(logicalTime));
 
-      MessageRetractionHandle messageRetractionHandle = getNextMessageRetractionHandle();
+    MessageRetractionHandle messageRetractionHandle = getNextMessageRetractionHandle();
 
-      SharedPtr<TimeStampedInteractionMessage> request;
-      request = new TimeStampedInteractionMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setInteractionClassHandle(interactionClassHandle);
-      if (timeRegulationEnabled)
-        request->setOrderType(interactionClass->getOrderType());
-      else
-        request->setOrderType(RECEIVE);
-      request->setTransportationType(interactionClass->getTransportationType());
-      request->setTag(tag);
-      request->setTimeStamp(getTimeManagement()->encodeLogicalTime(logicalTime));
-      request->setMessageRetractionHandle(messageRetractionHandle);
-      request->getParameterValues().swap(parameterValues);
-      send(request);
+    SharedPtr<TimeStampedInteractionMessage> request;
+    request = new TimeStampedInteractionMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setInteractionClassHandle(interactionClassHandle);
+    if (timeRegulationEnabled)
+      request->setOrderType(interactionClass->getOrderType());
+    else
+      request->setOrderType(RECEIVE);
+    request->setTransportationType(interactionClass->getTransportationType());
+    request->setTag(tag);
+    request->setTimeStamp(getTimeManagement()->encodeLogicalTime(logicalTime));
+    request->setMessageRetractionHandle(messageRetractionHandle);
+    request->getParameterValues().swap(parameterValues);
+    send(request);
 
-      return messageRetractionHandle;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    return messageRetractionHandle;
   }
 
   void deleteObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag)
-    throw (DeletePrivilegeNotHeld,
-           ObjectInstanceNotKnown,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (DeletePrivilegeNotHeld,
+    //        ObjectInstanceNotKnown,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
-      if (!objectInstance)
-        Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      if (!objectInstance->isOwnedByFederate())
-        Traits::throwDeletePrivilegeNotHeld(objectInstanceHandle.toString());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+    if (!objectInstance)
+      throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
+    if (!objectInstance->isOwnedByFederate())
+      throw DeletePrivilegeNotHeld(objectInstanceHandle.toString());
 
-      SharedPtr<DeleteObjectInstanceMessage> request;
-      request = new DeleteObjectInstanceMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectInstanceHandle(objectInstanceHandle);
-      request->setTag(tag);
+    SharedPtr<DeleteObjectInstanceMessage> request;
+    request = new DeleteObjectInstanceMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectInstanceHandle(objectInstanceHandle);
+    request->setTag(tag);
 
-      send(request);
+    send(request);
 
-      // Note that this also sends the unreference message just past the delete
-      _releaseObjectInstance(objectInstanceHandle);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    // Note that this also sends the unreference message just past the delete
+    _releaseObjectInstance(objectInstanceHandle);
   }
 
   MessageRetractionHandle deleteObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, const NativeLogicalTime& logicalTime)
-    throw (DeletePrivilegeNotHeld,
-           ObjectInstanceNotKnown,
-           InvalidLogicalTime,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (DeletePrivilegeNotHeld,
+    //        ObjectInstanceNotKnown,
+    //        InvalidLogicalTime,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
-      if (!objectInstance)
-        Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(AttributeHandle(0));
-      if (!instanceAttribute || !objectInstance->isOwnedByFederate())
-        Traits::throwDeletePrivilegeNotHeld(objectInstanceHandle.toString());
-      bool timeRegulationEnabled = getTimeManagement()->getTimeRegulationEnabled();
-      if (timeRegulationEnabled && getTimeManagement()->logicalTimeAlreadyPassed(logicalTime))
-        Traits::throwInvalidLogicalTime(getTimeManagement()->logicalTimeToString(logicalTime));
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+    if (!objectInstance)
+      throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
+    const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(AttributeHandle(0));
+    if (!instanceAttribute || !objectInstance->isOwnedByFederate())
+      throw DeletePrivilegeNotHeld(objectInstanceHandle.toString());
+    bool timeRegulationEnabled = getTimeManagement()->getTimeRegulationEnabled();
+    if (timeRegulationEnabled && getTimeManagement()->logicalTimeAlreadyPassed(logicalTime))
+      throw InvalidLogicalTime(getTimeManagement()->logicalTimeToString(logicalTime));
 
-      MessageRetractionHandle messageRetractionHandle = getNextMessageRetractionHandle();
+    MessageRetractionHandle messageRetractionHandle = getNextMessageRetractionHandle();
 
-      SharedPtr<TimeStampedDeleteObjectInstanceMessage> request;
-      request = new TimeStampedDeleteObjectInstanceMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectInstanceHandle(objectInstanceHandle);
-      if (timeRegulationEnabled)
-        request->setOrderType(instanceAttribute->getOrderType());
-      else
-        request->setOrderType(RECEIVE);
-      request->setTag(tag);
-      request->setTimeStamp(getTimeManagement()->encodeLogicalTime(logicalTime));
-      request->setMessageRetractionHandle(messageRetractionHandle);
+    SharedPtr<TimeStampedDeleteObjectInstanceMessage> request;
+    request = new TimeStampedDeleteObjectInstanceMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectInstanceHandle(objectInstanceHandle);
+    if (timeRegulationEnabled)
+      request->setOrderType(instanceAttribute->getOrderType());
+    else
+      request->setOrderType(RECEIVE);
+    request->setTag(tag);
+    request->setTimeStamp(getTimeManagement()->encodeLogicalTime(logicalTime));
+    request->setMessageRetractionHandle(messageRetractionHandle);
 
-      send(request);
+    send(request);
 
-      // FIXME do this once the logical time has passed
-      // When implementing message retraction this needs to be delayed probably ...
-      // Note that this also sends the unreference message just past the delete
-      // _releaseObjectInstance(objectInstanceHandle);
+    // FIXME do this once the logical time has passed
+    // When implementing message retraction this needs to be delayed probably ...
+    // Note that this also sends the unreference message just past the delete
+    // _releaseObjectInstance(objectInstanceHandle);
 
-      return messageRetractionHandle;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    return messageRetractionHandle;
   }
 
   void localDeleteObjectInstance(ObjectInstanceHandle objectInstanceHandle)
-    throw (ObjectInstanceNotKnown,
-           FederateOwnsAttributes,
-           OwnershipAcquisitionPending,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        FederateOwnsAttributes,
+    //        OwnershipAcquisitionPending,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
-      if (!objectInstance)
-        Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      if (objectInstance->ownsAnyAttribute())
-        Traits::throwFederateOwnsAttributes(objectInstanceHandle.toString());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+    if (!objectInstance)
+      throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
+    if (objectInstance->ownsAnyAttribute())
+      throw FederateOwnsAttributes(objectInstanceHandle.toString());
 
-      Traits::throwRTIinternalError("Not implemented!");
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    throw RTIinternalError("Not implemented!");
   }
 
   void changeAttributeTransportationType(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet, TransportationType transportationType)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        AttributeNotOwned,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
-      if (!objectInstance)
-        Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
-        const Federate::InstanceAttribute* attribute = objectInstance->getInstanceAttribute(j->getHandle());
-        if (!attribute)
-          Traits::throwAttributeNotDefined(j->toString());
-        if (!attribute->getIsOwnedByFederate())
-          Traits::throwAttributeNotOwned(j->toString());
-      }
-      for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
-        objectInstance->getInstanceAttribute(j->getHandle())->setTransportationType(transportationType);
-      }
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+    if (!objectInstance)
+      throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
+    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+      const Federate::InstanceAttribute* attribute = objectInstance->getInstanceAttribute(j->getHandle());
+      if (!attribute)
+        throw AttributeNotDefined(j->toString());
+      if (!attribute->getIsOwnedByFederate())
+        throw AttributeNotOwned(j->toString());
+    }
+    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+      objectInstance->getInstanceAttribute(j->getHandle())->setTransportationType(transportationType);
     }
   }
 
   void changeInteractionTransportationType(InteractionClassHandle interactionClassHandle, TransportationType transportationType)
-    throw (InteractionClassNotDefined,
-           InteractionClassNotPublished,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InteractionClassNotDefined,
+    //        InteractionClassNotPublished,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
-      if (!interactionClass)
-        Traits::throwInteractionClassNotDefined(interactionClassHandle.toString());
-      if (!interactionClass->isPublished())
-        Traits::throwInteractionClassNotPublished(interactionClass->getName());
-      interactionClass->setTransportationType(transportationType);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
+    if (!interactionClass)
+      throw InteractionClassNotDefined(interactionClassHandle.toString());
+    if (!interactionClass->isPublished())
+      throw InteractionClassNotPublished(interactionClass->getName());
+    interactionClass->setTransportationType(transportationType);
   }
 
   void requestAttributeValueUpdate(ObjectInstanceHandle objectInstanceHandle,
                                    const AttributeHandleSet& attributeHandleSet,
                                    const VariableLengthData& tag)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
-      if (!objectInstance)
-        Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
-        if (!objectInstance->getInstanceAttribute(j->getHandle()))
-          Traits::throwAttributeNotDefined(j->toString());
-      }
-
-      AttributeHandleVector attributeHandleVector;
-      attributeHandleVector.reserve(attributeHandleSet.size());
-      for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
-        attributeHandleVector.push_back(*j);
-      }
-
-      SharedPtr<RequestAttributeUpdateMessage> request;
-      request = new RequestAttributeUpdateMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectInstanceHandle(objectInstanceHandle);
-      request->getAttributeHandles().swap(attributeHandleVector);
-      request->setTag(tag);
-
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+    if (!objectInstance)
+      throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
+    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+      if (!objectInstance->getInstanceAttribute(j->getHandle()))
+        throw AttributeNotDefined(j->toString());
     }
+
+    AttributeHandleVector attributeHandleVector;
+    attributeHandleVector.reserve(attributeHandleSet.size());
+    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+      attributeHandleVector.push_back(*j);
+    }
+
+    SharedPtr<RequestAttributeUpdateMessage> request;
+    request = new RequestAttributeUpdateMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectInstanceHandle(objectInstanceHandle);
+    request->getAttributeHandles().swap(attributeHandleVector);
+    request->setTag(tag);
+
+    send(request);
   }
 
   void requestAttributeValueUpdate(ObjectClassHandle objectClassHandle,
                                    const AttributeHandleSet& attributeHandleSet,
                                    const VariableLengthData& tag)
-    throw (ObjectClassNotDefined,
-           AttributeNotDefined,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectClassNotDefined,
+    //        AttributeNotDefined,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
-      if (!objectClass)
-        Traits::throwObjectClassNotDefined(objectClassHandle.toString());
-      for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
-        if (!objectClass->getAttribute(*j))
-          Traits::throwAttributeNotDefined(j->toString());
-      }
-
-      AttributeHandleVector attributeHandleVector;
-      attributeHandleVector.reserve(attributeHandleSet.size());
-      for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
-        attributeHandleVector.push_back(*j);
-      }
-
-      SharedPtr<RequestClassAttributeUpdateMessage> request;
-      request = new RequestClassAttributeUpdateMessage;
-      request->setFederationHandle(getFederationHandle());
-      request->setObjectClassHandle(objectClassHandle);
-      request->getAttributeHandles().swap(attributeHandleVector);
-      request->setTag(tag);
-
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
+    if (!objectClass)
+      throw ObjectClassNotDefined(objectClassHandle.toString());
+    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+      if (!objectClass->getAttribute(*j))
+        throw AttributeNotDefined(j->toString());
     }
+
+    AttributeHandleVector attributeHandleVector;
+    attributeHandleVector.reserve(attributeHandleSet.size());
+    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+      attributeHandleVector.push_back(*j);
+    }
+
+    SharedPtr<RequestClassAttributeUpdateMessage> request;
+    request = new RequestClassAttributeUpdateMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectClassHandle(objectClassHandle);
+    request->getAttributeHandles().swap(attributeHandleVector);
+    request->setTag(tag);
+
+    send(request);
+  }
+
+  void requestAttributeTransportationTypeChange(ObjectInstanceHandle, const AttributeHandleSet &, TransportationType)
+    // throw (AttributeAlreadyBeingChanged,
+    //        AttributeNotOwned,
+    //        AttributeNotDefined,
+    //        ObjectInstanceNotKnown,
+    //        InvalidTransportationType,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
+  {
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
+  }
+
+  void queryAttributeTransportationType(ObjectInstanceHandle, AttributeHandle)
+    // throw (AttributeNotDefined,
+    //        ObjectInstanceNotKnown,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
+  {
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
+  }
+
+  void requestInteractionTransportationTypeChange(InteractionClassHandle, TransportationType)
+    // throw (InteractionClassAlreadyBeingChanged,
+    //        InteractionClassNotPublished,
+    //        InteractionClassNotDefined,
+    //        InvalidTransportationType,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
+  {
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
+  }
+
+  void queryInteractionTransportationType(FederateHandle, InteractionClassHandle)
+    // throw (InteractionClassNotDefined,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
+  {
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void unconditionalAttributeOwnershipDivestiture(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        AttributeNotOwned,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void negotiatedAttributeOwnershipDivestiture(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet, const VariableLengthData& tag)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           AttributeAlreadyBeingDivested,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        AttributeNotOwned,
+    //        AttributeAlreadyBeingDivested,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void confirmDivestiture(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet, const VariableLengthData& tag)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           AttributeDivestitureWasNotRequested,
-           NoAcquisitionPending,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        AttributeNotOwned,
+    //        AttributeDivestitureWasNotRequested,
+    //        NoAcquisitionPending,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void attributeOwnershipAcquisition(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet, const VariableLengthData& tag)
-    throw (ObjectInstanceNotKnown,
-           ObjectClassNotPublished,
-           AttributeNotDefined,
-           AttributeNotPublished,
-           FederateOwnsAttributes,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        ObjectClassNotPublished,
+    //        AttributeNotDefined,
+    //        AttributeNotPublished,
+    //        FederateOwnsAttributes,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void attributeOwnershipAcquisitionIfAvailable(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet)
-    throw (ObjectInstanceNotKnown,
-           ObjectClassNotPublished,
-           AttributeNotDefined,
-           AttributeNotPublished,
-           FederateOwnsAttributes,
-           AttributeAlreadyBeingAcquired,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        ObjectClassNotPublished,
+    //        AttributeNotDefined,
+    //        AttributeNotPublished,
+    //        FederateOwnsAttributes,
+    //        AttributeAlreadyBeingAcquired,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
+  }
+
+  void attributeOwnershipReleaseDenied(ObjectInstanceHandle, const AttributeHandleSet &)
+    // throw (AttributeNotOwned,
+    //        AttributeNotDefined,
+    //        ObjectInstanceNotKnown,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
+  {
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void attributeOwnershipDivestitureIfWanted(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet,
                                              AttributeHandleSet& divestedAttributes)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        AttributeNotOwned,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void cancelNegotiatedAttributeOwnershipDivestiture(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           AttributeDivestitureWasNotRequested,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        AttributeNotOwned,
+    //        AttributeDivestitureWasNotRequested,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void cancelAttributeOwnershipAcquisition(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           AttributeAlreadyOwned,
-           AttributeAcquisitionWasNotRequested,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        AttributeAlreadyOwned,
+    //        AttributeAcquisitionWasNotRequested,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void queryAttributeOwnership(ObjectInstanceHandle objectInstanceHandle, AttributeHandle attributeHandle)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   bool isAttributeOwnedByFederate(ObjectInstanceHandle objectInstanceHandle, AttributeHandle attributeHandle)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
-      if (!objectInstance)
-        Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      const Federate::InstanceAttribute* attribute = objectInstance->getInstanceAttribute(attributeHandle);
-      if (!attribute)
-        Traits::throwAttributeNotDefined(attributeHandle.toString());
-      return attribute->getIsOwnedByFederate();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+    if (!objectInstance)
+      throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
+    const Federate::InstanceAttribute* attribute = objectInstance->getInstanceAttribute(attributeHandle);
+    if (!attribute)
+      throw AttributeNotDefined(attributeHandle.toString());
+    return attribute->getIsOwnedByFederate();
   }
 
   void enableTimeRegulation(const NativeLogicalTimeInterval& lookahead)
-    throw (TimeRegulationAlreadyEnabled,
-           InvalidLookahead,
-           InTimeAdvancingState,
-           RequestForTimeRegulationPending,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (TimeRegulationAlreadyEnabled,
+    //        InvalidLookahead,
+    //        InTimeAdvancingState,
+    //        RequestForTimeRegulationPending,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (_timeManagement->getTimeRegulationEnabled())
-        Traits::throwTimeRegulationAlreadyEnabled();
-      if (_timeManagement->getTimeRegulationEnablePending())
-        Traits::throwRequestForTimeRegulationPending();
-      if (_timeManagement->getTimeAdvancePending())
-        Traits::throwInTimeAdvancingState();
-      if (!_timeManagement->isPositiveLogicalTimeInterval(lookahead))
-        Traits::throwInvalidLookahead(_timeManagement->logicalTimeIntervalToString(lookahead));
-      if (!_federate->getPermitTimeRegulation())
-        Traits::throwRTIinternalError("Enable time regulation not permitted due to server policy!");
-      _timeManagement->enableTimeRegulation(*this, lookahead);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (_timeManagement->getTimeRegulationEnabled())
+      throw TimeRegulationAlreadyEnabled();
+    if (_timeManagement->getTimeRegulationEnablePending())
+      throw RequestForTimeRegulationPending();
+    if (_timeManagement->getTimeAdvancePending())
+      throw InTimeAdvancingState();
+    if (!_timeManagement->isPositiveLogicalTimeInterval(lookahead))
+      throw InvalidLookahead(_timeManagement->logicalTimeIntervalToString(lookahead));
+    if (!_federate->getPermitTimeRegulation())
+      throw RTIinternalError("Enable time regulation not permitted due to server policy!");
+    _timeManagement->enableTimeRegulation(*this, lookahead);
   }
 
   // the RTI13 variant
   void enableTimeRegulation(const NativeLogicalTime& logicalTime, const NativeLogicalTimeInterval& lookahead)
-    throw (TimeRegulationAlreadyEnabled,
-           InvalidLogicalTime,
-           InvalidLookahead,
-           InTimeAdvancingState,
-           RequestForTimeRegulationPending,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (TimeRegulationAlreadyEnabled,
+    //        InvalidLogicalTime,
+    //        InvalidLookahead,
+    //        InTimeAdvancingState,
+    //        RequestForTimeRegulationPending,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (_timeManagement->getTimeRegulationEnabled())
-        Traits::throwTimeRegulationAlreadyEnabled();
-      if (_timeManagement->getTimeRegulationEnablePending())
-        Traits::throwRequestForTimeRegulationPending();
-      if (_timeManagement->getTimeAdvancePending())
-        Traits::throwInTimeAdvancingState();
-      if (_timeManagement->isLogicalTimeInThePast(logicalTime))
-        Traits::throwInvalidLogicalTime(_timeManagement->logicalTimeToString(logicalTime));
-      if (!_timeManagement->isPositiveLogicalTimeInterval(lookahead))
-        Traits::throwInvalidLookahead(_timeManagement->logicalTimeIntervalToString(lookahead));
-      if (!_federate->getPermitTimeRegulation())
-        Traits::throwRTIinternalError("Enable time regulation not permitted due to server policy!");
-      _timeManagement->enableTimeRegulation(*this, logicalTime, lookahead);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (_timeManagement->getTimeRegulationEnabled())
+      throw TimeRegulationAlreadyEnabled();
+    if (_timeManagement->getTimeRegulationEnablePending())
+      throw RequestForTimeRegulationPending();
+    if (_timeManagement->getTimeAdvancePending())
+      throw InTimeAdvancingState();
+    if (_timeManagement->isLogicalTimeInThePast(logicalTime))
+      throw InvalidLogicalTime(_timeManagement->logicalTimeToString(logicalTime));
+    if (!_timeManagement->isPositiveLogicalTimeInterval(lookahead))
+      throw InvalidLookahead(_timeManagement->logicalTimeIntervalToString(lookahead));
+    if (!_federate->getPermitTimeRegulation())
+      throw RTIinternalError("Enable time regulation not permitted due to server policy!");
+    _timeManagement->enableTimeRegulation(*this, logicalTime, lookahead);
   }
 
   void disableTimeRegulation()
-    throw (TimeRegulationIsNotEnabled,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (TimeRegulationIsNotEnabled,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (!_timeManagement->getTimeRegulationEnabled())
-        Traits::throwTimeRegulationIsNotEnabled();
-      _timeManagement->disableTimeRegulation(*this);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (!_timeManagement->getTimeRegulationEnabled())
+      throw TimeRegulationIsNotEnabled();
+    _timeManagement->disableTimeRegulation(*this);
   }
 
   void enableTimeConstrained()
-    throw (TimeConstrainedAlreadyEnabled,
-           InTimeAdvancingState,
-           RequestForTimeConstrainedPending,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (TimeConstrainedAlreadyEnabled,
+    //        InTimeAdvancingState,
+    //        RequestForTimeConstrainedPending,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (_timeManagement->getTimeConstrainedEnabled())
-        Traits::throwTimeConstrainedAlreadyEnabled();
-      if (_timeManagement->getTimeConstrainedEnablePending())
-        Traits::throwRequestForTimeConstrainedPending();
-      if (_timeManagement->getTimeAdvancePending())
-        Traits::throwInTimeAdvancingState();
-      _timeManagement->enableTimeConstrained(*this);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (_timeManagement->getTimeConstrainedEnabled())
+      throw TimeConstrainedAlreadyEnabled();
+    if (_timeManagement->getTimeConstrainedEnablePending())
+      throw RequestForTimeConstrainedPending();
+    if (_timeManagement->getTimeAdvancePending())
+      throw InTimeAdvancingState();
+    _timeManagement->enableTimeConstrained(*this);
   }
 
   void disableTimeConstrained()
-    throw (TimeConstrainedIsNotEnabled,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (TimeConstrainedIsNotEnabled,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (!_timeManagement->getTimeConstrainedEnabled())
-        Traits::throwTimeConstrainedIsNotEnabled();
-      _timeManagement->disableTimeConstrained(*this);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (!_timeManagement->getTimeConstrainedEnabled())
+      throw TimeConstrainedIsNotEnabled();
+    _timeManagement->disableTimeConstrained(*this);
   }
 
   void timeAdvanceRequest(const NativeLogicalTime& logicalTime)
-    throw (InvalidLogicalTime,
-           LogicalTimeAlreadyPassed,
-           InTimeAdvancingState,
-           RequestForTimeRegulationPending,
-           RequestForTimeConstrainedPending,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InvalidLogicalTime,
+    //        LogicalTimeAlreadyPassed,
+    //        InTimeAdvancingState,
+    //        RequestForTimeRegulationPending,
+    //        RequestForTimeConstrainedPending,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (_timeManagement->isLogicalTimeInThePast(logicalTime))
-        Traits::throwLogicalTimeAlreadyPassed(_timeManagement->logicalTimeToString(logicalTime));
-      if (_timeManagement->getTimeAdvancePending())
-        Traits::throwInTimeAdvancingState();
-      if (_timeManagement->getTimeRegulationEnablePending())
-        Traits::throwRequestForTimeRegulationPending();
-      if (_timeManagement->getTimeConstrainedEnablePending())
-        Traits::throwRequestForTimeConstrainedPending();
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::TimeAdvanceRequest);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (_timeManagement->isLogicalTimeInThePast(logicalTime))
+      throw LogicalTimeAlreadyPassed(_timeManagement->logicalTimeToString(logicalTime));
+    if (_timeManagement->getTimeAdvancePending())
+      throw InTimeAdvancingState();
+    if (_timeManagement->getTimeRegulationEnablePending())
+      throw RequestForTimeRegulationPending();
+    if (_timeManagement->getTimeConstrainedEnablePending())
+      throw RequestForTimeConstrainedPending();
+    _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::TimeAdvanceRequest);
   }
 
   void timeAdvanceRequestAvailable(const NativeLogicalTime& logicalTime)
-    throw (InvalidLogicalTime,
-           LogicalTimeAlreadyPassed,
-           InTimeAdvancingState,
-           RequestForTimeRegulationPending,
-           RequestForTimeConstrainedPending,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InvalidLogicalTime,
+    //        LogicalTimeAlreadyPassed,
+    //        InTimeAdvancingState,
+    //        RequestForTimeRegulationPending,
+    //        RequestForTimeConstrainedPending,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (_timeManagement->isLogicalTimeInThePast(logicalTime))
-        Traits::throwLogicalTimeAlreadyPassed(_timeManagement->logicalTimeToString(logicalTime));
-      if (_timeManagement->getTimeAdvancePending())
-        Traits::throwInTimeAdvancingState();
-      if (_timeManagement->getTimeRegulationEnablePending())
-        Traits::throwRequestForTimeRegulationPending();
-      if (_timeManagement->getTimeConstrainedEnablePending())
-        Traits::throwRequestForTimeConstrainedPending();
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::TimeAdvanceRequestAvailable);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (_timeManagement->isLogicalTimeInThePast(logicalTime))
+      throw LogicalTimeAlreadyPassed(_timeManagement->logicalTimeToString(logicalTime));
+    if (_timeManagement->getTimeAdvancePending())
+      throw InTimeAdvancingState();
+    if (_timeManagement->getTimeRegulationEnablePending())
+      throw RequestForTimeRegulationPending();
+    if (_timeManagement->getTimeConstrainedEnablePending())
+      throw RequestForTimeConstrainedPending();
+    _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::TimeAdvanceRequestAvailable);
   }
 
   void nextMessageRequest(const NativeLogicalTime& logicalTime)
-    throw (InvalidLogicalTime,
-           LogicalTimeAlreadyPassed,
-           InTimeAdvancingState,
-           RequestForTimeRegulationPending,
-           RequestForTimeConstrainedPending,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InvalidLogicalTime,
+    //        LogicalTimeAlreadyPassed,
+    //        InTimeAdvancingState,
+    //        RequestForTimeRegulationPending,
+    //        RequestForTimeConstrainedPending,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (_timeManagement->isLogicalTimeInThePast(logicalTime))
-        Traits::throwLogicalTimeAlreadyPassed(_timeManagement->logicalTimeToString(logicalTime));
-      if (_timeManagement->getTimeAdvancePending())
-        Traits::throwInTimeAdvancingState();
-      if (_timeManagement->getTimeRegulationEnablePending())
-        Traits::throwRequestForTimeRegulationPending();
-      if (_timeManagement->getTimeConstrainedEnablePending())
-        Traits::throwRequestForTimeConstrainedPending();
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::NextMessageRequest);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (_timeManagement->isLogicalTimeInThePast(logicalTime))
+      throw LogicalTimeAlreadyPassed(_timeManagement->logicalTimeToString(logicalTime));
+    if (_timeManagement->getTimeAdvancePending())
+      throw InTimeAdvancingState();
+    if (_timeManagement->getTimeRegulationEnablePending())
+      throw RequestForTimeRegulationPending();
+    if (_timeManagement->getTimeConstrainedEnablePending())
+      throw RequestForTimeConstrainedPending();
+    _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::NextMessageRequest);
   }
 
   void nextMessageRequestAvailable(const NativeLogicalTime& logicalTime)
-    throw (InvalidLogicalTime,
-           LogicalTimeAlreadyPassed,
-           InTimeAdvancingState,
-           RequestForTimeRegulationPending,
-           RequestForTimeConstrainedPending,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InvalidLogicalTime,
+    //        LogicalTimeAlreadyPassed,
+    //        InTimeAdvancingState,
+    //        RequestForTimeRegulationPending,
+    //        RequestForTimeConstrainedPending,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (_timeManagement->isLogicalTimeInThePast(logicalTime))
-        Traits::throwLogicalTimeAlreadyPassed(_timeManagement->logicalTimeToString(logicalTime));
-      if (_timeManagement->getTimeAdvancePending())
-        Traits::throwInTimeAdvancingState();
-      if (_timeManagement->getTimeRegulationEnablePending())
-        Traits::throwRequestForTimeRegulationPending();
-      if (_timeManagement->getTimeConstrainedEnablePending())
-        Traits::throwRequestForTimeConstrainedPending();
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::NextMessageRequestAvailable);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (_timeManagement->isLogicalTimeInThePast(logicalTime))
+      throw LogicalTimeAlreadyPassed(_timeManagement->logicalTimeToString(logicalTime));
+    if (_timeManagement->getTimeAdvancePending())
+      throw InTimeAdvancingState();
+    if (_timeManagement->getTimeRegulationEnablePending())
+      throw RequestForTimeRegulationPending();
+    if (_timeManagement->getTimeConstrainedEnablePending())
+      throw RequestForTimeConstrainedPending();
+    _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::NextMessageRequestAvailable);
   }
 
   void flushQueueRequest(const NativeLogicalTime& logicalTime)
-    throw (InvalidLogicalTime,
-           LogicalTimeAlreadyPassed,
-           InTimeAdvancingState,
-           RequestForTimeRegulationPending,
-           RequestForTimeConstrainedPending,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InvalidLogicalTime,
+    //        LogicalTimeAlreadyPassed,
+    //        InTimeAdvancingState,
+    //        RequestForTimeRegulationPending,
+    //        RequestForTimeConstrainedPending,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (_timeManagement->isLogicalTimeInThePast(logicalTime))
-        Traits::throwLogicalTimeAlreadyPassed(_timeManagement->logicalTimeToString(logicalTime));
-      if (_timeManagement->getTimeAdvancePending())
-        Traits::throwInTimeAdvancingState();
-      if (_timeManagement->getTimeRegulationEnablePending())
-        Traits::throwRequestForTimeRegulationPending();
-      if (_timeManagement->getTimeConstrainedEnablePending())
-        Traits::throwRequestForTimeConstrainedPending();
-      _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::FlushQueueRequest);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (_timeManagement->isLogicalTimeInThePast(logicalTime))
+      throw LogicalTimeAlreadyPassed(_timeManagement->logicalTimeToString(logicalTime));
+    if (_timeManagement->getTimeAdvancePending())
+      throw InTimeAdvancingState();
+    if (_timeManagement->getTimeRegulationEnablePending())
+      throw RequestForTimeRegulationPending();
+    if (_timeManagement->getTimeConstrainedEnablePending())
+      throw RequestForTimeConstrainedPending();
+    _timeManagement->timeAdvanceRequest(*this, logicalTime, InternalTimeManagement::FlushQueueRequest);
   }
 
   void enableAsynchronousDelivery()
-    throw (AsynchronousDeliveryAlreadyEnabled,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (AsynchronousDeliveryAlreadyEnabled,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (_timeManagement->getAsynchronousDeliveryEnabled())
-        Traits::throwAsynchronousDeliveryAlreadyEnabled();
-      _timeManagement->setAsynchronousDeliveryEnabled(true);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (_timeManagement->getAsynchronousDeliveryEnabled())
+      throw AsynchronousDeliveryAlreadyEnabled();
+    _timeManagement->setAsynchronousDeliveryEnabled(true);
   }
 
   void disableAsynchronousDelivery()
-    throw (AsynchronousDeliveryAlreadyDisabled,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (AsynchronousDeliveryAlreadyDisabled,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (!_timeManagement->getAsynchronousDeliveryEnabled())
-        Traits::throwAsynchronousDeliveryAlreadyDisabled();
-      _timeManagement->setAsynchronousDeliveryEnabled(false);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (!_timeManagement->getAsynchronousDeliveryEnabled())
+      throw AsynchronousDeliveryAlreadyDisabled();
+    _timeManagement->setAsynchronousDeliveryEnabled(false);
   }
 
   bool queryGALT(NativeLogicalTime& logicalTime)
-    throw (FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      return _timeManagement->queryGALT(*this, logicalTime);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    return _timeManagement->queryGALT(*this, logicalTime);
   }
 
   void queryLogicalTime(NativeLogicalTime& logicalTime)
-    throw (FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      _timeManagement->queryLogicalTime(*this, logicalTime);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    _timeManagement->queryLogicalTime(*this, logicalTime);
   }
 
   bool queryLITS(NativeLogicalTime& logicalTime)
-    throw (FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      return _timeManagement->queryLITS(*this, logicalTime);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    return _timeManagement->queryLITS(*this, logicalTime);
   }
 
-  void modifyLookahead(const NativeLogicalTimeInterval& lookahead)
-    throw (TimeRegulationIsNotEnabled,
-           InvalidLookahead,
-           InTimeAdvancingState,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+  void modifyLookahead(const NativeLogicalTimeInterval& lookahead, bool checkForTimeRegulation)
+    // throw (TimeRegulationIsNotEnabled,
+    //        InvalidLookahead,
+    //        InTimeAdvancingState,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (!_timeManagement->getTimeRegulationEnabled())
-        Traits::throwTimeRegulationIsNotEnabled();
-      if (!_timeManagement->isPositiveLogicalTimeInterval(lookahead))
-        Traits::throwInvalidLookahead(_timeManagement->logicalTimeIntervalToString(lookahead));
-      if (_timeManagement->getTimeAdvancePending() || _timeManagement->getTimeConstrainedEnablePending())
-        Traits::throwInTimeAdvancingState();
-      _timeManagement->modifyLookahead(*this, lookahead);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (checkForTimeRegulation && !_timeManagement->getTimeRegulationEnabled())
+      throw TimeRegulationIsNotEnabled();
+    if (!_timeManagement->isPositiveLogicalTimeInterval(lookahead))
+      throw InvalidLookahead(_timeManagement->logicalTimeIntervalToString(lookahead));
+    if (_timeManagement->getTimeAdvancePending() || _timeManagement->getTimeConstrainedEnablePending())
+      throw InTimeAdvancingState();
+    _timeManagement->modifyLookahead(*this, lookahead);
   }
 
-  void queryLookahead(NativeLogicalTimeInterval& logicalTimeInterval)
-    throw (TimeRegulationIsNotEnabled,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+  void queryLookahead(NativeLogicalTimeInterval& logicalTimeInterval, bool checkForTimeRegulation)
+    // throw (TimeRegulationIsNotEnabled,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_timeManagement.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (!_timeManagement->getTimeRegulationEnabled())
-        Traits::throwTimeRegulationIsNotEnabled();
-      _timeManagement->queryLookahead(*this, logicalTimeInterval);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_timeManagement.valid())
+      throw FederateNotExecutionMember();
+    if (checkForTimeRegulation && !_timeManagement->getTimeRegulationEnabled())
+      throw TimeRegulationIsNotEnabled();
+    _timeManagement->queryLookahead(*this, logicalTimeInterval);
   }
 
   void retract(MessageRetractionHandle messageRetractionHandle)
-    throw (InvalidRetractionHandle,
-           TimeRegulationIsNotEnabled,
-           MessageCanNoLongerBeRetracted,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InvalidMessageRetractionHandle,
+    //        TimeRegulationIsNotEnabled,
+    //        MessageCanNoLongerBeRetracted,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (!messageRetractionHandle.valid())
-        Traits::throwInvalidRetractionHandle(messageRetractionHandle.toString());
-      if (!messageRetractionHandle.getFederateHandle() != getFederateHandle())
-        Traits::throwInvalidRetractionHandle(messageRetractionHandle.toString());
-      if (!getTimeManagement()->getTimeRegulationEnabled())
-        Traits::throwTimeRegulationIsNotEnabled();
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    if (!messageRetractionHandle.valid())
+      throw InvalidMessageRetractionHandle(messageRetractionHandle.toString());
+    if (!messageRetractionHandle.getFederateHandle() != getFederateHandle())
+      throw InvalidMessageRetractionHandle(messageRetractionHandle.toString());
+    if (!getTimeManagement()->getTimeRegulationEnabled())
+      throw TimeRegulationIsNotEnabled();
 
-      Traits::throwRTIinternalError("Message retraction is not implemented!");
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    throw RTIinternalError("Message retraction is not implemented!");
   }
 
   void changeAttributeOrderType(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet, OrderType orderType)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        AttributeNotOwned,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
-      if (!objectInstance)
-        Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
-        const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(*j);
-        if (!instanceAttribute)
-          Traits::throwAttributeNotDefined(j->toString());
-        if (!instanceAttribute->getIsOwnedByFederate())
-          Traits::throwAttributeNotOwned(j->toString());
-      }
-      for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
-        objectInstance->getInstanceAttribute(*j)->setOrderType(orderType);
-      }
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+    if (!objectInstance)
+      throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
+    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+      const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(*j);
+      if (!instanceAttribute)
+        throw AttributeNotDefined(j->toString());
+      if (!instanceAttribute->getIsOwnedByFederate())
+        throw AttributeNotOwned(j->toString());
+    }
+    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+      objectInstance->getInstanceAttribute(*j)->setOrderType(orderType);
     }
   }
 
   void changeInteractionOrderType(InteractionClassHandle interactionClassHandle, OrderType orderType)
-    throw (InteractionClassNotDefined,
-           InteractionClassNotPublished,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InteractionClassNotDefined,
+    //        InteractionClassNotPublished,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
-      if (!interactionClass)
-        Traits::throwInteractionClassNotDefined(interactionClassHandle.toString());
-      if (!interactionClass->isPublished())
-        Traits::throwInteractionClassNotPublished(interactionClass->getName());
-      interactionClass->setOrderType(orderType);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
+    if (!interactionClass)
+      throw InteractionClassNotDefined(interactionClassHandle.toString());
+    if (!interactionClass->isPublished())
+      throw InteractionClassNotPublished(interactionClass->getName());
+    interactionClass->setOrderType(orderType);
   }
 
   RegionHandle createRegion(const DimensionHandleSet& dimensionHandleSet)
-    throw (InvalidDimensionHandle,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InvalidDimensionHandle,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      for (DimensionHandleSet::const_iterator i = dimensionHandleSet.begin(); i != dimensionHandleSet.end(); ++i) {
-        if (!_federate->getDimension(*i))
-          Traits::throwInvalidDimensionHandle(i->toString());
-      }
-      RegionHandle regionHandle = _federate->insertLocalRegion(dimensionHandleSet);
-
-      SharedPtr<InsertRegionMessage> request = new InsertRegionMessage;
-      request->setFederationHandle(getFederationHandle());
-      RegionHandleDimensionHandleSetPairVector value(1);
-      value[0].first = regionHandle;
-      value[0].second = dimensionHandleSet;
-      request->getRegionHandleDimensionHandleSetPairVector().swap(value);
-      send(request);
-
-      return regionHandle;
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    for (DimensionHandleSet::const_iterator i = dimensionHandleSet.begin(); i != dimensionHandleSet.end(); ++i) {
+      if (!_federate->getDimension(*i))
+        throw InvalidDimensionHandle(i->toString());
     }
+    RegionHandle regionHandle = _federate->insertLocalRegion(dimensionHandleSet);
+
+    SharedPtr<InsertRegionMessage> request = new InsertRegionMessage;
+    request->setFederationHandle(getFederationHandle());
+    RegionHandleDimensionHandleSetPairVector value(1);
+    value[0].first = regionHandle;
+    value[0].second = dimensionHandleSet;
+    request->getRegionHandleDimensionHandleSetPairVector().swap(value);
+    send(request);
+
+    return regionHandle;
   }
 
   void commitRegionModifications(const RegionHandleSet& regionHandleSet)
-    throw (InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      for (RegionHandleSet::const_iterator i = regionHandleSet.begin(); i != regionHandleSet.end(); ++i) {
-        if (!i->valid())
-          Traits::throwInvalidRegion(i->toString());
-        if (!_federate->getRegion(*i))
-          Traits::throwInvalidRegion(i->toString());
-        if (!i->getFederateHandle() != getFederateHandle())
-          Traits::throwRegionNotCreatedByThisFederate(i->toString());
-      }
-
-      Traits::throwRTIinternalError();
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    for (RegionHandleSet::const_iterator i = regionHandleSet.begin(); i != regionHandleSet.end(); ++i) {
+      if (!i->valid())
+        throw InvalidRegion(i->toString());
+      if (!_federate->getRegion(*i))
+        throw InvalidRegion(i->toString());
+      if (!i->getFederateHandle() != getFederateHandle())
+        throw RegionNotCreatedByThisFederate(i->toString());
     }
+
+    throw RTIinternalError("Not implemented");
   }
 
   void deleteRegion(RegionHandle regionHandle)
-    throw (InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           RegionInUseForUpdateOrSubscription,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        RegionInUseForUpdateOrSubscription,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (!regionHandle.valid())
-        Traits::throwInvalidRegion(regionHandle.toString());
-      Federate::RegionData* region = _federate->getRegion(regionHandle);
-      if (!region)
-        Traits::throwInvalidRegion(regionHandle.toString());
-      if (!regionHandle.getFederateHandle() != getFederateHandle())
-        Traits::throwRegionNotCreatedByThisFederate(regionHandle.toString());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    if (!regionHandle.valid())
+      throw InvalidRegion(regionHandle.toString());
+    Federate::RegionData* region = _federate->getRegion(regionHandle);
+    if (!region)
+      throw InvalidRegion(regionHandle.toString());
+    if (!regionHandle.getFederateHandle() != getFederateHandle())
+      throw RegionNotCreatedByThisFederate(regionHandle.toString());
 
-      // FIXME check for in use
-      _federate->eraseLocalRegion(regionHandle);
+    // FIXME check for in use
+    _federate->eraseLocalRegion(regionHandle);
 
-      SharedPtr<EraseRegionMessage> request = new EraseRegionMessage;
-      request->setFederationHandle(getFederationHandle());
-      RegionHandleVector value(1);
-      value[0] = regionHandle;
-      request->getRegionHandleVector().swap(value);
+    SharedPtr<EraseRegionMessage> request = new EraseRegionMessage;
+    request->setFederationHandle(getFederationHandle());
+    RegionHandleVector value(1);
+    value[0] = regionHandle;
+    request->getRegionHandleVector().swap(value);
 
-      send(request);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    send(request);
   }
 
   ObjectInstanceHandle registerObjectInstanceWithRegions(ObjectClassHandle objectClassHandle,
                                                          const AttributeHandleSetRegionHandleSetPairVector& attributeHandleSetRegionHandleSetPairVector)
-    throw (ObjectClassNotDefined,
-           ObjectClassNotPublished,
-           AttributeNotDefined,
-           AttributeNotPublished,
-           InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           InvalidRegionContext,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectClassNotDefined,
+    //        ObjectClassNotPublished,
+    //        AttributeNotDefined,
+    //        AttributeNotPublished,
+    //        InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        InvalidRegionContext,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-      return ObjectInstanceHandle();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
+    return ObjectInstanceHandle();
   }
 
   ObjectInstanceHandle
-  registerObjectInstanceWithRegions(ObjectClassHandle objectClassHandle,
-                                    const AttributeHandleSetRegionHandleSetPairVector& attributeHandleSetRegionHandleSetPairVector,
-                                    const std::string& objectInstanceName)
-    throw (ObjectClassNotDefined,
-           ObjectClassNotPublished,
-           AttributeNotDefined,
-           AttributeNotPublished,
-           InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           InvalidRegionContext,
-           ObjectInstanceNameNotReserved,
-           ObjectInstanceNameInUse,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    registerObjectInstanceWithRegions(ObjectClassHandle objectClassHandle,
+                                      const AttributeHandleSetRegionHandleSetPairVector& attributeHandleSetRegionHandleSetPairVector,
+                                      const std::string& objectInstanceName)
+    // throw (ObjectClassNotDefined,
+    //        ObjectClassNotPublished,
+    //        AttributeNotDefined,
+    //        AttributeNotPublished,
+    //        InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        InvalidRegionContext,
+    //        ObjectInstanceNameNotReserved,
+    //        ObjectInstanceNameInUse,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-      return ObjectInstanceHandle();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
+    return ObjectInstanceHandle();
   }
 
   void associateRegionsForUpdates(ObjectInstanceHandle objectInstanceHandle,
                                   const AttributeHandleSetRegionHandleSetPairVector& attributeHandleHandleSetRegionHandleSetPairVector)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           InvalidRegionContext,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        InvalidRegionContext,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void unassociateRegionsForUpdates(ObjectInstanceHandle objectInstanceHandle,
                                     const AttributeHandleSetRegionHandleSetPairVector& attributeHandleHandleSetRegionHandleSetPairVector)
-    throw (ObjectInstanceNotKnown,
-           AttributeNotDefined,
-           InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void subscribeObjectClassAttributesWithRegions(ObjectClassHandle objectClassHandle,
                                                  const AttributeHandleSetRegionHandleSetPairVector& attributeHandleHandleSetRegionHandleSetPairVector,
-                                                 bool active)
-    throw (ObjectClassNotDefined,
-           AttributeNotDefined,
-           InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           InvalidRegionContext,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+                                                 bool active, const std::string& updateRateDesignator)
+    // throw (ObjectClassNotDefined,
+    //        AttributeNotDefined,
+    //        InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        InvalidRegionContext,
+    //        FederateNotExecutionMember,
+    //        InvalidUpdateRateDesignator,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void unsubscribeObjectClassAttributesWithRegions(ObjectClassHandle objectClassHandle,
                                                    const AttributeHandleSetRegionHandleSetPairVector& attributeHandleHandleSetRegionHandleSetPairVector)
-    throw (ObjectClassNotDefined,
-           AttributeNotDefined,
-           InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectClassNotDefined,
+    //        AttributeNotDefined,
+    //        InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void subscribeInteractionClassWithRegions(InteractionClassHandle objectClassHandle, const RegionHandleSet& regionHandleSet, bool active)
-    throw (InteractionClassNotDefined,
-           InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           InvalidRegionContext,
-           FederateServiceInvocationsAreBeingReportedViaMOM,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InteractionClassNotDefined,
+    //        InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        InvalidRegionContext,
+    //        FederateServiceInvocationsAreBeingReportedViaMOM,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void unsubscribeInteractionClassWithRegions(InteractionClassHandle objectClassHandle, const RegionHandleSet& regionHandleSet)
-    throw (InteractionClassNotDefined,
-           InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InteractionClassNotDefined,
+    //        InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   void sendInteractionWithRegions(InteractionClassHandle interactionClassHandle,
                                   std::vector<ParameterValue>& parameterValues,
                                   const RegionHandleSet& regionHandleSet,
                                   const VariableLengthData& tag)
-    throw (InteractionClassNotDefined,
-           InteractionClassNotPublished,
-           InteractionParameterNotDefined,
-           InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           InvalidRegionContext,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InteractionClassNotDefined,
+    //        InteractionClassNotPublished,
+    //        InteractionParameterNotDefined,
+    //        InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        InvalidRegionContext,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   MessageRetractionHandle
-  sendInteractionWithRegions(InteractionClassHandle interactionClassHandle,
-                             std::vector<ParameterValue>& parameterValues,
-                             const RegionHandleSet& regionHandleSet,
-                             const VariableLengthData& tag,
-                             const NativeLogicalTime& logicalTime)
-    throw (InteractionClassNotDefined,
-           InteractionClassNotPublished,
-           InteractionParameterNotDefined,
-           InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           InvalidRegionContext,
-           InvalidLogicalTime,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    sendInteractionWithRegions(InteractionClassHandle interactionClassHandle,
+                               std::vector<ParameterValue>& parameterValues,
+                               const RegionHandleSet& regionHandleSet,
+                               const VariableLengthData& tag,
+                               const NativeLogicalTime& logicalTime)
+    // throw (InteractionClassNotDefined,
+    //        InteractionClassNotPublished,
+    //        InteractionParameterNotDefined,
+    //        InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        InvalidRegionContext,
+    //        InvalidLogicalTime,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-      return MessageRetractionHandle();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
+    return MessageRetractionHandle();
   }
 
   void requestAttributeValueUpdateWithRegions(ObjectClassHandle objectClassHandle, const AttributeHandleSetRegionHandleSetPairVector& theSet,
                                               const VariableLengthData& tag)
-    throw (ObjectClassNotDefined,
-           AttributeNotDefined,
-           InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           InvalidRegionContext,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectClassNotDefined,
+    //        AttributeNotDefined,
+    //        InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        InvalidRegionContext,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Traits::throwRTIinternalError();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
   }
 
   ResignAction getAutomaticResignDirective()
-    throw (FederateNotExecutionMember,
-           NotConnected,
-           RTIinternalError)
+    // throw (FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      return _federate->getAutomaticResignDirective();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    return _federate->getAutomaticResignDirective();
   }
 
   void setAutomaticResignDirective(ResignAction resignAction)
-    throw (InvalidResignAction,
-           FederateNotExecutionMember,
-           NotConnected,
-           RTIinternalError)
+    // throw (InvalidResignAction,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      switch (resignAction) {
-      case UNCONDITIONALLY_DIVEST_ATTRIBUTES:
-      case DELETE_OBJECTS:
-      case CANCEL_PENDING_OWNERSHIP_ACQUISITIONS:
-      case DELETE_OBJECTS_THEN_DIVEST:
-      case CANCEL_THEN_DELETE_THEN_DIVEST:
-      case NO_ACTION:
-        break;
-      default:
-        Traits::throwInvalidResignAction();
-      }
-
-      if (_federate->getAutomaticResignDirective() == resignAction)
-        return;
-
-      _federate->setAutomaticResignDirective(resignAction);
-
-      SharedPtr<ChangeAutomaticResignDirectiveMessage> message;
-      message = new ChangeAutomaticResignDirectiveMessage;
-      message->setFederationHandle(getFederationHandle());
-      message->setFederateHandle(getFederateHandle());
-      message->setResignAction(resignAction);
-      send(message);
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    switch (resignAction) {
+    case UNCONDITIONALLY_DIVEST_ATTRIBUTES:
+    case DELETE_OBJECTS:
+    case CANCEL_PENDING_OWNERSHIP_ACQUISITIONS:
+    case DELETE_OBJECTS_THEN_DIVEST:
+    case CANCEL_THEN_DELETE_THEN_DIVEST:
+    case NO_ACTION:
+      break;
+    default:
+      throw InvalidResignAction();
     }
+
+    if (_federate->getAutomaticResignDirective() == resignAction)
+      return;
+
+    _federate->setAutomaticResignDirective(resignAction);
+
+    SharedPtr<ChangeAutomaticResignDirectiveMessage> message;
+    message = new ChangeAutomaticResignDirectiveMessage;
+    message->setFederationHandle(getFederationHandle());
+    message->setFederateHandle(getFederateHandle());
+    message->setResignAction(resignAction);
+    send(message);
+  }
+
+  FederateHandle getFederateHandle(const std::string& name)
+    // throw (NameNotFound,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
+  {
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
+    return FederateHandle();
+    // FederateHandle federateHandle = _federate->getFederateHandle(name);
+    // if (!federateHandle.valid())
+    //   throw NameNotFound(name);
+    // return federateHandle;
+  }
+
+  const std::string& getFederateName(FederateHandle federateHandle)
+    // throw (InvalidFederateHandle,
+    //        FederateHandleNotKnown,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
+  {
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
+    static std::string s;
+    return s;
+    // const Federate::Federate* federate = _federate->getFederate(federateHandle);
+    // if (!federate)
+    //   throw InvalidFederateHandle(federateHandle.toString());
+    // return federate->getName();
   }
 
   ObjectClassHandle getObjectClassHandle(const std::string& name)
-    throw (NameNotFound,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (NameNotFound,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      ObjectClassHandle objectClassHandle = _federate->getObjectClassHandle(name);
-      if (!objectClassHandle.valid())
-        Traits::throwNameNotFound(name);
-      return objectClassHandle;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    ObjectClassHandle objectClassHandle = _federate->getObjectClassHandle(name);
+    if (!objectClassHandle.valid())
+      throw NameNotFound(name);
+    return objectClassHandle;
   }
 
   const std::string& getObjectClassName(ObjectClassHandle objectClassHandle)
-    throw (InvalidObjectClassHandle,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidObjectClassHandle,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
-      if (!objectClass)
-        Traits::throwInvalidObjectClassHandle(objectClassHandle.toString());
-      return objectClass->getName();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
+    if (!objectClass)
+      throw InvalidObjectClassHandle(objectClassHandle.toString());
+    return objectClass->getName();
   }
 
   AttributeHandle getAttributeHandle(ObjectClassHandle objectClassHandle, const std::string& name)
-    throw (InvalidObjectClassHandle,
-           NameNotFound,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidObjectClassHandle,
+    //        NameNotFound,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
-      if (!objectClass)
-        Traits::throwInvalidObjectClassHandle(objectClassHandle.toString());
-      AttributeHandle attributeHandle = objectClass->getAttributeHandle(name);
-      if (!attributeHandle.valid())
-        Traits::throwNameNotFound(name);
-      return attributeHandle;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
+    if (!objectClass)
+      throw InvalidObjectClassHandle(objectClassHandle.toString());
+    AttributeHandle attributeHandle = objectClass->getAttributeHandle(name);
+    if (!attributeHandle.valid())
+      throw NameNotFound(name);
+    return attributeHandle;
   }
 
   const std::string& getAttributeName(ObjectClassHandle objectClassHandle, AttributeHandle attributeHandle)
-    throw (InvalidObjectClassHandle,
-           InvalidAttributeHandle,
-           AttributeNotDefined,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidObjectClassHandle,
+    //        InvalidAttributeHandle,
+    //        AttributeNotDefined,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
-      if (!objectClass)
-        Traits::throwInvalidObjectClassHandle(objectClassHandle.toString());
-      const Federate::Attribute* attribute = objectClass->getAttribute(attributeHandle);
-      if (!attribute)
-        Traits::throwInvalidAttributeHandle(attributeHandle.toString());
-      return attribute->getName();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
+    if (!objectClass)
+      throw InvalidObjectClassHandle(objectClassHandle.toString());
+    const Federate::Attribute* attribute = objectClass->getAttribute(attributeHandle);
+    if (!attribute)
+      throw InvalidAttributeHandle(attributeHandle.toString());
+    return attribute->getName();
+  }
+
+  double getUpdateRateValue(const std::string& updateRateDesignator)
+    // throw (InvalidUpdateRateDesignator,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
+  {
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
+    return 0;
+  }
+
+  double getUpdateRateValueForAttribute(ObjectInstanceHandle objectInstanceHandle, AttributeHandle attributeHandle)
+    // throw (ObjectInstanceNotKnown,
+    //        AttributeNotDefined,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
+  {
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    throw RTIinternalError("Not implemented");
+    return 0;
   }
 
   InteractionClassHandle getInteractionClassHandle(const std::string& name)
-    throw (NameNotFound,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (NameNotFound,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      InteractionClassHandle interactionClassHandle;
-      interactionClassHandle = _federate->getInteractionClassHandle(name);
-      if (!interactionClassHandle.valid())
-        Traits::throwNameNotFound(name);
-      return interactionClassHandle;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    InteractionClassHandle interactionClassHandle;
+    interactionClassHandle = _federate->getInteractionClassHandle(name);
+    if (!interactionClassHandle.valid())
+      throw NameNotFound(name);
+    return interactionClassHandle;
   }
 
   const std::string& getInteractionClassName(InteractionClassHandle interactionClassHandle)
-    throw (InvalidInteractionClassHandle,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidInteractionClassHandle,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
-      if (!interactionClass)
-        Traits::throwInvalidInteractionClassHandle(interactionClassHandle.toString());
-      return interactionClass->getName();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
+    if (!interactionClass)
+      throw InvalidInteractionClassHandle(interactionClassHandle.toString());
+    return interactionClass->getName();
   }
 
   ParameterHandle getParameterHandle(InteractionClassHandle interactionClassHandle, const std::string& name)
-    throw (InvalidInteractionClassHandle,
-           NameNotFound,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidInteractionClassHandle,
+    //        NameNotFound,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
-      if (!interactionClass)
-        Traits::throwInvalidInteractionClassHandle(interactionClassHandle.toString());
-      ParameterHandle parameterHandle;
-      parameterHandle = interactionClass->getParameterHandle(name);
-      if (!parameterHandle.valid())
-        Traits::throwNameNotFound(name);
-      return parameterHandle;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
+    if (!interactionClass)
+      throw InvalidInteractionClassHandle(interactionClassHandle.toString());
+    ParameterHandle parameterHandle;
+    parameterHandle = interactionClass->getParameterHandle(name);
+    if (!parameterHandle.valid())
+      throw NameNotFound(name);
+    return parameterHandle;
   }
 
   const std::string& getParameterName(InteractionClassHandle interactionClassHandle, ParameterHandle parameterHandle)
-    throw (InvalidInteractionClassHandle,
-           InvalidParameterHandle,
-           InteractionParameterNotDefined,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidInteractionClassHandle,
+    //        InvalidParameterHandle,
+    //        InteractionParameterNotDefined,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
-      if (!interactionClass)
-        Traits::throwInvalidInteractionClassHandle(interactionClassHandle.toString());
-      const Federate::Parameter* parameter = interactionClass->getParameter(parameterHandle);
-      if (!parameter)
-        Traits::throwInvalidParameterHandle(parameterHandle.toString());
-      return parameter->getName();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
+    if (!interactionClass)
+      throw InvalidInteractionClassHandle(interactionClassHandle.toString());
+    const Federate::Parameter* parameter = interactionClass->getParameter(parameterHandle);
+    if (!parameter)
+      throw InvalidParameterHandle(parameterHandle.toString());
+    return parameter->getName();
   }
 
   ObjectInstanceHandle getObjectInstanceHandle(const std::string& name)
-    throw (ObjectInstanceNotKnown,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      ObjectInstanceHandle objectInstanceHandle = _federate->getObjectInstanceHandle(name);
-      if (!objectInstanceHandle.valid())
-        Traits::throwObjectInstanceNotKnown(name);
-      return objectInstanceHandle;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    ObjectInstanceHandle objectInstanceHandle = _federate->getObjectInstanceHandle(name);
+    if (!objectInstanceHandle.valid())
+      throw ObjectInstanceNotKnown(name);
+    return objectInstanceHandle;
   }
 
   const std::string& getObjectInstanceName(ObjectInstanceHandle objectInstanceHandle)
-    throw (ObjectInstanceNotKnown,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
-      if (!objectInstance)
-        Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      return objectInstance->getName();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+    if (!objectInstance)
+      throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
+    return objectInstance->getName();
   }
 
   DimensionHandle getDimensionHandle(const std::string& name)
-    throw (NameNotFound,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (NameNotFound,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      DimensionHandle dimensionHandle = _federate->getDimensionHandle(name);
-      if (!dimensionHandle.valid())
-        Traits::throwNameNotFound(name);
-      return dimensionHandle;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    DimensionHandle dimensionHandle = _federate->getDimensionHandle(name);
+    if (!dimensionHandle.valid())
+      throw NameNotFound(name);
+    return dimensionHandle;
   }
 
   const std::string& getDimensionName(DimensionHandle dimensionHandle)
-    throw (InvalidDimensionHandle,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidDimensionHandle,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::Dimension* dimension = _federate->getDimension(dimensionHandle);
-      if (!dimension)
-        Traits::throwInvalidDimensionHandle(dimensionHandle.toString());
-      return dimension->getName();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::Dimension* dimension = _federate->getDimension(dimensionHandle);
+    if (!dimension)
+      throw InvalidDimensionHandle(dimensionHandle.toString());
+    return dimension->getName();
   }
 
   unsigned long getDimensionUpperBound(DimensionHandle dimensionHandle)
-    throw (InvalidDimensionHandle,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidDimensionHandle,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::Dimension* dimension = _federate->getDimension(dimensionHandle);
-      if (!dimension)
-        Traits::throwInvalidDimensionHandle(dimensionHandle.toString());
-      return dimension->getUpperBound();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::Dimension* dimension = _federate->getDimension(dimensionHandle);
+    if (!dimension)
+      throw InvalidDimensionHandle(dimensionHandle.toString());
+    return dimension->getUpperBound();
   }
 
   DimensionHandleSet getAvailableDimensionsForClassAttribute(ObjectClassHandle objectClassHandle,
                                                              AttributeHandle attributeHandle)
-    throw (InvalidObjectClassHandle,
-           InvalidAttributeHandle,
-           AttributeNotDefined,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidObjectClassHandle,
+    //        InvalidAttributeHandle,
+    //        AttributeNotDefined,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
-      if (!objectClass)
-        Traits::throwInvalidObjectClassHandle(objectClassHandle.toString());
-      const Federate::Attribute* attribute = objectClass->getAttribute(attributeHandle);
-      if (!attribute)
-        Traits::throwInvalidAttributeHandle(attributeHandle.toString());
-      return attribute->getDimensionHandleSet();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
+    if (!objectClass)
+      throw InvalidObjectClassHandle(objectClassHandle.toString());
+    const Federate::Attribute* attribute = objectClass->getAttribute(attributeHandle);
+    if (!attribute)
+      throw InvalidAttributeHandle(attributeHandle.toString());
+    return attribute->getDimensionHandleSet();
   }
 
   ObjectClassHandle getKnownObjectClassHandle(ObjectInstanceHandle objectInstanceHandle)
-    throw (ObjectInstanceNotKnown,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (ObjectInstanceNotKnown,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
-      if (!objectInstance)
-        Traits::throwObjectInstanceNotKnown(objectInstanceHandle.toString());
-      return objectInstance->getObjectClassHandle();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+    if (!objectInstance)
+      throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
+    return objectInstance->getObjectClassHandle();
   }
 
   DimensionHandleSet getAvailableDimensionsForInteractionClass(InteractionClassHandle interactionClassHandle)
-    throw (InvalidInteractionClassHandle,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidInteractionClassHandle,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
-      if (!interactionClass)
-        Traits::throwInvalidInteractionClassHandle(interactionClassHandle.toString());
-      return interactionClass->getDimensionHandleSet();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(interactionClassHandle);
+    if (!interactionClass)
+      throw InvalidInteractionClassHandle(interactionClassHandle.toString());
+    return interactionClass->getDimensionHandleSet();
   }
 
   TransportationType getTransportationType(const std::string& name)
-    throw (InvalidTransportationName,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidTransportationName,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const TransportationType* transportationType = _federate->getTransportationType(name);
-      if (!transportationType)
-        Traits::throwInvalidTransportationName(name);
-      return *transportationType;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const TransportationType* transportationType = _federate->getTransportationType(name);
+    if (!transportationType)
+      throw InvalidTransportationName(name);
+    return *transportationType;
   }
 
   const std::string& getTransportationName(TransportationType transportationType)
-    throw (InvalidTransportationType,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidTransportationType,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const std::string* name = _federate->getTransportationName(transportationType);
-      if (!name)
-        Traits::throwInvalidTransportationType();
-      return *name;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const std::string* name = _federate->getTransportationName(transportationType);
+    if (!name)
+      throw InvalidTransportationType();
+    return *name;
   }
 
   OrderType getOrderType(const std::string& name)
-    throw (InvalidOrderName,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidOrderName,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const OrderType* orderType = _federate->getOrderType(name);
-      if (!orderType)
-        Traits::throwInvalidOrderName(name);
-      return *orderType;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const OrderType* orderType = _federate->getOrderType(name);
+    if (!orderType)
+      throw InvalidOrderName(name);
+    return *orderType;
   }
 
   std::string getOrderName(OrderType orderType)
-    throw (InvalidOrderType,
-           FederateNotExecutionMember,
-           RTIinternalError)
+    // throw (InvalidOrderType,
+    //        FederateNotExecutionMember,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const std::string* name = _federate->getOrderName(orderType);
-      if (!name)
-        Traits::throwInvalidOrderType();
-      return *name;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const std::string* name = _federate->getOrderName(orderType);
+    if (!name)
+      throw InvalidOrderType();
+    return *name;
   }
 
   void enableObjectClassRelevanceAdvisorySwitch()
-    throw (ObjectClassRelevanceAdvisorySwitchIsOn,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectClassRelevanceAdvisorySwitchIsOn,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (_federate->getObjectClassRelevanceAdvisorySwitchEnabled())
-        Traits::throwObjectClassRelevanceAdvisorySwitchIsOn();
-      _federate->setObjectClassRelevanceAdvisorySwitchEnabled(true);
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    if (_federate->getObjectClassRelevanceAdvisorySwitchEnabled())
+      throw ObjectClassRelevanceAdvisorySwitchIsOn();
+    _federate->setObjectClassRelevanceAdvisorySwitchEnabled(true);
 
-      Traits::throwRTIinternalError();
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    throw RTIinternalError("Not implemented");
   }
 
   void disableObjectClassRelevanceAdvisorySwitch()
-    throw (ObjectClassRelevanceAdvisorySwitchIsOff,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (ObjectClassRelevanceAdvisorySwitchIsOff,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (!_federate->getObjectClassRelevanceAdvisorySwitchEnabled())
-        Traits::throwObjectClassRelevanceAdvisorySwitchIsOff();
-      _federate->setObjectClassRelevanceAdvisorySwitchEnabled(false);
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    if (!_federate->getObjectClassRelevanceAdvisorySwitchEnabled())
+      throw ObjectClassRelevanceAdvisorySwitchIsOff();
+    _federate->setObjectClassRelevanceAdvisorySwitchEnabled(false);
 
-      Traits::throwRTIinternalError();
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    throw RTIinternalError("Not implemented");
   }
 
   void enableAttributeRelevanceAdvisorySwitch()
-    throw (AttributeRelevanceAdvisorySwitchIsOn,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (AttributeRelevanceAdvisorySwitchIsOn,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (_federate->getAttributeRelevanceAdvisorySwitchEnabled())
-        Traits::throwAttributeRelevanceAdvisorySwitchIsOn();
-      _federate->setAttributeRelevanceAdvisorySwitchEnabled(true);
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    if (_federate->getAttributeRelevanceAdvisorySwitchEnabled())
+      throw AttributeRelevanceAdvisorySwitchIsOn();
+    _federate->setAttributeRelevanceAdvisorySwitchEnabled(true);
 
-      Traits::throwRTIinternalError();
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    throw RTIinternalError("Not implemented");
   }
 
   void disableAttributeRelevanceAdvisorySwitch()
-    throw (AttributeRelevanceAdvisorySwitchIsOff,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (AttributeRelevanceAdvisorySwitchIsOff,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (!_federate->getAttributeRelevanceAdvisorySwitchEnabled())
-        Traits::throwAttributeRelevanceAdvisorySwitchIsOff();
-      _federate->setAttributeRelevanceAdvisorySwitchEnabled(false);
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    if (!_federate->getAttributeRelevanceAdvisorySwitchEnabled())
+      throw AttributeRelevanceAdvisorySwitchIsOff();
+    _federate->setAttributeRelevanceAdvisorySwitchEnabled(false);
 
-      Traits::throwRTIinternalError();
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    throw RTIinternalError("Not implemented");
   }
 
   void enableAttributeScopeAdvisorySwitch()
-    throw (AttributeScopeAdvisorySwitchIsOn,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (AttributeScopeAdvisorySwitchIsOn,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (_federate->getAttributeScopeAdvisorySwitchEnabled())
-        Traits::throwAttributeScopeAdvisorySwitchIsOn();
-      _federate->setAttributeScopeAdvisorySwitchEnabled(true);
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    if (_federate->getAttributeScopeAdvisorySwitchEnabled())
+      throw AttributeScopeAdvisorySwitchIsOn();
+    _federate->setAttributeScopeAdvisorySwitchEnabled(true);
 
-      Traits::throwRTIinternalError();
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    throw RTIinternalError("Not implemented");
   }
 
   void disableAttributeScopeAdvisorySwitch()
-    throw (AttributeScopeAdvisorySwitchIsOff,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (AttributeScopeAdvisorySwitchIsOff,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (!_federate->getAttributeScopeAdvisorySwitchEnabled())
-        Traits::throwAttributeScopeAdvisorySwitchIsOff();
-      _federate->setAttributeScopeAdvisorySwitchEnabled(false);
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    if (!_federate->getAttributeScopeAdvisorySwitchEnabled())
+      throw AttributeScopeAdvisorySwitchIsOff();
+    _federate->setAttributeScopeAdvisorySwitchEnabled(false);
 
-      Traits::throwRTIinternalError();
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    throw RTIinternalError("Not implemented");
   }
 
   void enableInteractionRelevanceAdvisorySwitch()
-    throw (InteractionRelevanceAdvisorySwitchIsOn,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InteractionRelevanceAdvisorySwitchIsOn,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (_federate->getInteractionRelevanceAdvisorySwitchEnabled())
-        Traits::throwInteractionRelevanceAdvisorySwitchIsOn();
-      _federate->setInteractionRelevanceAdvisorySwitchEnabled(true);
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    if (_federate->getInteractionRelevanceAdvisorySwitchEnabled())
+      throw InteractionRelevanceAdvisorySwitchIsOn();
+    _federate->setInteractionRelevanceAdvisorySwitchEnabled(true);
 
-      Traits::throwRTIinternalError();
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    throw RTIinternalError("Not implemented");
   }
 
   void disableInteractionRelevanceAdvisorySwitch()
-    throw (InteractionRelevanceAdvisorySwitchIsOff,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InteractionRelevanceAdvisorySwitchIsOff,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      if (!_federate->getInteractionRelevanceAdvisorySwitchEnabled())
-        Traits::throwInteractionRelevanceAdvisorySwitchIsOff();
-      _federate->setInteractionRelevanceAdvisorySwitchEnabled(false);
-
-      Traits::throwRTIinternalError();
-
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    if (!_federate->getInteractionRelevanceAdvisorySwitchEnabled())
+      throw InteractionRelevanceAdvisorySwitchIsOff();
+    _federate->setInteractionRelevanceAdvisorySwitchEnabled(false);
+    throw RTIinternalError("Not implemented");
   }
 
   DimensionHandleSet getDimensionHandleSet(RegionHandle regionHandle)
-    throw (InvalidRegion,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InvalidRegion,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::RegionData* region = _federate->getRegion(regionHandle);
-      if (!region)
-        Traits::throwInvalidRegion(regionHandle.toString());
-      return region->getDimensionHandleSet();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::RegionData* region = _federate->getRegion(regionHandle);
+    if (!region)
+      throw InvalidRegion(regionHandle.toString());
+    return region->getDimensionHandleSet();
   }
 
   RangeBounds getRangeBounds(RegionHandle regionHandle, DimensionHandle dimensionHandle)
-    throw (InvalidRegion,
-           RegionDoesNotContainSpecifiedDimension,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InvalidRegion,
+    //        RegionDoesNotContainSpecifiedDimension,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      const Federate::RegionData* region = _federate->getRegion(regionHandle);
-      if (!region)
-        Traits::throwInvalidRegion(regionHandle.toString());
-      if (!region->containsDimensionHandle(dimensionHandle))
-        Traits::throwRegionDoesNotContainSpecifiedDimension();
-      return region->getRegion().getRangeBounds(dimensionHandle);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    const Federate::RegionData* region = _federate->getRegion(regionHandle);
+    if (!region)
+      throw InvalidRegion(regionHandle.toString());
+    if (!region->containsDimensionHandle(dimensionHandle))
+      throw RegionDoesNotContainSpecifiedDimension();
+    return region->getRegion().getRangeBounds(dimensionHandle);
   }
 
   void setRangeBounds(RegionHandle regionHandle, DimensionHandle dimensionHandle, const RangeBounds& rangeBounds)
-    throw (InvalidRegion,
-           RegionNotCreatedByThisFederate,
-           RegionDoesNotContainSpecifiedDimension,
-           InvalidRangeBound,
-           FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    // throw (InvalidRegion,
+    //        RegionNotCreatedByThisFederate,
+    //        RegionDoesNotContainSpecifiedDimension,
+    //        InvalidRangeBound,
+    //        FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      Federate::RegionData* region = _federate->getRegion(regionHandle);
-      if (!region)
-        Traits::throwInvalidRegion(regionHandle.toString());
-      if (regionHandle.getFederateHandle() != getFederateHandle())
-        Traits::throwRegionNotCreatedByThisFederate(regionHandle.toString());
-      if (!region->containsDimensionHandle(dimensionHandle))
-        Traits::throwRegionDoesNotContainSpecifiedDimension();
-      const Federate::Dimension* dimension = _federate->getDimension(dimensionHandle);
-      OpenRTIAssert(dimension);
-      if (dimension->getUpperBound() < rangeBounds.getUpperBound())
-        Traits::throwInvalidRangeBound();
-      region->getRegion().setRangeBounds(dimensionHandle, rangeBounds);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    Federate::RegionData* region = _federate->getRegion(regionHandle);
+    if (!region)
+      throw InvalidRegion(regionHandle.toString());
+    if (regionHandle.getFederateHandle() != getFederateHandle())
+      throw RegionNotCreatedByThisFederate(regionHandle.toString());
+    if (!region->containsDimensionHandle(dimensionHandle))
+      throw RegionDoesNotContainSpecifiedDimension();
+    const Federate::Dimension* dimension = _federate->getDimension(dimensionHandle);
+    OpenRTIAssert(dimension);
+    if (dimension->getUpperBound() < rangeBounds.getUpperBound())
+      throw InvalidRangeBound();
+    region->getRegion().setRangeBounds(dimensionHandle, rangeBounds);
   }
 
   unsigned long normalizeFederateHandle(FederateHandle federateHandle)
-    throw (FederateNotExecutionMember,
-           InvalidFederateHandle,
-           RTIinternalError)
+    // throw (FederateNotExecutionMember,
+    //        InvalidFederateHandle,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      return federateHandle.getHandle();
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    return federateHandle.getHandle();
   }
 
   unsigned long normalizeServiceGroup(ServiceGroupIndicator serviceGroup)
-    throw (FederateNotExecutionMember,
-           InvalidServiceGroup,
-           RTIinternalError)
+    // throw (FederateNotExecutionMember,
+    //        InvalidServiceGroup,
+    //        NotConnected,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      return serviceGroup;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (!isConnected())
+      throw NotConnected();
+    if (!_federate.valid())
+      throw FederateNotExecutionMember();
+    return serviceGroup;
   }
 
-  bool evokeCallback(double approximateMinimumTimeInSeconds)
-    throw (FederateNotExecutionMember,
-           RTIinternalError)
+  bool evokeCallback(double approximateMinimumTimeInSeconds, bool needFederate)
+    // throw (FederateNotExecutionMember,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
+    if (needFederate && !_federate.valid())
+      throw FederateNotExecutionMember();
 
-      Clock clock = Clock::now();
-      clock += Clock::fromSeconds(approximateMinimumTimeInSeconds);
-      return dispatchCallback(clock);
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    Clock clock = Clock::now();
+    clock += Clock::fromSeconds(approximateMinimumTimeInSeconds);
+    return dispatchCallback(clock);
   }
 
-  bool evokeMultipleCallbacks(double approximateMinimumTimeInSeconds, double approximateMaximumTimeInSeconds)
-    throw (FederateNotExecutionMember,
-           RTIinternalError)
+  bool evokeMultipleCallbacks(double approximateMinimumTimeInSeconds, double approximateMaximumTimeInSeconds, bool needFederate)
+    // throw (FederateNotExecutionMember,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
+    if (needFederate && !_federate.valid())
+      throw FederateNotExecutionMember();
 
-      Clock clock = Clock::now();
-      clock += Clock::fromSeconds(approximateMinimumTimeInSeconds);
-      if (!dispatchCallback(clock))
+    Clock clock = Clock::now();
+    clock += Clock::fromSeconds(approximateMinimumTimeInSeconds);
+    if (!dispatchCallback(clock))
+      return false;
+
+    clock = Clock::now() + Clock::fromSeconds(approximateMaximumTimeInSeconds);
+    do {
+      if (!dispatchCallback(Clock::initial()))
         return false;
+    } while (Clock::now() <= clock);
 
-      clock = Clock::now() + Clock::fromSeconds(approximateMaximumTimeInSeconds);
-      do {
-        if (!dispatchCallback(Clock::initial()))
-          return false;
-      } while (Clock::now() <= clock);
-
-      return true;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    return true;
   }
 
-  void enableCallbacks()
-    throw (FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+  void enableCallbacks(bool needFederate)
+    // throw (FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      _callbacksEnabled = true;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (needFederate && !_federate.valid())
+      throw FederateNotExecutionMember();
+    _callbacksEnabled = true;
   }
 
-  void disableCallbacks()
-    throw (FederateNotExecutionMember,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+  void disableCallbacks(bool needFederate)
+    // throw (FederateNotExecutionMember,
+    //        SaveInProgress,
+    //        RestoreInProgress,
+    //        RTIinternalError)
   {
-    try {
-      if (!_federate.valid())
-        Traits::throwFederateNotExecutionMember();
-      _callbacksEnabled = false;
-    } catch (const typename Traits::Exception&) {
-      throw;
-    } catch (const OpenRTI::IgnoredError&) {
-    } catch (const OpenRTI::Exception& e) {
-      Traits::throwRTIinternalError(e.getReason());
-    }
+    if (needFederate && !_federate.valid())
+      throw FederateNotExecutionMember();
+    _callbacksEnabled = false;
   }
 
   void _requestObjectInstanceHandles(unsigned count)
@@ -3824,7 +3369,7 @@ public:
   }
 
   ObjectInstanceHandleNamePair
-  _getFreeObjectInstanceHandleNamePair()
+    _getFreeObjectInstanceHandleNamePair()
   {
     // Usually we already have some handles locally available, but for each new one,
     // start requesting the next from the server, this way we should stay asyncronous for ever.
@@ -3837,7 +3382,7 @@ public:
         if (receiveAndDispatchInternalMessage(timeout))
           continue;
         if (timeout < Clock::now())
-          Traits::throwRTIinternalError("Timeout while waiting for free object handles.");
+          throw RTIinternalError("Timeout while waiting for free object handles.");
       }
     }
 
@@ -3867,7 +3412,7 @@ public:
       _ambassador(ambassador)
     { }
     template<typename M>
-    void operator()(const M& message) const
+      void operator()(const M& message) const
     { _ambassador.acceptCallbackMessage(message); }
   private:
     Ambassador& _ambassador;
@@ -3896,7 +3441,7 @@ public:
 
   /// Default internal message processing method
   void acceptCallbackMessage(const AbstractMessage& message)
-  { Traits::throwRTIinternalError("Unexpected message in callback message processing!"); }
+  { throw RTIinternalError("Unexpected message in callback message processing!"); }
 
   void acceptCallbackMessage(const ConnectionLostMessage& message)
   { connectionLost(message.getFaultDescription()); }
@@ -4264,7 +3809,7 @@ public:
     _timeManagement = createTimeManagement(*_federate);
   }
 
-private:
+ private:
   // True if callbck dispatch is enabled or if callbacks are held back
   bool _callbacksEnabled;
   // The federate if available

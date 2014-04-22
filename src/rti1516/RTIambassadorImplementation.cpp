@@ -165,108 +165,6 @@ public:
   //   for (OpenRTI::AttributeHandleVector::const_iterator i = src.begin(); i != src.end(); ++i)
   //     dst.insert(rti1516::AttributeHandleFriend::createHandle(*i));
   // }
-
-  // The exceptions
-  typedef rti1516::Exception Exception;
-
-#define MAP_EXCEPTION(Exception, MappedException) \
-  typedef MappedException Exception; \
-  static void throw ## Exception(const std::string& reason) { throw MappedException(OpenRTI::utf8ToUcs(reason)); } \
-  static void throw ## Exception(const std::wstring& reason) { throw MappedException(reason); } \
-  static void throw ## Exception() { throw MappedException(std::wstring(L"/* NO COMMENT */")); }
-
-  MAP_EXCEPTION(AlreadyConnected, OpenRTI::IgnoredError)
-  MAP_EXCEPTION(AsynchronousDeliveryAlreadyDisabled, rti1516::AsynchronousDeliveryAlreadyDisabled)
-  MAP_EXCEPTION(AsynchronousDeliveryAlreadyEnabled, rti1516::AsynchronousDeliveryAlreadyEnabled)
-  MAP_EXCEPTION(AttributeAcquisitionWasNotRequested, rti1516::AttributeAcquisitionWasNotRequested)
-  MAP_EXCEPTION(AttributeAlreadyBeingAcquired, rti1516::AttributeAlreadyBeingAcquired)
-  MAP_EXCEPTION(AttributeAlreadyBeingDivested, rti1516::AttributeAlreadyBeingDivested)
-  MAP_EXCEPTION(AttributeAlreadyOwned, rti1516::AttributeAlreadyOwned)
-  MAP_EXCEPTION(AttributeDivestitureWasNotRequested, rti1516::AttributeDivestitureWasNotRequested)
-  MAP_EXCEPTION(AttributeNotDefined, rti1516::AttributeNotDefined)
-  MAP_EXCEPTION(AttributeNotOwned, rti1516::AttributeNotOwned)
-  MAP_EXCEPTION(AttributeNotPublished, rti1516::AttributeNotPublished)
-  MAP_EXCEPTION(AttributeRelevanceAdvisorySwitchIsOff, rti1516::AttributeRelevanceAdvisorySwitchIsOff)
-  MAP_EXCEPTION(AttributeRelevanceAdvisorySwitchIsOn, rti1516::AttributeRelevanceAdvisorySwitchIsOn)
-  MAP_EXCEPTION(AttributeScopeAdvisorySwitchIsOff, rti1516::AttributeScopeAdvisorySwitchIsOff)
-  MAP_EXCEPTION(AttributeScopeAdvisorySwitchIsOn, rti1516::AttributeScopeAdvisorySwitchIsOn)
-  MAP_EXCEPTION(CallNotAllowedFromWithinCallback, rti1516::RTIinternalError)
-  MAP_EXCEPTION(ConnectionFailed, rti1516::RTIinternalError)
-  MAP_EXCEPTION(CouldNotCreateLogicalTimeFactory, rti1516::CouldNotCreateLogicalTimeFactory)
-  MAP_EXCEPTION(CouldNotOpenFDD, rti1516::CouldNotOpenFDD)
-  MAP_EXCEPTION(CouldNotOpenMIM, rti1516::CouldNotOpenFDD)
-  MAP_EXCEPTION(DeletePrivilegeNotHeld, rti1516::DeletePrivilegeNotHeld)
-  MAP_EXCEPTION(ErrorReadingFDD, rti1516::ErrorReadingFDD)
-  MAP_EXCEPTION(ErrorReadingMIM, rti1516::ErrorReadingFDD)
-  MAP_EXCEPTION(FederateAlreadyExecutionMember, rti1516::FederateAlreadyExecutionMember)
-  MAP_EXCEPTION(FederateNameAlreadyInUse, rti1516::RTIinternalError)
-  MAP_EXCEPTION(FederateHasNotBegunSave, rti1516::FederateHasNotBegunSave)
-  MAP_EXCEPTION(FederateIsExecutionMember, rti1516::FederateAlreadyExecutionMember)
-  MAP_EXCEPTION(FederateNotExecutionMember, rti1516::FederateNotExecutionMember)
-  MAP_EXCEPTION(FederateOwnsAttributes, rti1516::FederateOwnsAttributes)
-  MAP_EXCEPTION(FederatesCurrentlyJoined, rti1516::FederatesCurrentlyJoined)
-  MAP_EXCEPTION(FederateServiceInvocationsAreBeingReportedViaMOM, rti1516::FederateServiceInvocationsAreBeingReportedViaMOM)
-  MAP_EXCEPTION(FederateUnableToUseTime, rti1516::FederateUnableToUseTime)
-  MAP_EXCEPTION(FederationExecutionAlreadyExists, rti1516::FederationExecutionAlreadyExists)
-  MAP_EXCEPTION(FederationExecutionDoesNotExist, rti1516::FederationExecutionDoesNotExist)
-  MAP_EXCEPTION(IllegalName, rti1516::IllegalName)
-  MAP_EXCEPTION(NameSetWasEmpty, rti1516::RTIinternalError) // does not happen
-  MAP_EXCEPTION(InconsistentFDD, rti1516::ErrorReadingFDD)
-  MAP_EXCEPTION(InteractionClassNotDefined, rti1516::InteractionClassNotDefined)
-  MAP_EXCEPTION(InteractionClassNotPublished, rti1516::InteractionClassNotPublished)
-  MAP_EXCEPTION(InteractionParameterNotDefined, rti1516::InteractionParameterNotDefined)
-  MAP_EXCEPTION(InteractionRelevanceAdvisorySwitchIsOff, rti1516::InteractionRelevanceAdvisorySwitchIsOff)
-  MAP_EXCEPTION(InteractionRelevanceAdvisorySwitchIsOn, rti1516::InteractionRelevanceAdvisorySwitchIsOn)
-  MAP_EXCEPTION(InTimeAdvancingState, rti1516::InTimeAdvancingState)
-  MAP_EXCEPTION(InvalidAttributeHandle, rti1516::InvalidAttributeHandle)
-  MAP_EXCEPTION(InvalidDimensionHandle, rti1516::InvalidDimensionHandle)
-  MAP_EXCEPTION(InvalidFederateHandle, rti1516::InvalidFederateHandle)
-  MAP_EXCEPTION(InvalidInteractionClassHandle, rti1516::InvalidInteractionClassHandle)
-  MAP_EXCEPTION(InvalidLocalSettingsDesignator, rti1516::RTIinternalError)
-  MAP_EXCEPTION(InvalidLogicalTime, rti1516::InvalidLogicalTime)
-  MAP_EXCEPTION(InvalidLookahead, rti1516::InvalidLookahead)
-  MAP_EXCEPTION(InvalidObjectClassHandle, rti1516::InvalidObjectClassHandle)
-  MAP_EXCEPTION(InvalidOrderName, rti1516::InvalidOrderName)
-  MAP_EXCEPTION(InvalidOrderType, rti1516::InvalidOrderType)
-  MAP_EXCEPTION(InvalidParameterHandle, rti1516::InvalidParameterHandle)
-  MAP_EXCEPTION(InvalidRangeBound, rti1516::InvalidRangeBound)
-  MAP_EXCEPTION(InvalidRegion, rti1516::InvalidRegion)
-  MAP_EXCEPTION(InvalidRegionContext, rti1516::InvalidRegionContext)
-  MAP_EXCEPTION(InvalidResignAction, rti1516::RTIinternalError)
-  MAP_EXCEPTION(InvalidRetractionHandle, rti1516::InvalidRetractionHandle)
-  MAP_EXCEPTION(InvalidServiceGroup, rti1516::InvalidServiceGroup)
-  MAP_EXCEPTION(InvalidTransportationName, rti1516::InvalidTransportationName)
-  MAP_EXCEPTION(InvalidTransportationType, rti1516::InvalidTransportationType)
-  MAP_EXCEPTION(LogicalTimeAlreadyPassed, rti1516::LogicalTimeAlreadyPassed)
-  MAP_EXCEPTION(MessageCanNoLongerBeRetracted, rti1516::MessageCanNoLongerBeRetracted)
-  MAP_EXCEPTION(NameNotFound, rti1516::NameNotFound)
-  MAP_EXCEPTION(NoAcquisitionPending, rti1516::NoAcquisitionPending)
-  MAP_EXCEPTION(NotConnected, rti1516::FederateNotExecutionMember)
-  MAP_EXCEPTION(ObjectClassNotDefined, rti1516::ObjectClassNotDefined)
-  MAP_EXCEPTION(ObjectClassNotPublished, rti1516::ObjectClassNotPublished)
-  MAP_EXCEPTION(ObjectClassRelevanceAdvisorySwitchIsOff, rti1516::ObjectClassRelevanceAdvisorySwitchIsOff)
-  MAP_EXCEPTION(ObjectClassRelevanceAdvisorySwitchIsOn, rti1516::ObjectClassRelevanceAdvisorySwitchIsOn)
-  MAP_EXCEPTION(ObjectInstanceNameInUse, rti1516::ObjectInstanceNameInUse)
-  MAP_EXCEPTION(ObjectInstanceNameNotReserved, rti1516::ObjectInstanceNameNotReserved)
-  MAP_EXCEPTION(ObjectInstanceNotKnown, rti1516::ObjectInstanceNotKnown)
-  MAP_EXCEPTION(OwnershipAcquisitionPending, rti1516::OwnershipAcquisitionPending)
-  MAP_EXCEPTION(RegionDoesNotContainSpecifiedDimension, rti1516::RegionDoesNotContainSpecifiedDimension)
-  MAP_EXCEPTION(RegionInUseForUpdateOrSubscription, rti1516::RegionInUseForUpdateOrSubscription)
-  MAP_EXCEPTION(RegionNotCreatedByThisFederate, rti1516::RegionNotCreatedByThisFederate)
-  MAP_EXCEPTION(RequestForTimeConstrainedPending, rti1516::RequestForTimeConstrainedPending)
-  MAP_EXCEPTION(RequestForTimeRegulationPending, rti1516::RequestForTimeRegulationPending)
-  MAP_EXCEPTION(RestoreInProgress, rti1516::RestoreInProgress)
-  MAP_EXCEPTION(RestoreNotRequested, rti1516::RestoreNotRequested)
-  MAP_EXCEPTION(RTIinternalError, rti1516::RTIinternalError)
-  MAP_EXCEPTION(SaveInProgress, rti1516::SaveInProgress)
-  MAP_EXCEPTION(SaveNotInitiated, rti1516::SaveNotInitiated)
-  MAP_EXCEPTION(SynchronizationPointLabelNotAnnounced, rti1516::SynchronizationPointLabelNotAnnounced)
-  MAP_EXCEPTION(TimeConstrainedAlreadyEnabled, rti1516::TimeConstrainedAlreadyEnabled)
-  MAP_EXCEPTION(TimeConstrainedIsNotEnabled, rti1516::TimeConstrainedIsNotEnabled)
-  MAP_EXCEPTION(TimeRegulationAlreadyEnabled, rti1516::TimeRegulationAlreadyEnabled)
-  MAP_EXCEPTION(TimeRegulationIsNotEnabled, rti1516::TimeRegulationIsNotEnabled)
-  MAP_EXCEPTION(UnsupportedCallbackModel, rti1516::RTIinternalError)
-#undef MAP_EXCEPTION
 };
 
 class OPENRTI_LOCAL RTIambassadorImplementation::RTI1516AmbassadorInterface : public OpenRTI::Ambassador<RTI1516Traits> {
@@ -1429,29 +1327,47 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
   try {
     fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream));
   } catch (const OpenRTI::Exception& e) {
-    throw rti1516::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.getReason()));
+    throw rti1516::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
   } catch (...) {
     throw rti1516::RTIinternalError(L"Unknown error while reading fdd file");
   }
 
-  std::string utf8FederationExecutionName = OpenRTI::ucsToUtf8(federationExecutionName);
-  _ambassadorInterface->ensureConnected(utf8FederationExecutionName);
-  _ambassadorInterface->createFederationExecution(getFilePart(utf8FederationExecutionName), fomModuleList, ucsToUtf8(logicalTimeImplementationName));
+
+  try {
+    std::string utf8FederationExecutionName = OpenRTI::ucsToUtf8(federationExecutionName);
+    _ambassadorInterface->ensureConnected(utf8FederationExecutionName);
+    _ambassadorInterface->createFederationExecution(getFilePart(utf8FederationExecutionName), fomModuleList, ucsToUtf8(logicalTimeImplementationName));
+  } catch (const OpenRTI::FederationExecutionAlreadyExists& e) {
+    throw rti1516::FederationExecutionAlreadyExists(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::CouldNotCreateLogicalTimeFactory& e) {
+    throw rti1516::CouldNotCreateLogicalTimeFactory(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 4.3
 void
 RTIambassadorImplementation::destroyFederationExecution(std::wstring const & federationExecutionName)
   throw (rti1516::FederatesCurrentlyJoined,
          rti1516::FederationExecutionDoesNotExist,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->ensureConnected(ucsToUtf8(federationExecutionName));
-
-  _ambassadorInterface->destroyFederationExecution(getFilePart(ucsToUtf8(federationExecutionName)));
+  try {
+    _ambassadorInterface->ensureConnected(ucsToUtf8(federationExecutionName));
+    _ambassadorInterface->destroyFederationExecution(getFilePart(ucsToUtf8(federationExecutionName)));
+  } catch (const OpenRTI::FederatesCurrentlyJoined& e) {
+    throw rti1516::FederatesCurrentlyJoined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederationExecutionDoesNotExist& e) {
+    throw rti1516::FederationExecutionDoesNotExist(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 4.4
 rti1516::FederateHandle
 RTIambassadorImplementation::joinFederationExecution(std::wstring const & federateType,
                                                      std::wstring const & federationExecutionName,
@@ -1463,16 +1379,31 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
          rti1516::CouldNotCreateLogicalTimeFactory,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->ensureConnected(ucsToUtf8(federationExecutionName));
-  _ambassadorInterface->_federateAmbassador = &federateAmbassador;
+  try {
+    _ambassadorInterface->ensureConnected(ucsToUtf8(federationExecutionName));
+    _ambassadorInterface->_federateAmbassador = &federateAmbassador;
 
-  FederateHandle federateHandle = _ambassadorInterface->joinFederationExecution(std::string(), ucsToUtf8(federateType),
-                                                                                getFilePart(ucsToUtf8(federationExecutionName)),
-                                                                                OpenRTI::FOMStringModuleList());
-  return rti1516::FederateHandleFriend::createHandle(federateHandle);
+    FederateHandle federateHandle = _ambassadorInterface->joinFederationExecution(std::string(), ucsToUtf8(federateType),
+                                                                                  getFilePart(ucsToUtf8(federationExecutionName)),
+                                                                                  OpenRTI::FOMStringModuleList());
+    return rti1516::FederateHandleFriend::createHandle(federateHandle);
+  } catch (const OpenRTI::CouldNotCreateLogicalTimeFactory& e) {
+    throw rti1516::CouldNotCreateLogicalTimeFactory(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederationExecutionDoesNotExist& e) {
+    throw rti1516::FederationExecutionDoesNotExist(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateAlreadyExecutionMember& e) {
+    throw rti1516::FederateAlreadyExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 4.5
 void
 RTIambassadorImplementation::resignFederationExecution(rti1516::ResignAction rti1516ResignAction)
   throw (rti1516::OwnershipAcquisitionPending,
@@ -1480,35 +1411,48 @@ RTIambassadorImplementation::resignFederationExecution(rti1516::ResignAction rti
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ResignAction resignAction;
-  switch (rti1516ResignAction) {
-  case rti1516::UNCONDITIONALLY_DIVEST_ATTRIBUTES:
-    resignAction = OpenRTI::UNCONDITIONALLY_DIVEST_ATTRIBUTES;
-    break;
-  case rti1516::DELETE_OBJECTS:
-    resignAction = OpenRTI::DELETE_OBJECTS;
-    break;
-  case rti1516::CANCEL_PENDING_OWNERSHIP_ACQUISITIONS:
-    resignAction = OpenRTI::CANCEL_PENDING_OWNERSHIP_ACQUISITIONS;
-    break;
-  case rti1516::DELETE_OBJECTS_THEN_DIVEST:
-    resignAction = OpenRTI::DELETE_OBJECTS_THEN_DIVEST;
-    break;
-  case rti1516::CANCEL_THEN_DELETE_THEN_DIVEST:
-    resignAction = OpenRTI::CANCEL_THEN_DELETE_THEN_DIVEST;
-    break;
-  case rti1516::NO_ACTION:
-    resignAction = OpenRTI::NO_ACTION;
-    break;
-  default:
-    resignAction = OpenRTI::CANCEL_THEN_DELETE_THEN_DIVEST;
-  }
+  try {
+    OpenRTI::ResignAction resignAction;
+    switch (rti1516ResignAction) {
+    case rti1516::UNCONDITIONALLY_DIVEST_ATTRIBUTES:
+      resignAction = OpenRTI::UNCONDITIONALLY_DIVEST_ATTRIBUTES;
+      break;
+    case rti1516::DELETE_OBJECTS:
+      resignAction = OpenRTI::DELETE_OBJECTS;
+      break;
+    case rti1516::CANCEL_PENDING_OWNERSHIP_ACQUISITIONS:
+      resignAction = OpenRTI::CANCEL_PENDING_OWNERSHIP_ACQUISITIONS;
+      break;
+    case rti1516::DELETE_OBJECTS_THEN_DIVEST:
+      resignAction = OpenRTI::DELETE_OBJECTS_THEN_DIVEST;
+      break;
+    case rti1516::CANCEL_THEN_DELETE_THEN_DIVEST:
+      resignAction = OpenRTI::CANCEL_THEN_DELETE_THEN_DIVEST;
+      break;
+    case rti1516::NO_ACTION:
+      resignAction = OpenRTI::NO_ACTION;
+      break;
+    default:
+      resignAction = OpenRTI::CANCEL_THEN_DELETE_THEN_DIVEST;
+    }
 
-  _ambassadorInterface->_federateAmbassador = 0;
-  _ambassadorInterface->resignFederationExecution(resignAction);
+    _ambassadorInterface->_federateAmbassador = 0;
+    _ambassadorInterface->resignFederationExecution(resignAction);
+  } catch (const OpenRTI::OwnershipAcquisitionPending& e) {
+    throw rti1516::OwnershipAcquisitionPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateOwnsAttributes& e) {
+    throw rti1516::FederateOwnsAttributes(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 4.6
 void
 RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring const & label,
                                                                     rti1516::VariableLengthData const & rti1516Tag)
@@ -1517,9 +1461,23 @@ RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
-  // According to the standard, an empty set also means all federates currently joined.
-  _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, OpenRTI::FederateHandleSet());
+  try {
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    // According to the standard, an empty set also means all federates currently joined.
+    _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, OpenRTI::FederateHandleSet());
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 void
@@ -1531,16 +1489,29 @@ RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+  try {
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
 
-  OpenRTI::FederateHandleSet federateHandleSet;
-  for (rti1516::FederateHandleSet::const_iterator i = rti1516FederateHandleSet.begin(); i != rti1516FederateHandleSet.end(); ++i)
-    federateHandleSet.insert(rti1516::FederateHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::FederateHandleSet federateHandleSet;
+    for (rti1516::FederateHandleSet::const_iterator i = rti1516FederateHandleSet.begin(); i != rti1516FederateHandleSet.end(); ++i)
+      federateHandleSet.insert(rti1516::FederateHandleFriend::getOpenRTIHandle(*i));
 
-  _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, federateHandleSet);
+    _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, federateHandleSet);
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 4.9
 void
 RTIambassadorImplementation::synchronizationPointAchieved(std::wstring const & label)
   throw (rti1516::SynchronizationPointLabelNotAnnounced,
@@ -1549,10 +1520,25 @@ RTIambassadorImplementation::synchronizationPointAchieved(std::wstring const & l
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->synchronizationPointAchieved(ucsToUtf8(label));
+  try {
+    _ambassadorInterface->synchronizationPointAchieved(ucsToUtf8(label), true/*successfully*/);
+  } catch (const OpenRTI::SynchronizationPointLabelNotAnnounced& e) {
+    throw rti1516::SynchronizationPointLabelNotAnnounced(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 4.11
 void
 RTIambassadorImplementation::requestFederationSave(std::wstring const & label)
   throw (rti1516::FederateNotExecutionMember,
@@ -1560,7 +1546,21 @@ RTIambassadorImplementation::requestFederationSave(std::wstring const & label)
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->requestFederationSave(ucsToUtf8(label));
+  try {
+    _ambassadorInterface->requestFederationSave(ucsToUtf8(label));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 void
@@ -1574,10 +1574,29 @@ RTIambassadorImplementation::requestFederationSave(const std::wstring& label,
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->requestFederationSave(ucsToUtf8(label), rti1516LogicalTime);
+  try {
+    _ambassadorInterface->requestFederationSave(ucsToUtf8(label), rti1516LogicalTime);
+  } catch (const OpenRTI::LogicalTimeAlreadyPassed& e) {
+    throw rti1516::LogicalTimeAlreadyPassed(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw rti1516::InvalidLogicalTime(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateUnableToUseTime& e) {
+    throw rti1516::FederateUnableToUseTime(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 4.13
 void
 RTIambassadorImplementation::federateSaveBegun()
   throw (rti1516::SaveNotInitiated,
@@ -1585,10 +1604,23 @@ RTIambassadorImplementation::federateSaveBegun()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->federateSaveBegun();
+  try {
+    _ambassadorInterface->federateSaveBegun();
+  } catch (const OpenRTI::SaveNotInitiated& e) {
+    throw rti1516::SaveNotInitiated(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 4.14
 void
 RTIambassadorImplementation::federateSaveComplete()
   throw (rti1516::FederateHasNotBegunSave,
@@ -1596,7 +1628,21 @@ RTIambassadorImplementation::federateSaveComplete()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->federateSaveComplete();
+  try {
+    _ambassadorInterface->federateSaveComplete();
+  } catch (const OpenRTI::FederateHasNotBegunSave& e) {
+    throw rti1516::FederateHasNotBegunSave(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 void
@@ -1606,20 +1652,44 @@ RTIambassadorImplementation::federateSaveNotComplete()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->federateSaveNotComplete();
+  try {
+    _ambassadorInterface->federateSaveNotComplete();
+  } catch (const OpenRTI::FederateHasNotBegunSave& e) {
+    throw rti1516::FederateHasNotBegunSave(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 4.16
 void
 RTIambassadorImplementation::queryFederationSaveStatus ()
   throw (rti1516::FederateNotExecutionMember,
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->queryFederationSaveStatus();
+  try {
+    _ambassadorInterface->queryFederationSaveStatus();
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 4.18
 void
 RTIambassadorImplementation::requestFederationRestore(std::wstring const & label)
   throw (rti1516::FederateNotExecutionMember,
@@ -1627,10 +1697,23 @@ RTIambassadorImplementation::requestFederationRestore(std::wstring const & label
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->requestFederationRestore(ucsToUtf8(label));
+  try {
+    _ambassadorInterface->requestFederationRestore(ucsToUtf8(label));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 4.22
 void
 RTIambassadorImplementation::federateRestoreComplete()
   throw (rti1516::RestoreNotRequested,
@@ -1638,7 +1721,21 @@ RTIambassadorImplementation::federateRestoreComplete()
          rti1516::SaveInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->federateRestoreComplete();
+  try {
+    _ambassadorInterface->federateRestoreComplete();
+  } catch (const OpenRTI::RestoreNotRequested& e) {
+    throw rti1516::RestoreNotRequested(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 void
@@ -1648,24 +1745,44 @@ RTIambassadorImplementation::federateRestoreNotComplete()
          rti1516::SaveInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->federateRestoreNotComplete();
+  try {
+    _ambassadorInterface->federateRestoreNotComplete();
+  } catch (const OpenRTI::RestoreNotRequested& e) {
+    throw rti1516::RestoreNotRequested(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 4.24
 void
 RTIambassadorImplementation::queryFederationRestoreStatus()
   throw (rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->queryFederationRestoreStatus();
+  try {
+    _ambassadorInterface->queryFederationRestoreStatus();
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-/////////////////////////////////////
-// Declaration Management Services //
-/////////////////////////////////////
-
-// 5.2
 void
 RTIambassadorImplementation::publishObjectClassAttributes(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                           rti1516::AttributeHandleSet const & rti1516AttributeHandleSet)
@@ -1676,16 +1793,33 @@ RTIambassadorImplementation::publishObjectClassAttributes(rti1516::ObjectClassHa
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  _ambassadorInterface->publishObjectClassAttributes(objectClassHandle, attributeHandleSet);
+    _ambassadorInterface->publishObjectClassAttributes(objectClassHandle, attributeHandleSet);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw rti1516::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 5.3
 void
 RTIambassadorImplementation::unpublishObjectClass(rti1516::ObjectClassHandle rti1516ObjectClassHandle)
   throw (rti1516::ObjectClassNotDefined,
@@ -1695,8 +1829,26 @@ RTIambassadorImplementation::unpublishObjectClass(rti1516::ObjectClassHandle rti
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-  _ambassadorInterface->unpublishObjectClass(objectClassHandle);
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+    _ambassadorInterface->unpublishObjectClass(objectClassHandle);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw rti1516::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::OwnershipAcquisitionPending& e) {
+    throw rti1516::OwnershipAcquisitionPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 void
@@ -1710,16 +1862,35 @@ RTIambassadorImplementation::unpublishObjectClassAttributes(rti1516::ObjectClass
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  _ambassadorInterface->unpublishObjectClassAttributes(objectClassHandle, attributeHandleSet);
+    _ambassadorInterface->unpublishObjectClassAttributes(objectClassHandle, attributeHandleSet);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw rti1516::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::OwnershipAcquisitionPending& e) {
+    throw rti1516::OwnershipAcquisitionPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 5.4
 void
 RTIambassadorImplementation::publishInteractionClass(rti1516::InteractionClassHandle rti1516InteractionClassHandle)
   throw (rti1516::InteractionClassNotDefined,
@@ -1728,11 +1899,26 @@ RTIambassadorImplementation::publishInteractionClass(rti1516::InteractionClassHa
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-  _ambassadorInterface->publishInteractionClass(interactionClassHandle);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    _ambassadorInterface->publishInteractionClass(interactionClassHandle);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw rti1516::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 5.5
 void
 RTIambassadorImplementation::unpublishInteractionClass(rti1516::InteractionClassHandle rti1516InteractionClassHandle)
   throw (rti1516::InteractionClassNotDefined,
@@ -1741,11 +1927,26 @@ RTIambassadorImplementation::unpublishInteractionClass(rti1516::InteractionClass
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-  _ambassadorInterface->unpublishInteractionClass(interactionClassHandle);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    _ambassadorInterface->unpublishInteractionClass(interactionClassHandle);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw rti1516::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 5.6
 void
 RTIambassadorImplementation::subscribeObjectClassAttributes(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                             rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
@@ -1757,16 +1958,33 @@ RTIambassadorImplementation::subscribeObjectClassAttributes(rti1516::ObjectClass
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  _ambassadorInterface->subscribeObjectClassAttributes(objectClassHandle, attributeHandleSet, active);
+    _ambassadorInterface->subscribeObjectClassAttributes(objectClassHandle, attributeHandleSet, active, std::string());
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw rti1516::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 5.7
 void
 RTIambassadorImplementation::unsubscribeObjectClass(rti1516::ObjectClassHandle rti1516ObjectClassHandle)
   throw (rti1516::ObjectClassNotDefined,
@@ -1775,8 +1993,24 @@ RTIambassadorImplementation::unsubscribeObjectClass(rti1516::ObjectClassHandle r
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-  _ambassadorInterface->unsubscribeObjectClass(objectClassHandle);
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+    _ambassadorInterface->unsubscribeObjectClass(objectClassHandle);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw rti1516::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 void
@@ -1789,16 +2023,33 @@ RTIambassadorImplementation::unsubscribeObjectClassAttributes(rti1516::ObjectCla
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  _ambassadorInterface->unsubscribeObjectClassAttributes(objectClassHandle, attributeHandleSet);
+    _ambassadorInterface->unsubscribeObjectClassAttributes(objectClassHandle, attributeHandleSet);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw rti1516::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 5.8
 void
 RTIambassadorImplementation::subscribeInteractionClass(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                                        bool active)
@@ -1809,11 +2060,28 @@ RTIambassadorImplementation::subscribeInteractionClass(rti1516::InteractionClass
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-  _ambassadorInterface->subscribeInteractionClass(interactionClassHandle, active);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    _ambassadorInterface->subscribeInteractionClass(interactionClassHandle, active);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw rti1516::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateServiceInvocationsAreBeingReportedViaMOM& e) {
+    throw rti1516::FederateServiceInvocationsAreBeingReportedViaMOM(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 5.9
 void
 RTIambassadorImplementation::unsubscribeInteractionClass(rti1516::InteractionClassHandle rti1516InteractionClassHandle)
   throw (rti1516::InteractionClassNotDefined,
@@ -1822,15 +2090,26 @@ RTIambassadorImplementation::unsubscribeInteractionClass(rti1516::InteractionCla
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-  _ambassadorInterface->unsubscribeInteractionClass(interactionClassHandle);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    _ambassadorInterface->unsubscribeInteractionClass(interactionClassHandle);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw rti1516::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-////////////////////////////////
-// Object Management Services //
-////////////////////////////////
-
-// 6.2
 void
 RTIambassadorImplementation::reserveObjectInstanceName(std::wstring const & objectInstanceName)
   throw (rti1516::IllegalName,
@@ -1839,10 +2118,25 @@ RTIambassadorImplementation::reserveObjectInstanceName(std::wstring const & obje
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->reserveObjectInstanceName(ucsToUtf8(objectInstanceName));
+  try {
+    _ambassadorInterface->reserveObjectInstanceName(ucsToUtf8(objectInstanceName));
+  } catch (const OpenRTI::IllegalName& e) {
+    throw rti1516::IllegalName(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 6.4
 rti1516::ObjectInstanceHandle
 RTIambassadorImplementation::registerObjectInstance(rti1516::ObjectClassHandle rti1516ObjectClassHandle)
   throw (rti1516::ObjectClassNotDefined,
@@ -1852,9 +2146,27 @@ RTIambassadorImplementation::registerObjectInstance(rti1516::ObjectClassHandle r
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = _ambassadorInterface->registerObjectInstance(objectClassHandle);
-  return rti1516::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = _ambassadorInterface->registerObjectInstance(objectClassHandle);
+    return rti1516::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw rti1516::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::ObjectClassNotPublished& e) {
+    throw rti1516::ObjectClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 rti1516::ObjectInstanceHandle
@@ -1869,12 +2181,33 @@ RTIambassadorImplementation::registerObjectInstance(rti1516::ObjectClassHandle r
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = _ambassadorInterface->registerObjectInstance(objectClassHandle, ucsToUtf8(objectInstanceName), false);
-  return rti1516::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = _ambassadorInterface->registerObjectInstance(objectClassHandle, ucsToUtf8(objectInstanceName), false);
+    return rti1516::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw rti1516::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::ObjectClassNotPublished& e) {
+    throw rti1516::ObjectClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::ObjectInstanceNameNotReserved& e) {
+    throw rti1516::ObjectInstanceNameNotReserved(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::ObjectInstanceNameInUse& e) {
+    throw rti1516::ObjectInstanceNameInUse(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 6.6
 void
 RTIambassadorImplementation::updateAttributeValues(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                    const rti1516::AttributeHandleValueMap& rti1516AttributeValues,
@@ -1887,20 +2220,40 @@ RTIambassadorImplementation::updateAttributeValues(rti1516::ObjectInstanceHandle
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
 
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
 
-  std::vector<OpenRTI::AttributeValue> attributeValueVector;
-  attributeValueVector.reserve(rti1516AttributeValues.size());
-  for (rti1516::AttributeHandleValueMap::const_iterator i = rti1516AttributeValues.begin(); i != rti1516AttributeValues.end(); ++i) {
-    attributeValueVector.push_back(OpenRTI::AttributeValue());
-    OpenRTI::AttributeHandle attributeHandle = rti1516::AttributeHandleFriend::getOpenRTIHandle(i->first);
-    attributeValueVector.back().setAttributeHandle(attributeHandle);
-    attributeValueVector.back().getValue() = rti1516::VariableLengthDataFriend::readPointer(i->second);
+    std::vector<OpenRTI::AttributeValue> attributeValueVector;
+    attributeValueVector.reserve(rti1516AttributeValues.size());
+    for (rti1516::AttributeHandleValueMap::const_iterator i = rti1516AttributeValues.begin(); i != rti1516AttributeValues.end(); ++i) {
+      attributeValueVector.push_back(OpenRTI::AttributeValue());
+      OpenRTI::AttributeHandle attributeHandle = rti1516::AttributeHandleFriend::getOpenRTIHandle(i->first);
+      attributeValueVector.back().setAttributeHandle(attributeHandle);
+      attributeValueVector.back().getValue() = rti1516::VariableLengthDataFriend::readPointer(i->second);
+    }
+
+    _ambassadorInterface->updateAttributeValues(objectInstanceHandle, attributeValueVector, tag);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw rti1516::AttributeNotOwned(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
   }
-
-  _ambassadorInterface->updateAttributeValues(objectInstanceHandle, attributeValueVector, tag);
 }
 
 rti1516::MessageRetractionHandle
@@ -1917,24 +2270,45 @@ RTIambassadorImplementation::updateAttributeValues(rti1516::ObjectInstanceHandle
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
 
-  std::vector<OpenRTI::AttributeValue> attributeValueVector;
-  attributeValueVector.reserve(rti1516AttributeValues.size());
-  for (rti1516::AttributeHandleValueMap::const_iterator i = rti1516AttributeValues.begin(); i != rti1516AttributeValues.end(); ++i) {
-    attributeValueVector.push_back(OpenRTI::AttributeValue());
-    OpenRTI::AttributeHandle attributeHandle = rti1516::AttributeHandleFriend::getOpenRTIHandle(i->first);
-    attributeValueVector.back().setAttributeHandle(attributeHandle);
-    attributeValueVector.back().getValue() = rti1516::VariableLengthDataFriend::readPointer(i->second);
+    std::vector<OpenRTI::AttributeValue> attributeValueVector;
+    attributeValueVector.reserve(rti1516AttributeValues.size());
+    for (rti1516::AttributeHandleValueMap::const_iterator i = rti1516AttributeValues.begin(); i != rti1516AttributeValues.end(); ++i) {
+      attributeValueVector.push_back(OpenRTI::AttributeValue());
+      OpenRTI::AttributeHandle attributeHandle = rti1516::AttributeHandleFriend::getOpenRTIHandle(i->first);
+      attributeValueVector.back().setAttributeHandle(attributeHandle);
+      attributeValueVector.back().getValue() = rti1516::VariableLengthDataFriend::readPointer(i->second);
+    }
+
+    OpenRTI::MessageRetractionHandle messageRetractionHandle;
+    messageRetractionHandle = _ambassadorInterface->updateAttributeValues(objectInstanceHandle, attributeValueVector, tag, rti1516LogicalTime);
+    return rti1516::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw rti1516::AttributeNotOwned(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw rti1516::InvalidLogicalTime(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
   }
-
-  OpenRTI::MessageRetractionHandle messageRetractionHandle;
-  messageRetractionHandle = _ambassadorInterface->updateAttributeValues(objectInstanceHandle, attributeValueVector, tag, rti1516LogicalTime);
-  return rti1516::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
 }
 
-// 6.8
 void
 RTIambassadorImplementation::sendInteraction(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                              const rti1516::ParameterHandleValueMap& rti1516ParameterValues,
@@ -1947,20 +2321,40 @@ RTIambassadorImplementation::sendInteraction(rti1516::InteractionClassHandle rti
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle;
-  interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle;
+    interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
 
-  std::vector<OpenRTI::ParameterValue> parameterValueVector;
-  parameterValueVector.reserve(rti1516ParameterValues.size());
-  for (rti1516::ParameterHandleValueMap::const_iterator i = rti1516ParameterValues.begin(); i != rti1516ParameterValues.end(); ++i) {
-    parameterValueVector.push_back(OpenRTI::ParameterValue());
-    OpenRTI::ParameterHandle parameterHandle = rti1516::ParameterHandleFriend::getOpenRTIHandle(i->first);
-    parameterValueVector.back().setParameterHandle(parameterHandle);
-    parameterValueVector.back().getValue() = rti1516::VariableLengthDataFriend::readPointer(i->second);
+    std::vector<OpenRTI::ParameterValue> parameterValueVector;
+    parameterValueVector.reserve(rti1516ParameterValues.size());
+    for (rti1516::ParameterHandleValueMap::const_iterator i = rti1516ParameterValues.begin(); i != rti1516ParameterValues.end(); ++i) {
+      parameterValueVector.push_back(OpenRTI::ParameterValue());
+      OpenRTI::ParameterHandle parameterHandle = rti1516::ParameterHandleFriend::getOpenRTIHandle(i->first);
+      parameterValueVector.back().setParameterHandle(parameterHandle);
+      parameterValueVector.back().getValue() = rti1516::VariableLengthDataFriend::readPointer(i->second);
+    }
+
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    _ambassadorInterface->sendInteraction(interactionClassHandle, parameterValueVector, tag);
+  } catch (const OpenRTI::InteractionClassNotPublished& e) {
+    throw rti1516::InteractionClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw rti1516::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InteractionParameterNotDefined& e) {
+    throw rti1516::InteractionParameterNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
   }
-
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
-  _ambassadorInterface->sendInteraction(interactionClassHandle, parameterValueVector, tag);
 }
 
 rti1516::MessageRetractionHandle
@@ -1977,25 +2371,46 @@ RTIambassadorImplementation::sendInteraction(rti1516::InteractionClassHandle rti
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle;
-  interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle;
+    interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
 
-  std::vector<OpenRTI::ParameterValue> parameterValueVector;
-  parameterValueVector.reserve(rti1516ParameterValues.size());
-  for (rti1516::ParameterHandleValueMap::const_iterator i = rti1516ParameterValues.begin(); i != rti1516ParameterValues.end(); ++i) {
-    parameterValueVector.push_back(OpenRTI::ParameterValue());
-    OpenRTI::ParameterHandle parameterHandle = rti1516::ParameterHandleFriend::getOpenRTIHandle(i->first);
-    parameterValueVector.back().setParameterHandle(parameterHandle);
-    parameterValueVector.back().getValue() = rti1516::VariableLengthDataFriend::readPointer(i->second);
+    std::vector<OpenRTI::ParameterValue> parameterValueVector;
+    parameterValueVector.reserve(rti1516ParameterValues.size());
+    for (rti1516::ParameterHandleValueMap::const_iterator i = rti1516ParameterValues.begin(); i != rti1516ParameterValues.end(); ++i) {
+      parameterValueVector.push_back(OpenRTI::ParameterValue());
+      OpenRTI::ParameterHandle parameterHandle = rti1516::ParameterHandleFriend::getOpenRTIHandle(i->first);
+      parameterValueVector.back().setParameterHandle(parameterHandle);
+      parameterValueVector.back().getValue() = rti1516::VariableLengthDataFriend::readPointer(i->second);
+    }
+
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::MessageRetractionHandle messageRetractionHandle;
+    messageRetractionHandle = _ambassadorInterface->sendInteraction(interactionClassHandle, parameterValueVector, tag, rti1516LogicalTime);
+    return rti1516::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
+  } catch (const OpenRTI::InteractionClassNotPublished& e) {
+    throw rti1516::InteractionClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw rti1516::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InteractionParameterNotDefined& e) {
+    throw rti1516::InteractionParameterNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw rti1516::InvalidLogicalTime(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
   }
-
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
-  OpenRTI::MessageRetractionHandle messageRetractionHandle;
-  messageRetractionHandle = _ambassadorInterface->sendInteraction(interactionClassHandle, parameterValueVector, tag, rti1516LogicalTime);
-  return rti1516::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
 }
 
-// 6.10
 void
 RTIambassadorImplementation::deleteObjectInstance(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                   const rti1516::VariableLengthData& rti1516Tag)
@@ -2006,9 +2421,27 @@ RTIambassadorImplementation::deleteObjectInstance(rti1516::ObjectInstanceHandle 
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
-  _ambassadorInterface->deleteObjectInstance(objectInstanceHandle, tag);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    _ambassadorInterface->deleteObjectInstance(objectInstanceHandle, tag);
+  } catch (const OpenRTI::DeletePrivilegeNotHeld& e) {
+    throw rti1516::DeletePrivilegeNotHeld(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 rti1516::MessageRetractionHandle
@@ -2023,13 +2456,32 @@ RTIambassadorImplementation::deleteObjectInstance(rti1516::ObjectInstanceHandle 
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
-  OpenRTI::MessageRetractionHandle messageRetractionHandle = _ambassadorInterface->deleteObjectInstance(objectInstanceHandle, tag, rti1516LogicalTime);
-  return rti1516::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::MessageRetractionHandle messageRetractionHandle = _ambassadorInterface->deleteObjectInstance(objectInstanceHandle, tag, rti1516LogicalTime);
+    return rti1516::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
+  } catch (const OpenRTI::DeletePrivilegeNotHeld& e) {
+    throw rti1516::DeletePrivilegeNotHeld(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw rti1516::InvalidLogicalTime(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 6.12
 void
 RTIambassadorImplementation::localDeleteObjectInstance(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle)
   throw (rti1516::ObjectInstanceNotKnown,
@@ -2040,11 +2492,30 @@ RTIambassadorImplementation::localDeleteObjectInstance(rti1516::ObjectInstanceHa
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-  _ambassadorInterface->localDeleteObjectInstance(objectInstanceHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+    _ambassadorInterface->localDeleteObjectInstance(objectInstanceHandle);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateOwnsAttributes& e) {
+    throw rti1516::FederateOwnsAttributes(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::OwnershipAcquisitionPending& e) {
+    throw rti1516::OwnershipAcquisitionPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 6.13
 void
 RTIambassadorImplementation::changeAttributeTransportationType(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
@@ -2057,18 +2528,37 @@ RTIambassadorImplementation::changeAttributeTransportationType(rti1516::ObjectIn
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  OpenRTI::TransportationType transportationType = translate(rti1516TransportationType);
+    OpenRTI::TransportationType transportationType = translate(rti1516TransportationType);
 
-  _ambassadorInterface->changeAttributeTransportationType(objectInstanceHandle, attributeHandleSet, transportationType);
+    _ambassadorInterface->changeAttributeTransportationType(objectInstanceHandle, attributeHandleSet, transportationType);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw rti1516::AttributeNotOwned(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 6.14
 void
 RTIambassadorImplementation::changeInteractionTransportationType(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                                                  rti1516::TransportationType rti1516TransportationType)
@@ -2079,12 +2569,29 @@ RTIambassadorImplementation::changeInteractionTransportationType(rti1516::Intera
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-  OpenRTI::TransportationType transportationType = translate(rti1516TransportationType);
-  _ambassadorInterface->changeInteractionTransportationType(interactionClassHandle, transportationType);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    OpenRTI::TransportationType transportationType = translate(rti1516TransportationType);
+    _ambassadorInterface->changeInteractionTransportationType(interactionClassHandle, transportationType);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw rti1516::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InteractionClassNotPublished& e) {
+    throw rti1516::InteractionClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 6.17
 void
 RTIambassadorImplementation::requestAttributeValueUpdate(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                          rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
@@ -2096,15 +2603,33 @@ RTIambassadorImplementation::requestAttributeValueUpdate(rti1516::ObjectInstance
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
 
-  _ambassadorInterface->requestAttributeValueUpdate(objectInstanceHandle, attributeHandleSet, tag);
+    _ambassadorInterface->requestAttributeValueUpdate(objectInstanceHandle, attributeHandleSet, tag);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 void
@@ -2118,21 +2643,35 @@ RTIambassadorImplementation::requestAttributeValueUpdate(rti1516::ObjectClassHan
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
 
-  _ambassadorInterface->requestAttributeValueUpdate(objectClassHandle, attributeHandleSet, tag);
+    _ambassadorInterface->requestAttributeValueUpdate(objectClassHandle, attributeHandleSet, tag);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw rti1516::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-///////////////////////////////////
-// Ownership Management Services //
-///////////////////////////////////
-// 7.2
 void
 RTIambassadorImplementation::unconditionalAttributeOwnershipDivestiture(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                         rti1516::AttributeHandleSet const & rti1516AttributeHandleSet)
@@ -2144,16 +2683,35 @@ RTIambassadorImplementation::unconditionalAttributeOwnershipDivestiture(rti1516:
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  _ambassadorInterface->unconditionalAttributeOwnershipDivestiture(objectInstanceHandle, attributeHandleSet);
+    _ambassadorInterface->unconditionalAttributeOwnershipDivestiture(objectInstanceHandle, attributeHandleSet);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw rti1516::AttributeNotOwned(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 7.3
 void
 RTIambassadorImplementation::negotiatedAttributeOwnershipDivestiture(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                      rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
@@ -2167,18 +2725,39 @@ RTIambassadorImplementation::negotiatedAttributeOwnershipDivestiture(rti1516::Ob
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
 
-  _ambassadorInterface->negotiatedAttributeOwnershipDivestiture(objectInstanceHandle, attributeHandleSet, tag);
+    _ambassadorInterface->negotiatedAttributeOwnershipDivestiture(objectInstanceHandle, attributeHandleSet, tag);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw rti1516::AttributeNotOwned(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeAlreadyBeingDivested& e) {
+    throw rti1516::AttributeAlreadyBeingDivested(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 7.6
 void
 RTIambassadorImplementation::confirmDivestiture(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                 rti1516::AttributeHandleSet const& rti1516AttributeHandleSet,
@@ -2193,18 +2772,41 @@ RTIambassadorImplementation::confirmDivestiture(rti1516::ObjectInstanceHandle rt
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
 
-  _ambassadorInterface->confirmDivestiture(objectInstanceHandle, attributeHandleSet, tag);
+    _ambassadorInterface->confirmDivestiture(objectInstanceHandle, attributeHandleSet, tag);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw rti1516::AttributeNotOwned(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeDivestitureWasNotRequested& e) {
+    throw rti1516::AttributeDivestitureWasNotRequested(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NoAcquisitionPending& e) {
+    throw rti1516::NoAcquisitionPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 7.8
 void
 RTIambassadorImplementation::attributeOwnershipAcquisition(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                            rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
@@ -2219,18 +2821,39 @@ RTIambassadorImplementation::attributeOwnershipAcquisition(rti1516::ObjectInstan
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
 
-  _ambassadorInterface->attributeOwnershipAcquisition(objectInstanceHandle, attributeHandleSet, tag);
+    _ambassadorInterface->attributeOwnershipAcquisition(objectInstanceHandle, attributeHandleSet, tag);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::ObjectClassNotPublished& e) {
+    throw rti1516::ObjectClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotPublished& e) {
+    throw rti1516::AttributeNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 7.9
 void
 RTIambassadorImplementation::attributeOwnershipAcquisitionIfAvailable(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                       rti1516::AttributeHandleSet const & rti1516AttributeHandleSet)
@@ -2245,16 +2868,41 @@ RTIambassadorImplementation::attributeOwnershipAcquisitionIfAvailable(rti1516::O
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  _ambassadorInterface->attributeOwnershipAcquisitionIfAvailable(objectInstanceHandle, attributeHandleSet);
+    _ambassadorInterface->attributeOwnershipAcquisitionIfAvailable(objectInstanceHandle, attributeHandleSet);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::ObjectClassNotPublished& e) {
+    throw rti1516::ObjectClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotPublished& e) {
+    throw rti1516::AttributeNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateOwnsAttributes& e) {
+    throw rti1516::FederateOwnsAttributes(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeAlreadyBeingAcquired& e) {
+    throw rti1516::AttributeAlreadyBeingAcquired(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 7.12
 void
 RTIambassadorImplementation::attributeOwnershipDivestitureIfWanted(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                    rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
@@ -2267,21 +2915,40 @@ RTIambassadorImplementation::attributeOwnershipDivestitureIfWanted(rti1516::Obje
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  OpenRTI::AttributeHandleSet divestedAttributeHandleSet;
-  _ambassadorInterface->attributeOwnershipDivestitureIfWanted(objectInstanceHandle, attributeHandleSet, divestedAttributeHandleSet);
+    OpenRTI::AttributeHandleSet divestedAttributeHandleSet;
+    _ambassadorInterface->attributeOwnershipDivestitureIfWanted(objectInstanceHandle, attributeHandleSet, divestedAttributeHandleSet);
 
-  rti1516DivestedAttributeSet.clear();
-  for (OpenRTI::AttributeHandleSet::const_iterator i = divestedAttributeHandleSet.begin(); i != divestedAttributeHandleSet.end(); ++i)
-    rti1516DivestedAttributeSet.insert(rti1516::AttributeHandleFriend::createHandle(*i));
+    rti1516DivestedAttributeSet.clear();
+    for (OpenRTI::AttributeHandleSet::const_iterator i = divestedAttributeHandleSet.begin(); i != divestedAttributeHandleSet.end(); ++i)
+      rti1516DivestedAttributeSet.insert(rti1516::AttributeHandleFriend::createHandle(*i));
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw rti1516::AttributeNotOwned(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 7.13
 void
 RTIambassadorImplementation::cancelNegotiatedAttributeOwnershipDivestiture(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                            rti1516::AttributeHandleSet const & rti1516AttributeHandleSet)
@@ -2294,16 +2961,37 @@ RTIambassadorImplementation::cancelNegotiatedAttributeOwnershipDivestiture(rti15
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  _ambassadorInterface->cancelNegotiatedAttributeOwnershipDivestiture(objectInstanceHandle, attributeHandleSet);
+    _ambassadorInterface->cancelNegotiatedAttributeOwnershipDivestiture(objectInstanceHandle, attributeHandleSet);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw rti1516::AttributeNotOwned(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeDivestitureWasNotRequested& e) {
+    throw rti1516::AttributeDivestitureWasNotRequested(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 7.14
 void
 RTIambassadorImplementation::cancelAttributeOwnershipAcquisition(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                  rti1516::AttributeHandleSet const & rti1516AttributeHandleSet)
@@ -2316,16 +3004,37 @@ RTIambassadorImplementation::cancelAttributeOwnershipAcquisition(rti1516::Object
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  _ambassadorInterface->cancelAttributeOwnershipAcquisition(objectInstanceHandle, attributeHandleSet);
+    _ambassadorInterface->cancelAttributeOwnershipAcquisition(objectInstanceHandle, attributeHandleSet);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeAlreadyOwned& e) {
+    throw rti1516::AttributeAlreadyOwned(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeAcquisitionWasNotRequested& e) {
+    throw rti1516::AttributeAcquisitionWasNotRequested(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 7.16
 void
 RTIambassadorImplementation::queryAttributeOwnership(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                      rti1516::AttributeHandle rti1516AttributeHandle)
@@ -2336,12 +3045,29 @@ RTIambassadorImplementation::queryAttributeOwnership(rti1516::ObjectInstanceHand
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-  OpenRTI::AttributeHandle attributeHandle = rti1516::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
-  _ambassadorInterface->queryAttributeOwnership(objectInstanceHandle, attributeHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::AttributeHandle attributeHandle = rti1516::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
+    _ambassadorInterface->queryAttributeOwnership(objectInstanceHandle, attributeHandle);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 7.18
 bool
 RTIambassadorImplementation::isAttributeOwnedByFederate(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                         rti1516::AttributeHandle rti1516AttributeHandle)
@@ -2352,16 +3078,29 @@ RTIambassadorImplementation::isAttributeOwnedByFederate(rti1516::ObjectInstanceH
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-  OpenRTI::AttributeHandle attributeHandle = rti1516::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
-  return _ambassadorInterface->isAttributeOwnedByFederate(objectInstanceHandle, attributeHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::AttributeHandle attributeHandle = rti1516::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
+    return _ambassadorInterface->isAttributeOwnedByFederate(objectInstanceHandle, attributeHandle);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-//////////////////////////////
-// Time Management Services //
-//////////////////////////////
-
-// 8.2
 void
 RTIambassadorImplementation::enableTimeRegulation(const rti1516::LogicalTimeInterval& rti1516Lookahead)
   throw (rti1516::TimeRegulationAlreadyEnabled,
@@ -2373,10 +3112,31 @@ RTIambassadorImplementation::enableTimeRegulation(const rti1516::LogicalTimeInte
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->enableTimeRegulation(rti1516Lookahead);
+  try {
+    _ambassadorInterface->enableTimeRegulation(rti1516Lookahead);
+  } catch (const OpenRTI::TimeRegulationAlreadyEnabled& e) {
+    throw rti1516::TimeRegulationAlreadyEnabled(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidLookahead& e) {
+    throw rti1516::InvalidLookahead(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw rti1516::InTimeAdvancingState(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RequestForTimeRegulationPending& e) {
+    throw rti1516::RequestForTimeRegulationPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.4
 void
 RTIambassadorImplementation::disableTimeRegulation()
   throw (rti1516::TimeRegulationIsNotEnabled,
@@ -2385,10 +3145,25 @@ RTIambassadorImplementation::disableTimeRegulation()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->disableTimeRegulation();
+  try {
+    _ambassadorInterface->disableTimeRegulation();
+  } catch (const OpenRTI::TimeRegulationIsNotEnabled& e) {
+    throw rti1516::TimeRegulationIsNotEnabled(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.5
 void
 RTIambassadorImplementation::enableTimeConstrained()
   throw (rti1516::TimeConstrainedAlreadyEnabled,
@@ -2399,10 +3174,29 @@ RTIambassadorImplementation::enableTimeConstrained()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->enableTimeConstrained();
+  try {
+    _ambassadorInterface->enableTimeConstrained();
+  } catch (const OpenRTI::TimeConstrainedAlreadyEnabled& e) {
+    throw rti1516::TimeConstrainedAlreadyEnabled(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw rti1516::InTimeAdvancingState(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RequestForTimeConstrainedPending& e) {
+    throw rti1516::RequestForTimeConstrainedPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.7
 void
 RTIambassadorImplementation::disableTimeConstrained()
   throw (rti1516::TimeConstrainedIsNotEnabled,
@@ -2411,10 +3205,25 @@ RTIambassadorImplementation::disableTimeConstrained()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->disableTimeConstrained();
+  try {
+    _ambassadorInterface->disableTimeConstrained();
+  } catch (const OpenRTI::TimeConstrainedIsNotEnabled& e) {
+    throw rti1516::TimeConstrainedIsNotEnabled(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.8
 void
 RTIambassadorImplementation::timeAdvanceRequest(const rti1516::LogicalTime& logicalTime)
   throw (rti1516::InvalidLogicalTime,
@@ -2427,10 +3236,33 @@ RTIambassadorImplementation::timeAdvanceRequest(const rti1516::LogicalTime& logi
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->timeAdvanceRequest(logicalTime);
+  try {
+    _ambassadorInterface->timeAdvanceRequest(logicalTime);
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw rti1516::InvalidLogicalTime(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::LogicalTimeAlreadyPassed& e) {
+    throw rti1516::LogicalTimeAlreadyPassed(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw rti1516::InTimeAdvancingState(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RequestForTimeRegulationPending& e) {
+    throw rti1516::RequestForTimeRegulationPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RequestForTimeConstrainedPending& e) {
+    throw rti1516::RequestForTimeConstrainedPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.9
 void
 RTIambassadorImplementation::timeAdvanceRequestAvailable(const rti1516::LogicalTime& logicalTime)
   throw (rti1516::InvalidLogicalTime,
@@ -2443,10 +3275,33 @@ RTIambassadorImplementation::timeAdvanceRequestAvailable(const rti1516::LogicalT
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->timeAdvanceRequestAvailable(logicalTime);
+  try {
+    _ambassadorInterface->timeAdvanceRequestAvailable(logicalTime);
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw rti1516::InvalidLogicalTime(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::LogicalTimeAlreadyPassed& e) {
+    throw rti1516::LogicalTimeAlreadyPassed(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw rti1516::InTimeAdvancingState(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RequestForTimeRegulationPending& e) {
+    throw rti1516::RequestForTimeRegulationPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RequestForTimeConstrainedPending& e) {
+    throw rti1516::RequestForTimeConstrainedPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.10
 void
 RTIambassadorImplementation::nextMessageRequest(const rti1516::LogicalTime& logicalTime)
   throw (rti1516::InvalidLogicalTime,
@@ -2459,10 +3314,33 @@ RTIambassadorImplementation::nextMessageRequest(const rti1516::LogicalTime& logi
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->nextMessageRequest(logicalTime);
+  try {
+    _ambassadorInterface->nextMessageRequest(logicalTime);
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw rti1516::InvalidLogicalTime(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::LogicalTimeAlreadyPassed& e) {
+    throw rti1516::LogicalTimeAlreadyPassed(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw rti1516::InTimeAdvancingState(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RequestForTimeRegulationPending& e) {
+    throw rti1516::RequestForTimeRegulationPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RequestForTimeConstrainedPending& e) {
+    throw rti1516::RequestForTimeConstrainedPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.11
 void
 RTIambassadorImplementation::nextMessageRequestAvailable(const rti1516::LogicalTime& logicalTime)
   throw (rti1516::InvalidLogicalTime,
@@ -2475,10 +3353,33 @@ RTIambassadorImplementation::nextMessageRequestAvailable(const rti1516::LogicalT
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->nextMessageRequestAvailable(logicalTime);
+  try {
+    _ambassadorInterface->nextMessageRequestAvailable(logicalTime);
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw rti1516::InvalidLogicalTime(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::LogicalTimeAlreadyPassed& e) {
+    throw rti1516::LogicalTimeAlreadyPassed(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw rti1516::InTimeAdvancingState(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RequestForTimeRegulationPending& e) {
+    throw rti1516::RequestForTimeRegulationPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RequestForTimeConstrainedPending& e) {
+    throw rti1516::RequestForTimeConstrainedPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.12
 void
 RTIambassadorImplementation::flushQueueRequest(const rti1516::LogicalTime& logicalTime)
   throw (rti1516::InvalidLogicalTime,
@@ -2491,10 +3392,33 @@ RTIambassadorImplementation::flushQueueRequest(const rti1516::LogicalTime& logic
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->flushQueueRequest(logicalTime);
+  try {
+    _ambassadorInterface->flushQueueRequest(logicalTime);
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw rti1516::InvalidLogicalTime(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::LogicalTimeAlreadyPassed& e) {
+    throw rti1516::LogicalTimeAlreadyPassed(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw rti1516::InTimeAdvancingState(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RequestForTimeRegulationPending& e) {
+    throw rti1516::RequestForTimeRegulationPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RequestForTimeConstrainedPending& e) {
+    throw rti1516::RequestForTimeConstrainedPending(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.14
 void
 RTIambassadorImplementation::enableAsynchronousDelivery()
   throw (rti1516::AsynchronousDeliveryAlreadyEnabled,
@@ -2503,10 +3427,25 @@ RTIambassadorImplementation::enableAsynchronousDelivery()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->enableAsynchronousDelivery();
+  try {
+    _ambassadorInterface->enableAsynchronousDelivery();
+  } catch (const OpenRTI::AsynchronousDeliveryAlreadyEnabled& e) {
+    throw rti1516::AsynchronousDeliveryAlreadyEnabled(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.15
 void
 RTIambassadorImplementation::disableAsynchronousDelivery()
   throw (rti1516::AsynchronousDeliveryAlreadyDisabled,
@@ -2515,10 +3454,25 @@ RTIambassadorImplementation::disableAsynchronousDelivery()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->disableAsynchronousDelivery();
+  try {
+    _ambassadorInterface->disableAsynchronousDelivery();
+  } catch (const OpenRTI::AsynchronousDeliveryAlreadyDisabled& e) {
+    throw rti1516::AsynchronousDeliveryAlreadyDisabled(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.16
 bool
 RTIambassadorImplementation::queryGALT(rti1516::LogicalTime& logicalTime)
   throw (rti1516::FederateNotExecutionMember,
@@ -2526,10 +3480,23 @@ RTIambassadorImplementation::queryGALT(rti1516::LogicalTime& logicalTime)
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  return _ambassadorInterface->queryGALT(logicalTime);
+  try {
+    return _ambassadorInterface->queryGALT(logicalTime);
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.17
 void
 RTIambassadorImplementation::queryLogicalTime(rti1516::LogicalTime& logicalTime)
   throw (rti1516::FederateNotExecutionMember,
@@ -2537,10 +3504,23 @@ RTIambassadorImplementation::queryLogicalTime(rti1516::LogicalTime& logicalTime)
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->queryLogicalTime(logicalTime);
+  try {
+    _ambassadorInterface->queryLogicalTime(logicalTime);
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.18
 bool
 RTIambassadorImplementation::queryLITS(rti1516::LogicalTime& logicalTime)
   throw (rti1516::FederateNotExecutionMember,
@@ -2548,10 +3528,23 @@ RTIambassadorImplementation::queryLITS(rti1516::LogicalTime& logicalTime)
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  return _ambassadorInterface->queryLITS(logicalTime);
+  try {
+    return _ambassadorInterface->queryLITS(logicalTime);
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.19
 void
 RTIambassadorImplementation::modifyLookahead(const rti1516::LogicalTimeInterval& lookahead)
   throw (rti1516::TimeRegulationIsNotEnabled,
@@ -2562,10 +3555,29 @@ RTIambassadorImplementation::modifyLookahead(const rti1516::LogicalTimeInterval&
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->modifyLookahead(lookahead);
+  try {
+    _ambassadorInterface->modifyLookahead(lookahead, true/*checkForTimeRegulation*/);
+  } catch (const OpenRTI::TimeRegulationIsNotEnabled& e) {
+    throw rti1516::TimeRegulationIsNotEnabled(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidLookahead& e) {
+    throw rti1516::InvalidLookahead(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InTimeAdvancingState& e) {
+    throw rti1516::InTimeAdvancingState(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.20
 void
 RTIambassadorImplementation::queryLookahead(rti1516::LogicalTimeInterval& lookahead)
   throw (rti1516::TimeRegulationIsNotEnabled,
@@ -2574,10 +3586,25 @@ RTIambassadorImplementation::queryLookahead(rti1516::LogicalTimeInterval& lookah
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->queryLookahead(lookahead);
+  try {
+    _ambassadorInterface->queryLookahead(lookahead, true/*checkForTimeRegulation*/);
+  } catch (const OpenRTI::TimeRegulationIsNotEnabled& e) {
+    throw rti1516::TimeRegulationIsNotEnabled(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.21
 void
 RTIambassadorImplementation::retract(rti1516::MessageRetractionHandle rti1516MessageRetractionHandle)
   throw (rti1516::InvalidRetractionHandle,
@@ -2588,11 +3615,30 @@ RTIambassadorImplementation::retract(rti1516::MessageRetractionHandle rti1516Mes
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::MessageRetractionHandle messageRetractionHandle = rti1516::MessageRetractionHandleFriend::getOpenRTIHandle(rti1516MessageRetractionHandle);
-  _ambassadorInterface->retract(messageRetractionHandle);
+  try {
+    OpenRTI::MessageRetractionHandle messageRetractionHandle = rti1516::MessageRetractionHandleFriend::getOpenRTIHandle(rti1516MessageRetractionHandle);
+    _ambassadorInterface->retract(messageRetractionHandle);
+  } catch (const OpenRTI::InvalidMessageRetractionHandle& e) {
+    throw rti1516::InvalidRetractionHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::TimeRegulationIsNotEnabled& e) {
+    throw rti1516::TimeRegulationIsNotEnabled(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::MessageCanNoLongerBeRetracted& e) {
+    throw rti1516::MessageCanNoLongerBeRetracted(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.23
 void
 RTIambassadorImplementation::changeAttributeOrderType(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                       rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
@@ -2605,18 +3651,37 @@ RTIambassadorImplementation::changeAttributeOrderType(rti1516::ObjectInstanceHan
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
 
-  OpenRTI::AttributeHandleSet attributeHandleSet;
-  for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-    attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::AttributeHandleSet attributeHandleSet;
+    for (rti1516::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
+      attributeHandleSet.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*i));
 
-  OpenRTI::OrderType orderType = translate(rti1516OrderType);
+    OpenRTI::OrderType orderType = translate(rti1516OrderType);
 
-  _ambassadorInterface->changeAttributeOrderType(objectInstanceHandle, attributeHandleSet, orderType);
+    _ambassadorInterface->changeAttributeOrderType(objectInstanceHandle, attributeHandleSet, orderType);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotOwned& e) {
+    throw rti1516::AttributeNotOwned(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 8.24
 void
 RTIambassadorImplementation::changeInteractionOrderType(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                                         rti1516::OrderType rti1516OrderType)
@@ -2627,18 +3692,31 @@ RTIambassadorImplementation::changeInteractionOrderType(rti1516::InteractionClas
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
 
-  OpenRTI::OrderType orderType = translate(rti1516OrderType);
+    OpenRTI::OrderType orderType = translate(rti1516OrderType);
 
-  _ambassadorInterface->changeInteractionOrderType(interactionClassHandle, orderType);
+    _ambassadorInterface->changeInteractionOrderType(interactionClassHandle, orderType);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw rti1516::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InteractionClassNotPublished& e) {
+    throw rti1516::InteractionClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-//////////////////////////////////
-// Data Distribution Management //
-//////////////////////////////////
-
-// 9.2
 rti1516::RegionHandle
 RTIambassadorImplementation::createRegion(rti1516::DimensionHandleSet const & rti1516DimensionHandleSet)
   throw (rti1516::InvalidDimensionHandle,
@@ -2647,14 +3725,29 @@ RTIambassadorImplementation::createRegion(rti1516::DimensionHandleSet const & rt
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::DimensionHandleSet dimensionHandleSet;
-  for (rti1516::DimensionHandleSet::const_iterator i = rti1516DimensionHandleSet.begin(); i != rti1516DimensionHandleSet.end(); ++i)
-    dimensionHandleSet.insert(rti1516::DimensionHandleFriend::getOpenRTIHandle(*i));
+  try {
+    OpenRTI::DimensionHandleSet dimensionHandleSet;
+    for (rti1516::DimensionHandleSet::const_iterator i = rti1516DimensionHandleSet.begin(); i != rti1516DimensionHandleSet.end(); ++i)
+      dimensionHandleSet.insert(rti1516::DimensionHandleFriend::getOpenRTIHandle(*i));
 
-  return rti1516::RegionHandleFriend::createHandle(_ambassadorInterface->createRegion(dimensionHandleSet));
+    return rti1516::RegionHandleFriend::createHandle(_ambassadorInterface->createRegion(dimensionHandleSet));
+  } catch (const OpenRTI::InvalidDimensionHandle& e) {
+    throw rti1516::InvalidDimensionHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 9.3
 void
 RTIambassadorImplementation::commitRegionModifications(rti1516::RegionHandleSet const & rti1516RegionHandleSet)
   throw (rti1516::InvalidRegion,
@@ -2664,14 +3757,31 @@ RTIambassadorImplementation::commitRegionModifications(rti1516::RegionHandleSet 
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::RegionHandleSet regionHandleSet;
-  for (rti1516::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
-    regionHandleSet.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*i));
+  try {
+    OpenRTI::RegionHandleSet regionHandleSet;
+    for (rti1516::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
+      regionHandleSet.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*i));
 
-  _ambassadorInterface->commitRegionModifications(regionHandleSet);
+    _ambassadorInterface->commitRegionModifications(regionHandleSet);
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 9.4
 void
 RTIambassadorImplementation::deleteRegion(rti1516::RegionHandle rti1516RegionHandle)
   throw (rti1516::InvalidRegion,
@@ -2682,15 +3792,34 @@ RTIambassadorImplementation::deleteRegion(rti1516::RegionHandle rti1516RegionHan
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::RegionHandle regionHandle = rti1516::RegionHandleFriend::getOpenRTIHandle(rti1516RegionHandle);
-  _ambassadorInterface->deleteRegion(regionHandle);
+  try {
+    OpenRTI::RegionHandle regionHandle = rti1516::RegionHandleFriend::getOpenRTIHandle(rti1516RegionHandle);
+    _ambassadorInterface->deleteRegion(regionHandle);
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionInUseForUpdateOrSubscription& e) {
+    throw rti1516::RegionInUseForUpdateOrSubscription(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 9.5
 rti1516::ObjectInstanceHandle
-RTIambassadorImplementation::registerObjectInstanceWithRegions(rti1516::ObjectClassHandle theClass,
+RTIambassadorImplementation::registerObjectInstanceWithRegions(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                                rti1516::AttributeHandleSetRegionHandleSetPairVector const &
-                                                               theAttributeHandleSetRegionHandleSetPairVector)
+                                                               rti1516AttributeHandleSetRegionHandleSetPairVector)
   throw (rti1516::ObjectClassNotDefined,
          rti1516::ObjectClassNotPublished,
          rti1516::AttributeNotDefined,
@@ -2703,16 +3832,60 @@ RTIambassadorImplementation::registerObjectInstanceWithRegions(rti1516::ObjectCl
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  throw rti1516::RTIinternalError(L"Not implemented");
-  // FIXME
-  /* _ambassadorInterface->registerObjectInstanceWithRegions(); */
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+
+    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
+    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
+    for (rti1516::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
+         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
+      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
+      for (rti1516::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*j));
+      }
+      for (rti1516::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*j));
+      }
+    }
+
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle;
+    objectInstanceHandle = _ambassadorInterface->registerObjectInstanceWithRegions(objectClassHandle,
+                                                                                   attributeHandleSetRegionHandleSetPairVector);
+    return rti1516::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw rti1516::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::ObjectClassNotPublished& e) {
+    throw rti1516::ObjectClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotPublished& e) {
+    throw rti1516::AttributeNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegionContext& e) {
+    throw rti1516::InvalidRegionContext(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 rti1516::ObjectInstanceHandle
-RTIambassadorImplementation::registerObjectInstanceWithRegions(rti1516::ObjectClassHandle theClass,
+RTIambassadorImplementation::registerObjectInstanceWithRegions(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                                rti1516::AttributeHandleSetRegionHandleSetPairVector const &
-                                                               theAttributeHandleSetRegionHandleSetPairVector,
-                                                               std::wstring const & theObjectInstanceName)
+                                                               rti1516AttributeHandleSetRegionHandleSetPairVector,
+                                                               std::wstring const & objectInstanceName)
   throw (rti1516::ObjectClassNotDefined,
          rti1516::ObjectClassNotPublished,
          rti1516::AttributeNotDefined,
@@ -2727,16 +3900,64 @@ RTIambassadorImplementation::registerObjectInstanceWithRegions(rti1516::ObjectCl
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  // FIXME
-  /* _ambassadorInterface->registerObjectInstanceWithRegions(); */
-  throw rti1516::RTIinternalError(L"not implemented");
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+
+    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
+    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
+    for (rti1516::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
+         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
+      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
+      for (rti1516::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*j));
+      }
+      for (rti1516::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*j));
+      }
+    }
+
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle;
+    objectInstanceHandle = _ambassadorInterface->registerObjectInstanceWithRegions(objectClassHandle,
+                                                                                   attributeHandleSetRegionHandleSetPairVector,
+                                                                                   ucsToUtf8(objectInstanceName));
+    return rti1516::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw rti1516::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::ObjectClassNotPublished& e) {
+    throw rti1516::ObjectClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotPublished& e) {
+    throw rti1516::AttributeNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegionContext& e) {
+    throw rti1516::InvalidRegionContext(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::ObjectInstanceNameNotReserved& e) {
+    throw rti1516::ObjectInstanceNameNotReserved(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::ObjectInstanceNameInUse& e) {
+    throw rti1516::ObjectInstanceNameInUse(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 9.6
 void
 RTIambassadorImplementation::associateRegionsForUpdates(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                         rti1516::AttributeHandleSetRegionHandleSetPairVector const &
-                                                        theAttributeHandleSetRegionHandleSetPairVector)
+                                                        rti1516AttributeHandleSetRegionHandleSetPairVector)
   throw (rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::InvalidRegion,
@@ -2747,15 +3968,50 @@ RTIambassadorImplementation::associateRegionsForUpdates(rti1516::ObjectInstanceH
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-  throw rti1516::RTIinternalError(L"Not implemented");
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
+    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
+    for (rti1516::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
+         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
+      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
+      for (rti1516::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*j));
+      }
+      for (rti1516::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*j));
+      }
+    }
+    _ambassadorInterface->associateRegionsForUpdates(objectInstanceHandle, attributeHandleSetRegionHandleSetPairVector);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegionContext& e) {
+    throw rti1516::InvalidRegionContext(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 9.7
 void
 RTIambassadorImplementation::unassociateRegionsForUpdates(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                           rti1516::AttributeHandleSetRegionHandleSetPairVector const &
-                                                          theAttributeHandleSetRegionHandleSetPairVector)
+                                                          rti1516AttributeHandleSetRegionHandleSetPairVector)
   throw (rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::InvalidRegion,
@@ -2765,16 +4021,48 @@ RTIambassadorImplementation::unassociateRegionsForUpdates(rti1516::ObjectInstanc
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-  // FIXME
-  /* _ambassadorInterface->registerObjectInstanceWithRegions(); */
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
+    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
+    for (rti1516::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
+         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
+      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
+      for (rti1516::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*j));
+      }
+      for (rti1516::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*j));
+      }
+    }
+    _ambassadorInterface->unassociateRegionsForUpdates(objectInstanceHandle, attributeHandleSetRegionHandleSetPairVector);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 9.8
 void
-RTIambassadorImplementation::subscribeObjectClassAttributesWithRegions(rti1516::ObjectClassHandle theClass,
+RTIambassadorImplementation::subscribeObjectClassAttributesWithRegions(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                                        rti1516::AttributeHandleSetRegionHandleSetPairVector const &
-                                                                       theAttributeHandleSetRegionHandleSetPairVector,
+                                                                       rti1516AttributeHandleSetRegionHandleSetPairVector,
                                                                        bool active)
   throw (rti1516::ObjectClassNotDefined,
          rti1516::AttributeNotDefined,
@@ -2786,15 +4074,50 @@ RTIambassadorImplementation::subscribeObjectClassAttributesWithRegions(rti1516::
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  // FIXME
-  /* _ambassadorInterface->registerObjectInstanceWithRegions(); */
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
+    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
+    for (rti1516::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
+         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
+      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
+      for (rti1516::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*j));
+      }
+      for (rti1516::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*j));
+      }
+    }
+    _ambassadorInterface->subscribeObjectClassAttributesWithRegions(objectClassHandle,
+                                                                    attributeHandleSetRegionHandleSetPairVector,
+                                                                    active, std::string());
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegionContext& e) {
+    throw rti1516::InvalidRegionContext(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 9.9
 void
-RTIambassadorImplementation::unsubscribeObjectClassAttributesWithRegions(rti1516::ObjectClassHandle theClass,
+RTIambassadorImplementation::unsubscribeObjectClassAttributesWithRegions(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                                          rti1516::AttributeHandleSetRegionHandleSetPairVector const &
-                                                                         theAttributeHandleSetRegionHandleSetPairVector)
+                                                                         rti1516AttributeHandleSetRegionHandleSetPairVector)
   throw (rti1516::ObjectClassNotDefined,
          rti1516::AttributeNotDefined,
          rti1516::InvalidRegion,
@@ -2804,11 +4127,45 @@ RTIambassadorImplementation::unsubscribeObjectClassAttributesWithRegions(rti1516
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  // FIXME
-  /* _ambassadorInterface->registerObjectInstanceWithRegions(); */
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
+    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
+    for (rti1516::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
+         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
+      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
+      for (rti1516::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*j));
+      }
+      for (rti1516::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*j));
+      }
+    }
+    _ambassadorInterface->unsubscribeObjectClassAttributesWithRegions(objectClassHandle,
+                                                                      attributeHandleSetRegionHandleSetPairVector);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw rti1516::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 9.10
 void
 RTIambassadorImplementation::subscribeInteractionClassWithRegions(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                                                   rti1516::RegionHandleSet const & rti1516RegionHandleSet,
@@ -2823,16 +4180,39 @@ RTIambassadorImplementation::subscribeInteractionClassWithRegions(rti1516::Inter
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
 
-  OpenRTI::RegionHandleSet regionHandleSet;
-  for (rti1516::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
-    regionHandleSet.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::RegionHandleSet regionHandleSet;
+    for (rti1516::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
+      regionHandleSet.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*i));
 
-  _ambassadorInterface->subscribeInteractionClassWithRegions(interactionClassHandle, regionHandleSet, active);
+    _ambassadorInterface->subscribeInteractionClassWithRegions(interactionClassHandle, regionHandleSet, active);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw rti1516::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegionContext& e) {
+    throw rti1516::InvalidRegionContext(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateServiceInvocationsAreBeingReportedViaMOM& e) {
+    throw rti1516::FederateServiceInvocationsAreBeingReportedViaMOM(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 9.11
 void
 RTIambassadorImplementation::unsubscribeInteractionClassWithRegions(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                                                     rti1516::RegionHandleSet const & rti1516RegionHandleSet)
@@ -2844,16 +4224,35 @@ RTIambassadorImplementation::unsubscribeInteractionClassWithRegions(rti1516::Int
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
 
-  OpenRTI::RegionHandleSet regionHandleSet;
-  for (rti1516::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
-    regionHandleSet.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*i));
+    OpenRTI::RegionHandleSet regionHandleSet;
+    for (rti1516::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
+      regionHandleSet.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*i));
 
-  _ambassadorInterface->unsubscribeInteractionClassWithRegions(interactionClassHandle, regionHandleSet);
+    _ambassadorInterface->unsubscribeInteractionClassWithRegions(interactionClassHandle, regionHandleSet);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw rti1516::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 9.12
 void
 RTIambassadorImplementation::sendInteractionWithRegions(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                                         rti1516::ParameterHandleValueMap const & rti1516ParameterHandleValueMap,
@@ -2870,16 +4269,50 @@ RTIambassadorImplementation::sendInteractionWithRegions(rti1516::InteractionClas
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
 
-  OpenRTI::RegionHandleSet regionHandleSet;
-  for (rti1516::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
-    regionHandleSet.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*i));
+    std::vector<OpenRTI::ParameterValue> parameterValueVector;
+    parameterValueVector.reserve(rti1516ParameterHandleValueMap.size());
+    for (rti1516::ParameterHandleValueMap::const_iterator i = rti1516ParameterHandleValueMap.begin();
+         i != rti1516ParameterHandleValueMap.end(); ++i) {
+      parameterValueVector.push_back(OpenRTI::ParameterValue());
+      OpenRTI::ParameterHandle parameterHandle = rti1516::ParameterHandleFriend::getOpenRTIHandle(i->first);
+      parameterValueVector.back().setParameterHandle(parameterHandle);
+      parameterValueVector.back().getValue() = rti1516::VariableLengthDataFriend::readPointer(i->second);
+    }
 
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::RegionHandleSet regionHandleSet;
+    for (rti1516::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
+      regionHandleSet.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*i));
 
-  // FIXME
-  /* _ambassadorInterface->sendInteractionWithRegions(); */
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    _ambassadorInterface->sendInteractionWithRegions(interactionClassHandle, parameterValueVector, regionHandleSet, tag);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw rti1516::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InteractionClassNotPublished& e) {
+    throw rti1516::InteractionClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InteractionParameterNotDefined& e) {
+    throw rti1516::InteractionParameterNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegionContext& e) {
+    throw rti1516::InvalidRegionContext(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 rti1516::MessageRetractionHandle
@@ -2888,34 +4321,72 @@ RTIambassadorImplementation::sendInteractionWithRegions(rti1516::InteractionClas
                                                         rti1516::RegionHandleSet const & rti1516RegionHandleSet,
                                                         rti1516::VariableLengthData const & rti1516Tag,
                                                         rti1516::LogicalTime const & rti1516LogicalTime)
-  throw (rti1516::InteractionClassNotDefined,
-         rti1516::InteractionClassNotPublished,
-         rti1516::InteractionParameterNotDefined,
-         rti1516::InvalidRegion,
-         rti1516::RegionNotCreatedByThisFederate,
-         rti1516::InvalidRegionContext,
-         rti1516::InvalidLogicalTime,
-         rti1516::FederateNotExecutionMember,
-         rti1516::SaveInProgress,
-         rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+throw (rti1516::InteractionClassNotDefined,
+       rti1516::InteractionClassNotPublished,
+       rti1516::InteractionParameterNotDefined,
+       rti1516::InvalidRegion,
+       rti1516::RegionNotCreatedByThisFederate,
+       rti1516::InvalidRegionContext,
+       rti1516::InvalidLogicalTime,
+       rti1516::FederateNotExecutionMember,
+       rti1516::SaveInProgress,
+       rti1516::RestoreInProgress,
+       rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
 
-  OpenRTI::RegionHandleSet regionHandleSet;
-  for (rti1516::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
-    regionHandleSet.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*i));
+    std::vector<OpenRTI::ParameterValue> parameterValueVector;
+    parameterValueVector.reserve(rti1516ParameterHandleValueMap.size());
+    for (rti1516::ParameterHandleValueMap::const_iterator i = rti1516ParameterHandleValueMap.begin();
+         i != rti1516ParameterHandleValueMap.end(); ++i) {
+      parameterValueVector.push_back(OpenRTI::ParameterValue());
+      OpenRTI::ParameterHandle parameterHandle = rti1516::ParameterHandleFriend::getOpenRTIHandle(i->first);
+      parameterValueVector.back().setParameterHandle(parameterHandle);
+      parameterValueVector.back().getValue() = rti1516::VariableLengthDataFriend::readPointer(i->second);
+    }
 
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
-  OpenRTI::MessageRetractionHandle messageRetractionHandle;
-  // messageRetractionHandle = _ambassadorInterface->sendInteractionWithRegions(interactionClassHandle, parameterValueVector, tag, logicalTime);
-  return rti1516::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
+    OpenRTI::RegionHandleSet regionHandleSet;
+    for (rti1516::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
+      regionHandleSet.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*i));
+
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::MessageRetractionHandle messageRetractionHandle;
+    messageRetractionHandle = _ambassadorInterface->sendInteractionWithRegions(interactionClassHandle, parameterValueVector, regionHandleSet, tag, rti1516LogicalTime);
+    return rti1516::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
+  } catch (const OpenRTI::InteractionClassNotDefined& e) {
+    throw rti1516::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InteractionClassNotPublished& e) {
+    throw rti1516::InteractionClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InteractionParameterNotDefined& e) {
+    throw rti1516::InteractionParameterNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegionContext& e) {
+    throw rti1516::InvalidRegionContext(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidLogicalTime& e) {
+    throw rti1516::InvalidLogicalTime(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 9.13
 void
-RTIambassadorImplementation::requestAttributeValueUpdateWithRegions(rti1516::ObjectClassHandle theClass,
-                                                                    rti1516::AttributeHandleSetRegionHandleSetPairVector const & theSet,
+RTIambassadorImplementation::requestAttributeValueUpdateWithRegions(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
+                                                                    rti1516::AttributeHandleSetRegionHandleSetPairVector const &
+                                                                    rti1516AttributeHandleSetRegionHandleSetPairVector,
                                                                     rti1516::VariableLengthData const & rti1516Tag)
   throw (rti1516::ObjectClassNotDefined,
          rti1516::AttributeNotDefined,
@@ -2927,39 +4398,92 @@ RTIambassadorImplementation::requestAttributeValueUpdateWithRegions(rti1516::Obj
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
+    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
+    for (rti1516::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
+         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
+      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
+      for (rti1516::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516::AttributeHandleFriend::getOpenRTIHandle(*j));
+      }
+      for (rti1516::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
+        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516::RegionHandleFriend::getOpenRTIHandle(*j));
+      }
+    }
 
-  // FIXME
-  /* _ambassadorInterface->registerObjectInstanceWithRegions(); */
+    OpenRTI::VariableLengthData tag = rti1516::VariableLengthDataFriend::readPointer(rti1516Tag);
+    _ambassadorInterface->requestAttributeValueUpdateWithRegions(objectClassHandle, attributeHandleSetRegionHandleSetPairVector, tag);
+  } catch (const OpenRTI::ObjectClassNotDefined& e) {
+    throw rti1516::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRegionContext& e) {
+    throw rti1516::InvalidRegionContext(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-//////////////////////////
-// RTI Support Services //
-//////////////////////////
-
-// 10.2
 rti1516::ObjectClassHandle
 RTIambassadorImplementation::getObjectClassHandle(std::wstring const & name)
   throw (rti1516::NameNotFound,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle handle = _ambassadorInterface->getObjectClassHandle(ucsToUtf8(name));
-  return rti1516::ObjectClassHandleFriend::createHandle(handle);
+  try {
+    OpenRTI::ObjectClassHandle handle = _ambassadorInterface->getObjectClassHandle(ucsToUtf8(name));
+    return rti1516::ObjectClassHandleFriend::createHandle(handle);
+  } catch (const OpenRTI::NameNotFound& e) {
+    throw rti1516::NameNotFound(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.3
 std::wstring
 RTIambassadorImplementation::getObjectClassName(rti1516::ObjectClassHandle rti1516ObjectClassHandle)
   throw (rti1516::InvalidObjectClassHandle,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-  return utf8ToUcs(_ambassadorInterface->getObjectClassName(objectClassHandle));
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+    return utf8ToUcs(_ambassadorInterface->getObjectClassName(objectClassHandle));
+  } catch (const OpenRTI::InvalidObjectClassHandle& e) {
+    throw rti1516::InvalidObjectClassHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.4
 rti1516::AttributeHandle
 RTIambassadorImplementation::getAttributeHandle(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                 std::wstring const & attributeName)
@@ -2968,12 +4492,25 @@ RTIambassadorImplementation::getAttributeHandle(rti1516::ObjectClassHandle rti15
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-  OpenRTI::AttributeHandle handle = _ambassadorInterface->getAttributeHandle(objectClassHandle, ucsToUtf8(attributeName));
-  return rti1516::AttributeHandleFriend::createHandle(handle);
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+    OpenRTI::AttributeHandle handle = _ambassadorInterface->getAttributeHandle(objectClassHandle, ucsToUtf8(attributeName));
+    return rti1516::AttributeHandleFriend::createHandle(handle);
+  } catch (const OpenRTI::InvalidObjectClassHandle& e) {
+    throw rti1516::InvalidObjectClassHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NameNotFound& e) {
+    throw rti1516::NameNotFound(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.5
 std::wstring
 RTIambassadorImplementation::getAttributeName(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                               rti1516::AttributeHandle rti1516AttributeHandle)
@@ -2983,34 +4520,71 @@ RTIambassadorImplementation::getAttributeName(rti1516::ObjectClassHandle rti1516
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-  OpenRTI::AttributeHandle attributeHandle = rti1516::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
-  return utf8ToUcs(_ambassadorInterface->getAttributeName(objectClassHandle, attributeHandle));
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+    OpenRTI::AttributeHandle attributeHandle = rti1516::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
+    return utf8ToUcs(_ambassadorInterface->getAttributeName(objectClassHandle, attributeHandle));
+  } catch (const OpenRTI::InvalidObjectClassHandle& e) {
+    throw rti1516::InvalidObjectClassHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidAttributeHandle& e) {
+    throw rti1516::InvalidAttributeHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.6
 rti1516::InteractionClassHandle
 RTIambassadorImplementation::getInteractionClassHandle(std::wstring const & name)
   throw (rti1516::NameNotFound,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle handle = _ambassadorInterface->getInteractionClassHandle(ucsToUtf8(name));
-  return rti1516::InteractionClassHandleFriend::createHandle(handle);
+  try {
+    OpenRTI::InteractionClassHandle handle = _ambassadorInterface->getInteractionClassHandle(ucsToUtf8(name));
+    return rti1516::InteractionClassHandleFriend::createHandle(handle);
+  } catch (const OpenRTI::NameNotFound& e) {
+    throw rti1516::NameNotFound(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.7
 std::wstring
 RTIambassadorImplementation::getInteractionClassName(rti1516::InteractionClassHandle rti1516InteractionClassHandle)
   throw (rti1516::InvalidInteractionClassHandle,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-  return utf8ToUcs(_ambassadorInterface->getInteractionClassName(interactionClassHandle));
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    return utf8ToUcs(_ambassadorInterface->getInteractionClassName(interactionClassHandle));
+  } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
+    throw rti1516::InvalidInteractionClassHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.8
 rti1516::ParameterHandle
 RTIambassadorImplementation::getParameterHandle(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                                 std::wstring const & parameterName)
@@ -3019,12 +4593,25 @@ RTIambassadorImplementation::getParameterHandle(rti1516::InteractionClassHandle 
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-  OpenRTI::ParameterHandle handle = _ambassadorInterface->getParameterHandle(interactionClassHandle, ucsToUtf8(parameterName));
-  return rti1516::ParameterHandleFriend::createHandle(handle);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    OpenRTI::ParameterHandle handle = _ambassadorInterface->getParameterHandle(interactionClassHandle, ucsToUtf8(parameterName));
+    return rti1516::ParameterHandleFriend::createHandle(handle);
+  } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
+    throw rti1516::InvalidInteractionClassHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NameNotFound& e) {
+    throw rti1516::NameNotFound(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.9
 std::wstring
 RTIambassadorImplementation::getParameterName(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                               rti1516::ParameterHandle rti1516ParameterHandle)
@@ -3034,67 +4621,137 @@ RTIambassadorImplementation::getParameterName(rti1516::InteractionClassHandle rt
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-  OpenRTI::ParameterHandle parameterHandle = rti1516::ParameterHandleFriend::getOpenRTIHandle(rti1516ParameterHandle);
-  return utf8ToUcs(_ambassadorInterface->getParameterName(interactionClassHandle, parameterHandle));
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    OpenRTI::ParameterHandle parameterHandle = rti1516::ParameterHandleFriend::getOpenRTIHandle(rti1516ParameterHandle);
+    return utf8ToUcs(_ambassadorInterface->getParameterName(interactionClassHandle, parameterHandle));
+  } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
+    throw rti1516::InvalidInteractionClassHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidParameterHandle& e) {
+    throw rti1516::InvalidParameterHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InteractionParameterNotDefined& e) {
+    throw rti1516::InteractionParameterNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.10
 rti1516::ObjectInstanceHandle
 RTIambassadorImplementation::getObjectInstanceHandle(std::wstring const & name)
   throw (rti1516::ObjectInstanceNotKnown,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle handle = _ambassadorInterface->getObjectInstanceHandle(ucsToUtf8(name));
-  return rti1516::ObjectInstanceHandleFriend::createHandle(handle);
+  try {
+    OpenRTI::ObjectInstanceHandle handle = _ambassadorInterface->getObjectInstanceHandle(ucsToUtf8(name));
+    return rti1516::ObjectInstanceHandleFriend::createHandle(handle);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.11
 std::wstring
 RTIambassadorImplementation::getObjectInstanceName(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle)
   throw (rti1516::ObjectInstanceNotKnown,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-  return utf8ToUcs(_ambassadorInterface->getObjectInstanceName(objectInstanceHandle));
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+    return utf8ToUcs(_ambassadorInterface->getObjectInstanceName(objectInstanceHandle));
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.12
 rti1516::DimensionHandle
 RTIambassadorImplementation::getDimensionHandle(std::wstring const & name)
   throw (rti1516::NameNotFound,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::DimensionHandle handle = _ambassadorInterface->getDimensionHandle(ucsToUtf8(name));
-  return rti1516::DimensionHandleFriend::createHandle(handle);
+  try {
+    OpenRTI::DimensionHandle handle = _ambassadorInterface->getDimensionHandle(ucsToUtf8(name));
+    return rti1516::DimensionHandleFriend::createHandle(handle);
+  } catch (const OpenRTI::NameNotFound& e) {
+    throw rti1516::NameNotFound(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.13
 std::wstring
 RTIambassadorImplementation::getDimensionName(rti1516::DimensionHandle rti1516DimensionHandle)
   throw (rti1516::InvalidDimensionHandle,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::DimensionHandle dimensionHandle = rti1516::DimensionHandleFriend::getOpenRTIHandle(rti1516DimensionHandle);
-  return utf8ToUcs(_ambassadorInterface->getDimensionName(dimensionHandle));
+  try {
+    OpenRTI::DimensionHandle dimensionHandle = rti1516::DimensionHandleFriend::getOpenRTIHandle(rti1516DimensionHandle);
+    return utf8ToUcs(_ambassadorInterface->getDimensionName(dimensionHandle));
+  } catch (const OpenRTI::InvalidDimensionHandle& e) {
+    throw rti1516::InvalidDimensionHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.14
 unsigned long
 RTIambassadorImplementation::getDimensionUpperBound(rti1516::DimensionHandle rti1516DimensionHandle)
   throw (rti1516::InvalidDimensionHandle,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::DimensionHandle dimensionHandle = rti1516::DimensionHandleFriend::getOpenRTIHandle(rti1516DimensionHandle);
-  return _ambassadorInterface->getDimensionUpperBound(dimensionHandle);
+  try {
+    OpenRTI::DimensionHandle dimensionHandle = rti1516::DimensionHandleFriend::getOpenRTIHandle(rti1516DimensionHandle);
+    return _ambassadorInterface->getDimensionUpperBound(dimensionHandle);
+  } catch (const OpenRTI::InvalidDimensionHandle& e) {
+    throw rti1516::InvalidDimensionHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.15
 rti1516::DimensionHandleSet
 RTIambassadorImplementation::getAvailableDimensionsForClassAttribute(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                                      rti1516::AttributeHandle rti1516AttributeHandle)
@@ -3104,90 +4761,171 @@ RTIambassadorImplementation::getAvailableDimensionsForClassAttribute(rti1516::Ob
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+  try {
+    OpenRTI::ObjectClassHandle objectClassHandle = rti1516::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
 
-  OpenRTI::AttributeHandle attributeHandle = rti1516::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
+    OpenRTI::AttributeHandle attributeHandle = rti1516::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
 
-  OpenRTI::DimensionHandleSet dimensionHandleSet = _ambassadorInterface->getAvailableDimensionsForClassAttribute(objectClassHandle, attributeHandle);
+    OpenRTI::DimensionHandleSet dimensionHandleSet = _ambassadorInterface->getAvailableDimensionsForClassAttribute(objectClassHandle, attributeHandle);
 
-  rti1516::DimensionHandleSet rti1516DimensionHandleSet;
-  for (OpenRTI::DimensionHandleSet::const_iterator i = dimensionHandleSet.begin(); i != dimensionHandleSet.end(); ++i)
-    rti1516DimensionHandleSet.insert(rti1516::DimensionHandleFriend::createHandle(*i));
+    rti1516::DimensionHandleSet rti1516DimensionHandleSet;
+    for (OpenRTI::DimensionHandleSet::const_iterator i = dimensionHandleSet.begin(); i != dimensionHandleSet.end(); ++i)
+      rti1516DimensionHandleSet.insert(rti1516::DimensionHandleFriend::createHandle(*i));
 
-  return rti1516DimensionHandleSet;
+    return rti1516DimensionHandleSet;
+  } catch (const OpenRTI::InvalidObjectClassHandle& e) {
+    throw rti1516::InvalidObjectClassHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidAttributeHandle& e) {
+    throw rti1516::InvalidAttributeHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::AttributeNotDefined& e) {
+    throw rti1516::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.16
 rti1516::ObjectClassHandle
 RTIambassadorImplementation::getKnownObjectClassHandle(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle)
   throw (rti1516::ObjectInstanceNotKnown,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-  OpenRTI::ObjectClassHandle objectClassHandle = _ambassadorInterface->getKnownObjectClassHandle(objectInstanceHandle);
-  return rti1516::ObjectClassHandleFriend::createHandle(objectClassHandle);
+  try {
+    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::ObjectClassHandle objectClassHandle = _ambassadorInterface->getKnownObjectClassHandle(objectInstanceHandle);
+    return rti1516::ObjectClassHandleFriend::createHandle(objectClassHandle);
+  } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
+    throw rti1516::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.17
 rti1516::DimensionHandleSet
 RTIambassadorImplementation::getAvailableDimensionsForInteractionClass(rti1516::InteractionClassHandle rti1516InteractionClassHandle)
   throw (rti1516::InvalidInteractionClassHandle,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+  try {
+    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
 
-  OpenRTI::DimensionHandleSet dimensionHandleSet = _ambassadorInterface->getAvailableDimensionsForInteractionClass(interactionClassHandle);
+    OpenRTI::DimensionHandleSet dimensionHandleSet = _ambassadorInterface->getAvailableDimensionsForInteractionClass(interactionClassHandle);
 
-  rti1516::DimensionHandleSet rti1516DimensionHandleSet;
-  for (OpenRTI::DimensionHandleSet::const_iterator i = dimensionHandleSet.begin(); i != dimensionHandleSet.end(); ++i)
-    rti1516DimensionHandleSet.insert(rti1516::DimensionHandleFriend::createHandle(*i));
+    rti1516::DimensionHandleSet rti1516DimensionHandleSet;
+    for (OpenRTI::DimensionHandleSet::const_iterator i = dimensionHandleSet.begin(); i != dimensionHandleSet.end(); ++i)
+      rti1516DimensionHandleSet.insert(rti1516::DimensionHandleFriend::createHandle(*i));
 
-  return rti1516DimensionHandleSet;
+    return rti1516DimensionHandleSet;
+  } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
+    throw rti1516::InvalidInteractionClassHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.18
 rti1516::TransportationType
 RTIambassadorImplementation::getTransportationType(std::wstring const & transportationName)
   throw (rti1516::InvalidTransportationName,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  return translate(_ambassadorInterface->getTransportationType(ucsToUtf8(transportationName)));
+  try {
+    return translate(_ambassadorInterface->getTransportationType(ucsToUtf8(transportationName)));
+  } catch (const OpenRTI::InvalidTransportationName& e) {
+    throw rti1516::InvalidTransportationName(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.19
 std::wstring
 RTIambassadorImplementation::getTransportationName(rti1516::TransportationType transportationType)
   throw (rti1516::InvalidTransportationType,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  return utf8ToUcs(_ambassadorInterface->getTransportationName(translate(transportationType)));
+  try {
+    return utf8ToUcs(_ambassadorInterface->getTransportationName(translate(transportationType)));
+  } catch (const OpenRTI::InvalidTransportationType& e) {
+    throw rti1516::InvalidTransportationType(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.20
 rti1516::OrderType
 RTIambassadorImplementation::getOrderType(std::wstring const & orderName)
   throw (rti1516::InvalidOrderName,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  return translate(_ambassadorInterface->getOrderType(ucsToUtf8(orderName)));
+  try {
+    return translate(_ambassadorInterface->getOrderType(ucsToUtf8(orderName)));
+  } catch (const OpenRTI::InvalidOrderName& e) {
+    throw rti1516::InvalidOrderName(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.21
 std::wstring
 RTIambassadorImplementation::getOrderName(rti1516::OrderType orderType)
   throw (rti1516::InvalidOrderType,
          rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  return utf8ToUcs(_ambassadorInterface->getOrderName(translate(orderType)));
+  try {
+    return utf8ToUcs(_ambassadorInterface->getOrderName(translate(orderType)));
+  } catch (const OpenRTI::InvalidOrderType& e) {
+    throw rti1516::InvalidOrderType(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.22
 void
 RTIambassadorImplementation::enableObjectClassRelevanceAdvisorySwitch()
   throw (rti1516::ObjectClassRelevanceAdvisorySwitchIsOn,
@@ -3196,10 +4934,25 @@ RTIambassadorImplementation::enableObjectClassRelevanceAdvisorySwitch()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->enableObjectClassRelevanceAdvisorySwitch();
+  try {
+    _ambassadorInterface->enableObjectClassRelevanceAdvisorySwitch();
+  } catch (const OpenRTI::ObjectClassRelevanceAdvisorySwitchIsOn& e) {
+    throw rti1516::ObjectClassRelevanceAdvisorySwitchIsOn(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.23
 void
 RTIambassadorImplementation::disableObjectClassRelevanceAdvisorySwitch()
   throw (rti1516::ObjectClassRelevanceAdvisorySwitchIsOff,
@@ -3208,10 +4961,25 @@ RTIambassadorImplementation::disableObjectClassRelevanceAdvisorySwitch()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->disableObjectClassRelevanceAdvisorySwitch();
+  try {
+    _ambassadorInterface->disableObjectClassRelevanceAdvisorySwitch();
+  } catch (const OpenRTI::ObjectClassRelevanceAdvisorySwitchIsOff& e) {
+    throw rti1516::ObjectClassRelevanceAdvisorySwitchIsOff(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.24
 void
 RTIambassadorImplementation::enableAttributeRelevanceAdvisorySwitch ()
   throw (rti1516::AttributeRelevanceAdvisorySwitchIsOn,
@@ -3220,10 +4988,25 @@ RTIambassadorImplementation::enableAttributeRelevanceAdvisorySwitch ()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->enableAttributeRelevanceAdvisorySwitch();
+  try {
+    _ambassadorInterface->enableAttributeRelevanceAdvisorySwitch();
+  } catch (const OpenRTI::AttributeRelevanceAdvisorySwitchIsOn& e) {
+    throw rti1516::AttributeRelevanceAdvisorySwitchIsOn(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.25
 void
 RTIambassadorImplementation::disableAttributeRelevanceAdvisorySwitch ()
   throw (rti1516::AttributeRelevanceAdvisorySwitchIsOff,
@@ -3232,10 +5015,25 @@ RTIambassadorImplementation::disableAttributeRelevanceAdvisorySwitch ()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->disableAttributeRelevanceAdvisorySwitch();
+  try {
+    _ambassadorInterface->disableAttributeRelevanceAdvisorySwitch();
+  } catch (const OpenRTI::AttributeRelevanceAdvisorySwitchIsOff& e) {
+    throw rti1516::AttributeRelevanceAdvisorySwitchIsOff(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.26
 void
 RTIambassadorImplementation::enableAttributeScopeAdvisorySwitch ()
   throw (rti1516::AttributeScopeAdvisorySwitchIsOn,
@@ -3244,10 +5042,25 @@ RTIambassadorImplementation::enableAttributeScopeAdvisorySwitch ()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->enableAttributeScopeAdvisorySwitch();
+  try {
+    _ambassadorInterface->enableAttributeScopeAdvisorySwitch();
+  } catch (const OpenRTI::AttributeScopeAdvisorySwitchIsOn& e) {
+    throw rti1516::AttributeScopeAdvisorySwitchIsOn(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.27
 void
 RTIambassadorImplementation::disableAttributeScopeAdvisorySwitch ()
   throw (rti1516::AttributeScopeAdvisorySwitchIsOff,
@@ -3256,10 +5069,25 @@ RTIambassadorImplementation::disableAttributeScopeAdvisorySwitch ()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->disableAttributeScopeAdvisorySwitch();
+  try {
+    _ambassadorInterface->disableAttributeScopeAdvisorySwitch();
+  } catch (const OpenRTI::AttributeScopeAdvisorySwitchIsOff& e) {
+    throw rti1516::AttributeScopeAdvisorySwitchIsOff(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.28
 void
 RTIambassadorImplementation::enableInteractionRelevanceAdvisorySwitch ()
   throw (rti1516::InteractionRelevanceAdvisorySwitchIsOn,
@@ -3268,10 +5096,25 @@ RTIambassadorImplementation::enableInteractionRelevanceAdvisorySwitch ()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->enableInteractionRelevanceAdvisorySwitch();
+  try {
+    _ambassadorInterface->enableInteractionRelevanceAdvisorySwitch();
+  } catch (const OpenRTI::InteractionRelevanceAdvisorySwitchIsOn& e) {
+    throw rti1516::InteractionRelevanceAdvisorySwitchIsOn(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.29
 void
 RTIambassadorImplementation::disableInteractionRelevanceAdvisorySwitch ()
   throw (rti1516::InteractionRelevanceAdvisorySwitchIsOff,
@@ -3280,10 +5123,25 @@ RTIambassadorImplementation::disableInteractionRelevanceAdvisorySwitch ()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->disableInteractionRelevanceAdvisorySwitch();
+  try {
+    _ambassadorInterface->disableInteractionRelevanceAdvisorySwitch();
+  } catch (const OpenRTI::InteractionRelevanceAdvisorySwitchIsOff& e) {
+    throw rti1516::InteractionRelevanceAdvisorySwitchIsOff(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.30
 rti1516::DimensionHandleSet
 RTIambassadorImplementation::getDimensionHandleSet(rti1516::RegionHandle rti1516RegionHandle)
   throw (rti1516::InvalidRegion,
@@ -3292,21 +5150,36 @@ RTIambassadorImplementation::getDimensionHandleSet(rti1516::RegionHandle rti1516
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  OpenRTI::RegionHandle regionHandle = rti1516::RegionHandleFriend::getOpenRTIHandle(rti1516RegionHandle);
+  try {
+    OpenRTI::RegionHandle regionHandle = rti1516::RegionHandleFriend::getOpenRTIHandle(rti1516RegionHandle);
 
-  OpenRTI::DimensionHandleSet dimensionHandleSet = _ambassadorInterface->getDimensionHandleSet(regionHandle);
+    OpenRTI::DimensionHandleSet dimensionHandleSet = _ambassadorInterface->getDimensionHandleSet(regionHandle);
 
-  rti1516::DimensionHandleSet rti1516DimensionHandleSet;
-  for (OpenRTI::DimensionHandleSet::const_iterator i = dimensionHandleSet.begin(); i != dimensionHandleSet.end(); ++i)
-    rti1516DimensionHandleSet.insert(rti1516::DimensionHandleFriend::createHandle(*i));
+    rti1516::DimensionHandleSet rti1516DimensionHandleSet;
+    for (OpenRTI::DimensionHandleSet::const_iterator i = dimensionHandleSet.begin(); i != dimensionHandleSet.end(); ++i)
+      rti1516DimensionHandleSet.insert(rti1516::DimensionHandleFriend::createHandle(*i));
 
-  return rti1516DimensionHandleSet;
+    return rti1516DimensionHandleSet;
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.31
 rti1516::RangeBounds
-RTIambassadorImplementation::getRangeBounds(rti1516::RegionHandle theRegionHandle,
-                                            rti1516::DimensionHandle theDimensionHandle)
+RTIambassadorImplementation::getRangeBounds(rti1516::RegionHandle rti1516RegionHandle,
+                                            rti1516::DimensionHandle rti1516DimensionHandle)
   throw (rti1516::InvalidRegion,
          rti1516::RegionDoesNotContainSpecifiedDimension,
          rti1516::FederateNotExecutionMember,
@@ -3314,16 +5187,34 @@ RTIambassadorImplementation::getRangeBounds(rti1516::RegionHandle theRegionHandl
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  throw rti1516::RTIinternalError(L"Not implemented");
-  // FIXME
-  /* _ambassadorInterface->setRangeBounds(); */
+  try {
+    OpenRTI::RegionHandle regionHandle = rti1516::RegionHandleFriend::getOpenRTIHandle(rti1516RegionHandle);
+    OpenRTI::DimensionHandle dimensionHandle = rti1516::DimensionHandleFriend::getOpenRTIHandle(rti1516DimensionHandle);
+    OpenRTI::RangeBounds rangeBounds = _ambassadorInterface->getRangeBounds(regionHandle, dimensionHandle);
+    return rti1516::RangeBounds(rangeBounds.getLowerBound(), rangeBounds.getUpperBound());
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionDoesNotContainSpecifiedDimension& e) {
+    throw rti1516::RegionDoesNotContainSpecifiedDimension(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.32
 void
-RTIambassadorImplementation::setRangeBounds(rti1516::RegionHandle theRegionHandle,
-                                            rti1516::DimensionHandle theDimensionHandle,
-                                            rti1516::RangeBounds const & theRangeBounds)
+RTIambassadorImplementation::setRangeBounds(rti1516::RegionHandle rti1516RegionHandle,
+                                            rti1516::DimensionHandle rti1516DimensionHandle,
+                                            rti1516::RangeBounds const & rti1516RangeBounds)
   throw (rti1516::InvalidRegion,
          rti1516::RegionNotCreatedByThisFederate,
          rti1516::RegionDoesNotContainSpecifiedDimension,
@@ -3333,79 +5224,138 @@ RTIambassadorImplementation::setRangeBounds(rti1516::RegionHandle theRegionHandl
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  // FIXME
-  /* _ambassadorInterface->setRangeBounds(); */
+  try {
+    OpenRTI::RegionHandle regionHandle = rti1516::RegionHandleFriend::getOpenRTIHandle(rti1516RegionHandle);
+    OpenRTI::DimensionHandle dimensionHandle = rti1516::DimensionHandleFriend::getOpenRTIHandle(rti1516DimensionHandle);
+    OpenRTI::RangeBounds rangeBounds(rti1516RangeBounds.getLowerBound(), rti1516RangeBounds.getUpperBound());
+    _ambassadorInterface->setRangeBounds(regionHandle, dimensionHandle, rangeBounds);
+  } catch (const OpenRTI::InvalidRegion& e) {
+    throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionNotCreatedByThisFederate& e) {
+    throw rti1516::RegionNotCreatedByThisFederate(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RegionDoesNotContainSpecifiedDimension& e) {
+    throw rti1516::RegionDoesNotContainSpecifiedDimension(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidRangeBound& e) {
+    throw rti1516::InvalidRangeBound(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.33
 unsigned long
 RTIambassadorImplementation::normalizeFederateHandle(rti1516::FederateHandle rti1516FederateHandle)
   throw (rti1516::FederateNotExecutionMember,
          rti1516::InvalidFederateHandle,
          rti1516::RTIinternalError)
 {
-  OpenRTI::FederateHandle federateHandle = rti1516::FederateHandleFriend::getOpenRTIHandle(rti1516FederateHandle);
-  return _ambassadorInterface->normalizeFederateHandle(federateHandle);
+  try {
+    OpenRTI::FederateHandle federateHandle = rti1516::FederateHandleFriend::getOpenRTIHandle(rti1516FederateHandle);
+    return _ambassadorInterface->normalizeFederateHandle(federateHandle);
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidFederateHandle& e) {
+    throw rti1516::InvalidFederateHandle(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.34
 unsigned long
 RTIambassadorImplementation::normalizeServiceGroup(rti1516::ServiceGroupIndicator rti1516ServiceGroup)
   throw (rti1516::FederateNotExecutionMember,
          rti1516::InvalidServiceGroup,
          rti1516::RTIinternalError)
 {
-  OpenRTI::ServiceGroupIndicator serviceGroup;
-  switch (rti1516ServiceGroup) {
-  case rti1516::FEDERATION_MANAGEMENT:
-    serviceGroup = OpenRTI::FEDERATION_MANAGEMENT;
-    break;
-  case rti1516::DECLARATION_MANAGEMENT:
-    serviceGroup = OpenRTI::DECLARATION_MANAGEMENT;
-    break;
-  case rti1516::OBJECT_MANAGEMENT:
-    serviceGroup = OpenRTI::OBJECT_MANAGEMENT;
-    break;
-  case rti1516::OWNERSHIP_MANAGEMENT:
-    serviceGroup = OpenRTI::OWNERSHIP_MANAGEMENT;
-    break;
-  case rti1516::TIME_MANAGEMENT:
-    serviceGroup = OpenRTI::TIME_MANAGEMENT;
-    break;
-  case rti1516::DATA_DISTRIBUTION_MANAGEMENT:
-    serviceGroup = OpenRTI::DATA_DISTRIBUTION_MANAGEMENT;
-    break;
-  case rti1516::SUPPORT_SERVICES:
-    serviceGroup = OpenRTI::SUPPORT_SERVICES;
-    break;
-  default:
-    throw rti1516::InvalidServiceGroup(L"");
-  }
+  try {
+    OpenRTI::ServiceGroupIndicator serviceGroup;
+    switch (rti1516ServiceGroup) {
+    case rti1516::FEDERATION_MANAGEMENT:
+      serviceGroup = OpenRTI::FEDERATION_MANAGEMENT;
+      break;
+    case rti1516::DECLARATION_MANAGEMENT:
+      serviceGroup = OpenRTI::DECLARATION_MANAGEMENT;
+      break;
+    case rti1516::OBJECT_MANAGEMENT:
+      serviceGroup = OpenRTI::OBJECT_MANAGEMENT;
+      break;
+    case rti1516::OWNERSHIP_MANAGEMENT:
+      serviceGroup = OpenRTI::OWNERSHIP_MANAGEMENT;
+      break;
+    case rti1516::TIME_MANAGEMENT:
+      serviceGroup = OpenRTI::TIME_MANAGEMENT;
+      break;
+    case rti1516::DATA_DISTRIBUTION_MANAGEMENT:
+      serviceGroup = OpenRTI::DATA_DISTRIBUTION_MANAGEMENT;
+      break;
+    case rti1516::SUPPORT_SERVICES:
+      serviceGroup = OpenRTI::SUPPORT_SERVICES;
+      break;
+    default:
+      throw OpenRTI::InvalidServiceGroup("");
+    }
 
-  return _ambassadorInterface->normalizeServiceGroup(serviceGroup);
+    return _ambassadorInterface->normalizeServiceGroup(serviceGroup);
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::InvalidServiceGroup& e) {
+    throw rti1516::InvalidServiceGroup(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::NotConnected& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.37
 bool
 RTIambassadorImplementation::evokeCallback(double approximateMinimumTimeInSeconds)
   throw (rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  return _ambassadorInterface->evokeCallback(approximateMinimumTimeInSeconds);
+  try {
+    return _ambassadorInterface->evokeCallback(approximateMinimumTimeInSeconds, true);
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.38
 bool
 RTIambassadorImplementation::evokeMultipleCallbacks(double approximateMinimumTimeInSeconds,
                                                     double approximateMaximumTimeInSeconds)
   throw (rti1516::FederateNotExecutionMember,
          rti1516::RTIinternalError)
 {
-  return _ambassadorInterface->evokeMultipleCallbacks(approximateMinimumTimeInSeconds,
-                                                      approximateMaximumTimeInSeconds);
+  try {
+    return _ambassadorInterface->evokeMultipleCallbacks(approximateMinimumTimeInSeconds,
+                                                        approximateMaximumTimeInSeconds, true);
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.39
 void
 RTIambassadorImplementation::enableCallbacks ()
   throw (rti1516::FederateNotExecutionMember,
@@ -3413,10 +5363,21 @@ RTIambassadorImplementation::enableCallbacks ()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->enableCallbacks();
+  try {
+    _ambassadorInterface->enableCallbacks(true);
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
-// 10.40
 void
 RTIambassadorImplementation::disableCallbacks ()
   throw (rti1516::FederateNotExecutionMember,
@@ -3424,61 +5385,145 @@ RTIambassadorImplementation::disableCallbacks ()
          rti1516::RestoreInProgress,
          rti1516::RTIinternalError)
 {
-  _ambassadorInterface->disableCallbacks();
+  try {
+    _ambassadorInterface->disableCallbacks(true);
+  } catch (const OpenRTI::FederateNotExecutionMember& e) {
+    throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::SaveInProgress& e) {
+    throw rti1516::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const OpenRTI::RestoreInProgress& e) {
+    throw rti1516::RestoreInProgress(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 rti1516::FederateHandle
 RTIambassadorImplementation::decodeFederateHandle(rti1516::VariableLengthData const & encodedValue) const
 {
-  return rti1516::FederateHandleFriend::createHandle(encodedValue);
+  try {
+    return rti1516::FederateHandleFriend::createHandle(encodedValue);
+  } catch (const OpenRTI::CouldNotDecode& e) {
+    throw rti1516::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 rti1516::ObjectClassHandle
 RTIambassadorImplementation::decodeObjectClassHandle(rti1516::VariableLengthData const & encodedValue) const
 {
-  return rti1516::ObjectClassHandleFriend::createHandle(encodedValue);
+  try {
+    return rti1516::ObjectClassHandleFriend::createHandle(encodedValue);
+  } catch (const OpenRTI::CouldNotDecode& e) {
+    throw rti1516::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 rti1516::InteractionClassHandle
 RTIambassadorImplementation::decodeInteractionClassHandle(rti1516::VariableLengthData const & encodedValue) const
 {
-  return rti1516::InteractionClassHandleFriend::createHandle(encodedValue);
+  try {
+    return rti1516::InteractionClassHandleFriend::createHandle(encodedValue);
+  } catch (const OpenRTI::CouldNotDecode& e) {
+    throw rti1516::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 rti1516::ObjectInstanceHandle
 RTIambassadorImplementation::decodeObjectInstanceHandle(rti1516::VariableLengthData const & encodedValue) const
 {
-  return rti1516::ObjectInstanceHandleFriend::createHandle(encodedValue);
+  try {
+    return rti1516::ObjectInstanceHandleFriend::createHandle(encodedValue);
+  } catch (const OpenRTI::CouldNotDecode& e) {
+    throw rti1516::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 rti1516::AttributeHandle
 RTIambassadorImplementation::decodeAttributeHandle(rti1516::VariableLengthData const & encodedValue) const
 {
-  return rti1516::AttributeHandleFriend::createHandle(encodedValue);
+  try {
+    return rti1516::AttributeHandleFriend::createHandle(encodedValue);
+  } catch (const OpenRTI::CouldNotDecode& e) {
+    throw rti1516::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 rti1516::ParameterHandle
 RTIambassadorImplementation::decodeParameterHandle(rti1516::VariableLengthData const & encodedValue) const
 {
-  return rti1516::ParameterHandleFriend::createHandle(encodedValue);
+  try {
+    return rti1516::ParameterHandleFriend::createHandle(encodedValue);
+  } catch (const OpenRTI::CouldNotDecode& e) {
+    throw rti1516::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 rti1516::DimensionHandle
 RTIambassadorImplementation::decodeDimensionHandle(rti1516::VariableLengthData const & encodedValue) const
 {
-  return rti1516::DimensionHandleFriend::createHandle(encodedValue);
+  try {
+    return rti1516::DimensionHandleFriend::createHandle(encodedValue);
+  } catch (const OpenRTI::CouldNotDecode& e) {
+    throw rti1516::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 rti1516::MessageRetractionHandle
 RTIambassadorImplementation::decodeMessageRetractionHandle(rti1516::VariableLengthData const & encodedValue) const
 {
-  return rti1516::MessageRetractionHandleFriend::createHandle(encodedValue);
+  try {
+    return rti1516::MessageRetractionHandleFriend::createHandle(encodedValue);
+  } catch (const OpenRTI::CouldNotDecode& e) {
+    throw rti1516::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 rti1516::RegionHandle
 RTIambassadorImplementation::decodeRegionHandle(rti1516::VariableLengthData const & encodedValue) const
 {
-  return rti1516::RegionHandleFriend::createHandle(encodedValue);
+  try {
+    return rti1516::RegionHandleFriend::createHandle(encodedValue);
+  } catch (const OpenRTI::CouldNotDecode& e) {
+    throw rti1516::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
+  } catch (const std::exception& e) {
+    throw rti1516::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown internal error!");
+  }
 }
 
 }

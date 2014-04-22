@@ -29,19 +29,13 @@
 namespace OpenRTI {
 
 Exception::Exception(const char* type, const char* reason) :
-  _reason(asciiToUtf8(type) + std::string(": ") + asciiToUtf8(reason))
+  _reason(asciiToUtf8(reason))
 {
   Log(Assert, Info) << "Fired exception: type = " << type << ", reason = " << _reason << std::endl;
 }
 
 Exception::Exception(const char* type, const std::string& reason) :
-  _reason(asciiToUtf8(type) + std::string(": ") + reason)
-{
-  Log(Assert, Info) << "Fired exception: type = " << type << ", reason = " << _reason << std::endl;
-}
-
-Exception::Exception(const char* type, const std::wstring& reason) :
-  _reason(asciiToUtf8(type) + std::string(": ") + ucsToUtf8(reason))
+  _reason(reason)
 {
   Log(Assert, Info) << "Fired exception: type = " << type << ", reason = " << _reason << std::endl;
 }
