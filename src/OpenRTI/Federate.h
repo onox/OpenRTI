@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2014 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -404,6 +404,24 @@ public:
   };
   typedef std::map<ObjectInstanceHandle, SharedPtr<ObjectInstance> > ObjectInstanceHandleMap;
 
+  typedef std::map<std::string, FederateHandle> NameFederateHandleMap;
+  struct OPENRTI_API _Federate : public Referenced {
+    _Federate(NameFederateHandleMap::iterator nameFederateHandleMapIterator);
+    ~_Federate();
+
+    const std::string& getName() const;
+
+    const NameFederateHandleMap::iterator& getNameFederateHandleMapIterator() const
+    { return _nameFederateHandleMapIterator; }
+
+  private:
+    _Federate(const _Federate&);
+    _Federate& operator=(const _Federate&);
+
+    NameFederateHandleMap::iterator _nameFederateHandleMapIterator;
+  };
+  typedef std::map<FederateHandle, SharedPtr<_Federate> > FederateHandleMap;
+
   ObjectInstance* getObjectInstance(const ObjectInstanceHandle& objectInstanceHandle);
   const ObjectInstance* getObjectInstance(const ObjectInstanceHandle& objectInstanceHandle) const;
   ObjectInstanceHandle getObjectInstanceHandle(const std::string& name) const;
@@ -426,10 +444,16 @@ public:
   ObjectInstanceHandle takeReservedObjectInstanceName(const std::string& objectInstanceName);
 
   /// The federates in the federation we know about
-  void insertFederate(const FederateHandle& federateHandle);
+  _Federate* getFederate(const FederateHandle& federateHandle);
+  const _Federate* getFederate(const FederateHandle& federateHandle) const;
+  FederateHandle getFederateHandle(const std::string& name) const;
+  void insertFederate(const FederateHandle& federateHandle, const std::string& name);
   void eraseFederate(const FederateHandle& federateHandle);
-  const FederateHandleSet& getFederateHandleSet() const
-  { return _federateHandleSet; }
+  void getFederateHandleSet(FederateHandleSet& federateHandleSet) const
+  {
+    for (FederateHandleMap::const_iterator i = _federateHandleMap.begin(); i != _federateHandleMap.end(); ++i)
+      federateHandleSet.insert(i->first);
+  }
 
   /// The Synchronization Labels
   void insertAnnouncedFederationSynchonizationLabel(const std::string& label);
@@ -499,7 +523,8 @@ private:
   NameObjectInstanceHandleMap _reservedNameObjectInstanceHandlePairs;
 
   // The federate handles that are currently joined
-  FederateHandleSet _federateHandleSet;
+  NameFederateHandleMap _nameFederateHandleMap;
+  FederateHandleMap _federateHandleMap;
 
   // The synchronization lables that are currently announced
   StringSet _announcedFederationSynchonizationLabels;

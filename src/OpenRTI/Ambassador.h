@@ -2655,12 +2655,10 @@ public:
       throw NotConnected();
     if (!_federate.valid())
       throw FederateNotExecutionMember();
-    throw RTIinternalError("Not implemented");
-    return FederateHandle();
-    // FederateHandle federateHandle = _federate->getFederateHandle(name);
-    // if (!federateHandle.valid())
-    //   throw NameNotFound(name);
-    // return federateHandle;
+    FederateHandle federateHandle = _federate->getFederateHandle(name);
+    if (!federateHandle.valid())
+      throw NameNotFound(name);
+    return federateHandle;
   }
 
   const std::string& getFederateName(FederateHandle federateHandle)
@@ -2674,13 +2672,10 @@ public:
       throw NotConnected();
     if (!_federate.valid())
       throw FederateNotExecutionMember();
-    throw RTIinternalError("Not implemented");
-    static std::string s;
-    return s;
-    // const Federate::Federate* federate = _federate->getFederate(federateHandle);
-    // if (!federate)
-    //   throw InvalidFederateHandle(federateHandle.toString());
-    // return federate->getName();
+    const Federate::_Federate* federate = _federate->getFederate(federateHandle);
+    if (!federate)
+      throw InvalidFederateHandle(federateHandle.toString());
+    return federate->getName();
   }
 
   ObjectClassHandle getObjectClassHandle(const std::string& name)

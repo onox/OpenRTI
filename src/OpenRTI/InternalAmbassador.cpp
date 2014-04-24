@@ -183,7 +183,7 @@ void
 InternalAmbassador::acceptInternalMessage(const JoinFederateNotifyMessage& message)
 {
   if (Federate* federate = getFederate())
-    federate->insertFederate(message.getFederateHandle());
+    federate->insertFederate(message.getFederateHandle(), message.getFederateName());
   if (InternalTimeManagement* timeManagement = getTimeManagement())
     timeManagement->acceptInternalMessage(*this, message);
 }

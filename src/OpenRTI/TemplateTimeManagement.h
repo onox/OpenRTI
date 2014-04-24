@@ -133,7 +133,7 @@ public:
     OpenRTIAssert(_timeRegulationEnableFederateHandleTimeStampMap.empty());
     OpenRTIAssert(_timeRegulationEnableFederateHandleSet.empty());
 
-    _timeRegulationEnableFederateHandleSet = ambassador.getFederate()->getFederateHandleSet();
+    ambassador.getFederate()->getFederateHandleSet(_timeRegulationEnableFederateHandleSet);
     // Make sure we wait for the request looping back through the root server.
     // We need to do that round trip to the root server to stay in order with newly
     // joined federates that are serialized by the root server.

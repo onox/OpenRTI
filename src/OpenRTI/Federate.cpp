@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2014 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -464,6 +464,21 @@ Federate::ObjectInstance::ownsAnyAttribute() const
       return true;
   }
   return false;
+}
+
+Federate::_Federate::_Federate(NameFederateHandleMap::iterator nameFederateHandleMapIterator) :
+  _nameFederateHandleMapIterator(nameFederateHandleMapIterator)
+{
+}
+
+Federate::_Federate::~_Federate()
+{
+}
+
+const std::string&
+Federate::_Federate::getName() const
+{
+  return _nameFederateHandleMapIterator->first;
 }
 
 Federate::Federate() :
@@ -1008,16 +1023,55 @@ Federate::takeReservedObjectInstanceName(const std::string& objectInstanceName)
   return objectInstanceHandle;
 }
 
-void
-Federate::insertFederate(const FederateHandle& federateHandle)
+Federate::_Federate*
+Federate::getFederate(const FederateHandle& federateHandle)
 {
-  _federateHandleSet.insert(federateHandle);
+  FederateHandleMap::const_iterator i = _federateHandleMap.find(federateHandle);
+  if (i == _federateHandleMap.end())
+    return 0;
+  return i->second.get();
+}
+
+const Federate::_Federate*
+Federate::getFederate(const FederateHandle& federateHandle) const
+{
+  FederateHandleMap::const_iterator i = _federateHandleMap.find(federateHandle);
+  if (i == _federateHandleMap.end())
+    return 0;
+  return i->second.get();
+}
+
+FederateHandle
+Federate::getFederateHandle(const std::string& name) const
+{
+  NameFederateHandleMap::const_iterator i = _nameFederateHandleMap.find(name);
+  if (i == _nameFederateHandleMap.end())
+    return FederateHandle();
+  return i->second;
+}
+
+void
+Federate::insertFederate(const FederateHandle& federateHandle, const std::string& name)
+{
+  OpenRTIAssert(_nameFederateHandleMap.find(name) == _nameFederateHandleMap.end());
+  OpenRTIAssert(_federateHandleMap.find(federateHandle) == _federateHandleMap.end());
+  NameFederateHandleMap::iterator i;
+  i = _nameFederateHandleMap.insert(NameFederateHandleMap::value_type(name, federateHandle)).first;
+  SharedPtr<_Federate> federate = new _Federate(i);
+  _federateHandleMap.insert(FederateHandleMap::value_type(federateHandle, federate));
 }
 
 void
 Federate::eraseFederate(const FederateHandle& federateHandle)
 {
-  _federateHandleSet.erase(federateHandle);
+  FederateHandleMap::iterator i = _federateHandleMap.find(federateHandle);
+  if (i == _federateHandleMap.end()) {
+    Log(FederateAmbassador, Warning) << "Federate: \"" << getFederateType() << "\": Cannot remove object instance with object handle: "
+                                     << federateHandle.getHandle() << std::endl;
+    return;
+  }
+  _nameFederateHandleMap.erase(i->second->getNameFederateHandleMapIterator());
+  _federateHandleMap.erase(i);
 }
 
 void
