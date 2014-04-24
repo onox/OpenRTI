@@ -280,7 +280,7 @@ public:
   }
 
 
-  void registerFederationSynchronizationPoint(const std::string& label, const VariableLengthData& tag, const FederateHandleSet& syncSet)
+  void registerFederationSynchronizationPoint(const std::string& label, VariableLengthData& tag, const FederateHandleSet& syncSet)
     // throw (FederateNotExecutionMember,
     //        SaveInProgress,
     //        RestoreInProgress,
@@ -298,7 +298,7 @@ public:
     message->setFederationHandle(getFederationHandle());
     message->setFederateHandle(getFederateHandle());
     message->setLabel(label);
-    message->setTag(tag);
+    message->getTag().swap(tag);
     message->setFederateHandleSet(syncSet);
     send(message);
   }
@@ -496,7 +496,8 @@ public:
     throw RTIinternalError("Save/Restore not implemented!");
   }
 
-  void publishObjectClassAttributes(ObjectClassHandle objectClassHandle, const AttributeHandleSet& attributeList)
+  // Note that the attributeHandleVector is consumed as if it could be with a lref in c++11
+  void publishObjectClassAttributes(ObjectClassHandle objectClassHandle, AttributeHandleVector& attributeHandleVector)
     // throw (ObjectClassNotDefined,
     //        AttributeNotDefined,
     //        FederateNotExecutionMember,
@@ -513,32 +514,37 @@ public:
     Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
     if (!objectClass)
       throw ObjectClassNotDefined(objectClassHandle.toString());
-    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i)
+    for (AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
       if (!objectClass->getAttribute(*i))
         throw AttributeNotDefined(i->toString());
+
+    // Mark the objectclass itself as published.
+    // Append this to the request if this publication has changed
+    AttributeHandleVector::iterator j = attributeHandleVector.begin();
+    if (objectClass->setPublicationType(Published)) {
+      if (attributeHandleVector.empty() || attributeHandleVector.front() != AttributeHandle(0))
+        j = attributeHandleVector.insert(attributeHandleVector.begin(), AttributeHandle(0));
+      ++j;
+    }
+    for (AttributeHandleVector::const_iterator i = j; i != attributeHandleVector.end(); ++i) {
+      // returns true if there is a change in the publication state
+      if (!objectClass->setAttributePublicationType(*i, Published))
+        continue;
+      if (i != j)
+        *j = *i;
+      ++j;
+    }
+    if (j != attributeHandleVector.end())
+      attributeHandleVector.erase(j, attributeHandleVector.end());
+    // If there has nothing changed, don't send anything.
+    if (attributeHandleVector.empty())
+      return;
 
     SharedPtr<ChangeObjectClassPublicationMessage> request = new ChangeObjectClassPublicationMessage;
     request->setFederationHandle(getFederationHandle());
     request->setObjectClassHandle(objectClassHandle);
-
-    // Alway one more because of the implicit privilege to delete
-    request->getAttributeHandles().reserve(1 + attributeList.size());
     request->setPublicationType(Published);
-
-    // Mark the objectclass itself as published.
-    // Append this to the request if this publication has changed
-    if (objectClass->setPublicationType(Published))
-      request->getAttributeHandles().push_back(AttributeHandle(0));
-    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i) {
-      // returns true if there is a change in the publication state
-      if (!objectClass->setAttributePublicationType(*i, Published))
-        continue;
-      request->getAttributeHandles().push_back(*i);
-    }
-    // If there has nothing changed, don't send anything.
-    if (request->getAttributeHandles().empty())
-      return;
-
+    request->getAttributeHandles().swap(attributeHandleVector);
     send(request);
   }
 
@@ -561,32 +567,32 @@ public:
       throw ObjectClassNotDefined(objectClassHandle.toString());
 
     // now that we know not to throw, handle the request
-    SharedPtr<ChangeObjectClassPublicationMessage> request = new ChangeObjectClassPublicationMessage;
-    request->setFederationHandle(getFederationHandle());
-    request->setObjectClassHandle(objectClassHandle);
-
-    // Alway one more because of the implicit privilege to delete
-    request->getAttributeHandles().reserve(objectClass->getNumAttributes());
-    request->setPublicationType(Unpublished);
-
+    AttributeHandleVector attributeHandleVector;
+    attributeHandleVector.reserve(objectClass->getNumAttributes());
     // Mark the objectclass itself as unpublished.
     // Append this to the request if this publication has changed
     if (objectClass->setPublicationType(Unpublished))
-      request->getAttributeHandles().push_back(AttributeHandle(0));
+      attributeHandleVector.push_back(AttributeHandle(0));
     for (size_t i = 0; i < objectClass->getNumAttributes(); ++i) {
       // returns true if there is a change in the publication state
       if (!objectClass->setAttributePublicationType(AttributeHandle(i), Unpublished))
         continue;
-      request->getAttributeHandles().push_back(AttributeHandle(i));
+      attributeHandleVector.push_back(AttributeHandle(i));
     }
     // If there has nothing changed, don't send anything.
-    if (request->getAttributeHandles().empty())
+    if (attributeHandleVector.empty())
       return;
 
+    SharedPtr<ChangeObjectClassPublicationMessage> request = new ChangeObjectClassPublicationMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectClassHandle(objectClassHandle);
+    request->setPublicationType(Unpublished);
+    request->getAttributeHandles().swap(attributeHandleVector);
     send(request);
   }
 
-  void unpublishObjectClassAttributes(ObjectClassHandle objectClassHandle, const AttributeHandleSet& attributeList)
+  // Note that the attributeHandleVector is consumed as if it could be with a lref in c++11
+  void unpublishObjectClassAttributes(ObjectClassHandle objectClassHandle, AttributeHandleVector& attributeHandleVector)
     // throw (ObjectClassNotDefined,
     //        AttributeNotDefined,
     //        OwnershipAcquisitionPending,
@@ -604,29 +610,32 @@ public:
     Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
     if (!objectClass)
       throw ObjectClassNotDefined(objectClassHandle.toString());
-    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i)
+    for (AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
       if (!objectClass->getAttribute(*i))
         throw AttributeNotDefined(i->toString());
 
-    // now that we know not to throw, handle the request
-    SharedPtr<ChangeObjectClassPublicationMessage> request = new ChangeObjectClassPublicationMessage;
-    request->setFederationHandle(getFederationHandle());
-    request->setObjectClassHandle(objectClassHandle);
-
-    // Alway one more because of the implicit privilege to delete
-    request->getAttributeHandles().reserve(attributeList.size());
-    request->setPublicationType(Unpublished);
-
-    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i) {
+    // Mark the objectclass itself as unpublished.
+    // Append this to the request if this publication has changed
+    AttributeHandleVector::iterator j = attributeHandleVector.begin();
+    for (AttributeHandleVector::const_iterator i = j; i != attributeHandleVector.end(); ++i) {
       // returns true if there is a change in the publication state
       if (!objectClass->setAttributePublicationType(*i, Unpublished))
         continue;
-      request->getAttributeHandles().push_back(*i);
+      if (i != j)
+        *j = *i;
+      ++j;
     }
+    if (j != attributeHandleVector.end())
+      attributeHandleVector.erase(j, attributeHandleVector.end());
     // If there has nothing changed, don't send anything.
-    if (request->getAttributeHandles().empty())
+    if (attributeHandleVector.empty())
       return;
 
+    SharedPtr<ChangeObjectClassPublicationMessage> request = new ChangeObjectClassPublicationMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectClassHandle(objectClassHandle);
+    request->setPublicationType(Unpublished);
+    request->getAttributeHandles().swap(attributeHandleVector);
     send(request);
   }
 
@@ -683,7 +692,7 @@ public:
     send(request);
   }
 
-  void subscribeObjectClassAttributes(ObjectClassHandle objectClassHandle, const AttributeHandleSet& attributeList, bool active, const std::string& updateRateDesignator)
+  void subscribeObjectClassAttributes(ObjectClassHandle objectClassHandle, AttributeHandleVector& attributeHandleVector, bool active, const std::string& updateRateDesignator)
     // throw (ObjectClassNotDefined,
     //        AttributeNotDefined,
     //        FederateNotExecutionMember,
@@ -701,42 +710,45 @@ public:
     Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
     if (!objectClass)
       throw ObjectClassNotDefined(objectClassHandle.toString());
-    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i)
+    for (AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
       if (!objectClass->getAttribute(*i))
         throw AttributeNotDefined(i->toString());
     if (!updateRateDesignator.empty())
       throw RTIinternalError("Non trvial update rate designators are not implemented yet!");
 
     // now that we know not to throw, handle the request
-    SharedPtr<ChangeObjectClassSubscriptionMessage> request = new ChangeObjectClassSubscriptionMessage;
-    request->setFederationHandle(getFederationHandle());
-    request->setObjectClassHandle(objectClassHandle);
-
-    // Alway one more because of the implicit privilege to delete
-    request->getAttributeHandles().reserve(1 + attributeList.size());
-
     SubscriptionType subscriptionType;
     if (active) {
       subscriptionType = SubscribedActive;
     } else {
       subscriptionType = SubscribedPassive;
     }
-    request->setSubscriptionType(subscriptionType);
 
-    // Mark the objectclass itself as subscribed.
-    // Append this to the request if this subscription has changed
-    if (objectClass->setSubscriptionType(subscriptionType))
-      request->getAttributeHandles().push_back(AttributeHandle(0));
-    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i) {
+    AttributeHandleVector::iterator j = attributeHandleVector.begin();
+    if (objectClass->setSubscriptionType(subscriptionType)) {
+      if (attributeHandleVector.empty() || attributeHandleVector.front() != AttributeHandle(0))
+        j = attributeHandleVector.insert(attributeHandleVector.begin(), AttributeHandle(0));
+      ++j;
+    }
+    for (AttributeHandleVector::const_iterator i = j; i != attributeHandleVector.end(); ++i) {
       // returns true if there is a change in the subscription state
       if (!objectClass->setAttributeSubscriptionType(*i, subscriptionType))
         continue;
-      request->getAttributeHandles().push_back(*i);
+      if (i != j)
+        *j = *i;
+      ++j;
     }
+    if (j != attributeHandleVector.end())
+      attributeHandleVector.erase(j, attributeHandleVector.end());
     // If there has nothing changed, don't send anything.
-    if (request->getAttributeHandles().empty())
+    if (attributeHandleVector.empty())
       return;
 
+    SharedPtr<ChangeObjectClassSubscriptionMessage> request = new ChangeObjectClassSubscriptionMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectClassHandle(objectClassHandle);
+    request->getAttributeHandles().swap(attributeHandleVector);
+    request->setSubscriptionType(subscriptionType);
     send(request);
   }
 
@@ -758,23 +770,27 @@ public:
       throw ObjectClassNotDefined(objectClassHandle.toString());
 
     // now that we know not to throw, handle the request
-    SharedPtr<ChangeObjectClassSubscriptionMessage> request = new ChangeObjectClassSubscriptionMessage;
-    request->setFederationHandle(getFederationHandle());
-    request->setObjectClassHandle(objectClassHandle);
-    request->setSubscriptionType(Unsubscribed);
-    request->getAttributeHandles().reserve(objectClass->getNumAttributes());
+    AttributeHandleVector attributeHandleVector;
+    attributeHandleVector.reserve(objectClass->getNumAttributes());
+    // Mark the objectclass itself as unpublished.
+    // Append this to the request if this subscription has changed
     if (objectClass->setSubscriptionType(Unsubscribed))
-      request->getAttributeHandles().push_back(AttributeHandle(0));
+      attributeHandleVector.push_back(AttributeHandle(0));
     for (size_t i = 0; i < objectClass->getNumAttributes(); ++i) {
       // returns true if there is a change in the subscription state
       if (!objectClass->setAttributeSubscriptionType(AttributeHandle(i), Unsubscribed))
         continue;
-      request->getAttributeHandles().push_back(AttributeHandle(i));
+      attributeHandleVector.push_back(AttributeHandle(i));
     }
     // If there has nothing changed, don't send anything.
-    if (request->getAttributeHandles().empty())
+    if (attributeHandleVector.empty())
       return;
 
+    SharedPtr<ChangeObjectClassSubscriptionMessage> request = new ChangeObjectClassSubscriptionMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->setObjectClassHandle(objectClassHandle);
+    request->setSubscriptionType(Unsubscribed);
+    request->getAttributeHandles().swap(attributeHandleVector);
     send(request);
 
     OpenRTIAssert(objectClass->getEffectiveSubscriptionType() == Unsubscribed);
@@ -791,7 +807,7 @@ public:
     }
   }
 
-  void unsubscribeObjectClassAttributes(ObjectClassHandle objectClassHandle, const AttributeHandleSet& attributeList)
+  void unsubscribeObjectClassAttributes(ObjectClassHandle objectClassHandle, AttributeHandleVector& attributeHandleVector)
     // throw (ObjectClassNotDefined,
     //        AttributeNotDefined,
     //        FederateNotExecutionMember,
@@ -808,27 +824,31 @@ public:
     Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
     if (!objectClass)
       throw ObjectClassNotDefined(objectClassHandle.toString());
-    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i)
+    for (AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
       if (!objectClass->getAttribute(*i))
         throw AttributeNotDefined(i->toString());
 
     // now that we know not to throw, handle the request
+    AttributeHandleVector::iterator j = attributeHandleVector.begin();
+    for (AttributeHandleVector::const_iterator i = j; i != attributeHandleVector.end(); ++i) {
+      // returns true if there is a change in the subscription state
+      if (!objectClass->setAttributeSubscriptionType(*i, Unsubscribed))
+        continue;
+      if (i != j)
+        *j = *i;
+      ++j;
+    }
+    if (j != attributeHandleVector.end())
+      attributeHandleVector.erase(j, attributeHandleVector.end());
+    // If there has nothing changed, don't send anything.
+    if (attributeHandleVector.empty())
+      return;
+
     SharedPtr<ChangeObjectClassSubscriptionMessage> request = new ChangeObjectClassSubscriptionMessage;
     request->setFederationHandle(getFederationHandle());
     request->setObjectClassHandle(objectClassHandle);
     request->setSubscriptionType(Unsubscribed);
-
-    request->getAttributeHandles().reserve(attributeList.size());
-    for (AttributeHandleSet::const_iterator i = attributeList.begin(); i != attributeList.end(); ++i) {
-      // returns true if there is a change in the subscription state
-      if (!objectClass->setAttributeSubscriptionType(*i, Unsubscribed))
-        continue;
-      request->getAttributeHandles().push_back(*i);
-    }
-    // If there has nothing changed, don't send anything.
-    if (request->getAttributeHandles().empty())
-      return;
-
+    request->getAttributeHandles().swap(attributeHandleVector);
     send(request);
 
     if (objectClass->getEffectiveSubscriptionType() == Unsubscribed) {
@@ -1135,7 +1155,7 @@ public:
 
   void updateAttributeValues(ObjectInstanceHandle objectInstanceHandle,
                              AttributeValueVector& attributeValues,
-                             const VariableLengthData& tag)
+                             VariableLengthData& tag)
     // throw (ObjectInstanceNotKnown,
     //        AttributeNotDefined,
     //        AttributeNotOwned,
@@ -1176,14 +1196,14 @@ public:
       request->setObjectInstanceHandle(objectInstanceHandle);
       request->getAttributeValues().swap(passels[i]);
       request->setTransportationType(TransportationType(i));
-      request->setTag(tag);
+      request->getTag().swap(tag);
       send(request);
     }
   }
 
   MessageRetractionHandle updateAttributeValues(ObjectInstanceHandle objectInstanceHandle,
                                                 AttributeValueVector& attributeValues,
-                                                const VariableLengthData& tag,
+                                                VariableLengthData& tag,
                                                 const NativeLogicalTime& nativeLogicalTime)
     // throw (ObjectInstanceNotKnown,
     //        AttributeNotDefined,
@@ -1238,7 +1258,7 @@ public:
         request->setTimeStamp(timeStamp);
         request->setTransportationType(TransportationType(i));
         request->setOrderType(OrderType(j));
-        request->setTag(tag);
+        request->getTag().swap(tag);
         request->setMessageRetractionHandle(messageRetractionHandle);
         send(request);
       }
@@ -1248,7 +1268,7 @@ public:
   }
 
   void sendInteraction(InteractionClassHandle interactionClassHandle, std::vector<ParameterValue>& parameterValues,
-                       const VariableLengthData& tag)
+                       VariableLengthData& tag)
     // throw (InteractionClassNotPublished,
     //        InteractionClassNotDefined,
     //        InteractionParameterNotDefined,
@@ -1276,14 +1296,14 @@ public:
     request->setFederationHandle(getFederationHandle());
     request->setInteractionClassHandle(interactionClassHandle);
     request->setTransportationType(interactionClass->getTransportationType());
-    request->setTag(tag);
+    request->getTag().swap(tag);
     request->getParameterValues().swap(parameterValues);
     send(request);
   }
 
   MessageRetractionHandle sendInteraction(InteractionClassHandle interactionClassHandle,
                                           std::vector<ParameterValue>& parameterValues,
-                                          const VariableLengthData& tag,
+                                          VariableLengthData& tag,
                                           const NativeLogicalTime& logicalTime)
     // throw (InteractionClassNotPublished,
     //        InteractionClassNotDefined,
@@ -1323,7 +1343,7 @@ public:
     else
       request->setOrderType(RECEIVE);
     request->setTransportationType(interactionClass->getTransportationType());
-    request->setTag(tag);
+    request->getTag().swap(tag);
     request->setTimeStamp(getTimeManagement()->encodeLogicalTime(logicalTime));
     request->setMessageRetractionHandle(messageRetractionHandle);
     request->getParameterValues().swap(parameterValues);
@@ -1332,7 +1352,7 @@ public:
     return messageRetractionHandle;
   }
 
-  void deleteObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag)
+  void deleteObjectInstance(ObjectInstanceHandle objectInstanceHandle, VariableLengthData& tag)
     // throw (DeletePrivilegeNotHeld,
     //        ObjectInstanceNotKnown,
     //        FederateNotExecutionMember,
@@ -1355,7 +1375,7 @@ public:
     request = new DeleteObjectInstanceMessage;
     request->setFederationHandle(getFederationHandle());
     request->setObjectInstanceHandle(objectInstanceHandle);
-    request->setTag(tag);
+    request->getTag().swap(tag);
 
     send(request);
 
@@ -1363,7 +1383,7 @@ public:
     _releaseObjectInstance(objectInstanceHandle);
   }
 
-  MessageRetractionHandle deleteObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, const NativeLogicalTime& logicalTime)
+  MessageRetractionHandle deleteObjectInstance(ObjectInstanceHandle objectInstanceHandle, VariableLengthData& tag, const NativeLogicalTime& logicalTime)
     // throw (DeletePrivilegeNotHeld,
     //        ObjectInstanceNotKnown,
     //        InvalidLogicalTime,
@@ -1397,7 +1417,7 @@ public:
       request->setOrderType(instanceAttribute->getOrderType());
     else
       request->setOrderType(RECEIVE);
-    request->setTag(tag);
+    request->getTag().swap(tag);
     request->setTimeStamp(getTimeManagement()->encodeLogicalTime(logicalTime));
     request->setMessageRetractionHandle(messageRetractionHandle);
 
@@ -1434,7 +1454,7 @@ public:
     throw RTIinternalError("Not implemented!");
   }
 
-  void changeAttributeTransportationType(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet, TransportationType transportationType)
+  void changeAttributeTransportationType(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector, TransportationType transportationType)
     // throw (ObjectInstanceNotKnown,
     //        AttributeNotDefined,
     //        AttributeNotOwned,
@@ -1451,14 +1471,14 @@ public:
     Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
     if (!objectInstance)
       throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
-    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+    for (AttributeHandleVector::const_iterator j = attributeHandleVector.begin(); j != attributeHandleVector.end(); ++j) {
       const Federate::InstanceAttribute* attribute = objectInstance->getInstanceAttribute(j->getHandle());
       if (!attribute)
         throw AttributeNotDefined(j->toString());
       if (!attribute->getIsOwnedByFederate())
         throw AttributeNotOwned(j->toString());
     }
-    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+    for (AttributeHandleVector::const_iterator j = attributeHandleVector.begin(); j != attributeHandleVector.end(); ++j) {
       objectInstance->getInstanceAttribute(j->getHandle())->setTransportationType(transportationType);
     }
   }
@@ -1484,9 +1504,8 @@ public:
     interactionClass->setTransportationType(transportationType);
   }
 
-  void requestAttributeValueUpdate(ObjectInstanceHandle objectInstanceHandle,
-                                   const AttributeHandleSet& attributeHandleSet,
-                                   const VariableLengthData& tag)
+  void requestAttributeValueUpdate(ObjectInstanceHandle objectInstanceHandle, AttributeHandleVector& attributeHandleVector,
+                                   VariableLengthData& tag)
     // throw (ObjectInstanceNotKnown,
     //        AttributeNotDefined,
     //        FederateNotExecutionMember,
@@ -1502,15 +1521,9 @@ public:
     Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
     if (!objectInstance)
       throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
-    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+    for (AttributeHandleVector::const_iterator j = attributeHandleVector.begin(); j != attributeHandleVector.end(); ++j) {
       if (!objectInstance->getInstanceAttribute(j->getHandle()))
         throw AttributeNotDefined(j->toString());
-    }
-
-    AttributeHandleVector attributeHandleVector;
-    attributeHandleVector.reserve(attributeHandleSet.size());
-    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
-      attributeHandleVector.push_back(*j);
     }
 
     SharedPtr<RequestAttributeUpdateMessage> request;
@@ -1518,14 +1531,12 @@ public:
     request->setFederationHandle(getFederationHandle());
     request->setObjectInstanceHandle(objectInstanceHandle);
     request->getAttributeHandles().swap(attributeHandleVector);
-    request->setTag(tag);
-
+    request->getTag().swap(tag);
     send(request);
   }
 
-  void requestAttributeValueUpdate(ObjectClassHandle objectClassHandle,
-                                   const AttributeHandleSet& attributeHandleSet,
-                                   const VariableLengthData& tag)
+  void requestAttributeValueUpdate(ObjectClassHandle objectClassHandle, AttributeHandleVector& attributeHandleVector,
+                                   VariableLengthData& tag)
     // throw (ObjectClassNotDefined,
     //        AttributeNotDefined,
     //        FederateNotExecutionMember,
@@ -1541,15 +1552,9 @@ public:
     Federate::ObjectClass* objectClass = _federate->getObjectClass(objectClassHandle);
     if (!objectClass)
       throw ObjectClassNotDefined(objectClassHandle.toString());
-    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+    for (AttributeHandleVector::const_iterator j = attributeHandleVector.begin(); j != attributeHandleVector.end(); ++j) {
       if (!objectClass->getAttribute(*j))
         throw AttributeNotDefined(j->toString());
-    }
-
-    AttributeHandleVector attributeHandleVector;
-    attributeHandleVector.reserve(attributeHandleSet.size());
-    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
-      attributeHandleVector.push_back(*j);
     }
 
     SharedPtr<RequestClassAttributeUpdateMessage> request;
@@ -1557,12 +1562,11 @@ public:
     request->setFederationHandle(getFederationHandle());
     request->setObjectClassHandle(objectClassHandle);
     request->getAttributeHandles().swap(attributeHandleVector);
-    request->setTag(tag);
-
+    request->getTag().swap(tag);
     send(request);
   }
 
-  void requestAttributeTransportationTypeChange(ObjectInstanceHandle, const AttributeHandleSet &, TransportationType)
+  void requestAttributeTransportationTypeChange(ObjectInstanceHandle, const AttributeHandleVector&, TransportationType)
     // throw (AttributeAlreadyBeingChanged,
     //        AttributeNotOwned,
     //        AttributeNotDefined,
@@ -1630,7 +1634,7 @@ public:
     throw RTIinternalError("Not implemented");
   }
 
-  void unconditionalAttributeOwnershipDivestiture(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet)
+  void unconditionalAttributeOwnershipDivestiture(ObjectInstanceHandle objectInstanceHandle, AttributeHandleVector& attributeHandleVector)
     // throw (ObjectInstanceNotKnown,
     //        AttributeNotDefined,
     //        AttributeNotOwned,
@@ -1647,7 +1651,7 @@ public:
     throw RTIinternalError("Not implemented");
   }
 
-  void negotiatedAttributeOwnershipDivestiture(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet, const VariableLengthData& tag)
+  void negotiatedAttributeOwnershipDivestiture(ObjectInstanceHandle objectInstanceHandle, AttributeHandleVector& attributeHandleVector, VariableLengthData& tag)
     // throw (ObjectInstanceNotKnown,
     //        AttributeNotDefined,
     //        AttributeNotOwned,
@@ -1665,7 +1669,7 @@ public:
     throw RTIinternalError("Not implemented");
   }
 
-  void confirmDivestiture(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet, const VariableLengthData& tag)
+  void confirmDivestiture(ObjectInstanceHandle objectInstanceHandle, AttributeHandleVector& attributeHandleVector, VariableLengthData& tag)
     // throw (ObjectInstanceNotKnown,
     //        AttributeNotDefined,
     //        AttributeNotOwned,
@@ -1684,7 +1688,7 @@ public:
     throw RTIinternalError("Not implemented");
   }
 
-  void attributeOwnershipAcquisition(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet, const VariableLengthData& tag)
+  void attributeOwnershipAcquisition(ObjectInstanceHandle objectInstanceHandle, AttributeHandleVector& attributeHandleVector, VariableLengthData& tag)
     // throw (ObjectInstanceNotKnown,
     //        ObjectClassNotPublished,
     //        AttributeNotDefined,
@@ -1703,7 +1707,7 @@ public:
     throw RTIinternalError("Not implemented");
   }
 
-  void attributeOwnershipAcquisitionIfAvailable(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet)
+  void attributeOwnershipAcquisitionIfAvailable(ObjectInstanceHandle objectInstanceHandle, AttributeHandleVector& attributeHandleVector)
     // throw (ObjectInstanceNotKnown,
     //        ObjectClassNotPublished,
     //        AttributeNotDefined,
@@ -1723,7 +1727,7 @@ public:
     throw RTIinternalError("Not implemented");
   }
 
-  void attributeOwnershipReleaseDenied(ObjectInstanceHandle, const AttributeHandleSet &)
+  void attributeOwnershipReleaseDenied(ObjectInstanceHandle, AttributeHandleVector&)
     // throw (AttributeNotOwned,
     //        AttributeNotDefined,
     //        ObjectInstanceNotKnown,
@@ -1740,8 +1744,8 @@ public:
     throw RTIinternalError("Not implemented");
   }
 
-  void attributeOwnershipDivestitureIfWanted(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet,
-                                             AttributeHandleSet& divestedAttributes)
+  void attributeOwnershipDivestitureIfWanted(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector,
+                                             AttributeHandleVector& divestedAttributes /*this is output*/)
     // throw (ObjectInstanceNotKnown,
     //        AttributeNotDefined,
     //        AttributeNotOwned,
@@ -1758,7 +1762,7 @@ public:
     throw RTIinternalError("Not implemented");
   }
 
-  void cancelNegotiatedAttributeOwnershipDivestiture(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet)
+  void cancelNegotiatedAttributeOwnershipDivestiture(ObjectInstanceHandle objectInstanceHandle, AttributeHandleVector& attributeHandleVector)
     // throw (ObjectInstanceNotKnown,
     //        AttributeNotDefined,
     //        AttributeNotOwned,
@@ -1776,7 +1780,7 @@ public:
     throw RTIinternalError("Not implemented");
   }
 
-  void cancelAttributeOwnershipAcquisition(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet)
+  void cancelAttributeOwnershipAcquisition(ObjectInstanceHandle objectInstanceHandle, AttributeHandleVector& attributeHandleVector)
     // throw (ObjectInstanceNotKnown,
     //        AttributeNotDefined,
     //        AttributeAlreadyOwned,
@@ -2224,7 +2228,7 @@ public:
     throw RTIinternalError("Message retraction is not implemented!");
   }
 
-  void changeAttributeOrderType(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleSet& attributeHandleSet, OrderType orderType)
+  void changeAttributeOrderType(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector, OrderType orderType)
     // throw (ObjectInstanceNotKnown,
     //        AttributeNotDefined,
     //        AttributeNotOwned,
@@ -2241,14 +2245,14 @@ public:
     Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
     if (!objectInstance)
       throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
-    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+    for (AttributeHandleVector::const_iterator j = attributeHandleVector.begin(); j != attributeHandleVector.end(); ++j) {
       const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(*j);
       if (!instanceAttribute)
         throw AttributeNotDefined(j->toString());
       if (!instanceAttribute->getIsOwnedByFederate())
         throw AttributeNotOwned(j->toString());
     }
-    for (AttributeHandleSet::const_iterator j = attributeHandleSet.begin(); j != attributeHandleSet.end(); ++j) {
+    for (AttributeHandleVector::const_iterator j = attributeHandleVector.begin(); j != attributeHandleVector.end(); ++j) {
       objectInstance->getInstanceAttribute(*j)->setOrderType(orderType);
     }
   }
@@ -2531,7 +2535,7 @@ public:
   void sendInteractionWithRegions(InteractionClassHandle interactionClassHandle,
                                   std::vector<ParameterValue>& parameterValues,
                                   const RegionHandleSet& regionHandleSet,
-                                  const VariableLengthData& tag)
+                                  VariableLengthData& tag)
     // throw (InteractionClassNotDefined,
     //        InteractionClassNotPublished,
     //        InteractionParameterNotDefined,
@@ -2555,7 +2559,7 @@ public:
     sendInteractionWithRegions(InteractionClassHandle interactionClassHandle,
                                std::vector<ParameterValue>& parameterValues,
                                const RegionHandleSet& regionHandleSet,
-                               const VariableLengthData& tag,
+                               VariableLengthData& tag,
                                const NativeLogicalTime& logicalTime)
     // throw (InteractionClassNotDefined,
     //        InteractionClassNotPublished,
@@ -2579,7 +2583,7 @@ public:
   }
 
   void requestAttributeValueUpdateWithRegions(ObjectClassHandle objectClassHandle, const AttributeHandleSetRegionHandleSetPairVector& theSet,
-                                              const VariableLengthData& tag)
+                                              VariableLengthData& tag)
     // throw (ObjectClassNotDefined,
     //        AttributeNotDefined,
     //        InvalidRegion,
@@ -3636,19 +3640,19 @@ public:
     Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
     if (!objectInstance)
       return;
-    AttributeHandleVector attributeHandleSet;
+    AttributeHandleVector attributeHandleVector;
     for (AttributeHandleVector::const_iterator j = message.getAttributeHandles().begin(); j != message.getAttributeHandles().end(); ++j) {
       Federate::InstanceAttribute* attribute = objectInstance->getInstanceAttribute(j->getHandle());
       if (!attribute)
         continue;
       if (!attribute->getIsOwnedByFederate())
         continue;
-      attributeHandleSet.reserve(message.getAttributeHandles().size());
-      attributeHandleSet.push_back(*j);
+      attributeHandleVector.reserve(message.getAttributeHandles().size());
+      attributeHandleVector.push_back(*j);
     }
-    if (attributeHandleSet.empty())
+    if (attributeHandleVector.empty())
       return;
-    provideAttributeValueUpdate(objectInstanceHandle, attributeHandleSet, message.getTag());
+    provideAttributeValueUpdate(objectInstanceHandle, attributeHandleVector, message.getTag());
   }
 
 

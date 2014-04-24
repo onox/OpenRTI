@@ -184,80 +184,266 @@ static OpenRTI::ServiceGroupIndicator translate(rti1516e::ServiceGroup serviceGr
   }
 }
 
+class OPENRTI_LOCAL _I1516EFederateHandle : public OpenRTI::FederateHandle {
+public:
+  _I1516EFederateHandle(const rti1516e::FederateHandle& federateHandle) :
+    FederateHandle(rti1516e::FederateHandleFriend::getOpenRTIHandle(federateHandle))
+  { }
+};
+class OPENRTI_LOCAL _I1516EObjectClassHandle : public OpenRTI::ObjectClassHandle {
+public:
+  _I1516EObjectClassHandle(const rti1516e::ObjectClassHandle& objectClassHandle) :
+    ObjectClassHandle(rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(objectClassHandle))
+  { }
+};
+class OPENRTI_LOCAL _I1516EInteractionClassHandle : public OpenRTI::InteractionClassHandle {
+public:
+  _I1516EInteractionClassHandle(const rti1516e::InteractionClassHandle& interactionClassHandle) :
+    InteractionClassHandle(rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(interactionClassHandle))
+  { }
+};
+class OPENRTI_LOCAL _I1516EObjectInstanceHandle : public OpenRTI::ObjectInstanceHandle {
+public:
+  _I1516EObjectInstanceHandle(const rti1516e::ObjectInstanceHandle& objectInstanceHandle) :
+    ObjectInstanceHandle(rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(objectInstanceHandle))
+  { }
+};
+class OPENRTI_LOCAL _I1516EAttributeHandle : public OpenRTI::AttributeHandle {
+public:
+  _I1516EAttributeHandle(const rti1516e::AttributeHandle& attributeHandle) :
+    AttributeHandle(rti1516e::AttributeHandleFriend::getOpenRTIHandle(attributeHandle))
+  { }
+};
+class OPENRTI_LOCAL _I1516EParameterHandle : public OpenRTI::ParameterHandle {
+public:
+  _I1516EParameterHandle(const rti1516e::ParameterHandle& parameterHandle) :
+    ParameterHandle(rti1516e::ParameterHandleFriend::getOpenRTIHandle(parameterHandle))
+  { }
+};
+class OPENRTI_LOCAL _I1516EDimensionHandle : public OpenRTI::DimensionHandle {
+public:
+  _I1516EDimensionHandle(const rti1516e::DimensionHandle& dimensionHandle) :
+    DimensionHandle(rti1516e::DimensionHandleFriend::getOpenRTIHandle(dimensionHandle))
+  { }
+};
+class OPENRTI_LOCAL _I1516ERegionHandle : public OpenRTI::RegionHandle {
+public:
+  _I1516ERegionHandle(const rti1516e::RegionHandle& regionHandle) :
+    RegionHandle(rti1516e::RegionHandleFriend::getOpenRTIHandle(regionHandle))
+  { }
+};
+class OPENRTI_LOCAL _I1516EMessageRetractionHandle : public OpenRTI::MessageRetractionHandle {
+public:
+  _I1516EMessageRetractionHandle(const rti1516e::MessageRetractionHandle& messageRetractionHandle) :
+    MessageRetractionHandle(rti1516e::MessageRetractionHandleFriend::getOpenRTIHandle(messageRetractionHandle))
+  { }
+};
+class OPENRTI_LOCAL _I1516EVariableLengthData : public OpenRTI::VariableLengthData {
+public:
+  _I1516EVariableLengthData(const rti1516e::VariableLengthData& variableLengthData) :
+    VariableLengthData(rti1516e::VariableLengthDataFriend::readPointer(variableLengthData))
+  { }
+};
+
+class OPENRTI_LOCAL _I1516EFederateHandleSet : public OpenRTI::FederateHandleSet {
+public:
+  _I1516EFederateHandleSet(const rti1516e::FederateHandleSet& federateHandleSet)
+  {
+    for (rti1516e::FederateHandleSet::const_iterator i = federateHandleSet.begin(); i != federateHandleSet.end(); ++i)
+      insert(OpenRTI::_I1516EFederateHandle(*i));
+  }
+};
+class OPENRTI_LOCAL _I1516EFederateHandleVector : public OpenRTI::FederateHandleVector {
+public:
+  _I1516EFederateHandleVector(const rti1516e::FederateHandleSet& federateHandleSet)
+  {
+    reserve(federateHandleSet.size() + 1);
+    for (rti1516e::FederateHandleSet::const_iterator i = federateHandleSet.begin(); i != federateHandleSet.end(); ++i)
+      push_back(OpenRTI::_I1516EFederateHandle(*i));
+  }
+};
+class OPENRTI_LOCAL _I1516EAttributeHandleVector : public OpenRTI::AttributeHandleVector {
+public:
+  _I1516EAttributeHandleVector(const rti1516e::AttributeHandleSet& attributeHandleSet)
+  {
+    reserve(attributeHandleSet.size() + 1);
+    for (rti1516e::AttributeHandleSet::const_iterator i = attributeHandleSet.begin(); i != attributeHandleSet.end(); ++i)
+      push_back(OpenRTI::_I1516EAttributeHandle(*i));
+  }
+};
+class OPENRTI_LOCAL _I1516EDimensionHandleSet : public OpenRTI::DimensionHandleSet {
+public:
+  _I1516EDimensionHandleSet(const rti1516e::DimensionHandleSet& dimensionHandleSet)
+  {
+    for (rti1516e::DimensionHandleSet::const_iterator i = dimensionHandleSet.begin(); i != dimensionHandleSet.end(); ++i)
+      insert(OpenRTI::_I1516EDimensionHandle(*i));
+  }
+};
+class OPENRTI_LOCAL _I1516ERegionHandleSet : public OpenRTI::RegionHandleSet {
+public:
+  _I1516ERegionHandleSet(const rti1516e::RegionHandleSet& regionHandleSet)
+  {
+    for (rti1516e::RegionHandleSet::const_iterator i = regionHandleSet.begin(); i != regionHandleSet.end(); ++i)
+      insert(OpenRTI::_I1516ERegionHandle(*i));
+  }
+};
+
+class OPENRTI_LOCAL _I1516EAttributeHandleSetRegionHandleSetPairVector : public OpenRTI::AttributeHandleSetRegionHandleSetPairVector {
+public:
+  _I1516EAttributeHandleSetRegionHandleSetPairVector(const rti1516e::AttributeHandleSetRegionHandleSetPairVector& attributeHandleSetRegionHandleSetPairVector)
+  {
+    reserve(attributeHandleSetRegionHandleSetPairVector.size());
+    for (rti1516e::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = attributeHandleSetRegionHandleSetPairVector.begin();
+         i != attributeHandleSetRegionHandleSetPairVector.end(); ++i) {
+      push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
+      for (rti1516e::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
+        back().first.insert(OpenRTI::_I1516EAttributeHandle(*j));
+      }
+      for (rti1516e::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
+        back().second.insert(OpenRTI::_I1516ERegionHandle(*j));
+      }
+    }
+  }
+};
+
+class OPENRTI_LOCAL _I1516EAttributeValueVector : public OpenRTI::AttributeValueVector {
+public:
+  _I1516EAttributeValueVector(const rti1516e::AttributeHandleValueMap& attributeHandleValueMap)
+  {
+    reserve(attributeHandleValueMap.size());
+    for (rti1516e::AttributeHandleValueMap::const_iterator i = attributeHandleValueMap.begin();
+         i != attributeHandleValueMap.end(); ++i) {
+      push_back(OpenRTI::AttributeValue());
+      back().setAttributeHandle(OpenRTI::_I1516EAttributeHandle(i->first));
+      OpenRTI::_I1516EVariableLengthData(i->second).swap(back().getValue());
+    }
+  }
+};
+class OPENRTI_LOCAL _I1516EParameterValueVector : public OpenRTI::ParameterValueVector {
+public:
+  _I1516EParameterValueVector(const rti1516e::ParameterHandleValueMap& parameterHandleValueMap)
+  {
+    reserve(parameterHandleValueMap.size());
+    for (rti1516e::ParameterHandleValueMap::const_iterator i = parameterHandleValueMap.begin();
+         i != parameterHandleValueMap.end(); ++i) {
+      push_back(OpenRTI::ParameterValue());
+      back().setParameterHandle(OpenRTI::_I1516EParameterHandle(i->first));
+      OpenRTI::_I1516EVariableLengthData(i->second).swap(back().getValue());
+    }
+  }
+};
+
+class OPENRTI_LOCAL _O1516EFederateHandle : public rti1516e::FederateHandle {
+public:
+  _O1516EFederateHandle(const OpenRTI::FederateHandle& federateHandle) :
+    rti1516e::FederateHandle(rti1516e::FederateHandleFriend::createHandle(federateHandle))
+  { }
+};
+class OPENRTI_LOCAL _O1516EObjectClassHandle : public rti1516e::ObjectClassHandle {
+public:
+  _O1516EObjectClassHandle(const OpenRTI::ObjectClassHandle& objectClassHandle) :
+    rti1516e::ObjectClassHandle(rti1516e::ObjectClassHandleFriend::createHandle(objectClassHandle))
+  { }
+};
+class OPENRTI_LOCAL _O1516EInteractionClassHandle : public rti1516e::InteractionClassHandle {
+public:
+  _O1516EInteractionClassHandle(const OpenRTI::InteractionClassHandle& interactionClassHandle) :
+    rti1516e::InteractionClassHandle(rti1516e::InteractionClassHandleFriend::createHandle(interactionClassHandle))
+  { }
+};
+class OPENRTI_LOCAL _O1516EObjectInstanceHandle : public rti1516e::ObjectInstanceHandle {
+public:
+  _O1516EObjectInstanceHandle(const OpenRTI::ObjectInstanceHandle& objectInstanceHandle) :
+    rti1516e::ObjectInstanceHandle(rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle))
+  { }
+};
+class OPENRTI_LOCAL _O1516EAttributeHandle : public rti1516e::AttributeHandle {
+public:
+  _O1516EAttributeHandle(const OpenRTI::AttributeHandle& attributeHandle) :
+    rti1516e::AttributeHandle(rti1516e::AttributeHandleFriend::createHandle(attributeHandle))
+  { }
+};
+class OPENRTI_LOCAL _O1516EParameterHandle : public rti1516e::ParameterHandle {
+public:
+  _O1516EParameterHandle(const OpenRTI::ParameterHandle& parameterHandle) :
+    rti1516e::ParameterHandle(rti1516e::ParameterHandleFriend::createHandle(parameterHandle))
+  { }
+};
+class OPENRTI_LOCAL _O1516EDimensionHandle : public rti1516e::DimensionHandle {
+public:
+  _O1516EDimensionHandle(const OpenRTI::DimensionHandle& dimensionHandle) :
+    rti1516e::DimensionHandle(rti1516e::DimensionHandleFriend::createHandle(dimensionHandle))
+  { }
+};
+class OPENRTI_LOCAL _O1516ERegionHandle : public rti1516e::RegionHandle {
+public:
+  _O1516ERegionHandle(const OpenRTI::RegionHandle& regionHandle) :
+    rti1516e::RegionHandle(rti1516e::RegionHandleFriend::createHandle(regionHandle))
+  { }
+};
+class OPENRTI_LOCAL _O1516EMessageRetractionHandle : public rti1516e::MessageRetractionHandle {
+public:
+  _O1516EMessageRetractionHandle(const OpenRTI::MessageRetractionHandle& messageRetractionHandle) :
+    rti1516e::MessageRetractionHandle(rti1516e::MessageRetractionHandleFriend::createHandle(messageRetractionHandle))
+  { }
+};
+class OPENRTI_LOCAL _O1516EVariableLengthData : public rti1516e::VariableLengthData {
+public:
+  _O1516EVariableLengthData(const OpenRTI::VariableLengthData& variableLengthData)
+  { rti1516e::VariableLengthDataFriend::writePointer(*this) = variableLengthData; }
+};
+
+class OPENRTI_LOCAL _O1516EAttributeHandleSet : public rti1516e::AttributeHandleSet {
+public:
+  _O1516EAttributeHandleSet(const OpenRTI::AttributeHandleVector& attributeHandleVector)
+  {
+    for (OpenRTI::AttributeHandleVector::const_iterator i = attributeHandleVector.begin();
+         i != attributeHandleVector.end(); ++i)
+      insert(OpenRTI::_O1516EAttributeHandle(*i));
+  }
+};
+class OPENRTI_LOCAL _O1516EDimensionHandleSet : public rti1516e::DimensionHandleSet {
+public:
+  _O1516EDimensionHandleSet(const OpenRTI::DimensionHandleSet& dimensionHandleVector)
+  {
+    for (OpenRTI::DimensionHandleSet::const_iterator i = dimensionHandleVector.begin();
+         i != dimensionHandleVector.end(); ++i)
+      insert(OpenRTI::_O1516EDimensionHandle(*i));
+  }
+};
+
+class OPENRTI_LOCAL _O1516EAttributeHandleValueMap : public rti1516e::AttributeHandleValueMap {
+public:
+  _O1516EAttributeHandleValueMap(const OpenRTI::Federate::ObjectClass& objectClass,
+                                 const OpenRTI::AttributeValueVector& attributeValueVector)
+  {
+    for (OpenRTI::AttributeValueVector::const_iterator i = attributeValueVector.begin();
+         i != attributeValueVector.end(); ++i) {
+        if (objectClass.getAttributeSubscriptionType(i->getAttributeHandle()) == Unsubscribed)
+          continue;
+        (*this)[OpenRTI::_O1516EAttributeHandle(i->getAttributeHandle())] = OpenRTI::_O1516EVariableLengthData(i->getValue());
+    }
+  }
+};
+class OPENRTI_LOCAL _O1516EParameterHandleValueMap : public rti1516e::ParameterHandleValueMap {
+public:
+  _O1516EParameterHandleValueMap(const OpenRTI::Federate::InteractionClass& interactionClass,
+                                 const OpenRTI::ParameterValueVector& parameterValueVector)
+  {
+    for (OpenRTI::ParameterValueVector::const_iterator i = parameterValueVector.begin();
+         i != parameterValueVector.end(); ++i) {
+        if (!interactionClass.getParameter(i->getParameterHandle()))
+          continue;
+        (*this)[OpenRTI::_O1516EParameterHandle(i->getParameterHandle())] = OpenRTI::_O1516EVariableLengthData(i->getValue());
+    }
+  }
+};
+
 class OPENRTI_LOCAL RTI1516ETraits {
 public:
   // The bindings have different logical times
   typedef rti1516e::LogicalTime NativeLogicalTime;
   typedef rti1516e::LogicalTimeInterval NativeLogicalTimeInterval;
-
-  // static OpenRTI::FederateHandle fromNative(const rti1516e::FederateHandle& federateHandle)
-  // { return rti1516e::FederateHandleFriend::getOpenRTIHandle(federateHandle); }
-  // static rti1516e::FederateHandle toNative(const OpenRTI::FederateHandle& federateHandle)
-  // { return rti1516e::FederateHandleFriend::createHandle(federateHandle); }
-
-  // static OpenRTI::ObjectClassHandle fromNative(const rti1516e::ObjectClassHandle& objectClassHandle)
-  // { return rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(objectClassHandle); }
-  // static rti1516e::ObjectClassHandle toNative(const OpenRTI::ObjectClassHandle& objectClassHandle)
-  // { return rti1516e::ObjectClassHandleFriend::createHandle(objectClassHandle); }
-
-  // static OpenRTI::InteractionClassHandle fromNative(const rti1516e::InteractionClassHandle& interactionClassHandle)
-  // { return rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(interactionClassHandle); }
-  // static rti1516e::InsteractionClassHandle toNative(const OpenRTI::InsteractionClassHandle& insteractionClassHandle)
-  // { return rti1516e::InsteractionClassHandleFriend::createHandle(insteractionClassHandle); }
-
-  // static OpenRTI::ObjectInstanceHandle fromNative(const rti1516e::ObjectInstanceHandle& objectInstanceHandle)
-  // { return rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(objectInstanceHandle); }
-  // static rti1516e::ObjectInstanceHandle toNative(const OpenRTI::ObjectInstanceHandle& objectInstanceHandle)
-  // { return rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle); }
-
-  // static OpenRTI::AttributeHandle fromNative(const rti1516e::AttributeHandle& attributeHandle)
-  // { return rti1516e::AttributeHandleFriend::getOpenRTIHandle(attributeHandle); }
-  // static rti1516e::AttributeHandle toNative(const OpenRTI::AttributeHandle& attributeHandle)
-  // { return rti1516e::AttributeHandleFriend::createHandle(attributeHandle); }
-
-  // static OpenRTI::ParameterHandle fromNative(const rti1516e::ParameterHandle& parameterHandle)
-  // { return rti1516e::ParameterHandleFriend::getOpenRTIHandle(parameterHandle); }
-  // static rti1516e::ParameterHandle toNative(const OpenRTI::ParameterHandle& parameterHandle)
-  // { return rti1516e::ParameterHandleFriend::createHandle(parameterHandle); }
-
-  // static OpenRTI::DimensionHandle fromNative(const rti1516e::DimensionHandle& dimensionHandle)
-  // { return rti1516e::DimensionHandleFriend::getOpenRTIHandle(dimensionHandle); }
-  // static rti1516e::DimensionHandle toNative(const OpenRTI::DimensionHandle& dimensionHandle)
-  // { return rti1516e::DimensionHandleFriend::createHandle(dimensionHandle); }
-
-  // static OpenRTI::RegionHandle fromNative(const rti1516e::RegionHandle& regionHandle)
-  // { return rti1516e::RegionHandleFriend::getOpenRTIHandle(regionHandle); }
-  // static rti1516e::RegionHandle toNative(const OpenRTI::RegionHandle& regionHandle)
-  // { return rti1516e::RegionHandleFriend::createHandle(regionHandle); }
-
-  // static OpenRTI::MessageRetractionHandle fromNative(const rti1516e::MessageRetractionHandle& messageRetractionHandle)
-  // { return rti1516e::MessageRetractionHandleFriend::getOpenRTIHandle(messageRetractionHandle); }
-  // static rti1516e::MessageRetractionHandle toNative(const OpenRTI::MessageRetractionHandle& messageRetractionHandle)
-  // { return rti1516e::MessageRetractionHandleFriend::createHandle(messageRetractionHandle); }
-
-
-  // // Ok, have here also methods to convert handle sets to handle sets!!!!
-  // static void copy(OpenRTI::AttributeHandleSet& dst, const rti1516e::AttributeHandleSet& src)
-  // {
-  //   for (rti1516e::AttributeHandleSet::const_iterator i = src.begin(); i != src.end(); ++i)
-  //     dst.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-  // }
-  // static void copy(rti1516e::AttributeHandleSet& dst, const OpenRTI::AttributeHandleSet& src)
-  // {
-  //   for (OpenRTI::AttributeHandleSet::const_iterator i = src.begin(); i != src.end(); ++i)
-  //     dst.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
-  // }
-  // static void copy(OpenRTI::AttributeHandleVector& dst, const rti1516e::AttributeHandleSet& src)
-  // {
-  //   dst.reserve(src.size());
-  //   for (rti1516e::AttributeHandleSet::const_iterator i = src.begin(); i != src.end(); ++i)
-  //     dst.push_back(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-  // }
-  // static void copy(rti1516e::AttributeHandleSet& dst, const OpenRTI::AttributeHandleVector& src)
-  // {
-  //   for (OpenRTI::AttributeHandleVector::const_iterator i = src.begin(); i != src.end(); ++i)
-  //     dst.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
-  // }
 };
 
 class OPENRTI_LOCAL RTIambassadorImplementation::RTI1516EAmbassadorInterface : public OpenRTI::Ambassador<RTI1516ETraits> {
@@ -399,7 +585,7 @@ public:
       return;
     }
     try {
-      rti1516e::VariableLengthData rti1516Tag = rti1516e::VariableLengthDataFriend::create(tag);
+      OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
       _federateAmbassador->announceSynchronizationPoint(utf8ToUcs(label), rti1516Tag);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -583,7 +769,7 @@ public:
   //   if (!_federateAmbassador)
   //     throw OpenRTI::FederateInternalError();
   //   try {
-  //     rti1516e::FederateHandle rti1516Handle = rti1516e::FederateHandleFriend::createHandle(handle);
+  //     OpenRTI::_O1516EFederateHandle rti1516Handle(handle);
   //     _federateAmbassador->initiateFederateRestore(label, rti1516Handle);
   //   } catch (const rti1516e::SpecifiedSaveLabelDoesNotExist& e) {
   //     throw OpenRTI::SpecifiedSaveLabelDoesNotExist(e.what());
@@ -680,7 +866,7 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectClassHandle rti1516Handle = rti1516e::ObjectClassHandleFriend::createHandle(objectClassHandle);
+      OpenRTI::_O1516EObjectClassHandle rti1516Handle(objectClassHandle);
       if (start)
         _federateAmbassador->startRegistrationForObjectClass(rti1516Handle);
       else
@@ -698,7 +884,7 @@ public:
       return;
     }
     try {
-      rti1516e::InteractionClassHandle rti1516Handle = rti1516e::InteractionClassHandleFriend::createHandle(interactionClassHandle);
+      OpenRTI::_O1516EInteractionClassHandle rti1516Handle(interactionClassHandle);
       if (on)
         _federateAmbassador->turnInteractionsOn(rti1516Handle);
       else
@@ -762,14 +948,9 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle
-        = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-      rti1516e::ObjectClassHandle rti1516ObjectClassHandle
-        = rti1516e::ObjectClassHandleFriend::createHandle(objectClassHandle);
-
-      _federateAmbassador->discoverObjectInstance(rti1516ObjectInstanceHandle,
-                                                  rti1516ObjectClassHandle,
-                                                  utf8ToUcs(name));
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EObjectClassHandle rti1516ObjectClassHandle(objectClassHandle);
+      _federateAmbassador->discoverObjectInstance(rti1516ObjectInstanceHandle, rti1516ObjectClassHandle, utf8ToUcs(name));
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
@@ -783,20 +964,10 @@ public:
       return;
     }
     try {
-      rti1516e::AttributeHandleValueMap rti1516AttributeValues;
-      for (std::vector<OpenRTI::AttributeValue>::const_iterator i = message.getAttributeValues().begin();
-           i != message.getAttributeValues().end(); ++i) {
-        if (objectClass.getAttributeSubscriptionType(i->getAttributeHandle()) == Unsubscribed)
-          continue;
-        rti1516AttributeValues[rti1516e::AttributeHandleFriend::createHandle(i->getAttributeHandle())]
-          = rti1516e::VariableLengthDataFriend::create(i->getValue());
-      }
-
+      OpenRTI::_O1516EAttributeHandleValueMap rti1516AttributeValues(objectClass, message.getAttributeValues());
       if (!rti1516AttributeValues.empty()) {
-        rti1516e::VariableLengthData rti1516Tag = rti1516e::VariableLengthDataFriend::create(message.getTag());
-
-        rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle;
-        rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(message.getObjectInstanceHandle());
+        OpenRTI::_O1516EVariableLengthData rti1516Tag(message.getTag());
+        OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(message.getObjectInstanceHandle());
 
         rti1516e::TransportationType rti1516TransportationType = translate(message.getTransportationType());
 
@@ -820,21 +991,10 @@ public:
       return;
     }
     try {
-      rti1516e::AttributeHandleValueMap rti1516AttributeValues;
-      for (std::vector<OpenRTI::AttributeValue>::const_iterator i = message.getAttributeValues().begin();
-           i != message.getAttributeValues().end(); ++i) {
-        if (objectClass.getAttributeSubscriptionType(i->getAttributeHandle()) == Unsubscribed)
-          continue;
-        rti1516AttributeValues[rti1516e::AttributeHandleFriend::createHandle(i->getAttributeHandle())]
-          = rti1516e::VariableLengthDataFriend::create(i->getValue());
-      }
-
+      OpenRTI::_O1516EAttributeHandleValueMap rti1516AttributeValues(objectClass, message.getAttributeValues());
       if (!rti1516AttributeValues.empty()) {
-        rti1516e::VariableLengthData rti1516Tag = rti1516e::VariableLengthDataFriend::create(message.getTag());
-
-        rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle;
-        rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(message.getObjectInstanceHandle());
-
+        OpenRTI::_O1516EVariableLengthData rti1516Tag(message.getTag());
+        OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(message.getObjectInstanceHandle());
         rti1516e::OrderType rti1516SentOrderType = translate(message.getOrderType());
         rti1516e::OrderType rti1516ReceivedOrderType = translate(orderType);
         rti1516e::TransportationType rti1516TransportationType = translate(message.getTransportationType());
@@ -842,8 +1002,7 @@ public:
         rti1516e::SupplementalReflectInfo rti1516SupplementalReflectInfo; // FIXME
 
         if (flushQueueMode) {
-          rti1516e::MessageRetractionHandle rti1516MessageRetractionHandle;
-          rti1516MessageRetractionHandle = rti1516e::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
+          OpenRTI::_O1516EMessageRetractionHandle rti1516MessageRetractionHandle(message.getMessageRetractionHandle());
           _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag, rti1516SentOrderType,
                                                       rti1516TransportationType, logicalTime, rti1516ReceivedOrderType,
                                                       rti1516MessageRetractionHandle, rti1516SupplementalReflectInfo);
@@ -867,9 +1026,8 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle;
-      rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(message.getObjectInstanceHandle());
-      rti1516e::VariableLengthData rti1516Tag = rti1516e::VariableLengthDataFriend::create(message.getTag());
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(message.getObjectInstanceHandle());
+      OpenRTI::_O1516EVariableLengthData rti1516Tag(message.getTag());
       rti1516e::SupplementalRemoveInfo rti1516SupplementalRemoveInfo; // FIXME
       _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516e::RECEIVE, rti1516SupplementalRemoveInfo);
     } catch (const rti1516e::Exception& e) {
@@ -886,15 +1044,13 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle;
-      rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(message.getObjectInstanceHandle());
-      rti1516e::VariableLengthData rti1516Tag = rti1516e::VariableLengthDataFriend::create(message.getTag());
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(message.getObjectInstanceHandle());
+      OpenRTI::_O1516EVariableLengthData rti1516Tag(message.getTag());
       rti1516e::OrderType rti1516SentOrderType = translate(message.getOrderType());
       rti1516e::OrderType rti1516ReceivedOrderType = translate(orderType);
       rti1516e::SupplementalRemoveInfo rti1516SupplementalRemoveInfo; // FIXME
       if (flushQueueMode) {
-        rti1516e::MessageRetractionHandle rti1516MessageRetractionHandle;
-        rti1516MessageRetractionHandle = rti1516e::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
+        OpenRTI::_O1516EMessageRetractionHandle rti1516MessageRetractionHandle(message.getMessageRetractionHandle());
         _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516SentOrderType,
                                                   logicalTime, rti1516ReceivedOrderType, rti1516MessageRetractionHandle,
                                                   rti1516SupplementalRemoveInfo);
@@ -918,25 +1074,16 @@ public:
       return;
     }
     try {
-      rti1516e::InteractionClassHandle rti1516InteractionClassHandle;
-      rti1516InteractionClassHandle = rti1516e::InteractionClassHandleFriend::createHandle(interactionClassHandle);
-
-      rti1516e::ParameterHandleValueMap rti1516ParameterValues;
-      for (std::vector<OpenRTI::ParameterValue>::const_iterator i = message.getParameterValues().begin();
-           i != message.getParameterValues().end(); ++i) {
-        if (!interactionClass.getParameter(i->getParameterHandle()))
-          continue;
-        rti1516ParameterValues[rti1516e::ParameterHandleFriend::createHandle(i->getParameterHandle())]
-          = rti1516e::VariableLengthDataFriend::create(i->getValue());
+      OpenRTI::_O1516EParameterHandleValueMap rti1516ParameterValues(interactionClass, message.getParameterValues());
+      if (!rti1516ParameterValues.empty()) {
+        OpenRTI::_O1516EInteractionClassHandle rti1516InteractionClassHandle(interactionClassHandle);
+        OpenRTI::_O1516EVariableLengthData rti1516Tag(message.getTag());
+        rti1516e::TransportationType rti1516TransportationType;
+        rti1516TransportationType = translate(message.getTransportationType());
+        rti1516e::SupplementalReceiveInfo rti1516eSupplementalReceiveInfo; // FIXME
+        _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516e::RECEIVE,
+                                                rti1516TransportationType, rti1516eSupplementalReceiveInfo);
       }
-
-      rti1516e::VariableLengthData rti1516Tag;
-      rti1516Tag = rti1516e::VariableLengthDataFriend::create(message.getTag());
-      rti1516e::TransportationType rti1516TransportationType;
-      rti1516TransportationType = translate(message.getTransportationType());
-      rti1516e::SupplementalReceiveInfo rti1516eSupplementalReceiveInfo; // FIXME
-      _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516e::RECEIVE,
-                                              rti1516TransportationType, rti1516eSupplementalReceiveInfo);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
@@ -953,36 +1100,26 @@ public:
       return;
     }
     try {
-      rti1516e::InteractionClassHandle rti1516InteractionClassHandle;
-      rti1516InteractionClassHandle = rti1516e::InteractionClassHandleFriend::createHandle(interactionClassHandle);
+      OpenRTI::_O1516EParameterHandleValueMap rti1516ParameterValues(interactionClass, message.getParameterValues());
+      if (!rti1516ParameterValues.empty()) {
+        OpenRTI::_O1516EInteractionClassHandle rti1516InteractionClassHandle(interactionClassHandle);
+        OpenRTI::_O1516EVariableLengthData rti1516Tag(message.getTag());
+        rti1516e::OrderType rti1516SentOrderType = translate(message.getOrderType());
+        rti1516e::OrderType rti1516ReceivedOrderType = translate(orderType);
+        rti1516e::TransportationType rti1516TransportationType;
+        rti1516TransportationType = translate(message.getTransportationType());
+        rti1516e::SupplementalReceiveInfo rti1516eSupplementalReceiveInfo; // FIXME
 
-      rti1516e::ParameterHandleValueMap rti1516ParameterValues;
-      for (std::vector<OpenRTI::ParameterValue>::const_iterator i = message.getParameterValues().begin();
-           i != message.getParameterValues().end(); ++i) {
-        if (!interactionClass.getParameter(i->getParameterHandle()))
-          continue;
-        rti1516ParameterValues[rti1516e::ParameterHandleFriend::createHandle(i->getParameterHandle())]
-          = rti1516e::VariableLengthDataFriend::create(i->getValue());
-      }
-
-      rti1516e::VariableLengthData rti1516Tag;
-      rti1516Tag = rti1516e::VariableLengthDataFriend::create(message.getTag());
-      rti1516e::OrderType rti1516SentOrderType = translate(message.getOrderType());
-      rti1516e::OrderType rti1516ReceivedOrderType = translate(orderType);
-      rti1516e::TransportationType rti1516TransportationType;
-      rti1516TransportationType = translate(message.getTransportationType());
-      rti1516e::SupplementalReceiveInfo rti1516eSupplementalReceiveInfo; // FIXME
-
-      if (flushQueueMode) {
-        rti1516e::MessageRetractionHandle rti1516MessageRetractionHandle;
-        rti1516MessageRetractionHandle = rti1516e::MessageRetractionHandleFriend::createHandle(message.getMessageRetractionHandle());
-        _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516SentOrderType,
-                                                rti1516TransportationType, logicalTime, rti1516ReceivedOrderType,
-                                                rti1516MessageRetractionHandle, rti1516eSupplementalReceiveInfo);
-      } else {
-        _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516SentOrderType,
-                                                rti1516TransportationType, logicalTime, rti1516ReceivedOrderType,
-                                                rti1516eSupplementalReceiveInfo);
+        if (flushQueueMode) {
+          OpenRTI::_O1516EMessageRetractionHandle rti1516MessageRetractionHandle(message.getMessageRetractionHandle());
+          _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516SentOrderType,
+                                                  rti1516TransportationType, logicalTime, rti1516ReceivedOrderType,
+                                                  rti1516MessageRetractionHandle, rti1516eSupplementalReceiveInfo);
+        } else {
+          _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516SentOrderType,
+                                                  rti1516TransportationType, logicalTime, rti1516ReceivedOrderType,
+                                                  rti1516eSupplementalReceiveInfo);
+        }
       }
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1000,12 +1137,8 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-
-      rti1516e::AttributeHandleSet rti1516AttributeHandleSet;
-      for (OpenRTI::AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
-        rti1516AttributeHandleSet.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
-
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
       _federateAmbassador->attributesInScope(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1023,12 +1156,8 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-
-      rti1516e::AttributeHandleSet rti1516AttributeHandleSet;
-      for (OpenRTI::AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
-        rti1516AttributeHandleSet.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
-
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
       _federateAmbassador->attributesOutOfScope(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1047,14 +1176,9 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-
-      rti1516e::AttributeHandleSet rti1516AttributeHandleSet;
-      for (OpenRTI::AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
-        rti1516AttributeHandleSet.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
-
-      rti1516e::VariableLengthData rti1516Tag = rti1516e::VariableLengthDataFriend::create(tag);
-
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
+      OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
       _federateAmbassador->provideAttributeValueUpdate(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1072,12 +1196,8 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-
-      rti1516e::AttributeHandleSet rti1516AttributeHandleSet;
-      for (OpenRTI::AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
-        rti1516AttributeHandleSet.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
-
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
       _federateAmbassador->turnUpdatesOnForObjectInstance(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1095,12 +1215,8 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-
-      rti1516e::AttributeHandleSet rti1516AttributeHandleSet;
-      for (OpenRTI::AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
-        rti1516AttributeHandleSet.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
-
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
       _federateAmbassador->turnUpdatesOffForObjectInstance(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1123,14 +1239,9 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-
-      rti1516e::AttributeHandleSet rti1516AttributeHandleSet;
-      for (OpenRTI::AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
-        rti1516AttributeHandleSet.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
-
-      rti1516e::VariableLengthData rti1516Tag = rti1516e::VariableLengthDataFriend::create(tag);
-
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
+      OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
       _federateAmbassador->requestAttributeOwnershipAssumption(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1148,12 +1259,8 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-
-      rti1516e::AttributeHandleSet rti1516AttributeHandleSet;
-      for (OpenRTI::AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
-        rti1516AttributeHandleSet.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
-
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
       _federateAmbassador->requestDivestitureConfirmation(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1172,14 +1279,9 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-
-      rti1516e::AttributeHandleSet rti1516AttributeHandleSet;
-      for (OpenRTI::AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
-        rti1516AttributeHandleSet.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
-
-      rti1516e::VariableLengthData rti1516Tag = rti1516e::VariableLengthDataFriend::create(tag);
-
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
+      OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
       _federateAmbassador->attributeOwnershipAcquisitionNotification(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1197,12 +1299,8 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-
-      rti1516e::AttributeHandleSet rti1516AttributeHandleSet;
-      for (OpenRTI::AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
-        rti1516AttributeHandleSet.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
-
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
       _federateAmbassador->attributeOwnershipUnavailable(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1221,14 +1319,9 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-
-      rti1516e::AttributeHandleSet rti1516AttributeHandleSet;
-      for (OpenRTI::AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
-        rti1516AttributeHandleSet.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
-
-      rti1516e::VariableLengthData rti1516Tag = rti1516e::VariableLengthDataFriend::create(tag);
-
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
+      OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
       _federateAmbassador->requestAttributeOwnershipRelease(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1246,12 +1339,8 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-
-      rti1516e::AttributeHandleSet rti1516AttributeHandleSet;
-      for (OpenRTI::AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
-        rti1516AttributeHandleSet.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
-
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
       _federateAmbassador->confirmAttributeOwnershipAcquisitionCancellation(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1271,13 +1360,9 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle
-        = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-      rti1516e::AttributeHandle rti1516AttributeHandle
-        = rti1516e::AttributeHandleFriend::createHandle(attributeHandle);
-      rti1516e::FederateHandle rti1516FederateHandle
-        = rti1516e::FederateHandleFriend::createHandle(federateHandle);
-
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandle rti1516AttributeHandle(attributeHandle);
+      OpenRTI::_O1516EFederateHandle rti1516FederateHandle(federateHandle);
       _federateAmbassador->informAttributeOwnership(rti1516ObjectInstanceHandle,
                                                     rti1516AttributeHandle,
                                                     rti1516FederateHandle);
@@ -1296,13 +1381,9 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle
-        = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-      rti1516e::AttributeHandle rti1516AttributeHandle
-        = rti1516e::AttributeHandleFriend::createHandle(attributeHandle);
-
-      _federateAmbassador->attributeIsNotOwned(rti1516ObjectInstanceHandle,
-                                               rti1516AttributeHandle);
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandle rti1516AttributeHandle(attributeHandle);
+      _federateAmbassador->attributeIsNotOwned(rti1516ObjectInstanceHandle, rti1516AttributeHandle);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
@@ -1318,13 +1399,9 @@ public:
       return;
     }
     try {
-      rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle
-        = rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
-      rti1516e::AttributeHandle rti1516AttributeHandle
-        = rti1516e::AttributeHandleFriend::createHandle(attributeHandle);
-
-      _federateAmbassador->attributeIsOwnedByRTI(rti1516ObjectInstanceHandle,
-                                                 rti1516AttributeHandle);
+      OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
+      OpenRTI::_O1516EAttributeHandle rti1516AttributeHandle(attributeHandle);
+      _federateAmbassador->attributeIsOwnedByRTI(rti1516ObjectInstanceHandle, rti1516AttributeHandle);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
@@ -1393,8 +1470,7 @@ public:
       return;
     }
     try {
-      rti1516e::MessageRetractionHandle rti1516MessageRetractionHandle;
-      rti1516MessageRetractionHandle = rti1516e::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
+      OpenRTI::_O1516EMessageRetractionHandle rti1516MessageRetractionHandle(messageRetractionHandle);
       _federateAmbassador->requestRetraction(rti1516MessageRetractionHandle);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1722,9 +1798,8 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
   }
 
   try {
-    FederateHandle federateHandle = _ambassadorInterface->joinFederationExecution(std::string(), ucsToUtf8(federateType),
-                                                                                  ucsToUtf8(federationExecutionName), fomModuleList);
-    return rti1516e::FederateHandleFriend::createHandle(federateHandle);
+    return OpenRTI::_O1516EFederateHandle(_ambassadorInterface->joinFederationExecution(std::string(), ucsToUtf8(federateType),
+                                                                                        ucsToUtf8(federationExecutionName), fomModuleList));
   } catch (const OpenRTI::CouldNotCreateLogicalTimeFactory& e) {
     throw rti1516e::CouldNotCreateLogicalTimeFactory(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::FederationExecutionDoesNotExist& e) {
@@ -1783,9 +1858,7 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
   }
 
   try {
-    FederateHandle federateHandle = _ambassadorInterface->joinFederationExecution(ucsToUtf8(federateName), ucsToUtf8(federateType), ucsToUtf8(federationExecutionName),
-                                                                                  fomModuleList);
-    return rti1516e::FederateHandleFriend::createHandle(federateHandle);
+    return OpenRTI::_O1516EFederateHandle(_ambassadorInterface->joinFederationExecution(ucsToUtf8(federateName), ucsToUtf8(federateType), ucsToUtf8(federationExecutionName), fomModuleList));
   } catch (const OpenRTI::CouldNotCreateLogicalTimeFactory& e) {
     throw rti1516e::CouldNotCreateLogicalTimeFactory(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::FederationExecutionDoesNotExist& e) {
@@ -1846,7 +1919,7 @@ RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
     // According to the standard, an empty set also means all federates currently joined.
     _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, OpenRTI::FederateHandleSet());
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
@@ -1875,12 +1948,8 @@ RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
-
-    OpenRTI::FederateHandleSet federateHandleSet;
-    for (rti1516e::FederateHandleSet::const_iterator i = rti1516FederateHandleSet.begin(); i != rti1516FederateHandleSet.end(); ++i)
-      federateHandleSet.insert(rti1516e::FederateHandleFriend::getOpenRTIHandle(*i));
-
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
+    OpenRTI::_I1516EFederateHandleSet federateHandleSet(rti1516FederateHandleSet);
     _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, federateHandleSet);
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw rti1516e::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
@@ -2235,13 +2304,9 @@ RTIambassadorImplementation::publishObjectClassAttributes(rti1516e::ObjectClassH
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    _ambassadorInterface->publishObjectClassAttributes(objectClassHandle, attributeHandleSet);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    _ambassadorInterface->publishObjectClassAttributes(objectClassHandle, attributeHandleVector);
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw rti1516e::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -2272,7 +2337,7 @@ RTIambassadorImplementation::unpublishObjectClass(rti1516e::ObjectClassHandle rt
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
     _ambassadorInterface->unpublishObjectClass(objectClassHandle);
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw rti1516e::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
@@ -2306,13 +2371,9 @@ RTIambassadorImplementation::unpublishObjectClassAttributes(rti1516e::ObjectClas
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    _ambassadorInterface->unpublishObjectClassAttributes(objectClassHandle, attributeHandleSet);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    _ambassadorInterface->unpublishObjectClassAttributes(objectClassHandle, attributeHandleVector);
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw rti1516e::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -2344,7 +2405,7 @@ RTIambassadorImplementation::publishInteractionClass(rti1516e::InteractionClassH
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
     _ambassadorInterface->publishInteractionClass(interactionClassHandle);
   } catch (const OpenRTI::InteractionClassNotDefined& e) {
     throw rti1516e::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
@@ -2373,7 +2434,7 @@ RTIambassadorImplementation::unpublishInteractionClass(rti1516e::InteractionClas
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
     _ambassadorInterface->unpublishInteractionClass(interactionClassHandle);
   } catch (const OpenRTI::InteractionClassNotDefined& e) {
     throw rti1516e::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
@@ -2406,13 +2467,9 @@ RTIambassadorImplementation::subscribeObjectClassAttributes(rti1516e::ObjectClas
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    _ambassadorInterface->subscribeObjectClassAttributes(objectClassHandle, attributeHandleSet, active, ucsToUtf8(updateRateDesignator));
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    _ambassadorInterface->subscribeObjectClassAttributes(objectClassHandle, attributeHandleVector, active, ucsToUtf8(updateRateDesignator));
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw rti1516e::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -2444,7 +2501,7 @@ RTIambassadorImplementation::unsubscribeObjectClass(rti1516e::ObjectClassHandle 
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
     _ambassadorInterface->unsubscribeObjectClass(objectClassHandle);
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw rti1516e::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
@@ -2475,13 +2532,9 @@ RTIambassadorImplementation::unsubscribeObjectClassAttributes(rti1516e::ObjectCl
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    _ambassadorInterface->unsubscribeObjectClassAttributes(objectClassHandle, attributeHandleSet);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    _ambassadorInterface->unsubscribeObjectClassAttributes(objectClassHandle, attributeHandleVector);
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw rti1516e::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -2513,7 +2566,7 @@ RTIambassadorImplementation::subscribeInteractionClass(rti1516e::InteractionClas
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
     _ambassadorInterface->subscribeInteractionClass(interactionClassHandle, active);
   } catch (const OpenRTI::InteractionClassNotDefined& e) {
     throw rti1516e::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
@@ -2544,7 +2597,7 @@ RTIambassadorImplementation::unsubscribeInteractionClass(rti1516e::InteractionCl
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
     _ambassadorInterface->unsubscribeInteractionClass(interactionClassHandle);
   } catch (const OpenRTI::InteractionClassNotDefined& e) {
     throw rti1516e::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
@@ -2695,9 +2748,8 @@ RTIambassadorImplementation::registerObjectInstance(rti1516e::ObjectClassHandle 
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = _ambassadorInterface->registerObjectInstance(objectClassHandle);
-    return rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    return OpenRTI::_O1516EObjectInstanceHandle(_ambassadorInterface->registerObjectInstance(objectClassHandle));
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw rti1516e::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::ObjectClassNotPublished& e) {
@@ -2731,9 +2783,8 @@ RTIambassadorImplementation::registerObjectInstance(rti1516e::ObjectClassHandle 
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = _ambassadorInterface->registerObjectInstance(objectClassHandle, ucsToUtf8(objectInstanceName), false);
-    return rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    return OpenRTI::_O1516EObjectInstanceHandle(_ambassadorInterface->registerObjectInstance(objectClassHandle, ucsToUtf8(objectInstanceName), false));
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw rti1516e::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::ObjectClassNotPublished& e) {
@@ -2759,7 +2810,7 @@ RTIambassadorImplementation::registerObjectInstance(rti1516e::ObjectClassHandle 
 
 void
 RTIambassadorImplementation::updateAttributeValues(rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle,
-                                                   const rti1516e::AttributeHandleValueMap& rti1516AttributeValues,
+                                                   const rti1516e::AttributeHandleValueMap& rti1516AttributeHandleValueMap,
                                                    const rti1516e::VariableLengthData& rti1516Tag)
   throw (rti1516e::ObjectInstanceNotKnown,
          rti1516e::AttributeNotDefined,
@@ -2771,19 +2822,9 @@ RTIambassadorImplementation::updateAttributeValues(rti1516e::ObjectInstanceHandl
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
-
-    std::vector<OpenRTI::AttributeValue> attributeValueVector;
-    attributeValueVector.reserve(rti1516AttributeValues.size());
-    for (rti1516e::AttributeHandleValueMap::const_iterator i = rti1516AttributeValues.begin(); i != rti1516AttributeValues.end(); ++i) {
-      attributeValueVector.push_back(OpenRTI::AttributeValue());
-      OpenRTI::AttributeHandle attributeHandle = rti1516e::AttributeHandleFriend::getOpenRTIHandle(i->first);
-      attributeValueVector.back().setAttributeHandle(attributeHandle);
-      attributeValueVector.back().getValue() = rti1516e::VariableLengthDataFriend::readPointer(i->second);
-    }
-
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeValueVector attributeValueVector(rti1516AttributeHandleValueMap);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
     _ambassadorInterface->updateAttributeValues(objectInstanceHandle, attributeValueVector, tag);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
@@ -2808,7 +2849,7 @@ RTIambassadorImplementation::updateAttributeValues(rti1516e::ObjectInstanceHandl
 
 rti1516e::MessageRetractionHandle
 RTIambassadorImplementation::updateAttributeValues(rti1516e::ObjectInstanceHandle rti1516ObjectInstanceHandle,
-                                                   const rti1516e::AttributeHandleValueMap& rti1516AttributeValues,
+                                                   const rti1516e::AttributeHandleValueMap& rti1516AttributeHandleValueMap,
                                                    const rti1516e::VariableLengthData& rti1516Tag,
                                                    const rti1516e::LogicalTime& rti1516LogicalTime)
   throw (rti1516e::ObjectInstanceNotKnown,
@@ -2822,21 +2863,10 @@ RTIambassadorImplementation::updateAttributeValues(rti1516e::ObjectInstanceHandl
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
-
-    std::vector<OpenRTI::AttributeValue> attributeValueVector;
-    attributeValueVector.reserve(rti1516AttributeValues.size());
-    for (rti1516e::AttributeHandleValueMap::const_iterator i = rti1516AttributeValues.begin(); i != rti1516AttributeValues.end(); ++i) {
-      attributeValueVector.push_back(OpenRTI::AttributeValue());
-      OpenRTI::AttributeHandle attributeHandle = rti1516e::AttributeHandleFriend::getOpenRTIHandle(i->first);
-      attributeValueVector.back().setAttributeHandle(attributeHandle);
-      attributeValueVector.back().getValue() = rti1516e::VariableLengthDataFriend::readPointer(i->second);
-    }
-
-    OpenRTI::MessageRetractionHandle messageRetractionHandle;
-    messageRetractionHandle = _ambassadorInterface->updateAttributeValues(objectInstanceHandle, attributeValueVector, tag, rti1516LogicalTime);
-    return rti1516e::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeValueVector attributeValueVector(rti1516AttributeHandleValueMap);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
+    return OpenRTI::_O1516EMessageRetractionHandle(_ambassadorInterface->updateAttributeValues(objectInstanceHandle, attributeValueVector, tag, rti1516LogicalTime));
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -2862,7 +2892,7 @@ RTIambassadorImplementation::updateAttributeValues(rti1516e::ObjectInstanceHandl
 
 void
 RTIambassadorImplementation::sendInteraction(rti1516e::InteractionClassHandle rti1516InteractionClassHandle,
-                                             const rti1516e::ParameterHandleValueMap& rti1516ParameterValues,
+                                             const rti1516e::ParameterHandleValueMap& rti1516ParameterHandleValueMap,
                                              const rti1516e::VariableLengthData& rti1516Tag)
   throw (rti1516e::InteractionClassNotPublished,
          rti1516e::InteractionClassNotDefined,
@@ -2874,19 +2904,9 @@ RTIambassadorImplementation::sendInteraction(rti1516e::InteractionClassHandle rt
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle;
-    interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-
-    std::vector<OpenRTI::ParameterValue> parameterValueVector;
-    parameterValueVector.reserve(rti1516ParameterValues.size());
-    for (rti1516e::ParameterHandleValueMap::const_iterator i = rti1516ParameterValues.begin(); i != rti1516ParameterValues.end(); ++i) {
-      parameterValueVector.push_back(OpenRTI::ParameterValue());
-      OpenRTI::ParameterHandle parameterHandle = rti1516e::ParameterHandleFriend::getOpenRTIHandle(i->first);
-      parameterValueVector.back().setParameterHandle(parameterHandle);
-      parameterValueVector.back().getValue() = rti1516e::VariableLengthDataFriend::readPointer(i->second);
-    }
-
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516EParameterValueVector parameterValueVector(rti1516ParameterHandleValueMap);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
     _ambassadorInterface->sendInteraction(interactionClassHandle, parameterValueVector, tag);
   } catch (const OpenRTI::InteractionClassNotPublished& e) {
     throw rti1516e::InteractionClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
@@ -2911,7 +2931,7 @@ RTIambassadorImplementation::sendInteraction(rti1516e::InteractionClassHandle rt
 
 rti1516e::MessageRetractionHandle
 RTIambassadorImplementation::sendInteraction(rti1516e::InteractionClassHandle rti1516InteractionClassHandle,
-                                             const rti1516e::ParameterHandleValueMap& rti1516ParameterValues,
+                                             const rti1516e::ParameterHandleValueMap& rti1516ParameterHandleValueMap,
                                              const rti1516e::VariableLengthData& rti1516Tag,
                                              const rti1516e::LogicalTime& rti1516LogicalTime)
   throw (rti1516e::InteractionClassNotPublished,
@@ -2925,22 +2945,10 @@ RTIambassadorImplementation::sendInteraction(rti1516e::InteractionClassHandle rt
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle;
-    interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-
-    std::vector<OpenRTI::ParameterValue> parameterValueVector;
-    parameterValueVector.reserve(rti1516ParameterValues.size());
-    for (rti1516e::ParameterHandleValueMap::const_iterator i = rti1516ParameterValues.begin(); i != rti1516ParameterValues.end(); ++i) {
-      parameterValueVector.push_back(OpenRTI::ParameterValue());
-      OpenRTI::ParameterHandle parameterHandle = rti1516e::ParameterHandleFriend::getOpenRTIHandle(i->first);
-      parameterValueVector.back().setParameterHandle(parameterHandle);
-      parameterValueVector.back().getValue() = rti1516e::VariableLengthDataFriend::readPointer(i->second);
-    }
-
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
-    OpenRTI::MessageRetractionHandle messageRetractionHandle;
-    messageRetractionHandle = _ambassadorInterface->sendInteraction(interactionClassHandle, parameterValueVector, tag, rti1516LogicalTime);
-    return rti1516e::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516EParameterValueVector parameterValueVector(rti1516ParameterHandleValueMap);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
+    return OpenRTI::_O1516EMessageRetractionHandle(_ambassadorInterface->sendInteraction(interactionClassHandle, parameterValueVector, tag, rti1516LogicalTime));
   } catch (const OpenRTI::InteractionClassNotPublished& e) {
     throw rti1516e::InteractionClassNotPublished(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::InteractionClassNotDefined& e) {
@@ -2976,8 +2984,8 @@ RTIambassadorImplementation::deleteObjectInstance(rti1516e::ObjectInstanceHandle
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
     _ambassadorInterface->deleteObjectInstance(objectInstanceHandle, tag);
   } catch (const OpenRTI::DeletePrivilegeNotHeld& e) {
     throw rti1516e::DeletePrivilegeNotHeld(OpenRTI::utf8ToUcs(e.what()));
@@ -3012,10 +3020,9 @@ RTIambassadorImplementation::deleteObjectInstance(rti1516e::ObjectInstanceHandle
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
-    OpenRTI::MessageRetractionHandle messageRetractionHandle = _ambassadorInterface->deleteObjectInstance(objectInstanceHandle, tag, rti1516LogicalTime);
-    return rti1516e::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
+    return OpenRTI::_O1516EMessageRetractionHandle(_ambassadorInterface->deleteObjectInstance(objectInstanceHandle, tag, rti1516LogicalTime));
   } catch (const OpenRTI::DeletePrivilegeNotHeld& e) {
     throw rti1516e::DeletePrivilegeNotHeld(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
@@ -3049,7 +3056,7 @@ RTIambassadorImplementation::localDeleteObjectInstance(rti1516e::ObjectInstanceH
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
     _ambassadorInterface->localDeleteObjectInstance(objectInstanceHandle);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
@@ -3086,15 +3093,10 @@ RTIambassadorImplementation::changeAttributeTransportationType(rti1516e::ObjectI
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
     OpenRTI::TransportationType transportationType = translate(rti1516TransportationType);
-
-    _ambassadorInterface->changeAttributeTransportationType(objectInstanceHandle, attributeHandleSet, transportationType);
+    _ambassadorInterface->changeAttributeTransportationType(objectInstanceHandle, attributeHandleVector, transportationType);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -3128,7 +3130,7 @@ RTIambassadorImplementation::changeInteractionTransportationType(rti1516e::Inter
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
     OpenRTI::TransportationType transportationType = translate(rti1516TransportationType);
     _ambassadorInterface->changeInteractionTransportationType(interactionClassHandle, transportationType);
   } catch (const OpenRTI::InteractionClassNotDefined& e) {
@@ -3163,15 +3165,10 @@ RTIambassadorImplementation::requestAttributeValueUpdate(rti1516e::ObjectInstanc
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
-
-    _ambassadorInterface->requestAttributeValueUpdate(objectInstanceHandle, attributeHandleSet, tag);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
+    _ambassadorInterface->requestAttributeValueUpdate(objectInstanceHandle, attributeHandleVector, tag);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -3204,15 +3201,10 @@ RTIambassadorImplementation::requestAttributeValueUpdate(rti1516e::ObjectClassHa
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
-
-    _ambassadorInterface->requestAttributeValueUpdate(objectClassHandle, attributeHandleSet, tag);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
+    _ambassadorInterface->requestAttributeValueUpdate(objectClassHandle, attributeHandleVector, tag);
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw rti1516e::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -3248,13 +3240,9 @@ RTIambassadorImplementation::requestAttributeTransportationTypeChange(rti1516e::
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    _ambassadorInterface->requestAttributeTransportationTypeChange(objectInstanceHandle, attributeHandleSet,
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    _ambassadorInterface->requestAttributeTransportationTypeChange(objectInstanceHandle, attributeHandleVector,
                                                                    translate(transportationType));
   } catch (const OpenRTI::AttributeAlreadyBeingChanged& e) {
     throw rti1516e::AttributeAlreadyBeingChanged(OpenRTI::utf8ToUcs(e.what()));
@@ -3293,8 +3281,8 @@ RTIambassadorImplementation::queryAttributeTransportationType(rti1516e::ObjectIn
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-    OpenRTI::AttributeHandle attributeHandle = rti1516e::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandle attributeHandle(rti1516AttributeHandle);
     _ambassadorInterface->queryAttributeTransportationType(objectInstanceHandle, attributeHandle);
   } catch (const OpenRTI::AttributeNotDefined& e) {
     throw rti1516e::AttributeNotDefined(OpenRTI::utf8ToUcs(e.what()));
@@ -3329,7 +3317,7 @@ RTIambassadorImplementation::requestInteractionTransportationTypeChange(rti1516e
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
     _ambassadorInterface->requestInteractionTransportationTypeChange(interactionClassHandle, translate(transportationType));
   } catch (const OpenRTI::InteractionClassAlreadyBeingChanged& e) {
     throw rti1516e::InteractionClassAlreadyBeingChanged(OpenRTI::utf8ToUcs(e.what()));
@@ -3364,8 +3352,8 @@ RTIambassadorImplementation::queryInteractionTransportationType(rti1516e::Federa
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::FederateHandle federateHandle = rti1516e::FederateHandleFriend::getOpenRTIHandle(rti1516FederateHandle);
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516EFederateHandle federateHandle(rti1516FederateHandle);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
     _ambassadorInterface->queryInteractionTransportationType(federateHandle, interactionClassHandle);
   } catch (const OpenRTI::InteractionClassNotDefined& e) {
     throw rti1516e::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
@@ -3397,13 +3385,9 @@ RTIambassadorImplementation::unconditionalAttributeOwnershipDivestiture(rti1516e
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    _ambassadorInterface->unconditionalAttributeOwnershipDivestiture(objectInstanceHandle, attributeHandleSet);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    _ambassadorInterface->unconditionalAttributeOwnershipDivestiture(objectInstanceHandle, attributeHandleVector);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -3440,15 +3424,10 @@ RTIambassadorImplementation::negotiatedAttributeOwnershipDivestiture(rti1516e::O
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
-
-    _ambassadorInterface->negotiatedAttributeOwnershipDivestiture(objectInstanceHandle, attributeHandleSet, tag);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
+    _ambassadorInterface->negotiatedAttributeOwnershipDivestiture(objectInstanceHandle, attributeHandleVector, tag);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -3488,15 +3467,10 @@ RTIambassadorImplementation::confirmDivestiture(rti1516e::ObjectInstanceHandle r
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
-
-    _ambassadorInterface->confirmDivestiture(objectInstanceHandle, attributeHandleSet, tag);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
+    _ambassadorInterface->confirmDivestiture(objectInstanceHandle, attributeHandleVector, tag);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -3538,15 +3512,10 @@ RTIambassadorImplementation::attributeOwnershipAcquisition(rti1516e::ObjectInsta
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
-
-    _ambassadorInterface->attributeOwnershipAcquisition(objectInstanceHandle, attributeHandleSet, tag);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
+    _ambassadorInterface->attributeOwnershipAcquisition(objectInstanceHandle, attributeHandleVector, tag);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::ObjectClassNotPublished& e) {
@@ -3586,13 +3555,9 @@ RTIambassadorImplementation::attributeOwnershipAcquisitionIfAvailable(rti1516e::
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    _ambassadorInterface->attributeOwnershipAcquisitionIfAvailable(objectInstanceHandle, attributeHandleSet);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    _ambassadorInterface->attributeOwnershipAcquisitionIfAvailable(objectInstanceHandle, attributeHandleVector);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::ObjectClassNotPublished& e) {
@@ -3633,12 +3598,9 @@ RTIambassadorImplementation::attributeOwnershipReleaseDenied(rti1516e::ObjectIns
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-    _ambassadorInterface->attributeOwnershipReleaseDenied(objectInstanceHandle, attributeHandleSet);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    _ambassadorInterface->attributeOwnershipReleaseDenied(objectInstanceHandle, attributeHandleVector);
   } catch (const OpenRTI::AttributeNotOwned& e) {
     throw rti1516e::AttributeNotOwned(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -3674,18 +3636,13 @@ RTIambassadorImplementation::attributeOwnershipDivestitureIfWanted(rti1516e::Obj
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    OpenRTI::AttributeHandleSet divestedAttributeHandleSet;
-    _ambassadorInterface->attributeOwnershipDivestitureIfWanted(objectInstanceHandle, attributeHandleSet, divestedAttributeHandleSet);
-
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    OpenRTI::AttributeHandleVector divestedAttributeHandleVector;
+    _ambassadorInterface->attributeOwnershipDivestitureIfWanted(objectInstanceHandle, attributeHandleVector, divestedAttributeHandleVector);
     rti1516DivestedAttributeSet.clear();
-    for (OpenRTI::AttributeHandleSet::const_iterator i = divestedAttributeHandleSet.begin(); i != divestedAttributeHandleSet.end(); ++i)
-      rti1516DivestedAttributeSet.insert(rti1516e::AttributeHandleFriend::createHandle(*i));
+    for (OpenRTI::AttributeHandleVector::const_iterator i = divestedAttributeHandleVector.begin(); i != divestedAttributeHandleVector.end(); ++i)
+      rti1516DivestedAttributeSet.insert(OpenRTI::_O1516EAttributeHandle(*i));
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -3721,13 +3678,9 @@ RTIambassadorImplementation::cancelNegotiatedAttributeOwnershipDivestiture(rti15
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    _ambassadorInterface->cancelNegotiatedAttributeOwnershipDivestiture(objectInstanceHandle, attributeHandleSet);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    _ambassadorInterface->cancelNegotiatedAttributeOwnershipDivestiture(objectInstanceHandle, attributeHandleVector);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -3765,13 +3718,9 @@ RTIambassadorImplementation::cancelAttributeOwnershipAcquisition(rti1516e::Objec
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
-    _ambassadorInterface->cancelAttributeOwnershipAcquisition(objectInstanceHandle, attributeHandleSet);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
+    _ambassadorInterface->cancelAttributeOwnershipAcquisition(objectInstanceHandle, attributeHandleVector);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -3807,8 +3756,8 @@ RTIambassadorImplementation::queryAttributeOwnership(rti1516e::ObjectInstanceHan
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-    OpenRTI::AttributeHandle attributeHandle = rti1516e::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandle attributeHandle(rti1516AttributeHandle);
     _ambassadorInterface->queryAttributeOwnership(objectInstanceHandle, attributeHandle);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
@@ -3841,8 +3790,8 @@ RTIambassadorImplementation::isAttributeOwnedByFederate(rti1516e::ObjectInstance
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-    OpenRTI::AttributeHandle attributeHandle = rti1516e::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandle attributeHandle(rti1516AttributeHandle);
     return _ambassadorInterface->isAttributeOwnedByFederate(objectInstanceHandle, attributeHandle);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
@@ -4395,7 +4344,7 @@ RTIambassadorImplementation::retract(rti1516e::MessageRetractionHandle rti1516Me
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::MessageRetractionHandle messageRetractionHandle = rti1516e::MessageRetractionHandleFriend::getOpenRTIHandle(rti1516MessageRetractionHandle);
+    OpenRTI::_I1516EMessageRetractionHandle messageRetractionHandle(rti1516MessageRetractionHandle);
     _ambassadorInterface->retract(messageRetractionHandle);
   } catch (const OpenRTI::InvalidMessageRetractionHandle& e) {
     throw rti1516e::InvalidMessageRetractionHandle(OpenRTI::utf8ToUcs(e.what()));
@@ -4432,15 +4381,10 @@ RTIambassadorImplementation::changeAttributeOrderType(rti1516e::ObjectInstanceHa
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-
-    OpenRTI::AttributeHandleSet attributeHandleSet;
-    for (rti1516e::AttributeHandleSet::const_iterator i = rti1516AttributeHandleSet.begin(); i != rti1516AttributeHandleSet.end(); ++i)
-      attributeHandleSet.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*i));
-
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleVector attributeHandleVector(rti1516AttributeHandleSet);
     OpenRTI::OrderType orderType = translate(rti1516OrderType);
-
-    _ambassadorInterface->changeAttributeOrderType(objectInstanceHandle, attributeHandleSet, orderType);
+    _ambassadorInterface->changeAttributeOrderType(objectInstanceHandle, attributeHandleVector, orderType);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -4474,10 +4418,8 @@ RTIambassadorImplementation::changeInteractionOrderType(rti1516e::InteractionCla
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
     OpenRTI::OrderType orderType = translate(rti1516OrderType);
-
     _ambassadorInterface->changeInteractionOrderType(interactionClassHandle, orderType);
   } catch (const OpenRTI::InteractionClassNotDefined& e) {
     throw rti1516e::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
@@ -4508,11 +4450,8 @@ RTIambassadorImplementation::createRegion(rti1516e::DimensionHandleSet const & r
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::DimensionHandleSet dimensionHandleSet;
-    for (rti1516e::DimensionHandleSet::const_iterator i = rti1516DimensionHandleSet.begin(); i != rti1516DimensionHandleSet.end(); ++i)
-      dimensionHandleSet.insert(rti1516e::DimensionHandleFriend::getOpenRTIHandle(*i));
-
-    return rti1516e::RegionHandleFriend::createHandle(_ambassadorInterface->createRegion(dimensionHandleSet));
+    OpenRTI::_I1516EDimensionHandleSet dimensionHandleSet(rti1516DimensionHandleSet);
+    return OpenRTI::_O1516ERegionHandle(_ambassadorInterface->createRegion(dimensionHandleSet));
   } catch (const OpenRTI::InvalidDimensionHandle& e) {
     throw rti1516e::InvalidDimensionHandle(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
@@ -4541,10 +4480,7 @@ RTIambassadorImplementation::commitRegionModifications(rti1516e::RegionHandleSet
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::RegionHandleSet regionHandleSet;
-    for (rti1516e::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
-      regionHandleSet.insert(rti1516e::RegionHandleFriend::getOpenRTIHandle(*i));
-
+    OpenRTI::_I1516ERegionHandleSet regionHandleSet(rti1516RegionHandleSet);
     _ambassadorInterface->commitRegionModifications(regionHandleSet);
   } catch (const OpenRTI::InvalidRegion& e) {
     throw rti1516e::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
@@ -4577,7 +4513,7 @@ RTIambassadorImplementation::deleteRegion(const rti1516e::RegionHandle& rti1516R
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::RegionHandle regionHandle = rti1516e::RegionHandleFriend::getOpenRTIHandle(rti1516RegionHandle);
+    OpenRTI::_I1516ERegionHandle regionHandle(rti1516RegionHandle);
     _ambassadorInterface->deleteRegion(regionHandle);
   } catch (const OpenRTI::InvalidRegion& e) {
     throw rti1516e::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
@@ -4618,25 +4554,10 @@ RTIambassadorImplementation::registerObjectInstanceWithRegions(rti1516e::ObjectC
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-
-    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
-    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
-    for (rti1516e::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
-         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
-      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
-      for (rti1516e::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*j));
-      }
-      for (rti1516e::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516e::RegionHandleFriend::getOpenRTIHandle(*j));
-      }
-    }
-
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle;
-    objectInstanceHandle = _ambassadorInterface->registerObjectInstanceWithRegions(objectClassHandle,
-                                                                                   attributeHandleSetRegionHandleSetPairVector);
-    return rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EAttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector(rti1516AttributeHandleSetRegionHandleSetPairVector);
+    return OpenRTI::_O1516EObjectInstanceHandle(_ambassadorInterface->registerObjectInstanceWithRegions(objectClassHandle,
+                                                                                                        attributeHandleSetRegionHandleSetPairVector));
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw rti1516e::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::ObjectClassNotPublished& e) {
@@ -4687,26 +4608,11 @@ RTIambassadorImplementation::registerObjectInstanceWithRegions(rti1516e::ObjectC
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-
-    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
-    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
-    for (rti1516e::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
-         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
-      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
-      for (rti1516e::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*j));
-      }
-      for (rti1516e::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516e::RegionHandleFriend::getOpenRTIHandle(*j));
-      }
-    }
-
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle;
-    objectInstanceHandle = _ambassadorInterface->registerObjectInstanceWithRegions(objectClassHandle,
-                                                                                   attributeHandleSetRegionHandleSetPairVector,
-                                                                                   ucsToUtf8(objectInstanceName));
-    return rti1516e::ObjectInstanceHandleFriend::createHandle(objectInstanceHandle);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EAttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector(rti1516AttributeHandleSetRegionHandleSetPairVector);
+    return OpenRTI::_O1516EObjectInstanceHandle(_ambassadorInterface->registerObjectInstanceWithRegions(objectClassHandle,
+                                                                                                        attributeHandleSetRegionHandleSetPairVector,
+                                                                                                        ucsToUtf8(objectInstanceName)));
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw rti1516e::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::ObjectClassNotPublished& e) {
@@ -4756,19 +4662,8 @@ RTIambassadorImplementation::associateRegionsForUpdates(rti1516e::ObjectInstance
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
-    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
-    for (rti1516e::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
-         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
-      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
-      for (rti1516e::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*j));
-      }
-      for (rti1516e::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516e::RegionHandleFriend::getOpenRTIHandle(*j));
-      }
-    }
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector(rti1516AttributeHandleSetRegionHandleSetPairVector);
     _ambassadorInterface->associateRegionsForUpdates(objectInstanceHandle, attributeHandleSetRegionHandleSetPairVector);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
@@ -4810,19 +4705,8 @@ RTIambassadorImplementation::unassociateRegionsForUpdates(rti1516e::ObjectInstan
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
-    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
-    for (rti1516e::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
-         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
-      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
-      for (rti1516e::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*j));
-      }
-      for (rti1516e::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516e::RegionHandleFriend::getOpenRTIHandle(*j));
-      }
-    }
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector(rti1516AttributeHandleSetRegionHandleSetPairVector);
     _ambassadorInterface->unassociateRegionsForUpdates(objectInstanceHandle, attributeHandleSetRegionHandleSetPairVector);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
@@ -4865,19 +4749,8 @@ RTIambassadorImplementation::subscribeObjectClassAttributesWithRegions(rti1516e:
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
-    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
-    for (rti1516e::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
-         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
-      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
-      for (rti1516e::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*j));
-      }
-      for (rti1516e::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516e::RegionHandleFriend::getOpenRTIHandle(*j));
-      }
-    }
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EAttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector(rti1516AttributeHandleSetRegionHandleSetPairVector);
     _ambassadorInterface->subscribeObjectClassAttributesWithRegions(objectClassHandle,
                                                                     attributeHandleSetRegionHandleSetPairVector,
                                                                     active, ucsToUtf8(updateRateDesignator));
@@ -4921,19 +4794,8 @@ RTIambassadorImplementation::unsubscribeObjectClassAttributesWithRegions(rti1516
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
-    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
-    for (rti1516e::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
-         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
-      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
-      for (rti1516e::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*j));
-      }
-      for (rti1516e::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516e::RegionHandleFriend::getOpenRTIHandle(*j));
-      }
-    }
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EAttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector(rti1516AttributeHandleSetRegionHandleSetPairVector);
     _ambassadorInterface->unsubscribeObjectClassAttributesWithRegions(objectClassHandle,
                                                                       attributeHandleSetRegionHandleSetPairVector);
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
@@ -4975,12 +4837,8 @@ RTIambassadorImplementation::subscribeInteractionClassWithRegions(rti1516e::Inte
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-
-    OpenRTI::RegionHandleSet regionHandleSet;
-    for (rti1516e::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
-      regionHandleSet.insert(rti1516e::RegionHandleFriend::getOpenRTIHandle(*i));
-
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516ERegionHandleSet regionHandleSet(rti1516RegionHandleSet);
     _ambassadorInterface->subscribeInteractionClassWithRegions(interactionClassHandle, regionHandleSet, active);
   } catch (const OpenRTI::InteractionClassNotDefined& e) {
     throw rti1516e::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
@@ -5020,12 +4878,8 @@ RTIambassadorImplementation::unsubscribeInteractionClassWithRegions(rti1516e::In
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-
-    OpenRTI::RegionHandleSet regionHandleSet;
-    for (rti1516e::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
-      regionHandleSet.insert(rti1516e::RegionHandleFriend::getOpenRTIHandle(*i));
-
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516ERegionHandleSet regionHandleSet(rti1516RegionHandleSet);
     _ambassadorInterface->unsubscribeInteractionClassWithRegions(interactionClassHandle, regionHandleSet);
   } catch (const OpenRTI::InteractionClassNotDefined& e) {
     throw rti1516e::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
@@ -5066,23 +4920,10 @@ RTIambassadorImplementation::sendInteractionWithRegions(rti1516e::InteractionCla
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-
-    std::vector<OpenRTI::ParameterValue> parameterValueVector;
-    parameterValueVector.reserve(rti1516ParameterHandleValueMap.size());
-    for (rti1516e::ParameterHandleValueMap::const_iterator i = rti1516ParameterHandleValueMap.begin();
-         i != rti1516ParameterHandleValueMap.end(); ++i) {
-      parameterValueVector.push_back(OpenRTI::ParameterValue());
-      OpenRTI::ParameterHandle parameterHandle = rti1516e::ParameterHandleFriend::getOpenRTIHandle(i->first);
-      parameterValueVector.back().setParameterHandle(parameterHandle);
-      parameterValueVector.back().getValue() = rti1516e::VariableLengthDataFriend::readPointer(i->second);
-    }
-
-    OpenRTI::RegionHandleSet regionHandleSet;
-    for (rti1516e::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
-      regionHandleSet.insert(rti1516e::RegionHandleFriend::getOpenRTIHandle(*i));
-
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516EParameterValueVector parameterValueVector(rti1516ParameterHandleValueMap);
+    OpenRTI::_I1516ERegionHandleSet regionHandleSet(rti1516RegionHandleSet);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
     _ambassadorInterface->sendInteractionWithRegions(interactionClassHandle, parameterValueVector, regionHandleSet, tag);
   } catch (const OpenRTI::InteractionClassNotDefined& e) {
     throw rti1516e::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
@@ -5131,26 +4972,11 @@ RTIambassadorImplementation::sendInteractionWithRegions(rti1516e::InteractionCla
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-
-    std::vector<OpenRTI::ParameterValue> parameterValueVector;
-    parameterValueVector.reserve(rti1516ParameterHandleValueMap.size());
-    for (rti1516e::ParameterHandleValueMap::const_iterator i = rti1516ParameterHandleValueMap.begin();
-         i != rti1516ParameterHandleValueMap.end(); ++i) {
-      parameterValueVector.push_back(OpenRTI::ParameterValue());
-      OpenRTI::ParameterHandle parameterHandle = rti1516e::ParameterHandleFriend::getOpenRTIHandle(i->first);
-      parameterValueVector.back().setParameterHandle(parameterHandle);
-      parameterValueVector.back().getValue() = rti1516e::VariableLengthDataFriend::readPointer(i->second);
-    }
-
-    OpenRTI::RegionHandleSet regionHandleSet;
-    for (rti1516e::RegionHandleSet::const_iterator i = rti1516RegionHandleSet.begin(); i != rti1516RegionHandleSet.end(); ++i)
-      regionHandleSet.insert(rti1516e::RegionHandleFriend::getOpenRTIHandle(*i));
-
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
-    OpenRTI::MessageRetractionHandle messageRetractionHandle;
-    messageRetractionHandle = _ambassadorInterface->sendInteractionWithRegions(interactionClassHandle, parameterValueVector, regionHandleSet, tag, rti1516LogicalTime);
-    return rti1516e::MessageRetractionHandleFriend::createHandle(messageRetractionHandle);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516EParameterValueVector parameterValueVector(rti1516ParameterHandleValueMap);
+    OpenRTI::_I1516ERegionHandleSet regionHandleSet(rti1516RegionHandleSet);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
+    return OpenRTI::_O1516EMessageRetractionHandle(_ambassadorInterface->sendInteractionWithRegions(interactionClassHandle, parameterValueVector, regionHandleSet, tag, rti1516LogicalTime));
   } catch (const OpenRTI::InteractionClassNotDefined& e) {
     throw rti1516e::InteractionClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::InteractionClassNotPublished& e) {
@@ -5197,21 +5023,9 @@ RTIambassadorImplementation::requestAttributeValueUpdateWithRegions(rti1516e::Ob
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-    OpenRTI::AttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector;
-    attributeHandleSetRegionHandleSetPairVector.reserve(rti1516AttributeHandleSetRegionHandleSetPairVector.size());
-    for (rti1516e::AttributeHandleSetRegionHandleSetPairVector::const_iterator i = rti1516AttributeHandleSetRegionHandleSetPairVector.begin();
-         i != rti1516AttributeHandleSetRegionHandleSetPairVector.end(); ++i) {
-      attributeHandleSetRegionHandleSetPairVector.push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
-      for (rti1516e::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().first.insert(rti1516e::AttributeHandleFriend::getOpenRTIHandle(*j));
-      }
-      for (rti1516e::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
-        attributeHandleSetRegionHandleSetPairVector.back().second.insert(rti1516e::RegionHandleFriend::getOpenRTIHandle(*j));
-      }
-    }
-
-    OpenRTI::VariableLengthData tag = rti1516e::VariableLengthDataFriend::readPointer(rti1516Tag);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EAttributeHandleSetRegionHandleSetPairVector attributeHandleSetRegionHandleSetPairVector(rti1516AttributeHandleSetRegionHandleSetPairVector);
+    OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
     _ambassadorInterface->requestAttributeValueUpdateWithRegions(objectClassHandle, attributeHandleSetRegionHandleSetPairVector, tag);
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw rti1516e::ObjectClassNotDefined(OpenRTI::utf8ToUcs(e.what()));
@@ -5287,8 +5101,7 @@ RTIambassadorImplementation::getFederateHandle(std::wstring const & name)
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::FederateHandle handle = _ambassadorInterface->getFederateHandle(ucsToUtf8(name));
-    return rti1516e::FederateHandleFriend::createHandle(handle);
+    return OpenRTI::_O1516EFederateHandle(_ambassadorInterface->getFederateHandle(ucsToUtf8(name)));
   } catch (const OpenRTI::NameNotFound& e) {
     throw rti1516e::NameNotFound(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
@@ -5311,7 +5124,7 @@ RTIambassadorImplementation::getFederateName(rti1516e::FederateHandle rti1516Fed
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::FederateHandle federateHandle = rti1516e::FederateHandleFriend::getOpenRTIHandle(rti1516FederateHandle);
+    OpenRTI::_I1516EFederateHandle federateHandle(rti1516FederateHandle);
     return utf8ToUcs(_ambassadorInterface->getFederateName(federateHandle));
   } catch (const OpenRTI::InvalidFederateHandle& e) {
     throw rti1516e::InvalidFederateHandle(OpenRTI::utf8ToUcs(e.what()));
@@ -5336,8 +5149,7 @@ RTIambassadorImplementation::getObjectClassHandle(std::wstring const & name)
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle handle = _ambassadorInterface->getObjectClassHandle(ucsToUtf8(name));
-    return rti1516e::ObjectClassHandleFriend::createHandle(handle);
+    return OpenRTI::_O1516EObjectClassHandle(_ambassadorInterface->getObjectClassHandle(ucsToUtf8(name)));
   } catch (const OpenRTI::NameNotFound& e) {
     throw rti1516e::NameNotFound(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
@@ -5359,7 +5171,7 @@ RTIambassadorImplementation::getObjectClassName(rti1516e::ObjectClassHandle rti1
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
     return utf8ToUcs(_ambassadorInterface->getObjectClassName(objectClassHandle));
   } catch (const OpenRTI::InvalidObjectClassHandle& e) {
     throw rti1516e::InvalidObjectClassHandle(OpenRTI::utf8ToUcs(e.what()));
@@ -5384,9 +5196,8 @@ RTIambassadorImplementation::getAttributeHandle(rti1516e::ObjectClassHandle rti1
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-    OpenRTI::AttributeHandle handle = _ambassadorInterface->getAttributeHandle(objectClassHandle, ucsToUtf8(attributeName));
-    return rti1516e::AttributeHandleFriend::createHandle(handle);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    return OpenRTI::_O1516EAttributeHandle(_ambassadorInterface->getAttributeHandle(objectClassHandle, ucsToUtf8(attributeName)));
   } catch (const OpenRTI::InvalidObjectClassHandle& e) {
     throw rti1516e::InvalidObjectClassHandle(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::NameNotFound& e) {
@@ -5413,8 +5224,8 @@ RTIambassadorImplementation::getAttributeName(rti1516e::ObjectClassHandle rti151
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-    OpenRTI::AttributeHandle attributeHandle = rti1516e::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EAttributeHandle attributeHandle(rti1516AttributeHandle);
     return utf8ToUcs(_ambassadorInterface->getAttributeName(objectClassHandle, attributeHandle));
   } catch (const OpenRTI::InvalidObjectClassHandle& e) {
     throw rti1516e::InvalidObjectClassHandle(OpenRTI::utf8ToUcs(e.what()));
@@ -5465,8 +5276,8 @@ RTIambassadorImplementation::getUpdateRateValueForAttribute(rti1516e::ObjectInst
            rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-    OpenRTI::AttributeHandle attributeHandle = rti1516e::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EAttributeHandle attributeHandle(rti1516AttributeHandle);
     return _ambassadorInterface->getUpdateRateValueForAttribute(objectInstanceHandle, attributeHandle);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
@@ -5491,8 +5302,7 @@ RTIambassadorImplementation::getInteractionClassHandle(std::wstring const & name
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle handle = _ambassadorInterface->getInteractionClassHandle(ucsToUtf8(name));
-    return rti1516e::InteractionClassHandleFriend::createHandle(handle);
+    return OpenRTI::_O1516EInteractionClassHandle(_ambassadorInterface->getInteractionClassHandle(ucsToUtf8(name)));
   } catch (const OpenRTI::NameNotFound& e) {
     throw rti1516e::NameNotFound(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
@@ -5514,7 +5324,7 @@ RTIambassadorImplementation::getInteractionClassName(rti1516e::InteractionClassH
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
     return utf8ToUcs(_ambassadorInterface->getInteractionClassName(interactionClassHandle));
   } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
     throw rti1516e::InvalidInteractionClassHandle(OpenRTI::utf8ToUcs(e.what()));
@@ -5539,9 +5349,8 @@ RTIambassadorImplementation::getParameterHandle(rti1516e::InteractionClassHandle
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-    OpenRTI::ParameterHandle handle = _ambassadorInterface->getParameterHandle(interactionClassHandle, ucsToUtf8(parameterName));
-    return rti1516e::ParameterHandleFriend::createHandle(handle);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
+    return OpenRTI::_O1516EParameterHandle(_ambassadorInterface->getParameterHandle(interactionClassHandle, ucsToUtf8(parameterName)));
   } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
     throw rti1516e::InvalidInteractionClassHandle(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::NameNotFound& e) {
@@ -5568,8 +5377,8 @@ RTIambassadorImplementation::getParameterName(rti1516e::InteractionClassHandle r
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-    OpenRTI::ParameterHandle parameterHandle = rti1516e::ParameterHandleFriend::getOpenRTIHandle(rti1516ParameterHandle);
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
+    OpenRTI::_I1516EParameterHandle parameterHandle(rti1516ParameterHandle);
     return utf8ToUcs(_ambassadorInterface->getParameterName(interactionClassHandle, parameterHandle));
   } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
     throw rti1516e::InvalidInteractionClassHandle(OpenRTI::utf8ToUcs(e.what()));
@@ -5596,8 +5405,7 @@ RTIambassadorImplementation::getObjectInstanceHandle(std::wstring const & name)
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle handle = _ambassadorInterface->getObjectInstanceHandle(ucsToUtf8(name));
-    return rti1516e::ObjectInstanceHandleFriend::createHandle(handle);
+    return OpenRTI::_O1516EObjectInstanceHandle(_ambassadorInterface->getObjectInstanceHandle(ucsToUtf8(name)));
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
@@ -5619,7 +5427,7 @@ RTIambassadorImplementation::getObjectInstanceName(rti1516e::ObjectInstanceHandl
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
     return utf8ToUcs(_ambassadorInterface->getObjectInstanceName(objectInstanceHandle));
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
@@ -5642,8 +5450,7 @@ RTIambassadorImplementation::getDimensionHandle(std::wstring const & name)
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::DimensionHandle handle = _ambassadorInterface->getDimensionHandle(ucsToUtf8(name));
-    return rti1516e::DimensionHandleFriend::createHandle(handle);
+    return OpenRTI::_O1516EDimensionHandle(_ambassadorInterface->getDimensionHandle(ucsToUtf8(name)));
   } catch (const OpenRTI::NameNotFound& e) {
     throw rti1516e::NameNotFound(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
@@ -5665,7 +5472,7 @@ RTIambassadorImplementation::getDimensionName(rti1516e::DimensionHandle rti1516D
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::DimensionHandle dimensionHandle = rti1516e::DimensionHandleFriend::getOpenRTIHandle(rti1516DimensionHandle);
+    OpenRTI::_I1516EDimensionHandle dimensionHandle(rti1516DimensionHandle);
     return utf8ToUcs(_ambassadorInterface->getDimensionName(dimensionHandle));
   } catch (const OpenRTI::InvalidDimensionHandle& e) {
     throw rti1516e::InvalidDimensionHandle(OpenRTI::utf8ToUcs(e.what()));
@@ -5688,7 +5495,7 @@ RTIambassadorImplementation::getDimensionUpperBound(rti1516e::DimensionHandle rt
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::DimensionHandle dimensionHandle = rti1516e::DimensionHandleFriend::getOpenRTIHandle(rti1516DimensionHandle);
+    OpenRTI::_I1516EDimensionHandle dimensionHandle(rti1516DimensionHandle);
     return _ambassadorInterface->getDimensionUpperBound(dimensionHandle);
   } catch (const OpenRTI::InvalidDimensionHandle& e) {
     throw rti1516e::InvalidDimensionHandle(OpenRTI::utf8ToUcs(e.what()));
@@ -5714,17 +5521,9 @@ RTIambassadorImplementation::getAvailableDimensionsForClassAttribute(rti1516e::O
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectClassHandle objectClassHandle = rti1516e::ObjectClassHandleFriend::getOpenRTIHandle(rti1516ObjectClassHandle);
-
-    OpenRTI::AttributeHandle attributeHandle = rti1516e::AttributeHandleFriend::getOpenRTIHandle(rti1516AttributeHandle);
-
-    OpenRTI::DimensionHandleSet dimensionHandleSet = _ambassadorInterface->getAvailableDimensionsForClassAttribute(objectClassHandle, attributeHandle);
-
-    rti1516e::DimensionHandleSet rti1516DimensionHandleSet;
-    for (OpenRTI::DimensionHandleSet::const_iterator i = dimensionHandleSet.begin(); i != dimensionHandleSet.end(); ++i)
-      rti1516DimensionHandleSet.insert(rti1516e::DimensionHandleFriend::createHandle(*i));
-
-    return rti1516DimensionHandleSet;
+    OpenRTI::_I1516EObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
+    OpenRTI::_I1516EAttributeHandle attributeHandle(rti1516AttributeHandle);
+    return OpenRTI::_O1516EDimensionHandleSet(_ambassadorInterface->getAvailableDimensionsForClassAttribute(objectClassHandle, attributeHandle));
   } catch (const OpenRTI::InvalidObjectClassHandle& e) {
     throw rti1516e::InvalidObjectClassHandle(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::InvalidAttributeHandle& e) {
@@ -5750,9 +5549,8 @@ RTIambassadorImplementation::getKnownObjectClassHandle(rti1516e::ObjectInstanceH
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::ObjectInstanceHandle objectInstanceHandle = rti1516e::ObjectInstanceHandleFriend::getOpenRTIHandle(rti1516ObjectInstanceHandle);
-    OpenRTI::ObjectClassHandle objectClassHandle = _ambassadorInterface->getKnownObjectClassHandle(objectInstanceHandle);
-    return rti1516e::ObjectClassHandleFriend::createHandle(objectClassHandle);
+    OpenRTI::_I1516EObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
+    return OpenRTI::_O1516EObjectClassHandle(_ambassadorInterface->getKnownObjectClassHandle(objectInstanceHandle));
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw rti1516e::ObjectInstanceNotKnown(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
@@ -5774,15 +5572,8 @@ RTIambassadorImplementation::getAvailableDimensionsForInteractionClass(rti1516e:
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::InteractionClassHandle interactionClassHandle = rti1516e::InteractionClassHandleFriend::getOpenRTIHandle(rti1516InteractionClassHandle);
-
-    OpenRTI::DimensionHandleSet dimensionHandleSet = _ambassadorInterface->getAvailableDimensionsForInteractionClass(interactionClassHandle);
-
-    rti1516e::DimensionHandleSet rti1516DimensionHandleSet;
-    for (OpenRTI::DimensionHandleSet::const_iterator i = dimensionHandleSet.begin(); i != dimensionHandleSet.end(); ++i)
-      rti1516DimensionHandleSet.insert(rti1516e::DimensionHandleFriend::createHandle(*i));
-
-    return rti1516DimensionHandleSet;
+    OpenRTI::_I1516EInteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
+    return OpenRTI::_O1516EDimensionHandleSet(_ambassadorInterface->getAvailableDimensionsForInteractionClass(interactionClassHandle));
   } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
     throw rti1516e::InvalidInteractionClassHandle(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
@@ -6118,15 +5909,8 @@ RTIambassadorImplementation::getDimensionHandleSet(rti1516e::RegionHandle rti151
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::RegionHandle regionHandle = rti1516e::RegionHandleFriend::getOpenRTIHandle(rti1516RegionHandle);
-
-    OpenRTI::DimensionHandleSet dimensionHandleSet = _ambassadorInterface->getDimensionHandleSet(regionHandle);
-
-    rti1516e::DimensionHandleSet rti1516DimensionHandleSet;
-    for (OpenRTI::DimensionHandleSet::const_iterator i = dimensionHandleSet.begin(); i != dimensionHandleSet.end(); ++i)
-      rti1516DimensionHandleSet.insert(rti1516e::DimensionHandleFriend::createHandle(*i));
-
-    return rti1516DimensionHandleSet;
+    OpenRTI::_I1516ERegionHandle regionHandle(rti1516RegionHandle);
+    return OpenRTI::_O1516EDimensionHandleSet(_ambassadorInterface->getDimensionHandleSet(regionHandle));
   } catch (const OpenRTI::InvalidRegion& e) {
     throw rti1516e::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
@@ -6156,8 +5940,8 @@ RTIambassadorImplementation::getRangeBounds(rti1516e::RegionHandle rti1516Region
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::RegionHandle regionHandle = rti1516e::RegionHandleFriend::getOpenRTIHandle(rti1516RegionHandle);
-    OpenRTI::DimensionHandle dimensionHandle = rti1516e::DimensionHandleFriend::getOpenRTIHandle(rti1516DimensionHandle);
+    OpenRTI::_I1516ERegionHandle regionHandle(rti1516RegionHandle);
+    OpenRTI::_I1516EDimensionHandle dimensionHandle(rti1516DimensionHandle);
     OpenRTI::RangeBounds rangeBounds = _ambassadorInterface->getRangeBounds(regionHandle, dimensionHandle);
     return rti1516e::RangeBounds(rangeBounds.getLowerBound(), rangeBounds.getUpperBound());
   } catch (const OpenRTI::InvalidRegion& e) {
@@ -6194,8 +5978,8 @@ RTIambassadorImplementation::setRangeBounds(rti1516e::RegionHandle rti1516Region
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::RegionHandle regionHandle = rti1516e::RegionHandleFriend::getOpenRTIHandle(rti1516RegionHandle);
-    OpenRTI::DimensionHandle dimensionHandle = rti1516e::DimensionHandleFriend::getOpenRTIHandle(rti1516DimensionHandle);
+    OpenRTI::_I1516ERegionHandle regionHandle(rti1516RegionHandle);
+    OpenRTI::_I1516EDimensionHandle dimensionHandle(rti1516DimensionHandle);
     OpenRTI::RangeBounds rangeBounds(rti1516RangeBounds.getLowerBound(), rti1516RangeBounds.getUpperBound());
     _ambassadorInterface->setRangeBounds(regionHandle, dimensionHandle, rangeBounds);
   } catch (const OpenRTI::InvalidRegion& e) {
@@ -6229,7 +6013,7 @@ RTIambassadorImplementation::normalizeFederateHandle(rti1516e::FederateHandle rt
          rti1516e::RTIinternalError)
 {
   try {
-    OpenRTI::FederateHandle federateHandle = rti1516e::FederateHandleFriend::getOpenRTIHandle(rti1516FederateHandle);
+    OpenRTI::_I1516EFederateHandle federateHandle(rti1516FederateHandle);
     return _ambassadorInterface->normalizeFederateHandle(federateHandle);
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw rti1516e::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));

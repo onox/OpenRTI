@@ -47,13 +47,6 @@ static char* newUtf8ToLocale(const std::string& utf8)
   return std::strncpy(data, s.c_str(), s.size());
 }
 
-static OpenRTI::VariableLengthData toOpenRTITag(const char* tag)
-{
-  if (!tag)
-    return OpenRTI::VariableLengthData();
-  return OpenRTI::VariableLengthData(tag);
-}
-
 /// Helper to get conformant handles from internal handles
 template<typename T>
 static RTI::ULong rti13Handle(const OpenRTI::Handle<T>& handle)
@@ -117,6 +110,57 @@ static OpenRTI::OrderType toOpenRTIOrderType(RTI::OrderType orderType)
 }
 
 namespace OpenRTI {
+
+class OPENRTI_LOCAL _I13VariableLengthData : public OpenRTI::VariableLengthData {
+public:
+  _I13VariableLengthData(const char* tag)
+  {
+    if (tag)
+      setData(tag, std::strlen(tag));
+  }
+};
+
+class OPENRTI_LOCAL _I13AttributeHandleVector : public OpenRTI::AttributeHandleVector {
+public:
+  _I13AttributeHandleVector(const RTI::AttributeHandleSet& attributeHandleSet)
+  {
+    RTI::ULong attributeHandleSetSize = attributeHandleSet.size();
+    reserve(attributeHandleSet.size() + 1);
+    for (RTI::ULong i = 0; i < attributeHandleSetSize; ++i)
+      push_back(attributeHandleSet.getHandle(i));
+  }
+};
+
+class OPENRTI_LOCAL _I13AttributeValueVector : public OpenRTI::AttributeValueVector {
+public:
+  _I13AttributeValueVector(const RTI::AttributeHandleValuePairSet& attributeHandleValuePairSet)
+  {
+    RTI::ULong attributeHandleValuePairSetSize = attributeHandleValuePairSet.size();
+    reserve(attributeHandleValuePairSetSize);
+    for (RTI::ULong i = 0; i < attributeHandleValuePairSetSize; ++i) {
+      push_back(OpenRTI::AttributeValue());
+      back().setAttributeHandle(attributeHandleValuePairSet.getHandle(i));
+      RTI::ULong length;
+      char* value = attributeHandleValuePairSet.getValuePointer(i, length);
+      back().getValue().setData(value, length);
+    }
+  }
+};
+class OPENRTI_LOCAL _I13ParameterValueVector : public OpenRTI::ParameterValueVector {
+public:
+  _I13ParameterValueVector(const RTI::ParameterHandleValuePairSet& parameterHandleValuePairSet)
+  {
+    RTI::ULong parameterHandleValuePairSetSize = parameterHandleValuePairSet.size();
+    reserve(parameterHandleValuePairSetSize);
+    for (RTI::ULong i = 0; i < parameterHandleValuePairSetSize; ++i) {
+      push_back(OpenRTI::ParameterValue());
+      back().setParameterHandle(parameterHandleValuePairSet.getHandle(i));
+      RTI::ULong length;
+      char* value = parameterHandleValuePairSet.getValuePointer(i, length);
+      back().getValue().setData(value, length);
+    }
+  }
+};
 
 class OPENRTI_LOCAL RTI13Traits {
 public:
@@ -1177,7 +1221,8 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char* label,
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     // According to the standard, an empty set also means all federates currently joined.
-    privateRefs->registerFederationSynchronizationPoint(OpenRTI::localeToUtf8(label), toOpenRTITag(tag), OpenRTI::FederateHandleSet());
+    OpenRTI::_I13VariableLengthData _tag(tag);
+    privateRefs->registerFederationSynchronizationPoint(OpenRTI::localeToUtf8(label), _tag, OpenRTI::FederateHandleSet());
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::SaveInProgress& e) {
@@ -1205,12 +1250,13 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char* label,
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
+    OpenRTI::_I13VariableLengthData _tag(tag);
     OpenRTI::FederateHandleSet federateHandleSet;
     ULong syncSetSize = syncSet.size();
     for (ULong i = 0; i < syncSetSize; ++i)
       federateHandleSet.insert(syncSet.getHandle(i));
 
-    privateRefs->registerFederationSynchronizationPoint(OpenRTI::localeToUtf8(label), toOpenRTITag(tag), federateHandleSet);
+    privateRefs->registerFederationSynchronizationPoint(OpenRTI::localeToUtf8(label), _tag, federateHandleSet);
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::SaveInProgress& e) {
@@ -1485,12 +1531,8 @@ RTI::RTIambassador::publishObjectClass(RTI::ObjectClassHandle objectClassHandle,
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-    ULong attributeHandleSetSize = attributeHandleSet.size();
-    for (ULong i = 0; i < attributeHandleSetSize; ++i)
-      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
-
-    privateRefs->publishObjectClassAttributes(objectClassHandle, OpenRTIAttributeHandleSet);
+    OpenRTI::_I13AttributeHandleVector attributeHandleVector(attributeHandleSet);
+    privateRefs->publishObjectClassAttributes(objectClassHandle, attributeHandleVector);
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -1618,12 +1660,8 @@ RTI::RTIambassador::subscribeObjectClassAttributes(RTI::ObjectClassHandle object
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-    ULong attributeHandleSetSize = attributeHandleSet.size();
-    for (ULong i = 0; i < attributeHandleSetSize; ++i)
-      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
-
-    privateRefs->subscribeObjectClassAttributes(objectClassHandle, OpenRTIAttributeHandleSet, active == RTI::RTI_TRUE, std::string());
+    OpenRTI::_I13AttributeHandleVector attributeHandleVector(attributeHandleSet);
+    privateRefs->subscribeObjectClassAttributes(objectClassHandle, attributeHandleVector, active == RTI::RTI_TRUE, std::string());
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -1821,18 +1859,10 @@ RTI::RTIambassador::updateAttributeValues(RTI::ObjectHandle objectHandle,
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    std::vector<OpenRTI::AttributeValue> attributeValueVector;
-    ULong attributeHandleArraySize = attributeHandleArray.size();
-    attributeValueVector.resize(attributeHandleArraySize);
-    for (ULong i = 0; i < attributeHandleArraySize; ++i) {
-      ULong length;
-      char* value = attributeHandleArray.getValuePointer(i, length);
-      attributeValueVector[i].setAttributeHandle(attributeHandleArray.getHandle(i));
-      attributeValueVector[i].getValue().setData(value, length);
-    }
-
+    OpenRTI::_I13AttributeValueVector attributeValueVector(attributeHandleArray);
+    OpenRTI::_I13VariableLengthData _tag(tag);
     OpenRTI::MessageRetractionHandle messageRetractionHandle;
-    messageRetractionHandle = privateRefs->updateAttributeValues(objectHandle, attributeValueVector, toOpenRTITag(tag), fedTime);
+    messageRetractionHandle = privateRefs->updateAttributeValues(objectHandle, attributeValueVector, _tag, fedTime);
     return rti13MessageRetractionHandle(messageRetractionHandle);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
@@ -1872,17 +1902,9 @@ RTI::RTIambassador::updateAttributeValues(RTI::ObjectHandle objectHandle,
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    std::vector<OpenRTI::AttributeValue> attributeValueVector;
-    ULong attributeHandleArraySize = attributeHandleArray.size();
-    attributeValueVector.resize(attributeHandleArraySize);
-    for (ULong i = 0; i < attributeHandleArraySize; ++i) {
-      ULong length;
-      char* value = attributeHandleArray.getValuePointer(i, length);
-      attributeValueVector[i].setAttributeHandle(attributeHandleArray.getHandle(i));
-      attributeValueVector[i].getValue().setData(value, length);
-    }
-
-    privateRefs->updateAttributeValues(objectHandle, attributeValueVector, toOpenRTITag(tag));
+    OpenRTI::_I13AttributeValueVector attributeValueVector(attributeHandleArray);
+    OpenRTI::_I13VariableLengthData _tag(tag);
+    privateRefs->updateAttributeValues(objectHandle, attributeValueVector, _tag);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -1922,21 +1944,11 @@ RTI::RTIambassador::sendInteraction(RTI::InteractionClassHandle interactionClass
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     OpenRTI::InteractionClassHandle OpenRTIInteractionClassHandle = interactionClassHandle;
-
-    std::vector<OpenRTI::ParameterValue> parameterValueVector;
-    ULong parameterHandleArraySize = parameterHandleArray.size();
-    parameterValueVector.resize(parameterHandleArraySize);
-    for (ULong i = 0; i < parameterHandleArraySize; ++i) {
-      ULong length;
-      char* value = parameterHandleArray.getValuePointer(i, length);
-      parameterValueVector[i].setParameterHandle(parameterHandleArray.getHandle(i));
-      parameterValueVector[i].getValue().setData(value, length);
-    }
-
+    OpenRTI::_I13ParameterValueVector parameterValueVector(parameterHandleArray);
+    OpenRTI::_I13VariableLengthData _tag(tag);
     // Note that the parametervaluevector is taken by the sendInteraction call. Thus on return it is empty
     OpenRTI::MessageRetractionHandle messageRetractionHandle;
-    messageRetractionHandle = privateRefs->sendInteraction(OpenRTIInteractionClassHandle, parameterValueVector,
-                                                           toOpenRTITag(tag), fedTime);
+    messageRetractionHandle = privateRefs->sendInteraction(OpenRTIInteractionClassHandle, parameterValueVector, _tag, fedTime);
     return rti13MessageRetractionHandle(messageRetractionHandle);
   } catch (const OpenRTI::InteractionClassNotPublished& e) {
     throw RTI::InteractionClassNotPublished(OpenRTI::utf8ToLocale(e.what()).c_str());
@@ -1977,19 +1989,10 @@ RTI::RTIambassador::sendInteraction(RTI::InteractionClassHandle interactionClass
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     OpenRTI::InteractionClassHandle OpenRTIInteractionClassHandle = interactionClassHandle;
-
-    std::vector<OpenRTI::ParameterValue> parameterValueVector;
-    ULong parameterHandleArraySize = parameterHandleArray.size();
-    parameterValueVector.resize(parameterHandleArraySize);
-    for (ULong i = 0; i < parameterHandleArraySize; ++i) {
-      ULong length;
-      char* value = parameterHandleArray.getValuePointer(i, length);
-      parameterValueVector[i].setParameterHandle(parameterHandleArray.getHandle(i));
-      parameterValueVector[i].getValue().setData(value, length);
-    }
-
+    OpenRTI::_I13ParameterValueVector parameterValueVector(parameterHandleArray);
+    OpenRTI::_I13VariableLengthData _tag(tag);
     // Note that the parametervaluevector is taken by the sendInteraction call. Thus on return it is empty
-    privateRefs->sendInteraction(OpenRTIInteractionClassHandle, parameterValueVector, toOpenRTITag(tag));
+    privateRefs->sendInteraction(OpenRTIInteractionClassHandle, parameterValueVector, _tag);
   } catch (const OpenRTI::InteractionClassNotPublished& e) {
     throw RTI::InteractionClassNotPublished(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::InteractionClassNotDefined& e) {
@@ -2026,8 +2029,9 @@ RTI::RTIambassador::deleteObjectInstance(RTI::ObjectHandle objectHandle,
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
+    OpenRTI::_I13VariableLengthData _tag(tag);
     OpenRTI::MessageRetractionHandle messageRetractionHandle;
-    messageRetractionHandle = privateRefs->deleteObjectInstance(objectHandle, toOpenRTITag(tag), fedTime);
+    messageRetractionHandle = privateRefs->deleteObjectInstance(objectHandle, _tag, fedTime);
     return rti13MessageRetractionHandle(messageRetractionHandle);
   } catch (const OpenRTI::DeletePrivilegeNotHeld& e) {
     throw RTI::DeletePrivilegeNotHeld(OpenRTI::utf8ToLocale(e.what()).c_str());
@@ -2063,7 +2067,8 @@ RTI::RTIambassador::deleteObjectInstance(RTI::ObjectHandle objectHandle,
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    privateRefs->deleteObjectInstance(objectHandle, toOpenRTITag(tag));
+    OpenRTI::_I13VariableLengthData _tag(tag);
+    privateRefs->deleteObjectInstance(objectHandle, _tag);
   } catch (const OpenRTI::DeletePrivilegeNotHeld& e) {
     throw RTI::DeletePrivilegeNotHeld(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
@@ -2134,12 +2139,8 @@ RTI::RTIambassador::changeAttributeTransportationType(RTI::ObjectHandle objectHa
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     OpenRTI::TransportationType transportationType = toOpenRTITransportationType(transportationHandle);
-    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-    ULong attributeHandleSetSize = attributeHandleSet.size();
-    for (ULong i = 0; i < attributeHandleSetSize; ++i)
-      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
-
-    privateRefs->changeAttributeTransportationType(objectHandle, OpenRTIAttributeHandleSet, transportationType);
+    OpenRTI::_I13AttributeHandleVector attributeHandleVector(attributeHandleSet);
+    privateRefs->changeAttributeTransportationType(objectHandle, attributeHandleVector, transportationType);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -2210,12 +2211,9 @@ RTI::RTIambassador::requestObjectAttributeValueUpdate(RTI::ObjectHandle objectHa
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-    ULong attributeHandleSetSize = attributeHandleSet.size();
-    for (ULong i = 0; i < attributeHandleSetSize; ++i)
-      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
-
-    privateRefs->requestAttributeValueUpdate(OpenRTI::ObjectInstanceHandle(objectHandle), OpenRTIAttributeHandleSet, OpenRTI::VariableLengthData());
+    OpenRTI::_I13AttributeHandleVector attributeHandleVector(attributeHandleSet);
+    OpenRTI::VariableLengthData tag;
+    privateRefs->requestAttributeValueUpdate(OpenRTI::ObjectInstanceHandle(objectHandle), attributeHandleVector, tag);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -2248,12 +2246,9 @@ RTI::RTIambassador::requestClassAttributeValueUpdate(RTI::ObjectClassHandle obje
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-    ULong attributeHandleSetSize = attributeHandleSet.size();
-    for (ULong i = 0; i < attributeHandleSetSize; ++i)
-      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
-
-    privateRefs->requestAttributeValueUpdate(OpenRTI::ObjectClassHandle(objectClassHandle), OpenRTIAttributeHandleSet, OpenRTI::VariableLengthData());
+    OpenRTI::_I13AttributeHandleVector attributeHandleVector(attributeHandleSet);
+    OpenRTI::VariableLengthData tag;
+    privateRefs->requestAttributeValueUpdate(OpenRTI::ObjectClassHandle(objectClassHandle), attributeHandleVector, tag);
   } catch (const OpenRTI::ObjectClassNotDefined& e) {
     throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -2287,12 +2282,8 @@ RTI::RTIambassador::unconditionalAttributeOwnershipDivestiture(RTI::ObjectHandle
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-    ULong attributeHandleSetSize = attributeHandleSet.size();
-    for (ULong i = 0; i < attributeHandleSetSize; ++i)
-      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
-
-    privateRefs->unconditionalAttributeOwnershipDivestiture(objectHandle, OpenRTIAttributeHandleSet);
+    OpenRTI::_I13AttributeHandleVector attributeHandleVector(attributeHandleSet);
+    privateRefs->unconditionalAttributeOwnershipDivestiture(objectHandle, attributeHandleVector);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -2330,12 +2321,9 @@ RTI::RTIambassador::negotiatedAttributeOwnershipDivestiture(RTI::ObjectHandle ob
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-    ULong attributeHandleSetSize = attributeHandleSet.size();
-    for (ULong i = 0; i < attributeHandleSetSize; ++i)
-      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
-
-    privateRefs->negotiatedAttributeOwnershipDivestiture(objectHandle, OpenRTIAttributeHandleSet, toOpenRTITag(tag));
+    OpenRTI::_I13AttributeHandleVector attributeHandleVector(attributeHandleSet);
+    OpenRTI::_I13VariableLengthData _tag(tag);
+    privateRefs->negotiatedAttributeOwnershipDivestiture(objectHandle, attributeHandleVector, _tag);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -2376,12 +2364,9 @@ RTI::RTIambassador::attributeOwnershipAcquisition(RTI::ObjectHandle objectHandle
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-    ULong attributeHandleSetSize = attributeHandleSet.size();
-    for (ULong i = 0; i < attributeHandleSetSize; ++i)
-      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
-
-    privateRefs->attributeOwnershipAcquisition(objectHandle, OpenRTIAttributeHandleSet, toOpenRTITag(tag));
+    OpenRTI::_I13AttributeHandleVector attributeHandleVector(attributeHandleSet);
+    OpenRTI::_I13VariableLengthData _tag(tag);
+    privateRefs->attributeOwnershipAcquisition(objectHandle, attributeHandleVector, _tag);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::ObjectClassNotPublished& e) {
@@ -2422,12 +2407,8 @@ RTI::RTIambassador::attributeOwnershipAcquisitionIfAvailable(RTI::ObjectHandle o
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-    ULong attributeHandleSetSize = attributeHandleSet.size();
-    for (ULong i = 0; i < attributeHandleSetSize; ++i)
-      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
-
-    privateRefs->attributeOwnershipAcquisitionIfAvailable(objectHandle, OpenRTIAttributeHandleSet);
+    OpenRTI::_I13AttributeHandleVector attributeHandleVector(attributeHandleSet);
+    privateRefs->attributeOwnershipAcquisitionIfAvailable(objectHandle, attributeHandleVector);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::ObjectClassNotPublished& e) {
@@ -2470,19 +2451,10 @@ RTI::RTIambassador::attributeOwnershipReleaseResponse(RTI::ObjectHandle objectHa
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-    ULong attributeHandleSetSize = attributeHandleSet.size();
-    for (ULong i = 0; i < attributeHandleSetSize; ++i)
-      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
-
-    OpenRTI::AttributeHandleSet divestedAttributes;
-    privateRefs->attributeOwnershipDivestitureIfWanted(objectHandle, OpenRTIAttributeHandleSet, divestedAttributes);
-
-    std::vector<OpenRTI::AttributeHandle> attributeHandleVector;
-    for (OpenRTI::AttributeHandleSet::const_iterator i = divestedAttributes.begin();
-         i != divestedAttributes.end(); ++i)
-      attributeHandleVector.push_back(*i);
-    return new AttributeHandleSetCallback(attributeHandleVector);
+    OpenRTI::_I13AttributeHandleVector attributeHandleVector(attributeHandleSet);
+    OpenRTI::AttributeHandleVector divestedAttributeHandleVector;
+    privateRefs->attributeOwnershipDivestitureIfWanted(objectHandle, attributeHandleVector, divestedAttributeHandleVector);
+    return new AttributeHandleSetCallback(divestedAttributeHandleVector);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -2519,12 +2491,8 @@ RTI::RTIambassador::cancelNegotiatedAttributeOwnershipDivestiture(RTI::ObjectHan
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-    ULong attributeHandleSetSize = attributeHandleSet.size();
-    for (ULong i = 0; i < attributeHandleSetSize; ++i)
-      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
-
-    privateRefs->cancelNegotiatedAttributeOwnershipDivestiture(objectHandle, OpenRTIAttributeHandleSet);
+    OpenRTI::_I13AttributeHandleVector attributeHandleVector(attributeHandleSet);
+    privateRefs->cancelNegotiatedAttributeOwnershipDivestiture(objectHandle, attributeHandleVector);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -2563,12 +2531,8 @@ RTI::RTIambassador::cancelAttributeOwnershipAcquisition(RTI::ObjectHandle object
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-    ULong attributeHandleSetSize = attributeHandleSet.size();
-    for (ULong i = 0; i < attributeHandleSetSize; ++i)
-      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
-
-    privateRefs->cancelAttributeOwnershipAcquisition(objectHandle, OpenRTIAttributeHandleSet);
+    OpenRTI::_I13AttributeHandleVector attributeHandleVector(attributeHandleSet);
+    privateRefs->cancelAttributeOwnershipAcquisition(objectHandle, attributeHandleVector);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::AttributeNotDefined& e) {
@@ -3242,12 +3206,8 @@ RTI::RTIambassador::changeAttributeOrderType(RTI::ObjectHandle objectHandle,
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     OpenRTI::OrderType orderType = toOpenRTIOrderType(orderingHandle);
-    OpenRTI::AttributeHandleSet OpenRTIAttributeHandleSet;
-    ULong attributeHandleSetSize = attributeHandleSet.size();
-    for (ULong i = 0; i < attributeHandleSetSize; ++i)
-      OpenRTIAttributeHandleSet.insert(attributeHandleSet.getHandle(i));
-
-    privateRefs->changeAttributeOrderType(objectHandle, OpenRTIAttributeHandleSet, orderType);
+    OpenRTI::_I13AttributeHandleVector attributeHandleVector(attributeHandleSet);
+    privateRefs->changeAttributeOrderType(objectHandle, attributeHandleVector, orderType);
   } catch (const OpenRTI::ObjectInstanceNotKnown& e) {
     throw RTI::ObjectNotKnown(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::AttributeNotDefined& e) {
