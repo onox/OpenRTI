@@ -99,20 +99,14 @@ namespace rti1516
   class OPENRTI_LOCAL HandleKind##Friend {                              \
   public:                                                               \
     static HandleKind                                                   \
-    createHandle(const OpenRTI::HandleKind& handle)                     \
-    {                                                                   \
-      return HandleKind(HandleKind##Implementation::create(handle));    \
-    }                                                                   \
-    static HandleKind                                                   \
-    createHandle(rti1516::VariableLengthData const & encodedValue)      \
-    {                                                                   \
-      return HandleKind(encodedValue);                                  \
-    }                                                                   \
-    static OpenRTI::HandleKind                                          \
-    getOpenRTIHandle(const HandleKind& handle)                          \
-    {                                                                   \
-      return HandleKind##Implementation::getHandle(handle._impl);       \
-    }                                                                   \
+    decode(rti1516::VariableLengthData const & encodedValue)            \
+    { return HandleKind(encodedValue); }                                \
+    static void                                                         \
+    copy(OpenRTI::HandleKind& dst, HandleKind const& src)               \
+    { dst = HandleKind##Implementation::getHandle(src._impl); }         \
+    static void                                                         \
+    copy(HandleKind& dst, OpenRTI::HandleKind const& src)               \
+    { dst = HandleKind(HandleKind##Implementation::create(src)); }      \
   };
 
 DECLARE_HANDLE_CLASS(FederateHandle)
