@@ -154,7 +154,7 @@ public:
   _I1516FederateHandleSet(const rti1516::FederateHandleSet& federateHandleSet)
   {
     for (rti1516::FederateHandleSet::const_iterator i = federateHandleSet.begin(); i != federateHandleSet.end(); ++i)
-      insert(OpenRTI::_I1516FederateHandle(*i));
+      insert(end(), OpenRTI::_I1516FederateHandle(*i));
   }
 };
 class OPENRTI_LOCAL _I1516FederateHandleVector : public OpenRTI::FederateHandleVector {
@@ -180,7 +180,7 @@ public:
   _I1516DimensionHandleSet(const rti1516::DimensionHandleSet& dimensionHandleSet)
   {
     for (rti1516::DimensionHandleSet::const_iterator i = dimensionHandleSet.begin(); i != dimensionHandleSet.end(); ++i)
-      insert(OpenRTI::_I1516DimensionHandle(*i));
+      insert(end(), OpenRTI::_I1516DimensionHandle(*i));
   }
 };
 class OPENRTI_LOCAL _I1516RegionHandleSet : public OpenRTI::RegionHandleSet {
@@ -188,7 +188,7 @@ public:
   _I1516RegionHandleSet(const rti1516::RegionHandleSet& regionHandleSet)
   {
     for (rti1516::RegionHandleSet::const_iterator i = regionHandleSet.begin(); i != regionHandleSet.end(); ++i)
-      insert(OpenRTI::_I1516RegionHandle(*i));
+      insert(end(), OpenRTI::_I1516RegionHandle(*i));
   }
 };
 
@@ -201,10 +201,10 @@ public:
          i != attributeHandleSetRegionHandleSetPairVector.end(); ++i) {
       push_back(OpenRTI::AttributeHandleSetRegionHandleSetPair());
       for (rti1516::AttributeHandleSet::const_iterator j = i->first.begin(); j != i->first.end(); ++j) {
-        back().first.insert(OpenRTI::_I1516AttributeHandle(*j));
+        back().first.insert(back().first.end(), OpenRTI::_I1516AttributeHandle(*j));
       }
       for (rti1516::RegionHandleSet::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
-        back().second.insert(OpenRTI::_I1516RegionHandle(*j));
+        back().second.insert(back().second.end(), OpenRTI::_I1516RegionHandle(*j));
       }
     }
   }
@@ -219,7 +219,7 @@ public:
          i != attributeHandleValueMap.end(); ++i) {
       push_back(OpenRTI::AttributeValue());
       back().setAttributeHandle(OpenRTI::_I1516AttributeHandle(i->first));
-      OpenRTI::_I1516VariableLengthData(i->second).swap(back().getValue());
+      back().setValue(rti1516::VariableLengthDataFriend::readPointer(i->second));
     }
   }
 };
@@ -232,7 +232,7 @@ public:
          i != parameterHandleValueMap.end(); ++i) {
       push_back(OpenRTI::ParameterValue());
       back().setParameterHandle(OpenRTI::_I1516ParameterHandle(i->first));
-      OpenRTI::_I1516VariableLengthData(i->second).swap(back().getValue());
+      back().setValue(rti1516::VariableLengthDataFriend::readPointer(i->second));
     }
   }
 };
@@ -300,7 +300,7 @@ public:
   {
     for (OpenRTI::AttributeHandleVector::const_iterator i = attributeHandleVector.begin();
          i != attributeHandleVector.end(); ++i)
-      insert(OpenRTI::_O1516AttributeHandle(*i));
+      insert(end(), OpenRTI::_O1516AttributeHandle(*i));
   }
 };
 class OPENRTI_LOCAL _O1516DimensionHandleSet : public rti1516::DimensionHandleSet {
@@ -309,33 +309,35 @@ public:
   {
     for (OpenRTI::DimensionHandleSet::const_iterator i = dimensionHandleVector.begin();
          i != dimensionHandleVector.end(); ++i)
-      insert(OpenRTI::_O1516DimensionHandle(*i));
+      insert(end(), OpenRTI::_O1516DimensionHandle(*i));
   }
 };
 
 class OPENRTI_LOCAL _O1516AttributeHandleValueMap : public rti1516::AttributeHandleValueMap {
 public:
   _O1516AttributeHandleValueMap(const OpenRTI::Federate::ObjectClass& objectClass,
-                                 const OpenRTI::AttributeValueVector& attributeValueVector)
+                                const OpenRTI::AttributeValueVector& attributeValueVector)
   {
     for (OpenRTI::AttributeValueVector::const_iterator i = attributeValueVector.begin();
          i != attributeValueVector.end(); ++i) {
         if (objectClass.getAttributeSubscriptionType(i->getAttributeHandle()) == Unsubscribed)
           continue;
-        (*this)[OpenRTI::_O1516AttributeHandle(i->getAttributeHandle())] = OpenRTI::_O1516VariableLengthData(i->getValue());
+        rti1516::VariableLengthData& variableLengthData = (*this)[OpenRTI::_O1516AttributeHandle(i->getAttributeHandle())];
+        rti1516::VariableLengthDataFriend::writePointer(variableLengthData) = i->getValue();
     }
   }
 };
 class OPENRTI_LOCAL _O1516ParameterHandleValueMap : public rti1516::ParameterHandleValueMap {
 public:
   _O1516ParameterHandleValueMap(const OpenRTI::Federate::InteractionClass& interactionClass,
-                                 const OpenRTI::ParameterValueVector& parameterValueVector)
+                                const OpenRTI::ParameterValueVector& parameterValueVector)
   {
     for (OpenRTI::ParameterValueVector::const_iterator i = parameterValueVector.begin();
          i != parameterValueVector.end(); ++i) {
         if (!interactionClass.getParameter(i->getParameterHandle()))
           continue;
-        (*this)[OpenRTI::_O1516ParameterHandle(i->getParameterHandle())] = OpenRTI::_O1516VariableLengthData(i->getValue());
+        rti1516::VariableLengthData& variableLengthData = (*this)[OpenRTI::_O1516ParameterHandle(i->getParameterHandle())];
+        rti1516::VariableLengthDataFriend::writePointer(variableLengthData) = i->getValue();
     }
   }
 };
