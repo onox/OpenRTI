@@ -142,6 +142,12 @@ public:
     VariableLengthData(rti1516::VariableLengthDataFriend::readPointer(variableLengthData))
   { }
 };
+class OPENRTI_LOCAL _I1516RangeBounds : public OpenRTI::RangeBounds {
+public:
+  _I1516RangeBounds(const rti1516::RangeBounds& rangeBounds) :
+    RangeBounds(rangeBounds.getLowerBound(), rangeBounds.getUpperBound())
+  { }
+};
 
 class OPENRTI_LOCAL _I1516FederateHandleSet : public OpenRTI::FederateHandleSet {
 public:
@@ -280,6 +286,12 @@ class OPENRTI_LOCAL _O1516VariableLengthData : public rti1516::VariableLengthDat
 public:
   _O1516VariableLengthData(const OpenRTI::VariableLengthData& variableLengthData)
   { rti1516::VariableLengthDataFriend::writePointer(*this) = variableLengthData; }
+};
+class OPENRTI_LOCAL _O1516RangeBounds : public rti1516::RangeBounds {
+public:
+  _O1516RangeBounds(const OpenRTI::RangeBounds& rangeBounds) :
+    rti1516::RangeBounds(rangeBounds.getLowerBound(), rangeBounds.getUpperBound())
+  { }
 };
 
 class OPENRTI_LOCAL _O1516AttributeHandleSet : public rti1516::AttributeHandleSet {
@@ -4966,8 +4978,7 @@ RTIambassadorImplementation::getRangeBounds(rti1516::RegionHandle rti1516RegionH
   try {
     OpenRTI::_I1516RegionHandle regionHandle(rti1516RegionHandle);
     OpenRTI::_I1516DimensionHandle dimensionHandle(rti1516DimensionHandle);
-    OpenRTI::RangeBounds rangeBounds = _ambassadorInterface->getRangeBounds(regionHandle, dimensionHandle);
-    return rti1516::RangeBounds(rangeBounds.getLowerBound(), rangeBounds.getUpperBound());
+    return OpenRTI::_O1516RangeBounds(_ambassadorInterface->getRangeBounds(regionHandle, dimensionHandle));
   } catch (const OpenRTI::InvalidRegion& e) {
     throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::RegionDoesNotContainSpecifiedDimension& e) {
@@ -5003,7 +5014,7 @@ RTIambassadorImplementation::setRangeBounds(rti1516::RegionHandle rti1516RegionH
   try {
     OpenRTI::_I1516RegionHandle regionHandle(rti1516RegionHandle);
     OpenRTI::_I1516DimensionHandle dimensionHandle(rti1516DimensionHandle);
-    OpenRTI::RangeBounds rangeBounds(rti1516RangeBounds.getLowerBound(), rti1516RangeBounds.getUpperBound());
+    OpenRTI::_I1516RangeBounds rangeBounds(rti1516RangeBounds);
     _ambassadorInterface->setRangeBounds(regionHandle, dimensionHandle, rangeBounds);
   } catch (const OpenRTI::InvalidRegion& e) {
     throw rti1516::InvalidRegion(OpenRTI::utf8ToUcs(e.what()));
