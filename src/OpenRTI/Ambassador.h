@@ -187,7 +187,7 @@ public:
       throw FederateAlreadyExecutionMember();
 
     if (!fomModules.empty())
-      throw RTIinternalError("Additionaly FOM modules are not implemented yet!");
+      throw RTIinternalError("Additional FOM modules on join are not implemented yet!");
 
     // The maximum abstime to try to connect
     Clock abstime = Clock::now() + Clock::fromSeconds(70);
