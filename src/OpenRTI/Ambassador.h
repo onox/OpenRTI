@@ -2307,7 +2307,7 @@ public:
     return regionHandle;
   }
 
-  void commitRegionModifications(const RegionHandleSet& regionHandleSet)
+  void commitRegionModifications(RegionHandleVector& regionHandleVector)
     // throw (InvalidRegion,
     //        RegionNotCreatedByThisFederate,
     //        FederateNotExecutionMember,
@@ -2320,7 +2320,7 @@ public:
       throw NotConnected();
     if (!_federate.valid())
       throw FederateNotExecutionMember();
-    for (RegionHandleSet::const_iterator i = regionHandleSet.begin(); i != regionHandleSet.end(); ++i) {
+    for (RegionHandleVector::const_iterator i = regionHandleVector.begin(); i != regionHandleVector.end(); ++i) {
       if (!i->valid())
         throw InvalidRegion(i->toString());
       if (!_federate->getRegion(*i))
@@ -2367,7 +2367,8 @@ public:
   }
 
   ObjectInstanceHandle registerObjectInstanceWithRegions(ObjectClassHandle objectClassHandle,
-                                                         const AttributeHandleSetRegionHandleSetPairVector& attributeHandleSetRegionHandleSetPairVector)
+                                                         AttributeHandleVectorRegionHandleVectorPairVector&
+                                                         attributeHandleVectorRegionHandleVectorPairVector)
     // throw (ObjectClassNotDefined,
     //        ObjectClassNotPublished,
     //        AttributeNotDefined,
@@ -2391,7 +2392,8 @@ public:
 
   ObjectInstanceHandle
     registerObjectInstanceWithRegions(ObjectClassHandle objectClassHandle,
-                                      const AttributeHandleSetRegionHandleSetPairVector& attributeHandleSetRegionHandleSetPairVector,
+                                      AttributeHandleVectorRegionHandleVectorPairVector&
+                                      attributeHandleVectorRegionHandleVectorPairVector,
                                       const std::string& objectInstanceName)
     // throw (ObjectClassNotDefined,
     //        ObjectClassNotPublished,
@@ -2417,7 +2419,8 @@ public:
   }
 
   void associateRegionsForUpdates(ObjectInstanceHandle objectInstanceHandle,
-                                  const AttributeHandleSetRegionHandleSetPairVector& attributeHandleHandleSetRegionHandleSetPairVector)
+                                  AttributeHandleVectorRegionHandleVectorPairVector&
+                                  attributeHandleVectorRegionHandleVectorPairVector)
     // throw (ObjectInstanceNotKnown,
     //        AttributeNotDefined,
     //        InvalidRegion,
@@ -2437,7 +2440,8 @@ public:
   }
 
   void unassociateRegionsForUpdates(ObjectInstanceHandle objectInstanceHandle,
-                                    const AttributeHandleSetRegionHandleSetPairVector& attributeHandleHandleSetRegionHandleSetPairVector)
+                                    AttributeHandleVectorRegionHandleVectorPairVector&
+                                    attributeHandleVectorRegionHandleVectorPairVector)
     // throw (ObjectInstanceNotKnown,
     //        AttributeNotDefined,
     //        InvalidRegion,
@@ -2456,7 +2460,8 @@ public:
   }
 
   void subscribeObjectClassAttributesWithRegions(ObjectClassHandle objectClassHandle,
-                                                 const AttributeHandleSetRegionHandleSetPairVector& attributeHandleHandleSetRegionHandleSetPairVector,
+                                                 AttributeHandleVectorRegionHandleVectorPairVector&
+                                                 attributeHandleVectorRegionHandleVectorPairVector,
                                                  bool active, const std::string& updateRateDesignator)
     // throw (ObjectClassNotDefined,
     //        AttributeNotDefined,
@@ -2478,7 +2483,8 @@ public:
   }
 
   void unsubscribeObjectClassAttributesWithRegions(ObjectClassHandle objectClassHandle,
-                                                   const AttributeHandleSetRegionHandleSetPairVector& attributeHandleHandleSetRegionHandleSetPairVector)
+                                                   AttributeHandleVectorRegionHandleVectorPairVector&
+                                                   attributeHandleVectorRegionHandleVectorPairVector)
     // throw (ObjectClassNotDefined,
     //        AttributeNotDefined,
     //        InvalidRegion,
@@ -2496,7 +2502,7 @@ public:
     throw RTIinternalError("Not implemented");
   }
 
-  void subscribeInteractionClassWithRegions(InteractionClassHandle objectClassHandle, const RegionHandleSet& regionHandleSet, bool active)
+  void subscribeInteractionClassWithRegions(InteractionClassHandle objectClassHandle, RegionHandleVector& regionHandleVector, bool active)
     // throw (InteractionClassNotDefined,
     //        InvalidRegion,
     //        RegionNotCreatedByThisFederate,
@@ -2515,7 +2521,7 @@ public:
     throw RTIinternalError("Not implemented");
   }
 
-  void unsubscribeInteractionClassWithRegions(InteractionClassHandle objectClassHandle, const RegionHandleSet& regionHandleSet)
+  void unsubscribeInteractionClassWithRegions(InteractionClassHandle objectClassHandle, RegionHandleVector& regionHandleVector)
     // throw (InteractionClassNotDefined,
     //        InvalidRegion,
     //        RegionNotCreatedByThisFederate,
@@ -2534,7 +2540,7 @@ public:
 
   void sendInteractionWithRegions(InteractionClassHandle interactionClassHandle,
                                   std::vector<ParameterValue>& parameterValues,
-                                  const RegionHandleSet& regionHandleSet,
+                                  RegionHandleVector& regionHandleVector,
                                   VariableLengthData& tag)
     // throw (InteractionClassNotDefined,
     //        InteractionClassNotPublished,
@@ -2558,7 +2564,7 @@ public:
   MessageRetractionHandle
     sendInteractionWithRegions(InteractionClassHandle interactionClassHandle,
                                std::vector<ParameterValue>& parameterValues,
-                               const RegionHandleSet& regionHandleSet,
+                               RegionHandleVector& regionHandleVector,
                                VariableLengthData& tag,
                                const NativeLogicalTime& logicalTime)
     // throw (InteractionClassNotDefined,
@@ -2582,7 +2588,9 @@ public:
     return MessageRetractionHandle();
   }
 
-  void requestAttributeValueUpdateWithRegions(ObjectClassHandle objectClassHandle, const AttributeHandleSetRegionHandleSetPairVector& theSet,
+  void requestAttributeValueUpdateWithRegions(ObjectClassHandle objectClassHandle,
+                                              AttributeHandleVectorRegionHandleVectorPairVector&
+                                              attributeHandleVectorRegionHandleVectorPairVector,
                                               VariableLengthData& tag)
     // throw (ObjectClassNotDefined,
     //        AttributeNotDefined,
