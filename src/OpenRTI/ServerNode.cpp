@@ -230,7 +230,7 @@ public:
       announce->setFederationHandle(getHandle());
       announce->setLabel(j->first);
       announce->setTag(j->second.getTag());
-      announce->getFederateHandleSet().insert(federate->getHandle());
+      announce->getFederateHandleVector().push_back(federate->getHandle());
       announce->setAddJoiningFederates(j->second._addJoiningFederates);
       broadcastToChildren(announce);
     }
@@ -486,12 +486,7 @@ public:
 
       SyncronizationLabelStateMap::iterator i;
       i = _syncronizationLabelStateMap.insert(SyncronizationLabelStateMap::value_type(message->getLabel(), SynchronizationState())).first;
-      // FIXME, avoid that extra copy
-      FederateHandleSet joinedFederates;
-      for (FederateHandleFederateMap::const_iterator j = _federateHandleFederateMap.begin();
-           j != _federateHandleFederateMap.end(); ++j)
-        joinedFederates.insert(joinedFederates.end(), j->first);
-      i->second.set(message->getFederateHandleSet(), joinedFederates);
+      i->second.set(message->getFederateHandleVector(), _federateHandleFederateMap);
       i->second._tag = message->getTag();
 
       // Respond to the originator
@@ -509,14 +504,15 @@ public:
         if (!j->first.valid())
           continue;
         // Build the intersection of the federate handles in the message and the ones in the connect.
-        FederateHandleSet federateHandleSet;
+        FederateHandleVector federateHandleVector;
+        federateHandleVector.reserve(j->second->_federateList.size());
         for (FederateList::const_iterator k = j->second->_federateList.begin();
              k != j->second->_federateList.end(); ++k) {
           if (i->second._waitFederates.find((*k)->getHandle()) == i->second._waitFederates.end())
             continue;
-          federateHandleSet.insert((*k)->getHandle());
+          federateHandleVector.push_back((*k)->getHandle());
         }
-        if (federateHandleSet.empty())
+        if (federateHandleVector.empty())
           continue;
 
         SharedPtr<AnnounceSynchronizationPointMessage> announce;
@@ -525,7 +521,7 @@ public:
         announce->setLabel(message->getLabel());
         announce->setTag(i->second._tag);
         announce->setAddJoiningFederates(i->second._addJoiningFederates);
-        announce->getFederateHandleSet().swap(federateHandleSet);
+        announce->getFederateHandleVector().swap(federateHandleVector);
         send(j->first, announce);
       }
     }
@@ -562,34 +558,36 @@ public:
         throw MessageError("Receiving incremental synchronization point update for fixed federate handle synchronization point!");
     }
 
-    // Cycle over all child connects and send announcements with the appropriate handle sets
-    for (ConnectHandleConnectDataMap::const_iterator j = _connectHandleConnectDataMap.begin();
-	 j != _connectHandleConnectDataMap.end(); ++j) {
-      if (j->first == _parentServerConnectHandle)
-	continue;
-      if (!j->first.valid())
-	continue;
-
-      // Build the intersection of the federate handles in the message and the ones in the connect.
-      FederateHandleSet federateHandleSet;
-      for (FederateList::const_iterator k = j->second->_federateList.begin();
-           k != j->second->_federateList.end(); ++k) {
-        if (message->getFederateHandleSet().find((*k)->getHandle()) == message->getFederateHandleSet().end())
+    // Distribute the announce messages across the appropriate connects
+    // First collect the federate handle sets by connect ...
+    std::map<ConnectHandle, FederateHandleVector> connectHandleFederateHandleVectorMap;
+    for (FederateHandleVector::const_iterator j = message->getFederateHandleVector().begin();
+           j != message->getFederateHandleVector().end(); ++j) {
+        Federate* federate = getFederate(*j);
+        if (!federate)
           continue;
-        federateHandleSet.insert((*k)->getHandle());
-      }
-      if (federateHandleSet.empty())
-        continue;
+        ConnectHandle federateConnectHandle = federate->getConnectHandle();
+        if (!federateConnectHandle.valid())
+          continue;
+        if (federateConnectHandle == _parentServerConnectHandle)
+          continue;
+        FederateHandleVector& federateHandleVector = connectHandleFederateHandleVectorMap[federateConnectHandle];
+        if (federateHandleVector.empty())
+          federateHandleVector.reserve(message->getFederateHandleVector().size());
+        federateHandleVector.push_back(*j);
+        i->second.insert(*j);
+    }
 
-      i->second.insert(federateHandleSet);
-
+    // ... then send them out throught the connect.
+    for (std::map<ConnectHandle, FederateHandleVector>::iterator j = connectHandleFederateHandleVectorMap.begin();
+         j != connectHandleFederateHandleVectorMap.end(); ++j) {
       SharedPtr<AnnounceSynchronizationPointMessage> announce;
       announce = new AnnounceSynchronizationPointMessage;
       announce->setFederationHandle(getHandle());
       announce->setLabel(message->getLabel());
       announce->setTag(message->getTag());
       announce->setAddJoiningFederates(message->getAddJoiningFederates());
-      announce->getFederateHandleSet().swap(federateHandleSet);
+      announce->getFederateHandleVector().swap(j->second);
       send(j->first, announce);
     }
   }
@@ -599,8 +597,8 @@ public:
     if (i == _syncronizationLabelStateMap.end())
       throw MessageError("SynchronizationPointAchievedMessage for unknown label!");
 
-    for (FederateHandleSet::const_iterator j = message->getFederateHandleSet().begin();
-         j != message->getFederateHandleSet().end(); ++j) {
+    for (FederateHandleVector::const_iterator j = message->getFederateHandleVector().begin();
+         j != message->getFederateHandleVector().end(); ++j) {
       i->second._waitFederates.erase(*j);
     }
     if (i->second._waitFederates.empty()) {
@@ -609,15 +607,21 @@ public:
         response = new FederationSynchronizedMessage;
         response->setFederationHandle(getHandle());
         response->setLabel(message->getLabel());
-        response->setFederateHandleSet(i->second._participatingFederates);
-        broadcastToChildren(response->getFederateHandleSet(), response);
+        response->getFederateHandleVector().reserve(i->second._participatingFederates.size());
+        for (FederateHandleSet::const_iterator j = i->second._participatingFederates.begin();
+             j != i->second._participatingFederates.end(); ++j)
+          response->getFederateHandleVector().push_back(*j);
+        broadcastToChildren(response->getFederateHandleVector(), response);
         _syncronizationLabelStateMap.erase(i);
       } else {
         SharedPtr<SynchronizationPointAchievedMessage> notify;
         notify = new SynchronizationPointAchievedMessage;
         notify->setFederationHandle(getHandle());
         notify->setLabel(message->getLabel());
-        notify->setFederateHandleSet(i->second._participatingFederates);
+        notify->getFederateHandleVector().reserve(i->second._participatingFederates.size());
+        for (FederateHandleSet::const_iterator j = i->second._participatingFederates.begin();
+             j != i->second._participatingFederates.end(); ++j)
+          notify->getFederateHandleVector().push_back(*j);
         send(_parentServerConnectHandle, notify);
       }
     }
@@ -628,32 +632,36 @@ public:
     if (i == _syncronizationLabelStateMap.end())
       throw MessageError("FederateSynchronizedMessage for unknown label.");
 
-    // Cycle over all child connects and send announcements with the appropriate handle sets
-    for (ConnectHandleConnectDataMap::const_iterator j = _connectHandleConnectDataMap.begin();
-	 j != _connectHandleConnectDataMap.end(); ++j) {
-      if (j->first == _parentServerConnectHandle)
-	continue;
-      if (!j->first.valid())
-	continue;
-
-      // Build the intersection of the federate handles in the message and the ones in the connect.
-      FederateHandleSet federateHandleSet;
-      for (FederateList::const_iterator k = j->second->_federateList.begin();
-           k != j->second->_federateList.end(); ++k) {
-        if (message->getFederateHandleSet().find((*k)->getHandle()) == message->getFederateHandleSet().end())
+    // Distribute the synchronized messages across the appropriate connects
+    // First collect the federate handle sets by connect ...
+    std::map<ConnectHandle, FederateHandleVector> connectHandleFederateHandleVectorMap;
+    for (FederateHandleVector::const_iterator j = message->getFederateHandleVector().begin();
+           j != message->getFederateHandleVector().end(); ++j) {
+        Federate* federate = getFederate(*j);
+        if (!federate)
           continue;
-        federateHandleSet.insert((*k)->getHandle());
-      }
-      if (federateHandleSet.empty())
-        continue;
+        ConnectHandle federateConnectHandle = federate->getConnectHandle();
+        if (!federateConnectHandle.valid())
+          continue;
+        if (federateConnectHandle == _parentServerConnectHandle)
+          continue;
+        FederateHandleVector& federateHandleVector = connectHandleFederateHandleVectorMap[federateConnectHandle];
+        if (federateHandleVector.empty())
+          federateHandleVector.reserve(message->getFederateHandleVector().size());
+        federateHandleVector.push_back(*j);
+    }
 
+    // ... then send them out throught the connect.
+    for (std::map<ConnectHandle, FederateHandleVector>::iterator j = connectHandleFederateHandleVectorMap.begin();
+         j != connectHandleFederateHandleVectorMap.end(); ++j) {
       SharedPtr<FederationSynchronizedMessage> synchronized;
       synchronized = new FederationSynchronizedMessage;
       synchronized->setFederationHandle(getHandle());
       synchronized->setLabel(message->getLabel());
-      synchronized->getFederateHandleSet().swap(federateHandleSet);
+      synchronized->getFederateHandleVector().swap(j->second);
       send(j->first, synchronized);
     }
+
     _syncronizationLabelStateMap.erase(i);
   }
 
@@ -1808,6 +1816,25 @@ public:
     }
   }
 
+  void broadcastToChildren(const FederateHandleVector& federateHandleVector, const SharedPtr<const AbstractMessage>& message) const
+  {
+    ConnectHandleSet broadcastSet;
+    for (FederateHandleVector::const_iterator i = federateHandleVector.begin(); i != federateHandleVector.end(); ++i) {
+      FederateHandleFederateMap::const_iterator j = _federateHandleFederateMap.find(*i);
+      if (j == _federateHandleFederateMap.end())
+        continue;
+      Federate* federate = j->second.get();
+      if (!federate)
+        continue;
+      ConnectHandle connectHandle = federate->getConnectHandle();
+      if (!connectHandle.valid())
+        continue;
+      if (connectHandle == _parentServerConnectHandle)
+        continue;
+      broadcastSet.insert(connectHandle);
+    }
+    send(broadcastSet, message);
+  }
   void broadcastToChildren(const FederateHandleSet& federateHandleSet, const SharedPtr<const AbstractMessage>& message) const
   {
     ConnectHandleSet broadcastSet;

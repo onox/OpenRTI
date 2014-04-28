@@ -668,15 +668,19 @@ public:
       _addJoiningFederates(true)
     { }
 
-    void set(const FederateHandleSet& participatingFederates, const FederateHandleSet& joinedFederates)
+    void set(const FederateHandleVector& participatingFederates, const FederateHandleFederateMap& joinedFederates)
     {
       if (participatingFederates.empty()) {
-        _participatingFederates = joinedFederates;
-        _waitFederates = joinedFederates;
+        for (FederateHandleFederateMap::const_iterator i = joinedFederates.begin(); i != joinedFederates.end(); ++i) {
+          _participatingFederates.insert(i->first);
+          _waitFederates.insert(i->first);
+        }
         _addJoiningFederates = true;
       } else {
-        _participatingFederates = participatingFederates;
-        _waitFederates = participatingFederates;
+        for (FederateHandleVector::const_iterator i = participatingFederates.begin(); i != participatingFederates.end(); ++i) {
+          _participatingFederates.insert(*i);
+          _waitFederates.insert(*i);
+        }
         _addJoiningFederates = false;
       }
     }

@@ -299,9 +299,7 @@ public:
     message->setFederateHandle(getFederateHandle());
     message->setLabel(label);
     message->getTag().swap(tag);
-    // message->getFederateHandleVector().swap(syncSet);
-    for (FederateHandleVector::const_iterator i = syncSet.begin(); i != syncSet.end(); ++i)
-      message->getFederateHandleSet().insert(*i);
+    message->getFederateHandleVector().swap(syncSet);
     send(message);
   }
 
@@ -326,7 +324,7 @@ public:
     SharedPtr<SynchronizationPointAchievedMessage> message;
     message = new SynchronizationPointAchievedMessage;
     message->setFederationHandle(getFederationHandle());
-    message->getFederateHandleSet().insert(getFederateHandle());
+    message->getFederateHandleVector().push_back(getFederateHandle());
     message->setLabel(label);
     send(message);
   }

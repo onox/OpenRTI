@@ -507,7 +507,7 @@
     <field name="Tag" type="VariableLengthData"/>
     <!-- The Federate handles that need to be handled.
          If empty all federates that are joined and will join are synchronized. -->
-    <field name="FederateHandleSet" type="FederateHandleSet"/>
+    <field name="FederateHandleVector" type="FederateHandleVector"/>
   </message>
   <message type="RegisterFederationSynchronizationPointResponse">
     <!-- The federation handle to identify packets -->
@@ -528,18 +528,18 @@
     <field name="AddJoiningFederates" type="Bool"/>
     <!-- The set of federate handles that need to be informed. Use for routing.
          This should be also used to track the server local federate set. -->
-    <field name="FederateHandleSet" type="FederateHandleSet"/>
+    <field name="FederateHandleVector" type="FederateHandleVector"/>
   </message>
 
   <message type="SynchronizationPointAchieved">
     <field name="FederationHandle" type="FederationHandle"/>
     <field name="Label" type="String"/>
-    <field name="FederateHandleSet" type="FederateHandleSet"/>
+    <field name="FederateHandleVector" type="FederateHandleVector"/>
   </message>
   <message type="FederationSynchronized">
     <field name="FederationHandle" type="FederationHandle"/>
     <field name="Label" type="String"/>
-    <field name="FederateHandleSet" type="FederateHandleSet"/>
+    <field name="FederateHandleVector" type="FederateHandleVector"/>
   </message>
 
   <!-- Time management -->

@@ -3284,23 +3284,23 @@ public:
   const VariableLengthData& getTag() const
   { return _tag; }
 
-  void setFederateHandleSet(const FederateHandleSet& value)
-  { _federateHandleSet = value; }
+  void setFederateHandleVector(const FederateHandleVector& value)
+  { _federateHandleVector = value; }
 #if 201103L <= __cplusplus
-  void setFederateHandleSet(FederateHandleSet&& value)
-  { _federateHandleSet = value; }
+  void setFederateHandleVector(FederateHandleVector&& value)
+  { _federateHandleVector = value; }
 #endif
-  FederateHandleSet& getFederateHandleSet()
-  { return _federateHandleSet; }
-  const FederateHandleSet& getFederateHandleSet() const
-  { return _federateHandleSet; }
+  FederateHandleVector& getFederateHandleVector()
+  { return _federateHandleVector; }
+  const FederateHandleVector& getFederateHandleVector() const
+  { return _federateHandleVector; }
 
 private:
   FederationHandle _federationHandle;
   FederateHandle _federateHandle;
   String _label;
   VariableLengthData _tag;
-  FederateHandleSet _federateHandleSet;
+  FederateHandleVector _federateHandleVector;
 };
 
 class OPENRTI_API RegisterFederationSynchronizationPointResponseMessage : public AbstractMessage {
@@ -3440,23 +3440,23 @@ public:
   const Bool& getAddJoiningFederates() const
   { return _addJoiningFederates; }
 
-  void setFederateHandleSet(const FederateHandleSet& value)
-  { _federateHandleSet = value; }
+  void setFederateHandleVector(const FederateHandleVector& value)
+  { _federateHandleVector = value; }
 #if 201103L <= __cplusplus
-  void setFederateHandleSet(FederateHandleSet&& value)
-  { _federateHandleSet = value; }
+  void setFederateHandleVector(FederateHandleVector&& value)
+  { _federateHandleVector = value; }
 #endif
-  FederateHandleSet& getFederateHandleSet()
-  { return _federateHandleSet; }
-  const FederateHandleSet& getFederateHandleSet() const
-  { return _federateHandleSet; }
+  FederateHandleVector& getFederateHandleVector()
+  { return _federateHandleVector; }
+  const FederateHandleVector& getFederateHandleVector() const
+  { return _federateHandleVector; }
 
 private:
   FederationHandle _federationHandle;
   String _label;
   VariableLengthData _tag;
   Bool _addJoiningFederates;
-  FederateHandleSet _federateHandleSet;
+  FederateHandleVector _federateHandleVector;
 };
 
 class OPENRTI_API SynchronizationPointAchievedMessage : public AbstractMessage {
@@ -3502,21 +3502,21 @@ public:
   const String& getLabel() const
   { return _label; }
 
-  void setFederateHandleSet(const FederateHandleSet& value)
-  { _federateHandleSet = value; }
+  void setFederateHandleVector(const FederateHandleVector& value)
+  { _federateHandleVector = value; }
 #if 201103L <= __cplusplus
-  void setFederateHandleSet(FederateHandleSet&& value)
-  { _federateHandleSet = value; }
+  void setFederateHandleVector(FederateHandleVector&& value)
+  { _federateHandleVector = value; }
 #endif
-  FederateHandleSet& getFederateHandleSet()
-  { return _federateHandleSet; }
-  const FederateHandleSet& getFederateHandleSet() const
-  { return _federateHandleSet; }
+  FederateHandleVector& getFederateHandleVector()
+  { return _federateHandleVector; }
+  const FederateHandleVector& getFederateHandleVector() const
+  { return _federateHandleVector; }
 
 private:
   FederationHandle _federationHandle;
   String _label;
-  FederateHandleSet _federateHandleSet;
+  FederateHandleVector _federateHandleVector;
 };
 
 class OPENRTI_API FederationSynchronizedMessage : public AbstractMessage {
@@ -3562,21 +3562,21 @@ public:
   const String& getLabel() const
   { return _label; }
 
-  void setFederateHandleSet(const FederateHandleSet& value)
-  { _federateHandleSet = value; }
+  void setFederateHandleVector(const FederateHandleVector& value)
+  { _federateHandleVector = value; }
 #if 201103L <= __cplusplus
-  void setFederateHandleSet(FederateHandleSet&& value)
-  { _federateHandleSet = value; }
+  void setFederateHandleVector(FederateHandleVector&& value)
+  { _federateHandleVector = value; }
 #endif
-  FederateHandleSet& getFederateHandleSet()
-  { return _federateHandleSet; }
-  const FederateHandleSet& getFederateHandleSet() const
-  { return _federateHandleSet; }
+  FederateHandleVector& getFederateHandleVector()
+  { return _federateHandleVector; }
+  const FederateHandleVector& getFederateHandleVector() const
+  { return _federateHandleVector; }
 
 private:
   FederationHandle _federationHandle;
   String _label;
-  FederateHandleSet _federateHandleSet;
+  FederateHandleVector _federateHandleVector;
 };
 
 class OPENRTI_API EnableTimeRegulationRequestMessage : public AbstractMessage {
@@ -7381,7 +7381,7 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const RegisterFederat
   os << ", ";
   os << "tag: " << value.getTag();
   os << ", ";
-  os << "federateHandleSet: " << value.getFederateHandleSet();
+  os << "federateHandleVector: " << value.getFederateHandleVector();
   os << " }";
   return os;
 }
@@ -7415,7 +7415,7 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const AnnounceSynchro
   os << ", ";
   os << "addJoiningFederates: " << value.getAddJoiningFederates();
   os << ", ";
-  os << "federateHandleSet: " << value.getFederateHandleSet();
+  os << "federateHandleVector: " << value.getFederateHandleVector();
   os << " }";
   return os;
 }
@@ -7429,7 +7429,7 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const Synchronization
   os << ", ";
   os << "label: " << value.getLabel();
   os << ", ";
-  os << "federateHandleSet: " << value.getFederateHandleSet();
+  os << "federateHandleVector: " << value.getFederateHandleVector();
   os << " }";
   return os;
 }
@@ -7443,7 +7443,7 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FederationSynch
   os << ", ";
   os << "label: " << value.getLabel();
   os << ", ";
-  os << "federateHandleSet: " << value.getFederateHandleSet();
+  os << "federateHandleVector: " << value.getFederateHandleVector();
   os << " }";
   return os;
 }

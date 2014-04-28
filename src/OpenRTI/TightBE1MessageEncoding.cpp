@@ -1168,7 +1168,7 @@ public:
     writeFederateHandle(value.getFederateHandle());
     writeString(value.getLabel());
     writeVariableLengthData(value.getTag());
-    writeFederateHandleSet(value.getFederateHandleSet());
+    writeFederateHandleVector(value.getFederateHandleVector());
   }
 
   void writeRegisterFederationSynchronizationPointResponseMessage(const RegisterFederationSynchronizationPointResponseMessage& value)
@@ -1185,21 +1185,21 @@ public:
     writeString(value.getLabel());
     writeVariableLengthData(value.getTag());
     writeBool(value.getAddJoiningFederates());
-    writeFederateHandleSet(value.getFederateHandleSet());
+    writeFederateHandleVector(value.getFederateHandleVector());
   }
 
   void writeSynchronizationPointAchievedMessage(const SynchronizationPointAchievedMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
     writeString(value.getLabel());
-    writeFederateHandleSet(value.getFederateHandleSet());
+    writeFederateHandleVector(value.getFederateHandleVector());
   }
 
   void writeFederationSynchronizedMessage(const FederationSynchronizedMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
     writeString(value.getLabel());
-    writeFederateHandleSet(value.getFederateHandleSet());
+    writeFederateHandleVector(value.getFederateHandleVector());
   }
 
   void writeEnableTimeRegulationRequestMessage(const EnableTimeRegulationRequestMessage& value)
@@ -3140,7 +3140,7 @@ public:
     readFederateHandle(value.getFederateHandle());
     readString(value.getLabel());
     readVariableLengthData(value.getTag());
-    readFederateHandleSet(value.getFederateHandleSet());
+    readFederateHandleVector(value.getFederateHandleVector());
   }
 
   void readRegisterFederationSynchronizationPointResponseMessage(RegisterFederationSynchronizationPointResponseMessage& value)
@@ -3157,21 +3157,21 @@ public:
     readString(value.getLabel());
     readVariableLengthData(value.getTag());
     readBool(value.getAddJoiningFederates());
-    readFederateHandleSet(value.getFederateHandleSet());
+    readFederateHandleVector(value.getFederateHandleVector());
   }
 
   void readSynchronizationPointAchievedMessage(SynchronizationPointAchievedMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
     readString(value.getLabel());
-    readFederateHandleSet(value.getFederateHandleSet());
+    readFederateHandleVector(value.getFederateHandleVector());
   }
 
   void readFederationSynchronizedMessage(FederationSynchronizedMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
     readString(value.getLabel());
-    readFederateHandleSet(value.getFederateHandleSet());
+    readFederateHandleVector(value.getFederateHandleVector());
   }
 
   void readEnableTimeRegulationRequestMessage(EnableTimeRegulationRequestMessage& value)

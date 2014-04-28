@@ -1050,7 +1050,7 @@ RegisterFederationSynchronizationPointMessage::operator==(const RegisterFederati
   if (getFederateHandle() != rhs.getFederateHandle()) return false;
   if (getLabel() != rhs.getLabel()) return false;
   if (getTag() != rhs.getTag()) return false;
-  if (getFederateHandleSet() != rhs.getFederateHandleSet()) return false;
+  if (getFederateHandleVector() != rhs.getFederateHandleVector()) return false;
   return true;
 }
 
@@ -1065,8 +1065,8 @@ RegisterFederationSynchronizationPointMessage::operator<(const RegisterFederatio
   if (rhs.getLabel() < getLabel()) return false;
   if (getTag() < rhs.getTag()) return true;
   if (rhs.getTag() < getTag()) return false;
-  if (getFederateHandleSet() < rhs.getFederateHandleSet()) return true;
-  if (rhs.getFederateHandleSet() < getFederateHandleSet()) return false;
+  if (getFederateHandleVector() < rhs.getFederateHandleVector()) return true;
+  if (rhs.getFederateHandleVector() < getFederateHandleVector()) return false;
   return false;
 }
 
@@ -1171,7 +1171,7 @@ AnnounceSynchronizationPointMessage::operator==(const AnnounceSynchronizationPoi
   if (getLabel() != rhs.getLabel()) return false;
   if (getTag() != rhs.getTag()) return false;
   if (getAddJoiningFederates() != rhs.getAddJoiningFederates()) return false;
-  if (getFederateHandleSet() != rhs.getFederateHandleSet()) return false;
+  if (getFederateHandleVector() != rhs.getFederateHandleVector()) return false;
   return true;
 }
 
@@ -1186,8 +1186,8 @@ AnnounceSynchronizationPointMessage::operator<(const AnnounceSynchronizationPoin
   if (rhs.getTag() < getTag()) return false;
   if (getAddJoiningFederates() < rhs.getAddJoiningFederates()) return true;
   if (rhs.getAddJoiningFederates() < getAddJoiningFederates()) return false;
-  if (getFederateHandleSet() < rhs.getFederateHandleSet()) return true;
-  if (rhs.getFederateHandleSet() < getFederateHandleSet()) return false;
+  if (getFederateHandleVector() < rhs.getFederateHandleVector()) return true;
+  if (rhs.getFederateHandleVector() < getFederateHandleVector()) return false;
   return false;
 }
 
@@ -1231,7 +1231,7 @@ SynchronizationPointAchievedMessage::operator==(const SynchronizationPointAchiev
 {
   if (getFederationHandle() != rhs.getFederationHandle()) return false;
   if (getLabel() != rhs.getLabel()) return false;
-  if (getFederateHandleSet() != rhs.getFederateHandleSet()) return false;
+  if (getFederateHandleVector() != rhs.getFederateHandleVector()) return false;
   return true;
 }
 
@@ -1242,8 +1242,8 @@ SynchronizationPointAchievedMessage::operator<(const SynchronizationPointAchieve
   if (rhs.getFederationHandle() < getFederationHandle()) return false;
   if (getLabel() < rhs.getLabel()) return true;
   if (rhs.getLabel() < getLabel()) return false;
-  if (getFederateHandleSet() < rhs.getFederateHandleSet()) return true;
-  if (rhs.getFederateHandleSet() < getFederateHandleSet()) return false;
+  if (getFederateHandleVector() < rhs.getFederateHandleVector()) return true;
+  if (rhs.getFederateHandleVector() < getFederateHandleVector()) return false;
   return false;
 }
 
@@ -1287,7 +1287,7 @@ FederationSynchronizedMessage::operator==(const FederationSynchronizedMessage& r
 {
   if (getFederationHandle() != rhs.getFederationHandle()) return false;
   if (getLabel() != rhs.getLabel()) return false;
-  if (getFederateHandleSet() != rhs.getFederateHandleSet()) return false;
+  if (getFederateHandleVector() != rhs.getFederateHandleVector()) return false;
   return true;
 }
 
@@ -1298,8 +1298,8 @@ FederationSynchronizedMessage::operator<(const FederationSynchronizedMessage& rh
   if (rhs.getFederationHandle() < getFederationHandle()) return false;
   if (getLabel() < rhs.getLabel()) return true;
   if (rhs.getLabel() < getLabel()) return false;
-  if (getFederateHandleSet() < rhs.getFederateHandleSet()) return true;
-  if (rhs.getFederateHandleSet() < getFederateHandleSet()) return false;
+  if (getFederateHandleVector() < rhs.getFederateHandleVector()) return true;
+  if (rhs.getFederateHandleVector() < getFederateHandleVector()) return false;
   return false;
 }
 
