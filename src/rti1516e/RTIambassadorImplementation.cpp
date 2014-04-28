@@ -242,14 +242,6 @@ public:
   { }
 };
 
-class OPENRTI_LOCAL _I1516EFederateHandleSet : public OpenRTI::FederateHandleSet {
-public:
-  _I1516EFederateHandleSet(const rti1516e::FederateHandleSet& federateHandleSet)
-  {
-    for (rti1516e::FederateHandleSet::const_iterator i = federateHandleSet.begin(); i != federateHandleSet.end(); ++i)
-      insert(end(), OpenRTI::_I1516EFederateHandle(*i));
-  }
-};
 class OPENRTI_LOCAL _I1516EFederateHandleVector : public OpenRTI::FederateHandleVector {
 public:
   _I1516EFederateHandleVector(const rti1516e::FederateHandleSet& federateHandleSet)
@@ -403,6 +395,15 @@ public:
     for (OpenRTI::DimensionHandleSet::const_iterator i = dimensionHandleVector.begin();
          i != dimensionHandleVector.end(); ++i)
       insert(end(), OpenRTI::_O1516EDimensionHandle(*i));
+  }
+};
+class OPENRTI_LOCAL _O1516EFederateHandleSet : public rti1516e::FederateHandleSet {
+public:
+  _O1516EFederateHandleSet(const OpenRTI::FederateHandleVector& federateHandleVector)
+  {
+    for (OpenRTI::FederateHandleVector::const_iterator i = federateHandleVector.begin();
+         i != federateHandleVector.end(); ++i)
+      insert(end(), OpenRTI::_O1516EFederateHandle(*i));
   }
 };
 
@@ -588,7 +589,7 @@ public:
     }
   }
 
-  virtual void federationSynchronized(const std::string& label)
+  virtual void federationSynchronized(const std::string& label, const OpenRTI::FederateHandleVector& federateHandleVector)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -596,7 +597,8 @@ public:
       return;
     }
     try {
-      _federateAmbassador->federationSynchronized(utf8ToUcs(label), rti1516e::FederateHandleSet() /* FIXME */);
+      OpenRTI::_O1516EFederateHandleSet federateHandleSet(federateHandleVector);
+      _federateAmbassador->federationSynchronized(utf8ToUcs(label), federateHandleSet);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }
@@ -1917,7 +1919,8 @@ RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring
   try {
     OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
     // According to the standard, an empty set also means all federates currently joined.
-    _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, OpenRTI::FederateHandleSet());
+    OpenRTI::FederateHandleVector federateHandleVector;
+    _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, federateHandleVector);
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw rti1516e::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::SaveInProgress& e) {
@@ -1945,8 +1948,8 @@ RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring
 {
   try {
     OpenRTI::_I1516EVariableLengthData tag(rti1516Tag);
-    OpenRTI::_I1516EFederateHandleSet federateHandleSet(rti1516FederateHandleSet);
-    _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, federateHandleSet);
+    OpenRTI::_I1516EFederateHandleVector federateHandleVector(rti1516FederateHandleSet);
+    _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, federateHandleVector);
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw rti1516e::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::SaveInProgress& e) {

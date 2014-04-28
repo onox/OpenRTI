@@ -130,6 +130,16 @@ public:
       push_back(attributeHandleSet.getHandle(i));
   }
 };
+class OPENRTI_LOCAL _I13FederateHandleVector : public OpenRTI::FederateHandleVector {
+public:
+  _I13FederateHandleVector(const RTI::FederateHandleSet& federateHandleSet)
+  {
+    RTI::ULong federateHandleSetSize = federateHandleSet.size();
+    reserve(federateHandleSet.size() + 1);
+    for (RTI::ULong i = 0; i < federateHandleSetSize; ++i)
+      push_back(federateHandleSet.getHandle(i));
+  }
+};
 
 class OPENRTI_LOCAL _I13AttributeValueVector : public OpenRTI::AttributeValueVector {
 public:
@@ -221,7 +231,7 @@ public:
     }
   }
 
-  virtual void federationSynchronized(const std::string& label)
+  virtual void federationSynchronized(const std::string& label, const OpenRTI::FederateHandleVector&)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -1222,7 +1232,8 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char* label,
   try {
     // According to the standard, an empty set also means all federates currently joined.
     OpenRTI::_I13VariableLengthData _tag(tag);
-    privateRefs->registerFederationSynchronizationPoint(OpenRTI::localeToUtf8(label), _tag, OpenRTI::FederateHandleSet());
+    OpenRTI::FederateHandleVector federateHandleVector;
+    privateRefs->registerFederationSynchronizationPoint(OpenRTI::localeToUtf8(label), _tag, federateHandleVector);
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::SaveInProgress& e) {
@@ -1251,12 +1262,8 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char* label,
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     OpenRTI::_I13VariableLengthData _tag(tag);
-    OpenRTI::FederateHandleSet federateHandleSet;
-    ULong syncSetSize = syncSet.size();
-    for (ULong i = 0; i < syncSetSize; ++i)
-      federateHandleSet.insert(syncSet.getHandle(i));
-
-    privateRefs->registerFederationSynchronizationPoint(OpenRTI::localeToUtf8(label), _tag, federateHandleSet);
+    OpenRTI::_I13FederateHandleVector federateHandleVector(syncSet);
+    privateRefs->registerFederationSynchronizationPoint(OpenRTI::localeToUtf8(label), _tag, federateHandleVector);
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::SaveInProgress& e) {

@@ -149,14 +149,6 @@ public:
   { }
 };
 
-class OPENRTI_LOCAL _I1516FederateHandleSet : public OpenRTI::FederateHandleSet {
-public:
-  _I1516FederateHandleSet(const rti1516::FederateHandleSet& federateHandleSet)
-  {
-    for (rti1516::FederateHandleSet::const_iterator i = federateHandleSet.begin(); i != federateHandleSet.end(); ++i)
-      insert(end(), OpenRTI::_I1516FederateHandle(*i));
-  }
-};
 class OPENRTI_LOCAL _I1516FederateHandleVector : public OpenRTI::FederateHandleVector {
 public:
   _I1516FederateHandleVector(const rti1516::FederateHandleSet& federateHandleSet)
@@ -428,7 +420,7 @@ public:
     }
   }
 
-  virtual void federationSynchronized(const std::string& label)
+  virtual void federationSynchronized(const std::string& label, const OpenRTI::FederateHandleVector&)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -1536,7 +1528,8 @@ RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring
   try {
     OpenRTI::_I1516VariableLengthData tag(rti1516Tag);
     // According to the standard, an empty set also means all federates currently joined.
-    _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, OpenRTI::FederateHandleSet());
+    OpenRTI::FederateHandleVector federateHandleVector;
+    _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, federateHandleVector);
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::SaveInProgress& e) {
@@ -1563,8 +1556,8 @@ RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring
 {
   try {
     OpenRTI::_I1516VariableLengthData tag(rti1516Tag);
-    OpenRTI::_I1516FederateHandleSet federateHandleSet(rti1516FederateHandleSet);
-    _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, federateHandleSet);
+    OpenRTI::_I1516FederateHandleVector federateHandleVector(rti1516FederateHandleSet);
+    _ambassadorInterface->registerFederationSynchronizationPoint(ucsToUtf8(label), tag, federateHandleVector);
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::SaveInProgress& e) {

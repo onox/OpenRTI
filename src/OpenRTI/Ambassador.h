@@ -280,7 +280,7 @@ public:
   }
 
 
-  void registerFederationSynchronizationPoint(const std::string& label, VariableLengthData& tag, const FederateHandleSet& syncSet)
+  void registerFederationSynchronizationPoint(const std::string& label, VariableLengthData& tag, FederateHandleVector& syncSet)
     // throw (FederateNotExecutionMember,
     //        SaveInProgress,
     //        RestoreInProgress,
@@ -299,7 +299,9 @@ public:
     message->setFederateHandle(getFederateHandle());
     message->setLabel(label);
     message->getTag().swap(tag);
-    message->setFederateHandleSet(syncSet);
+    // message->getFederateHandleVector().swap(syncSet);
+    for (FederateHandleVector::const_iterator i = syncSet.begin(); i != syncSet.end(); ++i)
+      message->getFederateHandleSet().insert(*i);
     send(message);
   }
 
@@ -3460,7 +3462,9 @@ public:
   {
     if (!_federate.valid())
       return;
-    federationSynchronized(message.getLabel());
+    /* FIXME fill this with the successfull ones */
+    FederateHandleVector federateHandleVector;
+    federationSynchronized(message.getLabel(), federateHandleVector);
     _federate->eraseAnnouncedFederationSynchonizationLabel(message.getLabel());
   }
   void acceptCallbackMessage(const RegistrationForObjectClassMessage& message)
@@ -3667,7 +3671,7 @@ public:
     throw () = 0;
   virtual void announceSynchronizationPoint(const std::string& label, const VariableLengthData& tag)
     throw () = 0;
-  virtual void federationSynchronized(const std::string& label)
+  virtual void federationSynchronized(const std::string& label, const FederateHandleVector& federateHandleVector)
     throw () = 0;
 
   virtual void registrationForObjectClass(ObjectClassHandle objectClassHandle, bool start)
