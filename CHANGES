@@ -6,6 +6,7 @@ OpenRTI-0.6.0 (development)
  * Bring the language binding of rti1516e to the same level than rti1516.
  * Make advisory switches do something sensible, even if it is not coorrect.
  * Implement requestClassAttributeUpdate.
+ * Fix default value for asynchronous delivery enabled.
 
  * For a more detailed list of changes see the git history.
 

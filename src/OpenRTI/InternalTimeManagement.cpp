@@ -25,7 +25,7 @@ InternalTimeManagement::InternalTimeManagement() :
   _timeRegulationMode(TimeRegulationDisabled),
   _timeConstrainedMode(TimeConstrainedDisabled),
   _timeAdvanceMode(TimeAdvanceGranted),
-  _asynchronousDeliveryEnabled(true),
+  _asynchronousDeliveryEnabled(false),
   _messageRetractionSerial(0)
 {
 }
