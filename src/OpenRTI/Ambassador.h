@@ -3099,8 +3099,7 @@ public:
     if (!_federate->getObjectClassRelevanceAdvisorySwitchEnabled())
       throw ObjectClassRelevanceAdvisorySwitchIsOff();
     _federate->setObjectClassRelevanceAdvisorySwitchEnabled(false);
-
-    throw RTIinternalError("Not implemented");
+    // I think we do not want the stop registration for object class messages for each object class ...
   }
 
   void enableAttributeRelevanceAdvisorySwitch()
@@ -3137,8 +3136,7 @@ public:
     if (!_federate->getAttributeRelevanceAdvisorySwitchEnabled())
       throw AttributeRelevanceAdvisorySwitchIsOff();
     _federate->setAttributeRelevanceAdvisorySwitchEnabled(false);
-
-    throw RTIinternalError("Not implemented");
+    // I think we do not want the attribute update turn off messages for each attribute ...
   }
 
   void enableAttributeScopeAdvisorySwitch()
@@ -3175,8 +3173,7 @@ public:
     if (!_federate->getAttributeScopeAdvisorySwitchEnabled())
       throw AttributeScopeAdvisorySwitchIsOff();
     _federate->setAttributeScopeAdvisorySwitchEnabled(false);
-
-    throw RTIinternalError("Not implemented");
+    // I think we do not want the attribute update turn off messages for each attribute ...
   }
 
   void enableInteractionRelevanceAdvisorySwitch()
@@ -3213,7 +3210,7 @@ public:
     if (!_federate->getInteractionRelevanceAdvisorySwitchEnabled())
       throw InteractionRelevanceAdvisorySwitchIsOff();
     _federate->setInteractionRelevanceAdvisorySwitchEnabled(false);
-    throw RTIinternalError("Not implemented");
+    // I think we do not want the turn off messages for each published class ...
   }
 
   DimensionHandleSet getDimensionHandleSet(RegionHandle regionHandle)
