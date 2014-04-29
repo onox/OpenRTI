@@ -1315,6 +1315,20 @@ public:
     writeBool(value.getStart());
   }
 
+  void writeAttributesInScopeMessage(const AttributesInScopeMessage& value)
+  {
+    writeObjectInstanceHandle(value.getObjectInstanceHandle());
+    writeAttributeHandleVector(value.getAttributeHandles());
+    writeBool(value.getInScope());
+  }
+
+  void writeTurnUpdatesOnForInstanceMessage(const TurnUpdatesOnForInstanceMessage& value)
+  {
+    writeObjectInstanceHandle(value.getObjectInstanceHandle());
+    writeAttributeHandleVector(value.getAttributeHandles());
+    writeBool(value.getOn());
+  }
+
   void writeTurnInteractionsOnMessage(const TurnInteractionsOnMessage& value)
   {
     writeInteractionClassHandle(value.getInteractionClassHandle());
@@ -3285,6 +3299,20 @@ public:
   {
     readObjectClassHandle(value.getObjectClassHandle());
     readBool(value.getStart());
+  }
+
+  void readAttributesInScopeMessage(AttributesInScopeMessage& value)
+  {
+    readObjectInstanceHandle(value.getObjectInstanceHandle());
+    readAttributeHandleVector(value.getAttributeHandles());
+    readBool(value.getInScope());
+  }
+
+  void readTurnUpdatesOnForInstanceMessage(TurnUpdatesOnForInstanceMessage& value)
+  {
+    readObjectInstanceHandle(value.getObjectInstanceHandle());
+    readAttributeHandleVector(value.getAttributeHandles());
+    readBool(value.getOn());
   }
 
   void readTurnInteractionsOnMessage(TurnInteractionsOnMessage& value)

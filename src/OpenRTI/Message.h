@@ -324,6 +324,8 @@ class ChangeObjectClassPublicationMessage;
 class ChangeInteractionClassSubscriptionMessage;
 class ChangeObjectClassSubscriptionMessage;
 class RegistrationForObjectClassMessage;
+class AttributesInScopeMessage;
+class TurnUpdatesOnForInstanceMessage;
 class TurnInteractionsOnMessage;
 class InteractionMessage;
 class TimeStampedInteractionMessage;
@@ -4527,6 +4529,126 @@ private:
   Bool _start;
 };
 
+class OPENRTI_API AttributesInScopeMessage : public AbstractMessage {
+public:
+  AttributesInScopeMessage();
+  virtual ~AttributesInScopeMessage();
+
+  virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const AttributesInScopeMessage& rhs) const;
+  bool operator<(const AttributesInScopeMessage& rhs) const;
+  bool operator!=(const AttributesInScopeMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const AttributesInScopeMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const AttributesInScopeMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const AttributesInScopeMessage& rhs) const
+  { return !operator>(rhs); }
+
+  void setObjectInstanceHandle(const ObjectInstanceHandle& value)
+  { _objectInstanceHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectInstanceHandle(ObjectInstanceHandle&& value)
+  { _objectInstanceHandle = value; }
+#endif
+  ObjectInstanceHandle& getObjectInstanceHandle()
+  { return _objectInstanceHandle; }
+  const ObjectInstanceHandle& getObjectInstanceHandle() const
+  { return _objectInstanceHandle; }
+
+  void setAttributeHandles(const AttributeHandleVector& value)
+  { _attributeHandles = value; }
+#if 201103L <= __cplusplus
+  void setAttributeHandles(AttributeHandleVector&& value)
+  { _attributeHandles = value; }
+#endif
+  AttributeHandleVector& getAttributeHandles()
+  { return _attributeHandles; }
+  const AttributeHandleVector& getAttributeHandles() const
+  { return _attributeHandles; }
+
+  void setInScope(const Bool& value)
+  { _inScope = value; }
+#if 201103L <= __cplusplus
+  void setInScope(Bool&& value)
+  { _inScope = value; }
+#endif
+  Bool& getInScope()
+  { return _inScope; }
+  const Bool& getInScope() const
+  { return _inScope; }
+
+private:
+  ObjectInstanceHandle _objectInstanceHandle;
+  AttributeHandleVector _attributeHandles;
+  Bool _inScope;
+};
+
+class OPENRTI_API TurnUpdatesOnForInstanceMessage : public AbstractMessage {
+public:
+  TurnUpdatesOnForInstanceMessage();
+  virtual ~TurnUpdatesOnForInstanceMessage();
+
+  virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const TurnUpdatesOnForInstanceMessage& rhs) const;
+  bool operator<(const TurnUpdatesOnForInstanceMessage& rhs) const;
+  bool operator!=(const TurnUpdatesOnForInstanceMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const TurnUpdatesOnForInstanceMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const TurnUpdatesOnForInstanceMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const TurnUpdatesOnForInstanceMessage& rhs) const
+  { return !operator>(rhs); }
+
+  void setObjectInstanceHandle(const ObjectInstanceHandle& value)
+  { _objectInstanceHandle = value; }
+#if 201103L <= __cplusplus
+  void setObjectInstanceHandle(ObjectInstanceHandle&& value)
+  { _objectInstanceHandle = value; }
+#endif
+  ObjectInstanceHandle& getObjectInstanceHandle()
+  { return _objectInstanceHandle; }
+  const ObjectInstanceHandle& getObjectInstanceHandle() const
+  { return _objectInstanceHandle; }
+
+  void setAttributeHandles(const AttributeHandleVector& value)
+  { _attributeHandles = value; }
+#if 201103L <= __cplusplus
+  void setAttributeHandles(AttributeHandleVector&& value)
+  { _attributeHandles = value; }
+#endif
+  AttributeHandleVector& getAttributeHandles()
+  { return _attributeHandles; }
+  const AttributeHandleVector& getAttributeHandles() const
+  { return _attributeHandles; }
+
+  void setOn(const Bool& value)
+  { _on = value; }
+#if 201103L <= __cplusplus
+  void setOn(Bool&& value)
+  { _on = value; }
+#endif
+  Bool& getOn()
+  { return _on; }
+  const Bool& getOn() const
+  { return _on; }
+
+private:
+  ObjectInstanceHandle _objectInstanceHandle;
+  AttributeHandleVector _attributeHandles;
+  Bool _on;
+};
+
 class OPENRTI_API TurnInteractionsOnMessage : public AbstractMessage {
 public:
   TurnInteractionsOnMessage();
@@ -7673,6 +7795,34 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const RegistrationFor
   os << "objectClassHandle: " << value.getObjectClassHandle();
   os << ", ";
   os << "start: " << value.getStart();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const AttributesInScopeMessage& value)
+{
+  os << "{ ";
+  os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
+  os << ", ";
+  os << "attributeHandles: " << value.getAttributeHandles();
+  os << ", ";
+  os << "inScope: " << value.getInScope();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const TurnUpdatesOnForInstanceMessage& value)
+{
+  os << "{ ";
+  os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
+  os << ", ";
+  os << "attributeHandles: " << value.getAttributeHandles();
+  os << ", ";
+  os << "on: " << value.getOn();
   os << " }";
   return os;
 }

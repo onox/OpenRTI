@@ -3472,6 +3472,20 @@ public:
   }
   void acceptCallbackMessage(const RegistrationForObjectClassMessage& message)
   { registrationForObjectClass(message.getObjectClassHandle(), message.getStart()); }
+  void acceptCallbackMessage(const AttributesInScopeMessage& message)
+  {
+    if (message.getInScope())
+      attributesInScope(message.getObjectInstanceHandle(), message.getAttributeHandles());
+    else
+      attributesOutOfScope(message.getObjectInstanceHandle(), message.getAttributeHandles());
+  }
+  void acceptCallbackMessage(const TurnUpdatesOnForInstanceMessage& message)
+  {
+    if (message.getOn())
+      turnUpdatesOnForObjectInstance(message.getObjectInstanceHandle(), message.getAttributeHandles());
+    else
+      turnUpdatesOffForObjectInstance(message.getObjectInstanceHandle(), message.getAttributeHandles());
+  }
   void acceptCallbackMessage(const TurnInteractionsOnMessage& message)
   { turnInteractionsOn(message.getInteractionClassHandle(), message.getOn()); }
 

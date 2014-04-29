@@ -2237,6 +2237,118 @@ RegistrationForObjectClassMessage::operator<(const RegistrationForObjectClassMes
   return false;
 }
 
+AttributesInScopeMessage::AttributesInScopeMessage()
+{
+}
+
+AttributesInScopeMessage::~AttributesInScopeMessage()
+{
+}
+
+const char*
+AttributesInScopeMessage::getTypeName() const
+{
+  return "AttributesInScopeMessage";
+}
+
+void
+AttributesInScopeMessage::out(std::ostream& os) const
+{
+  os << "AttributesInScopeMessage " << *this;
+}
+
+void
+AttributesInScopeMessage::dispatch(const AbstractMessageDispatcher& dispatcher) const
+{
+  dispatcher.accept(*this);
+}
+
+bool
+AttributesInScopeMessage::operator==(const AbstractMessage& rhs) const
+{
+  const AttributesInScopeMessage* message = dynamic_cast<const AttributesInScopeMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+AttributesInScopeMessage::operator==(const AttributesInScopeMessage& rhs) const
+{
+  if (getObjectInstanceHandle() != rhs.getObjectInstanceHandle()) return false;
+  if (getAttributeHandles() != rhs.getAttributeHandles()) return false;
+  if (getInScope() != rhs.getInScope()) return false;
+  return true;
+}
+
+bool
+AttributesInScopeMessage::operator<(const AttributesInScopeMessage& rhs) const
+{
+  if (getObjectInstanceHandle() < rhs.getObjectInstanceHandle()) return true;
+  if (rhs.getObjectInstanceHandle() < getObjectInstanceHandle()) return false;
+  if (getAttributeHandles() < rhs.getAttributeHandles()) return true;
+  if (rhs.getAttributeHandles() < getAttributeHandles()) return false;
+  if (getInScope() < rhs.getInScope()) return true;
+  if (rhs.getInScope() < getInScope()) return false;
+  return false;
+}
+
+TurnUpdatesOnForInstanceMessage::TurnUpdatesOnForInstanceMessage()
+{
+}
+
+TurnUpdatesOnForInstanceMessage::~TurnUpdatesOnForInstanceMessage()
+{
+}
+
+const char*
+TurnUpdatesOnForInstanceMessage::getTypeName() const
+{
+  return "TurnUpdatesOnForInstanceMessage";
+}
+
+void
+TurnUpdatesOnForInstanceMessage::out(std::ostream& os) const
+{
+  os << "TurnUpdatesOnForInstanceMessage " << *this;
+}
+
+void
+TurnUpdatesOnForInstanceMessage::dispatch(const AbstractMessageDispatcher& dispatcher) const
+{
+  dispatcher.accept(*this);
+}
+
+bool
+TurnUpdatesOnForInstanceMessage::operator==(const AbstractMessage& rhs) const
+{
+  const TurnUpdatesOnForInstanceMessage* message = dynamic_cast<const TurnUpdatesOnForInstanceMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+TurnUpdatesOnForInstanceMessage::operator==(const TurnUpdatesOnForInstanceMessage& rhs) const
+{
+  if (getObjectInstanceHandle() != rhs.getObjectInstanceHandle()) return false;
+  if (getAttributeHandles() != rhs.getAttributeHandles()) return false;
+  if (getOn() != rhs.getOn()) return false;
+  return true;
+}
+
+bool
+TurnUpdatesOnForInstanceMessage::operator<(const TurnUpdatesOnForInstanceMessage& rhs) const
+{
+  if (getObjectInstanceHandle() < rhs.getObjectInstanceHandle()) return true;
+  if (rhs.getObjectInstanceHandle() < getObjectInstanceHandle()) return false;
+  if (getAttributeHandles() < rhs.getAttributeHandles()) return true;
+  if (rhs.getAttributeHandles() < getAttributeHandles()) return false;
+  if (getOn() < rhs.getOn()) return true;
+  if (rhs.getOn() < getOn()) return false;
+  return false;
+}
+
 TurnInteractionsOnMessage::TurnInteractionsOnMessage()
 {
 }

@@ -645,6 +645,16 @@
     <field name="ObjectClassHandle" type="ObjectClassHandle"/>
     <field name="Start" type="Bool"/>
   </message>
+  <message type="AttributesInScope">
+    <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
+    <field name="AttributeHandles" type="AttributeHandleVector"/>
+    <field name="InScope" type="Bool"/>
+  </message>
+  <message type="TurnUpdatesOnForInstance">
+    <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
+    <field name="AttributeHandles" type="AttributeHandleVector"/>
+    <field name="On" type="Bool"/>
+  </message>
   <message type="TurnInteractionsOn">
     <field name="InteractionClassHandle" type="InteractionClassHandle"/>
     <field name="On" type="Bool"/>
