@@ -425,7 +425,34 @@ InternalAmbassador::acceptInternalMessage(const RequestAttributeUpdateMessage& m
 void
 InternalAmbassador::acceptInternalMessage(const RequestClassAttributeUpdateMessage& message)
 {
-  // queueCallback(message);
+  Federate* federate = getFederate();
+  OpenRTIAssert(federate);
+
+  for (Federate::ObjectInstanceHandleMap::const_iterator i = federate->getObjectInstanceHandleMap().begin();
+       i != federate->getObjectInstanceHandleMap().end(); ++i) {
+    const Federate::ObjectInstance* objectInstance = i->second.get();
+    if (!objectInstance)
+      continue;
+    // FIXME have a list of object instances by class
+    ObjectClassHandle objectClassHandle = objectInstance->getObjectClassHandle();
+    while (objectClassHandle.valid()) {
+      if (objectClassHandle == message.getObjectClassHandle())
+        break;
+      const Federate::ObjectClass* objectClass = federate->getObjectClass(objectClassHandle);
+      OpenRTIAssert(objectClass);
+      objectClassHandle = objectClass->getParentObjectClassHandle();
+    }
+    if (!objectClassHandle.valid())
+      continue;
+
+    SharedPtr<RequestAttributeUpdateMessage> request;
+    request = new RequestAttributeUpdateMessage;
+    request->setFederationHandle(federate->getFederationHandle());
+    request->setObjectInstanceHandle(i->first);
+    request->setAttributeHandles(message.getAttributeHandles());
+    request->setTag(message.getTag());
+    queueCallback(request);
+  }
 }
 
 class OPENRTI_LOCAL InternalAmbassador::_CreateFederationExecutionFunctor {
