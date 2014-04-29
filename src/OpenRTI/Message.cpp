@@ -2333,6 +2333,7 @@ TurnUpdatesOnForInstanceMessage::operator==(const TurnUpdatesOnForInstanceMessag
 {
   if (getObjectInstanceHandle() != rhs.getObjectInstanceHandle()) return false;
   if (getAttributeHandles() != rhs.getAttributeHandles()) return false;
+  if (getUpdateRate() != rhs.getUpdateRate()) return false;
   if (getOn() != rhs.getOn()) return false;
   return true;
 }
@@ -2344,6 +2345,8 @@ TurnUpdatesOnForInstanceMessage::operator<(const TurnUpdatesOnForInstanceMessage
   if (rhs.getObjectInstanceHandle() < getObjectInstanceHandle()) return false;
   if (getAttributeHandles() < rhs.getAttributeHandles()) return true;
   if (rhs.getAttributeHandles() < getAttributeHandles()) return false;
+  if (getUpdateRate() < rhs.getUpdateRate()) return true;
+  if (rhs.getUpdateRate() < getUpdateRate()) return false;
   if (getOn() < rhs.getOn()) return true;
   if (rhs.getOn() < getOn()) return false;
   return false;

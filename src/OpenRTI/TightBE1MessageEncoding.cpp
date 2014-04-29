@@ -1326,6 +1326,7 @@ public:
   {
     writeObjectInstanceHandle(value.getObjectInstanceHandle());
     writeAttributeHandleVector(value.getAttributeHandles());
+    writeString(value.getUpdateRate());
     writeBool(value.getOn());
   }
 
@@ -3312,6 +3313,7 @@ public:
   {
     readObjectInstanceHandle(value.getObjectInstanceHandle());
     readAttributeHandleVector(value.getAttributeHandles());
+    readString(value.getUpdateRate());
     readBool(value.getOn());
   }
 

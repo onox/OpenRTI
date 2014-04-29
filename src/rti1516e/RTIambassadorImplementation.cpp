@@ -1183,7 +1183,7 @@ public:
   // 6.19
   virtual
   void
-  turnUpdatesOnForObjectInstance(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
+  turnUpdatesOnForObjectInstance(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector, const std::string& updateRate)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -1193,7 +1193,12 @@ public:
     try {
       OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
       OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
-      _federateAmbassador->turnUpdatesOnForObjectInstance(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
+      if (updateRate.empty()) {
+        _federateAmbassador->turnUpdatesOnForObjectInstance(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
+      } else {
+        std::wstring rti1516UpdateRate = utf8ToUcs(updateRate);
+        _federateAmbassador->turnUpdatesOnForObjectInstance(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516UpdateRate);
+      }
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
     }

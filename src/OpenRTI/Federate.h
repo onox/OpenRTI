@@ -82,6 +82,9 @@ public:
   { return _permitTimeRegulation; }
   void setPermitTimeRegulation(bool permitTimeRegulation);
 
+  /// rti1516e update rates.
+  double getUpdateRateValue(const std::string& name) const;
+
   /// TransportationTypes
   const TransportationType* getTransportationType(const std::string& name) const;
   const std::string* getTransportationName(TransportationType transportationType) const;
@@ -364,6 +367,10 @@ public:
     { return _isOwnedByFederate; }
     void setIsOwnedByFederate(bool isOwnedByFederate);
 
+    double getUpdateRate() const
+    { return _updateRate; }
+    void setUpdateRate(double updateRate);
+
   private:
     InstanceAttribute(const InstanceAttribute&);
     InstanceAttribute& operator=(const InstanceAttribute&);
@@ -371,6 +378,7 @@ public:
     OrderType _orderType;
     TransportationType _transportationType;
     bool _isOwnedByFederate;
+    double _updateRate;
   };
   typedef std::vector<SharedPtr<InstanceAttribute> > InstanceAttributeVector;
 

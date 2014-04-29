@@ -741,6 +741,8 @@ public:
     for (AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
       if (!objectClass->getAttribute(*i))
         throw AttributeNotDefined(i->toString());
+    if (_federate->getUpdateRateValue(updateRateDesignator) < 0)
+      throw InvalidUpdateRateDesignator(updateRateDesignator);
     if (!updateRateDesignator.empty())
       throw RTIinternalError("Non trvial update rate designators are not implemented yet!");
 
@@ -1124,6 +1126,7 @@ public:
         message->setObjectInstanceHandle(handleNamePair.first);
         message->getAttributeHandles().swap(attributeHandleVector);
         message->setOn(true);
+        // message->setUpdateRate(/*FIXME*/);
         queueCallback(message);
       }
     }
@@ -1218,6 +1221,7 @@ public:
         message->setObjectInstanceHandle(objectInstanceHandle);
         message->getAttributeHandles().swap(attributeHandleVector);
         message->setOn(true);
+        // message->setUpdateRate(/*FIXME*/);
         queueCallback(message);
       }
     }
@@ -2845,8 +2849,10 @@ public:
       throw NotConnected();
     if (!_federate.valid())
       throw FederateNotExecutionMember();
-    throw RTIinternalError("Not implemented");
-    return 0;
+    double updateRateValue = _federate->getUpdateRateValue(updateRateDesignator);
+    if (updateRateValue < 0)
+      throw InvalidUpdateRateDesignator(updateRateDesignator);
+    return updateRateValue;
   }
 
   double getUpdateRateValueForAttribute(ObjectInstanceHandle objectInstanceHandle, AttributeHandle attributeHandle)
@@ -2860,8 +2866,13 @@ public:
       throw NotConnected();
     if (!_federate.valid())
       throw FederateNotExecutionMember();
-    throw RTIinternalError("Not implemented");
-    return 0;
+    Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
+    if (!objectInstance)
+      throw ObjectInstanceNotKnown(objectInstanceHandle.toString());
+    const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(attributeHandle);
+    if (!instanceAttribute)
+      throw AttributeNotDefined(attributeHandle.toString());
+    return instanceAttribute->getUpdateRate();
   }
 
   InteractionClassHandle getInteractionClassHandle(const std::string& name)
@@ -3227,6 +3238,7 @@ public:
       message->setObjectInstanceHandle(i->first);
       message->getAttributeHandles().swap(attributeHandleVector);
       message->setOn(true);
+      // message->setUpdateRate(/*FIXME*/);
       queueCallback(message);
     }
   }
@@ -3630,7 +3642,7 @@ public:
   void acceptCallbackMessage(const TurnUpdatesOnForInstanceMessage& message)
   {
     if (message.getOn())
-      turnUpdatesOnForObjectInstance(message.getObjectInstanceHandle(), message.getAttributeHandles());
+      turnUpdatesOnForObjectInstance(message.getObjectInstanceHandle(), message.getAttributeHandles(), message.getUpdateRate());
     else
       turnUpdatesOffForObjectInstance(message.getObjectInstanceHandle(), message.getAttributeHandles());
   }
@@ -3894,7 +3906,7 @@ public:
     throw () = 0;
 
   // 6.19
-  virtual void turnUpdatesOnForObjectInstance(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
+  virtual void turnUpdatesOnForObjectInstance(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector, const std::string& updateRate)
     throw () = 0;
 
   // 6.20

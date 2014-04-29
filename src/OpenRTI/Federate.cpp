@@ -373,7 +373,8 @@ Federate::ObjectClass::setPublicationType(PublicationType publicationType)
 Federate::InstanceAttribute::InstanceAttribute(const Federate::Attribute& attribute, bool isOwnedByFederate) :
   _orderType(attribute.getOrderType()),
   _transportationType(attribute.getTransportationType()),
-  _isOwnedByFederate(isOwnedByFederate)
+  _isOwnedByFederate(isOwnedByFederate),
+  _updateRate(0)
 {
 }
 
@@ -397,6 +398,12 @@ void
 Federate::InstanceAttribute::setIsOwnedByFederate(bool isOwnedByFederate)
 {
   _isOwnedByFederate = isOwnedByFederate;
+}
+
+void
+Federate::InstanceAttribute::setUpdateRate(double updateRate)
+{
+  _updateRate = updateRate;
 }
 
 Federate::ObjectInstance::ObjectInstance(NameObjectInstanceHandleMap::iterator nameObjectInstanceHandleMapIterator,
@@ -565,6 +572,13 @@ void
 Federate::setPermitTimeRegulation(bool permitTimeRegulation)
 {
   _permitTimeRegulation = permitTimeRegulation;
+}
+
+double
+Federate::getUpdateRateValue(const std::string& name) const
+{
+  return 0;
+  // FIXME
 }
 
 const TransportationType*
@@ -1101,6 +1115,7 @@ Federate::synchronizationLabelAnnounced(const std::string& label) const
 void
 Federate::insertFOMModule(const FOMModule& module)
 {
+  // FIXME missing update rates.
   for (FOMDimensionList::const_iterator i = module.getDimensionList().begin();
        i != module.getDimensionList().end(); ++i)
     insertDimension(i->getName(), i->getDimensionHandle(), i->getUpperBound());

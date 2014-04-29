@@ -4632,6 +4632,17 @@ public:
   const AttributeHandleVector& getAttributeHandles() const
   { return _attributeHandles; }
 
+  void setUpdateRate(const String& value)
+  { _updateRate = value; }
+#if 201103L <= __cplusplus
+  void setUpdateRate(String&& value)
+  { _updateRate = value; }
+#endif
+  String& getUpdateRate()
+  { return _updateRate; }
+  const String& getUpdateRate() const
+  { return _updateRate; }
+
   void setOn(const Bool& value)
   { _on = value; }
 #if 201103L <= __cplusplus
@@ -4646,6 +4657,7 @@ public:
 private:
   ObjectInstanceHandle _objectInstanceHandle;
   AttributeHandleVector _attributeHandles;
+  String _updateRate;
   Bool _on;
 };
 
@@ -7821,6 +7833,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const TurnUpdatesOnFo
   os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
   os << ", ";
   os << "attributeHandles: " << value.getAttributeHandles();
+  os << ", ";
+  os << "updateRate: " << value.getUpdateRate();
   os << ", ";
   os << "on: " << value.getOn();
   os << " }";

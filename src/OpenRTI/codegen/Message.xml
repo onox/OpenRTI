@@ -653,6 +653,7 @@
   <message type="TurnUpdatesOnForInstance">
     <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
     <field name="AttributeHandles" type="AttributeHandleVector"/>
+    <field name="UpdateRate" type="String"/>
     <field name="On" type="Bool"/>
   </message>
   <message type="TurnInteractionsOn">

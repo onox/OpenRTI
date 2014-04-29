@@ -725,7 +725,7 @@ public:
   // 6.19
   virtual
   void
-  turnUpdatesOnForObjectInstance(OpenRTI::ObjectInstanceHandle objectInstanceHandle, const OpenRTI::AttributeHandleVector& attributeHandleVector)
+  turnUpdatesOnForObjectInstance(OpenRTI::ObjectInstanceHandle objectInstanceHandle, const OpenRTI::AttributeHandleVector& attributeHandleVector, const std::string&)
     throw ()
   {
     if (!_federateAmbassador) {

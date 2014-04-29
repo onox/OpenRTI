@@ -985,7 +985,7 @@ public:
   // 6.19
   virtual
   void
-  turnUpdatesOnForObjectInstance(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
+  turnUpdatesOnForObjectInstance(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector, const std::string&)
     throw ()
   {
     if (!_federateAmbassador) {
