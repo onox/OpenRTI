@@ -315,6 +315,7 @@ public:
     // Sets the local publish status. Returns true if the publish type changed with this call.
     bool setAttributePublicationType(const AttributeHandle& attributeHandle, PublicationType publicationType);
 
+    bool isPublished() const;
     PublicationType getEffectivePublicationType() const;
     PublicationType getPublicationType() const
     { return _publicationType; }

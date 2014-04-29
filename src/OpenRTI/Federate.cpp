@@ -350,6 +350,12 @@ Federate::ObjectClass::setAttributePublicationType(const AttributeHandle& attrib
   return oldPublicationType != getEffectiveAttributePublicationType(attributeHandle);
 }
 
+bool
+Federate::ObjectClass::isPublished() const
+{
+  return Unpublished != getEffectivePublicationType();
+}
+
 PublicationType
 Federate::ObjectClass::getEffectivePublicationType() const
 {

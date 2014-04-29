@@ -518,10 +518,12 @@ public:
       if (!objectClass->getAttribute(*i))
         throw AttributeNotDefined(i->toString());
 
+    bool objectClassFreshPublished = false;
     // Mark the objectclass itself as published.
     // Append this to the request if this publication has changed
     AttributeHandleVector::iterator j = attributeHandleVector.begin();
     if (objectClass->setPublicationType(Published)) {
+      objectClassFreshPublished = true;
       if (attributeHandleVector.empty() || attributeHandleVector.front() != AttributeHandle(0))
         j = attributeHandleVector.insert(attributeHandleVector.begin(), AttributeHandle(0));
       ++j;
@@ -546,6 +548,16 @@ public:
     request->setPublicationType(Published);
     request->getAttributeHandles().swap(attributeHandleVector);
     send(request);
+
+    // Simple implementation only listening to the ambassadors own publication
+    // see comment in enableObjectClassRelevanceAdvisorySwitch()
+    if (objectClassFreshPublished && _federate->getObjectClassRelevanceAdvisorySwitchEnabled()) {
+      SharedPtr<RegistrationForObjectClassMessage> message = new RegistrationForObjectClassMessage;
+      message->setObjectClassHandle(objectClassHandle);
+      message->setStart(true);
+
+      queueCallback(message);
+    }
   }
 
   void unpublishObjectClass(ObjectClassHandle objectClassHandle)
@@ -589,6 +601,8 @@ public:
     request->setPublicationType(Unpublished);
     request->getAttributeHandles().swap(attributeHandleVector);
     send(request);
+
+    // No advisory callbacks in unpublished state
   }
 
   // Note that the attributeHandleVector is consumed as if it could be with a lref in c++11
@@ -637,6 +651,8 @@ public:
     request->setPublicationType(Unpublished);
     request->getAttributeHandles().swap(attributeHandleVector);
     send(request);
+
+    // No advisory callbacks in unpublished state
   }
 
   void publishInteractionClass(InteractionClassHandle interactionClassHandle)
@@ -663,6 +679,16 @@ public:
     request->setPublicationType(Published);
 
     send(request);
+
+    // Simple implementation only listening to the ambassadors own publication
+    // see comment in enableInteractionRelevanceAdvisorySwitch()
+    if (_federate->getInteractionRelevanceAdvisorySwitchEnabled()) {
+      SharedPtr<TurnInteractionsOnMessage> message = new TurnInteractionsOnMessage;
+      message->setInteractionClassHandle(interactionClassHandle);
+      message->setOn(true);
+
+      queueCallback(message);
+    }
   }
 
   void unpublishInteractionClass(InteractionClassHandle interactionClassHandle)
@@ -690,6 +716,8 @@ public:
     request->setPublicationType(Unpublished);
 
     send(request);
+
+    // No advisory callbacks in unpublished state
   }
 
   void subscribeObjectClassAttributes(ObjectClassHandle objectClassHandle, AttributeHandleVector& attributeHandleVector, bool active, const std::string& updateRateDesignator)
@@ -1068,15 +1096,37 @@ public:
     request->setObjectClassHandle(objectClassHandle);
     request->setObjectInstanceHandle(handleNamePair.first);
     request->setName(handleNamePair.second);
-    request->getAttributeStateVector().reserve(objectClass->getNumAttributes());
-    for (size_t i = 0; i < objectClass->getNumAttributes(); ++i) {
+    std::size_t numAttributes = objectClass->getNumAttributes();
+    request->getAttributeStateVector().reserve(numAttributes);
+    AttributeHandleVector attributeHandleVector;
+    attributeHandleVector.reserve(numAttributes);
+    for (size_t i = 0; i < numAttributes; ++i) {
       if (!objectClass->isAttributePublished(AttributeHandle(i)))
         continue;
       AttributeState attributeState;
       attributeState.setAttributeHandle(AttributeHandle(i));
       request->getAttributeStateVector().push_back(attributeState);
+      attributeHandleVector.push_back(AttributeHandle(i));
     }
     send(request);
+
+    if (!attributeHandleVector.empty()) {
+      if (_federate->getAttributeScopeAdvisorySwitchEnabled()) {
+        SharedPtr<AttributesInScopeMessage> message = new AttributesInScopeMessage;
+        message->setObjectInstanceHandle(handleNamePair.first);
+        // Copy this here since we might need it later
+        message->setAttributeHandles(attributeHandleVector);
+        message->setInScope(true);
+        queueCallback(message);
+      }
+      if (_federate->getAttributeRelevanceAdvisorySwitchEnabled()) {
+        SharedPtr<TurnUpdatesOnForInstanceMessage> message = new TurnUpdatesOnForInstanceMessage;
+        message->setObjectInstanceHandle(handleNamePair.first);
+        message->getAttributeHandles().swap(attributeHandleVector);
+        message->setOn(true);
+        queueCallback(message);
+      }
+    }
 
     return handleNamePair.first;
   }
@@ -1140,15 +1190,37 @@ public:
     request->setObjectClassHandle(objectClassHandle);
     request->setObjectInstanceHandle(objectInstanceHandle);
     request->setName(objectInstanceName);
-    request->getAttributeStateVector().reserve(objectClass->getNumAttributes());
-    for (size_t i = 0; i < objectClass->getNumAttributes(); ++i) {
+    std::size_t numAttributes = objectClass->getNumAttributes();
+    request->getAttributeStateVector().reserve(numAttributes);
+    AttributeHandleVector attributeHandleVector;
+    attributeHandleVector.reserve(numAttributes);
+    for (size_t i = 0; i < numAttributes; ++i) {
       if (!objectClass->isAttributePublished(AttributeHandle(i)))
         continue;
       AttributeState attributeState;
       attributeState.setAttributeHandle(AttributeHandle(i));
       request->getAttributeStateVector().push_back(attributeState);
+      attributeHandleVector.push_back(AttributeHandle(i));
     }
     send(request);
+
+    if (!attributeHandleVector.empty()) {
+      if (_federate->getAttributeScopeAdvisorySwitchEnabled()) {
+        SharedPtr<AttributesInScopeMessage> message = new AttributesInScopeMessage;
+        message->setObjectInstanceHandle(objectInstanceHandle);
+        // Copy this here since we might need it later
+        message->setAttributeHandles(attributeHandleVector);
+        message->setInScope(true);
+        queueCallback(message);
+      }
+      if (_federate->getAttributeRelevanceAdvisorySwitchEnabled()) {
+        SharedPtr<TurnUpdatesOnForInstanceMessage> message = new TurnUpdatesOnForInstanceMessage;
+        message->setObjectInstanceHandle(objectInstanceHandle);
+        message->getAttributeHandles().swap(attributeHandleVector);
+        message->setOn(true);
+        queueCallback(message);
+      }
+    }
 
     return objectInstanceHandle;
   }
@@ -3081,7 +3153,21 @@ public:
       throw ObjectClassRelevanceAdvisorySwitchIsOn();
     _federate->setObjectClassRelevanceAdvisorySwitchEnabled(true);
 
-    throw RTIinternalError("Not implemented");
+    // This is a very simple and actually wrong implementation as it only
+    // directly responds to the ambassadors own publication state. But
+    // implementing this without real subscription tracking helps a lot of simple
+    // examples to run correctly.
+    for (std::size_t i = 0; i < _federate->getNumObjectClasses(); ++i) {
+      const Federate::ObjectClass* objectClass = _federate->getObjectClass(ObjectClassHandle(i));
+      if (!objectClass)
+        continue;
+      if (!objectClass->isPublished())
+        continue;
+      SharedPtr<RegistrationForObjectClassMessage> message = new RegistrationForObjectClassMessage;
+      message->setObjectClassHandle(ObjectClassHandle(i));
+      message->setStart(true);
+      queueCallback(message);
+    }
   }
 
   void disableObjectClassRelevanceAdvisorySwitch()
@@ -3118,7 +3204,31 @@ public:
       throw AttributeRelevanceAdvisorySwitchIsOn();
     _federate->setAttributeRelevanceAdvisorySwitchEnabled(true);
 
-    throw RTIinternalError("Not implemented");
+    for (Federate::ObjectInstanceHandleMap::const_iterator i = _federate->getObjectInstanceHandleMap().begin();
+         i != _federate->getObjectInstanceHandleMap().end(); ++i) {
+      const Federate::ObjectInstance* objectInstance = i->second.get();
+      if (!objectInstance)
+        continue;
+      const Federate::ObjectClass* objectClass = _federate->getObjectClass(objectInstance->getObjectClassHandle());
+      if (!objectClass)
+        continue;
+      std::size_t numAttributes = objectClass->getNumAttributes();
+      AttributeHandleVector attributeHandleVector;
+      for (std::size_t j = 0; j < numAttributes; ++j) {
+        const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(AttributeHandle(j));
+        if (!instanceAttribute->getIsOwnedByFederate())
+          continue;
+        attributeHandleVector.reserve(numAttributes);
+        attributeHandleVector.push_back(AttributeHandle(j));
+      }
+      if (attributeHandleVector.empty())
+        continue;
+      SharedPtr<TurnUpdatesOnForInstanceMessage> message = new TurnUpdatesOnForInstanceMessage;
+      message->setObjectInstanceHandle(i->first);
+      message->getAttributeHandles().swap(attributeHandleVector);
+      message->setOn(true);
+      queueCallback(message);
+    }
   }
 
   void disableAttributeRelevanceAdvisorySwitch()
@@ -3155,7 +3265,31 @@ public:
       throw AttributeScopeAdvisorySwitchIsOn();
     _federate->setAttributeScopeAdvisorySwitchEnabled(true);
 
-    throw RTIinternalError("Not implemented");
+    for (Federate::ObjectInstanceHandleMap::const_iterator i = _federate->getObjectInstanceHandleMap().begin();
+         i != _federate->getObjectInstanceHandleMap().end(); ++i) {
+      const Federate::ObjectInstance* objectInstance = i->second.get();
+      if (!objectInstance)
+        continue;
+      const Federate::ObjectClass* objectClass = _federate->getObjectClass(objectInstance->getObjectClassHandle());
+      if (!objectClass)
+        continue;
+      std::size_t numAttributes = objectClass->getNumAttributes();
+      AttributeHandleVector attributeHandleVector;
+      for (std::size_t j = 0; j < numAttributes; ++j) {
+        const Federate::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(AttributeHandle(j));
+        if (!instanceAttribute->getIsOwnedByFederate())
+          continue;
+        attributeHandleVector.reserve(numAttributes);
+        attributeHandleVector.push_back(AttributeHandle(j));
+      }
+      if (attributeHandleVector.empty())
+        continue;
+      SharedPtr<AttributesInScopeMessage> message = new AttributesInScopeMessage;
+      message->setObjectInstanceHandle(i->first);
+      message->getAttributeHandles().swap(attributeHandleVector);
+      message->setInScope(true);
+      queueCallback(message);
+    }
   }
 
   void disableAttributeScopeAdvisorySwitch()
@@ -3192,7 +3326,21 @@ public:
       throw InteractionRelevanceAdvisorySwitchIsOn();
     _federate->setInteractionRelevanceAdvisorySwitchEnabled(true);
 
-    throw RTIinternalError("Not implemented");
+    // This is a very simple and actually wrong implementation as it only
+    // directly responds to the ambassadors own publication state. But
+    // implementing this without real subscription tracking helps a lot of simple
+    // examples to run correctly.
+    for (std::size_t i = 0; i < _federate->getNumInteractionClasses(); ++i) {
+      const Federate::InteractionClass* interactionClass = _federate->getInteractionClass(InteractionClassHandle(i));
+      if (!interactionClass)
+        continue;
+      if (!interactionClass->isPublished())
+        continue;
+      SharedPtr<TurnInteractionsOnMessage> message = new TurnInteractionsOnMessage;
+      message->setInteractionClassHandle(InteractionClassHandle(i));
+      message->setOn(true);
+      queueCallback(message);
+    }
   }
 
   void disableInteractionRelevanceAdvisorySwitch()

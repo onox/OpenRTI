@@ -4,6 +4,7 @@ OpenRTI-0.6.0 (development)
  * Port to MinGW.
  * Make use ot the memory model parameters in the atomic implementation.
  * Bring the language binding of rti1516e to the same level than rti1516.
+ * Make advisory switches do something sensible, even if it is not coorrect.
 
  * For a more detailed list of changes see the git history.
 
