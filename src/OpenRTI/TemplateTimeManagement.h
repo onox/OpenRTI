@@ -950,8 +950,16 @@ public:
     OrderType orderType = InternalTimeManagement::getTimeStampOrderDelivery(message.getOrderType());
     LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp());
     OpenRTIAssert(orderType == RECEIVE || _logicalTime <= LogicalTimePair(logicalTime, 0));
-    ambassador.reflectAttributeValues(objectClass, InternalTimeManagement::getFlushQueueMode(), orderType,
-                                      message, _logicalTimeFactory.getLogicalTime(logicalTime));
+    if (InternalTimeManagement::getFlushQueueMode()) {
+      ambassador.reflectAttributeValues(objectClass, message.getObjectInstanceHandle(), message.getAttributeValues(),
+                                        message.getTag(), message.getOrderType(), message.getTransportationType(),
+                                        _logicalTimeFactory.getLogicalTime(logicalTime), orderType,
+                                        message.getMessageRetractionHandle());
+    } else {
+      ambassador.reflectAttributeValues(objectClass, message.getObjectInstanceHandle(), message.getAttributeValues(),
+                                        message.getTag(), message.getOrderType(), message.getTransportationType(),
+                                        _logicalTimeFactory.getLogicalTime(logicalTime), orderType);
+    }
   }
 
   virtual void removeObjectInstance(Ambassador<T>& ambassador, const TimeStampedDeleteObjectInstanceMessage& message)
@@ -959,18 +967,31 @@ public:
     OrderType orderType = InternalTimeManagement::getTimeStampOrderDelivery(message.getOrderType());
     LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp());
     OpenRTIAssert(orderType == RECEIVE || _logicalTime <= LogicalTimePair(logicalTime, 0));
-    ambassador.removeObjectInstance(InternalTimeManagement::getFlushQueueMode(), orderType, message,
-                                    _logicalTimeFactory.getLogicalTime(logicalTime));
+    if (InternalTimeManagement::getFlushQueueMode()) {
+      ambassador.removeObjectInstance(message.getObjectInstanceHandle(), message.getTag(), message.getOrderType(),
+                                      _logicalTimeFactory.getLogicalTime(logicalTime), orderType);
+    } else {
+      ambassador.removeObjectInstance(message.getObjectInstanceHandle(), message.getTag(), message.getOrderType(),
+                                      _logicalTimeFactory.getLogicalTime(logicalTime), orderType,
+                                      message.getMessageRetractionHandle());
+    }
   }
 
-  virtual void receiveInteraction(Ambassador<T>& ambassador, const InteractionClassHandle& interactionClassHandle,
-                                  const Federate::InteractionClass& interactionClass, const TimeStampedInteractionMessage& message)
+  virtual void receiveInteraction(Ambassador<T>& ambassador, const Federate::InteractionClass& interactionClass,
+                                  const InteractionClassHandle& interactionClassHandle, const TimeStampedInteractionMessage& message)
   {
     OrderType orderType = InternalTimeManagement::getTimeStampOrderDelivery(message.getOrderType());
     LogicalTime logicalTime = _logicalTimeFactory.decodeLogicalTime(message.getTimeStamp());
     OpenRTIAssert(orderType == RECEIVE || _logicalTime <= LogicalTimePair(logicalTime, 0));
-    ambassador.receiveInteraction(interactionClassHandle, interactionClass, InternalTimeManagement::getFlushQueueMode(),
-                                  orderType, message, _logicalTimeFactory.getLogicalTime(logicalTime));
+    if (InternalTimeManagement::getFlushQueueMode()) {
+      ambassador.receiveInteraction(interactionClass, interactionClassHandle, message.getParameterValues(),
+                                    message.getTag(), message.getOrderType(), message.getTransportationType(),
+                                    _logicalTimeFactory.getLogicalTime(logicalTime), orderType, message.getMessageRetractionHandle());
+    } else {
+      ambassador.receiveInteraction(interactionClass, interactionClassHandle, message.getParameterValues(),
+                                    message.getTag(), message.getOrderType(), message.getTransportationType(),
+                                    _logicalTimeFactory.getLogicalTime(logicalTime), orderType);
+    }
   }
 
   virtual bool dispatchCallback(const AbstractMessageDispatcher& dispatcher)

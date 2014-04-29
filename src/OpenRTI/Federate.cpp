@@ -1019,9 +1019,9 @@ Federate::takeFreeObjectInstanceHandleNamePair()
 }
 
 void
-Federate::insertReservedNameObjectInstanceHandlePair(const std::string& name, const ObjectInstanceHandle& objectInstanceHandle)
+Federate::insertReservedObjectInstanceHandleNamePair(const ObjectInstanceHandleNamePair& objectInstanceHandleNamePair)
 {
-  _reservedNameObjectInstanceHandlePairs[name] = objectInstanceHandle;
+  _reservedNameObjectInstanceHandlePairs[objectInstanceHandleNamePair.second] = objectInstanceHandleNamePair.first;
 }
 
 bool

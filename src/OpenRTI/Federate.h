@@ -448,7 +448,7 @@ public:
   ObjectInstanceHandleNamePair takeFreeObjectInstanceHandleNamePair();
 
   /// Explicitly reserved object names, the instance handles for them are allocated already
-  void insertReservedNameObjectInstanceHandlePair(const std::string& name, const ObjectInstanceHandle& objectInstanceHandle);
+  void insertReservedObjectInstanceHandleNamePair(const ObjectInstanceHandleNamePair& objectInstanceHandleNamePair);
   bool objectInstanceNameReserved(const std::string& objectInstanceName) const;
   ObjectInstanceHandle takeReservedObjectInstanceName(const std::string& objectInstanceName);
 

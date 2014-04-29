@@ -3653,21 +3653,30 @@ public:
   {
     if (!_federate.valid())
       return;
-    if (message.getSuccess())
-      _federate->insertReservedNameObjectInstanceHandlePair(message.getObjectInstanceHandleNamePair().second, message.getObjectInstanceHandleNamePair().first);
-    objectInstanceNameReservation(message);
+    if (message.getSuccess()) {
+      _federate->insertReservedObjectInstanceHandleNamePair(message.getObjectInstanceHandleNamePair());
+      objectInstanceNameReservationSucceeded(message.getObjectInstanceHandleNamePair().second);
+    } else {
+      objectInstanceNameReservationFailed(message.getObjectInstanceHandleNamePair().second);
+    }
   }
   void acceptCallbackMessage(const ReserveMultipleObjectInstanceNameResponseMessage& message)
   {
     if (!_federate.valid())
       return;
-    if (message.getSuccess()) {
-      for (ObjectInstanceHandleNamePairVector::const_iterator i = message.getObjectInstanceHandleNamePairVector().begin();
-           i != message.getObjectInstanceHandleNamePairVector().end(); ++i) {
-        _federate->insertReservedNameObjectInstanceHandlePair(i->second, i->first);
-      }
+    StringVector stringVector;
+    stringVector.reserve(message.getObjectInstanceHandleNamePairVector().size());
+    for (ObjectInstanceHandleNamePairVector::const_iterator i = message.getObjectInstanceHandleNamePairVector().begin();
+         i != message.getObjectInstanceHandleNamePairVector().end(); ++i) {
+      stringVector.push_back(i->second);
+      if (message.getSuccess())
+        _federate->insertReservedObjectInstanceHandleNamePair(*i);
     }
-    objectInstanceNameReservation(message);
+    if (message.getSuccess()) {
+      multipleObjectInstanceNameReservationSucceeded(stringVector);
+    } else {
+      multipleObjectInstanceNameReservationFailed(stringVector);
+    }
   }
   void acceptCallbackMessage(const InsertObjectInstanceMessage& message)
   {
@@ -3700,7 +3709,7 @@ public:
     Federate::ObjectClass* objectClass = _federate->getObjectClass(objectInstance->getObjectClassHandle());
     if (objectClass) {
       if (Unsubscribed != objectClass->getEffectiveSubscriptionType()) {
-        removeObjectInstance(message);
+        removeObjectInstance(message.getObjectInstanceHandle(), message.getTag(), OpenRTI::RECEIVE);
       }
     }
     _releaseObjectInstance(message.getObjectInstanceHandle());
@@ -3735,7 +3744,8 @@ public:
     Federate::ObjectClass* objectClass = _federate->getObjectClass(objectInstance->getObjectClassHandle());
     if (!objectClass)
       return;
-    reflectAttributeValues(*objectClass, message);
+    reflectAttributeValues(*objectClass, message.getObjectInstanceHandle(), message.getAttributeValues(), message.getTag(),
+                           OpenRTI::RECEIVE, message.getTransportationType());
   }
   void acceptCallbackMessage(const TimeStampedAttributeUpdateMessage& message)
   {
@@ -3771,7 +3781,8 @@ public:
       if (!interactionClass)
         return;
     }
-    receiveInteraction(interactionClassHandle, *interactionClass, message);
+    receiveInteraction(*interactionClass, interactionClassHandle, message.getParameterValues(), message.getTag(),
+                       OpenRTI::RECEIVE, message.getTransportationType());
   }
   void acceptCallbackMessage(const TimeStampedInteractionMessage& message)
   {
@@ -3792,7 +3803,7 @@ public:
       if (!interactionClass)
         return;
     }
-    _timeManagement->receiveInteraction(*this, interactionClassHandle, *interactionClass, message);
+    _timeManagement->receiveInteraction(*this, *interactionClass, interactionClassHandle, message);
   }
   void acceptCallbackMessage(const TimeConstrainedEnabledMessage& message)
   {
@@ -3841,7 +3852,7 @@ public:
   // The callback into the binding concrete implementation.
   virtual void connectionLost(const std::string& faultDescription) = 0;
 
-  virtual void reportFederationExecutions(const FederationExecutionInformationVector& theFederationExecutionInformationList)
+  virtual void reportFederationExecutions(const FederationExecutionInformationVector& federationExecutionInformationVector)
     throw () = 0;
 
   virtual void synchronizationPointRegistrationResponse(const std::string& label, RegisterFederationSynchronizationPointResponseType reason)
@@ -3857,106 +3868,103 @@ public:
   virtual void turnInteractionsOn(InteractionClassHandle interactionClassHandle, bool on)
     throw () = 0;
 
-  virtual void objectInstanceNameReservation(const ReserveObjectInstanceNameResponseMessage&)
+  virtual void objectInstanceNameReservationSucceeded(const std::string& objectInstanceName)
     throw () = 0;
-  virtual void objectInstanceNameReservation(const ReserveMultipleObjectInstanceNameResponseMessage&)
+  virtual void objectInstanceNameReservationFailed(const std::string& objectInstanceName)
     throw () = 0;
 
-  // 6.5
+  virtual void multipleObjectInstanceNameReservationSucceeded(const std::vector<std::string>& objectInstanceNames)
+    throw () = 0;
+  virtual void multipleObjectInstanceNameReservationFailed(const std::vector<std::string>& objectInstanceNames)
+    throw () = 0;
+
   virtual void discoverObjectInstance(ObjectInstanceHandle objectInstanceHandle, ObjectClassHandle objectClassHandle,
                                       const std::string& objectInstanceName)
     throw () = 0;
 
-
-  virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, const AttributeUpdateMessage& message)
+  virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
+                                      const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
+                                      OrderType sentOrder, TransportationType transportationType)
+    throw () = 0;
+  virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
+                                      const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
+                                      OrderType sentOrder, TransportationType transportationType,
+                                      const NativeLogicalTime& logicalTime, OrderType receivedOrder)
+    throw () = 0;
+  virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
+                                      const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
+                                      OrderType sentOrder, TransportationType transportationType,
+                                      const NativeLogicalTime& logicalTime, OrderType receivedOrder,
+                                      MessageRetractionHandle messageRetractionHandle)
     throw () = 0;
 
-  virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, bool flushQueueMode,
-                                      OrderType recievedOrder, const TimeStampedAttributeUpdateMessage& message,
-                                      const NativeLogicalTime& logicalTime)
+  virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder)
+    throw () = 0;
+  virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
+                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder)
+    throw () = 0;
+  virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
+                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder,
+                                    MessageRetractionHandle messageRetractionHandle)
     throw () = 0;
 
-  // 6.11
-  virtual void removeObjectInstance(const DeleteObjectInstanceMessage& message)
+  virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
+                                  const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
+                                  OrderType sentOrder, TransportationType transportationType)
+    throw () = 0;
+  virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
+                                  const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
+                                  OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
+                                  OrderType receivedOrder)
+    throw () = 0;
+  virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
+                                  const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
+                                  OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
+                                  OrderType receivedOrder, MessageRetractionHandle messageRetractionHandle)
     throw () = 0;
 
-  virtual void removeObjectInstance(bool flushQueueMode, OrderType recievedOrder, const TimeStampedDeleteObjectInstanceMessage& message, const NativeLogicalTime& logicalTime)
-    throw () = 0;
-
-  // 6.9
-  virtual void receiveInteraction(const InteractionClassHandle& interactionClassHandle, const Federate::InteractionClass& interactionClass, const InteractionMessage& message)
-    throw () = 0;
-
-  virtual void receiveInteraction(const InteractionClassHandle& interactionClassHandle, const Federate::InteractionClass& interactionClass, bool flushQueueMode,
-                                  OrderType recievedOrder, const TimeStampedInteractionMessage& message,
-                                  const NativeLogicalTime& logicalTime)
-    throw () = 0;
-
-  // 6.15
   virtual void attributesInScope(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
     throw () = 0;
-
-  // 6.16
   virtual void attributesOutOfScope(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
     throw () = 0;
 
-  // 6.18
   virtual void provideAttributeValueUpdate(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector,
                                            const VariableLengthData& tag)
     throw () = 0;
 
-  // 6.19
   virtual void turnUpdatesOnForObjectInstance(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector, const std::string& updateRate)
     throw () = 0;
-
-  // 6.20
   virtual void turnUpdatesOffForObjectInstance(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
     throw () = 0;
 
-  // 7.4
   virtual void requestAttributeOwnershipAssumption(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector,
                                                    const VariableLengthData& tag)
     throw () = 0;
-
-  // 7.5
   virtual void requestDivestitureConfirmation(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
     throw () = 0;
 
-  // 7.7
   virtual void attributeOwnershipAcquisitionNotification(ObjectInstanceHandle objectInstanceHandle,
                                                          const AttributeHandleVector& attributeHandleVector,
                                                          const VariableLengthData& tag)
     throw () = 0;
-
-  // 7.10
   virtual void attributeOwnershipUnavailable(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
     throw () = 0;
-
-  // 7.11
   virtual void requestAttributeOwnershipRelease(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector,
                                                 const VariableLengthData& tag)
     throw () = 0;
-
-  // 7.15
   virtual void confirmAttributeOwnershipAcquisitionCancellation(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
     throw () = 0;
-
-  // 7.17
   virtual void informAttributeOwnership(ObjectInstanceHandle objectInstanceHandle, AttributeHandle attributeHandle, FederateHandle theOwner)
     throw () = 0;
-
   virtual void attributeIsNotOwned(ObjectInstanceHandle objectInstanceHandle, AttributeHandle attributeHandle)
     throw () = 0;
-
   virtual void attributeIsOwnedByRTI(ObjectInstanceHandle objectInstanceHandle, AttributeHandle attributeHandle)
     throw () = 0;
 
   virtual void timeRegulationEnabled(const NativeLogicalTime& logicalTime)
     throw () = 0;
-
   virtual void timeConstrainedEnabled(const NativeLogicalTime& logicalTime)
     throw () = 0;
-
   virtual void timeAdvanceGrant(const NativeLogicalTime& logicalTime)
     throw () = 0;
 
