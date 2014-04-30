@@ -2396,16 +2396,22 @@ public:
       throw NotConnected();
     if (!_federate.valid())
       throw FederateNotExecutionMember();
+    RegionHandleRegionValuePairVector regionHandleRegionValuePairVector;
+    regionHandleRegionValuePairVector.reserve(regionHandleVector.size());
     for (RegionHandleVector::const_iterator i = regionHandleVector.begin(); i != regionHandleVector.end(); ++i) {
       if (!i->valid())
         throw InvalidRegion(i->toString());
-      if (!_federate->getRegion(*i))
-        throw InvalidRegion(i->toString());
       if (!i->getFederateHandle() != getFederateHandle())
         throw RegionNotCreatedByThisFederate(i->toString());
+      Federate::RegionData* region = _federate->getRegion(*i);
+      if (!region)
+        throw InvalidRegion(i->toString());
+      region->getRegion().getRegionValue(regionHandleRegionValuePairVector.back().second);
     }
-
-    throw RTIinternalError("Not implemented");
+    SharedPtr<CommitRegionMessage> request = new CommitRegionMessage;
+    request->setFederationHandle(getFederationHandle());
+    request->getRegionHandleRegionValuePairVector().swap(regionHandleRegionValuePairVector);
+    send(request);
   }
 
   void deleteRegion(RegionHandle regionHandle)
