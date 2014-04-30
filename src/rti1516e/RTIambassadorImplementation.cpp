@@ -472,8 +472,20 @@ class OPENRTI_LOCAL RTIambassadorImplementation::RTI1516EAmbassadorInterface : p
 public:
   RTI1516EAmbassadorInterface() :
     Ambassador<RTI1516ETraits>(),
-    _federateAmbassador(0)
+    _federateAmbassador(0),
+    _inCallback(false)
   { }
+
+  class OPENRTI_LOCAL CallbackScope {
+  public:
+    CallbackScope(RTI1516EAmbassadorInterface& ambassadorInterface) :
+      _ambassadorInterface(ambassadorInterface)
+    { _ambassadorInterface._inCallback = true; }
+    ~CallbackScope()
+    { _ambassadorInterface._inCallback = false; }
+  private:
+    RTI1516EAmbassadorInterface& _ambassadorInterface;
+  };
 
   std::auto_ptr<rti1516e::LogicalTimeFactory> getTimeFactory()
   {
@@ -1578,6 +1590,7 @@ public:
   }
 
   rti1516e::FederateAmbassador* _federateAmbassador;
+  bool _inCallback;
 };
 
 RTIambassadorImplementation::RTIambassadorImplementation() throw () :
@@ -1605,6 +1618,8 @@ RTIambassadorImplementation::connect(rti1516e::FederateAmbassador & federateAmba
     throw rti1516e::UnsupportedCallbackModel(L"Only HLA_EVOKED supported!");
 
   try {
+    if (_ambassadorInterface->_inCallback)
+      throw OpenRTI::CallNotAllowedFromWithinCallback();
     URL url = URL::fromUrl(ucsToUtf8(localSettingsDesignator));
     _ambassadorInterface->connect(url, StringStringListMap());
     _ambassadorInterface->_federateAmbassador = &federateAmbassador;
@@ -1630,6 +1645,8 @@ RTIambassadorImplementation::disconnect()
          rti1516e::RTIinternalError)
 {
   try {
+    if (_ambassadorInterface->_inCallback)
+      throw OpenRTI::CallNotAllowedFromWithinCallback();
     _ambassadorInterface->disconnect();
     _ambassadorInterface->_federateAmbassador = 0;
   } catch (const OpenRTI::FederateIsExecutionMember& e) {
@@ -1898,6 +1915,8 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
   }
 
   try {
+    if (_ambassadorInterface->_inCallback)
+      throw OpenRTI::CallNotAllowedFromWithinCallback();
     return OpenRTI::_O1516EFederateHandle(_ambassadorInterface->joinFederationExecution(std::string(), ucsToUtf8(federateType),
                                                                                         ucsToUtf8(federationExecutionName), fomModuleList));
   } catch (const OpenRTI::CouldNotCreateLogicalTimeFactory& e) {
@@ -1958,6 +1977,8 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
   }
 
   try {
+    if (_ambassadorInterface->_inCallback)
+      throw OpenRTI::CallNotAllowedFromWithinCallback();
     return OpenRTI::_O1516EFederateHandle(_ambassadorInterface->joinFederationExecution(ucsToUtf8(federateName), ucsToUtf8(federateType), ucsToUtf8(federationExecutionName), fomModuleList));
   } catch (const OpenRTI::CouldNotCreateLogicalTimeFactory& e) {
     throw rti1516e::CouldNotCreateLogicalTimeFactory(OpenRTI::utf8ToUcs(e.what()));
@@ -6155,12 +6176,13 @@ RTIambassadorImplementation::evokeCallback(double approximateMinimumTimeInSecond
   throw (rti1516e::CallNotAllowedFromWithinCallback,
          rti1516e::RTIinternalError)
 {
-  // FIXME need to handle rti1516e::CallNotAllowedFromWithinCallback
   try {
-    return _ambassadorInterface->evokeCallback(approximateMinimumTimeInSeconds, false);
-  } catch (const OpenRTI::FederateNotExecutionMember& e) {
-    // must not get here
-    throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+    if (_ambassadorInterface->_inCallback)
+      throw OpenRTI::CallNotAllowedFromWithinCallback();
+    RTI1516EAmbassadorInterface::CallbackScope callbackScope(*_ambassadorInterface);
+    return _ambassadorInterface->evokeCallback(approximateMinimumTimeInSeconds);
+  } catch (const OpenRTI::CallNotAllowedFromWithinCallback& e) {
+    throw rti1516e::CallNotAllowedFromWithinCallback(OpenRTI::utf8ToUcs(e.what()));
   } catch (const std::exception& e) {
     throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
   } catch (...) {
@@ -6174,14 +6196,13 @@ RTIambassadorImplementation::evokeMultipleCallbacks(double approximateMinimumTim
   throw (rti1516e::CallNotAllowedFromWithinCallback,
          rti1516e::RTIinternalError)
 {
-  // FIXME need to handle rti1516e::CallNotAllowedFromWithinCallback
   try {
-    return _ambassadorInterface->evokeMultipleCallbacks(approximateMinimumTimeInSeconds,
-                                                        approximateMaximumTimeInSeconds,
-                                                        false);
-  } catch (const OpenRTI::FederateNotExecutionMember& e) {
-    // must not get here
-    throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+    if (_ambassadorInterface->_inCallback)
+      throw OpenRTI::CallNotAllowedFromWithinCallback();
+    RTI1516EAmbassadorInterface::CallbackScope callbackScope(*_ambassadorInterface);
+    return _ambassadorInterface->evokeMultipleCallbacks(approximateMinimumTimeInSeconds, approximateMaximumTimeInSeconds);
+  } catch (const OpenRTI::CallNotAllowedFromWithinCallback& e) {
+    throw rti1516e::CallNotAllowedFromWithinCallback(OpenRTI::utf8ToUcs(e.what()));
   } catch (const std::exception& e) {
     throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
   } catch (...) {
@@ -6196,10 +6217,7 @@ RTIambassadorImplementation::enableCallbacks()
          rti1516e::RTIinternalError)
 {
   try {
-    _ambassadorInterface->enableCallbacks(false);
-  } catch (const OpenRTI::FederateNotExecutionMember& e) {
-    // must not get here
-    throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+    _ambassadorInterface->enableCallbacks();
   } catch (const OpenRTI::SaveInProgress& e) {
     throw rti1516e::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::RestoreInProgress& e) {
@@ -6218,10 +6236,7 @@ RTIambassadorImplementation::disableCallbacks()
          rti1516e::RTIinternalError)
 {
   try {
-    _ambassadorInterface->disableCallbacks(false);
-  } catch (const OpenRTI::FederateNotExecutionMember& e) {
-    // must not get here
-    throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
+    _ambassadorInterface->disableCallbacks();
   } catch (const OpenRTI::SaveInProgress& e) {
     throw rti1516e::SaveInProgress(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::RestoreInProgress& e) {

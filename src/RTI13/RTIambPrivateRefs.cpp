@@ -4272,7 +4272,7 @@ RTI::RTIambassador::tick()
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    bool pendingCallback = privateRefs->evokeMultipleCallbacks(0, std::numeric_limits<double>::infinity(), true);
+    bool pendingCallback = privateRefs->evokeMultipleCallbacks(0, std::numeric_limits<double>::infinity());
     return pendingCallback ? RTI::RTI_TRUE : RTI::RTI_FALSE;
   } catch (const std::exception& e) {
     throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());
@@ -4290,7 +4290,7 @@ RTI::RTIambassador::tick(RTI::TickTime minTime,
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    bool pendingCallback = privateRefs->evokeMultipleCallbacks(minTime, maxTime, true);
+    bool pendingCallback = privateRefs->evokeMultipleCallbacks(minTime, maxTime);
     return pendingCallback ? RTI::RTI_TRUE : RTI::RTI_FALSE;
   } catch (const std::exception& e) {
     throw RTI::RTIinternalError(OpenRTI::utf8ToLocale(e.what()).c_str());

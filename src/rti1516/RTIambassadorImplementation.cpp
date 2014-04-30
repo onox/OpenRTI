@@ -5186,7 +5186,9 @@ RTIambassadorImplementation::evokeCallback(double approximateMinimumTimeInSecond
          rti1516::RTIinternalError)
 {
   try {
-    return _ambassadorInterface->evokeCallback(approximateMinimumTimeInSeconds, true);
+    if (!_ambassadorInterface->getFederate())
+      throw OpenRTI::FederateNotExecutionMember();
+    return _ambassadorInterface->evokeCallback(approximateMinimumTimeInSeconds);
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
   } catch (const std::exception& e) {
@@ -5203,8 +5205,9 @@ RTIambassadorImplementation::evokeMultipleCallbacks(double approximateMinimumTim
          rti1516::RTIinternalError)
 {
   try {
-    return _ambassadorInterface->evokeMultipleCallbacks(approximateMinimumTimeInSeconds,
-                                                        approximateMaximumTimeInSeconds, true);
+    if (!_ambassadorInterface->getFederate())
+      throw OpenRTI::FederateNotExecutionMember();
+    return _ambassadorInterface->evokeMultipleCallbacks(approximateMinimumTimeInSeconds, approximateMaximumTimeInSeconds);
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
   } catch (const std::exception& e) {
@@ -5222,7 +5225,9 @@ RTIambassadorImplementation::enableCallbacks ()
          rti1516::RTIinternalError)
 {
   try {
-    _ambassadorInterface->enableCallbacks(true);
+    if (!_ambassadorInterface->getFederate())
+      throw OpenRTI::FederateNotExecutionMember();
+    _ambassadorInterface->enableCallbacks();
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::SaveInProgress& e) {
@@ -5244,7 +5249,9 @@ RTIambassadorImplementation::disableCallbacks ()
          rti1516::RTIinternalError)
 {
   try {
-    _ambassadorInterface->disableCallbacks(true);
+    if (!_ambassadorInterface->getFederate())
+      throw OpenRTI::FederateNotExecutionMember();
+    _ambassadorInterface->disableCallbacks();
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw rti1516::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::SaveInProgress& e) {

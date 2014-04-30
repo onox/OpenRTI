@@ -3473,25 +3473,17 @@ public:
     return serviceGroup;
   }
 
-  bool evokeCallback(double approximateMinimumTimeInSeconds, bool needFederate)
-    // throw (FederateNotExecutionMember,
-    //        RTIinternalError)
+  bool evokeCallback(double approximateMinimumTimeInSeconds)
+    // throw (RTIinternalError)
   {
-    if (needFederate && !_federate.valid())
-      throw FederateNotExecutionMember();
-
     Clock clock = Clock::now();
     clock += Clock::fromSeconds(approximateMinimumTimeInSeconds);
     return dispatchCallback(clock);
   }
 
-  bool evokeMultipleCallbacks(double approximateMinimumTimeInSeconds, double approximateMaximumTimeInSeconds, bool needFederate)
-    // throw (FederateNotExecutionMember,
-    //        RTIinternalError)
+  bool evokeMultipleCallbacks(double approximateMinimumTimeInSeconds, double approximateMaximumTimeInSeconds)
+    // throw (RTIinternalError)
   {
-    if (needFederate && !_federate.valid())
-      throw FederateNotExecutionMember();
-
     Clock clock = Clock::now();
     clock += Clock::fromSeconds(approximateMinimumTimeInSeconds);
     if (!dispatchCallback(clock))
@@ -3506,25 +3498,19 @@ public:
     return true;
   }
 
-  void enableCallbacks(bool needFederate)
-    // throw (FederateNotExecutionMember,
-    //        SaveInProgress,
+  void enableCallbacks()
+    // throw (SaveInProgress,
     //        RestoreInProgress,
     //        RTIinternalError)
   {
-    if (needFederate && !_federate.valid())
-      throw FederateNotExecutionMember();
     _callbacksEnabled = true;
   }
 
-  void disableCallbacks(bool needFederate)
-    // throw (FederateNotExecutionMember,
-    //        SaveInProgress,
+  void disableCallbacks()
+    // throw (SaveInProgress,
     //        RestoreInProgress,
     //        RTIinternalError)
   {
-    if (needFederate && !_federate.valid())
-      throw FederateNotExecutionMember();
     _callbacksEnabled = false;
   }
 
