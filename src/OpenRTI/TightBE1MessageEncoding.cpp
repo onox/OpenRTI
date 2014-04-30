@@ -310,6 +310,11 @@ public:
     writeSizeTCompressed(value);
   }
 
+  void writeDouble(const double& value)
+  {
+    writeFloat64Compressed(value);
+  }
+
   void writeFederationHandle(const FederationHandle& value)
   {
     writeUInt16Compressed(value);
@@ -864,6 +869,20 @@ public:
     }
   }
 
+  void writeFOMStringUpdateRate(const FOMStringUpdateRate& value)
+  {
+    writeString(value.getName());
+    writeString(value.getUpdateRate());
+  }
+
+  void writeFOMStringUpdateRateList(const FOMStringUpdateRateList& value)
+  {
+    writeSizeTCompressed(value.size());
+    for (FOMStringUpdateRateList::const_iterator i = value.begin(); i != value.end(); ++i) {
+      writeFOMStringUpdateRate(*i);
+    }
+  }
+
   void writeFOMStringModule(const FOMStringModule& value)
   {
     writeFOMStringTransportationTypeList(value.getTransportationTypeList());
@@ -1024,6 +1043,20 @@ public:
     writeSizeTCompressed(value.size());
     for (FOMObjectClassList::const_iterator i = value.begin(); i != value.end(); ++i) {
       writeFOMObjectClass(*i);
+    }
+  }
+
+  void writeFOMUpdateRate(const FOMUpdateRate& value)
+  {
+    writeString(value.getName());
+    writeDouble(value.getUpdateRate());
+  }
+
+  void writeFOMUpdateRateList(const FOMUpdateRateList& value)
+  {
+    writeSizeTCompressed(value.size());
+    for (FOMUpdateRateList::const_iterator i = value.begin(); i != value.end(); ++i) {
+      writeFOMUpdateRate(*i);
     }
   }
 
@@ -2283,6 +2316,11 @@ public:
     value = readSizeTCompressed();
   }
 
+  void readDouble(double& value)
+  {
+    value = readFloat64Compressed();
+  }
+
   void readFederationHandle(FederationHandle& value)
   {
     value = readUInt16Compressed();
@@ -2847,6 +2885,20 @@ public:
     }
   }
 
+  void readFOMStringUpdateRate(FOMStringUpdateRate& value)
+  {
+    readString(value.getName());
+    readString(value.getUpdateRate());
+  }
+
+  void readFOMStringUpdateRateList(FOMStringUpdateRateList& value)
+  {
+    value.resize(readSizeTCompressed());
+    for (FOMStringUpdateRateList::iterator i = value.begin(); i != value.end(); ++i) {
+      readFOMStringUpdateRate(*i);
+    }
+  }
+
   void readFOMStringModule(FOMStringModule& value)
   {
     readFOMStringTransportationTypeList(value.getTransportationTypeList());
@@ -3011,6 +3063,20 @@ public:
     value.resize(readSizeTCompressed());
     for (FOMObjectClassList::iterator i = value.begin(); i != value.end(); ++i) {
       readFOMObjectClass(*i);
+    }
+  }
+
+  void readFOMUpdateRate(FOMUpdateRate& value)
+  {
+    readString(value.getName());
+    readDouble(value.getUpdateRate());
+  }
+
+  void readFOMUpdateRateList(FOMUpdateRateList& value)
+  {
+    value.resize(readSizeTCompressed());
+    for (FOMUpdateRateList::iterator i = value.begin(); i != value.end(); ++i) {
+      readFOMUpdateRate(*i);
     }
   }
 

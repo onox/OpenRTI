@@ -125,6 +125,8 @@ typedef int32_t Int;
 
 typedef size_t SizeType;
 
+typedef double Double;
+
 typedef std::vector<AttributeHandle> AttributeHandleVector;
 
 typedef std::set<FederateHandle> FederateHandleSet;
@@ -249,6 +251,9 @@ typedef std::vector<FOMStringAttribute> FOMStringAttributeList;
 class FOMStringObjectClass;
 typedef std::vector<FOMStringObjectClass> FOMStringObjectClassList;
 
+class FOMStringUpdateRate;
+typedef std::vector<FOMStringUpdateRate> FOMStringUpdateRateList;
+
 class FOMStringModule;
 typedef std::vector<FOMStringModule> FOMStringModuleList;
 
@@ -280,6 +285,9 @@ typedef std::vector<FOMAttribute> FOMAttributeList;
 
 class FOMObjectClass;
 typedef std::vector<FOMObjectClass> FOMObjectClassList;
+
+class FOMUpdateRate;
+typedef std::vector<FOMUpdateRate> FOMUpdateRateList;
 
 class FOMModule;
 typedef std::vector<FOMModule> FOMModuleList;
@@ -353,6 +361,8 @@ typedef uint32_t Unsigned;
 typedef int32_t Int;
 
 typedef size_t SizeType;
+
+typedef double Double;
 
 typedef std::vector<AttributeHandle> AttributeHandleVector;
 
@@ -1269,6 +1279,82 @@ private:
 
 typedef std::vector<FOMStringObjectClass> FOMStringObjectClassList;
 
+class OPENRTI_API FOMStringUpdateRate {
+public:
+  FOMStringUpdateRate() : 
+    _impl(new Implementation)
+  { }
+  void setName(const String& value)
+  { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
+  String& getName()
+  { return getImpl()._name; }
+  const String& getName() const
+  { return getConstImpl()._name; }
+
+  void setUpdateRate(const String& value)
+  { getImpl()._updateRate = value; }
+#if 201103L <= __cplusplus
+  void setUpdateRate(String&& value)
+  { getImpl()._updateRate = value; }
+#endif
+  String& getUpdateRate()
+  { return getImpl()._updateRate; }
+  const String& getUpdateRate() const
+  { return getConstImpl()._updateRate; }
+
+  bool operator==(const FOMStringUpdateRate& rhs) const
+  {
+    if (_impl.get() == rhs._impl.get())
+      return true;
+    if (getName() != rhs.getName()) return false;
+    if (getUpdateRate() != rhs.getUpdateRate()) return false;
+    return true;
+  }
+  bool operator<(const FOMStringUpdateRate& rhs) const
+  {
+    if (_impl.get() == rhs._impl.get())
+      return false;
+    if (getName() < rhs.getName()) return true;
+    if (rhs.getName() < getName()) return false;
+    if (getUpdateRate() < rhs.getUpdateRate()) return true;
+    if (rhs.getUpdateRate() < getUpdateRate()) return false;
+    return false;
+  }
+  bool operator!=(const FOMStringUpdateRate& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const FOMStringUpdateRate& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const FOMStringUpdateRate& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const FOMStringUpdateRate& rhs) const
+  { return !operator>(rhs); }
+private:
+  struct OPENRTI_API Implementation : public Referenced {
+    String _name;
+    String _updateRate;
+  };
+
+  const Implementation& getConstImpl() const
+  {
+    return *_impl;
+  }
+
+  Implementation& getImpl()
+  {
+    if (1 < Referenced::count(_impl.get()))
+      _impl = new Implementation(*_impl);
+    return *_impl;
+  }
+
+  SharedPtr<Implementation> _impl;
+};
+
+typedef std::vector<FOMStringUpdateRate> FOMStringUpdateRateList;
+
 class OPENRTI_API FOMStringModule {
 public:
   FOMStringModule() : 
@@ -2109,6 +2195,82 @@ private:
 };
 
 typedef std::vector<FOMObjectClass> FOMObjectClassList;
+
+class OPENRTI_API FOMUpdateRate {
+public:
+  FOMUpdateRate() : 
+    _impl(new Implementation)
+  { }
+  void setName(const String& value)
+  { getImpl()._name = value; }
+#if 201103L <= __cplusplus
+  void setName(String&& value)
+  { getImpl()._name = value; }
+#endif
+  String& getName()
+  { return getImpl()._name; }
+  const String& getName() const
+  { return getConstImpl()._name; }
+
+  void setUpdateRate(const Double& value)
+  { getImpl()._updateRate = value; }
+#if 201103L <= __cplusplus
+  void setUpdateRate(Double&& value)
+  { getImpl()._updateRate = value; }
+#endif
+  Double& getUpdateRate()
+  { return getImpl()._updateRate; }
+  const Double& getUpdateRate() const
+  { return getConstImpl()._updateRate; }
+
+  bool operator==(const FOMUpdateRate& rhs) const
+  {
+    if (_impl.get() == rhs._impl.get())
+      return true;
+    if (getName() != rhs.getName()) return false;
+    if (getUpdateRate() != rhs.getUpdateRate()) return false;
+    return true;
+  }
+  bool operator<(const FOMUpdateRate& rhs) const
+  {
+    if (_impl.get() == rhs._impl.get())
+      return false;
+    if (getName() < rhs.getName()) return true;
+    if (rhs.getName() < getName()) return false;
+    if (getUpdateRate() < rhs.getUpdateRate()) return true;
+    if (rhs.getUpdateRate() < getUpdateRate()) return false;
+    return false;
+  }
+  bool operator!=(const FOMUpdateRate& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const FOMUpdateRate& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const FOMUpdateRate& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const FOMUpdateRate& rhs) const
+  { return !operator>(rhs); }
+private:
+  struct OPENRTI_API Implementation : public Referenced {
+    String _name;
+    Double _updateRate;
+  };
+
+  const Implementation& getConstImpl() const
+  {
+    return *_impl;
+  }
+
+  Implementation& getImpl()
+  {
+    if (1 < Referenced::count(_impl.get()))
+      _impl = new Implementation(*_impl);
+    return *_impl;
+  }
+
+  SharedPtr<Implementation> _impl;
+};
+
+typedef std::vector<FOMUpdateRate> FOMUpdateRateList;
 
 class OPENRTI_API FOMModule {
 public:
@@ -6915,6 +7077,34 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringObject
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringUpdateRate& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "updateRate: " << value.getUpdateRate();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringUpdateRateList& value)
+{
+  os << "{ ";
+  FOMStringUpdateRateList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringModule& value)
 {
   os << "{ ";
@@ -7221,6 +7411,34 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMObjectClassL
 {
   os << "{ ";
   FOMObjectClassList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMUpdateRate& value)
+{
+  os << "{ ";
+  os << "name: " << value.getName();
+  os << ", ";
+  os << "updateRate: " << value.getUpdateRate();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMUpdateRateList& value)
+{
+  os << "{ ";
+  FOMUpdateRateList::const_iterator i = value.begin();
   if (i != value.end()) {
     os << *i;
     while (++i != value.end()) {

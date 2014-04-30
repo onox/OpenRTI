@@ -320,6 +320,72 @@ public:
     return _variableLengthData.getAlignedInt64BE(offset);
   }
 
+  float readFloat32LE()
+  {
+    size_t offset = _offset;
+    _offset += 4;
+    if (_variableLengthData.size() < _offset)
+      throw RTIinternalError("Reading beyond the end of the packet");
+    return _variableLengthData.getFloat32LE(offset);
+  }
+  float readFloat32BE()
+  {
+    size_t offset = _offset;
+    _offset += 4;
+    if (_variableLengthData.size() < _offset)
+      throw RTIinternalError("Reading beyond the end of the packet");
+    return _variableLengthData.getFloat32BE(offset);
+  }
+  float readAlignedFloat32LE()
+  {
+    size_t offset = _offset;
+    _offset += 4;
+    if (_variableLengthData.size() < _offset)
+      throw RTIinternalError("Reading beyond the end of the packet");
+    return _variableLengthData.getAlignedFloat32LE(offset);
+  }
+  float readAlignedFloat32BE()
+  {
+    size_t offset = _offset;
+    _offset += 4;
+    if (_variableLengthData.size() < _offset)
+      throw RTIinternalError("Reading beyond the end of the packet");
+    return _variableLengthData.getAlignedFloat32BE(offset);
+  }
+
+  double readFloat64LE()
+  {
+    size_t offset = _offset;
+    _offset += 8;
+    if (_variableLengthData.size() < _offset)
+      throw RTIinternalError("Reading beyond the end of the packet");
+    return _variableLengthData.getFloat64LE(offset);
+  }
+  double readFloat64BE()
+  {
+    size_t offset = _offset;
+    _offset += 8;
+    if (_variableLengthData.size() < _offset)
+      throw RTIinternalError("Reading beyond the end of the packet");
+    return _variableLengthData.getFloat64BE(offset);
+  }
+  double readAlignedFloat64LE()
+  {
+    size_t offset = _offset;
+    _offset += 8;
+    if (_variableLengthData.size() < _offset)
+      throw RTIinternalError("Reading beyond the end of the packet");
+    return _variableLengthData.getAlignedFloat64LE(offset);
+  }
+  double readAlignedFloat64BE()
+  {
+    size_t offset = _offset;
+    _offset += 8;
+    if (_variableLengthData.size() < _offset)
+      throw RTIinternalError("Reading beyond the end of the packet");
+    return _variableLengthData.getAlignedFloat64BE(offset);
+  }
+
 
   // FIXME rethink all below
 
@@ -345,6 +411,25 @@ public:
   { uint64_t value = 0; readTemplateCompressed(value); return value; }
   int64_t readInt64Compressed()
   { return readUInt64Compressed(); }
+
+  float readFloat32Compressed()
+  {
+    union {
+      float f;
+      uint32_t u;
+    } u;
+    u.u = readUInt32Compressed();
+    return u.f;
+  }
+  double readFloat64Compressed()
+  {
+    union {
+      double d;
+      uint64_t u;
+    } u;
+    u.u = readUInt64Compressed();
+    return u.d;
+  }
 
   bool readBoolCompressed()
   { return !!readUInt8BE(); }

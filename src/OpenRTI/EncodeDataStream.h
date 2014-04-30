@@ -335,6 +335,72 @@ public:
     _variableLengthData.setInt64BE(value, offset);
   }
 
+  void writeFloat32LE(float value)
+  {
+    size_t offset = _offset;
+    _offset += 4;
+    if (_variableLengthData.size() < _offset)
+      _variableLengthData.resize(_offset);
+    _variableLengthData.setFloat32LE(value, offset);
+  }
+  void writeFloat32BE(float value)
+  {
+    size_t offset = _offset;
+    _offset += 4;
+    if (_variableLengthData.size() < _offset)
+      _variableLengthData.resize(_offset);
+    _variableLengthData.setFloat32BE(value, offset);
+  }
+  void writeAlignedFloat32LE(float value)
+  {
+    size_t offset = _offset;
+    _offset += 4;
+    if (_variableLengthData.size() < _offset)
+      _variableLengthData.resize(_offset);
+    _variableLengthData.setAlignedFloat32LE(value, offset);
+  }
+  void writeAlignedFloat32BE(float value)
+  {
+    size_t offset = _offset;
+    _offset += 4;
+    if (_variableLengthData.size() < _offset)
+      _variableLengthData.resize(_offset);
+    _variableLengthData.setAlignedFloat32BE(value, offset);
+  }
+
+  void writeFloat64LE(double value)
+  {
+    size_t offset = _offset;
+    _offset += 8;
+    if (_variableLengthData.size() < _offset)
+      _variableLengthData.resize(_offset);
+    _variableLengthData.setFloat64LE(value, offset);
+  }
+  void writeFloat64BE(double value)
+  {
+    size_t offset = _offset;
+    _offset += 8;
+    if (_variableLengthData.size() < _offset)
+      _variableLengthData.resize(_offset);
+    _variableLengthData.setFloat64BE(value, offset);
+  }
+  void writeAlignedFloat64LE(double value)
+  {
+    size_t offset = _offset;
+    _offset += 8;
+    if (_variableLengthData.size() < _offset)
+      _variableLengthData.resize(_offset);
+    _variableLengthData.setAlignedFloat64LE(value, offset);
+  }
+  void writeAlignedFloat64BE(double value)
+  {
+    size_t offset = _offset;
+    _offset += 8;
+    if (_variableLengthData.size() < _offset)
+      _variableLengthData.resize(_offset);
+    _variableLengthData.setFloat64BE(value, offset);
+  }
+
   // Rethink the below FIXME
 
   void writeBool(bool value)
@@ -359,6 +425,25 @@ public:
   { writeTemplateCompressed(value); }
   void writeInt64Compressed(int64_t value)
   { writeUInt64Compressed(value); }
+
+  void writeFloat32Compressed(float value)
+  {
+    union {
+      float f;
+      uint32_t u;
+    } u;
+    u.f = value;
+    writeUInt32Compressed(u.u);
+  }
+  void writeFloat64Compressed(double value)
+  {
+    union {
+      double d;
+      uint64_t u;
+    } u;
+    u.d = value;
+    writeUInt64Compressed(u.u);
+  }
 
   void writeSizeTCompressed(size_t value)
   { writeTemplateCompressed(value); }

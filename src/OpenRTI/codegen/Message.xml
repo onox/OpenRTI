@@ -94,6 +94,7 @@
   <type name="Int" ctype="int32_t" encoding="Int32"/>
   <!-- FIXME Make that UInt64 -->
   <type name="SizeType" ctype="size_t" encoding="SizeT"/>
+  <type name="Double" ctype="double" encoding="Float64"/>
 
   <type name="FederationHandle" ctype="FederationHandle" encoding="UInt16"/>
   <type name="FOMModuleHandle" ctype="FOMModuleHandle" encoding="UInt16"/>
@@ -265,6 +266,12 @@
   </type>
   <type name="FOMStringObjectClassList" type="vector" scalar="FOMStringObjectClass"/>
 
+  <type name="FOMStringUpdateRate" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="UpdateRate" type="String"/>
+  </type>
+  <type name="FOMStringUpdateRateList" type="vector" scalar="FOMStringUpdateRate"/>
+
   <type name="FOMStringModule" type="struct" copyOnWrite="true">
     <!-- <field name="Name" type="String"/> -->
     <field name="TransportationTypeList" type="FOMStringTransportationTypeList"/>
@@ -272,6 +279,8 @@
     <field name="RoutingSpaceList" type="FOMStringRoutingSpaceList"/>
     <field name="InteractionClassList" type="FOMStringInteractionClassList"/>
     <field name="ObjectClassList" type="FOMStringObjectClassList"/>
+    <!-- FIXME change when changing the protocol the next time -->
+    <!-- <field name="UpdateRateList" type="FOMStringUpdateRateList"/> -->
   </type>
   <type name="FOMStringModuleList" type="vector" scalar="FOMStringModule"/>
 
@@ -335,6 +344,12 @@
   </type>
   <type name="FOMObjectClassList" type="vector" scalar="FOMObjectClass"/>
 
+  <type name="FOMUpdateRate" type="struct" copyOnWrite="true">
+    <field name="Name" type="String"/>
+    <field name="UpdateRate" type="Double"/>
+  </type>
+  <type name="FOMUpdateRateList" type="vector" scalar="FOMUpdateRate"/>
+
   <type name="FOMModule" type="struct" copyOnWrite="true">
     <field name="FOMModuleHandle" type="FOMModuleHandle"/>
     <field name="RequiredFOMModuleHandleSet" type="FOMModuleHandleSet"/>
@@ -343,6 +358,8 @@
     <field name="RoutingSpaceList" type="FOMRoutingSpaceList"/>
     <field name="InteractionClassList" type="FOMInteractionClassList"/>
     <field name="ObjectClassList" type="FOMObjectClassList"/>
+    <!-- FIXME change when changing the protocol the next time -->
+    <!-- <field name="UpdateRateList" type="FOMUpdateRateList"/> -->
   </type>
   <type name="FOMModuleList" type="vector" scalar="FOMModule"/>
 

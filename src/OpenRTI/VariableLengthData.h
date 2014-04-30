@@ -864,7 +864,7 @@ public:
     u.d = value;
     setUInt64BE(u.u, offset);
   }
-  void setAlignedFloat64LE(float value, size_t offset)
+  void setAlignedFloat64LE(double value, size_t offset)
   {
     OpenRTIAssert((offset & 7) == 0);
 #if defined OpenRTI_HOST_IS_BIG_ENDIAN
@@ -876,7 +876,7 @@ public:
 #error "No endianess defined!"
 #endif
   }
-  void setAlignedFloat64BE(float value, size_t offset)
+  void setAlignedFloat64BE(double value, size_t offset)
   {
     OpenRTIAssert((offset & 7) == 0);
 #if defined OpenRTI_HOST_IS_BIG_ENDIAN
