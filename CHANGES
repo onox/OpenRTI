@@ -7,6 +7,7 @@ OpenRTI-0.6.0 (development)
  * Make advisory switches do something sensible, even if it is not coorrect.
  * Implement requestClassAttributeUpdate.
  * Fix default value for asynchronous delivery enabled.
+ * Add a new url protocol to configure an ambassador driven rtinode.
 
  * For a more detailed list of changes see the git history.
 

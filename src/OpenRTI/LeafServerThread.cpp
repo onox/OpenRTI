@@ -133,6 +133,22 @@ LeafServerThread::_Registry::createServer(const URL& url, const SharedPtr<Abstra
     server->connectParentServer(url, Clock::now() + Clock::fromSeconds(70));
 
     return server;
+  } else if (url.getProtocol() == "rtinode") {
+    SharedPtr<NetworkServer> server = new NetworkServer(serverNode);
+
+    server->setServerName(url.str());
+    for (std::size_t i = 0; i < url.getNumQueries(); ++i) {
+      StringPair stringPair = url.getQuery(i);
+      if (stringPair.first == "config") {
+        server->setUpFromConfig(stringPair.second);
+      } else if (stringPair.first == "listen") {
+        server->listen(URL::fromUrl(stringPair.second), 20);
+      } else if (stringPair.first == "parent") {
+        server->connectParentServer(URL::fromUrl(stringPair.second), Clock::now() + Clock::fromSeconds(70));
+      }
+    }
+
+    return server;
   } else {
     return SharedPtr<AbstractServer>();
   }

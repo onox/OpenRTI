@@ -143,6 +143,22 @@ pipe:
  Uses the rti binary protocol on a named pipe. Can be used for machine
  local communication in presence of tight packet filters.
 
+rtinode: (experimental, only available in the ambassador)
+ A meta protocol to be able to run an rtinode just from inside of any
+ ambassador. The protocol uses url query key value pairs to configure
+ this rtinode like server. Query keys understood are:
+  config=<config file name>
+   to provide a configuration file for rtinode
+  listen=<listen url>
+   to provide a listen url for rtinode
+  parent=<parent url>
+   to provide a parent url for rtinode
+ Note that you may need to escape the queries properly if they contain
+ characters that make the url parsing ambigous else.
+
+ A simple example url setting up an rtinode on localhost on the default
+ port reads "rtinode:///FederationExecutionName?listen=rti:///".
+
 The implementation is prepared to some degree to move protocols into a
 user provided shared library that could be loaded at runtime.
 
