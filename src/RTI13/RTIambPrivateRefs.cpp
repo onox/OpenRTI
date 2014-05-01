@@ -38,6 +38,16 @@
 #include "StringUtils.h"
 #include "TemplateTimeManagement.h"
 
+static OpenRTI::URL federationExecutionToUrl(const std::string& federationExecutionName)
+{
+  OpenRTI::URL url;
+  if (federationExecutionName.find("://") != std::string::npos)
+    url = OpenRTI::URL::fromUrl(federationExecutionName);
+  else
+    url.setPath(federationExecutionName);
+  return url;
+}
+
 /// Returns a new string as required with RTI13 interfaces
 static char* newUtf8ToLocale(const std::string& utf8)
 {
@@ -1059,17 +1069,18 @@ public:
     RTIambPrivateRefs& _p;
   };
 
-  void ensureConnected(const std::string& federationExecutionName)
+  void ensureConnected(const OpenRTI::URL& url)
   {
-    OpenRTI::URL url;
-    if (federationExecutionName.find("://") != std::string::npos)
-      url = OpenRTI::URL::fromUrl(federationExecutionName);
+    OpenRTI::URL connectUrl = url;
+    // For the path component strip the file part which is the bare federation execution name
+    if (1 < url.getPath().size())
+      connectUrl.setPath(OpenRTI::getBasePart(url.getPath()));
 
     if (!isConnected()) {
-      connect(url, OpenRTI::StringStringListMap());
+      connect(connectUrl, OpenRTI::StringStringListMap());
 
-      _connectedUrl = url;
-    } else if (_connectedUrl != url) {
+      _connectedUrl = connectUrl;
+    } else if (_connectedUrl != connectUrl) {
       throw RTI::RTIinternalError("Connect url does not point to the same connection.");
     }
   }
@@ -1129,9 +1140,9 @@ RTI::RTIambassador::createFederationExecution(const char* federationExecutionNam
   }
 
   try {
-    std::string utf8FederationExecutionName = OpenRTI::localeToUtf8(federationExecutionName);
-    privateRefs->ensureConnected(utf8FederationExecutionName);
-    privateRefs->createFederationExecution(OpenRTI::getFilePart(utf8FederationExecutionName), fomModules, "HLAfloat64Time");
+    OpenRTI::URL url = federationExecutionToUrl(OpenRTI::localeToUtf8(federationExecutionName));
+    privateRefs->ensureConnected(url);
+    privateRefs->createFederationExecution(OpenRTI::getFilePart(url.getPath()), fomModules, "HLAfloat64Time");
   } catch (const OpenRTI::FederationExecutionAlreadyExists& e) {
     throw RTI::FederationExecutionAlreadyExists(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const std::exception& e) {
@@ -1151,9 +1162,9 @@ RTI::RTIambassador::destroyFederationExecution(const char* federationExecutionNa
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
 
   try {
-    std::string utf8FederationExecutionName = OpenRTI::localeToUtf8(federationExecutionName);
-    privateRefs->ensureConnected(utf8FederationExecutionName);
-    privateRefs->destroyFederationExecution(OpenRTI::getFilePart(utf8FederationExecutionName));
+    OpenRTI::URL url = federationExecutionToUrl(OpenRTI::localeToUtf8(federationExecutionName));
+    privateRefs->ensureConnected(url);
+    privateRefs->destroyFederationExecution(OpenRTI::getFilePart(url.getPath()));
   } catch (const OpenRTI::FederatesCurrentlyJoined& e) {
     throw RTI::FederatesCurrentlyJoined(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::FederationExecutionDoesNotExist& e) {
@@ -1183,11 +1194,11 @@ RTI::RTIambassador::joinFederationExecution(const char* federateType,
     throw RTI::FederationExecutionDoesNotExist("Joining with a zero federate ambassador pointer!");
 
   try {
-    std::string utf8FederationExecutionName = OpenRTI::localeToUtf8(federationExecutionName);
-    privateRefs->ensureConnected(utf8FederationExecutionName);
+    OpenRTI::URL url = federationExecutionToUrl(OpenRTI::localeToUtf8(federationExecutionName));
+    privateRefs->ensureConnected(url);
     std::string utf8FederateType = OpenRTI::localeToUtf8(federateType);
     FederateHandle federateHandle = privateRefs->joinFederationExecution(std::string(), utf8FederateType,
-                                                                         OpenRTI::getFilePart(utf8FederationExecutionName),
+                                                                         OpenRTI::getFilePart(url.getPath()),
                                                                          OpenRTI::FOMStringModuleList());
     privateRefs->_federateAmbassador = federateAmbassadorPointer;
     return federateHandle;

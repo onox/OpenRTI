@@ -47,6 +47,16 @@
 
 namespace OpenRTI {
 
+static URL federationExecutionToUrl(const std::string& federationExecutionName)
+{
+  URL url;
+  if (federationExecutionName.find("://") != std::string::npos)
+    url = OpenRTI::URL::fromUrl(federationExecutionName);
+  else
+    url.setPath(federationExecutionName);
+  return url;
+}
+
 static rti1516::OrderType translate(OpenRTI::OrderType orderType)
 {
   switch (orderType) {
@@ -1404,27 +1414,27 @@ public:
     return new TemplateTimeManagement<RTI1516Traits, RTI1516LogicalTimeFactory>(RTI1516LogicalTimeFactory(logicalTimeFactory));
   }
 
-  void ensureConnected(const std::string& federationExecutionName)
+  void ensureConnected(const URL& url)
   {
-    URL url;
+    URL connectUrl = url;
+    // For the path component strip the file part which is the bare federation execution name
+    if (1 < url.getPath().size())
+      connectUrl.setPath(OpenRTI::getBasePart(url.getPath()));
 
-    if (federationExecutionName.find("://") != std::string::npos)
-      url = URL::fromUrl(federationExecutionName);
-
-    if (url.getProtocol().empty())
-      url.setProtocol(_defaultUrl.getProtocol());
-    if (url.getHost().empty())
-      url.setHost(_defaultUrl.getHost());
-    if (url.getService().empty())
-      url.setService(_defaultUrl.getService());
-    if (url.getPath().empty())
-      url.setPath(_defaultUrl.getPath());
+    if (connectUrl.getProtocol().empty())
+      connectUrl.setProtocol(_defaultUrl.getProtocol());
+    if (connectUrl.getHost().empty())
+      connectUrl.setHost(_defaultUrl.getHost());
+    if (connectUrl.getService().empty())
+      connectUrl.setService(_defaultUrl.getService());
+    if (connectUrl.getPath().empty())
+      connectUrl.setPath(_defaultUrl.getPath());
 
     if (!isConnected()) {
-      Ambassador<RTI1516Traits>::connect(url, _stringStringListMap);
+      Ambassador<RTI1516Traits>::connect(connectUrl, _stringStringListMap);
 
-      _connectedUrl = url;;
-    } else if (_connectedUrl != url) {
+      _connectedUrl = connectUrl;;
+    } else if (_connectedUrl != connectUrl) {
       throw rti1516::RTIinternalError(L"Connect url does not point to the same connection.");
     }
   }
@@ -1474,9 +1484,9 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
 
 
   try {
-    std::string utf8FederationExecutionName = OpenRTI::ucsToUtf8(federationExecutionName);
-    _ambassadorInterface->ensureConnected(utf8FederationExecutionName);
-    _ambassadorInterface->createFederationExecution(getFilePart(utf8FederationExecutionName), fomModuleList, ucsToUtf8(logicalTimeImplementationName));
+    OpenRTI::URL url = federationExecutionToUrl(OpenRTI::ucsToUtf8(federationExecutionName));
+    _ambassadorInterface->ensureConnected(url);
+    _ambassadorInterface->createFederationExecution(getFilePart(url.getPath()), fomModuleList, ucsToUtf8(logicalTimeImplementationName));
   } catch (const OpenRTI::FederationExecutionAlreadyExists& e) {
     throw rti1516::FederationExecutionAlreadyExists(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::CouldNotCreateLogicalTimeFactory& e) {
@@ -1495,8 +1505,9 @@ RTIambassadorImplementation::destroyFederationExecution(std::wstring const & fed
          rti1516::RTIinternalError)
 {
   try {
-    _ambassadorInterface->ensureConnected(ucsToUtf8(federationExecutionName));
-    _ambassadorInterface->destroyFederationExecution(getFilePart(ucsToUtf8(federationExecutionName)));
+    OpenRTI::URL url = federationExecutionToUrl(OpenRTI::ucsToUtf8(federationExecutionName));
+    _ambassadorInterface->ensureConnected(url);
+    _ambassadorInterface->destroyFederationExecution(getFilePart(url.getPath()));
   } catch (const OpenRTI::FederatesCurrentlyJoined& e) {
     throw rti1516::FederatesCurrentlyJoined(OpenRTI::utf8ToUcs(e.what()));
   } catch (const OpenRTI::FederationExecutionDoesNotExist& e) {
@@ -1520,11 +1531,12 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
          rti1516::RTIinternalError)
 {
   try {
-    _ambassadorInterface->ensureConnected(ucsToUtf8(federationExecutionName));
+    OpenRTI::URL url = federationExecutionToUrl(OpenRTI::ucsToUtf8(federationExecutionName));
+    _ambassadorInterface->ensureConnected(url);
     _ambassadorInterface->_federateAmbassador = &federateAmbassador;
 
     FederateHandle federateHandle = _ambassadorInterface->joinFederationExecution(std::string(), ucsToUtf8(federateType),
-                                                                                  getFilePart(ucsToUtf8(federationExecutionName)),
+                                                                                  getFilePart(url.getPath()),
                                                                                   OpenRTI::FOMStringModuleList());
     return OpenRTI::_O1516FederateHandle(federateHandle);
   } catch (const OpenRTI::CouldNotCreateLogicalTimeFactory& e) {
