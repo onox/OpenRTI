@@ -268,7 +268,7 @@
 
   <type name="FOMStringUpdateRate" type="struct" copyOnWrite="true">
     <field name="Name" type="String"/>
-    <field name="UpdateRate" type="String"/>
+    <field name="Rate" type="Double"/>
   </type>
   <type name="FOMStringUpdateRateList" type="vector" scalar="FOMStringUpdateRate"/>
 
@@ -346,7 +346,7 @@
 
   <type name="FOMUpdateRate" type="struct" copyOnWrite="true">
     <field name="Name" type="String"/>
-    <field name="UpdateRate" type="Double"/>
+    <field name="Rate" type="Double"/>
   </type>
   <type name="FOMUpdateRateList" type="vector" scalar="FOMUpdateRate"/>
 

@@ -1295,23 +1295,23 @@ public:
   const String& getName() const
   { return getConstImpl()._name; }
 
-  void setUpdateRate(const String& value)
-  { getImpl()._updateRate = value; }
+  void setRate(const Double& value)
+  { getImpl()._rate = value; }
 #if 201103L <= __cplusplus
-  void setUpdateRate(String&& value)
-  { getImpl()._updateRate = value; }
+  void setRate(Double&& value)
+  { getImpl()._rate = value; }
 #endif
-  String& getUpdateRate()
-  { return getImpl()._updateRate; }
-  const String& getUpdateRate() const
-  { return getConstImpl()._updateRate; }
+  Double& getRate()
+  { return getImpl()._rate; }
+  const Double& getRate() const
+  { return getConstImpl()._rate; }
 
   bool operator==(const FOMStringUpdateRate& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
       return true;
     if (getName() != rhs.getName()) return false;
-    if (getUpdateRate() != rhs.getUpdateRate()) return false;
+    if (getRate() != rhs.getRate()) return false;
     return true;
   }
   bool operator<(const FOMStringUpdateRate& rhs) const
@@ -1320,8 +1320,8 @@ public:
       return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
-    if (getUpdateRate() < rhs.getUpdateRate()) return true;
-    if (rhs.getUpdateRate() < getUpdateRate()) return false;
+    if (getRate() < rhs.getRate()) return true;
+    if (rhs.getRate() < getRate()) return false;
     return false;
   }
   bool operator!=(const FOMStringUpdateRate& rhs) const
@@ -1335,7 +1335,7 @@ public:
 private:
   struct OPENRTI_API Implementation : public Referenced {
     String _name;
-    String _updateRate;
+    Double _rate;
   };
 
   const Implementation& getConstImpl() const
@@ -2212,23 +2212,23 @@ public:
   const String& getName() const
   { return getConstImpl()._name; }
 
-  void setUpdateRate(const Double& value)
-  { getImpl()._updateRate = value; }
+  void setRate(const Double& value)
+  { getImpl()._rate = value; }
 #if 201103L <= __cplusplus
-  void setUpdateRate(Double&& value)
-  { getImpl()._updateRate = value; }
+  void setRate(Double&& value)
+  { getImpl()._rate = value; }
 #endif
-  Double& getUpdateRate()
-  { return getImpl()._updateRate; }
-  const Double& getUpdateRate() const
-  { return getConstImpl()._updateRate; }
+  Double& getRate()
+  { return getImpl()._rate; }
+  const Double& getRate() const
+  { return getConstImpl()._rate; }
 
   bool operator==(const FOMUpdateRate& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
       return true;
     if (getName() != rhs.getName()) return false;
-    if (getUpdateRate() != rhs.getUpdateRate()) return false;
+    if (getRate() != rhs.getRate()) return false;
     return true;
   }
   bool operator<(const FOMUpdateRate& rhs) const
@@ -2237,8 +2237,8 @@ public:
       return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
-    if (getUpdateRate() < rhs.getUpdateRate()) return true;
-    if (rhs.getUpdateRate() < getUpdateRate()) return false;
+    if (getRate() < rhs.getRate()) return true;
+    if (rhs.getRate() < getRate()) return false;
     return false;
   }
   bool operator!=(const FOMUpdateRate& rhs) const
@@ -2252,7 +2252,7 @@ public:
 private:
   struct OPENRTI_API Implementation : public Referenced {
     String _name;
-    Double _updateRate;
+    Double _rate;
   };
 
   const Implementation& getConstImpl() const
@@ -7082,7 +7082,7 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringUpdate
   os << "{ ";
   os << "name: " << value.getName();
   os << ", ";
-  os << "updateRate: " << value.getUpdateRate();
+  os << "rate: " << value.getRate();
   os << " }";
   return os;
 }
@@ -7428,7 +7428,7 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMUpdateRate& 
   os << "{ ";
   os << "name: " << value.getName();
   os << ", ";
-  os << "updateRate: " << value.getUpdateRate();
+  os << "rate: " << value.getRate();
   os << " }";
   return os;
 }

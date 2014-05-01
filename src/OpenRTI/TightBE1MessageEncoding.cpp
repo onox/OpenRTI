@@ -872,7 +872,7 @@ public:
   void writeFOMStringUpdateRate(const FOMStringUpdateRate& value)
   {
     writeString(value.getName());
-    writeString(value.getUpdateRate());
+    writeDouble(value.getRate());
   }
 
   void writeFOMStringUpdateRateList(const FOMStringUpdateRateList& value)
@@ -1049,7 +1049,7 @@ public:
   void writeFOMUpdateRate(const FOMUpdateRate& value)
   {
     writeString(value.getName());
-    writeDouble(value.getUpdateRate());
+    writeDouble(value.getRate());
   }
 
   void writeFOMUpdateRateList(const FOMUpdateRateList& value)
@@ -2888,7 +2888,7 @@ public:
   void readFOMStringUpdateRate(FOMStringUpdateRate& value)
   {
     readString(value.getName());
-    readString(value.getUpdateRate());
+    readDouble(value.getRate());
   }
 
   void readFOMStringUpdateRateList(FOMStringUpdateRateList& value)
@@ -3069,7 +3069,7 @@ public:
   void readFOMUpdateRate(FOMUpdateRate& value)
   {
     readString(value.getName());
-    readDouble(value.getUpdateRate());
+    readDouble(value.getRate());
   }
 
   void readFOMUpdateRateList(FOMUpdateRateList& value)
