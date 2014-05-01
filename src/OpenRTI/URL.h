@@ -54,6 +54,7 @@ public:
   const StringPairVector& getQuery() const;
   void setQuery(const StringPairVector& query);
   std::size_t getNumQueries() const;
+  std::size_t getQueryIndex(const std::string& key) const;
   StringPair getQuery(std::size_t index) const;
   std::string getQuery(const std::string& key) const;
 

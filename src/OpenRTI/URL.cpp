@@ -279,6 +279,16 @@ URL::getNumQueries() const
   return _query.size();
 }
 
+std::size_t
+URL::getQueryIndex(const std::string& key) const
+{
+  for (std::size_t i = 0; i < _query.size(); ++i) {
+    if (key == _query[i].first)
+      return i;
+  }
+  return ~std::size_t(0);
+}
+
 StringPair
 URL::getQuery(std::size_t index) const
 {
