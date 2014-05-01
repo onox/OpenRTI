@@ -43,12 +43,17 @@ main(int argc, char* argv[])
   std::wstring interactionClassName;
   std::wstring parameterName;
 
+  std::wstring dimensionName;
+
   OpenRTI::Options options(argc, argv);
   std::vector<std::wstring> args;
-  while (options.next("a:i:F:o:O:p:")) {
+  while (options.next("a:d:i:F:o:O:p:")) {
     switch (options.getOptChar()) {
     case 'a':
       objectClassAttributeName = OpenRTI::localeToUcs(options.getArgument());
+      break;
+    case 'd':
+      dimensionName = OpenRTI::localeToUcs(options.getArgument());
       break;
     case 'i':
       interactionClassName = OpenRTI::localeToUcs(options.getArgument());
@@ -157,6 +162,25 @@ main(int argc, char* argv[])
       }
       std::wcout << L"  " << parameterName << L": \"" << rtiName << "\" " << parameterHandle.toString() << std::endl;
     }
+  }
+
+  if (!dimensionName.empty()) {
+    rti1516::DimensionHandle dimensionHandle;
+    std::wstring rtiName;
+    unsigned upperBound = 0;
+    try {
+      dimensionHandle = ambassador.getDimensionHandle(dimensionName);
+      rtiName = ambassador.getDimensionName(dimensionHandle);
+      upperBound = ambassador.getDimensionUpperBound(dimensionHandle);
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return EXIT_FAILURE;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return EXIT_FAILURE;
+    }
+    std::wcout << L"  " << dimensionName << L": \"" << rtiName << "\" " << dimensionHandle.toString()
+               << L", upperBound = " << upperBound << std::endl;
   }
 
   // and now resign must work

@@ -1304,6 +1304,16 @@ public:
     return _ambassador->getAttributeName(whichClass, theHandle);
   }
 
+  double getUpdateRateValue(std::wstring const & updateRateDesignator)
+  {
+    return _ambassador->getUpdateRateValue(updateRateDesignator);
+  }
+
+  double getUpdateRateValueForAttribute(rti1516e::ObjectInstanceHandle objectInstanceHandle, rti1516e::AttributeHandle attributeHandle)
+  {
+    return _ambassador->getUpdateRateValueForAttribute(objectInstanceHandle, attributeHandle);
+  }
+
   rti1516e::InteractionClassHandle getInteractionClassHandle(std::wstring const & theName)
   {
     return _ambassador->getInteractionClassHandle(theName);
