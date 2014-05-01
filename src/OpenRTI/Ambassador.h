@@ -1502,9 +1502,12 @@ public:
     // FIXME do this once the logical time has passed
     // When implementing message retraction this needs to be delayed probably ...
     // Note that this also sends the unreference message just past the delete
-    // _releaseObjectInstance(objectInstanceHandle);
+    _releaseObjectInstance(objectInstanceHandle);
 
-    return messageRetractionHandle;
+    // FIXME: see above - make sure we do not hand a valid retraction handle
+    // over to the user until this is implemented.
+    // return messageRetractionHandle;
+    return MessageRetractionHandle();
   }
 
   void localDeleteObjectInstance(ObjectInstanceHandle objectInstanceHandle)
