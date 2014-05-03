@@ -38,7 +38,7 @@
 
 namespace OpenRTI {
 
-class OPENRTI_LOCAL FOMModuleSet {
+class OPENRTI_API FOMModuleSet {
 public:
   FOMModuleSet();
   ~FOMModuleSet();

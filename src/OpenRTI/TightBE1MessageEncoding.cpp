@@ -733,8 +733,11 @@ public:
     case JoinFederationExecutionResponseRestoreInProgress:
       writeUInt32Compressed(4);
       break;
-    default:
+    case JoinFederationExecutionResponseInconsistentFDD:
       writeUInt32Compressed(5);
+      break;
+    default:
+      writeUInt32Compressed(6);
       break;
     }
   }
@@ -2748,8 +2751,11 @@ public:
     case 4:
       value = JoinFederationExecutionResponseRestoreInProgress;
       break;
+    case 5:
+      value = JoinFederationExecutionResponseInconsistentFDD;
+      break;
     default:
-      value = JoinFederationExecutionResponseRestoreInProgress;
+      value = JoinFederationExecutionResponseInconsistentFDD;
       break;
     }
   }

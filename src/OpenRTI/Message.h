@@ -219,7 +219,8 @@ enum JoinFederationExecutionResponseType {
   JoinFederationExecutionResponseFederateNameAlreadyInUse,
   JoinFederationExecutionResponseFederationExecutionDoesNotExist,
   JoinFederationExecutionResponseSaveInProgress,
-  JoinFederationExecutionResponseRestoreInProgress
+  JoinFederationExecutionResponseRestoreInProgress,
+  JoinFederationExecutionResponseInconsistentFDD
 };
 
 enum RegisterFederationSynchronizationPointResponseType {
@@ -6837,6 +6838,7 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const JoinFederationE
   case JoinFederationExecutionResponseFederationExecutionDoesNotExist: os << "JoinFederationExecutionResponseFederationExecutionDoesNotExist"; break;
   case JoinFederationExecutionResponseSaveInProgress: os << "JoinFederationExecutionResponseSaveInProgress"; break;
   case JoinFederationExecutionResponseRestoreInProgress: os << "JoinFederationExecutionResponseRestoreInProgress"; break;
+  case JoinFederationExecutionResponseInconsistentFDD: os << "JoinFederationExecutionResponseInconsistentFDD"; break;
   }
   return os;
 }

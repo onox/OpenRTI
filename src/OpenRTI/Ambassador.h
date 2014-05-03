@@ -220,6 +220,10 @@ public:
       _federate = 0;
       throw RestoreInProgress();
       break;
+    case JoinFederationExecutionResponseInconsistentFDD:
+      _federate = 0;
+      throw InconsistentFDD(federationExecutionName);
+      break;
     default:
       break;
     }

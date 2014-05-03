@@ -206,6 +206,7 @@
     <enumerant name="JoinFederationExecutionResponseFederationExecutionDoesNotExist"/>
     <enumerant name="JoinFederationExecutionResponseSaveInProgress"/>
     <enumerant name="JoinFederationExecutionResponseRestoreInProgress"/>
+    <enumerant name="JoinFederationExecutionResponseInconsistentFDD"/>
   </type>
 
   <type name="RegisterFederationSynchronizationPointResponseType" type="enum">
