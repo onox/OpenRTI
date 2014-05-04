@@ -198,6 +198,7 @@ public:
     request->setFederationExecution(federationExecutionName);
     request->setFederateType(federateType);
     request->setFederateName(federateName);
+    request->setFOMStringModuleList(fomModules);
 
     // Send this message and wait for the response
     send(request);
