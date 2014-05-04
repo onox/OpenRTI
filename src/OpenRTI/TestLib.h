@@ -383,6 +383,14 @@ public:
       }
       return argumentList;
     }
+    std::wstring getConnectUrl() const
+    {
+      if (_constructorArgs._address.empty()) {
+        return L"thread:///";
+      } else {
+        return std::wstring(L"rti://") + _constructorArgs._address + L"/";
+      }
+    }
     const std::vector<std::wstring>& getFederateList() const
     { return _constructorArgs._federateList; }
 

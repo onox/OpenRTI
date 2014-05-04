@@ -82,7 +82,10 @@ main(int argc, char* argv[])
 
   OpenRTI::RTI1516ESimpleAmbassador ambassador;
 
-  ambassador.connect(args);
+  if (args.empty())
+    ambassador.connect(std::wstring());
+  else
+    ambassador.connect(args[0]);
 
   // create, must work
   try {

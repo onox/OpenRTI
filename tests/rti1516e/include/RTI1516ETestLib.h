@@ -214,7 +214,7 @@ public:
     std::auto_ptr<rti1516e::RTIambassador> ambassador;
     rti1516e::RTIambassadorFactory factory;
     ambassador = factory.createRTIambassador();
-    ambassador->connect(*this, rti1516e::HLA_EVOKED, getArgument());
+    ambassador->connect(*this, rti1516e::HLA_EVOKED, getConnectUrl());
 
     // create, must work once
     try {
@@ -305,7 +305,7 @@ public:
     std::auto_ptr<rti1516e::RTIambassador> ambassador;
     rti1516e::RTIambassadorFactory factory;
     ambassador = factory.createRTIambassador();
-    ambassador->connect(*this, rti1516e::HLA_EVOKED, getArgument());
+    ambassador->connect(*this, rti1516e::HLA_EVOKED, getConnectUrl());
 
     // Try that several times. Ensure correct cleanup
     unsigned n = 99;
@@ -811,17 +811,11 @@ public:
   const rti1516e::FederateHandle& getFederateHandle() const
   { return _federateHandle; }
 
-  void connect(std::vector<std::wstring> args)
+  void connect(const std::wstring& url)
   {
     rti1516e::RTIambassadorFactory factory;
     _ambassador = factory.createRTIambassador();
-    std::wstring arg;
-    for (std::vector<std::wstring>::const_iterator i = args.begin(); i != args.end(); ++i) {
-      if (!arg.empty())
-        arg += L";";
-      arg += *i;
-    }
-    _ambassador->connect(*this, rti1516e::HLA_EVOKED, arg);
+    _ambassador->connect(*this, rti1516e::HLA_EVOKED, url);
     setLogicalTimeFactory();
   }
 
