@@ -44,6 +44,7 @@ public:
   ~FOMModuleSet();
 
   FOMModuleHandleSet insertModuleList(const FOMStringModuleList& moduleList);
+  bool testModuleList(const FOMStringModuleList& moduleList);
   void insertModuleList(const FOMModuleList& moduleList);
 
   // // Should return the full set of fom module handles that are needed to satisfy a new federate with the given

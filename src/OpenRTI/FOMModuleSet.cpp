@@ -481,6 +481,19 @@ FOMModuleSet::insertModuleList(const FOMStringModuleList& moduleList)
   return fomModuleHandles;
 }
 
+bool
+FOMModuleSet::testModuleList(const FOMStringModuleList& moduleList)
+{
+  // The candidate that is only committed when successful
+  SharedPtr<AllocatorMap> allocatorMap = new AllocatorMap(*_allocatorMap);
+
+  for (FOMStringModuleList::const_iterator i = moduleList.begin(); i != moduleList.end(); ++i)
+    allocatorMap->insertModule(*i);
+
+  // Survived, throw the result away ...
+  return true;
+}
+
 void
 FOMModuleSet::insertModuleList(const FOMModuleList& moduleList)
 {
