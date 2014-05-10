@@ -70,8 +70,9 @@ class SourceStream(object):
 
 ###############################################################################
 class DataType(object):
-    def __init__(self, name):
+    def __init__(self, name, hasSwap):
         self.__name = name
+        self.__hasSwap = hasSwap
         self._hasPayload = None
 
     def getName(self):
@@ -80,11 +81,14 @@ class DataType(object):
     def isMessage(self):
         return False
 
-    def resolveHasPayload(self, typeMap):
+    def resolveHasPayloadAndHasSwap(self, typeMap):
         pass
 
     def hasPayload(self):
         return self._hasPayload
+
+    def hasSwap(self):
+        return self.__hasSwap
 
     def writeForwardDeclaration(self, sourceStream):
         pass
@@ -105,7 +109,11 @@ class DataType(object):
 ###############################################################################
 class CDataType(DataType):
     def __init__(self, name, encoding, ctype):
-        DataType.__init__(self, name)
+        if ctype == 'VariableLengthData' or ctype == 'std::string':
+            hasSwap = True
+        else:
+            hasSwap = False
+        DataType.__init__(self, name, hasSwap)
         self.__encoding = encoding
         self.__ctype = ctype
 
@@ -115,7 +123,7 @@ class CDataType(DataType):
     def getTypeName(self):
         return self.__ctype
 
-    def resolveHasPayload(self, typeMap):
+    def resolveHasPayloadAndHasSwap(self, typeMap):
         self._hasPayload = self.getTypeName() == 'VariableLengthData'
 
     def writeForwardDeclaration(self, sourceStream):
@@ -147,7 +155,7 @@ class EnumLabel(object):
 
 class EnumDataType(DataType):
     def __init__(self, name):
-        DataType.__init__(self, name)
+        DataType.__init__(self, name, False)
         self.__enumList = []
 
     def addEnum(self, name, value):
@@ -196,15 +204,15 @@ class EnumDataType(DataType):
 ###############################################################################
 class VectorDataType(DataType):
     def __init__(self, name, scalarTypeName):
-        DataType.__init__(self, name)
+        DataType.__init__(self, name, True)
         self.__scalarTypeName = scalarTypeName
 
     def getScalarTypeName(self):
         return self.__scalarTypeName
 
-    def resolveHasPayload(self, typeMap):
+    def resolveHasPayloadAndHasSwap(self, typeMap):
         t = typeMap.getType(self.getScalarTypeName())
-        t.resolveHasPayload(typeMap)
+        t.resolveHasPayloadAndHasSwap(typeMap)
         self._hasPayload = t.hasPayload()
 
     def writeForwardDeclaration(self, sourceStream):
@@ -242,15 +250,15 @@ class VectorDataType(DataType):
 ###############################################################################
 class SetDataType(DataType):
     def __init__(self, name, scalarTypeName):
-        DataType.__init__(self, name)
+        DataType.__init__(self, name, True)
         self.__scalarTypeName = scalarTypeName
 
     def getScalarTypeName(self):
         return self.__scalarTypeName
 
-    def resolveHasPayload(self, typeMap):
+    def resolveHasPayloadAndHasSwap(self, typeMap):
         t = typeMap.getType(self.getScalarTypeName())
-        t.resolveHasPayload(typeMap)
+        t.resolveHasPayloadAndHasSwap(typeMap)
         self._hasPayload = t.hasPayload()
 
     def writeForwardDeclaration(self, sourceStream):
@@ -288,7 +296,7 @@ class SetDataType(DataType):
 ###############################################################################
 class MapDataType(DataType):
     def __init__(self, name, keyTypeName, valueTypeName):
-        DataType.__init__(self, name)
+        DataType.__init__(self, name, True)
         self.__keyTypeName = keyTypeName
         self.__valueTypeName = valueTypeName
         self.__keyHasPayload = None
@@ -300,12 +308,12 @@ class MapDataType(DataType):
     def getValueTypeName(self):
         return self.__valueTypeName
 
-    def resolveHasPayload(self, typeMap):
+    def resolveHasPayloadAndHasSwap(self, typeMap):
         t = typeMap.getType(self.getKeyTypeName())
-        t.resolveHasPayload(typeMap)
+        t.resolveHasPayloadAndHasSwap(typeMap)
         self.__keyHasPayload = t.hasPayload()
         t = typeMap.getType(self.getValueTypeName())
-        t.resolveHasPayload(typeMap)
+        t.resolveHasPayloadAndHasSwap(typeMap)
         self.__valueHasPayload = t.hasPayload()
         self._hasPayload = self.__keyHasPayload or self.__valueHasPayload
 
@@ -351,7 +359,7 @@ class MapDataType(DataType):
 ###############################################################################
 class PairDataType(DataType):
     def __init__(self, name, firstTypeName, secondTypeName):
-        DataType.__init__(self, name)
+        DataType.__init__(self, name, False)
         self.__firstTypeName = firstTypeName
         self.__secondTypeName = secondTypeName
         self.__firstHasPayload = None
@@ -363,12 +371,12 @@ class PairDataType(DataType):
     def getSecondTypeName(self):
         return self.__secondTypeName
 
-    def resolveHasPayload(self, typeMap):
+    def resolveHasPayloadAndHasSwap(self, typeMap):
         t = typeMap.getType(self.getFirstTypeName())
-        t.resolveHasPayload(typeMap)
+        t.resolveHasPayloadAndHasSwap(typeMap)
         self.__firstHasPayload = t.hasPayload()
         t = typeMap.getType(self.getSecondTypeName())
-        t.resolveHasPayload(typeMap)
+        t.resolveHasPayloadAndHasSwap(typeMap)
         self.__secondHasPayload = t.hasPayload()
         self._hasPayload = self.__firstHasPayload or self.__secondHasPayload
 
@@ -410,6 +418,7 @@ class StructField(object):
     def __init__(self, name, typeName):
         self.__name = name
         self.__typeName = typeName
+        self.__hasSwap = False
         self._hasPayload = None
 
     def getName(self):
@@ -427,10 +436,12 @@ class StructField(object):
     def getTypeName(self):
         return self.__typeName
 
-    def resolveHasPayload(self, typeMap):
+    def resolveHasPayloadAndHasSwap(self, typeMap):
         t = typeMap.getType(self.getTypeName())
-        t.resolveHasPayload(typeMap)
+        t.resolveHasPayloadAndHasSwap(typeMap)
         self._hasPayload = t.hasPayload()
+
+        self.__hasSwap = t.hasSwap()
 
     def hasPayload(self):
         return self._hasPayload
@@ -465,10 +476,17 @@ class StructField(object):
         memberName = self.getMemberName()
         sourceStream.writeline('{typeName} {memberName};'.format(typeName = typeName, memberName = memberName))
 
+    def writeSwap(self, sourceStream, value):
+        memberName = self.getMemberName()
+        if self.__hasSwap:
+            sourceStream.writeline('{memberName}.swap({value}.{memberName});'.format(memberName = memberName, value = value))
+        else:
+            sourceStream.writeline('std::swap({memberName}, {value}.{memberName});'.format(memberName = memberName, value = value))
+
 ###############################################################################
 class StructDataType(DataType):
     def __init__(self, name, parentTypeName = None):
-        DataType.__init__(self, name)
+        DataType.__init__(self, name, True)
         self.__parentTypeName = parentTypeName
         self.__fieldList = []
         self.__cow = False
@@ -488,9 +506,9 @@ class StructDataType(DataType):
     def getParentTypeName(self):
         return self.__parentTypeName
 
-    def resolveHasPayload(self, typeMap):
+    def resolveHasPayloadAndHasSwap(self, typeMap):
         for field in self.__fieldList:
-            field.resolveHasPayload(typeMap)
+            field.resolveHasPayloadAndHasSwap(typeMap)
         for field in self.__fieldList:
             self._hasPayload = self.hasPayload() or field.hasPayload()
 
@@ -521,16 +539,17 @@ class StructDataType(DataType):
             field.writeConstGetter(sourceStream, constValuePrefix)
             sourceStream.writeline()
 
-        # sourceStream.writeline('{name}& swap({name}& rhs)'.format(name = self.getName()))
-        # sourceStream.writeline('{')
-        # if self.__cow:
-        #     sourceStream.writeline('  _impl.swap(rhs._impl);')
-        # else:
-        #     for field in self.__fieldList:
-        #         lowerName = field.getLowerName()
-        #         sourceStream.writeline('  _{lowerName}.swap(rhs._{lowerName});'.format(lowerName = lowerName))
-        # sourceStream.writeline('  return *this;')
-        # sourceStream.writeline('}')
+        sourceStream.writeline('{name}& swap({name}& rhs)'.format(name = self.getName()))
+        sourceStream.writeline('{')
+        sourceStream.pushIndent()
+        if self.__cow:
+            sourceStream.writeline('_impl.swap(rhs._impl);')
+        else:
+            for field in self.__fieldList:
+                field.writeSwap(sourceStream, 'rhs')
+        sourceStream.writeline('return *this;')
+        sourceStream.popIndent()
+        sourceStream.writeline('}')
 
         sourceStream.writeline('bool operator==(const {name}& rhs) const'.format(name = self.getName()))
         sourceStream.writeline('{')
@@ -1453,7 +1472,7 @@ class TypeMap(object):
             node = node.next
 
         for t in self.__typeList:
-            t.resolveHasPayload(self)
+            t.resolveHasPayloadAndHasSwap(self)
 
     def addType(self, t):
         self.__typeList.append(t)

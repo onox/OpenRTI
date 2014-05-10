@@ -413,6 +413,12 @@ public:
   const Unsigned& getUpperBound() const
   { return _upperBound; }
 
+  RangeBoundsValue& swap(RangeBoundsValue& rhs)
+  {
+    std::swap(_lowerBound, rhs._lowerBound);
+    std::swap(_upperBound, rhs._upperBound);
+    return *this;
+  }
   bool operator==(const RangeBoundsValue& rhs) const
   {
     if (getLowerBound() != rhs.getLowerBound()) return false;
@@ -475,6 +481,11 @@ public:
   const AttributeHandle& getAttributeHandle() const
   { return _attributeHandle; }
 
+  AttributeState& swap(AttributeState& rhs)
+  {
+    std::swap(_attributeHandle, rhs._attributeHandle);
+    return *this;
+  }
   bool operator==(const AttributeState& rhs) const
   {
     if (getAttributeHandle() != rhs.getAttributeHandle()) return false;
@@ -524,6 +535,12 @@ public:
   const VariableLengthData& getValue() const
   { return _value; }
 
+  ParameterValue& swap(ParameterValue& rhs)
+  {
+    std::swap(_parameterHandle, rhs._parameterHandle);
+    _value.swap(rhs._value);
+    return *this;
+  }
   bool operator==(const ParameterValue& rhs) const
   {
     if (getParameterHandle() != rhs.getParameterHandle()) return false;
@@ -577,6 +594,12 @@ public:
   const VariableLengthData& getValue() const
   { return _value; }
 
+  AttributeValue& swap(AttributeValue& rhs)
+  {
+    std::swap(_attributeHandle, rhs._attributeHandle);
+    _value.swap(rhs._value);
+    return *this;
+  }
   bool operator==(const AttributeValue& rhs) const
   {
     if (getAttributeHandle() != rhs.getAttributeHandle()) return false;
@@ -638,6 +661,12 @@ public:
   const String& getLogicalTimeFactoryName() const
   { return _logicalTimeFactoryName; }
 
+  FederationExecutionInformation& swap(FederationExecutionInformation& rhs)
+  {
+    _federationExecutionName.swap(rhs._federationExecutionName);
+    _logicalTimeFactoryName.swap(rhs._logicalTimeFactoryName);
+    return *this;
+  }
   bool operator==(const FederationExecutionInformation& rhs) const
   {
     if (getFederationExecutionName() != rhs.getFederationExecutionName()) return false;
@@ -689,6 +718,11 @@ public:
   const String& getName() const
   { return getConstImpl()._name; }
 
+  FOMStringTransportationType& swap(FOMStringTransportationType& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMStringTransportationType& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -761,6 +795,11 @@ public:
   const Unsigned& getUpperBound() const
   { return getConstImpl()._upperBound; }
 
+  FOMStringDimension& swap(FOMStringDimension& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMStringDimension& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -837,6 +876,11 @@ public:
   const StringSet& getDimensionSet() const
   { return getConstImpl()._dimensionSet; }
 
+  FOMStringRoutingSpace& swap(FOMStringRoutingSpace& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMStringRoutingSpace& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -902,6 +946,11 @@ public:
   const String& getName() const
   { return getConstImpl()._name; }
 
+  FOMStringParameter& swap(FOMStringParameter& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMStringParameter& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -1018,6 +1067,11 @@ public:
   const FOMStringParameterList& getParameterList() const
   { return getConstImpl()._parameterList; }
 
+  FOMStringInteractionClass& swap(FOMStringInteractionClass& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMStringInteractionClass& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -1143,6 +1197,11 @@ public:
   const StringSet& getDimensionSet() const
   { return getConstImpl()._dimensionSet; }
 
+  FOMStringAttribute& swap(FOMStringAttribute& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMStringAttribute& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -1231,6 +1290,11 @@ public:
   const FOMStringAttributeList& getAttributeList() const
   { return getConstImpl()._attributeList; }
 
+  FOMStringObjectClass& swap(FOMStringObjectClass& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMStringObjectClass& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -1307,6 +1371,11 @@ public:
   const Double& getRate() const
   { return getConstImpl()._rate; }
 
+  FOMStringUpdateRate& swap(FOMStringUpdateRate& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMStringUpdateRate& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -1416,6 +1485,11 @@ public:
   const FOMStringObjectClassList& getObjectClassList() const
   { return getConstImpl()._objectClassList; }
 
+  FOMStringModule& swap(FOMStringModule& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMStringModule& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -1504,6 +1578,11 @@ public:
   const TransportationType& getTransportationType() const
   { return getConstImpl()._transportationType; }
 
+  FOMTransportationType& swap(FOMTransportationType& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMTransportationType& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -1593,6 +1672,11 @@ public:
   const Unsigned& getUpperBound() const
   { return getConstImpl()._upperBound; }
 
+  FOMDimension& swap(FOMDimension& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMDimension& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -1686,6 +1770,11 @@ public:
   const DimensionHandleSet& getDimensionHandleSet() const
   { return getConstImpl()._dimensionHandleSet; }
 
+  FOMRoutingSpace& swap(FOMRoutingSpace& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMRoutingSpace& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -1768,6 +1857,11 @@ public:
   const ParameterHandle& getParameterHandle() const
   { return getConstImpl()._parameterHandle; }
 
+  FOMParameter& swap(FOMParameter& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMParameter& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -1901,6 +1995,11 @@ public:
   const FOMParameterList& getParameterList() const
   { return getConstImpl()._parameterList; }
 
+  FOMInteractionClass& swap(FOMInteractionClass& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMInteractionClass& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -2030,6 +2129,11 @@ public:
   const DimensionHandleSet& getDimensionHandleSet() const
   { return getConstImpl()._dimensionHandleSet; }
 
+  FOMAttribute& swap(FOMAttribute& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMAttribute& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -2140,6 +2244,11 @@ public:
   const FOMAttributeList& getAttributeList() const
   { return getConstImpl()._attributeList; }
 
+  FOMObjectClass& swap(FOMObjectClass& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMObjectClass& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -2224,6 +2333,11 @@ public:
   const Double& getRate() const
   { return getConstImpl()._rate; }
 
+  FOMUpdateRate& swap(FOMUpdateRate& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMUpdateRate& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
@@ -2355,6 +2469,11 @@ public:
   const FOMObjectClassList& getObjectClassList() const
   { return getConstImpl()._objectClassList; }
 
+  FOMModule& swap(FOMModule& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
   bool operator==(const FOMModule& rhs) const
   {
     if (_impl.get() == rhs._impl.get())
