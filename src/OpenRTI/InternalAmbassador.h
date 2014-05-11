@@ -118,7 +118,8 @@ public:
   DestroyFederationExecutionResponseType
   dispatchWaitDestroyFederationExecutionResponse(const Clock& abstime);
 
-  JoinFederationExecutionResponseType dispatchWaitJoinFederationExecutionResponse(const Clock& abstime);
+  std::pair<JoinFederationExecutionResponseType, std::string>
+  dispatchWaitJoinFederationExecutionResponse(const Clock& abstime);
   bool dispatchWaitEraseFederationExecutionResponse(const Clock& abstime);
 
   /// Tries to reserve the object instance name in the federate and returns

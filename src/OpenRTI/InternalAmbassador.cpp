@@ -537,13 +537,14 @@ class OPENRTI_LOCAL InternalAmbassador::_JoinFederationExecutionFunctor {
 public:
   _JoinFederationExecutionFunctor(InternalAmbassador& basicAmbassador) :
     _done(false),
-    _response(JoinFederationExecutionResponseFederationExecutionDoesNotExist),
+    _response(JoinFederationExecutionResponseFederationExecutionDoesNotExist, std::string()),
     _basicAmbassador(basicAmbassador)
   { }
   void operator()(const ConnectionLostMessage& message)
   {
     _basicAmbassador.acceptInternalMessage(message);
-    _response = JoinFederationExecutionResponseFederationExecutionDoesNotExist;
+    _response.first = JoinFederationExecutionResponseFederationExecutionDoesNotExist;
+    _response.second = message.getFaultDescription();
     _done = true;
   }
   void operator()(const InsertFederationExecutionMessage& message)
@@ -553,7 +554,8 @@ public:
   void operator()(const JoinFederationExecutionResponseMessage& message)
   {
     _basicAmbassador.acceptInternalMessage(message);
-    _response = message.getJoinFederationExecutionResponseType();
+    _response.first = message.getJoinFederationExecutionResponseType();
+    _response.second = message.getExceptionString();
     _done = true;
   }
   template<typename M>
@@ -561,13 +563,13 @@ public:
   { _basicAmbassador.acceptInternalMessage(message); }
 
   bool _done;
-  JoinFederationExecutionResponseType _response;
+  std::pair<JoinFederationExecutionResponseType, std::string> _response;
 
 private:
   InternalAmbassador& _basicAmbassador;
 };
 
-JoinFederationExecutionResponseType
+std::pair<JoinFederationExecutionResponseType, std::string>
 InternalAmbassador::dispatchWaitJoinFederationExecutionResponse(const Clock& abstime)
 {
   _JoinFederationExecutionFunctor functor(*this);

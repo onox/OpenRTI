@@ -202,9 +202,9 @@ public:
 
     // Send this message and wait for the response
     send(request);
-    JoinFederationExecutionResponseType responseType;
-    responseType = dispatchWaitJoinFederationExecutionResponse(abstime);
-    switch (responseType) {
+    std::pair<JoinFederationExecutionResponseType, std::string> response;
+    response = dispatchWaitJoinFederationExecutionResponse(abstime);
+    switch (response.first) {
     case JoinFederationExecutionResponseFederateNameAlreadyInUse:
       _federate = 0;
       throw FederateNameAlreadyInUse(federateName);
@@ -223,7 +223,7 @@ public:
       break;
     case JoinFederationExecutionResponseInconsistentFDD:
       _federate = 0;
-      throw InconsistentFDD(federationExecutionName);
+      throw InconsistentFDD(response.second);
       break;
     default:
       break;
