@@ -48,6 +48,7 @@ public:
   void addDimension()
   {
     _module.getDimensionList().push_back(FOMStringDimension());
+    _module.getDimensionList().back().setUpperBound(0);
   }
   FOMStringDimension& getCurrentDimension()
   {
