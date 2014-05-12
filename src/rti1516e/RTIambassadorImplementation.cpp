@@ -1947,19 +1947,6 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
     }
   }
 
-  // try to collapse the string fom modules already here since we want to avoid failing this in the server
-  if (1 < fomModuleList.size()) {
-    try {
-      OpenRTI::FOMModuleSet fomModuleSet;
-      fomModuleSet.insertModuleList(fomModuleList);
-    } catch (const OpenRTI::Exception& e) {
-      // } catch (const OpenRTI::InconsistentFDD& e) {
-      throw rti1516e::InconsistentFDD(OpenRTI::utf8ToUcs(e.what()));
-    } catch (...) {
-      throw rti1516e::RTIinternalError(L"Unknown error while checking fdd consistency file");
-    }
-  }
-
   try {
     if (_ambassadorInterface->_inCallback)
       throw OpenRTI::CallNotAllowedFromWithinCallback();
@@ -2019,19 +2006,6 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
       throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
     } catch (...) {
       throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
-    }
-  }
-
-  // try to collapse the string fom modules already here since we want to avoid failing this in the server
-  if (1 < fomModuleList.size()) {
-    try {
-      OpenRTI::FOMModuleSet fomModuleSet;
-      fomModuleSet.insertModuleList(fomModuleList);
-    } catch (const OpenRTI::Exception& e) {
-      // } catch (const OpenRTI::InconsistentFDD& e) {
-      throw rti1516e::InconsistentFDD(OpenRTI::utf8ToUcs(e.what()));
-    } catch (...) {
-      throw rti1516e::RTIinternalError(L"Unknown error while checking fdd consistency file");
     }
   }
 
