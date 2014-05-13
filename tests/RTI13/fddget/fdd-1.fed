@@ -1,0 +1,31 @@
+(FED
+  (Federation test)
+  (FEDversion v1.3)
+  (objects
+    (class objectRoot
+      (attribute privilegeToDelete reliable TimeStamp)
+      (class ObjectClass1
+        (attribute Attribute1 reliable TimeStamp)
+        (class ObjectClass2
+          (attribute Attribute2 reliable TimeStamp)
+        )
+        (class ObjectClass3
+          (attribute Attribute3 reliable TimeStamp)
+        )
+      )
+    )
+  )
+  (interactions
+    (class interactionRoot reliable TimeStamp
+      (class InteractionClass1 reliable TimeStamp
+        (parameter Parameter1)
+        (class InteractionClass2 reliable TimeStamp
+          (parameter Parameter2)
+        )
+        (class InteractionClass3 reliable TimeStamp
+          (parameter Parameter3)
+        )
+      )
+    )
+  )
+)

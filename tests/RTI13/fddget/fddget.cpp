@@ -35,17 +35,17 @@ main(int argc, char* argv[])
   std::string fullPathNameToTheFDDfile("fdd.fed");
 
   std::string objectClassName;
-  std::string objectClassAttributeName;
+  std::vector<std::string> attributeNameVector;
 
   std::string interactionClassName;
-  std::string parameterName;
+  std::vector<std::string> parameterNameVector;
 
   OpenRTI::Options options(argc, argv);
   std::vector<std::string> args;
   while (options.next("a:i:F:o:O:p:")) {
     switch (options.getOptChar()) {
     case 'a':
-      objectClassAttributeName = options.getArgument();
+      attributeNameVector.push_back(options.getArgument());
       break;
     case 'i':
       interactionClassName = options.getArgument();
@@ -60,7 +60,7 @@ main(int argc, char* argv[])
       objectClassName = options.getArgument();
       break;
     case 'p':
-      parameterName = options.getArgument();
+      parameterNameVector.push_back(options.getArgument());
       break;
     case '\0':
       args.push_back(options.getArgument());
@@ -109,10 +109,10 @@ main(int argc, char* argv[])
     }
     std::cout << objectClassName << ": \"" << rtiName << "\" " << objectClassHandle << std::endl;
 
-    if (!objectClassAttributeName.empty()) {
+    for (std::vector<std::string>::const_iterator i = attributeNameVector.begin(); i != attributeNameVector.end(); ++i) {
       RTI::AttributeHandle attributeHandle;
       try {
-        attributeHandle = ambassador.getAttributeHandle(objectClassHandle, objectClassAttributeName);
+        attributeHandle = ambassador.getAttributeHandle(objectClassHandle, *i);
         rtiName = ambassador.getAttributeName(objectClassHandle, attributeHandle);
       } catch (const RTI::Exception& e) {
         std::cout << "RTI::Exception: \"" << e._reason << "\"" << std::endl;
@@ -121,7 +121,7 @@ main(int argc, char* argv[])
         std::cout << "Unknown Exception!" << std::endl;
         return EXIT_FAILURE;
       }
-      std::cout << "  " << objectClassAttributeName << ": \"" << rtiName << "\" " << attributeHandle << std::endl;
+      std::cout << "  " << *i << ": \"" << rtiName << "\" " << attributeHandle << std::endl;
     }
   }
 
@@ -140,10 +140,10 @@ main(int argc, char* argv[])
     }
     std::cout << interactionClassName << ": \"" << rtiName << "\" " << interactionClassHandle << std::endl;
 
-    if (!parameterName.empty()) {
+    for (std::vector<std::string>::const_iterator i = parameterNameVector.begin(); i != parameterNameVector.end(); ++i) {
       RTI::ParameterHandle parameterHandle;
       try {
-        parameterHandle = ambassador.getParameterHandle(interactionClassHandle, parameterName);
+        parameterHandle = ambassador.getParameterHandle(interactionClassHandle, *i);
         rtiName = ambassador.getParameterName(interactionClassHandle, parameterHandle);
       } catch (const RTI::Exception& e) {
         std::cout << "RTI::Exception: \"" << e._reason << "\"" << std::endl;
@@ -152,7 +152,7 @@ main(int argc, char* argv[])
         std::cout << "Unknown Exception!" << std::endl;
         return EXIT_FAILURE;
       }
-      std::cout << "  " << parameterName << ": \"" << rtiName << "\" " << parameterHandle << std::endl;
+      std::cout << "  " << *i << ": \"" << rtiName << "\" " << parameterHandle << std::endl;
     }
   }
 

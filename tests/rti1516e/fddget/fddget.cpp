@@ -38,23 +38,23 @@ main(int argc, char* argv[])
   std::vector<std::wstring> fomModules;
 
   std::wstring objectClassName;
-  std::wstring objectClassAttributeName;
+  std::vector<std::wstring> attributeNameVector;
 
   std::wstring interactionClassName;
-  std::wstring parameterName;
+  std::vector<std::wstring> parameterNameVector;
 
-  std::wstring dimensionName;
-  std::wstring updateRateName;
+  std::vector<std::wstring> dimensionNameVector;
+  std::vector<std::wstring> updateRateNameVector;
 
   OpenRTI::Options options(argc, argv);
   std::vector<std::wstring> args;
   while (options.next("a:d:i:F:o:O:p:u:")) {
     switch (options.getOptChar()) {
     case 'a':
-      objectClassAttributeName = OpenRTI::localeToUcs(options.getArgument());
+      attributeNameVector.push_back(OpenRTI::localeToUcs(options.getArgument()));
       break;
     case 'd':
-      dimensionName = OpenRTI::localeToUcs(options.getArgument());
+      dimensionNameVector.push_back(OpenRTI::localeToUcs(options.getArgument()));
       break;
     case 'i':
       interactionClassName = OpenRTI::localeToUcs(options.getArgument());
@@ -69,10 +69,10 @@ main(int argc, char* argv[])
       objectClassName = OpenRTI::localeToUcs(options.getArgument());
       break;
     case 'p':
-      parameterName = OpenRTI::localeToUcs(options.getArgument());
+      parameterNameVector.push_back(OpenRTI::localeToUcs(options.getArgument()));
       break;
     case 'u':
-      updateRateName = OpenRTI::localeToUcs(options.getArgument());
+      updateRateNameVector.push_back(OpenRTI::localeToUcs(options.getArgument()));
       break;
     case '\0':
       args.push_back(OpenRTI::localeToUcs(options.getArgument()));
@@ -124,10 +124,10 @@ main(int argc, char* argv[])
     }
     std::wcout << objectClassName << L": \"" << rtiName << "\" " << objectClassHandle.toString() << std::endl;
 
-    if (!objectClassAttributeName.empty()) {
+    for (std::vector<std::wstring>::const_iterator i = attributeNameVector.begin(); i != attributeNameVector.end(); ++i) {
       rti1516e::AttributeHandle attributeHandle;
       try {
-        attributeHandle = ambassador.getAttributeHandle(objectClassHandle, objectClassAttributeName);
+        attributeHandle = ambassador.getAttributeHandle(objectClassHandle, *i);
         rtiName = ambassador.getAttributeName(objectClassHandle, attributeHandle);
       } catch (const rti1516e::Exception& e) {
         std::wcout << L"rti1516e::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -136,7 +136,7 @@ main(int argc, char* argv[])
         std::wcout << L"Unknown Exception!" << std::endl;
         return EXIT_FAILURE;
       }
-      std::wcout << L"  " << objectClassAttributeName << L": \"" << rtiName << "\" " << attributeHandle.toString() << std::endl;
+      std::wcout << L"  " << *i << L": \"" << rtiName << "\" " << attributeHandle.toString() << std::endl;
     }
   }
 
@@ -155,10 +155,10 @@ main(int argc, char* argv[])
     }
     std::wcout << interactionClassName << L": \"" << rtiName << "\" " << interactionClassHandle.toString() << std::endl;
 
-    if (!parameterName.empty()) {
+   for (std::vector<std::wstring>::const_iterator i = parameterNameVector.begin(); i != parameterNameVector.end(); ++i) {
       rti1516e::ParameterHandle parameterHandle;
       try {
-        parameterHandle = ambassador.getParameterHandle(interactionClassHandle, parameterName);
+        parameterHandle = ambassador.getParameterHandle(interactionClassHandle, *i);
         rtiName = ambassador.getParameterName(interactionClassHandle, parameterHandle);
       } catch (const rti1516e::Exception& e) {
         std::wcout << L"rti1516e::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -167,16 +167,16 @@ main(int argc, char* argv[])
         std::wcout << L"Unknown Exception!" << std::endl;
         return EXIT_FAILURE;
       }
-      std::wcout << L"  " << parameterName << L": \"" << rtiName << "\" " << parameterHandle.toString() << std::endl;
+      std::wcout << L"  " << *i << L": \"" << rtiName << "\" " << parameterHandle.toString() << std::endl;
     }
   }
 
-  if (!dimensionName.empty()) {
+  for (std::vector<std::wstring>::const_iterator i = dimensionNameVector.begin(); i != dimensionNameVector.end(); ++i) {
     rti1516e::DimensionHandle dimensionHandle;
     std::wstring rtiName;
     unsigned upperBound = 0;
     try {
-      dimensionHandle = ambassador.getDimensionHandle(dimensionName);
+      dimensionHandle = ambassador.getDimensionHandle(*i);
       rtiName = ambassador.getDimensionName(dimensionHandle);
       upperBound = ambassador.getDimensionUpperBound(dimensionHandle);
     } catch (const rti1516e::Exception& e) {
@@ -186,14 +186,14 @@ main(int argc, char* argv[])
       std::wcout << L"Unknown Exception!" << std::endl;
       return EXIT_FAILURE;
     }
-    std::wcout << L"  " << dimensionName << L": \"" << rtiName << "\" " << dimensionHandle.toString()
+    std::wcout << L"  " << *i << L": \"" << rtiName << "\" " << dimensionHandle.toString()
                << L", upperBound = " << upperBound << std::endl;
   }
 
-  if (!updateRateName.empty()) {
+  for (std::vector<std::wstring>::const_iterator i = updateRateNameVector.begin(); i != updateRateNameVector.end(); ++i) {
     double updateRateValue = 0;
     try {
-      updateRateValue = ambassador.getUpdateRateValue(updateRateName);
+      updateRateValue = ambassador.getUpdateRateValue(*i);
     } catch (const rti1516e::Exception& e) {
       std::wcout << L"rti1516e::Exception: \"" << e.what() << L"\"" << std::endl;
       return EXIT_FAILURE;
@@ -201,7 +201,7 @@ main(int argc, char* argv[])
       std::wcout << L"Unknown Exception!" << std::endl;
       return EXIT_FAILURE;
     }
-    std::wcout << L"  " << updateRateName << L": " << updateRateValue << std::endl;
+    std::wcout << L"  " << *i << L": " << updateRateValue << std::endl;
   }
 
   // and now resign must work

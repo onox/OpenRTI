@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<objectModel DTDversion="1516.2">
+  <objects>
+    <objectClass name="HLAobjectRoot">
+      <attribute name="HLAprivilegeToDeleteObject"/>
+      <attribute name="privilegeToDelete"/>
+      <objectClass name="ObjectClass1">
+        <attribute name="Attribute1"/>
+        <objectClass name="ObjectClass2">
+          <attribute name="Attribute2"/>
+        </objectClass>
+      </objectClass>
+      <objectClass name="ObjectClass3">
+        <attribute name="Attribute3"/>
+      </objectClass>
+    </objectClass>
+  </objects>
+  <interactions>
+    <interactionClass name="HLAinteractionRoot">
+      <interactionClass name="InteractionClass1">
+        <parameter name="Parameter1"/>
+        <interactionClass name="InteractionClass2">
+          <parameter name="Parameter2"/>
+        </interactionClass>
+      </interactionClass>
+      <interactionClass name="InteractionClass3">
+        <parameter name="Parameter3"/>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+</objectModel>
