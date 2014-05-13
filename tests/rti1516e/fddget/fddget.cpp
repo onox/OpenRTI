@@ -36,6 +36,7 @@ main(int argc, char* argv[])
 {
   std::wstring federationExecutionName(L"federationExecutionName");
   std::vector<std::wstring> fomModules;
+  std::wstring mimModule;
 
   std::wstring objectClassName;
   std::vector<std::wstring> attributeNameVector;
@@ -48,7 +49,7 @@ main(int argc, char* argv[])
 
   OpenRTI::Options options(argc, argv);
   std::vector<std::wstring> args;
-  while (options.next("a:d:i:F:o:O:p:u:")) {
+  while (options.next("a:d:i:F:M:o:O:p:u:")) {
     switch (options.getOptChar()) {
     case 'a':
       attributeNameVector.push_back(OpenRTI::localeToUcs(options.getArgument()));
@@ -61,6 +62,9 @@ main(int argc, char* argv[])
       break;
     case 'F':
       federationExecutionName = OpenRTI::localeToUcs(options.getArgument());
+      break;
+    case 'M':
+      mimModule = OpenRTI::localeToUcs(options.getArgument());
       break;
     case 'O':
       fomModules.push_back(OpenRTI::localeToUcs(options.getArgument()));
@@ -89,7 +93,10 @@ main(int argc, char* argv[])
 
   // create, must work
   try {
-    ambassador.createFederationExecution(federationExecutionName, fomModules);
+    if (mimModule.empty())
+      ambassador.createFederationExecution(federationExecutionName, fomModules);
+    else
+      ambassador.createFederationExecutionWithMIM(federationExecutionName, fomModules, mimModule);
   } catch (const rti1516e::Exception& e) {
     std::wcout << L"rti1516e::Exception: \"" << e.what() << L"\"" << std::endl;
     return EXIT_FAILURE;
