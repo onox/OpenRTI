@@ -59,17 +59,16 @@ public:
 
   void pushObjectClass()
   {
+    size_t parentIndex;
     if (_objectClassIndexStack.empty()) {
-      _objectClassIndexStack.push_back(0);
-      _parentObjectClassIndexVector.push_back(~size_t(0));
-      _module.getObjectClassList().resize(1);
+      parentIndex = ~size_t(0);
     } else {
-      size_t parentIndex = _objectClassIndexStack.back();
-      size_t index = _module.getObjectClassList().size();
-      _objectClassIndexStack.push_back(index);
-      _parentObjectClassIndexVector.push_back(parentIndex);
-      _module.getObjectClassList().resize(index + 1);
+      parentIndex = _objectClassIndexStack.back();
     }
+    size_t index = _module.getObjectClassList().size();
+    _objectClassIndexStack.push_back(index);
+    _parentObjectClassIndexVector.push_back(parentIndex);
+    _module.getObjectClassList().resize(index + 1);
   }
   void popObjectClass()
   {
@@ -107,17 +106,16 @@ public:
 
   void pushInteractionClass()
   {
+    size_t parentIndex;
     if (_interactionClassIndexStack.empty()) {
-      _interactionClassIndexStack.push_back(0);
-      _parentInteractionClassIndexVector.push_back(~size_t(0));
-      _module.getInteractionClassList().resize(1);
+      parentIndex = ~size_t(0);
     } else {
-      size_t parentIndex = _interactionClassIndexStack.back();
-      size_t index = _module.getInteractionClassList().size();
-      _interactionClassIndexStack.push_back(index);
-      _parentInteractionClassIndexVector.push_back(parentIndex);
-      _module.getInteractionClassList().resize(index + 1);
+      parentIndex = _interactionClassIndexStack.back();
     }
+    size_t index = _module.getInteractionClassList().size();
+    _interactionClassIndexStack.push_back(index);
+    _parentInteractionClassIndexVector.push_back(parentIndex);
+    _module.getInteractionClassList().resize(index + 1);
   }
   void popInteractionClass()
   {
@@ -156,8 +154,10 @@ public:
   {
     // Complete the parent class names
     OpenRTIAssert(_parentInteractionClassIndexVector.size() == _module.getInteractionClassList().size());
-    for (size_t i = 1; i < _parentInteractionClassIndexVector.size(); ++i) {
+    for (size_t i = 0; i < _parentInteractionClassIndexVector.size(); ++i) {
       size_t parentIndex = _parentInteractionClassIndexVector[i];
+      if (parentIndex == ~std::size_t(0))
+        continue;
       OpenRTIAssert(parentIndex < _parentInteractionClassIndexVector.size());
       StringVector stringVector = _module.getInteractionClassList()[parentIndex].getName();
       OpenRTIAssert(_module.getInteractionClassList()[i].getName().size() == 1);
@@ -165,8 +165,10 @@ public:
       _module.getInteractionClassList()[i].getName().swap(stringVector);
     }
     OpenRTIAssert(_parentObjectClassIndexVector.size() == _module.getObjectClassList().size());
-    for (size_t i = 1; i < _parentObjectClassIndexVector.size(); ++i) {
+    for (size_t i = 0; i < _parentObjectClassIndexVector.size(); ++i) {
       size_t parentIndex = _parentObjectClassIndexVector[i];
+      if (parentIndex == ~std::size_t(0))
+        continue;
       OpenRTIAssert(parentIndex < _parentObjectClassIndexVector.size());
       StringVector stringVector = _module.getObjectClassList()[parentIndex].getName();
       OpenRTIAssert(_module.getObjectClassList()[i].getName().size() == 1);
