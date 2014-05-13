@@ -65,6 +65,9 @@ public:
   FOMModuleList getModuleList() const;
 
 private:
+  FOMModuleSet(const FOMModuleSet&);
+  FOMModuleSet& operator=(const FOMModuleSet&);
+
   struct AllocatorMap;
   SharedPtr<AllocatorMap> _allocatorMap;
 };
