@@ -29,7 +29,16 @@ Specifically under a UNIX like environment:
 cd <builddir>
 cmake -DCMAKE_INSTALL_PREFIX=<prefix> <srcdir>
 make
+make test
 make install
+
+Specifically under windows using cl:
+
+cd <builddir>
+cmake -DCMAKE_INSTALL_PREFIX=<prefix> <srcdir>
+cmake --build . --config Release
+ctest --build-config Release
+cmake --build . --config Release --target INSTALL
 
 Or depending on your c++ compile environment, you may need to take
 different steps. For details refer to www.cmake.org.
