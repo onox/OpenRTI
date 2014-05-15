@@ -911,7 +911,7 @@ public:
     _numTimesteps(100),
     _numInteractions(4)
   {
-    insertOptionString("fI:L:M:T:");
+    insertOptionString("fI:L:N:T:");
   }
 
   virtual bool processOption(char optchar, const std::string& argument)
@@ -926,7 +926,7 @@ public:
     case 'L':
       _lookahead = atoi(argument.c_str());
       return true;
-    case 'M':
+    case 'N':
       _timeAdvanceMode = TimeAdvanceMode(atoi(argument.c_str()));
       switch (_timeAdvanceMode) {
       case TimeAdvanceRequest:

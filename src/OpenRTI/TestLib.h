@@ -339,6 +339,7 @@ public:
     std::wstring _federationExecution;
     std::wstring _federateType;
     std::wstring _fddFile;
+    std::wstring _mimFile;
     std::wstring _address;
     std::vector<std::wstring> _argumentList;
     std::vector<std::wstring> _federateList;
@@ -372,6 +373,10 @@ public:
     { return _constructorArgs._federateType; }
     const std::wstring& getFddFile() const
     { return _constructorArgs._fddFile; }
+    std::vector<std::wstring> getFddFileList() const
+    { std::vector<std::wstring> fddFileList; fddFileList.push_back(getFddFile()); return fddFileList; }
+    const std::wstring& getMimFile() const
+    { return _constructorArgs._mimFile; }
     std::vector<std::wstring> getArgumentList() const
     {
       std::vector<std::wstring> argumentList = _constructorArgs._argumentList;
@@ -437,7 +442,7 @@ public:
   };
 
   RTITest(int argc, const char* const argv[], bool disjointFederations) :
-    _optionString("A:C:F:JO:S:"),
+    _optionString("A:C:F:JM:O:S:"),
     _options(argc, argv),
     _federationExecution(L"FederationExecution"),
     _numServers(1),
@@ -473,6 +478,9 @@ public:
       return true;
     case 'F':
       _federationExecution = localeToUcs(argument);
+      return true;
+    case 'M':
+      _mimFile = localeToUcs(argument);
       return true;
     case 'O':
       _fddFile = localeToUcs(argument);
@@ -510,6 +518,7 @@ public:
     Rand rand;
     ConstructorArgs constructorArgs;
     constructorArgs._fddFile = _fddFile;
+    constructorArgs._mimFile = _mimFile;
     constructorArgs._federationBarrier = new FederationBarrier(_numAmbassadorThreads);
     constructorArgs._lbts = new LBTS(_numAmbassadorThreads);
     constructorArgs._argumentList = _globalArgumentList;
@@ -591,6 +600,7 @@ private:
   ArgumentList _globalArgumentList;
 
   std::wstring _fddFile;
+  std::wstring _mimFile;
   std::wstring _federationExecution;
 
   unsigned _numServers;

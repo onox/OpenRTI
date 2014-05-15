@@ -218,7 +218,10 @@ public:
 
     // create, must work once
     try {
-      ambassador->createFederationExecution(getFederationExecution(), getFddFile(), std::wstring(L"HLAinteger64Time"));
+      if (getMimFile().empty())
+        ambassador->createFederationExecution(getFederationExecution(), getFddFileList(), std::wstring(L"HLAinteger64Time"));
+      else
+        ambassador->createFederationExecutionWithMIM(getFederationExecution(), getFddFileList(), getMimFile(), std::wstring(L"HLAinteger64Time"));
 
       if (!getFederationBarrier()->success())
         return false;
@@ -313,7 +316,10 @@ public:
 
       // create, must work once
       try {
-        ambassador->createFederationExecution(getFederationExecution(), getFddFile(), std::wstring(L"HLAinteger64Time"));
+        if (getMimFile().empty())
+          ambassador->createFederationExecution(getFederationExecution(), getFddFileList(), std::wstring(L"HLAinteger64Time"));
+        else
+          ambassador->createFederationExecutionWithMIM(getFederationExecution(), getFddFileList(), getMimFile(), std::wstring(L"HLAinteger64Time"));
 
         if (!getFederationBarrier()->success())
           return false;
