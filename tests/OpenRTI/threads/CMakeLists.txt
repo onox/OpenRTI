@@ -4,8 +4,5 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/OpenRTI)
 ADD_EXECUTABLE(threads threads.cpp)
 TARGET_LINK_LIBRARIES(threads OpenRTI)
 
-ADD_TEST(OpenRTI/threads-1 ${CMAKE_CURRENT_BINARY_DIR}/threads)
-
-# ADD_EXECUTABLE(variableLengthData variableLengthData.cpp)
-# TARGET_LINK_LIBRARIES(variableLengthData OpenRTI)
+ADD_TEST(OpenRTI/threads-1 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/threads")
 
