@@ -87,13 +87,21 @@ ServerObjectModel::ObjectInstance::unreferenceObjectInstance(ObjectInstanceConne
 }
 
 void
-ServerObjectModel::insert(const FOMModuleList& moduleList)
+ServerObjectModel::insert(const FOMModuleList& moduleList, bool isBaseType)
 {
   for (FOMModuleList::const_iterator i = moduleList.begin(); i != moduleList.end(); ++i) {
     insertFomModule(*i);
   }
 
-  _fomModuleSet.insertModuleList(moduleList);
+  _fomModuleSet.insertModuleList(moduleList, isBaseType);
+}
+
+void
+ServerObjectModel::erase(const FOMModuleList& moduleList)
+{
+  for (FOMModuleList::const_iterator i = moduleList.begin(); i != moduleList.end(); ++i) {
+    eraseFomModule(*i);
+  }
 }
 
 bool
@@ -109,6 +117,19 @@ ServerObjectModel::insertFomModule(const FOMModule& fomModule)
     insertObjectClass(*i);
   }
   return true;
+}
+
+void
+ServerObjectModel::eraseFomModule(const FOMModule& fomModule)
+{
+  for (FOMInteractionClassList::const_iterator i = fomModule.getInteractionClassList().begin();
+       i != fomModule.getInteractionClassList().end(); ++i) {
+    eraseInteractionClass(*i);
+  }
+  for (FOMObjectClassList::const_iterator i = fomModule.getObjectClassList().begin();
+       i != fomModule.getObjectClassList().end(); ++i) {
+    eraseObjectClass(*i);
+  }
 }
 
 void
@@ -137,12 +158,32 @@ ServerObjectModel::insertInteractionClass(const FOMInteractionClass& module)
 }
 
 void
+ServerObjectModel::eraseInteractionClass(const FOMInteractionClass& module)
+{
+  // FIXME move this into the destructors, but then we need to reliably unfold these things even in exception paths
+#ifndef _NDEBUG
+  InteractionClass* interactionClass = _interactionClassVector[module.getInteractionClassHandle().getHandle()].get();
+  if (interactionClass) {
+    OpenRTIAssert(interactionClass->getSubscriptionType() == Unsubscribed);
+    OpenRTIAssert(interactionClass->getPublicationType() == Unpublished);
+  }
+#endif
+  _interactionClassVector[module.getInteractionClassHandle().getHandle()].clear();
+}
+
+void
 ServerObjectModel::insertObjectClass(const FOMObjectClass& module)
 {
-  if (getObjectClass(module.getObjectClassHandle())) {
-    // FIXME: currently jus trust the FOMModuleSet that this cannot happen.
-    // Also, since this  kind of stuff can arrive from the network, this is unsafe
-    // OpenRTIAssert(module.getAttributeList().empty());
+  if (ObjectClass* existingObjectClass = getObjectClass(module.getObjectClassHandle())) {
+    for (FOMAttributeList::const_iterator i = module.getAttributeList().begin();
+         i != module.getAttributeList().end(); ++i) {
+      // FIXME share these among object classes???
+      SharedPtr<ObjectClassAttribute> attribute;
+      attribute = new ObjectClassAttribute(i->getName(), i->getAttributeHandle());
+      // FIXME, this???
+      // <field name="DimensionHandleSet" type="DimensionHandleSet"/>
+      existingObjectClass->insertObjectClassAttribute(attribute);
+    }
   } else {
     ObjectClass* parentObjectClass = getObjectClass(module.getParentObjectClassHandle());
 
@@ -179,6 +220,28 @@ ServerObjectModel::insertObjectClass(const FOMObjectClass& module)
 
     _objectClassVector[objectClassHandle.getHandle()] = objectClass;
   }
+}
+
+void
+ServerObjectModel::eraseObjectClass(const FOMObjectClass& module)
+{
+  // FIXME move this into the destructors, but then we need to reliably unfold these things even in exception paths
+#ifndef _NDEBUG
+  ObjectClass* objectClass = _objectClassVector[module.getObjectClassHandle().getHandle()].get();
+  if (objectClass) {
+    OpenRTIAssert(objectClass->getChildObjectClassList().empty());
+    OpenRTIAssert(objectClass->getObjectInstanceList().empty());
+    const ObjectClassAttributeVector& objectClassAttributeVector = objectClass->getObjectClassAttributeVector();
+    for (ObjectClassAttributeVector::const_iterator i = objectClassAttributeVector.begin();
+         i != objectClassAttributeVector.end(); ++i) {
+      if (!i->valid())
+        continue;
+      OpenRTIAssert((*i)->getSubscriptionType() == Unsubscribed);
+      OpenRTIAssert((*i)->getPublicationType() == Unpublished);
+    }
+  }
+#endif
+  _objectClassVector[module.getObjectClassHandle().getHandle()].clear();
 }
 
 ServerObjectModel::Region*
@@ -347,6 +410,9 @@ void
 ServerObjectModel::eraseFederate(ServerObjectModel::FederateHandleFederateMap::iterator i)
 {
   OpenRTIAssert(i != _federateHandleFederateMap.end());
+
+  // drop fom modules in use just by this
+  erase(_fomModuleSet.eraseModuleList(i->second->_fomModuleHandleVector));
 
   // The time management stuff
   _federateHandleCommitMap.erase(i->first);

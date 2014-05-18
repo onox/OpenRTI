@@ -375,7 +375,6 @@
 
   <type name="FOMModule" type="struct" copyOnWrite="true">
     <field name="FOMModuleHandle" type="FOMModuleHandle"/>
-    <field name="RequiredFOMModuleHandleSet" type="FOMModuleHandleSet"/>
     <field name="TransportationTypeList" type="FOMTransportationTypeList"/>
     <field name="DimensionList" type="FOMDimensionList"/>
     <field name="RoutingSpaceList" type="FOMRoutingSpaceList"/>
@@ -453,17 +452,6 @@
     <field name="FederationHandle" type="FederationHandle"/>
   </message>
 
-  <!-- Tell a child server node about a set of new FOM modules. This should happen on demand when it is needed. -->
-  <!-- <message type="InsertFOMModules"> -->
-  <!--   <field name="FederationHandle" type="FederationHandle"/> -->
-  <!--   <field name="FOMModule" type="FOMModule"/> -->
-  <!-- </message> -->
-  <!-- <message type="EraseFOMModules"> -->
-  <!--   <field name="FederationHandle" type="FederationHandle"/> -->
-  <!--   <field name="FOMModuleHandle" type="FOMModuleHandle"/> -->
-  <!-- </message> -->
-
-
   <!-- Join federation execution -->
   <message type="JoinFederationExecutionRequest">
     <field name="FederationExecution" type="String"/>
@@ -488,7 +476,7 @@
     <!-- The new federates unique name -->
     <field name="FederateName" type="String"/>
     <!-- The list of required fom modules -->
-    <field name="FOMModuleHandleList" type="FOMModuleHandleVector"/>
+    <field name="FOMModuleList" type="FOMModuleList"/>
   </message>
 
   <!-- Resign federation execution as sent from the ambassador.

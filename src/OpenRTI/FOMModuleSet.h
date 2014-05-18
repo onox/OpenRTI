@@ -38,31 +38,27 @@
 
 namespace OpenRTI {
 
+/// FIXME: This class should vanish:
+/// The ServerObjectModel should correctly reference all it's data
+/// by the federate object model that defined the entities. Then
+/// a rollback on an inconsistent fdd is easy to implement as well as the
+/// anyway required erase methods in the server object model.
 class OPENRTI_API FOMModuleSet {
 public:
   FOMModuleSet();
   ~FOMModuleSet();
 
-  FOMModuleHandleSet insertModuleList(const FOMStringModuleList& moduleList);
+  FOMModuleHandleSet insertModuleList(const FOMStringModuleList& moduleList, bool isBaseType);
   bool testModuleList(const FOMStringModuleList& moduleList);
-  void insertModuleList(const FOMModuleList& moduleList);
-
-  // // Should return the full set of fom module handles that are needed to satisfy a new federate with the given
-  // // modules handle list. The returned list should contain the base modules from the original
-  // // create request and the mim module.
-  // FOMModuleHandleSet getFullHandleList(const FOMModuleHandleSet& moduleHandleList) const
-  // {
-  //   FOMModuleHandleSet handleSet;
-  //   std::set_union(moduleHandleList.begin(), moduleHandleList.end(),
-  //                  _createModuleHandles.begin(), _createModuleHandles.end(),
-  //                  std::inserter(handleSet, handleSet.begin()));
-  //   return handleSet;
-  // }
-
-  // FOMModuleHandleSet _createModuleHandles;
+  void insertModuleList(const FOMModuleList& moduleList, bool isBaseType);
+  // returns the components from the module list that are actually erased.
+  // but dont trust anyting but the handles and names.
+  FOMModuleList eraseModuleList(const FOMModuleHandleVector& moduleList);
 
   FOMModule getFOMModule(const FOMModuleHandle& moduleHandle) const;
-  FOMModuleList getModuleList() const;
+  FOMModuleList getModuleList(const FOMModuleHandleSet& moduleList) const;
+  FOMModuleList getModuleList(const FOMModuleHandleVector& moduleList) const;
+  FOMModuleList getBaseModuleList() const;
 
 private:
   FOMModuleSet(const FOMModuleSet&);

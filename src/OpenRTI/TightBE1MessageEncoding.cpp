@@ -1126,7 +1126,6 @@ public:
   void writeFOMModule(const FOMModule& value)
   {
     writeFOMModuleHandle(value.getFOMModuleHandle());
-    writeFOMModuleHandleSet(value.getRequiredFOMModuleHandleSet());
     writeFOMTransportationTypeList(value.getTransportationTypeList());
     writeFOMDimensionList(value.getDimensionList());
     writeFOMRoutingSpaceList(value.getRoutingSpaceList());
@@ -1223,7 +1222,7 @@ public:
     writeFederateHandle(value.getFederateHandle());
     writeString(value.getFederateType());
     writeString(value.getFederateName());
-    writeFOMModuleHandleVector(value.getFOMModuleHandleList());
+    writeFOMModuleList(value.getFOMModuleList());
   }
 
   void writeResignFederationExecutionLeafRequestMessage(const ResignFederationExecutionLeafRequestMessage& value)
@@ -3219,7 +3218,6 @@ public:
   void readFOMModule(FOMModule& value)
   {
     readFOMModuleHandle(value.getFOMModuleHandle());
-    readFOMModuleHandleSet(value.getRequiredFOMModuleHandleSet());
     readFOMTransportationTypeList(value.getTransportationTypeList());
     readFOMDimensionList(value.getDimensionList());
     readFOMRoutingSpaceList(value.getRoutingSpaceList());
@@ -3316,7 +3314,7 @@ public:
     readFederateHandle(value.getFederateHandle());
     readString(value.getFederateType());
     readString(value.getFederateName());
-    readFOMModuleHandleVector(value.getFOMModuleHandleList());
+    readFOMModuleList(value.getFOMModuleList());
   }
 
   void readResignFederationExecutionLeafRequestMessage(ResignFederationExecutionLeafRequestMessage& value)

@@ -268,7 +268,7 @@ public:
   void insertInteractionClass(const FOMInteractionClass& module);
   size_t getNumInteractionClasses() const
   { return _interactionClassVector.size(); }
-
+  bool isInteractionClassDerivedFrom(const InteractionClassHandle& baseInteractionClassHandle, const InteractionClassHandle& interactionClassHandle) const;
 
   /// Object Classes
   struct OPENRTI_API Attribute : public PublishSubscribe {
@@ -351,6 +351,7 @@ public:
   void insertObjectClass(const FOMObjectClass& module);
   size_t getNumObjectClasses() const
   { return _objectClassVector.size(); }
+  bool isObjectClassDerivedFrom(const ObjectClassHandle& baseObjectClassHandle, const ObjectClassHandle& objectClassHandle) const;
 
 
   /// Object Instances

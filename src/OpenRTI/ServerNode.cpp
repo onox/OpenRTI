@@ -172,6 +172,16 @@ public:
   const std::string& getServerPath() const
   { return _serverOptions->getServerPath(); }
 
+  bool isFOMStringModuleCompatible(const FOMStringModuleList& fomStringModuleList, std::string& exceptionString)
+  {
+    try {
+      return _fomModuleSet.testModuleList(fomStringModuleList);
+    } catch (OpenRTI::Exception& e) {
+      exceptionString = e.what();
+      return false;
+    }
+  }
+
   void accept(const ConnectHandle& connectHandle, const JoinFederationExecutionRequestMessage* message)
   {
     // This function needs to be successful since the calling function has already inserted the connect here
@@ -190,6 +200,15 @@ public:
       send(connectHandle, response);
       return;
     }
+    std::string exceptionString;
+    if (!isFOMStringModuleCompatible(message->getFOMStringModuleList(), exceptionString)) {
+      SharedPtr<JoinFederationExecutionResponseMessage> response;
+      response = new JoinFederationExecutionResponseMessage;
+      response->setJoinFederationExecutionResponseType(JoinFederationExecutionResponseInconsistentFDD);
+      response->setExceptionString(exceptionString);
+      send(connectHandle, response);
+      return;
+    }
 
     // Respond with Success
     SharedPtr<JoinFederationExecutionResponseMessage> response;
@@ -200,6 +219,14 @@ public:
     Federate* federate = insertFederate(connectHandle, message->getFederateName());
     OpenRTIAssert(federate);
     federate->_federateType = message->getFederateType();
+
+    // We have tested above, so this must work now.
+    FOMModuleHandleSet fomModuleHandles = _fomModuleSet.insertModuleList(message->getFOMStringModuleList(), false);
+    insert(_fomModuleSet.getModuleList(fomModuleHandles), false);
+    response->setFOMModuleList(_fomModuleSet.getModuleList(fomModuleHandles));
+    federate->_fomModuleHandleVector.reserve(fomModuleHandles.size());
+    for (FOMModuleHandleSet::const_iterator i = fomModuleHandles.begin(); i != fomModuleHandles.end(); ++i)
+      federate->_fomModuleHandleVector.push_back(*i);
 
     /// FIXME shall we get that message from the federation server???
     response->setFederationHandle(getHandle());
@@ -245,6 +272,15 @@ public:
     Federate* federate = insertFederate(requestConnectHandle, message->getFederateName(), federateHandle);
     OpenRTIAssert(federate);
     federate->_federateType = message->getFederateType();
+
+    // here insert the fom
+    FOMModuleHandleVector fomModuleHandleVector;
+    fomModuleHandleVector.reserve(message->getFOMModuleList().size());
+    for (FOMModuleList::const_iterator i = message->getFOMModuleList().begin(); i != message->getFOMModuleList().end(); ++i)
+      fomModuleHandleVector.push_back(i->getFOMModuleHandle());
+    federate->_fomModuleHandleVector = fomModuleHandleVector;
+    _fomModuleSet.insertModuleList(message->getFOMModuleList(), false);
+    insert(message->getFOMModuleList(), false);
 
     if (requestConnectHandle.valid()) {
       // The requesting server needs to know about us, just forward here
@@ -963,6 +999,8 @@ public:
     // Unpublish this connect by fake unpublish messages?!!
     for (InteractionClassVector::const_iterator j = getInteractionClassVector().begin();
          j != getInteractionClassVector().end(); ++j) {
+      if (!j->valid())
+        continue;
       if ((*j)->getPublicationType(connectHandle) == Unpublished)
         continue;
       SharedPtr<ChangeInteractionClassPublicationMessage> message = new ChangeInteractionClassPublicationMessage;
@@ -973,9 +1011,13 @@ public:
     }
     for (ObjectClassVector::const_iterator j = getObjectClassVector().begin();
          j != getObjectClassVector().end(); ++j) {
+      if (!j->valid())
+        continue;
       AttributeHandleVector attributeHandleVector;
       for (ObjectClassAttributeVector::const_iterator k = (*j)->getObjectClassAttributeVector().begin();
            k != (*j)->getObjectClassAttributeVector().end(); ++k) {
+        if (!k->valid())
+          continue;
         if ((*k)->getPublicationType(connectHandle) == Unpublished)
           continue;
         attributeHandleVector.reserve((*j)->getObjectClassAttributeVector().size());
@@ -1098,6 +1140,8 @@ public:
     // Unsubscribe this connect by fake unsubscribe messages?!!
     for (InteractionClassVector::const_iterator j = getInteractionClassVector().begin();
          j != getInteractionClassVector().end(); ++j) {
+      if (!j->valid())
+        continue;
       if ((*j)->getSubscriptionType(connectHandle) == Unsubscribed)
         continue;
       SharedPtr<ChangeInteractionClassSubscriptionMessage> message = new ChangeInteractionClassSubscriptionMessage;
@@ -1108,9 +1152,13 @@ public:
     }
     for (ObjectClassVector::const_iterator j = getObjectClassVector().begin();
          j != getObjectClassVector().end(); ++j) {
+      if (!j->valid())
+        continue;
       AttributeHandleVector attributeHandleVector;
       for (ObjectClassAttributeVector::const_iterator k = (*j)->getObjectClassAttributeVector().begin();
            k != (*j)->getObjectClassAttributeVector().end(); ++k) {
+        if (!k->valid())
+          continue;
         if ((*k)->getSubscriptionType(connectHandle) == Unsubscribed)
           continue;
         attributeHandleVector.reserve((*j)->getObjectClassAttributeVector().size());
@@ -1637,7 +1685,7 @@ public:
     // FIXME add the server options
 
     // FIXME push them as required
-    message->setFOMModuleList(getModuleList());
+    message->setFOMModuleList(_fomModuleSet.getBaseModuleList());
     messageSender->send(message);
 
     /// FIXME currently these are all flushed when an EraseFederationExecutionMessage is recieved.
@@ -1997,9 +2045,9 @@ public:
           federationServer->setLogicalTimeFactoryName(message->getLogicalTimeFactoryName());
 
           FOMModuleHandleSet fomModuleHandleSet;
-          fomModuleHandleSet = federationServer->_fomModuleSet.insertModuleList(message->getFOMStringModuleList());
-          FOMModuleList moduleList = federationServer->_fomModuleSet.getModuleList();
-          federationServer->insert(moduleList);
+          fomModuleHandleSet = federationServer->_fomModuleSet.insertModuleList(message->getFOMStringModuleList(), true);
+          FOMModuleList moduleList = federationServer->_fomModuleSet.getBaseModuleList();
+          federationServer->insert(moduleList, true);
 
           // register this one
           candidate.take();
@@ -2204,7 +2252,7 @@ public:
     i = insertFederation(message->getFederationName(), federationHandle);
     i->second->setParentConfigurationParameterMap(message->getConfigurationParameterMap());
     i->second->setLogicalTimeFactoryName(message->getLogicalTimeFactoryName());
-    i->second->insert(message->getFOMModuleList());
+    i->second->insert(message->getFOMModuleList(), true);
     // FIXME add the server options
   }
   // A child server or an ambassador sends this request to be removed from the federation execution.
@@ -2314,6 +2362,7 @@ public:
 
     // If we are a root server ...
     if (isRootServer()) {
+      std::string exceptionString;
 
       FederationServerMap::const_iterator i = _federationServerMap.find(message->getFederationExecution());
       if (i == _federationServerMap.end()) {
@@ -2332,6 +2381,12 @@ public:
         response->setJoinFederationExecutionResponseType(JoinFederationExecutionResponseFederateNameAlreadyInUse);
         _serverConnectSet.send(connectHandle, response);
 
+      } else if (!i->second->isFOMStringModuleCompatible(message->getFOMStringModuleList(), exceptionString)) {
+        SharedPtr<JoinFederationExecutionResponseMessage> response;
+        response = new JoinFederationExecutionResponseMessage;
+        response->setJoinFederationExecutionResponseType(JoinFederationExecutionResponseInconsistentFDD);
+        response->setExceptionString(exceptionString);
+        _serverConnectSet.send(connectHandle, response);
       } else {
         // Insert a new connect
         i->second->insertConnect(connectHandle, _serverConnectSet.getMessageSender(connectHandle), _serverConnectSet.getName(connectHandle));

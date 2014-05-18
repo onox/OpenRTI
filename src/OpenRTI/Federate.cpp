@@ -171,7 +171,8 @@ Federate::InteractionClass::insertParameter(const FOMParameter& fomParameter)
   size_t index = parameterHandle.getHandle();
   if (_parameterVector.size() <= index)
     _parameterVector.resize(index + 1);
-  OpenRTIAssert(!_parameterVector[index].valid());
+  if (_parameterVector[index].valid())
+    return;
   _parameterVector[index] = new Parameter;
   Parameter* parameter = _parameterVector[index].get();
 
@@ -250,7 +251,8 @@ Federate::ObjectClass::insertAttribute(const FOMAttribute& fomAttribute)
   size_t index = attributeHandle.getHandle();
   if (_attributeVector.size() <= index)
     _attributeVector.resize(index + 1);
-  OpenRTIAssert(!_attributeVector[index].valid());
+  if (_attributeVector[index].valid())
+    return;
   _attributeVector[index] = new Attribute;
   Attribute* attribute = _attributeVector[index].get();
 
@@ -834,47 +836,71 @@ Federate::insertInteractionClass(const FOMInteractionClass& module)
   size_t index = module.getInteractionClassHandle().getHandle();
   if (_interactionClassVector.size() <= index)
     _interactionClassVector.resize(index + 1);
-  _interactionClassVector[index] = new InteractionClass;
+  if (!_interactionClassVector[index].valid()) {
+    _interactionClassVector[index] = new InteractionClass;
 
-  InteractionClassHandle parentHandle = module.getParentInteractionClassHandle();
+    InteractionClassHandle parentHandle = module.getParentInteractionClassHandle();
 
-  // If we have invented an internal HLAinteractionRoot, the name of this one is empty.
-  std::string fqName;
-  if (parentHandle.valid()) {
-    fqName = getInteractionClass(parentHandle)->getFQName();
-    if (!fqName.empty())
-      fqName.append(".");
+    // If we have invented an internal HLAinteractionRoot, the name of this one is empty.
+    std::string fqName;
+    if (parentHandle.valid()) {
+      fqName = getInteractionClass(parentHandle)->getFQName();
+      if (!fqName.empty())
+        fqName.append(".");
+    }
+    fqName.append(module.getName());
+
+    if (!fqName.empty()) {
+      _nameInteractionClassHandleMap[module.getName()] = module.getInteractionClassHandle();
+      _nameInteractionClassHandleMap[fqName] = module.getInteractionClassHandle();
+    } else {
+      OpenRTIAssert(!parentHandle.valid());
+      _nameInteractionClassHandleMap["HLAinteractionRoot"] = module.getInteractionClassHandle();
+    }
+
+    InteractionClass* interactionClass = _interactionClassVector[index].get();
+    if (fqName.empty())
+      interactionClass->setName("HLAinteractionRoot");
+    else
+      interactionClass->setName(module.getName());
+    interactionClass->setFQName(fqName);
+    interactionClass->setParentInteractionClassHandle(parentHandle);
+    interactionClass->setOrderType(module.getOrderType());
+    interactionClass->setTransportationType(module.getTransportationType());
+    interactionClass->setDimensionHandleSet(module.getDimensionHandleSet());
+
+    if (parentHandle.valid()) {
+      InteractionClass* parentClass = getInteractionClass(parentHandle);
+      OpenRTIAssert(parentClass);
+      interactionClass->insertDerivedParameters(*parentClass);
+    }
   }
-  fqName.append(module.getName());
-
-  if (!fqName.empty()) {
-    _nameInteractionClassHandleMap[module.getName()] = module.getInteractionClassHandle();
-    _nameInteractionClassHandleMap[fqName] = module.getInteractionClassHandle();
-  } else {
-    OpenRTIAssert(!parentHandle.valid());
-    _nameInteractionClassHandleMap["HLAinteractionRoot"] = module.getInteractionClassHandle();
+  for (std::size_t i = index; i < _interactionClassVector.size(); ++i) {
+    InteractionClass* interactionClass = getInteractionClass(InteractionClassHandle(i));
+    if (!interactionClass)
+      continue;
+    if (!isInteractionClassDerivedFrom(module.getInteractionClassHandle(), InteractionClassHandle(i)))
+      continue;
+    for (FOMParameterList::const_iterator i = module.getParameterList().begin();
+         i != module.getParameterList().end(); ++i) {
+      interactionClass->insertParameter(*i);
+    }
   }
+}
 
-  InteractionClass* interactionClass = _interactionClassVector[index].get();
-  if (fqName.empty())
-    interactionClass->setName("HLAinteractionRoot");
-  else
-    interactionClass->setName(module.getName());
-  interactionClass->setFQName(fqName);
-  interactionClass->setParentInteractionClassHandle(parentHandle);
-  interactionClass->setOrderType(module.getOrderType());
-  interactionClass->setTransportationType(module.getTransportationType());
-  interactionClass->setDimensionHandleSet(module.getDimensionHandleSet());
-
-  if (parentHandle.valid()) {
-    InteractionClass* parentClass = getInteractionClass(parentHandle);
-    OpenRTIAssert(parentClass);
-    interactionClass->insertDerivedParameters(*parentClass);
+bool
+Federate::isInteractionClassDerivedFrom(const InteractionClassHandle& baseInteractionClassHandle, const InteractionClassHandle& interactionClassHandle) const
+{
+  InteractionClassHandle derivedInteractionClassHandle = interactionClassHandle;
+  while (derivedInteractionClassHandle.valid()) {
+    if (baseInteractionClassHandle == derivedInteractionClassHandle)
+      return true;
+    const InteractionClass* interactionClass = getInteractionClass(derivedInteractionClassHandle);
+    if (!interactionClass)
+      return false;
+    derivedInteractionClassHandle = interactionClass->getParentInteractionClassHandle();
   }
-  for (FOMParameterList::const_iterator i = module.getParameterList().begin();
-       i != module.getParameterList().end(); ++i) {
-    interactionClass->insertParameter(*i);
-  }
+  return false;
 }
 
 Federate::ObjectClass*
@@ -908,44 +934,68 @@ Federate::insertObjectClass(const FOMObjectClass& module)
   size_t index = module.getObjectClassHandle().getHandle();
   if (_objectClassVector.size() <= index)
     _objectClassVector.resize(index + 1);
-  _objectClassVector[index] = new ObjectClass;
-  ObjectClass* objectClass = _objectClassVector[index].get();
+  if (!_objectClassVector[index].valid()) {
+    _objectClassVector[index] = new ObjectClass;
+    ObjectClass* objectClass = _objectClassVector[index].get();
 
-  ObjectClassHandle parentHandle = module.getParentObjectClassHandle();
+    ObjectClassHandle parentHandle = module.getParentObjectClassHandle();
 
-  // If we have invented an internal HLAobjectRoot, the name of this one is empty.
-  std::string fqName;
-  if (parentHandle.valid()) {
-    fqName = getObjectClass(parentHandle)->getFQName();
-    if (!fqName.empty())
-      fqName.append(".");
+    // If we have invented an internal HLAobjectRoot, the name of this one is empty.
+    std::string fqName;
+    if (parentHandle.valid()) {
+      fqName = getObjectClass(parentHandle)->getFQName();
+      if (!fqName.empty())
+        fqName.append(".");
+    }
+    fqName.append(module.getName());
+
+    if (!fqName.empty()) {
+      _nameObjectClassHandleMap[module.getName()] = module.getObjectClassHandle();
+      _nameObjectClassHandleMap[fqName] = module.getObjectClassHandle();
+    } else {
+      OpenRTIAssert(!parentHandle.valid());
+      _nameObjectClassHandleMap["HLAobjectRoot"] = module.getObjectClassHandle();
+    }
+
+    if (fqName.empty())
+      objectClass->setName("HLAobjectRoot");
+    else
+      objectClass->setName(module.getName());
+    objectClass->setFQName(fqName);
+    objectClass->setParentObjectClassHandle(parentHandle);
+
+    if (parentHandle.valid()) {
+      ObjectClass* parentClass = getObjectClass(parentHandle);
+      OpenRTIAssert(parentClass);
+      objectClass->insertDerivedAttributes(*parentClass);
+    }
   }
-  fqName.append(module.getName());
-
-  if (!fqName.empty()) {
-    _nameObjectClassHandleMap[module.getName()] = module.getObjectClassHandle();
-    _nameObjectClassHandleMap[fqName] = module.getObjectClassHandle();
-  } else {
-    OpenRTIAssert(!parentHandle.valid());
-    _nameObjectClassHandleMap["HLAobjectRoot"] = module.getObjectClassHandle();
+  for (std::size_t i = index; i < _objectClassVector.size(); ++i) {
+    ObjectClass* objectClass = getObjectClass(ObjectClassHandle(i));
+    if (!objectClass)
+      continue;
+    if (!isObjectClassDerivedFrom(module.getObjectClassHandle(), ObjectClassHandle(i)))
+      continue;
+    for (FOMAttributeList::const_iterator i = module.getAttributeList().begin();
+         i != module.getAttributeList().end(); ++i) {
+      objectClass->insertAttribute(*i);
+    }
   }
+}
 
-  if (fqName.empty())
-    objectClass->setName("HLAobjectRoot");
-  else
-    objectClass->setName(module.getName());
-  objectClass->setFQName(fqName);
-  objectClass->setParentObjectClassHandle(parentHandle);
-
-  if (parentHandle.valid()) {
-    ObjectClass* parentClass = getObjectClass(parentHandle);
-    OpenRTIAssert(parentClass);
-    objectClass->insertDerivedAttributes(*parentClass);
+bool
+Federate::isObjectClassDerivedFrom(const ObjectClassHandle& baseObjectClassHandle, const ObjectClassHandle& objectClassHandle) const
+{
+  ObjectClassHandle derivedObjectClassHandle = objectClassHandle;
+  while (derivedObjectClassHandle.valid()) {
+    if (baseObjectClassHandle == derivedObjectClassHandle)
+      return true;
+    const ObjectClass* objectClass = getObjectClass(derivedObjectClassHandle);
+    if (!objectClass)
+      return false;
+    derivedObjectClassHandle = objectClass->getParentObjectClassHandle();
   }
-  for (FOMAttributeList::const_iterator i = module.getAttributeList().begin();
-       i != module.getAttributeList().end(); ++i) {
-    objectClass->insertAttribute(*i);
-  }
+  return false;
 }
 
 Federate::ObjectInstance*

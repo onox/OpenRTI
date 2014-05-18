@@ -707,7 +707,7 @@ JoinFederationExecutionResponseMessage::operator==(const JoinFederationExecution
   if (getFederateHandle() != rhs.getFederateHandle()) return false;
   if (getFederateType() != rhs.getFederateType()) return false;
   if (getFederateName() != rhs.getFederateName()) return false;
-  if (getFOMModuleHandleList() != rhs.getFOMModuleHandleList()) return false;
+  if (getFOMModuleList() != rhs.getFOMModuleList()) return false;
   return true;
 }
 
@@ -726,8 +726,8 @@ JoinFederationExecutionResponseMessage::operator<(const JoinFederationExecutionR
   if (rhs.getFederateType() < getFederateType()) return false;
   if (getFederateName() < rhs.getFederateName()) return true;
   if (rhs.getFederateName() < getFederateName()) return false;
-  if (getFOMModuleHandleList() < rhs.getFOMModuleHandleList()) return true;
-  if (rhs.getFOMModuleHandleList() < getFOMModuleHandleList()) return false;
+  if (getFOMModuleList() < rhs.getFOMModuleList()) return true;
+  if (rhs.getFOMModuleList() < getFOMModuleList()) return false;
   return false;
 }
 

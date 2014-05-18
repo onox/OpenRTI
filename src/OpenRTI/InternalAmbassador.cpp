@@ -172,6 +172,7 @@ InternalAmbassador::acceptInternalMessage(const JoinFederationExecutionResponseM
   federate->setFederateHandle(message.getFederateHandle());
   federate->setFederateName(message.getFederateName());
   federate->setFederateType(message.getFederateType());
+  federate->insertFOMModuleList(message.getFOMModuleList());
 }
 
 void

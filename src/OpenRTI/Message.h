@@ -2611,17 +2611,6 @@ public:
   const FOMModuleHandle& getFOMModuleHandle() const
   { return getConstImpl()._fOMModuleHandle; }
 
-  void setRequiredFOMModuleHandleSet(const FOMModuleHandleSet& value)
-  { getImpl()._requiredFOMModuleHandleSet = value; }
-#if 201103L <= __cplusplus
-  void setRequiredFOMModuleHandleSet(FOMModuleHandleSet&& value)
-  { getImpl()._requiredFOMModuleHandleSet = value; }
-#endif
-  FOMModuleHandleSet& getRequiredFOMModuleHandleSet()
-  { return getImpl()._requiredFOMModuleHandleSet; }
-  const FOMModuleHandleSet& getRequiredFOMModuleHandleSet() const
-  { return getConstImpl()._requiredFOMModuleHandleSet; }
-
   void setTransportationTypeList(const FOMTransportationTypeList& value)
   { getImpl()._transportationTypeList = value; }
 #if 201103L <= __cplusplus
@@ -2709,7 +2698,6 @@ public:
     if (_impl.get() == rhs._impl.get())
       return true;
     if (getFOMModuleHandle() != rhs.getFOMModuleHandle()) return false;
-    if (getRequiredFOMModuleHandleSet() != rhs.getRequiredFOMModuleHandleSet()) return false;
     if (getTransportationTypeList() != rhs.getTransportationTypeList()) return false;
     if (getDimensionList() != rhs.getDimensionList()) return false;
     if (getRoutingSpaceList() != rhs.getRoutingSpaceList()) return false;
@@ -2725,8 +2713,6 @@ public:
       return false;
     if (getFOMModuleHandle() < rhs.getFOMModuleHandle()) return true;
     if (rhs.getFOMModuleHandle() < getFOMModuleHandle()) return false;
-    if (getRequiredFOMModuleHandleSet() < rhs.getRequiredFOMModuleHandleSet()) return true;
-    if (rhs.getRequiredFOMModuleHandleSet() < getRequiredFOMModuleHandleSet()) return false;
     if (getTransportationTypeList() < rhs.getTransportationTypeList()) return true;
     if (rhs.getTransportationTypeList() < getTransportationTypeList()) return false;
     if (getDimensionList() < rhs.getDimensionList()) return true;
@@ -2754,7 +2740,6 @@ public:
 private:
   struct OPENRTI_API Implementation : public Referenced {
     FOMModuleHandle _fOMModuleHandle;
-    FOMModuleHandleSet _requiredFOMModuleHandleSet;
     FOMTransportationTypeList _transportationTypeList;
     FOMDimensionList _dimensionList;
     FOMRoutingSpaceList _routingSpaceList;
@@ -3432,16 +3417,16 @@ public:
   const String& getFederateName() const
   { return _federateName; }
 
-  void setFOMModuleHandleList(const FOMModuleHandleVector& value)
-  { _fOMModuleHandleList = value; }
+  void setFOMModuleList(const FOMModuleList& value)
+  { _fOMModuleList = value; }
 #if 201103L <= __cplusplus
-  void setFOMModuleHandleList(FOMModuleHandleVector&& value)
-  { _fOMModuleHandleList = value; }
+  void setFOMModuleList(FOMModuleList&& value)
+  { _fOMModuleList = value; }
 #endif
-  FOMModuleHandleVector& getFOMModuleHandleList()
-  { return _fOMModuleHandleList; }
-  const FOMModuleHandleVector& getFOMModuleHandleList() const
-  { return _fOMModuleHandleList; }
+  FOMModuleList& getFOMModuleList()
+  { return _fOMModuleList; }
+  const FOMModuleList& getFOMModuleList() const
+  { return _fOMModuleList; }
 
 private:
   FederationHandle _federationHandle;
@@ -3450,7 +3435,7 @@ private:
   FederateHandle _federateHandle;
   String _federateType;
   String _federateName;
-  FOMModuleHandleVector _fOMModuleHandleList;
+  FOMModuleList _fOMModuleList;
 };
 
 class OPENRTI_API ResignFederationExecutionLeafRequestMessage : public AbstractMessage {
@@ -7987,8 +7972,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModule& valu
   os << "{ ";
   os << "fOMModuleHandle: " << value.getFOMModuleHandle();
   os << ", ";
-  os << "requiredFOMModuleHandleSet: " << value.getRequiredFOMModuleHandleSet();
-  os << ", ";
   os << "transportationTypeList: " << value.getTransportationTypeList();
   os << ", ";
   os << "dimensionList: " << value.getDimensionList();
@@ -8182,7 +8165,7 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const JoinFederationE
   os << ", ";
   os << "federateName: " << value.getFederateName();
   os << ", ";
-  os << "fOMModuleHandleList: " << value.getFOMModuleHandleList();
+  os << "fOMModuleList: " << value.getFOMModuleList();
   os << " }";
   return os;
 }

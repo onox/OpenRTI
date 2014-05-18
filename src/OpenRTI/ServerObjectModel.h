@@ -386,8 +386,18 @@ public:
       OpenRTIAssert(attributeHandle.valid());
       if (_objectClassAttributeVector.size() <= attributeHandle.getHandle())
         _objectClassAttributeVector.resize(attributeHandle.getHandle() + 1);
-      OpenRTIAssert(!_objectClassAttributeVector[attributeHandle.getHandle()].valid());
+      if (_objectClassAttributeVector[attributeHandle.getHandle()].valid())
+        return;
       _objectClassAttributeVector[attributeHandle.getHandle()] = objectClassAttribute;
+
+      for (ObjectClassList::const_iterator i = _childObjectClassList.begin(); i != _childObjectClassList.end(); ++i) {
+        // FIXME share these among object classes???
+        SharedPtr<ObjectClassAttribute> attribute;
+        attribute = new ObjectClassAttribute(objectClassAttribute->getName(), objectClassAttribute->getHandle());
+        // FIXME, this???
+        // <field name="DimensionHandleSet" type="DimensionHandleSet"/>
+        (*i)->insertObjectClassAttribute(attribute);
+      }
     }
     ObjectClassAttribute* getAttribute(const AttributeHandle& attributeHandle) const
     {
@@ -817,24 +827,30 @@ public:
     }
     for (ObjectClassVector::const_iterator i = _objectClassVector.begin();
          i != _objectClassVector.end(); ++i) {
+      if (!i->valid())
+        continue;
       (*i)->removeConnect(connectHandle);
     }
     for (InteractionClassVector::const_iterator i = _interactionClassVector.begin();
          i != _interactionClassVector.end(); ++i) {
+      if (!i->valid())
+        continue;
       (*i)->removeConnect(connectHandle);
     }
   }
 
-  void insert(const FOMModuleList& moduleList);
-  FOMModuleList getModuleList() const
-  { return _fomModuleSet.getModuleList(); }
+  void insert(const FOMModuleList& moduleList, bool isBaseType);
+  void erase(const FOMModuleList& moduleList);
 
   FOMModuleSet _fomModuleSet;
 
   // Insert a given fom module, must be compatible
   bool insertFomModule(const FOMModule& fomModule);
+  void eraseFomModule(const FOMModule& fomModule);
   void insertInteractionClass(const FOMInteractionClass& interactionClass);
+  void eraseInteractionClass(const FOMInteractionClass& interactionClass);
   void insertObjectClass(const FOMObjectClass& objectClass);
+  void eraseObjectClass(const FOMObjectClass& objectClass);
 
   /// The object classes in the current object model
   ObjectClassVector _objectClassVector;
@@ -1111,6 +1127,7 @@ public:
     }
     bool _resignPending;
     ResignAction _automaticResignDirective;
+    FOMModuleHandleVector _fomModuleHandleVector;
   };
   FederateHandleAllocator _federateHandleAllocator;
   FederateHandleFederateMap _federateHandleFederateMap;

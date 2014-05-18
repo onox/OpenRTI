@@ -1796,7 +1796,7 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
   if (1 < fomModuleList.size()) {
     try {
       OpenRTI::FOMModuleSet fomModuleSet;
-      fomModuleSet.insertModuleList(fomModuleList);
+      fomModuleSet.insertModuleList(fomModuleList, true);
     } catch (const OpenRTI::Exception& e) {
       // } catch (const OpenRTI::InconsistentFDD& e) {
       throw rti1516e::InconsistentFDD(OpenRTI::utf8ToUcs(e.what()));
@@ -1870,7 +1870,7 @@ RTIambassadorImplementation::createFederationExecutionWithMIM (std::wstring cons
   if (1 < fomModuleList.size()) {
     try {
       OpenRTI::FOMModuleSet fomModuleSet;
-      fomModuleSet.insertModuleList(fomModuleList);
+      fomModuleSet.insertModuleList(fomModuleList, true);
     } catch (const OpenRTI::Exception& e) {
       // } catch (const OpenRTI::InconsistentFDD& e) {
       throw rti1516e::InconsistentFDD(OpenRTI::utf8ToUcs(e.what()));
