@@ -803,7 +803,7 @@ public:
 
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
-                                      OrderType sentOrder, TransportationType transportationType)
+                                      OrderType sentOrder, TransportationType transportationType, FederateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -827,7 +827,7 @@ public:
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
                                       OrderType sentOrder, TransportationType transportationType,
-                                      const NativeLogicalTime& logicalTime, OrderType receivedOrder)
+                                      const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -853,7 +853,7 @@ public:
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
                                       OrderType sentOrder, TransportationType transportationType,
-                                      const NativeLogicalTime& logicalTime, OrderType receivedOrder,
+                                      const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle,
                                       MessageRetractionHandle messageRetractionHandle)
     throw ()
   {
@@ -879,7 +879,7 @@ public:
     }
   }
 
-  virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder)
+  virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder, FederateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -896,7 +896,7 @@ public:
     }
   }
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
-                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder)
+                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -915,7 +915,7 @@ public:
     }
   }
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
-                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder,
+                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle,
                                     MessageRetractionHandle messageRetractionHandle)
     throw ()
   {
@@ -938,7 +938,7 @@ public:
 
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
-                                  OrderType sentOrder, TransportationType transportationType)
+                                  OrderType sentOrder, TransportationType transportationType, FederateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -962,7 +962,7 @@ public:
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
                                   OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
-                                  OrderType receivedOrder)
+                                  OrderType receivedOrder, FederateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -987,7 +987,7 @@ public:
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
                                   OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
-                                  OrderType receivedOrder, MessageRetractionHandle messageRetractionHandle)
+                                  OrderType receivedOrder, FederateHandle, MessageRetractionHandle messageRetractionHandle)
     throw ()
   {
     if (!_federateAmbassador) {

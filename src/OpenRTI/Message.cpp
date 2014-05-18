@@ -2444,6 +2444,7 @@ bool
 InteractionMessage::operator==(const InteractionMessage& rhs) const
 {
   if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
   if (getInteractionClassHandle() != rhs.getInteractionClassHandle()) return false;
   if (getTransportationType() != rhs.getTransportationType()) return false;
   if (getTag() != rhs.getTag()) return false;
@@ -2456,6 +2457,8 @@ InteractionMessage::operator<(const InteractionMessage& rhs) const
 {
   if (getFederationHandle() < rhs.getFederationHandle()) return true;
   if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
   if (getInteractionClassHandle() < rhs.getInteractionClassHandle()) return true;
   if (rhs.getInteractionClassHandle() < getInteractionClassHandle()) return false;
   if (getTransportationType() < rhs.getTransportationType()) return true;
@@ -2512,6 +2515,7 @@ bool
 TimeStampedInteractionMessage::operator==(const TimeStampedInteractionMessage& rhs) const
 {
   if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
   if (getInteractionClassHandle() != rhs.getInteractionClassHandle()) return false;
   if (getOrderType() != rhs.getOrderType()) return false;
   if (getTransportationType() != rhs.getTransportationType()) return false;
@@ -2527,6 +2531,8 @@ TimeStampedInteractionMessage::operator<(const TimeStampedInteractionMessage& rh
 {
   if (getFederationHandle() < rhs.getFederationHandle()) return true;
   if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
   if (getInteractionClassHandle() < rhs.getInteractionClassHandle()) return true;
   if (rhs.getInteractionClassHandle() < getInteractionClassHandle()) return false;
   if (getOrderType() < rhs.getOrderType()) return true;
@@ -3046,6 +3052,7 @@ bool
 DeleteObjectInstanceMessage::operator==(const DeleteObjectInstanceMessage& rhs) const
 {
   if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
   if (getObjectInstanceHandle() != rhs.getObjectInstanceHandle()) return false;
   if (getTag() != rhs.getTag()) return false;
   return true;
@@ -3056,6 +3063,8 @@ DeleteObjectInstanceMessage::operator<(const DeleteObjectInstanceMessage& rhs) c
 {
   if (getFederationHandle() < rhs.getFederationHandle()) return true;
   if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
   if (getObjectInstanceHandle() < rhs.getObjectInstanceHandle()) return true;
   if (rhs.getObjectInstanceHandle() < getObjectInstanceHandle()) return false;
   if (getTag() < rhs.getTag()) return true;
@@ -3102,6 +3111,7 @@ bool
 TimeStampedDeleteObjectInstanceMessage::operator==(const TimeStampedDeleteObjectInstanceMessage& rhs) const
 {
   if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
   if (getObjectInstanceHandle() != rhs.getObjectInstanceHandle()) return false;
   if (getOrderType() != rhs.getOrderType()) return false;
   if (getTag() != rhs.getTag()) return false;
@@ -3115,6 +3125,8 @@ TimeStampedDeleteObjectInstanceMessage::operator<(const TimeStampedDeleteObjectI
 {
   if (getFederationHandle() < rhs.getFederationHandle()) return true;
   if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
   if (getObjectInstanceHandle() < rhs.getObjectInstanceHandle()) return true;
   if (rhs.getObjectInstanceHandle() < getObjectInstanceHandle()) return false;
   if (getOrderType() < rhs.getOrderType()) return true;
@@ -3167,6 +3179,7 @@ bool
 AttributeUpdateMessage::operator==(const AttributeUpdateMessage& rhs) const
 {
   if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
   if (getObjectInstanceHandle() != rhs.getObjectInstanceHandle()) return false;
   if (getTag() != rhs.getTag()) return false;
   if (getTransportationType() != rhs.getTransportationType()) return false;
@@ -3179,6 +3192,8 @@ AttributeUpdateMessage::operator<(const AttributeUpdateMessage& rhs) const
 {
   if (getFederationHandle() < rhs.getFederationHandle()) return true;
   if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
   if (getObjectInstanceHandle() < rhs.getObjectInstanceHandle()) return true;
   if (rhs.getObjectInstanceHandle() < getObjectInstanceHandle()) return false;
   if (getTag() < rhs.getTag()) return true;
@@ -3235,6 +3250,7 @@ bool
 TimeStampedAttributeUpdateMessage::operator==(const TimeStampedAttributeUpdateMessage& rhs) const
 {
   if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFederateHandle() != rhs.getFederateHandle()) return false;
   if (getObjectInstanceHandle() != rhs.getObjectInstanceHandle()) return false;
   if (getTag() != rhs.getTag()) return false;
   if (getTimeStamp() != rhs.getTimeStamp()) return false;
@@ -3250,6 +3266,8 @@ TimeStampedAttributeUpdateMessage::operator<(const TimeStampedAttributeUpdateMes
 {
   if (getFederationHandle() < rhs.getFederationHandle()) return true;
   if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFederateHandle() < rhs.getFederateHandle()) return true;
+  if (rhs.getFederateHandle() < getFederateHandle()) return false;
   if (getObjectInstanceHandle() < rhs.getObjectInstanceHandle()) return true;
   if (rhs.getObjectInstanceHandle() < getObjectInstanceHandle()) return false;
   if (getTag() < rhs.getTag()) return true;

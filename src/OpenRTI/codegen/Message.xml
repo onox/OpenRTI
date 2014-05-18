@@ -680,6 +680,7 @@
   <!-- Interaction message -->
   <message type="Interaction">
     <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
     <field name="InteractionClassHandle" type="InteractionClassHandle"/>
     <field name="TransportationType" type="TransportationType"/>
     <field name="Tag" type="VariableLengthData"/>
@@ -688,6 +689,7 @@
   </message>
   <message type="TimeStampedInteraction">
     <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
     <field name="InteractionClassHandle" type="InteractionClassHandle"/>
     <field name="OrderType" type="OrderType"/>
     <field name="TransportationType" type="TransportationType"/>
@@ -768,11 +770,13 @@
   <!-- Obsolete -->
   <message type="DeleteObjectInstance">
     <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
     <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
     <field name="Tag" type="VariableLengthData"/>
   </message>
   <message type="TimeStampedDeleteObjectInstance">
     <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
     <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
     <field name="OrderType" type="OrderType"/>
     <field name="Tag" type="VariableLengthData"/>
@@ -797,6 +801,7 @@
   <!-- Attribute updates -->
   <message type="AttributeUpdate">
     <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
     <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
     <field name="Tag" type="VariableLengthData"/>
     <field name="TransportationType" type="TransportationType"/>
@@ -805,6 +810,7 @@
   </message>
   <message type="TimeStampedAttributeUpdate">
     <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FederateHandle" type="FederateHandle"/>
     <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
     <field name="Tag" type="VariableLengthData"/>
     <field name="TimeStamp" type="VariableLengthData"/>

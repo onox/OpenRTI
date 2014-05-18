@@ -953,12 +953,12 @@ public:
     if (InternalTimeManagement::getFlushQueueMode()) {
       ambassador.reflectAttributeValues(objectClass, message.getObjectInstanceHandle(), message.getAttributeValues(),
                                         message.getTag(), message.getOrderType(), message.getTransportationType(),
-                                        _logicalTimeFactory.getLogicalTime(logicalTime), orderType,
+                                        _logicalTimeFactory.getLogicalTime(logicalTime), orderType, message.getFederateHandle(),
                                         message.getMessageRetractionHandle());
     } else {
       ambassador.reflectAttributeValues(objectClass, message.getObjectInstanceHandle(), message.getAttributeValues(),
                                         message.getTag(), message.getOrderType(), message.getTransportationType(),
-                                        _logicalTimeFactory.getLogicalTime(logicalTime), orderType);
+                                        _logicalTimeFactory.getLogicalTime(logicalTime), orderType, message.getFederateHandle());
     }
   }
 
@@ -969,11 +969,11 @@ public:
     OpenRTIAssert(orderType == RECEIVE || _logicalTime <= LogicalTimePair(logicalTime, 0));
     if (InternalTimeManagement::getFlushQueueMode()) {
       ambassador.removeObjectInstance(message.getObjectInstanceHandle(), message.getTag(), message.getOrderType(),
-                                      _logicalTimeFactory.getLogicalTime(logicalTime), orderType);
+                                      _logicalTimeFactory.getLogicalTime(logicalTime), orderType, message.getFederateHandle(),
+                                      message.getMessageRetractionHandle());
     } else {
       ambassador.removeObjectInstance(message.getObjectInstanceHandle(), message.getTag(), message.getOrderType(),
-                                      _logicalTimeFactory.getLogicalTime(logicalTime), orderType,
-                                      message.getMessageRetractionHandle());
+                                      _logicalTimeFactory.getLogicalTime(logicalTime), orderType, message.getFederateHandle());
     }
   }
 
@@ -986,11 +986,12 @@ public:
     if (InternalTimeManagement::getFlushQueueMode()) {
       ambassador.receiveInteraction(interactionClass, interactionClassHandle, message.getParameterValues(),
                                     message.getTag(), message.getOrderType(), message.getTransportationType(),
-                                    _logicalTimeFactory.getLogicalTime(logicalTime), orderType, message.getMessageRetractionHandle());
+                                    _logicalTimeFactory.getLogicalTime(logicalTime), orderType, message.getFederateHandle(),
+                                    message.getMessageRetractionHandle());
     } else {
       ambassador.receiveInteraction(interactionClass, interactionClassHandle, message.getParameterValues(),
                                     message.getTag(), message.getOrderType(), message.getTransportationType(),
-                                    _logicalTimeFactory.getLogicalTime(logicalTime), orderType);
+                                    _logicalTimeFactory.getLogicalTime(logicalTime), orderType, message.getFederateHandle());
     }
   }
 

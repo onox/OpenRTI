@@ -538,7 +538,7 @@ public:
 
   virtual void reflectAttributeValues(const OpenRTI::Federate::ObjectClass& objectClass, OpenRTI::ObjectInstanceHandle objectInstanceHandle,
                                       const OpenRTI::AttributeValueVector& attributeValueVector, const OpenRTI::VariableLengthData& tag,
-                                      OpenRTI::OrderType sentOrder, OpenRTI::TransportationType transportationType)
+                                      OpenRTI::OrderType sentOrder, OpenRTI::TransportationType transportationType, OpenRTI::FederateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -565,16 +565,17 @@ public:
   virtual void reflectAttributeValues(const OpenRTI::Federate::ObjectClass& objectClass, OpenRTI::ObjectInstanceHandle objectInstanceHandle,
                                       const OpenRTI::AttributeValueVector& attributeValueVector, const OpenRTI::VariableLengthData& tag,
                                       OpenRTI::OrderType sentOrder, OpenRTI::TransportationType transportationType,
-                                      const NativeLogicalTime& logicalTime, OpenRTI::OrderType receivedOrder)
+                                      const NativeLogicalTime& logicalTime, OpenRTI::OrderType receivedOrder,
+                                      OpenRTI::FederateHandle federateHandle)
     throw ()
   {
     reflectAttributeValues(objectClass, objectInstanceHandle,attributeValueVector, tag, sentOrder, transportationType,
-                           logicalTime, receivedOrder, OpenRTI::MessageRetractionHandle());
+                           logicalTime, receivedOrder, federateHandle, OpenRTI::MessageRetractionHandle());
   }
   virtual void reflectAttributeValues(const OpenRTI::Federate::ObjectClass& objectClass, OpenRTI::ObjectInstanceHandle objectInstanceHandle,
                                       const OpenRTI::AttributeValueVector& attributeValueVector, const OpenRTI::VariableLengthData& tag,
                                       OpenRTI::OrderType sentOrder, OpenRTI::TransportationType transportationType,
-                                      const NativeLogicalTime& logicalTime, OpenRTI::OrderType receivedOrder,
+                                      const NativeLogicalTime& logicalTime, OpenRTI::OrderType receivedOrder, OpenRTI::FederateHandle,
                                       OpenRTI::MessageRetractionHandle messageRetractionHandle)
     throw ()
   {
@@ -603,7 +604,7 @@ public:
   }
 
   virtual void removeObjectInstance(OpenRTI::ObjectInstanceHandle objectInstanceHandle, const OpenRTI::VariableLengthData& tag,
-                                    OpenRTI::OrderType)
+                                    OpenRTI::OrderType, OpenRTI::FederateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -618,14 +619,14 @@ public:
   }
   virtual void removeObjectInstance(OpenRTI::ObjectInstanceHandle objectInstanceHandle, const OpenRTI::VariableLengthData& tag,
                                     OpenRTI::OrderType sentOrder, const NativeLogicalTime& logicalTime,
-                                    OpenRTI::OrderType receivedOrder)
+                                    OpenRTI::OrderType receivedOrder, OpenRTI::FederateHandle federateHandle)
     throw ()
   {
-    removeObjectInstance(objectInstanceHandle, tag, sentOrder, logicalTime, receivedOrder, OpenRTI::MessageRetractionHandle());
+    removeObjectInstance(objectInstanceHandle, tag, sentOrder, logicalTime, receivedOrder, federateHandle, OpenRTI::MessageRetractionHandle());
   }
   virtual void removeObjectInstance(OpenRTI::ObjectInstanceHandle objectInstanceHandle, const OpenRTI::VariableLengthData& tag,
                                     OpenRTI::OrderType sentOrder, const NativeLogicalTime& logicalTime,
-                                    OpenRTI::OrderType receivedOrder, OpenRTI::MessageRetractionHandle messageRetractionHandle)
+                                    OpenRTI::OrderType receivedOrder, OpenRTI::FederateHandle, OpenRTI::MessageRetractionHandle messageRetractionHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -643,7 +644,7 @@ public:
   virtual void receiveInteraction(const OpenRTI::Federate::InteractionClass& interactionClass,
                                   OpenRTI::InteractionClassHandle interactionClassHandle,
                                   const OpenRTI::ParameterValueVector& parameterValueVector, const OpenRTI::VariableLengthData& tag,
-                                  OpenRTI::OrderType sentOrder, OpenRTI::TransportationType transportationType)
+                                  OpenRTI::OrderType sentOrder, OpenRTI::TransportationType transportationType, OpenRTI::FederateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -672,17 +673,17 @@ public:
                                   OpenRTI::InteractionClassHandle interactionClassHandle,
                                   const OpenRTI::ParameterValueVector& parameterValueVector, const OpenRTI::VariableLengthData& tag,
                                   OpenRTI::OrderType sentOrder, OpenRTI::TransportationType transportationType,
-                                  const NativeLogicalTime& logicalTime, OpenRTI::OrderType receivedOrder)
+                                  const NativeLogicalTime& logicalTime, OpenRTI::OrderType receivedOrder, OpenRTI::FederateHandle federateHandle)
     throw ()
   {
     receiveInteraction(interactionClass, interactionClassHandle, parameterValueVector, tag, sentOrder, transportationType,
-                       logicalTime, receivedOrder, OpenRTI::MessageRetractionHandle());
+                       logicalTime, receivedOrder, federateHandle, OpenRTI::MessageRetractionHandle());
   }
   virtual void receiveInteraction(const OpenRTI::Federate::InteractionClass& interactionClass,
                                   OpenRTI::InteractionClassHandle interactionClassHandle,
                                   const OpenRTI::ParameterValueVector& parameterValueVector, const OpenRTI::VariableLengthData& tag,
                                   OpenRTI::OrderType sentOrder, OpenRTI::TransportationType transportationType,
-                                  const NativeLogicalTime& logicalTime, OpenRTI::OrderType receivedOrder,
+                                  const NativeLogicalTime& logicalTime, OpenRTI::OrderType receivedOrder, OpenRTI::FederateHandle,
                                   OpenRTI::MessageRetractionHandle messageRetractionHandle)
     throw ()
   {

@@ -462,6 +462,25 @@ public:
   }
 };
 
+class OPENRTI_LOCAL _O1516ESupplementalReflectInfo : public rti1516e::SupplementalReflectInfo {
+public:
+  _O1516ESupplementalReflectInfo(const OpenRTI::FederateHandle& federateHandle) :
+    rti1516e::SupplementalReflectInfo(_O1516EFederateHandle(federateHandle))
+  { hasProducingFederate = federateHandle.valid(); }
+};
+class OPENRTI_LOCAL _O1516ESupplementalRemoveInfo : public rti1516e::SupplementalRemoveInfo {
+public:
+  _O1516ESupplementalRemoveInfo(const OpenRTI::FederateHandle& federateHandle) :
+    rti1516e::SupplementalRemoveInfo(_O1516EFederateHandle(federateHandle))
+  { hasProducingFederate = federateHandle.valid(); }
+};
+class OPENRTI_LOCAL _O1516ESupplementalReceiveInfo : public rti1516e::SupplementalReceiveInfo {
+public:
+  _O1516ESupplementalReceiveInfo(const OpenRTI::FederateHandle& federateHandle) :
+    rti1516e::SupplementalReceiveInfo(_O1516EFederateHandle(federateHandle))
+  { hasProducingFederate = federateHandle.valid(); }
+};
+
 class OPENRTI_LOCAL RTI1516ETraits {
 public:
   // The bindings have different logical times
@@ -1012,7 +1031,7 @@ public:
 
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
-                                      OrderType sentOrder, TransportationType transportationType)
+                                      OrderType sentOrder, TransportationType transportationType, FederateHandle federateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -1026,7 +1045,7 @@ public:
         OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
         rti1516e::OrderType rti1516SentOrderType = translate(sentOrder);
         rti1516e::TransportationType rti1516TransportationType = translate(transportationType);
-        rti1516e::SupplementalReflectInfo rti1516SupplementalReflectInfo; // FIXME
+        OpenRTI::_O1516ESupplementalReflectInfo rti1516SupplementalReflectInfo(federateHandle);
         _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag,
                                                     rti1516SentOrderType, rti1516TransportationType, rti1516SupplementalReflectInfo);
       }
@@ -1037,7 +1056,7 @@ public:
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
                                       OrderType sentOrder, TransportationType transportationType,
-                                      const NativeLogicalTime& logicalTime, OrderType receivedOrder)
+                                      const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle federateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -1052,7 +1071,7 @@ public:
         rti1516e::OrderType rti1516SentOrderType = translate(sentOrder);
         rti1516e::TransportationType rti1516TransportationType = translate(transportationType);
         rti1516e::OrderType rti1516ReceivedOrderType = translate(receivedOrder);
-        rti1516e::SupplementalReflectInfo rti1516SupplementalReflectInfo; // FIXME
+        OpenRTI::_O1516ESupplementalReflectInfo rti1516SupplementalReflectInfo(federateHandle);
         _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag,
                                                     rti1516SentOrderType, rti1516TransportationType, logicalTime,
                                                     rti1516ReceivedOrderType, rti1516SupplementalReflectInfo);
@@ -1064,7 +1083,7 @@ public:
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
                                       OrderType sentOrder, TransportationType transportationType,
-                                      const NativeLogicalTime& logicalTime, OrderType receivedOrder,
+                                      const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle federateHandle,
                                       MessageRetractionHandle messageRetractionHandle)
     throw ()
   {
@@ -1081,7 +1100,7 @@ public:
         rti1516e::TransportationType rti1516TransportationType = translate(transportationType);
         rti1516e::OrderType rti1516ReceivedOrderType = translate(receivedOrder);
         OpenRTI::_O1516EMessageRetractionHandle rti1516MessageRetractionHandle(messageRetractionHandle);
-        rti1516e::SupplementalReflectInfo rti1516SupplementalReflectInfo; // FIXME
+        OpenRTI::_O1516ESupplementalReflectInfo rti1516SupplementalReflectInfo(federateHandle);
         _federateAmbassador->reflectAttributeValues(rti1516ObjectInstanceHandle, rti1516AttributeValues, rti1516Tag,
                                                     rti1516SentOrderType, rti1516TransportationType, logicalTime,
                                                     rti1516ReceivedOrderType, rti1516MessageRetractionHandle,
@@ -1092,7 +1111,7 @@ public:
     }
   }
 
-  virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder)
+  virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder, FederateHandle federateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -1103,7 +1122,7 @@ public:
       OpenRTI::_O1516EObjectInstanceHandle rti1516ObjectInstanceHandle(objectInstanceHandle);
       OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
       rti1516e::OrderType rti1516SentOrderType = translate(sentOrder);
-      rti1516e::SupplementalRemoveInfo rti1516SupplementalRemoveInfo; // FIXME
+      OpenRTI::_O1516ESupplementalRemoveInfo rti1516SupplementalRemoveInfo(federateHandle);
       _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516SentOrderType,
                                                 rti1516SupplementalRemoveInfo);
     } catch (const rti1516e::Exception& e) {
@@ -1111,7 +1130,7 @@ public:
     }
   }
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
-                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder)
+                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle federateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -1123,7 +1142,7 @@ public:
       OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
       rti1516e::OrderType rti1516SentOrderType = translate(sentOrder);
       rti1516e::OrderType rti1516ReceivedOrderType = translate(receivedOrder);
-      rti1516e::SupplementalRemoveInfo rti1516SupplementalRemoveInfo; // FIXME
+      OpenRTI::_O1516ESupplementalRemoveInfo rti1516SupplementalRemoveInfo(federateHandle);
       _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516SentOrderType,
                                                 logicalTime, rti1516ReceivedOrderType, rti1516SupplementalRemoveInfo);
     } catch (const rti1516e::Exception& e) {
@@ -1131,7 +1150,7 @@ public:
     }
   }
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
-                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder,
+                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle federateHandle,
                                     MessageRetractionHandle messageRetractionHandle)
     throw ()
   {
@@ -1145,7 +1164,7 @@ public:
       rti1516e::OrderType rti1516SentOrderType = translate(sentOrder);
       rti1516e::OrderType rti1516ReceivedOrderType = translate(receivedOrder);
       OpenRTI::_O1516EMessageRetractionHandle rti1516MessageRetractionHandle(messageRetractionHandle);
-      rti1516e::SupplementalRemoveInfo rti1516SupplementalRemoveInfo; // FIXME
+      OpenRTI::_O1516ESupplementalRemoveInfo rti1516SupplementalRemoveInfo(federateHandle);
       _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516SentOrderType,
                                                 logicalTime, rti1516ReceivedOrderType, rti1516MessageRetractionHandle,
                                                 rti1516SupplementalRemoveInfo);
@@ -1156,7 +1175,7 @@ public:
 
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
-                                  OrderType sentOrder, TransportationType transportationType)
+                                  OrderType sentOrder, TransportationType transportationType, FederateHandle federateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -1170,9 +1189,9 @@ public:
         OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
         rti1516e::OrderType rti1516SentOrderType = translate(sentOrder);
         rti1516e::TransportationType rti1516TransportationType = translate(transportationType);
-        rti1516e::SupplementalReceiveInfo rti1516eSupplementalReceiveInfo; // FIXME
+        OpenRTI::_O1516ESupplementalReceiveInfo rti1516SupplementalReceiveInfo(federateHandle);
         _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag,
-                                                rti1516SentOrderType, rti1516TransportationType, rti1516eSupplementalReceiveInfo);
+                                                rti1516SentOrderType, rti1516TransportationType, rti1516SupplementalReceiveInfo);
       }
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1181,7 +1200,7 @@ public:
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
                                   OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
-                                  OrderType receivedOrder)
+                                  OrderType receivedOrder, FederateHandle federateHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -1196,10 +1215,10 @@ public:
         rti1516e::OrderType rti1516SentOrderType = translate(sentOrder);
         rti1516e::OrderType rti1516ReceivedOrderType = translate(receivedOrder);
         rti1516e::TransportationType rti1516TransportationType = translate(transportationType);
-        rti1516e::SupplementalReceiveInfo rti1516eSupplementalReceiveInfo; // FIXME
+        OpenRTI::_O1516ESupplementalReceiveInfo rti1516SupplementalReceiveInfo(federateHandle);
         _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516SentOrderType,
                                                 rti1516TransportationType, logicalTime, rti1516ReceivedOrderType,
-                                                rti1516eSupplementalReceiveInfo);
+                                                rti1516SupplementalReceiveInfo);
       }
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
@@ -1208,7 +1227,7 @@ public:
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
                                   OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
-                                  OrderType receivedOrder, MessageRetractionHandle messageRetractionHandle)
+                                  OrderType receivedOrder, FederateHandle federateHandle, MessageRetractionHandle messageRetractionHandle)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -1224,10 +1243,10 @@ public:
         rti1516e::OrderType rti1516ReceivedOrderType = translate(receivedOrder);
         rti1516e::TransportationType rti1516TransportationType = translate(transportationType);
         OpenRTI::_O1516EMessageRetractionHandle rti1516MessageRetractionHandle(messageRetractionHandle);
-        rti1516e::SupplementalReceiveInfo rti1516eSupplementalReceiveInfo; // FIXME
+        OpenRTI::_O1516ESupplementalReceiveInfo rti1516SupplementalReceiveInfo(federateHandle);
         _federateAmbassador->receiveInteraction(rti1516InteractionClassHandle, rti1516ParameterValues, rti1516Tag, rti1516SentOrderType,
                                                 rti1516TransportationType, logicalTime, rti1516ReceivedOrderType,
-                                                rti1516MessageRetractionHandle, rti1516eSupplementalReceiveInfo);
+                                                rti1516MessageRetractionHandle, rti1516SupplementalReceiveInfo);
       }
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;

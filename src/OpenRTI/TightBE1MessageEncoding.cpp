@@ -1377,6 +1377,7 @@ public:
   void writeInteractionMessage(const InteractionMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
+    writeFederateHandle(value.getFederateHandle());
     writeInteractionClassHandle(value.getInteractionClassHandle());
     writeTransportationType(value.getTransportationType());
     writeVariableLengthData(value.getTag());
@@ -1386,6 +1387,7 @@ public:
   void writeTimeStampedInteractionMessage(const TimeStampedInteractionMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
+    writeFederateHandle(value.getFederateHandle());
     writeInteractionClassHandle(value.getInteractionClassHandle());
     writeOrderType(value.getOrderType());
     writeTransportationType(value.getTransportationType());
@@ -1457,6 +1459,7 @@ public:
   void writeDeleteObjectInstanceMessage(const DeleteObjectInstanceMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
+    writeFederateHandle(value.getFederateHandle());
     writeObjectInstanceHandle(value.getObjectInstanceHandle());
     writeVariableLengthData(value.getTag());
   }
@@ -1464,6 +1467,7 @@ public:
   void writeTimeStampedDeleteObjectInstanceMessage(const TimeStampedDeleteObjectInstanceMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
+    writeFederateHandle(value.getFederateHandle());
     writeObjectInstanceHandle(value.getObjectInstanceHandle());
     writeOrderType(value.getOrderType());
     writeVariableLengthData(value.getTag());
@@ -1474,6 +1478,7 @@ public:
   void writeAttributeUpdateMessage(const AttributeUpdateMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
+    writeFederateHandle(value.getFederateHandle());
     writeObjectInstanceHandle(value.getObjectInstanceHandle());
     writeVariableLengthData(value.getTag());
     writeTransportationType(value.getTransportationType());
@@ -1483,6 +1488,7 @@ public:
   void writeTimeStampedAttributeUpdateMessage(const TimeStampedAttributeUpdateMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
+    writeFederateHandle(value.getFederateHandle());
     writeObjectInstanceHandle(value.getObjectInstanceHandle());
     writeVariableLengthData(value.getTag());
     writeVariableLengthData(value.getTimeStamp());
@@ -3402,6 +3408,7 @@ public:
   void readInteractionMessage(InteractionMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
+    readFederateHandle(value.getFederateHandle());
     readInteractionClassHandle(value.getInteractionClassHandle());
     readTransportationType(value.getTransportationType());
     readVariableLengthData(value.getTag());
@@ -3411,6 +3418,7 @@ public:
   void readTimeStampedInteractionMessage(TimeStampedInteractionMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
+    readFederateHandle(value.getFederateHandle());
     readInteractionClassHandle(value.getInteractionClassHandle());
     readOrderType(value.getOrderType());
     readTransportationType(value.getTransportationType());
@@ -3482,6 +3490,7 @@ public:
   void readDeleteObjectInstanceMessage(DeleteObjectInstanceMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
+    readFederateHandle(value.getFederateHandle());
     readObjectInstanceHandle(value.getObjectInstanceHandle());
     readVariableLengthData(value.getTag());
   }
@@ -3489,6 +3498,7 @@ public:
   void readTimeStampedDeleteObjectInstanceMessage(TimeStampedDeleteObjectInstanceMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
+    readFederateHandle(value.getFederateHandle());
     readObjectInstanceHandle(value.getObjectInstanceHandle());
     readOrderType(value.getOrderType());
     readVariableLengthData(value.getTag());
@@ -3499,6 +3509,7 @@ public:
   void readAttributeUpdateMessage(AttributeUpdateMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
+    readFederateHandle(value.getFederateHandle());
     readObjectInstanceHandle(value.getObjectInstanceHandle());
     readVariableLengthData(value.getTag());
     readTransportationType(value.getTransportationType());
@@ -3508,6 +3519,7 @@ public:
   void readTimeStampedAttributeUpdateMessage(TimeStampedAttributeUpdateMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
+    readFederateHandle(value.getFederateHandle());
     readObjectInstanceHandle(value.getObjectInstanceHandle());
     readVariableLengthData(value.getTag());
     readVariableLengthData(value.getTimeStamp());

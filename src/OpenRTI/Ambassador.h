@@ -1274,6 +1274,7 @@ public:
       SharedPtr<AttributeUpdateMessage> request;
       request = new AttributeUpdateMessage;
       request->setFederationHandle(getFederationHandle());
+      request->setFederateHandle(getFederateHandle());
       request->setObjectInstanceHandle(objectInstanceHandle);
       request->getAttributeValues().swap(passels[i]);
       request->setTransportationType(TransportationType(i));
@@ -1334,6 +1335,7 @@ public:
         SharedPtr<TimeStampedAttributeUpdateMessage> request;
         request = new TimeStampedAttributeUpdateMessage;
         request->setFederationHandle(getFederationHandle());
+        request->setFederateHandle(getFederateHandle());
         request->setObjectInstanceHandle(objectInstanceHandle);
         request->getAttributeValues().swap(passels[i][j]);
         request->setTimeStamp(timeStamp);
@@ -1375,6 +1377,7 @@ public:
     SharedPtr<InteractionMessage> request;
     request = new InteractionMessage;
     request->setFederationHandle(getFederationHandle());
+    request->setFederateHandle(getFederateHandle());
     request->setInteractionClassHandle(interactionClassHandle);
     request->setTransportationType(interactionClass->getTransportationType());
     request->getTag().swap(tag);
@@ -1418,6 +1421,7 @@ public:
     SharedPtr<TimeStampedInteractionMessage> request;
     request = new TimeStampedInteractionMessage;
     request->setFederationHandle(getFederationHandle());
+    request->setFederateHandle(getFederateHandle());
     request->setInteractionClassHandle(interactionClassHandle);
     if (timeRegulationEnabled)
       request->setOrderType(interactionClass->getOrderType());
@@ -1455,6 +1459,7 @@ public:
     SharedPtr<DeleteObjectInstanceMessage> request;
     request = new DeleteObjectInstanceMessage;
     request->setFederationHandle(getFederationHandle());
+    request->setFederateHandle(getFederateHandle());
     request->setObjectInstanceHandle(objectInstanceHandle);
     request->getTag().swap(tag);
 
@@ -1493,6 +1498,7 @@ public:
     SharedPtr<TimeStampedDeleteObjectInstanceMessage> request;
     request = new TimeStampedDeleteObjectInstanceMessage;
     request->setFederationHandle(getFederationHandle());
+    request->setFederateHandle(getFederateHandle());
     request->setObjectInstanceHandle(objectInstanceHandle);
     if (timeRegulationEnabled)
       request->setOrderType(instanceAttribute->getOrderType());
@@ -3709,7 +3715,7 @@ public:
     Federate::ObjectClass* objectClass = _federate->getObjectClass(objectInstance->getObjectClassHandle());
     if (objectClass) {
       if (Unsubscribed != objectClass->getEffectiveSubscriptionType()) {
-        removeObjectInstance(message.getObjectInstanceHandle(), message.getTag(), OpenRTI::RECEIVE);
+        removeObjectInstance(message.getObjectInstanceHandle(), message.getTag(), OpenRTI::RECEIVE, message.getFederateHandle());
       }
     }
     _releaseObjectInstance(message.getObjectInstanceHandle());
@@ -3745,7 +3751,7 @@ public:
     if (!objectClass)
       return;
     reflectAttributeValues(*objectClass, message.getObjectInstanceHandle(), message.getAttributeValues(), message.getTag(),
-                           OpenRTI::RECEIVE, message.getTransportationType());
+                           OpenRTI::RECEIVE, message.getTransportationType(), message.getFederateHandle());
   }
   void acceptCallbackMessage(const TimeStampedAttributeUpdateMessage& message)
   {
@@ -3782,7 +3788,7 @@ public:
         return;
     }
     receiveInteraction(*interactionClass, interactionClassHandle, message.getParameterValues(), message.getTag(),
-                       OpenRTI::RECEIVE, message.getTransportationType());
+                       OpenRTI::RECEIVE, message.getTransportationType(), message.getFederateHandle());
   }
   void acceptCallbackMessage(const TimeStampedInteractionMessage& message)
   {
@@ -3884,43 +3890,43 @@ public:
 
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
-                                      OrderType sentOrder, TransportationType transportationType)
+                                      OrderType sentOrder, TransportationType transportationType, FederateHandle federateHandle)
     throw () = 0;
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
-                                      OrderType sentOrder, TransportationType transportationType,
-                                      const NativeLogicalTime& logicalTime, OrderType receivedOrder)
+                                      OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
+                                      OrderType receivedOrder, FederateHandle federateHandle)
     throw () = 0;
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
-                                      OrderType sentOrder, TransportationType transportationType,
-                                      const NativeLogicalTime& logicalTime, OrderType receivedOrder,
-                                      MessageRetractionHandle messageRetractionHandle)
+                                      OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
+                                      OrderType receivedOrder, FederateHandle federateHandle, MessageRetractionHandle messageRetractionHandle)
     throw () = 0;
 
-  virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder)
+  virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
+                                    FederateHandle federateHandle)
     throw () = 0;
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
-                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder)
+                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle federateHandle)
     throw () = 0;
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
-                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder,
+                                    const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle federateHandle,
                                     MessageRetractionHandle messageRetractionHandle)
     throw () = 0;
 
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
-                                  OrderType sentOrder, TransportationType transportationType)
+                                  OrderType sentOrder, TransportationType transportationType, FederateHandle federateHandle)
     throw () = 0;
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
                                   OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
-                                  OrderType receivedOrder)
+                                  OrderType receivedOrder, FederateHandle federateHandle)
     throw () = 0;
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
                                   OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
-                                  OrderType receivedOrder, MessageRetractionHandle messageRetractionHandle)
+                                  OrderType receivedOrder, FederateHandle federateHandle, MessageRetractionHandle messageRetractionHandle)
     throw () = 0;
 
   virtual void attributesInScope(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)

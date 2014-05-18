@@ -1438,6 +1438,7 @@ public:
           i != connectHandleAttributeValueVectorMap.end(); ++i) {
       SharedPtr<AttributeUpdateMessage> update = new AttributeUpdateMessage;
       update->setFederationHandle(getHandle());
+      update->setFederateHandle(message->getFederateHandle());
       update->setObjectInstanceHandle(message->getObjectInstanceHandle());
       update->setTag(message->getTag());
       update->setTransportationType(message->getTransportationType());
@@ -1471,6 +1472,7 @@ public:
           i != connectHandleAttributeValueVectorMap.end(); ++i) {
       SharedPtr<TimeStampedAttributeUpdateMessage> update = new TimeStampedAttributeUpdateMessage;
       update->setFederationHandle(getHandle());
+      update->setFederateHandle(message->getFederateHandle());
       update->setObjectInstanceHandle(message->getObjectInstanceHandle());
       update->setTag(message->getTag());
       update->setTimeStamp(message->getTimeStamp());

@@ -5055,6 +5055,17 @@ public:
   const FederationHandle& getFederationHandle() const
   { return _federationHandle; }
 
+  void setFederateHandle(const FederateHandle& value)
+  { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
+  FederateHandle& getFederateHandle()
+  { return _federateHandle; }
+  const FederateHandle& getFederateHandle() const
+  { return _federateHandle; }
+
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
 #if 201103L <= __cplusplus
@@ -5101,6 +5112,7 @@ public:
 
 private:
   FederationHandle _federationHandle;
+  FederateHandle _federateHandle;
   InteractionClassHandle _interactionClassHandle;
   TransportationType _transportationType;
   VariableLengthData _tag;
@@ -5140,6 +5152,17 @@ public:
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
   { return _federationHandle; }
+
+  void setFederateHandle(const FederateHandle& value)
+  { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
+  FederateHandle& getFederateHandle()
+  { return _federateHandle; }
+  const FederateHandle& getFederateHandle() const
+  { return _federateHandle; }
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
@@ -5220,6 +5243,7 @@ public:
 
 private:
   FederationHandle _federationHandle;
+  FederateHandle _federateHandle;
   InteractionClassHandle _interactionClassHandle;
   OrderType _orderType;
   TransportationType _transportationType;
@@ -5777,6 +5801,17 @@ public:
   const FederationHandle& getFederationHandle() const
   { return _federationHandle; }
 
+  void setFederateHandle(const FederateHandle& value)
+  { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
+  FederateHandle& getFederateHandle()
+  { return _federateHandle; }
+  const FederateHandle& getFederateHandle() const
+  { return _federateHandle; }
+
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
 #if 201103L <= __cplusplus
@@ -5801,6 +5836,7 @@ public:
 
 private:
   FederationHandle _federationHandle;
+  FederateHandle _federateHandle;
   ObjectInstanceHandle _objectInstanceHandle;
   VariableLengthData _tag;
 };
@@ -5836,6 +5872,17 @@ public:
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
   { return _federationHandle; }
+
+  void setFederateHandle(const FederateHandle& value)
+  { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
+  FederateHandle& getFederateHandle()
+  { return _federateHandle; }
+  const FederateHandle& getFederateHandle() const
+  { return _federateHandle; }
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
@@ -5894,6 +5941,7 @@ public:
 
 private:
   FederationHandle _federationHandle;
+  FederateHandle _federateHandle;
   ObjectInstanceHandle _objectInstanceHandle;
   OrderType _orderType;
   VariableLengthData _tag;
@@ -5935,6 +5983,17 @@ public:
   const FederationHandle& getFederationHandle() const
   { return _federationHandle; }
 
+  void setFederateHandle(const FederateHandle& value)
+  { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
+  FederateHandle& getFederateHandle()
+  { return _federateHandle; }
+  const FederateHandle& getFederateHandle() const
+  { return _federateHandle; }
+
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
 #if 201103L <= __cplusplus
@@ -5981,6 +6040,7 @@ public:
 
 private:
   FederationHandle _federationHandle;
+  FederateHandle _federateHandle;
   ObjectInstanceHandle _objectInstanceHandle;
   VariableLengthData _tag;
   TransportationType _transportationType;
@@ -6020,6 +6080,17 @@ public:
   { return _federationHandle; }
   const FederationHandle& getFederationHandle() const
   { return _federationHandle; }
+
+  void setFederateHandle(const FederateHandle& value)
+  { _federateHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederateHandle(FederateHandle&& value)
+  { _federateHandle = value; }
+#endif
+  FederateHandle& getFederateHandle()
+  { return _federateHandle; }
+  const FederateHandle& getFederateHandle() const
+  { return _federateHandle; }
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
@@ -6100,6 +6171,7 @@ public:
 
 private:
   FederationHandle _federationHandle;
+  FederateHandle _federateHandle;
   ObjectInstanceHandle _objectInstanceHandle;
   VariableLengthData _tag;
   VariableLengthData _timeStamp;
@@ -8233,6 +8305,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const InteractionMess
   os << "{ ";
   os << "federationHandle: " << value.getFederationHandle();
   os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
   os << "interactionClassHandle: " << value.getInteractionClassHandle();
   os << ", ";
   os << "transportationType: " << value.getTransportationType();
@@ -8250,6 +8324,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeStampedInte
 {
   os << "{ ";
   os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
   os << ", ";
   os << "interactionClassHandle: " << value.getInteractionClassHandle();
   os << ", ";
@@ -8393,6 +8469,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const DeleteObjectIns
   os << "{ ";
   os << "federationHandle: " << value.getFederationHandle();
   os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
   os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
   os << ", ";
   os << "tag: " << value.getTag();
@@ -8406,6 +8484,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeStampedDele
 {
   os << "{ ";
   os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
   os << ", ";
   os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
   os << ", ";
@@ -8427,6 +8507,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const AttributeUpdate
   os << "{ ";
   os << "federationHandle: " << value.getFederationHandle();
   os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
+  os << ", ";
   os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
   os << ", ";
   os << "tag: " << value.getTag();
@@ -8444,6 +8526,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const TimeStampedAttr
 {
   os << "{ ";
   os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "federateHandle: " << value.getFederateHandle();
   os << ", ";
   os << "objectInstanceHandle: " << value.getObjectInstanceHandle();
   os << ", ";
