@@ -746,7 +746,7 @@ public:
     for (AttributeHandleVector::const_iterator i = attributeHandleVector.begin(); i != attributeHandleVector.end(); ++i)
       if (!objectClass->getAttribute(*i))
         throw AttributeNotDefined(i->toString());
-    if (_federate->getUpdateRateValue(updateRateDesignator) < 0)
+    if (!updateRateDesignator.empty() && _federate->getUpdateRateValue(updateRateDesignator) < 0)
       throw InvalidUpdateRateDesignator(updateRateDesignator);
     if (!updateRateDesignator.empty())
       throw RTIinternalError("Non trvial update rate designators are not implemented yet!");

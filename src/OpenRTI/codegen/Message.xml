@@ -280,8 +280,7 @@
     <field name="RoutingSpaceList" type="FOMStringRoutingSpaceList"/>
     <field name="InteractionClassList" type="FOMStringInteractionClassList"/>
     <field name="ObjectClassList" type="FOMStringObjectClassList"/>
-    <!-- FIXME change when changing the protocol the next time -->
-    <!-- <field name="UpdateRateList" type="FOMStringUpdateRateList"/> -->
+    <field name="UpdateRateList" type="FOMStringUpdateRateList"/>
   </type>
   <type name="FOMStringModuleList" type="vector" scalar="FOMStringModule"/>
 
@@ -359,8 +358,7 @@
     <field name="RoutingSpaceList" type="FOMRoutingSpaceList"/>
     <field name="InteractionClassList" type="FOMInteractionClassList"/>
     <field name="ObjectClassList" type="FOMObjectClassList"/>
-    <!-- FIXME change when changing the protocol the next time -->
-    <!-- <field name="UpdateRateList" type="FOMUpdateRateList"/> -->
+    <field name="UpdateRateList" type="FOMUpdateRateList"/>
   </type>
   <type name="FOMModuleList" type="vector" scalar="FOMModule"/>
 

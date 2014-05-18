@@ -84,6 +84,7 @@ public:
 
   /// rti1516e update rates.
   double getUpdateRateValue(const std::string& name) const;
+  void insertUpdateRate(const std::string& name, double updateRate);
 
   /// TransportationTypes
   const TransportationType* getTransportationType(const std::string& name) const;
@@ -495,6 +496,9 @@ private:
   bool _interactionRelevanceAdvisorySwitchEnabled;
 
   bool _permitTimeRegulation;
+
+  typedef std::map<std::string, double> NameUpdateRateMap;
+  NameUpdateRateMap _nameUpdateRateMap;
 
   typedef std::map<std::string, TransportationType> NameTransportationTypeMap;
   NameTransportationTypeMap _nameTransportationTypeMap;

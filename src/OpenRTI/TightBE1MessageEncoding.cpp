@@ -893,6 +893,7 @@ public:
     writeFOMStringRoutingSpaceList(value.getRoutingSpaceList());
     writeFOMStringInteractionClassList(value.getInteractionClassList());
     writeFOMStringObjectClassList(value.getObjectClassList());
+    writeFOMStringUpdateRateList(value.getUpdateRateList());
   }
 
   void writeFOMStringModuleList(const FOMStringModuleList& value)
@@ -1072,6 +1073,7 @@ public:
     writeFOMRoutingSpaceList(value.getRoutingSpaceList());
     writeFOMInteractionClassList(value.getInteractionClassList());
     writeFOMObjectClassList(value.getObjectClassList());
+    writeFOMUpdateRateList(value.getUpdateRateList());
   }
 
   void writeFOMModuleList(const FOMModuleList& value)
@@ -2912,6 +2914,7 @@ public:
     readFOMStringRoutingSpaceList(value.getRoutingSpaceList());
     readFOMStringInteractionClassList(value.getInteractionClassList());
     readFOMStringObjectClassList(value.getObjectClassList());
+    readFOMStringUpdateRateList(value.getUpdateRateList());
   }
 
   void readFOMStringModuleList(FOMStringModuleList& value)
@@ -3095,6 +3098,7 @@ public:
     readFOMRoutingSpaceList(value.getRoutingSpaceList());
     readFOMInteractionClassList(value.getInteractionClassList());
     readFOMObjectClassList(value.getObjectClassList());
+    readFOMUpdateRateList(value.getUpdateRateList());
   }
 
   void readFOMModuleList(FOMModuleList& value)

@@ -9,6 +9,7 @@ OpenRTI-0.6.0 (development)
  * Fix default value for asynchronous delivery enabled.
  * Add a new url protocol to configure an ambassador driven rtinode.
  * Reorder build files to improve running tests on windows.
+ * Implement update rate parsing for rti1516e.
 
  * For a more detailed list of changes see the git history.
 

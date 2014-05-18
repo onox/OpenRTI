@@ -312,6 +312,14 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
       module.getTransportationTypeList().push_back(transportationType);
     }
 
+    for (FOMStringUpdateRateList::const_iterator k = stringModule.getUpdateRateList().begin();
+         k != stringModule.getUpdateRateList().end(); ++k) {
+      FOMUpdateRate updateRate;
+      updateRate.setName(k->getName());
+      updateRate.setRate(k->getRate());
+      module.getUpdateRateList().push_back(updateRate);
+    }
+
     for (FOMStringDimensionList::const_iterator k = stringModule.getDimensionList().begin();
          k != stringModule.getDimensionList().end(); ++k) {
       if (!insertDimension(*k))

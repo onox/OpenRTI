@@ -45,6 +45,18 @@ public:
     return _module.getTransportationTypeList().back();
   }
 
+  void addUpdateRate()
+  {
+    _module.getUpdateRateList().push_back(FOMStringUpdateRate());
+    _module.getUpdateRateList().back().setRate(0);
+  }
+  FOMStringUpdateRate& getCurrentUpdateRate()
+  {
+    if (_module.getUpdateRateList().empty())
+      throw RTIinternalError("No current updateRate.");
+    return _module.getUpdateRateList().back();
+  }
+
   void addDimension()
   {
     _module.getDimensionList().push_back(FOMStringDimension());

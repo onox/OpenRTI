@@ -577,8 +577,17 @@ Federate::setPermitTimeRegulation(bool permitTimeRegulation)
 double
 Federate::getUpdateRateValue(const std::string& name) const
 {
-  return 0;
-  // FIXME
+  NameUpdateRateMap::const_iterator i = _nameUpdateRateMap.find(name);
+  if (i == _nameUpdateRateMap.end())
+    return -1;
+  return i->second;
+}
+
+void
+Federate::insertUpdateRate(const std::string& name, double value)
+{
+  OpenRTIAssert(_nameUpdateRateMap.find(name) == _nameUpdateRateMap.end());
+  _nameUpdateRateMap[name] = value;
 }
 
 const TransportationType*
@@ -1115,7 +1124,9 @@ Federate::synchronizationLabelAnnounced(const std::string& label) const
 void
 Federate::insertFOMModule(const FOMModule& module)
 {
-  // FIXME missing update rates.
+  for (FOMUpdateRateList::const_iterator i = module.getUpdateRateList().begin();
+       i != module.getUpdateRateList().end(); ++i)
+    insertUpdateRate(i->getName(), i->getRate());
   for (FOMDimensionList::const_iterator i = module.getDimensionList().begin();
        i != module.getDimensionList().end(); ++i)
     insertDimension(i->getName(), i->getDimensionHandle(), i->getUpperBound());

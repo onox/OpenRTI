@@ -1485,6 +1485,17 @@ public:
   const FOMStringObjectClassList& getObjectClassList() const
   { return getConstImpl()._objectClassList; }
 
+  void setUpdateRateList(const FOMStringUpdateRateList& value)
+  { getImpl()._updateRateList = value; }
+#if 201103L <= __cplusplus
+  void setUpdateRateList(FOMStringUpdateRateList&& value)
+  { getImpl()._updateRateList = value; }
+#endif
+  FOMStringUpdateRateList& getUpdateRateList()
+  { return getImpl()._updateRateList; }
+  const FOMStringUpdateRateList& getUpdateRateList() const
+  { return getConstImpl()._updateRateList; }
+
   FOMStringModule& swap(FOMStringModule& rhs)
   {
     _impl.swap(rhs._impl);
@@ -1499,6 +1510,7 @@ public:
     if (getRoutingSpaceList() != rhs.getRoutingSpaceList()) return false;
     if (getInteractionClassList() != rhs.getInteractionClassList()) return false;
     if (getObjectClassList() != rhs.getObjectClassList()) return false;
+    if (getUpdateRateList() != rhs.getUpdateRateList()) return false;
     return true;
   }
   bool operator<(const FOMStringModule& rhs) const
@@ -1515,6 +1527,8 @@ public:
     if (rhs.getInteractionClassList() < getInteractionClassList()) return false;
     if (getObjectClassList() < rhs.getObjectClassList()) return true;
     if (rhs.getObjectClassList() < getObjectClassList()) return false;
+    if (getUpdateRateList() < rhs.getUpdateRateList()) return true;
+    if (rhs.getUpdateRateList() < getUpdateRateList()) return false;
     return false;
   }
   bool operator!=(const FOMStringModule& rhs) const
@@ -1532,6 +1546,7 @@ private:
     FOMStringRoutingSpaceList _routingSpaceList;
     FOMStringInteractionClassList _interactionClassList;
     FOMStringObjectClassList _objectClassList;
+    FOMStringUpdateRateList _updateRateList;
   };
 
   const Implementation& getConstImpl() const
@@ -2469,6 +2484,17 @@ public:
   const FOMObjectClassList& getObjectClassList() const
   { return getConstImpl()._objectClassList; }
 
+  void setUpdateRateList(const FOMUpdateRateList& value)
+  { getImpl()._updateRateList = value; }
+#if 201103L <= __cplusplus
+  void setUpdateRateList(FOMUpdateRateList&& value)
+  { getImpl()._updateRateList = value; }
+#endif
+  FOMUpdateRateList& getUpdateRateList()
+  { return getImpl()._updateRateList; }
+  const FOMUpdateRateList& getUpdateRateList() const
+  { return getConstImpl()._updateRateList; }
+
   FOMModule& swap(FOMModule& rhs)
   {
     _impl.swap(rhs._impl);
@@ -2485,6 +2511,7 @@ public:
     if (getRoutingSpaceList() != rhs.getRoutingSpaceList()) return false;
     if (getInteractionClassList() != rhs.getInteractionClassList()) return false;
     if (getObjectClassList() != rhs.getObjectClassList()) return false;
+    if (getUpdateRateList() != rhs.getUpdateRateList()) return false;
     return true;
   }
   bool operator<(const FOMModule& rhs) const
@@ -2505,6 +2532,8 @@ public:
     if (rhs.getInteractionClassList() < getInteractionClassList()) return false;
     if (getObjectClassList() < rhs.getObjectClassList()) return true;
     if (rhs.getObjectClassList() < getObjectClassList()) return false;
+    if (getUpdateRateList() < rhs.getUpdateRateList()) return true;
+    if (rhs.getUpdateRateList() < getUpdateRateList()) return false;
     return false;
   }
   bool operator!=(const FOMModule& rhs) const
@@ -2524,6 +2553,7 @@ private:
     FOMRoutingSpaceList _routingSpaceList;
     FOMInteractionClassList _interactionClassList;
     FOMObjectClassList _objectClassList;
+    FOMUpdateRateList _updateRateList;
   };
 
   const Implementation& getConstImpl() const
@@ -7238,6 +7268,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringModule
   os << "interactionClassList: " << value.getInteractionClassList();
   os << ", ";
   os << "objectClassList: " << value.getObjectClassList();
+  os << ", ";
+  os << "updateRateList: " << value.getUpdateRateList();
   os << " }";
   return os;
 }
@@ -7588,6 +7620,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModule& valu
   os << "interactionClassList: " << value.getInteractionClassList();
   os << ", ";
   os << "objectClassList: " << value.getObjectClassList();
+  os << ", ";
+  os << "updateRateList: " << value.getUpdateRateList();
   os << " }";
   return os;
 }

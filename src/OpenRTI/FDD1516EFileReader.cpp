@@ -138,13 +138,13 @@ public:
     TransportationMode,
     TransportationNameMode,
     TransportationReliableMode,
-    TransportationSemanticsMode// ,
+    TransportationSemanticsMode,
 
     // SwitchesMode,
 
-    // UpdateRateMode,
-    // UpdateRateNameMode,
-    // UpdateRateRateMode,
+    UpdateRateMode,
+    UpdateRateNameMode,
+    UpdateRateRateMode //,
 
     // BasicDataRepresentationsMode,
     // BasicDataMode,
@@ -228,6 +228,9 @@ FDD1516EContentHandler::startElement(const char* uri, const char* name,
       break;
     case TransportationMode:
       _modeStack.push_back(TransportationNameMode);
+      break;
+    case UpdateRateMode:
+      _modeStack.push_back(UpdateRateNameMode);
       break;
     default:
       // throw ErrorReadingFDD("unexpected name tag!");
@@ -410,11 +413,6 @@ FDD1516EContentHandler::startElement(const char* uri, const char* name,
       throw ErrorReadingFDD("switches tag outside objectModel!");
     _modeStack.push_back(SwitchesMode);
 
-  } else if (strcmp(name, "updateRates") == 0) {
-    if (getCurrentMode() != ObjectModelMode)
-      throw ErrorReadingFDD("updateRates tag outside objectModel!");
-    _modeStack.push_back(UpdateRatesMode);
-
   } else if (strcmp(name, "dataTypes") == 0) {
     if (getCurrentMode() != ObjectModelMode)
       throw ErrorReadingFDD("dataTypes tag outside objectModel!");
@@ -424,6 +422,24 @@ FDD1516EContentHandler::startElement(const char* uri, const char* name,
     if (getCurrentMode() != ObjectModelMode)
       throw ErrorReadingFDD("notes tag outside objectModel!");
     _modeStack.push_back(NotesMode);
+
+
+    /// updateRates
+  } else if (strcmp(name, "updateRates") == 0) {
+    if (getCurrentMode() != ObjectModelMode)
+      throw ErrorReadingFDD("updateRates tag outside objectModel!");
+    _modeStack.push_back(UpdateRatesMode);
+
+  } else if (strcmp(name, "updateRate") == 0) {
+    if (getCurrentMode() != UpdateRatesMode)
+      throw ErrorReadingFDD("updateRates tag outside updateRates!");
+    _modeStack.push_back(UpdateRateMode);
+    _fomStringModuleBuilder.addUpdateRate();
+
+  } else if (strcmp(name, "rate") == 0) {
+    if (getCurrentMode() != UpdateRateMode)
+      throw ErrorReadingFDD("rate tag outside updateRate!");
+    _modeStack.push_back(UpdateRateRateMode);
 
 
     /// objectClass hierarchies
@@ -542,8 +558,12 @@ FDD1516EContentHandler::endElement(const char* uri, const char* name, const char
                               _fomStringModuleBuilder.getCurrentTransportationType().getName() + "\"!");
       _fomStringModuleBuilder.getCurrentTransportationType().setName(_characterData);
       break;
-    // case UpdateRateNameMode:
-    //   break;
+    case UpdateRateNameMode:
+      if (!_fomStringModuleBuilder.getCurrentUpdateRate().getName().empty())
+        throw ErrorReadingFDD("Duplicate name tag for updateRate \"" +
+                              _fomStringModuleBuilder.getCurrentUpdateRate().getName() + "\"!");
+      _fomStringModuleBuilder.getCurrentUpdateRate().setName(_characterData);
+      break;
     default:
       break;
     }
@@ -563,6 +583,12 @@ FDD1516EContentHandler::endElement(const char* uri, const char* name, const char
     default:
       break;
     }
+
+  } else if (strcmp(name, "rate") == 0) {
+    std::stringstream ss(_characterData);
+    double rate = 0;
+    ss >> rate;
+    _fomStringModuleBuilder.getCurrentUpdateRate().setRate(rate);
 
   } else if (strcmp(name, "order") == 0) {
     switch (getCurrentMode()) {
