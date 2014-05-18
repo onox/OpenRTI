@@ -10,3 +10,4 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Test directories should be listed here in sensible testing order
 ADD_SUBDIRECTORY(link)
 ADD_SUBDIRECTORY(fddget)
+ADD_SUBDIRECTORY(modules)

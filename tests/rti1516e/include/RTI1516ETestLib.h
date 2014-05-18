@@ -851,9 +851,19 @@ public:
   }
 
   const rti1516e::FederateHandle& joinFederationExecution(const std::wstring& federateType,
-                                                         const std::wstring& federationExecutionName)
+                                                          const std::wstring& federationExecutionName,
+                                                          std::vector<std::wstring> const& additionalFomModules=std::vector<std::wstring>())
   {
-    _federateHandle = _ambassador->joinFederationExecution(federateType, federationExecutionName);
+    _federateHandle = _ambassador->joinFederationExecution(federateType, federationExecutionName, additionalFomModules);
+    _grantedLogicalTime = _logicalTimeFactory->makeInitial();
+    return _federateHandle;
+  }
+
+  const rti1516e::FederateHandle& joinFederationExecution(const std::wstring& federateName, const std::wstring& federateType,
+                                                          const std::wstring& federationExecutionName,
+                                                          std::vector<std::wstring> const& additionalFomModules=std::vector<std::wstring>())
+  {
+    _federateHandle = _ambassador->joinFederationExecution(federateName, federateType, federationExecutionName, additionalFomModules);
     _grantedLogicalTime = _logicalTimeFactory->makeInitial();
     return _federateHandle;
   }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectModel
+    xmlns="http://standards.ieee.org/IEEE1516-2010"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://standards.ieee.org/IEEE1516-2010 http://standards.ieee.org/downloads/1516/1516.2-2010/IEEE1516-DIF-2010.xsd">
+  <interactions>
+    <interactionClass>
+      <name>HLAinteractionRoot</name>
+      <interactionClass>
+	<name>InteractionClass1</name>
+        <interactionClass>
+	  <name>InteractionClass2</name>
+	  <parameter>
+	    <name>OtherParameter2</name>
+	  </parameter>
+        </interactionClass>
+      </interactionClass>
+    </interactionClass>
+  </interactions>
+</objectModel>
