@@ -601,6 +601,10 @@ public:
          j != message->getFederateHandleVector().end(); ++j) {
       i->second._waitFederates.erase(*j);
     }
+    for (FederateHandleVector::const_iterator j = message->getSuccessfulFederateHandleVector().begin();
+         j != message->getSuccessfulFederateHandleVector().end(); ++j) {
+      i->second._successfulFederates.insert(*j);
+    }
     if (i->second._waitFederates.empty()) {
       if (isRootServer()) {
         SharedPtr<FederationSynchronizedMessage> response;
@@ -611,6 +615,10 @@ public:
         for (FederateHandleSet::const_iterator j = i->second._participatingFederates.begin();
              j != i->second._participatingFederates.end(); ++j)
           response->getFederateHandleVector().push_back(*j);
+        response->getSuccessfulFederateHandleVector().reserve(i->second._successfulFederates.size());
+        for (FederateHandleSet::const_iterator j = i->second._successfulFederates.begin();
+             j != i->second._successfulFederates.end(); ++j)
+          response->getSuccessfulFederateHandleVector().push_back(*j);
         broadcastToChildren(response->getFederateHandleVector(), response);
         _syncronizationLabelStateMap.erase(i);
       } else {
@@ -622,6 +630,10 @@ public:
         for (FederateHandleSet::const_iterator j = i->second._participatingFederates.begin();
              j != i->second._participatingFederates.end(); ++j)
           notify->getFederateHandleVector().push_back(*j);
+        notify->getSuccessfulFederateHandleVector().reserve(i->second._successfulFederates.size());
+        for (FederateHandleSet::const_iterator j = i->second._successfulFederates.begin();
+             j != i->second._successfulFederates.end(); ++j)
+          notify->getSuccessfulFederateHandleVector().push_back(*j);
         send(_parentServerConnectHandle, notify);
       }
     }
@@ -659,6 +671,7 @@ public:
       synchronized->setFederationHandle(getHandle());
       synchronized->setLabel(message->getLabel());
       synchronized->getFederateHandleVector().swap(j->second);
+      synchronized->setSuccessfulFederateHandleVector(message->getSuccessfulFederateHandleVector());
       send(j->first, synchronized);
     }
 

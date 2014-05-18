@@ -1232,6 +1232,7 @@ SynchronizationPointAchievedMessage::operator==(const SynchronizationPointAchiev
   if (getFederationHandle() != rhs.getFederationHandle()) return false;
   if (getLabel() != rhs.getLabel()) return false;
   if (getFederateHandleVector() != rhs.getFederateHandleVector()) return false;
+  if (getSuccessfulFederateHandleVector() != rhs.getSuccessfulFederateHandleVector()) return false;
   return true;
 }
 
@@ -1244,6 +1245,8 @@ SynchronizationPointAchievedMessage::operator<(const SynchronizationPointAchieve
   if (rhs.getLabel() < getLabel()) return false;
   if (getFederateHandleVector() < rhs.getFederateHandleVector()) return true;
   if (rhs.getFederateHandleVector() < getFederateHandleVector()) return false;
+  if (getSuccessfulFederateHandleVector() < rhs.getSuccessfulFederateHandleVector()) return true;
+  if (rhs.getSuccessfulFederateHandleVector() < getSuccessfulFederateHandleVector()) return false;
   return false;
 }
 
@@ -1288,6 +1291,7 @@ FederationSynchronizedMessage::operator==(const FederationSynchronizedMessage& r
   if (getFederationHandle() != rhs.getFederationHandle()) return false;
   if (getLabel() != rhs.getLabel()) return false;
   if (getFederateHandleVector() != rhs.getFederateHandleVector()) return false;
+  if (getSuccessfulFederateHandleVector() != rhs.getSuccessfulFederateHandleVector()) return false;
   return true;
 }
 
@@ -1300,6 +1304,8 @@ FederationSynchronizedMessage::operator<(const FederationSynchronizedMessage& rh
   if (rhs.getLabel() < getLabel()) return false;
   if (getFederateHandleVector() < rhs.getFederateHandleVector()) return true;
   if (rhs.getFederateHandleVector() < getFederateHandleVector()) return false;
+  if (getSuccessfulFederateHandleVector() < rhs.getSuccessfulFederateHandleVector()) return true;
+  if (rhs.getSuccessfulFederateHandleVector() < getSuccessfulFederateHandleVector()) return false;
   return false;
 }
 

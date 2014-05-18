@@ -3827,10 +3827,22 @@ public:
   const FederateHandleVector& getFederateHandleVector() const
   { return _federateHandleVector; }
 
+  void setSuccessfulFederateHandleVector(const FederateHandleVector& value)
+  { _successfulFederateHandleVector = value; }
+#if 201103L <= __cplusplus
+  void setSuccessfulFederateHandleVector(FederateHandleVector&& value)
+  { _successfulFederateHandleVector = value; }
+#endif
+  FederateHandleVector& getSuccessfulFederateHandleVector()
+  { return _successfulFederateHandleVector; }
+  const FederateHandleVector& getSuccessfulFederateHandleVector() const
+  { return _successfulFederateHandleVector; }
+
 private:
   FederationHandle _federationHandle;
   String _label;
   FederateHandleVector _federateHandleVector;
+  FederateHandleVector _successfulFederateHandleVector;
 };
 
 class OPENRTI_API FederationSynchronizedMessage : public AbstractMessage {
@@ -3887,10 +3899,22 @@ public:
   const FederateHandleVector& getFederateHandleVector() const
   { return _federateHandleVector; }
 
+  void setSuccessfulFederateHandleVector(const FederateHandleVector& value)
+  { _successfulFederateHandleVector = value; }
+#if 201103L <= __cplusplus
+  void setSuccessfulFederateHandleVector(FederateHandleVector&& value)
+  { _successfulFederateHandleVector = value; }
+#endif
+  FederateHandleVector& getSuccessfulFederateHandleVector()
+  { return _successfulFederateHandleVector; }
+  const FederateHandleVector& getSuccessfulFederateHandleVector() const
+  { return _successfulFederateHandleVector; }
+
 private:
   FederationHandle _federationHandle;
   String _label;
   FederateHandleVector _federateHandleVector;
+  FederateHandleVector _successfulFederateHandleVector;
 };
 
 class OPENRTI_API EnableTimeRegulationRequestMessage : public AbstractMessage {
@@ -8009,6 +8033,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const Synchronization
   os << "label: " << value.getLabel();
   os << ", ";
   os << "federateHandleVector: " << value.getFederateHandleVector();
+  os << ", ";
+  os << "successfulFederateHandleVector: " << value.getSuccessfulFederateHandleVector();
   os << " }";
   return os;
 }
@@ -8023,6 +8049,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FederationSynch
   os << "label: " << value.getLabel();
   os << ", ";
   os << "federateHandleVector: " << value.getFederateHandleVector();
+  os << ", ";
+  os << "successfulFederateHandleVector: " << value.getSuccessfulFederateHandleVector();
   os << " }";
   return os;
 }

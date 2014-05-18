@@ -700,6 +700,7 @@ public:
     {
       _participatingFederates.erase(federateHandle);
       _waitFederates.erase(federateHandle);
+      _successfulFederates.erase(federateHandle);
     }
 
     VariableLengthData& getTag()
@@ -716,6 +717,8 @@ public:
     // The set of federates we need to wait for until the synchronization point could be announced to the parent.
     // This one must be filled with the the active federate handles in any case
     FederateHandleSet _waitFederates;
+    // The set of federates that have set the successfully flag on synchronizationPointAchieved
+    FederateHandleSet _successfulFederates;
   };
 
   /// Synchronizatoin labels are tracked here

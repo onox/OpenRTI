@@ -322,8 +322,6 @@ public:
       throw FederateNotExecutionMember();
     if (!_federate->synchronizationLabelAnnounced(label))
       throw SynchronizationPointLabelNotAnnounced();
-    if (!successfully)
-      throw RTIinternalError("unsuccessful synchronization point achieved!? not implemented");
 
     // tell all federates about that label
     SharedPtr<SynchronizationPointAchievedMessage> message;
@@ -331,6 +329,8 @@ public:
     message->setFederationHandle(getFederationHandle());
     message->getFederateHandleVector().push_back(getFederateHandle());
     message->setLabel(label);
+    if (successfully)
+      message->getSuccessfulFederateHandleVector().push_back(getFederateHandle());
     send(message);
   }
 
@@ -3631,9 +3631,7 @@ public:
   {
     if (!_federate.valid())
       return;
-    /* FIXME fill this with the successfull ones */
-    FederateHandleVector federateHandleVector;
-    federationSynchronized(message.getLabel(), federateHandleVector);
+    federationSynchronized(message.getLabel(), message.getSuccessfulFederateHandleVector());
     _federate->eraseAnnouncedFederationSynchonizationLabel(message.getLabel());
   }
   void acceptCallbackMessage(const RegistrationForObjectClassMessage& message)

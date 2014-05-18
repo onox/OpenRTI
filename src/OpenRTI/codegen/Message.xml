@@ -551,11 +551,13 @@
     <field name="FederationHandle" type="FederationHandle"/>
     <field name="Label" type="String"/>
     <field name="FederateHandleVector" type="FederateHandleVector"/>
+    <field name="SuccessfulFederateHandleVector" type="FederateHandleVector"/>
   </message>
   <message type="FederationSynchronized">
     <field name="FederationHandle" type="FederationHandle"/>
     <field name="Label" type="String"/>
     <field name="FederateHandleVector" type="FederateHandleVector"/>
+    <field name="SuccessfulFederateHandleVector" type="FederateHandleVector"/>
   </message>
 
   <!-- Time management -->

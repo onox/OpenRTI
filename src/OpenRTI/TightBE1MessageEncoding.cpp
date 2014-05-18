@@ -1231,6 +1231,7 @@ public:
     writeFederationHandle(value.getFederationHandle());
     writeString(value.getLabel());
     writeFederateHandleVector(value.getFederateHandleVector());
+    writeFederateHandleVector(value.getSuccessfulFederateHandleVector());
   }
 
   void writeFederationSynchronizedMessage(const FederationSynchronizedMessage& value)
@@ -1238,6 +1239,7 @@ public:
     writeFederationHandle(value.getFederationHandle());
     writeString(value.getLabel());
     writeFederateHandleVector(value.getFederateHandleVector());
+    writeFederateHandleVector(value.getSuccessfulFederateHandleVector());
   }
 
   void writeEnableTimeRegulationRequestMessage(const EnableTimeRegulationRequestMessage& value)
@@ -3262,6 +3264,7 @@ public:
     readFederationHandle(value.getFederationHandle());
     readString(value.getLabel());
     readFederateHandleVector(value.getFederateHandleVector());
+    readFederateHandleVector(value.getSuccessfulFederateHandleVector());
   }
 
   void readFederationSynchronizedMessage(FederationSynchronizedMessage& value)
@@ -3269,6 +3272,7 @@ public:
     readFederationHandle(value.getFederationHandle());
     readString(value.getLabel());
     readFederateHandleVector(value.getFederateHandleVector());
+    readFederateHandleVector(value.getSuccessfulFederateHandleVector());
   }
 
   void readEnableTimeRegulationRequestMessage(EnableTimeRegulationRequestMessage& value)
