@@ -282,6 +282,36 @@ public:
     }
   }
 
+  void writeSwitchesType(const SwitchesType& value)
+  {
+    switch (value) {
+    case InteractionRelevanceAdvisorySwitchesType:
+      writeUInt32Compressed(0);
+      break;
+    case ObjectClassRelevanceAdvisorySwitchesType:
+      writeUInt32Compressed(1);
+      break;
+    case AttributeRelevanceAdvisorySwitchesType:
+      writeUInt32Compressed(2);
+      break;
+    case AttributeScopeAdvisorySwitchesType:
+      writeUInt32Compressed(3);
+      break;
+    case AutoProvideSwitchesType:
+      writeUInt32Compressed(4);
+      break;
+    case ConveyRegionDesignatorSetsSwitchesType:
+      writeUInt32Compressed(5);
+      break;
+    case ServiceReportingSwitchesType:
+      writeUInt32Compressed(6);
+      break;
+    default:
+      writeUInt32Compressed(7);
+      break;
+    }
+  }
+
   void writeBool(const bool& value)
   {
     writeBoolCompressed(value);
@@ -886,6 +916,20 @@ public:
     }
   }
 
+  void writeFOMStringSwitch(const FOMStringSwitch& value)
+  {
+    writeSwitchesType(value.getSwitchesType());
+    writeBool(value.getEnabled());
+  }
+
+  void writeFOMStringSwitchList(const FOMStringSwitchList& value)
+  {
+    writeSizeTCompressed(value.size());
+    for (FOMStringSwitchList::const_iterator i = value.begin(); i != value.end(); ++i) {
+      writeFOMStringSwitch(*i);
+    }
+  }
+
   void writeFOMStringModule(const FOMStringModule& value)
   {
     writeFOMStringTransportationTypeList(value.getTransportationTypeList());
@@ -894,6 +938,7 @@ public:
     writeFOMStringInteractionClassList(value.getInteractionClassList());
     writeFOMStringObjectClassList(value.getObjectClassList());
     writeFOMStringUpdateRateList(value.getUpdateRateList());
+    writeFOMStringSwitchList(value.getSwitchList());
   }
 
   void writeFOMStringModuleList(const FOMStringModuleList& value)
@@ -1064,6 +1109,20 @@ public:
     }
   }
 
+  void writeFOMSwitch(const FOMSwitch& value)
+  {
+    writeSwitchesType(value.getSwitchesType());
+    writeBool(value.getEnabled());
+  }
+
+  void writeFOMSwitchList(const FOMSwitchList& value)
+  {
+    writeSizeTCompressed(value.size());
+    for (FOMSwitchList::const_iterator i = value.begin(); i != value.end(); ++i) {
+      writeFOMSwitch(*i);
+    }
+  }
+
   void writeFOMModule(const FOMModule& value)
   {
     writeFOMModuleHandle(value.getFOMModuleHandle());
@@ -1074,6 +1133,7 @@ public:
     writeFOMInteractionClassList(value.getInteractionClassList());
     writeFOMObjectClassList(value.getObjectClassList());
     writeFOMUpdateRateList(value.getUpdateRateList());
+    writeFOMSwitchList(value.getSwitchList());
   }
 
   void writeFOMModuleList(const FOMModuleList& value)
@@ -2301,6 +2361,36 @@ public:
     }
   }
 
+  void readSwitchesType(SwitchesType& value)
+  {
+    switch (readUInt32Compressed()) {
+    case 0:
+      value = InteractionRelevanceAdvisorySwitchesType;
+      break;
+    case 1:
+      value = ObjectClassRelevanceAdvisorySwitchesType;
+      break;
+    case 2:
+      value = AttributeRelevanceAdvisorySwitchesType;
+      break;
+    case 3:
+      value = AttributeScopeAdvisorySwitchesType;
+      break;
+    case 4:
+      value = AutoProvideSwitchesType;
+      break;
+    case 5:
+      value = ConveyRegionDesignatorSetsSwitchesType;
+      break;
+    case 6:
+      value = ServiceReportingSwitchesType;
+      break;
+    default:
+      value = ServiceReportingSwitchesType;
+      break;
+    }
+  }
+
   void readBool(bool& value)
   {
     value = readBoolCompressed();
@@ -2915,6 +3005,20 @@ public:
     }
   }
 
+  void readFOMStringSwitch(FOMStringSwitch& value)
+  {
+    readSwitchesType(value.getSwitchesType());
+    readBool(value.getEnabled());
+  }
+
+  void readFOMStringSwitchList(FOMStringSwitchList& value)
+  {
+    value.resize(readSizeTCompressed());
+    for (FOMStringSwitchList::iterator i = value.begin(); i != value.end(); ++i) {
+      readFOMStringSwitch(*i);
+    }
+  }
+
   void readFOMStringModule(FOMStringModule& value)
   {
     readFOMStringTransportationTypeList(value.getTransportationTypeList());
@@ -2923,6 +3027,7 @@ public:
     readFOMStringInteractionClassList(value.getInteractionClassList());
     readFOMStringObjectClassList(value.getObjectClassList());
     readFOMStringUpdateRateList(value.getUpdateRateList());
+    readFOMStringSwitchList(value.getSwitchList());
   }
 
   void readFOMStringModuleList(FOMStringModuleList& value)
@@ -3097,6 +3202,20 @@ public:
     }
   }
 
+  void readFOMSwitch(FOMSwitch& value)
+  {
+    readSwitchesType(value.getSwitchesType());
+    readBool(value.getEnabled());
+  }
+
+  void readFOMSwitchList(FOMSwitchList& value)
+  {
+    value.resize(readSizeTCompressed());
+    for (FOMSwitchList::iterator i = value.begin(); i != value.end(); ++i) {
+      readFOMSwitch(*i);
+    }
+  }
+
   void readFOMModule(FOMModule& value)
   {
     readFOMModuleHandle(value.getFOMModuleHandle());
@@ -3107,6 +3226,7 @@ public:
     readFOMInteractionClassList(value.getInteractionClassList());
     readFOMObjectClassList(value.getObjectClassList());
     readFOMUpdateRateList(value.getUpdateRateList());
+    readFOMSwitchList(value.getSwitchList());
   }
 
   void readFOMModuleList(FOMModuleList& value)

@@ -88,6 +88,16 @@
     <enumerant name="TimeAdvanceAndNextMessageCommit" value="3"/>
   </type>
 
+  <type name="SwitchesType" type="enum">
+    <enumerant name="InteractionRelevanceAdvisorySwitchesType"/>
+    <enumerant name="ObjectClassRelevanceAdvisorySwitchesType"/>
+    <enumerant name="AttributeRelevanceAdvisorySwitchesType"/>
+    <enumerant name="AttributeScopeAdvisorySwitchesType"/>
+    <enumerant name="AutoProvideSwitchesType"/>
+    <enumerant name="ConveyRegionDesignatorSetsSwitchesType"/>
+    <enumerant name="ServiceReportingSwitchesType"/>
+  </type>
+
   <type name="Bool" ctype="bool" encoding="Bool"/>
   <type name="String" ctype="std::string" encoding="String"/>
   <type name="Unsigned" ctype="uint32_t" encoding="UInt32"/>
@@ -273,6 +283,12 @@
   </type>
   <type name="FOMStringUpdateRateList" type="vector" scalar="FOMStringUpdateRate"/>
 
+  <type name="FOMStringSwitch" type="struct" copyOnWrite="true">
+    <field name="SwitchesType" type="SwitchesType"/>
+    <field name="Enabled" type="Bool"/>
+  </type>
+  <type name="FOMStringSwitchList" type="vector" scalar="FOMStringSwitch"/>
+
   <type name="FOMStringModule" type="struct" copyOnWrite="true">
     <!-- <field name="Name" type="String"/> -->
     <field name="TransportationTypeList" type="FOMStringTransportationTypeList"/>
@@ -281,6 +297,7 @@
     <field name="InteractionClassList" type="FOMStringInteractionClassList"/>
     <field name="ObjectClassList" type="FOMStringObjectClassList"/>
     <field name="UpdateRateList" type="FOMStringUpdateRateList"/>
+    <field name="SwitchList" type="FOMStringSwitchList"/>
   </type>
   <type name="FOMStringModuleList" type="vector" scalar="FOMStringModule"/>
 
@@ -350,6 +367,12 @@
   </type>
   <type name="FOMUpdateRateList" type="vector" scalar="FOMUpdateRate"/>
 
+  <type name="FOMSwitch" type="struct" copyOnWrite="true">
+    <field name="SwitchesType" type="SwitchesType"/>
+    <field name="Enabled" type="Bool"/>
+  </type>
+  <type name="FOMSwitchList" type="vector" scalar="FOMSwitch"/>
+
   <type name="FOMModule" type="struct" copyOnWrite="true">
     <field name="FOMModuleHandle" type="FOMModuleHandle"/>
     <field name="RequiredFOMModuleHandleSet" type="FOMModuleHandleSet"/>
@@ -359,6 +382,7 @@
     <field name="InteractionClassList" type="FOMInteractionClassList"/>
     <field name="ObjectClassList" type="FOMObjectClassList"/>
     <field name="UpdateRateList" type="FOMUpdateRateList"/>
+    <field name="SwitchList" type="FOMSwitchList"/>
   </type>
   <type name="FOMModuleList" type="vector" scalar="FOMModule"/>
 

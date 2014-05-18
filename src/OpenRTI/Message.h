@@ -115,6 +115,16 @@ enum LowerBoundTimeStampCommitType {
   TimeAdvanceAndNextMessageCommit = 3
 };
 
+enum SwitchesType {
+  InteractionRelevanceAdvisorySwitchesType,
+  ObjectClassRelevanceAdvisorySwitchesType,
+  AttributeRelevanceAdvisorySwitchesType,
+  AttributeScopeAdvisorySwitchesType,
+  AutoProvideSwitchesType,
+  ConveyRegionDesignatorSetsSwitchesType,
+  ServiceReportingSwitchesType
+};
+
 typedef bool Bool;
 
 typedef std::string String;
@@ -255,6 +265,9 @@ typedef std::vector<FOMStringObjectClass> FOMStringObjectClassList;
 class FOMStringUpdateRate;
 typedef std::vector<FOMStringUpdateRate> FOMStringUpdateRateList;
 
+class FOMStringSwitch;
+typedef std::vector<FOMStringSwitch> FOMStringSwitchList;
+
 class FOMStringModule;
 typedef std::vector<FOMStringModule> FOMStringModuleList;
 
@@ -289,6 +302,9 @@ typedef std::vector<FOMObjectClass> FOMObjectClassList;
 
 class FOMUpdateRate;
 typedef std::vector<FOMUpdateRate> FOMUpdateRateList;
+
+class FOMSwitch;
+typedef std::vector<FOMSwitch> FOMSwitchList;
 
 class FOMModule;
 typedef std::vector<FOMModule> FOMModuleList;
@@ -1425,6 +1441,87 @@ private:
 
 typedef std::vector<FOMStringUpdateRate> FOMStringUpdateRateList;
 
+class OPENRTI_API FOMStringSwitch {
+public:
+  FOMStringSwitch() : 
+    _impl(new Implementation)
+  { }
+  void setSwitchesType(const SwitchesType& value)
+  { getImpl()._switchesType = value; }
+#if 201103L <= __cplusplus
+  void setSwitchesType(SwitchesType&& value)
+  { getImpl()._switchesType = value; }
+#endif
+  SwitchesType& getSwitchesType()
+  { return getImpl()._switchesType; }
+  const SwitchesType& getSwitchesType() const
+  { return getConstImpl()._switchesType; }
+
+  void setEnabled(const Bool& value)
+  { getImpl()._enabled = value; }
+#if 201103L <= __cplusplus
+  void setEnabled(Bool&& value)
+  { getImpl()._enabled = value; }
+#endif
+  Bool& getEnabled()
+  { return getImpl()._enabled; }
+  const Bool& getEnabled() const
+  { return getConstImpl()._enabled; }
+
+  FOMStringSwitch& swap(FOMStringSwitch& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
+  bool operator==(const FOMStringSwitch& rhs) const
+  {
+    if (_impl.get() == rhs._impl.get())
+      return true;
+    if (getSwitchesType() != rhs.getSwitchesType()) return false;
+    if (getEnabled() != rhs.getEnabled()) return false;
+    return true;
+  }
+  bool operator<(const FOMStringSwitch& rhs) const
+  {
+    if (_impl.get() == rhs._impl.get())
+      return false;
+    if (getSwitchesType() < rhs.getSwitchesType()) return true;
+    if (rhs.getSwitchesType() < getSwitchesType()) return false;
+    if (getEnabled() < rhs.getEnabled()) return true;
+    if (rhs.getEnabled() < getEnabled()) return false;
+    return false;
+  }
+  bool operator!=(const FOMStringSwitch& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const FOMStringSwitch& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const FOMStringSwitch& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const FOMStringSwitch& rhs) const
+  { return !operator>(rhs); }
+private:
+  struct OPENRTI_API Implementation : public Referenced {
+    SwitchesType _switchesType;
+    Bool _enabled;
+  };
+
+  const Implementation& getConstImpl() const
+  {
+    return *_impl;
+  }
+
+  Implementation& getImpl()
+  {
+    if (1 < Referenced::count(_impl.get()))
+      _impl = new Implementation(*_impl);
+    return *_impl;
+  }
+
+  SharedPtr<Implementation> _impl;
+};
+
+typedef std::vector<FOMStringSwitch> FOMStringSwitchList;
+
 class OPENRTI_API FOMStringModule {
 public:
   FOMStringModule() : 
@@ -1496,6 +1593,17 @@ public:
   const FOMStringUpdateRateList& getUpdateRateList() const
   { return getConstImpl()._updateRateList; }
 
+  void setSwitchList(const FOMStringSwitchList& value)
+  { getImpl()._switchList = value; }
+#if 201103L <= __cplusplus
+  void setSwitchList(FOMStringSwitchList&& value)
+  { getImpl()._switchList = value; }
+#endif
+  FOMStringSwitchList& getSwitchList()
+  { return getImpl()._switchList; }
+  const FOMStringSwitchList& getSwitchList() const
+  { return getConstImpl()._switchList; }
+
   FOMStringModule& swap(FOMStringModule& rhs)
   {
     _impl.swap(rhs._impl);
@@ -1511,6 +1619,7 @@ public:
     if (getInteractionClassList() != rhs.getInteractionClassList()) return false;
     if (getObjectClassList() != rhs.getObjectClassList()) return false;
     if (getUpdateRateList() != rhs.getUpdateRateList()) return false;
+    if (getSwitchList() != rhs.getSwitchList()) return false;
     return true;
   }
   bool operator<(const FOMStringModule& rhs) const
@@ -1529,6 +1638,8 @@ public:
     if (rhs.getObjectClassList() < getObjectClassList()) return false;
     if (getUpdateRateList() < rhs.getUpdateRateList()) return true;
     if (rhs.getUpdateRateList() < getUpdateRateList()) return false;
+    if (getSwitchList() < rhs.getSwitchList()) return true;
+    if (rhs.getSwitchList() < getSwitchList()) return false;
     return false;
   }
   bool operator!=(const FOMStringModule& rhs) const
@@ -1547,6 +1658,7 @@ private:
     FOMStringInteractionClassList _interactionClassList;
     FOMStringObjectClassList _objectClassList;
     FOMStringUpdateRateList _updateRateList;
+    FOMStringSwitchList _switchList;
   };
 
   const Implementation& getConstImpl() const
@@ -2402,6 +2514,87 @@ private:
 
 typedef std::vector<FOMUpdateRate> FOMUpdateRateList;
 
+class OPENRTI_API FOMSwitch {
+public:
+  FOMSwitch() : 
+    _impl(new Implementation)
+  { }
+  void setSwitchesType(const SwitchesType& value)
+  { getImpl()._switchesType = value; }
+#if 201103L <= __cplusplus
+  void setSwitchesType(SwitchesType&& value)
+  { getImpl()._switchesType = value; }
+#endif
+  SwitchesType& getSwitchesType()
+  { return getImpl()._switchesType; }
+  const SwitchesType& getSwitchesType() const
+  { return getConstImpl()._switchesType; }
+
+  void setEnabled(const Bool& value)
+  { getImpl()._enabled = value; }
+#if 201103L <= __cplusplus
+  void setEnabled(Bool&& value)
+  { getImpl()._enabled = value; }
+#endif
+  Bool& getEnabled()
+  { return getImpl()._enabled; }
+  const Bool& getEnabled() const
+  { return getConstImpl()._enabled; }
+
+  FOMSwitch& swap(FOMSwitch& rhs)
+  {
+    _impl.swap(rhs._impl);
+    return *this;
+  }
+  bool operator==(const FOMSwitch& rhs) const
+  {
+    if (_impl.get() == rhs._impl.get())
+      return true;
+    if (getSwitchesType() != rhs.getSwitchesType()) return false;
+    if (getEnabled() != rhs.getEnabled()) return false;
+    return true;
+  }
+  bool operator<(const FOMSwitch& rhs) const
+  {
+    if (_impl.get() == rhs._impl.get())
+      return false;
+    if (getSwitchesType() < rhs.getSwitchesType()) return true;
+    if (rhs.getSwitchesType() < getSwitchesType()) return false;
+    if (getEnabled() < rhs.getEnabled()) return true;
+    if (rhs.getEnabled() < getEnabled()) return false;
+    return false;
+  }
+  bool operator!=(const FOMSwitch& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const FOMSwitch& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const FOMSwitch& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const FOMSwitch& rhs) const
+  { return !operator>(rhs); }
+private:
+  struct OPENRTI_API Implementation : public Referenced {
+    SwitchesType _switchesType;
+    Bool _enabled;
+  };
+
+  const Implementation& getConstImpl() const
+  {
+    return *_impl;
+  }
+
+  Implementation& getImpl()
+  {
+    if (1 < Referenced::count(_impl.get()))
+      _impl = new Implementation(*_impl);
+    return *_impl;
+  }
+
+  SharedPtr<Implementation> _impl;
+};
+
+typedef std::vector<FOMSwitch> FOMSwitchList;
+
 class OPENRTI_API FOMModule {
 public:
   FOMModule() : 
@@ -2495,6 +2688,17 @@ public:
   const FOMUpdateRateList& getUpdateRateList() const
   { return getConstImpl()._updateRateList; }
 
+  void setSwitchList(const FOMSwitchList& value)
+  { getImpl()._switchList = value; }
+#if 201103L <= __cplusplus
+  void setSwitchList(FOMSwitchList&& value)
+  { getImpl()._switchList = value; }
+#endif
+  FOMSwitchList& getSwitchList()
+  { return getImpl()._switchList; }
+  const FOMSwitchList& getSwitchList() const
+  { return getConstImpl()._switchList; }
+
   FOMModule& swap(FOMModule& rhs)
   {
     _impl.swap(rhs._impl);
@@ -2512,6 +2716,7 @@ public:
     if (getInteractionClassList() != rhs.getInteractionClassList()) return false;
     if (getObjectClassList() != rhs.getObjectClassList()) return false;
     if (getUpdateRateList() != rhs.getUpdateRateList()) return false;
+    if (getSwitchList() != rhs.getSwitchList()) return false;
     return true;
   }
   bool operator<(const FOMModule& rhs) const
@@ -2534,6 +2739,8 @@ public:
     if (rhs.getObjectClassList() < getObjectClassList()) return false;
     if (getUpdateRateList() < rhs.getUpdateRateList()) return true;
     if (rhs.getUpdateRateList() < getUpdateRateList()) return false;
+    if (getSwitchList() < rhs.getSwitchList()) return true;
+    if (rhs.getSwitchList() < getSwitchList()) return false;
     return false;
   }
   bool operator!=(const FOMModule& rhs) const
@@ -2554,6 +2761,7 @@ private:
     FOMInteractionClassList _interactionClassList;
     FOMObjectClassList _objectClassList;
     FOMUpdateRateList _updateRateList;
+    FOMSwitchList _switchList;
   };
 
   const Implementation& getConstImpl() const
@@ -6506,6 +6714,22 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const LowerBoundTimeS
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const SwitchesType& value)
+{
+  switch (value) {
+  case InteractionRelevanceAdvisorySwitchesType: os << "InteractionRelevanceAdvisorySwitchesType"; break;
+  case ObjectClassRelevanceAdvisorySwitchesType: os << "ObjectClassRelevanceAdvisorySwitchesType"; break;
+  case AttributeRelevanceAdvisorySwitchesType: os << "AttributeRelevanceAdvisorySwitchesType"; break;
+  case AttributeScopeAdvisorySwitchesType: os << "AttributeScopeAdvisorySwitchesType"; break;
+  case AutoProvideSwitchesType: os << "AutoProvideSwitchesType"; break;
+  case ConveyRegionDesignatorSetsSwitchesType: os << "ConveyRegionDesignatorSetsSwitchesType"; break;
+  case ServiceReportingSwitchesType: os << "ServiceReportingSwitchesType"; break;
+  }
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const AttributeHandleVector& value)
 {
   os << "{ ";
@@ -7352,6 +7576,34 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringUpdate
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringSwitch& value)
+{
+  os << "{ ";
+  os << "switchesType: " << value.getSwitchesType();
+  os << ", ";
+  os << "enabled: " << value.getEnabled();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringSwitchList& value)
+{
+  os << "{ ";
+  FOMStringSwitchList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringModule& value)
 {
   os << "{ ";
@@ -7366,6 +7618,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringModule
   os << "objectClassList: " << value.getObjectClassList();
   os << ", ";
   os << "updateRateList: " << value.getUpdateRateList();
+  os << ", ";
+  os << "switchList: " << value.getSwitchList();
   os << " }";
   return os;
 }
@@ -7700,6 +7954,34 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMUpdateRateLi
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMSwitch& value)
+{
+  os << "{ ";
+  os << "switchesType: " << value.getSwitchesType();
+  os << ", ";
+  os << "enabled: " << value.getEnabled();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMSwitchList& value)
+{
+  os << "{ ";
+  FOMSwitchList::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModule& value)
 {
   os << "{ ";
@@ -7718,6 +8000,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModule& valu
   os << "objectClassList: " << value.getObjectClassList();
   os << ", ";
   os << "updateRateList: " << value.getUpdateRateList();
+  os << ", ";
+  os << "switchList: " << value.getSwitchList();
   os << " }";
   return os;
 }

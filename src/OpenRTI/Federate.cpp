@@ -574,6 +574,34 @@ Federate::setPermitTimeRegulation(bool permitTimeRegulation)
   _permitTimeRegulation = permitTimeRegulation;
 }
 
+void
+Federate::applySwitch(const FOMSwitch& switchValue)
+{
+  switch (switchValue.getSwitchesType()) {
+  case InteractionRelevanceAdvisorySwitchesType:
+    _interactionRelevanceAdvisorySwitchEnabled = switchValue.getEnabled();
+    break;
+  case ObjectClassRelevanceAdvisorySwitchesType:
+    _objectClassRelevanceAdvisorySwitchEnabled = switchValue.getEnabled();
+    break;
+  case AttributeRelevanceAdvisorySwitchesType:
+    _attributeRelevanceAdvisorySwitchEnabled = switchValue.getEnabled();
+    break;
+  case AttributeScopeAdvisorySwitchesType:
+    _attributeScopeAdvisorySwitchEnabled = switchValue.getEnabled();
+    break;
+  case AutoProvideSwitchesType:
+    // _autoProvideSwitchEnabled = switchValue.getEnabled();
+    break;
+  case ConveyRegionDesignatorSetsSwitchesType:
+    // _conveyRegionDesignatorSetsSwitchEnabled = switchValue.getEnabled();
+    break;
+  case ServiceReportingSwitchesType:
+    // _serviceReportingSwitchesEnabled = switchValue.getEnabled();
+    break;
+  }
+}
+
 double
 Federate::getUpdateRateValue(const std::string& name) const
 {
@@ -1142,6 +1170,9 @@ Federate::insertFOMModule(const FOMModule& module)
   for (FOMObjectClassList::const_iterator i = module.getObjectClassList().begin();
        i != module.getObjectClassList().end(); ++i)
     insertObjectClass(*i);
+  for (FOMSwitchList::const_iterator i = module.getSwitchList().begin();
+       i != module.getSwitchList().end(); ++i)
+    applySwitch(*i);
 }
 
 void
