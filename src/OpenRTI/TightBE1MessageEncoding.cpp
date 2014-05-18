@@ -939,6 +939,8 @@ public:
     writeFOMStringObjectClassList(value.getObjectClassList());
     writeFOMStringUpdateRateList(value.getUpdateRateList());
     writeFOMStringSwitchList(value.getSwitchList());
+    writeBool(value.getArtificialInteractionRoot());
+    writeBool(value.getArtificialObjectRoot());
   }
 
   void writeFOMStringModuleList(const FOMStringModuleList& value)
@@ -1133,6 +1135,8 @@ public:
     writeFOMObjectClassList(value.getObjectClassList());
     writeFOMUpdateRateList(value.getUpdateRateList());
     writeFOMSwitchList(value.getSwitchList());
+    writeBool(value.getArtificialInteractionRoot());
+    writeBool(value.getArtificialObjectRoot());
   }
 
   void writeFOMModuleList(const FOMModuleList& value)
@@ -3027,6 +3031,8 @@ public:
     readFOMStringObjectClassList(value.getObjectClassList());
     readFOMStringUpdateRateList(value.getUpdateRateList());
     readFOMStringSwitchList(value.getSwitchList());
+    readBool(value.getArtificialInteractionRoot());
+    readBool(value.getArtificialObjectRoot());
   }
 
   void readFOMStringModuleList(FOMStringModuleList& value)
@@ -3225,6 +3231,8 @@ public:
     readFOMObjectClassList(value.getObjectClassList());
     readFOMUpdateRateList(value.getUpdateRateList());
     readFOMSwitchList(value.getSwitchList());
+    readBool(value.getArtificialInteractionRoot());
+    readBool(value.getArtificialObjectRoot());
   }
 
   void readFOMModuleList(FOMModuleList& value)

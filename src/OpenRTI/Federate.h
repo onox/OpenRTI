@@ -265,7 +265,7 @@ public:
   InteractionClass* getInteractionClass(const InteractionClassHandle& interactionClassHandle);
   const InteractionClass* getInteractionClass(const InteractionClassHandle& interactionClassHandle) const;
   InteractionClassHandle getInteractionClassHandle(const std::string& name) const;
-  void insertInteractionClass(const FOMInteractionClass& module);
+  void insertInteractionClass(const FOMInteractionClass& module, bool artificialObjectRoot);
   size_t getNumInteractionClasses() const
   { return _interactionClassVector.size(); }
   bool isInteractionClassDerivedFrom(const InteractionClassHandle& baseInteractionClassHandle, const InteractionClassHandle& interactionClassHandle) const;
@@ -348,7 +348,7 @@ public:
   ObjectClass* getObjectClass(const ObjectClassHandle& objectClassHandle);
   const ObjectClass* getObjectClass(const ObjectClassHandle& objectClassHandle) const;
   ObjectClassHandle getObjectClassHandle(const std::string& name) const;
-  void insertObjectClass(const FOMObjectClass& module);
+  void insertObjectClass(const FOMObjectClass& module, bool artificialObjectRoot);
   size_t getNumObjectClasses() const
   { return _objectClassVector.size(); }
   bool isObjectClassDerivedFrom(const ObjectClassHandle& baseObjectClassHandle, const ObjectClassHandle& objectClassHandle) const;

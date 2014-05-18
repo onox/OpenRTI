@@ -1604,6 +1604,28 @@ public:
   const FOMStringSwitchList& getSwitchList() const
   { return getConstImpl()._switchList; }
 
+  void setArtificialInteractionRoot(const Bool& value)
+  { getImpl()._artificialInteractionRoot = value; }
+#if 201103L <= __cplusplus
+  void setArtificialInteractionRoot(Bool&& value)
+  { getImpl()._artificialInteractionRoot = value; }
+#endif
+  Bool& getArtificialInteractionRoot()
+  { return getImpl()._artificialInteractionRoot; }
+  const Bool& getArtificialInteractionRoot() const
+  { return getConstImpl()._artificialInteractionRoot; }
+
+  void setArtificialObjectRoot(const Bool& value)
+  { getImpl()._artificialObjectRoot = value; }
+#if 201103L <= __cplusplus
+  void setArtificialObjectRoot(Bool&& value)
+  { getImpl()._artificialObjectRoot = value; }
+#endif
+  Bool& getArtificialObjectRoot()
+  { return getImpl()._artificialObjectRoot; }
+  const Bool& getArtificialObjectRoot() const
+  { return getConstImpl()._artificialObjectRoot; }
+
   FOMStringModule& swap(FOMStringModule& rhs)
   {
     _impl.swap(rhs._impl);
@@ -1620,6 +1642,8 @@ public:
     if (getObjectClassList() != rhs.getObjectClassList()) return false;
     if (getUpdateRateList() != rhs.getUpdateRateList()) return false;
     if (getSwitchList() != rhs.getSwitchList()) return false;
+    if (getArtificialInteractionRoot() != rhs.getArtificialInteractionRoot()) return false;
+    if (getArtificialObjectRoot() != rhs.getArtificialObjectRoot()) return false;
     return true;
   }
   bool operator<(const FOMStringModule& rhs) const
@@ -1640,6 +1664,10 @@ public:
     if (rhs.getUpdateRateList() < getUpdateRateList()) return false;
     if (getSwitchList() < rhs.getSwitchList()) return true;
     if (rhs.getSwitchList() < getSwitchList()) return false;
+    if (getArtificialInteractionRoot() < rhs.getArtificialInteractionRoot()) return true;
+    if (rhs.getArtificialInteractionRoot() < getArtificialInteractionRoot()) return false;
+    if (getArtificialObjectRoot() < rhs.getArtificialObjectRoot()) return true;
+    if (rhs.getArtificialObjectRoot() < getArtificialObjectRoot()) return false;
     return false;
   }
   bool operator!=(const FOMStringModule& rhs) const
@@ -1659,6 +1687,8 @@ private:
     FOMStringObjectClassList _objectClassList;
     FOMStringUpdateRateList _updateRateList;
     FOMStringSwitchList _switchList;
+    Bool _artificialInteractionRoot;
+    Bool _artificialObjectRoot;
   };
 
   const Implementation& getConstImpl() const
@@ -2688,6 +2718,28 @@ public:
   const FOMSwitchList& getSwitchList() const
   { return getConstImpl()._switchList; }
 
+  void setArtificialInteractionRoot(const Bool& value)
+  { getImpl()._artificialInteractionRoot = value; }
+#if 201103L <= __cplusplus
+  void setArtificialInteractionRoot(Bool&& value)
+  { getImpl()._artificialInteractionRoot = value; }
+#endif
+  Bool& getArtificialInteractionRoot()
+  { return getImpl()._artificialInteractionRoot; }
+  const Bool& getArtificialInteractionRoot() const
+  { return getConstImpl()._artificialInteractionRoot; }
+
+  void setArtificialObjectRoot(const Bool& value)
+  { getImpl()._artificialObjectRoot = value; }
+#if 201103L <= __cplusplus
+  void setArtificialObjectRoot(Bool&& value)
+  { getImpl()._artificialObjectRoot = value; }
+#endif
+  Bool& getArtificialObjectRoot()
+  { return getImpl()._artificialObjectRoot; }
+  const Bool& getArtificialObjectRoot() const
+  { return getConstImpl()._artificialObjectRoot; }
+
   FOMModule& swap(FOMModule& rhs)
   {
     _impl.swap(rhs._impl);
@@ -2705,6 +2757,8 @@ public:
     if (getObjectClassList() != rhs.getObjectClassList()) return false;
     if (getUpdateRateList() != rhs.getUpdateRateList()) return false;
     if (getSwitchList() != rhs.getSwitchList()) return false;
+    if (getArtificialInteractionRoot() != rhs.getArtificialInteractionRoot()) return false;
+    if (getArtificialObjectRoot() != rhs.getArtificialObjectRoot()) return false;
     return true;
   }
   bool operator<(const FOMModule& rhs) const
@@ -2727,6 +2781,10 @@ public:
     if (rhs.getUpdateRateList() < getUpdateRateList()) return false;
     if (getSwitchList() < rhs.getSwitchList()) return true;
     if (rhs.getSwitchList() < getSwitchList()) return false;
+    if (getArtificialInteractionRoot() < rhs.getArtificialInteractionRoot()) return true;
+    if (rhs.getArtificialInteractionRoot() < getArtificialInteractionRoot()) return false;
+    if (getArtificialObjectRoot() < rhs.getArtificialObjectRoot()) return true;
+    if (rhs.getArtificialObjectRoot() < getArtificialObjectRoot()) return false;
     return false;
   }
   bool operator!=(const FOMModule& rhs) const
@@ -2747,6 +2805,8 @@ private:
     FOMObjectClassList _objectClassList;
     FOMUpdateRateList _updateRateList;
     FOMSwitchList _switchList;
+    Bool _artificialInteractionRoot;
+    Bool _artificialObjectRoot;
   };
 
   const Implementation& getConstImpl() const
@@ -7605,6 +7665,10 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringModule
   os << "updateRateList: " << value.getUpdateRateList();
   os << ", ";
   os << "switchList: " << value.getSwitchList();
+  os << ", ";
+  os << "artificialInteractionRoot: " << value.getArtificialInteractionRoot();
+  os << ", ";
+  os << "artificialObjectRoot: " << value.getArtificialObjectRoot();
   os << " }";
   return os;
 }
@@ -7985,6 +8049,10 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModule& valu
   os << "updateRateList: " << value.getUpdateRateList();
   os << ", ";
   os << "switchList: " << value.getSwitchList();
+  os << ", ";
+  os << "artificialInteractionRoot: " << value.getArtificialInteractionRoot();
+  os << ", ";
+  os << "artificialObjectRoot: " << value.getArtificialObjectRoot();
   os << " }";
   return os;
 }

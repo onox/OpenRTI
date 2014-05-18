@@ -831,7 +831,7 @@ Federate::getInteractionClassHandle(const std::string& name) const
 }
 
 void
-Federate::insertInteractionClass(const FOMInteractionClass& module)
+Federate::insertInteractionClass(const FOMInteractionClass& module, bool artificialInteractionRoot)
 {
   size_t index = module.getInteractionClassHandle().getHandle();
   if (_interactionClassVector.size() <= index)
@@ -841,7 +841,6 @@ Federate::insertInteractionClass(const FOMInteractionClass& module)
 
     InteractionClassHandle parentHandle = module.getParentInteractionClassHandle();
 
-    // If we have invented an internal HLAinteractionRoot, the name of this one is empty.
     std::string fqName;
     if (parentHandle.valid()) {
       fqName = getInteractionClass(parentHandle)->getFQName();
@@ -849,20 +848,17 @@ Federate::insertInteractionClass(const FOMInteractionClass& module)
         fqName.append(".");
     }
     fqName.append(module.getName());
+    if (artificialInteractionRoot && fqName.compare(0, 19, "HLAinteractionRoot.") == 0) {
+      fqName = fqName.substr(19, std::string::npos);
+    }
 
-    if (!fqName.empty()) {
-      _nameInteractionClassHandleMap[module.getName()] = module.getInteractionClassHandle();
+    _nameInteractionClassHandleMap[module.getName()] = module.getInteractionClassHandle();
+    if (!fqName.empty() && fqName != module.getName()) {
       _nameInteractionClassHandleMap[fqName] = module.getInteractionClassHandle();
-    } else {
-      OpenRTIAssert(!parentHandle.valid());
-      _nameInteractionClassHandleMap["HLAinteractionRoot"] = module.getInteractionClassHandle();
     }
 
     InteractionClass* interactionClass = _interactionClassVector[index].get();
-    if (fqName.empty())
-      interactionClass->setName("HLAinteractionRoot");
-    else
-      interactionClass->setName(module.getName());
+    interactionClass->setName(module.getName());
     interactionClass->setFQName(fqName);
     interactionClass->setParentInteractionClassHandle(parentHandle);
     interactionClass->setOrderType(module.getOrderType());
@@ -929,7 +925,7 @@ Federate::getObjectClassHandle(const std::string& name) const
 }
 
 void
-Federate::insertObjectClass(const FOMObjectClass& module)
+Federate::insertObjectClass(const FOMObjectClass& module, bool artificialObjectRoot)
 {
   size_t index = module.getObjectClassHandle().getHandle();
   if (_objectClassVector.size() <= index)
@@ -940,7 +936,6 @@ Federate::insertObjectClass(const FOMObjectClass& module)
 
     ObjectClassHandle parentHandle = module.getParentObjectClassHandle();
 
-    // If we have invented an internal HLAobjectRoot, the name of this one is empty.
     std::string fqName;
     if (parentHandle.valid()) {
       fqName = getObjectClass(parentHandle)->getFQName();
@@ -948,19 +943,16 @@ Federate::insertObjectClass(const FOMObjectClass& module)
         fqName.append(".");
     }
     fqName.append(module.getName());
-
-    if (!fqName.empty()) {
-      _nameObjectClassHandleMap[module.getName()] = module.getObjectClassHandle();
-      _nameObjectClassHandleMap[fqName] = module.getObjectClassHandle();
-    } else {
-      OpenRTIAssert(!parentHandle.valid());
-      _nameObjectClassHandleMap["HLAobjectRoot"] = module.getObjectClassHandle();
+    if (artificialObjectRoot && fqName.compare(0, 14, "HLAobjectRoot.") == 0) {
+      fqName = fqName.substr(14, std::string::npos);
     }
 
-    if (fqName.empty())
-      objectClass->setName("HLAobjectRoot");
-    else
-      objectClass->setName(module.getName());
+    _nameObjectClassHandleMap[module.getName()] = module.getObjectClassHandle();
+    if (!fqName.empty() && fqName != module.getName()) {
+      _nameObjectClassHandleMap[fqName] = module.getObjectClassHandle();
+    }
+
+    objectClass->setName(module.getName());
     objectClass->setFQName(fqName);
     objectClass->setParentObjectClassHandle(parentHandle);
 
@@ -1216,10 +1208,10 @@ Federate::insertFOMModule(const FOMModule& module)
     insertTransportationType(i->getName(), i->getTransportationType());
   for (FOMInteractionClassList::const_iterator i = module.getInteractionClassList().begin();
        i != module.getInteractionClassList().end(); ++i)
-    insertInteractionClass(*i);
+    insertInteractionClass(*i, module.getArtificialInteractionRoot());
   for (FOMObjectClassList::const_iterator i = module.getObjectClassList().begin();
        i != module.getObjectClassList().end(); ++i)
-    insertObjectClass(*i);
+    insertObjectClass(*i, module.getArtificialObjectRoot());
   for (FOMSwitchList::const_iterator i = module.getSwitchList().begin();
        i != module.getSwitchList().end(); ++i)
     applySwitch(*i);

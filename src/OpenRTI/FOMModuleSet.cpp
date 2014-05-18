@@ -392,6 +392,9 @@ struct OPENRTI_LOCAL FOMModuleSet::AllocatorMap : public Referenced {
     insertInteractionClassList(module.getInteractionClassList(), fomModuleHandle, stringModule.getInteractionClassList(), isBaseType);
     insertObjectClassList(module.getObjectClassList(), fomModuleHandle, stringModule.getObjectClassList(), isBaseType);
 
+    module.setArtificialInteractionRoot(stringModule.getArtificialInteractionRoot());
+    module.setArtificialObjectRoot(stringModule.getArtificialObjectRoot());
+
     module.setFOMModuleHandle(fomModuleHandle);
     _fomModuleHandleFOMModuleMap[fomModuleHandle] = module;
     if (isBaseType)

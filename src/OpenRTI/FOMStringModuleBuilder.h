@@ -257,12 +257,16 @@ public:
     // Insert an artificial interaction root if not yet there.
     // note that the rti13 fed file reader normalizes its different name to the rti1516* standard one checked here.
     StringVector interactionRootName;
+    // Hmm may be just the reverse? throw out this object and mention the non standard names for this
     interactionRootName.push_back("HLAinteractionRoot");
     if (_module.getInteractionClassList().empty() || _module.getInteractionClassList()[0].getName() != interactionRootName) {
+      _module.setArtificialInteractionRoot(true);
       _module.getInteractionClassList().insert(_module.getInteractionClassList().begin(), FOMStringInteractionClass());
       for (size_t i = 0; i < _module.getInteractionClassList().size(); ++i) {
-        _module.getInteractionClassList()[i].getName().insert(_module.getInteractionClassList()[i].getName().begin(), std::string());
+        _module.getInteractionClassList()[i].getName().insert(_module.getInteractionClassList()[i].getName().begin(), interactionRootName.front());
       }
+    } else {
+      _module.setArtificialInteractionRoot(false);
     }
 
     for (size_t i = 0; i < _module.getInteractionClassList().size(); ++i) {
@@ -284,10 +288,13 @@ public:
     StringVector objectRootName;
     objectRootName.push_back("HLAobjectRoot");
     if (_module.getObjectClassList().empty() || _module.getObjectClassList()[0].getName() != objectRootName) {
+      _module.setArtificialObjectRoot(true);
       _module.getObjectClassList().insert(_module.getObjectClassList().begin(), FOMStringObjectClass());
       for (size_t i = 0; i < _module.getObjectClassList().size(); ++i) {
-        _module.getObjectClassList()[i].getName().insert(_module.getObjectClassList()[i].getName().begin(), std::string());
+        _module.getObjectClassList()[i].getName().insert(_module.getObjectClassList()[i].getName().begin(), objectRootName.front());
       }
+    } else {
+      _module.setArtificialObjectRoot(false);
     }
     // on any price this may be artificial object class must have exactly this single attribute
     // Note that this resize preserves everything originally contained there.
