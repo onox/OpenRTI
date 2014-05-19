@@ -9,9 +9,9 @@
         (class ObjectClass2
           (attribute Attribute2 reliable TimeStamp)
         )
-        (class ObjectClass3
-          (attribute Attribute3 reliable TimeStamp)
-        )
+      )
+      (class ObjectClass3
+        (attribute Attribute3 reliable TimeStamp)
       )
     )
   )
@@ -22,9 +22,9 @@
         (class InteractionClass2 reliable TimeStamp
           (parameter Parameter2)
         )
-        (class InteractionClass3 reliable TimeStamp
-          (parameter Parameter3)
-        )
+      )
+      (class InteractionClass3 reliable TimeStamp
+        (parameter Parameter3)
       )
     )
   )

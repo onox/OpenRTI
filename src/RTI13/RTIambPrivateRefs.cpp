@@ -3563,20 +3563,21 @@ RTI::RTIambassador::requestClassAttributeValueUpdateWithRegion(RTI::ObjectClassH
 }
 
 RTI::ObjectClassHandle
-RTI::RTIambassador::getObjectClassHandle(const char* name)
+RTI::RTIambassador::getObjectClassHandle(const char* _name)
   throw (RTI::NameNotFound,
          RTI::FederateNotExecutionMember,
          RTI::ConcurrentAccessAttempted,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  if (!name)
+  if (!_name)
     throw RTI::NameNotFound("Zero name pointer.");
   try {
+    std::string name = OpenRTI::localeToUtf8(_name);
     // special casing for the root object
-    if (OpenRTI::caseCompare(name, "ObjectRoot"))
-      return privateRefs->getObjectClassHandle("HLAobjectRoot");
-    return privateRefs->getObjectClassHandle(OpenRTI::localeToUtf8(name));
+    if (10 <= name.size() && OpenRTI::caseCompare(name.substr(0, 10), "ObjectRoot"))
+      name.replace(0, 10, "HLAobjectRoot");
+    return privateRefs->getObjectClassHandle(name);
   } catch (const OpenRTI::NameNotFound& e) {
     throw RTI::NameNotFound(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
@@ -3600,9 +3601,9 @@ RTI::RTIambassador::getObjectClassName(RTI::ObjectClassHandle objectClassHandle)
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     std::string name = privateRefs->getObjectClassName(objectClassHandle);
-    // special casing for the root object
-    if (name == "HLAobjectRoot")
-      return newUtf8ToLocale("ObjectRoot");
+    // special casing for the privilege to delete
+    if (13 <= name.size() && name.compare(0, 13, "HLAobjectRoot") == 0)
+      name.replace(0, 13, "ObjectRoot");
     return newUtf8ToLocale(name);
   } catch (const OpenRTI::InvalidObjectClassHandle& e) {
     throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
@@ -3618,7 +3619,7 @@ RTI::RTIambassador::getObjectClassName(RTI::ObjectClassHandle objectClassHandle)
 }
 
 RTI::AttributeHandle
-RTI::RTIambassador::getAttributeHandle(const char* name,
+RTI::RTIambassador::getAttributeHandle(const char* _name,
                                        RTI::ObjectClassHandle objectClassHandle)
   throw (RTI::ObjectClassNotDefined,
          RTI::NameNotFound,
@@ -3627,13 +3628,16 @@ RTI::RTIambassador::getAttributeHandle(const char* name,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  if (!name)
+  if (!_name)
     throw RTI::NameNotFound("Zero name pointer.");
   try {
-    // special casing for the privilege to delete
-    if (OpenRTI::caseCompare(name, "privilegeToDelete"))
-      return privateRefs->getAttributeHandle(objectClassHandle, "HLAprivilegeToDeleteObject");
-    return privateRefs->getAttributeHandle(objectClassHandle, OpenRTI::localeToUtf8(name));
+    std::string name = OpenRTI::localeToUtf8(_name);
+    // special casing for the root object
+    if (10 <= name.size() && OpenRTI::caseCompare(name.substr(0, 10), "ObjectRoot"))
+      name.replace(0, 10, "HLAobjectRoot");
+    if (17 <= name.size() && OpenRTI::caseCompare(name.substr(name.size() - 17, 17), "privilegeToDelete"))
+      name.replace(name.size() - 17, 17, "HLAprivilegeToDeleteObject");
+    return privateRefs->getAttributeHandle(objectClassHandle, name);
   } catch (const OpenRTI::InvalidObjectClassHandle& e) {
     throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::NameNotFound& e) {
@@ -3662,8 +3666,10 @@ RTI::RTIambassador::getAttributeName(RTI::AttributeHandle attributeHandle,
   try {
     std::string name = privateRefs->getAttributeName(objectClassHandle, attributeHandle);
     // special casing for the privilege to delete
-    if (name == "HLAprivilegeToDeleteObject")
-      return newUtf8ToLocale("privilegeToDelete");
+    if (25 <= name.size() && name.compare(name.size() - 25, 25, "HLAprivilegeToDeleteObject") == 0)
+      name.replace(name.size() - 25, 25, "privilegeToDelete");
+    if (13 <= name.size() && name.compare(0, 13, "HLAobjectRoot") == 0)
+      name.replace(0, 13, "ObjectRoot");
     return newUtf8ToLocale(name);
   } catch (const OpenRTI::InvalidObjectClassHandle& e) {
     throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
@@ -3683,20 +3689,21 @@ RTI::RTIambassador::getAttributeName(RTI::AttributeHandle attributeHandle,
 }
 
 RTI::InteractionClassHandle
-RTI::RTIambassador::getInteractionClassHandle(const char* name)
+RTI::RTIambassador::getInteractionClassHandle(const char* _name)
   throw (RTI::NameNotFound,
          RTI::FederateNotExecutionMember,
          RTI::ConcurrentAccessAttempted,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  if (!name)
+  if (!_name)
     throw RTI::NameNotFound("Zero name pointer.");
   try {
+    std::string name = OpenRTI::localeToUtf8(_name);
     // special casing for the root object
-    if (OpenRTI::caseCompare(name, "InteractionRoot"))
-      return privateRefs->getInteractionClassHandle("HLAinteractionRoot");
-    return privateRefs->getInteractionClassHandle(OpenRTI::localeToUtf8(name));
+    if (15 <= name.size() && OpenRTI::caseCompare(name.substr(0, 15), "InteractionRoot"))
+      name.replace(0, 15, "HLAinteractionRoot");
+    return privateRefs->getInteractionClassHandle(name);
   } catch (const OpenRTI::NameNotFound& e) {
     throw RTI::NameNotFound(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
@@ -3721,8 +3728,8 @@ RTI::RTIambassador::getInteractionClassName(RTI::InteractionClassHandle interact
   try {
     std::string name = privateRefs->getInteractionClassName(interactionClassHandle);
     // special casing for the root object
-    if (name == "HLAinteractionRoot")
-      return newUtf8ToLocale("InteractionRoot");
+    if (18 <= name.size() && name.compare(0, 18, "HLAinteractionRoot") == 0)
+      name.replace(0, 18, "InteractionRoot");
     return newUtf8ToLocale(name);
   } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
     throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
@@ -3738,7 +3745,7 @@ RTI::RTIambassador::getInteractionClassName(RTI::InteractionClassHandle interact
 }
 
 RTI::ParameterHandle
-RTI::RTIambassador::getParameterHandle(const char* name,
+RTI::RTIambassador::getParameterHandle(const char* _name,
                                        RTI::InteractionClassHandle interactionClassHandle)
   throw (RTI::InteractionClassNotDefined,
          RTI::NameNotFound,
@@ -3747,10 +3754,14 @@ RTI::RTIambassador::getParameterHandle(const char* name,
          RTI::RTIinternalError)
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
-  if (!name)
+  if (!_name)
     throw RTI::NameNotFound("Zero name pointer.");
   try {
-    return privateRefs->getParameterHandle(interactionClassHandle, OpenRTI::localeToUtf8(name));
+    std::string name = OpenRTI::localeToUtf8(_name);
+    // special casing for the root object
+    if (15 <= name.size() && OpenRTI::caseCompare(name.substr(0, 15), "InteractionRoot"))
+      name.replace(0, 15, "HLAinteractionRoot");
+    return privateRefs->getParameterHandle(interactionClassHandle, name);
   } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
     throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::NameNotFound& e) {
@@ -3777,7 +3788,11 @@ RTI::RTIambassador::getParameterName(RTI::ParameterHandle parameterHandle,
 {
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
-    return newUtf8ToLocale(privateRefs->getParameterName(interactionClassHandle, parameterHandle));
+    std::string name = privateRefs->getParameterName(interactionClassHandle, parameterHandle);
+    // special casing for the root object
+    if (18 <= name.size() && name.compare(0, 18, "HLAinteractionRoot") == 0)
+      name.replace(0, 18, "InteractionRoot");
+    return newUtf8ToLocale(name);
   } catch (const OpenRTI::InvalidInteractionClassHandle& e) {
     throw RTI::InteractionClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::InvalidParameterHandle& e) {
