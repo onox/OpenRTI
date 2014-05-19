@@ -343,6 +343,7 @@ public:
     std::wstring _address;
     std::vector<std::wstring> _argumentList;
     std::vector<std::wstring> _federateList;
+    bool _disjointFederations;
     bool _joinOnce;
     SharedPtr<FederationBarrier> _federationBarrier;
     SharedPtr<LBTS> _lbts;
@@ -398,6 +399,8 @@ public:
     }
     const std::vector<std::wstring>& getFederateList() const
     { return _constructorArgs._federateList; }
+    bool getDisjointFederations() const
+    { return _constructorArgs._disjointFederations; }
 
     const SharedPtr<FederationBarrier>& getFederationBarrier()
     { return _constructorArgs._federationBarrier; }
@@ -522,6 +525,7 @@ public:
     constructorArgs._federationBarrier = new FederationBarrier(_numAmbassadorThreads);
     constructorArgs._lbts = new LBTS(_numAmbassadorThreads);
     constructorArgs._argumentList = _globalArgumentList;
+    constructorArgs._disjointFederations = _disjointFederations;
     constructorArgs._joinOnce = _joinOnce;
     for (unsigned i = 0; i < _numAmbassadorThreads; ++i) {
       std::wstringstream federateType;
@@ -570,6 +574,11 @@ public:
     }
     return success ? EXIT_SUCCESS : EXIT_FAILURE;
   }
+
+  bool getDisjointFederations() const
+  { return _disjointFederations; }
+  void setDisjointFederations(bool disjointFederations)
+  { _disjointFederations = disjointFederations; }
 
 private:
   typedef std::vector<std::wstring> ArgumentList;
