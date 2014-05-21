@@ -26,6 +26,8 @@
 
 namespace OpenRTI {
 
+#if __cplusplus < 201103L
+
 Condition::Condition(void) :
   _privateData(new PrivateData)
 {
@@ -60,5 +62,7 @@ Condition::wait_until(ScopeLock& scopeLock, const Clock& timeout)
 {
   return _privateData->wait_until(scopeLock.mutex()->_privateData->_mutex, timeout);
 }
+
+#endif
 
 } // namespace OpenRTI

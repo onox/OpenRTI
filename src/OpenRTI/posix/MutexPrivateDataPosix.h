@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -29,6 +29,8 @@
 #include <pthread.h>
 
 namespace OpenRTI {
+
+#if __cplusplus < 201103L
 
 struct OPENRTI_LOCAL Mutex::PrivateData {
   PrivateData()
@@ -61,6 +63,8 @@ struct OPENRTI_LOCAL Mutex::PrivateData {
 
   pthread_mutex_t _mutex;
 };
+
+#endif
 
 } // namespace OpenRTI
 

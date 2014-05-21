@@ -24,6 +24,23 @@
 
 namespace OpenRTI {
 
+#if 201103L <= __cplusplus
+
+class ScopeLock : public std::unique_lock<std::mutex> {
+public:
+  ScopeLock(Mutex& mutex) : std::unique_lock<std::mutex>(mutex._mutex)
+  { }
+  ~ScopeLock(void)
+  { }
+
+private:
+  ScopeLock(void);
+  ScopeLock(const ScopeLock&);
+  ScopeLock& operator=(const ScopeLock&);
+};
+
+#else
+
 class ScopeLock {
 public:
   ScopeLock(Mutex& mutex) : mMutex(mutex)
@@ -41,6 +58,8 @@ private:
 
   Mutex& mMutex;
 };
+
+#endif
 
 } // namespace OpenRTI
 

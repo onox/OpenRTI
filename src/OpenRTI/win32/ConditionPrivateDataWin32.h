@@ -31,6 +31,8 @@
 
 namespace OpenRTI {
 
+#if __cplusplus < 201103L
+
 // Windows Server 2008/Vista provides native conditions
 #if 0x0600 <= WINVER
 // ... but they seem not to work on shutdown!
@@ -127,6 +129,7 @@ struct Condition::PrivateData {
   std::list<HANDLE> _pool;
 };
 
+#endif
 #endif
 
 } // namespace OpenRTI

@@ -31,6 +31,8 @@
 
 namespace OpenRTI {
 
+#if __cplusplus < 201103L
+
 struct OPENRTI_LOCAL Condition::PrivateData {
   PrivateData(void)
   {
@@ -95,6 +97,8 @@ struct OPENRTI_LOCAL Condition::PrivateData {
 
   pthread_cond_t _condition;
 };
+
+#endif
 
 } // namespace OpenRTI
 

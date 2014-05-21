@@ -23,6 +23,7 @@
 
 namespace OpenRTI {
 
+#if __cplusplus < 201103L
 Mutex::Mutex(void) :
   _privateData(new PrivateData)
 {
@@ -45,5 +46,7 @@ Mutex::unlock(void)
 {
   _privateData->unlock();
 }
+
+#endif
 
 } // namespace OpenRTI

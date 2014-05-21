@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -96,6 +96,8 @@ uint64_t ClockPosix::now()
 #endif
 }
 
+#if __cplusplus < 201103L
+
 Clock
 Clock::now()
 {
@@ -119,5 +121,7 @@ Clock::sleep_for(const Clock& reltime)
     poll(0, 0, ClockPosix::toIntMSec(reltime.getNSec()));
 #endif
 }
+
+#endif
 
 } // namespace OpenRTI

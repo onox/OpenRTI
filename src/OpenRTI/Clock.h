@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -27,6 +27,11 @@
 #include "Export.h"
 #include "Types.h"
 
+#if 201103L <= __cplusplus
+# include <chrono>
+# include <thread>
+#endif
+
 namespace OpenRTI {
 
 // use something sophisticated for the posix clock stuff.
@@ -37,9 +42,24 @@ public:
     _nsec(0)
   { }
 
+#if 201103L <= __cplusplus
+  static Clock now()
+  {
+    std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+    return Clock(std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch()).count());
+  }
+#else
   static Clock now();
+#endif
 
+#if 201103L <= __cplusplus
+  static void sleep_for(const Clock& reltime)
+  {
+    std::this_thread::sleep_for(std::chrono::nanoseconds(reltime.getNSec()));
+  }
+#else
   static void sleep_for(const Clock& reltime);
+#endif
 
   static Clock zero()
   { return Clock(0); }

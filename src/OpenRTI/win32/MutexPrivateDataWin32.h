@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -28,6 +28,7 @@
 
 namespace OpenRTI {
 
+#if __cplusplus < 201103L
 struct Mutex::PrivateData {
   PrivateData()
   {
@@ -43,7 +44,7 @@ struct Mutex::PrivateData {
   {
     EnterCriticalSection((LPCRITICAL_SECTION)&_criticalSection);
   }
-  
+
   void unlock(void)
   {
     LeaveCriticalSection((LPCRITICAL_SECTION)&_criticalSection);
@@ -51,6 +52,7 @@ struct Mutex::PrivateData {
 
   CRITICAL_SECTION _criticalSection;
 };
+#endif
 
 } // namespace OpenRTI
 

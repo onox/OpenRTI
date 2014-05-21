@@ -27,6 +27,8 @@
 
 namespace OpenRTI {
 
+#if __cplusplus < 201103L
+
 Condition::Condition(void) :
   _privateData(new PrivateData)
 {
@@ -65,5 +67,7 @@ Condition::wait_until(ScopeLock& scopeLock, const Clock& absclock)
   DWORD msec = ClockWin32::toMsec((absclock - now).getNSec());
   return _privateData->wait_for(*scopeLock.mutex()->_privateData, msec);
 }
+
+#endif
 
 } // namespace OpenRTI

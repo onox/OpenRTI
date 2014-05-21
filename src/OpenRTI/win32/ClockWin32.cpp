@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -33,6 +33,8 @@
 #endif
 
 namespace OpenRTI {
+
+#if __cplusplus < 201103L
 
 #if defined(HAVE_PERFORMANCE_COUNTER)
 
@@ -89,5 +91,7 @@ Clock::sleep_for(const Clock& reltime)
 {
   Sleep(ClockWin32::toMsec(reltime.getNSec()));
 }
+
+#endif
 
 }
