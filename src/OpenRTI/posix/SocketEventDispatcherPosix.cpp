@@ -124,7 +124,7 @@ struct OPENRTI_LOCAL SocketEventDispatcher::PrivateData {
           }
         }
 
-        if (socketEvent->getTimeout() != Clock::final()) {
+        if (socketEvent->getTimeout() != Clock::max()) {
           timeout = std::min(timeout, socketEvent->getTimeout());
           if (!included)
             _timerSocketEventVector.push_back(socketEvent);
@@ -137,7 +137,7 @@ struct OPENRTI_LOCAL SocketEventDispatcher::PrivateData {
       _fdVector.push_back(pfd);
 
       int count;
-      if (timeout < Clock::final()) {
+      if (timeout < Clock::max()) {
         uint64_t now = ClockPosix::now();
         if (timeout.getNSec() < now) {
           count = 0;

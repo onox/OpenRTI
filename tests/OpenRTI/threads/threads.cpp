@@ -67,7 +67,7 @@ public:
 protected:
   virtual void run()
   {
-    Clock::sleep(Clock::final());
+    Clock::sleep_for(Clock::max());
   }
 };
 

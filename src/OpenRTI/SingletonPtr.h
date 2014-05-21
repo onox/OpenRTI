@@ -40,7 +40,7 @@ public:
     while (unsigned(_initialized) != 2) {
       // We expect 0 == uninitalized and write there 1 == initializing
       if (!_initialized.compareAndExchange(0, 1, Atomic::MemoryOrderAcqRel)) {
-        Clock::sleep(Clock::fromSeconds(1e-6));
+        Clock::sleep_for(Clock::fromSeconds(1e-6));
       } else {
         _ptr = new T();
         // We know that it must be 1 and write 2 there

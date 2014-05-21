@@ -20,6 +20,9 @@
 #include "ThreadLocal.h"
 
 #include <vector>
+#ifndef NOMINMAX
+# define NOMINMAX
+#endif
 #include <windows.h>
 
 #include "SingletonPtr.h"

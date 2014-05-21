@@ -187,7 +187,7 @@ struct SocketEventDispatcher::PrivateData {
         nfds = int(_wakeupReadSocket);
 
       int count;
-      if (timeout < Clock::final()) {
+      if (timeout < Clock::max()) {
         Clock now = Clock::now();
         if (timeout < now) {
           count = 0;

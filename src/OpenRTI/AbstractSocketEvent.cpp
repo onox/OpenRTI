@@ -23,7 +23,7 @@ namespace OpenRTI {
 
 AbstractSocketEvent::AbstractSocketEvent() :
   _socketEventDispatcher(0),
-  _timeout(Clock::final())
+  _timeout(Clock::max())
 {
 }
 

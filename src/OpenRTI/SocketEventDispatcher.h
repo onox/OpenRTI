@@ -49,7 +49,7 @@ public:
   // * The timeout expires.
   // * When empty(), that is there are no socket events left.
   // * The wakeUp method is called from some thread.
-  int exec(const Clock& absclock = Clock::final());
+  int exec(const Clock& absclock = Clock::max());
 
 private:
   SocketEventDispatcher(const SocketEventDispatcher&);

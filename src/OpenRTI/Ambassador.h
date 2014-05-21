@@ -3507,7 +3507,7 @@ public:
 
     clock = addSecondsSaturate(reference, approximateMaximumTimeInSeconds);
     do {
-      if (!dispatchCallback(Clock::initial()))
+      if (!dispatchCallback(Clock::zero()))
         return false;
     } while (Clock::now() <= clock);
 

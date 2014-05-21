@@ -85,7 +85,7 @@ Clock::now()
 #endif
 
 void
-Clock::sleep(const Clock& reltime)
+Clock::sleep_for(const Clock& reltime)
 {
   Sleep(ClockWin32::toMsec(reltime.getNSec()));
 }

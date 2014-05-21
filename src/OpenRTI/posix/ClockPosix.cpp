@@ -103,7 +103,7 @@ Clock::now()
 }
 
 void
-Clock::sleep(const Clock& reltime)
+Clock::sleep_for(const Clock& reltime)
 {
 #if defined(HAVE_POSIX_TIMERS) && !defined(ANDROID) && !defined(__hpux)
   struct timespec ts = ClockPosix::toTimespec(reltime.getNSec());
@@ -113,7 +113,7 @@ Clock::sleep(const Clock& reltime)
   clock_nanosleep(CLOCK_REALTIME, 0, &ts, 0);
 #endif
 #else
-  if (reltime == Clock::final())
+  if (reltime == Clock::max())
     poll(0, 0, -1);
   else
     poll(0, 0, ClockPosix::toIntMSec(reltime.getNSec()));

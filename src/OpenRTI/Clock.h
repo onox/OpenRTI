@@ -21,6 +21,7 @@
 #define OpenRTI_Clock_h
 
 #include <iomanip>
+#include <limits>
 #include <ostream>
 #include <sstream>
 #include "Export.h"
@@ -38,12 +39,12 @@ public:
 
   static Clock now();
 
-  static void sleep(const Clock& reltime);
+  static void sleep_for(const Clock& reltime);
 
-  static Clock initial()
+  static Clock zero()
   { return Clock(0); }
-  static Clock final()
-  { return Clock(infinity()); }
+  static Clock max()
+  { return Clock(std::numeric_limits<uint64_t>::max()); }
 
   static Clock fromSeconds(int seconds)
   { return Clock(seconds*uint64_t(1000000000)); }
@@ -88,9 +89,6 @@ private:
     _nsec(nsecs)
   { }
 
-  static uint64_t infinity()
-  { return ~uint64_t(0); }
-
   // In the worst case this is nanoseconds since epoch.
   // In the usual case this is the simulation time in nanoseconds for the logical time
   // and the monotonic posix clock for timeouts.
@@ -115,9 +113,9 @@ Clock addSecondsSaturate(const Clock& clock, const double& seconds)
 {
   double nsecs = 1e9*seconds;
   if (nsecs <= -double(clock.getNSec()))
-    return Clock::initial();
-  else if (double((Clock::final() - clock).getNSec()) <= nsecs)
-    return Clock::final();
+    return Clock::zero();
+  else if (double((Clock::max() - clock).getNSec()) <= nsecs)
+    return Clock::max();
   else
     return clock + Clock::fromNSec(uint64_t(nsecs));
 }
