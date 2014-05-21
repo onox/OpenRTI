@@ -31,6 +31,9 @@ public:
   ~ScopeLock(void)
   { mMutex.unlock(); }
 
+  Mutex* mutex() const
+  { return &mMutex; }
+
 private:
   ScopeLock(void);
   ScopeLock(const ScopeLock&);
