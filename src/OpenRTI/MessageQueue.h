@@ -76,7 +76,7 @@ public:
     ScopeLock scopeLock(_mutex);
     while (_messageList.empty()) {
       // We must not rely on the timeout return before checking the predicate.
-      bool signaledOrSpurious = _condition.wait(_mutex, timeout);
+      bool signaledOrSpurious = _condition.wait_until(scopeLock, timeout);
       if (!_messageList.empty())
         break;
       if (_isClosed)
@@ -105,13 +105,13 @@ protected:
     bool needSignal = _messageList.empty();
     _messageList.push_back(message);
     if (needSignal)
-      _condition.signal();
+      _condition.notify_one();
   }
   virtual void close()
   {
     ScopeLock scopeLock(_mutex);
     _isClosed = true;
-    _condition.signal();
+    _condition.notify_one();
   }
 
 private:

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -25,17 +25,17 @@
 namespace OpenRTI {
 
 class Clock;
-class Mutex;
+class ScopeLock;
 
 class OPENRTI_API Condition {
 public:
   Condition(void);
   ~Condition(void);
 
-  void signal(void);
-  void broadcast(void);
-  void wait(Mutex& mutex);
-  bool wait(Mutex& mutex, const Clock& timeout);
+  void notify_one(void);
+  void notify_all(void);
+  void wait(ScopeLock& scopeLock);
+  bool wait_until(ScopeLock& scopeLock, const Clock& abstime);
 
 private:
   Condition(const Condition&);

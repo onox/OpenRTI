@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -159,12 +159,12 @@ public:
     ConditionTest testThread(ping, pong);
     testThread.start();
 
-    ping.signal();
+    ping.notify_one();
     pong.wait();
 
     Clock start = Clock::now();
     for (unsigned i = 0; i < 10000; ++i) {
-      ping.signal();
+      ping.notify_one();
       pong.wait();
     }
     Clock stop = Clock::now();
@@ -179,26 +179,26 @@ protected:
   virtual void run()
   {
     _ping.wait();
-    _pong.signal();
+    _pong.notify_one();
     for (unsigned i = 0; i < 10000; ++i) {
       _ping.wait();
-      _pong.signal();
+      _pong.notify_one();
     }
   }
 
   struct ConditionData {
     ConditionData() : _signaled(false) {}
-    void signal()
+    void notify_one()
     {
       ScopeLock scopeLock(_mutex);
       _signaled = true;
-      _condition.signal();
+      _condition.notify_one();
     }
     void wait()
     {
       ScopeLock scopeLock(_mutex);
       while (!_signaled)
-        _condition.wait(_mutex);
+        _condition.wait(scopeLock);
       _signaled = false;
     }
 

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -40,7 +40,7 @@ ThreadServer::exec()
   ScopeLock scopeLock(_mutex);
   while (!getDone()) {
     if (_queue.empty()) {
-      _condition.wait(_mutex);
+      _condition.wait(scopeLock);
     } else {
       // Get pending messages.
       _Queue queue;
@@ -70,7 +70,7 @@ ThreadServer::_postMessage(const _MessageConnectHandlePair& messageConnectHandle
   bool empty = _queue.empty();
   _queue.push_back(messageConnectHandlePair, _pool);
   if (empty)
-    _condition.signal();
+    _condition.notify_one();
 }
 
 void
@@ -80,7 +80,7 @@ ThreadServer::_postOperation(const SharedPtr<_Operation>& operation)
   bool empty = _queue.empty();
   _queue.push_back(operation, _pool);
   if (empty)
-    _condition.signal();
+    _condition.notify_one();
 }
 
 } // namespace OpenRTI

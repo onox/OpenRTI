@@ -162,7 +162,7 @@ AbstractServer::_ConnectOperation::operator()(AbstractServer& serverLoop)
 
   ScopeLock scopeLock(_mutex);
   _done = true;
-  _condition.signal();
+  _condition.notify_one();
 }
 
 void
@@ -170,7 +170,7 @@ AbstractServer::_ConnectOperation::wait()
 {
   ScopeLock scopeLock(_mutex);
   while (!_done)
-    _condition.wait(_mutex);
+    _condition.wait(scopeLock);
 }
 
 const ConnectHandle&

@@ -180,7 +180,7 @@ public:
       if (_numThreads == ++_numWaitingThreads) {
         _resetAndSignal();
       } else {
-        _wait();
+        _wait(scopeLock);
       }
     }
     bool removeThread()
@@ -201,7 +201,7 @@ public:
         _resetAndSignal();
         return _checkUniqueSuccessAndClear();
       } else {
-        _wait();
+        _wait(scopeLock);
         return true;
       }
     }
@@ -213,7 +213,7 @@ public:
         _resetAndSignal();
         return _checkUniqueSuccessAndClear();
       } else {
-        _wait();
+        _wait(scopeLock);
         return true;
       }
     }
@@ -223,13 +223,13 @@ public:
     {
       _numWaitingThreads = 0;
       ++_serial;
-      _condition.broadcast();
+      _condition.notify_all();
     }
-    void _wait()
+    void _wait(ScopeLock& scopeLock)
     {
       unsigned serial = _serial;
       do {
-        _condition.wait(_mutex);
+        _condition.wait(scopeLock);
       } while (serial == _serial);
     }
     bool _checkUniqueSuccessAndClear()

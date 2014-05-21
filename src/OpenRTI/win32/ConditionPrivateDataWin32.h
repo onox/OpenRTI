@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -47,17 +47,17 @@ struct Condition::PrivateData {
   {
   }
 
-  void signal(void)
+  void notify_one(void)
   {
     WakeConditionVariable(&_condition);
   }
 
-  void broadcast(void)
+  void notify_all(void)
   {
     WakeAllConditionVariable(&_condition);
   }
 
-  bool wait(Mutex::PrivateData& mutexPrivateData, DWORD msec)
+  bool wait_for(Mutex::PrivateData& mutexPrivateData, DWORD msec)
   {
     return SleepConditionVariableCS(&_condition, &mutexPrivateData._criticalSection, msec);
   }
@@ -79,7 +79,7 @@ struct Condition::PrivateData {
     _mutex.unlock();
   }
 
-  void signal(void)
+  void notify_one(void)
   {
     _mutex.lock();
     if (!_waiters.empty())
@@ -87,7 +87,7 @@ struct Condition::PrivateData {
     _mutex.unlock();
   }
 
-  void broadcast(void)
+  void notify_all(void)
   {
     _mutex.lock();
     for (std::list<HANDLE>::iterator i = _waiters.begin(); i != _waiters.end(); ++i)
@@ -95,7 +95,7 @@ struct Condition::PrivateData {
     _mutex.unlock();
   }
 
-  bool wait(Mutex::PrivateData& externalMutex, DWORD msec)
+  bool wait_for(Mutex::PrivateData& externalMutex, DWORD msec)
   {
     _mutex.lock();
     if (_pool.empty())

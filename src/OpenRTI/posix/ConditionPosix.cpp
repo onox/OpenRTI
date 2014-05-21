@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -20,7 +20,7 @@
 #include "Condition.h"
 
 #include "Clock.h"
-#include "Mutex.h"
+#include "ScopeLock.h"
 #include "MutexPrivateDataPosix.h"
 #include "ConditionPrivateDataPosix.h"
 
@@ -38,27 +38,27 @@ Condition::~Condition(void)
 }
 
 void
-Condition::signal(void)
+Condition::notify_one(void)
 {
-  _privateData->signal();
+  _privateData->notify_one();
 }
 
 void
-Condition::broadcast(void)
+Condition::notify_all(void)
 {
-  _privateData->broadcast();
+  _privateData->notify_all();
 }
 
 void
-Condition::wait(Mutex& mutex)
+Condition::wait(ScopeLock& scopeLock)
 {
-  _privateData->wait(mutex._privateData->_mutex);
+  _privateData->wait(scopeLock.mutex()->_privateData->_mutex);
 }
 
 bool
-Condition::wait(Mutex& mutex, const Clock& timeout)
+Condition::wait_until(ScopeLock& scopeLock, const Clock& timeout)
 {
-  return _privateData->wait(mutex._privateData->_mutex, timeout);
+  return _privateData->wait_until(scopeLock.mutex()->_privateData->_mutex, timeout);
 }
 
 } // namespace OpenRTI

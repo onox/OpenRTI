@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -21,7 +21,7 @@
 
 #include "Clock.h"
 #include "ClockWin32.h"
-#include "Mutex.h"
+#include "ScopeLock.h"
 #include "MutexPrivateDataWin32.h"
 #include "ConditionPrivateDataWin32.h"
 
@@ -39,31 +39,31 @@ Condition::~Condition(void)
 }
 
 void
-Condition::signal(void)
+Condition::notify_one(void)
 {
-  _privateData->signal();
+  _privateData->notify_one();
 }
 
 void
-Condition::broadcast(void)
+Condition::notify_all(void)
 {
-  _privateData->broadcast();
+  _privateData->notify_all();
 }
 
 void
-Condition::wait(Mutex& mutex)
+Condition::wait(ScopeLock& scopeLock)
 {
-  _privateData->wait(*mutex._privateData, INFINITE);
+  _privateData->wait_for(*scopeLock.mutex()->_privateData, INFINITE);
 }
 
 bool
-Condition::wait(Mutex& mutex, const Clock& absclock)
+Condition::wait_until(ScopeLock& scopeLock, const Clock& absclock)
 {
   Clock now = Clock::now();
   if (absclock < now)
     return false;
   DWORD msec = ClockWin32::toMsec((absclock - now).getNSec());
-  return _privateData->wait(*mutex._privateData, msec);
+  return _privateData->wait_for(*scopeLock.mutex()->_privateData, msec);
 }
 
 } // namespace OpenRTI

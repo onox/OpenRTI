@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -61,14 +61,14 @@ struct OPENRTI_LOCAL Condition::PrivateData {
       throw ResourceError("Could not destroy Condition!");
   }
 
-  void signal(void)
+  void notify_one(void)
   {
     int err = pthread_cond_signal(&_condition);
     if (err != 0)
       throw ResourceError("Could not signal Condition!");
   }
 
-  void broadcast(void)
+  void notify_all(void)
   {
     int err = pthread_cond_broadcast(&_condition);
     if (err != 0)
@@ -82,7 +82,7 @@ struct OPENRTI_LOCAL Condition::PrivateData {
       throw ResourceError("Error waiting for Condition!");
   }
 
-  bool wait(pthread_mutex_t& mutex, const Clock& absclock)
+  bool wait_until(pthread_mutex_t& mutex, const Clock& absclock)
   {
     struct timespec abstime = ClockPosix::toTimespec(absclock.getNSec());
     int evalue = pthread_cond_timedwait(&_condition, &mutex, &abstime);
