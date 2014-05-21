@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2014 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -115,7 +115,7 @@ protected:
   }
 
 private:
-  Mutex _mutex;
+  mutable Mutex _mutex;
   Condition _condition;
   PooledMessageList _messageList;
   bool _isClosed;

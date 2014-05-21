@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -26,7 +26,7 @@ namespace OpenRTI {
 
 class ScopeLock {
 public:
-  ScopeLock(const Mutex& mutex) : mMutex(mutex)
+  ScopeLock(Mutex& mutex) : mMutex(mutex)
   { mMutex.lock(); }
   ~ScopeLock(void)
   { mMutex.unlock(); }
@@ -36,7 +36,7 @@ private:
   ScopeLock(const ScopeLock&);
   ScopeLock& operator=(const ScopeLock&);
 
-  const Mutex& mMutex;
+  Mutex& mMutex;
 };
 
 } // namespace OpenRTI

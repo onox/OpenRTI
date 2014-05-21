@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -41,7 +41,7 @@ private:
   ThreadServer(const ThreadServer&);
   ThreadServer& operator=(const ThreadServer&);
 
-  Mutex _mutex;
+  mutable Mutex _mutex;
   Condition _condition;
   _Queue _queue;
   _MessageConnectHandlePairList _pool;

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -32,8 +32,8 @@ public:
   Mutex(void);
   ~Mutex(void);
 
-  void lock(void) const;
-  void unlock(void) const;
+  void lock(void);
+  void unlock(void);
 
 private:
   Mutex(const Mutex&);

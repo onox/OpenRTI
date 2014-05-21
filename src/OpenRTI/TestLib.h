@@ -242,7 +242,7 @@ public:
       return success;
     }
 
-    Mutex _mutex;
+    mutable Mutex _mutex;
     Condition _condition;
 
     unsigned _numThreads;
@@ -292,7 +292,7 @@ public:
     }
 
   private:
-    Mutex _mutex;
+    mutable Mutex _mutex;
     std::map<unsigned, unsigned> _lbtsMap;
   };
 

@@ -45,7 +45,7 @@ public:
   static SingletonPtr<_Registry> _instance;
 
 private:
-  Mutex _mutex;
+  mutable Mutex _mutex;
   UrlServerMap _urlServerMap;
 };
 
