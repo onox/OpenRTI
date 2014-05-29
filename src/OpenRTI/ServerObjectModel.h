@@ -68,7 +68,7 @@ public:
 
   typedef IntrusiveList<ObjectClass, 0> ChildObjectClassList;
   typedef std::list<ObjectInstance*> ObjectInstanceList;
-  typedef std::list<InteractionClass*> InteractionClassList;
+  typedef IntrusiveList<InteractionClass, 0> ChildInteractionClassList;
   typedef std::list<Federate*> FederateList;
 
 
@@ -550,25 +550,25 @@ public:
     ConnectHandle _ownerConnectHandle;
   };
 
-  struct OPENRTI_LOCAL InteractionClass : public PublishSubscribe<InteractionClassHandle> {
+  struct OPENRTI_LOCAL InteractionClass : public PublishSubscribe<InteractionClassHandle>, public ChildInteractionClassList::Hook {
     InteractionClass(const std::string& name, const InteractionClassHandle& handle, InteractionClass* parentInteractionClass) :
       PublishSubscribe<InteractionClassHandle>(name, handle),
       _parentInteractionClass(parentInteractionClass)
     {
       if (_parentInteractionClass)
-        _childInteractionClassListIterator = _parentInteractionClass->_childInteractionClassList.insert(_parentInteractionClass->_childInteractionClassList.begin(), this);
+        _parentInteractionClass->_childInteractionClassList.push_front(*this);
     }
     ~InteractionClass()
     {
       if (_parentInteractionClass)
-        _parentInteractionClass->_childInteractionClassList.erase(_childInteractionClassListIterator);
+        _parentInteractionClass->_childInteractionClassList.erase(*this);
     }
 
     /// Get the parent InteractionClass
     InteractionClass* getParentInteractionClass() const
     { return _parentInteractionClass; }
 
-    const InteractionClassList& getChildInteractionClassList() const
+    const ChildInteractionClassList& getChildInteractionClassList() const
     { return _childInteractionClassList; }
 
     void updateCumulativeSubscription(const ConnectHandle& connectHandle)
@@ -586,8 +586,8 @@ public:
       if (!updateCumulativeSubscribedConnectHandleSet(connectHandle, subscribe))
         return;
       // Update the receiving connect handle set
-      for (InteractionClassList::const_iterator i = _childInteractionClassList.begin(); i != _childInteractionClassList.end(); ++i) {
-        (*i)->_updateCumulativeSubscription(connectHandle, subscribe);
+      for (ChildInteractionClassList::iterator i = _childInteractionClassList.begin(); i != _childInteractionClassList.end(); ++i) {
+        i->_updateCumulativeSubscription(connectHandle, subscribe);
       }
     }
 
@@ -596,9 +596,7 @@ public:
     InteractionClass* const _parentInteractionClass;
 
     /// The list of child interaction classes
-    InteractionClassList _childInteractionClassList;
-    /// The iterator into the parents _childInteractionClassList for O(1) removal
-    InteractionClassList::iterator _childInteractionClassListIterator;
+    ChildInteractionClassList _childInteractionClassList;
   };
 
 
