@@ -66,7 +66,7 @@ public:
   typedef std::map<FederateHandle, SharedPtr<Federate> > FederateHandleFederateMap;
   typedef std::map<ObjectInstanceHandle, SharedPtr<ObjectInstance> > ObjectInstanceHandleObjectInstanceMap;
 
-  typedef std::list<ObjectClass*> ObjectClassList;
+  typedef IntrusiveList<ObjectClass, 0> ChildObjectClassList;
   typedef std::list<ObjectInstance*> ObjectInstanceList;
   typedef std::list<InteractionClass*> InteractionClassList;
   typedef std::list<Federate*> FederateList;
@@ -357,18 +357,18 @@ public:
 
   };
 
-  struct OPENRTI_LOCAL ObjectClass : public NameHandlePair<ObjectClassHandle> {
+  struct OPENRTI_LOCAL ObjectClass : public NameHandlePair<ObjectClassHandle>, public ChildObjectClassList::Hook {
     ObjectClass(const std::string& name, const ObjectClassHandle& handle, ObjectClass* parentObjectClass) :
       NameHandlePair<ObjectClassHandle>(name, handle),
       _parentObjectClass(parentObjectClass)
     {
       if (_parentObjectClass)
-        _childObjectClassListIterator = _parentObjectClass->_childObjectClassList.insert(_parentObjectClass->_childObjectClassList.begin(), this);
+        _parentObjectClass->_childObjectClassList.push_front(*this);
     }
     ~ObjectClass()
     {
       if (_parentObjectClass)
-        _parentObjectClass->_childObjectClassList.erase(_childObjectClassListIterator);
+        _parentObjectClass->_childObjectClassList.erase(*this);
     }
 
     /// Get the parent ObjectClass
@@ -391,13 +391,13 @@ public:
         return;
       _objectClassAttributeVector[attributeHandle.getHandle()] = objectClassAttribute;
 
-      for (ObjectClassList::const_iterator i = _childObjectClassList.begin(); i != _childObjectClassList.end(); ++i) {
+      for (ChildObjectClassList::iterator i = _childObjectClassList.begin(); i != _childObjectClassList.end(); ++i) {
         // FIXME share these among object classes???
         SharedPtr<ObjectClassAttribute> attribute;
         attribute = new ObjectClassAttribute(objectClassAttribute->getName(), objectClassAttribute->getHandle());
         // FIXME, this???
         // <field name="DimensionHandleSet" type="DimensionHandleSet"/>
-        (*i)->insertObjectClassAttribute(attribute);
+        i->insertObjectClassAttribute(attribute);
       }
     }
     ObjectClassAttribute* getAttribute(const AttributeHandle& attributeHandle) const
@@ -424,7 +424,7 @@ public:
         (*i)->removeConnect(connectHandle);
     }
 
-    const ObjectClassList& getChildObjectClassList() const
+    const ChildObjectClassList& getChildObjectClassList() const
     { return _childObjectClassList; }
 
     /// since we might end in different depths for different attributes, this is done per attribute
@@ -447,8 +447,8 @@ public:
       if (!objectClassAttribute->updateCumulativeSubscribedConnectHandleSet(connectHandle, subscribe))
         return;
       // Update the receiving connect handle set
-      for (ObjectClassList::const_iterator i = _childObjectClassList.begin(); i != _childObjectClassList.end(); ++i) {
-        (*i)->_updateCumulativeSubscription(connectHandle, attributeHandle, subscribe, objectInstanceList);
+      for (ChildObjectClassList::iterator i = _childObjectClassList.begin(); i != _childObjectClassList.end(); ++i) {
+        i->_updateCumulativeSubscription(connectHandle, attributeHandle, subscribe, objectInstanceList);
       }
       /// FIXME: need to walk the objects and see how the routing for the object changes
       /// FIXME: store the object instances that are yet unknown to a connect and store these to propagate them into the connect
@@ -484,9 +484,7 @@ public:
     ObjectClass* const _parentObjectClass;
 
     /// The list of child object classes
-    ObjectClassList _childObjectClassList;
-    /// The iterator into the parents _childObjectClassList for O(1) removal
-    ObjectClassList::iterator _childObjectClassListIterator;
+    ChildObjectClassList _childObjectClassList;
 
     /// The set of class attributes of this object class type
     ObjectClassAttributeVector _objectClassAttributeVector;
