@@ -70,7 +70,7 @@ public:
   typedef IntrusiveList<ObjectInstance, 0> ObjectClassInstanceList;
   typedef std::list<ObjectInstance*> ObjectInstanceList;
   typedef IntrusiveList<InteractionClass, 0> ChildInteractionClassList;
-  typedef std::list<Federate*> FederateList;
+  typedef IntrusiveList<Federate, 0> ConnectFederateList;
 
 
   ServerObjectModel(const std::string& name, const FederationHandle& handle) :
@@ -1092,7 +1092,7 @@ public:
 
 
   // The FederateHandle <-> federate data mappings
-  struct OPENRTI_LOCAL Federate : public Referenced {
+  struct OPENRTI_LOCAL Federate : public Referenced, public ConnectFederateList::Hook {
     Federate(const FederateHandleFederateMap::iterator& federateHandleFederateMapIterator,
              const StringSet::iterator& stringSetIterator) :
       _federateHandleFederateMapIterator(federateHandleFederateMapIterator),
@@ -1108,7 +1108,6 @@ public:
     const std::string& getName() const { return *_stringSetIterator; }
     std::string _federateType;
     ConnectData* _connect;
-    FederateList::iterator _federateListIterator;
     ConnectHandle getConnectHandle() const
     {
       if (!_connect)
@@ -1156,7 +1155,7 @@ public:
     SharedPtr<AbstractMessageSender> _messageSender;
     const ConnectHandle& getHandle() const { return _connectHandleConnectDataMapIterator->first; }
     std::string _name;
-    FederateList _federateList;
+    ConnectFederateList _federateList;
     bool _permitTimeRegulation;
     void send(const SharedPtr<const AbstractMessage>& message)
     {
@@ -1173,7 +1172,7 @@ public:
         return;
       OpenRTIAssert(connect == this);
       // Remove from connects
-      connect->_federateList.erase(federate->_federateListIterator);
+      connect->_federateList.erase(*federate);
       federate->_connect = 0;
     }
 

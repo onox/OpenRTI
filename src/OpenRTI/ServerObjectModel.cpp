@@ -384,7 +384,7 @@ ServerObjectModel::insertFederate(const ConnectHandle& connectHandle, const std:
   ConnectHandleConnectDataMap::iterator j = _connectHandleConnectDataMap.find(connectHandle);
   if (j != _connectHandleConnectDataMap.end()) {
     i->second->_connect = j->second.get();
-    i->second->_federateListIterator = j->second->_federateList.insert(j->second->_federateList.begin(), i->second.get());
+    j->second->_federateList.push_front(*i->second);
   } else {
     i->second->_resignPending = true;
   }

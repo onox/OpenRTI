@@ -363,8 +363,7 @@ public:
 
     FederateHandle federateHandle = message->getFederateHandle();
     OpenRTIAssert(connect->_federateList.size() == 1);
-    OpenRTIAssert(connect->_federateList.front());
-    OpenRTIAssert(connect->_federateList.front()->getHandle() == federateHandle);
+    OpenRTIAssert(connect->_federateList.front().getHandle() == federateHandle);
 
     // Since this server node is executing the resign setting this here should
     // be sufficient.
@@ -541,12 +540,12 @@ public:
           continue;
         // Build the intersection of the federate handles in the message and the ones in the connect.
         FederateHandleVector federateHandleVector;
-        federateHandleVector.reserve(j->second->_federateList.size());
-        for (FederateList::const_iterator k = j->second->_federateList.begin();
+        // federateHandleVector.reserve(j->second->_federateList.size());
+        for (ConnectFederateList::const_iterator k = j->second->_federateList.begin();
              k != j->second->_federateList.end(); ++k) {
-          if (i->second._waitFederates.find((*k)->getHandle()) == i->second._waitFederates.end())
+          if (i->second._waitFederates.find(k->getHandle()) == i->second._waitFederates.end())
             continue;
-          federateHandleVector.push_back((*k)->getHandle());
+          federateHandleVector.push_back(k->getHandle());
         }
         if (federateHandleVector.empty())
           continue;
@@ -1836,8 +1835,8 @@ public:
 
     ConnectHandleConnectDataMap::iterator i = _connectHandleConnectDataMap.find(connectHandle);
     if (i != _connectHandleConnectDataMap.end()) {
-      for (FederateList::iterator j = i->second->_federateList.begin(); j != i->second->_federateList.end();) {
-        Federate* federate = *(j++);
+      for (ConnectFederateList::iterator j = i->second->_federateList.begin(); j != i->second->_federateList.end();) {
+        Federate* federate = &*(j++);
         i->second->eraseFederate(federate);
         Log(ServerFederate, Info) << getServerPath() << ": Resigning federate " << federate->getHandle()
                                   << " because of closed connection!" << std::endl;
