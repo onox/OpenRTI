@@ -1819,9 +1819,9 @@ public:
     // Release all region references
     {
       SharedPtr<EraseRegionMessage> eraseRegionMessage;
-      for (RegionList::iterator j = connect->_ownedRegions.begin();
+      for (ConnectOwnedRegionList::iterator j = connect->_ownedRegions.begin();
            j != connect->_ownedRegions.end(); ++j) {
-        RegionHandle regionHandle = (*j)->getHandle();
+        RegionHandle regionHandle = j->getHandle();
         if (!eraseRegionMessage.valid()) {
           eraseRegionMessage = new EraseRegionMessage;
           eraseRegionMessage->setFederationHandle(getHandle());

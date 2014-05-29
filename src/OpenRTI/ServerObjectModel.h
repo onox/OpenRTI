@@ -32,6 +32,7 @@
 #include "FOMModuleSet.h"
 #include "Handle.h"
 #include "HandleAllocator.h"
+#include "IntrusiveList.h"
 #include "Message.h"
 #include "NameHandlePair.h"
 #include "Referenced.h"
@@ -862,14 +863,14 @@ public:
 
   struct Region;
   typedef std::map<RegionHandle, SharedPtr<Region> > RegionHandleRegionMap;
-  typedef std::list<Region*> RegionList;
+  typedef IntrusiveList<Region, 0> ConnectOwnedRegionList;
 
   Region* getRegion(const RegionHandle& regionHandle);
   Region* insertRegion(const RegionHandle& regionHandle);
   void eraseRegion(Region* region);
   void eraseRegion(const RegionHandle& regionHandle);
 
-  struct OPENRTI_LOCAL Region : public Referenced {
+  struct OPENRTI_LOCAL Region : public Referenced, public ConnectOwnedRegionList::Hook {
     Region(const RegionHandleRegionMap::iterator& regionHandleRegionMapIterator) :
       _regionHandleRegionMapIterator(regionHandleRegionMapIterator),
       _connect(0)
@@ -884,14 +885,13 @@ public:
     void setConnect(ConnectData* connect)
     { _connect = connect; }
 
-    void insertToRegionList(RegionList& regionList)
+    void insertToRegionList(ConnectOwnedRegionList& regionList)
     {
-      _regionListIterator = regionList.insert(regionList.begin(), this);
+      regionList.push_front(*this);
     }
-    void eraseFromRegionList(RegionList& regionList)
+    void eraseFromRegionList(ConnectOwnedRegionList& regionList)
     {
-      regionList.erase(_regionListIterator);
-      _regionListIterator = regionList.end();
+      regionList.erase(*this);
     }
 
     RegionValue _regionValue;
@@ -900,8 +900,6 @@ public:
   private:
     const RegionHandleRegionMap::iterator _regionHandleRegionMapIterator;
     ConnectData* _connect;
-
-    RegionList::iterator _regionListIterator;
 
     // originating connect???
     // recieving connectset???
@@ -1210,7 +1208,7 @@ public:
     ObjectInstanceConnectList _objectInstanceConnectList;
 
     /// List of regions that are owned by this connect
-    RegionList _ownedRegions;
+    ConnectOwnedRegionList _ownedRegions;
   };
   ConnectHandle _parentServerConnectHandle;
   ConnectHandleConnectDataMap _connectHandleConnectDataMap;
