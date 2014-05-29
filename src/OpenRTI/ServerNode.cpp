@@ -1615,9 +1615,9 @@ public:
          i != message->getAttributeHandles().end(); ++i) {
       // FIXME: improove that, less allocations, Probably use std::list of connect handles, insert, sort, unique, pool of handle elements
       ConnectHandleSet connectHandleSet;
-      for (ObjectInstanceList::const_iterator l = objectClass->getObjectInstanceList().begin();
+      for (ObjectClassInstanceList::const_iterator l = objectClass->getObjectInstanceList().begin();
            l != objectClass->getObjectInstanceList().end(); ++l) {
-        const ObjectAttribute* objectAttribute = (*l)->getAttribute(*i);
+        const ObjectAttribute* objectAttribute = l->getAttribute(*i);
         if (!objectAttribute) // FIXME this is more an error ...
           continue;
         // The connect handle that owns this attribute

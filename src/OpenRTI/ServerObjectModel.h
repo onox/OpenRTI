@@ -67,6 +67,7 @@ public:
   typedef std::map<ObjectInstanceHandle, SharedPtr<ObjectInstance> > ObjectInstanceHandleObjectInstanceMap;
 
   typedef IntrusiveList<ObjectClass, 0> ChildObjectClassList;
+  typedef IntrusiveList<ObjectInstance, 0> ObjectClassInstanceList;
   typedef std::list<ObjectInstance*> ObjectInstanceList;
   typedef IntrusiveList<InteractionClass, 0> ChildInteractionClassList;
   typedef std::list<Federate*> FederateList;
@@ -410,7 +411,7 @@ public:
     { return getAttribute(AttributeHandle(0)); }
 
     /// Get the set of object instances of this object class type
-    const ObjectInstanceList& getObjectInstanceList() const
+    const ObjectClassInstanceList& getObjectInstanceList() const
     { return _objectInstanceList; }
 
     /// Manipulation routines
@@ -453,8 +454,8 @@ public:
       /// FIXME: need to walk the objects and see how the routing for the object changes
       /// FIXME: store the object instances that are yet unknown to a connect and store these to propagate them into the connect
       /// Hmm, here is the first good use case for a visitor
-      for (ObjectInstanceList::const_iterator i = _objectInstanceList.begin(); i != _objectInstanceList.end(); ++i) {
-        ObjectAttribute* objectAttribute = (*i)->getAttribute(attributeHandle);
+      for (ObjectClassInstanceList::iterator i = _objectInstanceList.begin(); i != _objectInstanceList.end(); ++i) {
+        ObjectAttribute* objectAttribute = i->getAttribute(attributeHandle);
         if (!objectAttribute) // FIXME: is this an error??
           continue;
 
@@ -469,7 +470,7 @@ public:
 
           // Note that we need to insert this object instance into this connect
           if (attributeHandle == AttributeHandle(0))
-            objectInstanceList.push_back(*i);
+            objectInstanceList.push_back(&*i);
 
         } else {
           // Erase the connect handle from the recieving connects
@@ -493,7 +494,7 @@ public:
     /// Note that the object class does not 'own' the instances, thus
     /// this ObjectInstanceList only stores plain pointers instead of references
     /// The federation owns the objects and consequently carries references
-    ObjectInstanceList _objectInstanceList;
+    ObjectClassInstanceList _objectInstanceList;
   };
 
   struct OPENRTI_LOCAL ObjectAttribute : public Referenced {
@@ -966,7 +967,7 @@ public:
 
   void eraseObjectInstanceHandle(ObjectInstance* objectInstance);
 
-  struct OPENRTI_LOCAL ObjectInstance : public NameHandlePair<ObjectInstanceHandle> {
+  struct OPENRTI_LOCAL ObjectInstance : public NameHandlePair<ObjectInstanceHandle>, public ObjectClassInstanceList::Hook {
     ObjectInstance(const ObjectInstanceHandleObjectInstanceMap::iterator& objectInstanceHandleObjectInstanceMapIterator,
                    const StringSet::iterator& stringSetIterator) :
       NameHandlePair<ObjectInstanceHandle>(*stringSetIterator, objectInstanceHandleObjectInstanceMapIterator->first),
@@ -1038,15 +1039,14 @@ public:
     }
 
     // Inserts itself into the list that is usually held in the object class knowing all the object instances
-    void insertToObjectClassList(ObjectInstanceList& objectInstanceList)
+    void insertToObjectClassList(ObjectClassInstanceList& objectInstanceList)
     {
-      _objectInstanceListIterator = objectInstanceList.insert(objectInstanceList.begin(), this);
+      objectInstanceList.push_front(*this);
     }
     // Removes itself from the list that is usually held in the object class knowing all the object instances
-    void eraseFromObjectClassList(ObjectInstanceList& objectInstanceList)
+    void eraseFromObjectClassList(ObjectClassInstanceList& objectInstanceList)
     {
-      objectInstanceList.erase(_objectInstanceListIterator);
-      _objectInstanceListIterator = objectInstanceList.end();
+      objectInstanceList.erase(*this);
     }
 
     ObjectInstanceConnect* referenceObjectInstance(ConnectData* connect);
@@ -1061,10 +1061,6 @@ public:
     ConnectHandleObjectInstanceConnectMap _connectHandleObjectInstanceConnectMap;
 
   private:
-    // We store the position in the list of objects of this type in the object class,
-    // this way erasing an object is also O(1).
-    ObjectInstanceList::iterator _objectInstanceListIterator;
-
     /// The pointer to the object class this object is an instance of, can be zero
     ObjectClass* _objectClass;
 
