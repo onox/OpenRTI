@@ -58,7 +58,7 @@ struct Condition::PrivateData {
 
   bool wait(Mutex::PrivateData& mutexPrivateData, DWORD msec)
   {
-    return SleepConditionVariableCS(&_condition, &mutexPrivateData._mutex, msec);
+    return SleepConditionVariableCS(&_condition, &mutexPrivateData._criticalSection, msec);
   }
 
   CONDITION_VARIABLE _condition;
