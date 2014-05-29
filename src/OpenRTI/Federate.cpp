@@ -180,14 +180,21 @@ Federate::InteractionClass::insertParameter(const FOMParameter& fomParameter)
   _nameParameterHandleMap[_fqName + "." + fomParameter.getName()] = parameterHandle;
 
   parameter->setName(fomParameter.getName());
+
+  for (IntrusiveList<InteractionClass>::iterator i = _childInteractionClassList.begin();
+       i != _childInteractionClassList.end(); ++i) {
+    i->insertParameter(fomParameter);
+  }
 }
 
 void
-Federate::InteractionClass::insertDerivedParameters(const InteractionClass& parentInteractionClass)
+Federate::InteractionClass::insertChildInteractionClass(InteractionClass& interactionClass)
 {
   // Since a parameter only contains a name we can share the parameters of the base interaction class
-  _parameterVector = parentInteractionClass._parameterVector;
-  _nameParameterHandleMap = parentInteractionClass._nameParameterHandleMap;
+  interactionClass._parameterVector = _parameterVector;
+  interactionClass._nameParameterHandleMap = _nameParameterHandleMap;
+
+  _childInteractionClassList.push_back(interactionClass);
 }
 
 Federate::ObjectClass::ObjectClass() :
@@ -263,21 +270,28 @@ Federate::ObjectClass::insertAttribute(const FOMAttribute& fomAttribute)
   attribute->setOrderType(fomAttribute.getOrderType());
   attribute->setTransportationType(fomAttribute.getTransportationType());
   attribute->setDimensionHandleSet(fomAttribute.getDimensionHandleSet());
+
+  for (IntrusiveList<ObjectClass>::iterator i = _childObjectClassList.begin();
+       i != _childObjectClassList.end(); ++i) {
+    i->insertAttribute(fomAttribute);
+  }
 }
 
 void
-Federate::ObjectClass::insertDerivedAttributes(const ObjectClass& parentObjectClass)
+Federate::ObjectClass::insertChildObjectClass(ObjectClass& objectClass)
 {
-  _attributeVector.reserve(parentObjectClass._attributeVector.size());
-  for (AttributeVector::const_iterator i = parentObjectClass._attributeVector.begin();
-       i != parentObjectClass._attributeVector.end(); ++i) {
+  objectClass._attributeVector.reserve(_attributeVector.size());
+  for (AttributeVector::const_iterator i = _attributeVector.begin();
+       i != _attributeVector.end(); ++i) {
     if (i->valid()) {
-      _attributeVector.push_back(new Attribute(**i));
+      objectClass._attributeVector.push_back(new Attribute(**i));
     } else {
-      _attributeVector.push_back(0);
+      objectClass._attributeVector.push_back(0);
     }
   }
-  _nameAttributeHandleMap = parentObjectClass._nameAttributeHandleMap;
+  objectClass._nameAttributeHandleMap = _nameAttributeHandleMap;
+
+  _childObjectClassList.push_back(objectClass);
 }
 
 bool
@@ -868,35 +882,13 @@ Federate::insertInteractionClass(const FOMInteractionClass& module, bool artific
     if (parentHandle.valid()) {
       InteractionClass* parentClass = getInteractionClass(parentHandle);
       OpenRTIAssert(parentClass);
-      interactionClass->insertDerivedParameters(*parentClass);
+      parentClass->insertChildInteractionClass(*interactionClass);
     }
   }
-  for (std::size_t i = index; i < _interactionClassVector.size(); ++i) {
-    InteractionClass* interactionClass = getInteractionClass(InteractionClassHandle(i));
-    if (!interactionClass)
-      continue;
-    if (!isInteractionClassDerivedFrom(module.getInteractionClassHandle(), InteractionClassHandle(i)))
-      continue;
-    for (FOMParameterList::const_iterator i = module.getParameterList().begin();
-         i != module.getParameterList().end(); ++i) {
-      interactionClass->insertParameter(*i);
-    }
+  for (FOMParameterList::const_iterator i = module.getParameterList().begin();
+       i != module.getParameterList().end(); ++i) {
+    _interactionClassVector[index]->insertParameter(*i);
   }
-}
-
-bool
-Federate::isInteractionClassDerivedFrom(const InteractionClassHandle& baseInteractionClassHandle, const InteractionClassHandle& interactionClassHandle) const
-{
-  InteractionClassHandle derivedInteractionClassHandle = interactionClassHandle;
-  while (derivedInteractionClassHandle.valid()) {
-    if (baseInteractionClassHandle == derivedInteractionClassHandle)
-      return true;
-    const InteractionClass* interactionClass = getInteractionClass(derivedInteractionClassHandle);
-    if (!interactionClass)
-      return false;
-    derivedInteractionClassHandle = interactionClass->getParentInteractionClassHandle();
-  }
-  return false;
 }
 
 Federate::ObjectClass*
@@ -959,35 +951,13 @@ Federate::insertObjectClass(const FOMObjectClass& module, bool artificialObjectR
     if (parentHandle.valid()) {
       ObjectClass* parentClass = getObjectClass(parentHandle);
       OpenRTIAssert(parentClass);
-      objectClass->insertDerivedAttributes(*parentClass);
+      parentClass->insertChildObjectClass(*objectClass);
     }
   }
-  for (std::size_t i = index; i < _objectClassVector.size(); ++i) {
-    ObjectClass* objectClass = getObjectClass(ObjectClassHandle(i));
-    if (!objectClass)
-      continue;
-    if (!isObjectClassDerivedFrom(module.getObjectClassHandle(), ObjectClassHandle(i)))
-      continue;
-    for (FOMAttributeList::const_iterator i = module.getAttributeList().begin();
-         i != module.getAttributeList().end(); ++i) {
-      objectClass->insertAttribute(*i);
-    }
+  for (FOMAttributeList::const_iterator i = module.getAttributeList().begin();
+       i != module.getAttributeList().end(); ++i) {
+    _objectClassVector[index]->insertAttribute(*i);
   }
-}
-
-bool
-Federate::isObjectClassDerivedFrom(const ObjectClassHandle& baseObjectClassHandle, const ObjectClassHandle& objectClassHandle) const
-{
-  ObjectClassHandle derivedObjectClassHandle = objectClassHandle;
-  while (derivedObjectClassHandle.valid()) {
-    if (baseObjectClassHandle == derivedObjectClassHandle)
-      return true;
-    const ObjectClass* objectClass = getObjectClass(derivedObjectClassHandle);
-    if (!objectClass)
-      return false;
-    derivedObjectClassHandle = objectClass->getParentObjectClassHandle();
-  }
-  return false;
 }
 
 Federate::ObjectInstance*

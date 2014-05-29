@@ -21,6 +21,7 @@
 #define OpenRTI_Federate_h
 
 #include "Export.h"
+#include "IntrusiveList.h"
 #include "HandleAllocator.h"
 #include "LogStream.h"
 #include "Message.h"
@@ -231,7 +232,10 @@ public:
   };
   typedef std::vector<SharedPtr<Parameter> > ParameterVector;
 
-  struct OPENRTI_API InteractionClass : public PublishSubscribe {
+  struct InteractionClass;
+  typedef IntrusiveList<InteractionClass> ChildInteractionClassList;
+
+  struct OPENRTI_API InteractionClass : public PublishSubscribe, public ChildInteractionClassList::Hook {
     InteractionClass();
     ~InteractionClass();
 
@@ -247,7 +251,7 @@ public:
     Parameter* getParameter(const ParameterHandle& parameterHandle);
     ParameterHandle getParameterHandle(const std::string& name) const;
     void insertParameter(const FOMParameter& fomParameter);
-    void insertDerivedParameters(const InteractionClass& parentInteractionClass);
+    void insertChildInteractionClass(InteractionClass& interactionClass);
 
   private:
     InteractionClass(const InteractionClass&);
@@ -259,6 +263,8 @@ public:
     ParameterVector _parameterVector;
     typedef std::map<std::string, ParameterHandle> NameParameterHandleMap;
     NameParameterHandleMap _nameParameterHandleMap;
+
+    ChildInteractionClassList _childInteractionClassList;
   };
   typedef std::vector<SharedPtr<InteractionClass> > InteractionClassVector;
 
@@ -268,7 +274,6 @@ public:
   void insertInteractionClass(const FOMInteractionClass& module, bool artificialObjectRoot);
   size_t getNumInteractionClasses() const
   { return _interactionClassVector.size(); }
-  bool isInteractionClassDerivedFrom(const InteractionClassHandle& baseInteractionClassHandle, const InteractionClassHandle& interactionClassHandle) const;
 
   /// Object Classes
   struct OPENRTI_API Attribute : public PublishSubscribe {
@@ -278,7 +283,10 @@ public:
   };
   typedef std::vector<SharedPtr<Attribute> > AttributeVector;
 
-  struct OPENRTI_API ObjectClass : public Referenced {
+  struct ObjectClass;
+  typedef IntrusiveList<ObjectClass> ChildObjectClassList;
+
+  struct OPENRTI_API ObjectClass : public Referenced, public ChildObjectClassList::Hook {
     ObjectClass();
     ~ObjectClass();
 
@@ -300,7 +308,7 @@ public:
     size_t getNumAttributes() const
     { return _attributeVector.size(); }
     void insertAttribute(const FOMAttribute& fomAttribute);
-    void insertDerivedAttributes(const ObjectClass& parentObjectClass);
+    void insertChildObjectClass(ObjectClass& objectClass);
 
     // Returns true if the attribute is subscribed.
     bool isAttributeSubscribed(const AttributeHandle& attributeHandle) const;
@@ -342,6 +350,8 @@ public:
     // Because of implicit publication/subscription
     SubscriptionType _subscriptionType;
     PublicationType _publicationType;
+
+    ChildObjectClassList _childObjectClassList;
   };
   typedef std::vector<SharedPtr<ObjectClass> > ObjectClassVector;
 
@@ -351,7 +361,6 @@ public:
   void insertObjectClass(const FOMObjectClass& module, bool artificialObjectRoot);
   size_t getNumObjectClasses() const
   { return _objectClassVector.size(); }
-  bool isObjectClassDerivedFrom(const ObjectClassHandle& baseObjectClassHandle, const ObjectClassHandle& objectClassHandle) const;
 
 
   /// Object Instances
@@ -408,8 +417,8 @@ public:
     bool ownsAnyAttribute() const;
 
   private:
-  //   ObjectInstance(const ObjectInstance&);
-  //   ObjectInstance& operator=(const ObjectInstance&);
+    ObjectInstance(const ObjectInstance&);
+    ObjectInstance& operator=(const ObjectInstance&);
 
     ObjectClassHandle _objectClassHandle;
     NameObjectInstanceHandleMap::iterator _nameObjectInstanceHandleMapIterator;
