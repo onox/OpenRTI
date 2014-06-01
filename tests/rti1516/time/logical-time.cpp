@@ -22,10 +22,6 @@
 #include <memory>
 #include <string>
 
-// #include <RTI/HLAinteger64Time.h>
-// #include <RTI/HLAinteger64Interval.h>
-// #include <RTI/HLAfloat64Time.h>
-// #include <RTI/HLAfloat64Interval.h>
 #include <RTI/LogicalTime.h>
 #include <RTI/LogicalTimeFactory.h>
 #include <RTI/LogicalTimeInterval.h>
@@ -34,6 +30,28 @@
 #include <StringUtils.h>
 
 using namespace OpenRTI;
+
+// FIXME adapt the tests to check for these explicitly.
+//
+// The standard paper wants:
+// let Iz = 0, Ie = epsilon, Iz < I
+// any T denotes a value of type time,
+// any I denotes a value of type interval:
+//
+// T' = T + I then T' > T          (1)
+// T' = T - I then T' < T          (1)
+// T' = T + Iz then T' == T        (2)
+// T' = T - Iz then T' == T        (2)
+// T1 != T2 then |T1 - T2| >= Ie   (3)
+// T1 == T2 then T1 - T2 == Iz     (3)
+//
+// I' = I + Iz then I' == I        (4)
+// I' = I - Iz then I' == I        (4)
+// I1 != I2 then |I1 - I2| >= Ie   (5)
+// I1 == I2 then I1 - I2 == Iz     (5)
+// I != Iz then I >= Ie            (6)
+//
+// T > T' then T' < T              (7)
 
 int
 main(int argc, char* argv[])
