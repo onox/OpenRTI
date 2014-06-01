@@ -908,10 +908,10 @@ public:
 
   struct ObjectInstanceConnect;
   typedef std::map<ConnectHandle, SharedPtr<ObjectInstanceConnect> > ConnectHandleObjectInstanceConnectMap;
-  typedef std::list<ObjectInstanceConnect*> ObjectInstanceConnectList;
+  typedef IntrusiveList<ObjectInstanceConnect, 1> ObjectInstanceConnectList;
 
   // Per Connect object instance data.
-  struct OPENRTI_LOCAL ObjectInstanceConnect : public Referenced {
+  struct OPENRTI_LOCAL ObjectInstanceConnect : public Referenced, public ObjectInstanceConnectList::Hook {
     ObjectInstanceConnect(const ConnectHandleObjectInstanceConnectMap::iterator& iterator,
                           ObjectInstance* objectInstance, ConnectData* connect) :
       _connectHandleObjectInstanceConnectMapIterator(iterator),
@@ -929,19 +929,16 @@ public:
 
     void insertToObjectInstanceConnectList(ObjectInstanceConnectList& objectInstanceConnectList)
     {
-      _objectInstanceConnectListIterator = objectInstanceConnectList.insert(objectInstanceConnectList.begin(), this);
+      objectInstanceConnectList.push_front(*this);
     }
     void eraseFromObjectInstanceConnectList(ObjectInstanceConnectList& objectInstanceConnectList)
     {
-      objectInstanceConnectList.erase(_objectInstanceConnectListIterator);
-      _objectInstanceConnectListIterator = objectInstanceConnectList.end();
+      objectInstanceConnectList.erase(*this);
     }
 
   private:
     /// iterator into the primary index in the ObjectInstance, here for O(1) removal
     ConnectHandleObjectInstanceConnectMap::iterator _connectHandleObjectInstanceConnectMapIterator;
-    /// iterator into the list of these objects in the connect, here for O(1) removal
-    ObjectInstanceConnectList::iterator _objectInstanceConnectListIterator;
     /// The original ObjectInstance this belongs to
     ObjectInstance* _objectInstance;
     /// The original Connect this belongs to

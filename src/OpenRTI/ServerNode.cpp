@@ -1792,7 +1792,7 @@ public:
       SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> releaseMessage;
       for (ObjectInstanceConnectList::iterator j = connect->_objectInstanceConnectList.begin();
            j != connect->_objectInstanceConnectList.end();) {
-        ObjectInstanceConnect* objectInstanceConnect = *(j++);
+        ObjectInstanceConnect* objectInstanceConnect = &*(j++);
         ObjectInstance* objectInstance = objectInstanceConnect->getObjectInstance();
         if (!objectInstance->unreferenceObjectInstance(objectInstanceConnect))
           continue;
