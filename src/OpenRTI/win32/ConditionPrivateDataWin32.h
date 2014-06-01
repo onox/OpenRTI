@@ -33,7 +33,8 @@ namespace OpenRTI {
 
 // Windows Server 2008/Vista provides native conditions
 #if 0x0600 <= WINVER
-# define HAVE_CONDITION_VARIABLE
+// ... but they seem not to work on shutdown!
+// # define HAVE_CONDITION_VARIABLE
 #endif
 
 #ifdef HAVE_CONDITION_VARIABLE
