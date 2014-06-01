@@ -84,7 +84,7 @@ private:
   }
 
   _IntrusiveListHook* _unlink_get_next(void)
-  { _IntrusiveListHook* next = _next; unlink(); return _next; }
+  { _IntrusiveListHook* next = _next; unlink(); return next; }
 
   // Only reinitialize our own state, do not care for other list entries
   // possible pointing to this. Use with care!
