@@ -51,12 +51,13 @@ IF(MSVC)
 ELSEIF(MINGW OR CYGWIN)
   ADD_LIBRARY(FedTimeStub STATIC ${LIB_FEDTIME_SOURCES})
   SET_PROPERTY(TARGET FedTimeStub APPEND PROPERTY COMPILE_DEFINITIONS FedTime_EXPORTS)
+  GET_PROPERTY(_stubArchiveFile TARGET FedTimeStub PROPERTY LOCATION)
   ADD_CUSTOM_COMMAND(TARGET FedTimeStub
           POST_BUILD
           COMMAND "${CMAKE_COMMAND}" -E remove -f libFedTime.dll.a
-          COMMAND "${DLLTOOL}" -DlibFedTime.dll -llibFedTime.dll.a libFedTimeStub.a
-          COMMAND "${CMAKE_COMMAND}" -E remove -f libFedTimeStub.a
-          COMMAND "${CMAKE_COMMAND}" -E rename libFedTime.dll.a libFedTimeStub.a
+          COMMAND "${DLLTOOL}" -DlibFedTime.dll -llibFedTime.dll.a ${_stubArchiveFile}
+          COMMAND "${CMAKE_COMMAND}" -E remove -f ${_stubArchiveFile}
+          COMMAND "${CMAKE_COMMAND}" -E rename libFedTime.dll.a ${_stubArchiveFile}
     )
   OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(RTI-NG FedTimeStub OpenRTI)
 ELSE()
