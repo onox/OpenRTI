@@ -54,8 +54,8 @@ public:
 
   TemplateTimeManagement(const LogicalTimeFactory& logicalTimeFactory) :
     _timeAdvanceToBeScheduled(false),
-    _logicalTimeFactory(logicalTimeFactory),
-    _commitId(-17) // make sure we test wraparound regularily
+    _commitId(-17), // make sure we test wraparound regularily
+    _logicalTimeFactory(logicalTimeFactory)
   {
     _logicalTime.first = _logicalTimeFactory.initialLogicalTime();
     _logicalTime.second = 0;
