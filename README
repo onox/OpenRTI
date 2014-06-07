@@ -60,12 +60,12 @@ OpenRTI requires a c++98 implementation, but can be compiled also with
 a c++11 compiler and stl library.
 
 OpenRTI can make use of additional components like zlib for on the wire
-compression, that is used if it is avaialbe. OpenRTI's on the wire
+compression, that is used if it is available. OpenRTI's on the wire
 protocol negotiates if this is used or not. So, mixing different builds
 one with zlib and one without shall interact seamlessly.
 The python binding is obviously only available if python is available.
 
-That saied, much more specifically, there is no dependency on boost
+That said, much more specifically, there is no dependency on boost
 as of today and there will not be any in the future. The same goes for
 any other dependency library that is not strictly needed.
 
@@ -82,7 +82,7 @@ HP-UX did work at some time in the past but is no longer tested.
 
 Linux is tested on current fedora variants and centos 4, 5 and 6.
 
-Windows is tested so far with 32 und 64 bits on XP with VS 2010/VS2012.
+Windows is tested so far with 32 and 64 bits on XP with VS 2010/VS2012.
 
 Macos X is fully supported starting with 10.6. Starting with this
 version a workaround for a problem originating from the
@@ -113,8 +113,8 @@ Often it would be also good to exploit some locality in an RTI. To
 get this, an OpenRTI server can operate as slave servers under a parent
 server. That means that every server in that tree seed all the federations
 in that server tree but messages are only routed to servers that need
-these messages. So having a sub server on a local subnet, traffict just
-interresting for federates connected to that slave server originating from
+these messages. So having a sub server on a local subnet, traffic just
+interesting for federates connected to that slave server originating from
 federates connected to that slave server will never be sent to the
 parent server.
 
@@ -163,7 +163,7 @@ rtinode: (experimental, only available in the ambassador)
   parent=<parent url>
    to provide a parent url for rtinode
  Note that you may need to escape the queries properly if they contain
- characters that make the url parsing ambigous else.
+ characters that make the url parsing ambiguous else.
 
  A simple example url setting up an rtinode on localhost on the default
  port reads "rtinode:///FederationExecutionName?listen=rti:///".
@@ -190,11 +190,11 @@ address=<a>
   The interpretation depends on the protocol:
   For 'thread' this is ignored.
   For 'rti' and 'http' this contains the host:port pair.
-  port can be omitted to use the apropriate default port.
+  port can be omitted to use the appropriate default port.
   For 'pipe' this should contain the path to the named pipe.
 
 timeout=<t>
-  Sets initial packet timeouts for messages that happen syncronous.
+  Sets initial packet timeouts for messages that happen synchronous.
   That is mostly for create, destroy, join and resign.
 
 
@@ -202,12 +202,12 @@ Federation execution names and URLs
 -----------------------------------
 
 For rti1516 it is easy to set the connect parameters in the string list.
-But the RTI15 layer does not have this.
+But the RTI13 layer does not have this.
 So, OpenRTI interprets federation execution names as urls:
 
  <protocol>://<address>/<path>/<name>
 
-Where the protocol overriedes the protocol field from the string list.
+Where the protocol overrides the protocol field from the string list.
 The address is the network address of the server. The path contains the
 path to the named pipe if protocol is pipe and the name is just the plain
 name of the federation execution.
@@ -217,7 +217,7 @@ same federation execution by different federation execution names depending
 on your server setup. But anyway I think that this is a useful idea to address
 different servers without relying on environment variables.
 
-So, for the standard conformance question we will need some override somwhere
+So, for the standard conformance question we will need some override somewhere
 in the future to disable interpretation of federation execution names as urls.
 
 
@@ -311,7 +311,7 @@ a message is sent to such a message queue, the sender should never touch that
 message again. Due to messages being reference counted, the last one switches
 the light off...
 
-There are two notable exceptins to this.
+There are two notable exceptions to this.
 1. The thread rti server:
 Since this rti server does not have its own thread to live in, its execution is
 guarded by a mutex that serializes sending messages to this server.
@@ -323,7 +323,7 @@ VariableLengthData Lifetime.
 ----------------------------
 
 The VariableLengthData class is implemented using a reference counted
-copy/allocate on write schmeme. This means that passing these values around has
+copy/allocate on write scheme. This means that passing these values around has
 just the cost of reference counting. In the best case and with federates living
 in the same application, the receiving federate sees exactly the same payload
 memory than the sending federate used to write into.
@@ -343,11 +343,11 @@ This is a brief overview how publication and subscription are propagated over
 the tree.
 Publication is a simple two state value that is tracked for each connect in a
 server node. When a server node or ambassador behind a connect changes this
-state it sends an apporpiate message to the server node. The server node tracks
+state it sends an appropriate message to the server node. The server node tracks
 this publication state for each connect. This server node is responsible to
 inform the other connects about its publication state. A server node should
 only inform once this state changes for each connect. When the server node
-recieves a second publication through a second connect, no publication state
+receives a second publication through a second connect, no publication state
 should be changed for connects that already know about that.
 Publication state is immediately pushed to a new server node once it
 is registered.
@@ -374,7 +374,7 @@ object instance name reservations, where the instance handle is
 already assigned once the name is reserved.
 
 Every server node tracks the child connects that reference an object
-instance handle. Once there are no chold connects left that reference
+instance handle. Once there are no old connects left that reference
 an object instance handle, the server node unreferences this handle at
 its parent.
 
