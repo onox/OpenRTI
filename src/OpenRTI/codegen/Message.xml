@@ -291,6 +291,7 @@
   <type name="FOMStringSwitchList" type="vector" scalar="FOMStringSwitch"/>
 
   <type name="FOMStringModule" type="struct" copyOnWrite="true">
+    <field name="Content" type="String"/>
     <field name="TransportationTypeList" type="FOMStringTransportationTypeList"/>
     <field name="DimensionList" type="FOMStringDimensionList"/>
     <field name="RoutingSpaceList" type="FOMStringRoutingSpaceList"/>
@@ -387,6 +388,7 @@
     <field name="SwitchList" type="FOMSwitchList"/>
     <field name="ArtificialInteractionRoot" type="Bool"/>
     <field name="ArtificialObjectRoot" type="Bool"/>
+    <field name="Content" type="String"/>
   </type>
   <type name="FOMModuleList" type="vector" scalar="FOMModule"/>
 

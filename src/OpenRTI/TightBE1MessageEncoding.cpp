@@ -937,6 +937,7 @@ public:
 
   void writeFOMStringModule(const FOMStringModule& value)
   {
+    writeString(value.getContent());
     writeFOMStringTransportationTypeList(value.getTransportationTypeList());
     writeFOMStringDimensionList(value.getDimensionList());
     writeFOMStringRoutingSpaceList(value.getRoutingSpaceList());
@@ -1143,6 +1144,7 @@ public:
     writeFOMSwitchList(value.getSwitchList());
     writeBool(value.getArtificialInteractionRoot());
     writeBool(value.getArtificialObjectRoot());
+    writeString(value.getContent());
   }
 
   void writeFOMModuleList(const FOMModuleList& value)
@@ -3035,6 +3037,7 @@ public:
 
   void readFOMStringModule(FOMStringModule& value)
   {
+    readString(value.getContent());
     readFOMStringTransportationTypeList(value.getTransportationTypeList());
     readFOMStringDimensionList(value.getDimensionList());
     readFOMStringRoutingSpaceList(value.getRoutingSpaceList());
@@ -3245,6 +3248,7 @@ public:
     readFOMSwitchList(value.getSwitchList());
     readBool(value.getArtificialInteractionRoot());
     readBool(value.getArtificialObjectRoot());
+    readString(value.getContent());
   }
 
   void readFOMModuleList(FOMModuleList& value)

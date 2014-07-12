@@ -1527,6 +1527,17 @@ public:
   FOMStringModule() : 
     _impl(new Implementation)
   { }
+  void setContent(const String& value)
+  { getImpl()._content = value; }
+#if 201103L <= __cplusplus
+  void setContent(String&& value)
+  { getImpl()._content = value; }
+#endif
+  String& getContent()
+  { return getImpl()._content; }
+  const String& getContent() const
+  { return getConstImpl()._content; }
+
   void setTransportationTypeList(const FOMStringTransportationTypeList& value)
   { getImpl()._transportationTypeList = value; }
 #if 201103L <= __cplusplus
@@ -1635,6 +1646,7 @@ public:
   {
     if (_impl.get() == rhs._impl.get())
       return true;
+    if (getContent() != rhs.getContent()) return false;
     if (getTransportationTypeList() != rhs.getTransportationTypeList()) return false;
     if (getDimensionList() != rhs.getDimensionList()) return false;
     if (getRoutingSpaceList() != rhs.getRoutingSpaceList()) return false;
@@ -1650,6 +1662,8 @@ public:
   {
     if (_impl.get() == rhs._impl.get())
       return false;
+    if (getContent() < rhs.getContent()) return true;
+    if (rhs.getContent() < getContent()) return false;
     if (getTransportationTypeList() < rhs.getTransportationTypeList()) return true;
     if (rhs.getTransportationTypeList() < getTransportationTypeList()) return false;
     if (getDimensionList() < rhs.getDimensionList()) return true;
@@ -1680,6 +1694,7 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    String _content;
     FOMStringTransportationTypeList _transportationTypeList;
     FOMStringDimensionList _dimensionList;
     FOMStringRoutingSpaceList _routingSpaceList;
@@ -2755,6 +2770,17 @@ public:
   const Bool& getArtificialObjectRoot() const
   { return getConstImpl()._artificialObjectRoot; }
 
+  void setContent(const String& value)
+  { getImpl()._content = value; }
+#if 201103L <= __cplusplus
+  void setContent(String&& value)
+  { getImpl()._content = value; }
+#endif
+  String& getContent()
+  { return getImpl()._content; }
+  const String& getContent() const
+  { return getConstImpl()._content; }
+
   FOMModule& swap(FOMModule& rhs)
   {
     _impl.swap(rhs._impl);
@@ -2774,6 +2800,7 @@ public:
     if (getSwitchList() != rhs.getSwitchList()) return false;
     if (getArtificialInteractionRoot() != rhs.getArtificialInteractionRoot()) return false;
     if (getArtificialObjectRoot() != rhs.getArtificialObjectRoot()) return false;
+    if (getContent() != rhs.getContent()) return false;
     return true;
   }
   bool operator<(const FOMModule& rhs) const
@@ -2800,6 +2827,8 @@ public:
     if (rhs.getArtificialInteractionRoot() < getArtificialInteractionRoot()) return false;
     if (getArtificialObjectRoot() < rhs.getArtificialObjectRoot()) return true;
     if (rhs.getArtificialObjectRoot() < getArtificialObjectRoot()) return false;
+    if (getContent() < rhs.getContent()) return true;
+    if (rhs.getContent() < getContent()) return false;
     return false;
   }
   bool operator!=(const FOMModule& rhs) const
@@ -2822,6 +2851,7 @@ private:
     FOMSwitchList _switchList;
     Bool _artificialInteractionRoot;
     Bool _artificialObjectRoot;
+    String _content;
   };
 
   const Implementation& getConstImpl() const
@@ -7667,6 +7697,8 @@ std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMStringModule& value)
 {
   os << "{ ";
+  os << "content: " << value.getContent();
+  os << ", ";
   os << "transportationTypeList: " << value.getTransportationTypeList();
   os << ", ";
   os << "dimensionList: " << value.getDimensionList();
@@ -8070,6 +8102,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModule& valu
   os << "artificialInteractionRoot: " << value.getArtificialInteractionRoot();
   os << ", ";
   os << "artificialObjectRoot: " << value.getArtificialObjectRoot();
+  os << ", ";
+  os << "content: " << value.getContent();
   os << " }";
   return os;
 }
