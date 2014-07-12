@@ -125,6 +125,7 @@ Federate::InteractionClass::InteractionClass()
 
 Federate::InteractionClass::~InteractionClass()
 {
+  _childInteractionClassList.unlink();
 }
 
 void
@@ -205,6 +206,7 @@ Federate::ObjectClass::ObjectClass() :
 
 Federate::ObjectClass::~ObjectClass()
 {
+  _childObjectClassList.unlink();
 }
 
 void

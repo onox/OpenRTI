@@ -369,7 +369,8 @@ public:
     ~ObjectClass()
     {
       if (_parentObjectClass)
-        _parentObjectClass->_childObjectClassList.erase(*this);
+        _parentObjectClass->_childObjectClassList.unlink(*this);
+      _childObjectClassList.unlink();
     }
 
     /// Get the parent ObjectClass
@@ -562,7 +563,8 @@ public:
     ~InteractionClass()
     {
       if (_parentInteractionClass)
-        _parentInteractionClass->_childInteractionClassList.erase(*this);
+        _parentInteractionClass->_childInteractionClassList.unlink(*this);
+      _childInteractionClassList.unlink();
     }
 
     /// Get the parent InteractionClass
@@ -888,7 +890,7 @@ public:
     }
     void eraseFromRegionList(ConnectOwnedRegionList& regionList)
     {
-      regionList.erase(*this);
+      regionList.unlink(*this);
     }
 
     RegionValue _regionValue;
@@ -933,7 +935,7 @@ public:
     }
     void eraseFromObjectInstanceConnectList(ObjectInstanceConnectList& objectInstanceConnectList)
     {
-      objectInstanceConnectList.erase(*this);
+      objectInstanceConnectList.unlink(*this);
     }
 
   private:
@@ -1043,7 +1045,7 @@ public:
     // Removes itself from the list that is usually held in the object class knowing all the object instances
     void eraseFromObjectClassList(ObjectClassInstanceList& objectInstanceList)
     {
-      objectInstanceList.erase(*this);
+      objectInstanceList.unlink(*this);
     }
 
     ObjectInstanceConnect* referenceObjectInstance(ConnectData* connect);
@@ -1148,6 +1150,12 @@ public:
       _connectHandleConnectDataMapIterator(connectHandleConnectDataMapIterator),
       _permitTimeRegulation(true)
     { }
+    ~ConnectData()
+    {
+      _federateList.unlink();
+      _objectInstanceConnectList.unlink();
+      _ownedRegions.unlink();
+    }
     ConnectHandleConnectDataMap::iterator _connectHandleConnectDataMapIterator;
     SharedPtr<AbstractMessageSender> _messageSender;
     const ConnectHandle& getHandle() const { return _connectHandleConnectDataMapIterator->first; }
@@ -1169,7 +1177,7 @@ public:
         return;
       OpenRTIAssert(connect == this);
       // Remove from connects
-      connect->_federateList.erase(*federate);
+      connect->_federateList.unlink(*federate);
       federate->_connect = 0;
     }
 
