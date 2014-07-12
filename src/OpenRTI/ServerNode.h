@@ -59,7 +59,7 @@ private:
   ServerNode(const ServerNode&);
   ServerNode& operator=(const ServerNode&);
 
-  SharedPtr<ServerMessageDispatcher> _serverMessageDispatcher;
+  ServerMessageDispatcher* _serverMessageDispatcher;
 };
 
 } // namespace OpenRTI
