@@ -23,6 +23,7 @@
 #include "Export.h"
 #include "Message.h"
 #include "Referenced.h"
+#include "StringUtils.h"
 
 namespace OpenRTI {
 
