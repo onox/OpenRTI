@@ -365,6 +365,11 @@ public:
     writeUInt32Compressed(value);
   }
 
+  void writeUpdateRateHandle(const UpdateRateHandle& value)
+  {
+    writeUInt32Compressed(value);
+  }
+
   void writeObjectClassHandle(const ObjectClassHandle& value)
   {
     writeUInt32Compressed(value);
@@ -1100,6 +1105,7 @@ public:
   void writeFOMUpdateRate(const FOMUpdateRate& value)
   {
     writeString(value.getName());
+    writeUpdateRateHandle(value.getUpdateRateHandle());
     writeDouble(value.getRate());
   }
 
@@ -2447,6 +2453,11 @@ public:
     value = readUInt32Compressed();
   }
 
+  void readUpdateRateHandle(UpdateRateHandle& value)
+  {
+    value = readUInt32Compressed();
+  }
+
   void readObjectClassHandle(ObjectClassHandle& value)
   {
     value = readUInt32Compressed();
@@ -3196,6 +3207,7 @@ public:
   void readFOMUpdateRate(FOMUpdateRate& value)
   {
     readString(value.getName());
+    readUpdateRateHandle(value.getUpdateRateHandle());
     readDouble(value.getRate());
   }
 

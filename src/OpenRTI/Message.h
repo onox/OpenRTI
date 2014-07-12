@@ -2479,6 +2479,17 @@ public:
   const String& getName() const
   { return getConstImpl()._name; }
 
+  void setUpdateRateHandle(const UpdateRateHandle& value)
+  { getImpl()._updateRateHandle = value; }
+#if 201103L <= __cplusplus
+  void setUpdateRateHandle(UpdateRateHandle&& value)
+  { getImpl()._updateRateHandle = value; }
+#endif
+  UpdateRateHandle& getUpdateRateHandle()
+  { return getImpl()._updateRateHandle; }
+  const UpdateRateHandle& getUpdateRateHandle() const
+  { return getConstImpl()._updateRateHandle; }
+
   void setRate(const Double& value)
   { getImpl()._rate = value; }
 #if 201103L <= __cplusplus
@@ -2500,6 +2511,7 @@ public:
     if (_impl.get() == rhs._impl.get())
       return true;
     if (getName() != rhs.getName()) return false;
+    if (getUpdateRateHandle() != rhs.getUpdateRateHandle()) return false;
     if (getRate() != rhs.getRate()) return false;
     return true;
   }
@@ -2509,6 +2521,8 @@ public:
       return false;
     if (getName() < rhs.getName()) return true;
     if (rhs.getName() < getName()) return false;
+    if (getUpdateRateHandle() < rhs.getUpdateRateHandle()) return true;
+    if (rhs.getUpdateRateHandle() < getUpdateRateHandle()) return false;
     if (getRate() < rhs.getRate()) return true;
     if (rhs.getRate() < getRate()) return false;
     return false;
@@ -2524,6 +2538,7 @@ public:
 private:
   struct OPENRTI_API Implementation : public Referenced {
     String _name;
+    UpdateRateHandle _updateRateHandle;
     Double _rate;
   };
 
@@ -7979,6 +7994,8 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMUpdateRate& 
 {
   os << "{ ";
   os << "name: " << value.getName();
+  os << ", ";
+  os << "updateRateHandle: " << value.getUpdateRateHandle();
   os << ", ";
   os << "rate: " << value.getRate();
   os << " }";

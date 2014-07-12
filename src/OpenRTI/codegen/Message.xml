@@ -111,6 +111,7 @@
 
   <type name="AttributeHandle" ctype="AttributeHandle" encoding="UInt32"/>
   <type name="DimensionHandle" ctype="DimensionHandle" encoding="UInt32"/>
+  <type name="UpdateRateHandle" ctype="UpdateRateHandle" encoding="UInt32"/>
   <type name="ObjectClassHandle" ctype="ObjectClassHandle" encoding="UInt32"/>
   <type name="ObjectInstanceHandle" ctype="ObjectInstanceHandle" encoding="UInt32"/>
   <type name="InteractionClassHandle" ctype="InteractionClassHandle" encoding="UInt32"/>
@@ -364,6 +365,7 @@
 
   <type name="FOMUpdateRate" type="struct" copyOnWrite="true">
     <field name="Name" type="String"/>
+    <field name="UpdateRateHandle" type="UpdateRateHandle"/>
     <field name="Rate" type="Double"/>
   </type>
   <type name="FOMUpdateRateList" type="vector" scalar="FOMUpdateRate"/>

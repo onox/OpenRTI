@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2014 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -170,6 +170,7 @@ DECLARE_HANDLE_TYPE(OrderingHandle, uint8_t)
 
 DECLARE_HANDLE_TYPE(DimensionHandle, uint32_t)
 DECLARE_HANDLE_TYPE(SpaceHandle, uint32_t)
+DECLARE_HANDLE_TYPE(UpdateRateHandle, uint32_t)
 
 class OPENRTI_LOCAL MessageRetractionHandle : public Handle<uint64_t> {
 public:
