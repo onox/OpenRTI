@@ -80,6 +80,9 @@ public:
   bool operator!=(const Handle& handle) const
   { return _handle != handle._handle; }
 
+  const T& getHash() const
+  { return _handle; }
+
   std::string getReservedName(const char* prefix) const
   {
     std::stringstream ss;
