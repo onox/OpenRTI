@@ -219,6 +219,8 @@ public:
   void reserve(size_t cap)
   {
     OpenRTIAssert(_size <= cap);
+    // Don't mess with too small allocations.
+    cap = std::max(size_t(512), cap);
     if (!_data.valid()) {
       _data = createOwnData(cap);
     } else if (capacity() < cap) {
