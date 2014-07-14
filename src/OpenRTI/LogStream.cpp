@@ -61,9 +61,18 @@ struct OPENRTI_LOCAL LogStream::StreamPair {
   protected:
     virtual int sync()
     {
-      if (!_referencedMutex.valid())
-        return 0;
-      ScopeLock scopeLock(_referencedMutex->_mutex);
+      // Not having the mutex here can only happen in weired circumstances.
+      // But if so, do not hold back the message.
+      if (_referencedMutex.valid()) {
+        ScopeLock scopeLock(_referencedMutex->_mutex);
+        return _syncUnlocked();
+      } else {
+        return _syncUnlocked();
+      }
+    }
+
+    int _syncUnlocked()
+    {
       const char* base = pbase();
       size_t count = pptr() - base;
       if (count <= 0)
