@@ -159,7 +159,6 @@ SET(OpenRTI_SOURCES
   FDD1516EFileReader.cpp
   FDD1516FileReader.cpp
   FEDFileReader.cpp
-  FOMModuleSet.cpp
   InitialClientStreamProtocol.cpp
   InitialServerStreamProtocol.cpp
   InitialStreamProtocol.cpp
