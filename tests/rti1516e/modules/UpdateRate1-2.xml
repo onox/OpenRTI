@@ -6,7 +6,7 @@
   <updateRates>
     <updateRate>
       <name>UpdateRate1</name>
-      <rate>1</rate>
+      <rate>2</rate>
     </updateRate>
   </updateRates>
 </objectModel>

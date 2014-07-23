@@ -59,8 +59,8 @@ struct Module {
   std::map<std::wstring, InteractionClass> _interactionClasses;
   std::map<std::wstring, ObjectClass> _objectClasses;
 
-  // std::vector<std::wstring> _dimensionNames;
-  // std::vector<std::wstring> _updateRateNames;
+  std::vector<std::wstring> _dimensionNames;
+  std::vector<std::wstring> _updateRateNames;
 
   Module()
   {
@@ -314,81 +314,81 @@ struct ModuleList {
       _modules.push_back(module);
     }
 
-    // /////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
 
-    // {
-    //   Module module;
-    //   module._name = L"Dimension1-1.xml";
-    //   module._incompatibleModuleNames.insert(L"Dimension1-2.xml");
+    {
+      Module module;
+      module._name = L"Dimension1-1.xml";
+      module._incompatibleModuleNames.insert(L"Dimension1-2.xml");
 
-    //   module._dimensionNames.push_back(L"Dimension1");
-    //   _modules.push_back(module);
-    // }
+      module._dimensionNames.push_back(L"Dimension1");
+      _modules.push_back(module);
+    }
 
-    // {
-    //   Module module;
-    //   module._name = L"Dimension1-2.xml";
-    //   module._incompatibleModuleNames.insert(L"Dimension1-1.xml");
+    {
+      Module module;
+      module._name = L"Dimension1-2.xml";
+      module._incompatibleModuleNames.insert(L"Dimension1-1.xml");
 
-    //   module._dimensionNames.push_back(L"Dimension1");
-    //   _modules.push_back(module);
-    // }
+      module._dimensionNames.push_back(L"Dimension1");
+      _modules.push_back(module);
+    }
 
-    // {
-    //   Module module;
-    //   module._name = L"Dimension2-1.xml";
-    //   module._incompatibleModuleNames.insert(L"Dimension2-2.xml");
+    {
+      Module module;
+      module._name = L"Dimension2-1.xml";
+      module._incompatibleModuleNames.insert(L"Dimension2-2.xml");
 
-    //   module._dimensionNames.push_back(L"Dimension2");
-    //   _modules.push_back(module);
-    // }
+      module._dimensionNames.push_back(L"Dimension2");
+      _modules.push_back(module);
+    }
 
-    // {
-    //   Module module;
-    //   module._name = L"Dimension2-2.xml";
-    //   module._incompatibleModuleNames.insert(L"Dimension2-1.xml");
+    {
+      Module module;
+      module._name = L"Dimension2-2.xml";
+      module._incompatibleModuleNames.insert(L"Dimension2-1.xml");
 
-    //   module._dimensionNames.push_back(L"Dimension2");
-    //   _modules.push_back(module);
-    // }
+      module._dimensionNames.push_back(L"Dimension2");
+      _modules.push_back(module);
+    }
 
-    // /////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
 
-    // {
-    //   Module module;
-    //   module._name = L"UpdateRate1-1.xml";
-    //   module._incompatibleModuleNames.insert(L"UpdateRate1-2.xml");
+    {
+      Module module;
+      module._name = L"UpdateRate1-1.xml";
+      module._incompatibleModuleNames.insert(L"UpdateRate1-2.xml");
 
-    //   module._updateRateNames.push_back(L"UpdateRate1");
-    //   _modules.push_back(module);
-    // }
+      module._updateRateNames.push_back(L"UpdateRate1");
+      _modules.push_back(module);
+    }
 
-    // {
-    //   Module module;
-    //   module._name = L"UpdateRate1-2.xml";
-    //   module._incompatibleModuleNames.insert(L"UpdateRate1-1.xml");
+    {
+      Module module;
+      module._name = L"UpdateRate1-2.xml";
+      module._incompatibleModuleNames.insert(L"UpdateRate1-1.xml");
 
-    //   module._updateRateNames.push_back(L"UpdateRate1");
-    //   _modules.push_back(module);
-    // }
+      module._updateRateNames.push_back(L"UpdateRate1");
+      _modules.push_back(module);
+    }
 
-    // {
-    //   Module module;
-    //   module._name = L"UpdateRate2-1.xml";
-    //   module._incompatibleModuleNames.insert(L"UpdateRate2-2.xml");
+    {
+      Module module;
+      module._name = L"UpdateRate2-1.xml";
+      module._incompatibleModuleNames.insert(L"UpdateRate2-2.xml");
 
-    //   module._updateRateNames.push_back(L"UpdateRate2");
-    //   _modules.push_back(module);
-    // }
+      module._updateRateNames.push_back(L"UpdateRate2");
+      _modules.push_back(module);
+    }
 
-    // {
-    //   Module module;
-    //   module._name = L"UpdateRate2-2.xml";
-    //   module._incompatibleModuleNames.insert(L"UpdateRate2-1.xml");
+    {
+      Module module;
+      module._name = L"UpdateRate2-2.xml";
+      module._incompatibleModuleNames.insert(L"UpdateRate2-1.xml");
 
-    //   module._updateRateNames.push_back(L"UpdateRate2");
-    //   _modules.push_back(module);
-    // }
+      module._updateRateNames.push_back(L"UpdateRate2");
+      _modules.push_back(module);
+    }
   }
 
   bool fomModuleCombinationValid(const std::wstring& previousFileName, const std::wstring& fileName) const

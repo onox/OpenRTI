@@ -632,7 +632,7 @@ Federate::getUpdateRateValue(const std::string& name) const
 void
 Federate::insertUpdateRate(const std::string& name, double value)
 {
-  OpenRTIAssert(_nameUpdateRateMap.find(name) == _nameUpdateRateMap.end());
+  // OpenRTIAssert(_nameUpdateRateMap.find(name) == _nameUpdateRateMap.end());
   _nameUpdateRateMap[name] = value;
 }
 
@@ -713,7 +713,7 @@ Federate::getDimensionHandle(const std::string& name) const
 void
 Federate::insertDimension(const std::string& name, const DimensionHandle& dimensionHandle, Unsigned upperBound)
 {
-  OpenRTIAssert(_nameDimensionHandleMap.find(name) == _nameDimensionHandleMap.end());
+  // OpenRTIAssert(_nameDimensionHandleMap.find(name) == _nameDimensionHandleMap.end());
   size_t index = dimensionHandle.getHandle();
   if (_dimensionVector.size() <= index)
     _dimensionVector.resize(index + 1);
