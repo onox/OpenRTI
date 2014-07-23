@@ -37,7 +37,6 @@
 #include "Ambassador.h"
 #include "DynamicModule.h"
 #include "FDD1516EFileReader.h"
-#include "FOMModuleSet.h"
 #include "LogStream.h"
 #include "TemplateTimeManagement.h"
 
@@ -1792,19 +1791,6 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
     }
   }
 
-  // try to collapse the string fom modules already here since we want to avoid failing this in the server
-  if (1 < fomModuleList.size()) {
-    try {
-      OpenRTI::FOMModuleSet fomModuleSet;
-      fomModuleSet.insertModuleList(fomModuleList, true);
-    } catch (const OpenRTI::Exception& e) {
-      // } catch (const OpenRTI::InconsistentFDD& e) {
-      throw rti1516e::InconsistentFDD(OpenRTI::utf8ToUcs(e.what()));
-    } catch (...) {
-      throw rti1516e::RTIinternalError(L"Unknown error while checking fdd consistency file");
-    }
-  }
-
   try {
     _ambassadorInterface->createFederationExecution(ucsToUtf8(federationExecutionName), fomModuleList, ucsToUtf8(logicalTimeImplementationName));
   } catch (const OpenRTI::InconsistentFDD& e) {
@@ -1863,19 +1849,6 @@ RTIambassadorImplementation::createFederationExecutionWithMIM (std::wstring cons
       throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
     } catch (...) {
       throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
-    }
-  }
-
-  // try to collapse the string fom modules already here since we want to avoid failing this in the server
-  if (1 < fomModuleList.size()) {
-    try {
-      OpenRTI::FOMModuleSet fomModuleSet;
-      fomModuleSet.insertModuleList(fomModuleList, true);
-    } catch (const OpenRTI::Exception& e) {
-      // } catch (const OpenRTI::InconsistentFDD& e) {
-      throw rti1516e::InconsistentFDD(OpenRTI::utf8ToUcs(e.what()));
-    } catch (...) {
-      throw rti1516e::RTIinternalError(L"Unknown error while checking fdd consistency file");
     }
   }
 

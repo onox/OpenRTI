@@ -201,6 +201,7 @@
     <enumerant name="CreateFederationExecutionResponseCouldNotOpenFDD"/>
     <enumerant name="CreateFederationExecutionResponseErrorReadingFDD"/>
     <enumerant name="CreateFederationExecutionResponseCouldNotCreateLogicalTimeFactory"/>
+    <enumerant name="CreateFederationExecutionResponseInconsistentFDD"/>
     <enumerant name="CreateFederationExecutionResponseRTIinternalError"/>
   </type>
 

@@ -1884,18 +1884,13 @@ public:
       response->setCreateFederationExecutionResponseType(CreateFederationExecutionResponseFederationExecutionAlreadyExists);
       send(connectHandle, response);
     } else {
+      // Successful create
+      FederationServer* federationServer;
+      federationServer = new FederationServer(*this);
+      federationServer->setName(message->getFederationExecution());
+      federationServer->setLogicalTimeFactoryName(message->getLogicalTimeFactoryName());
       try {
-        // Successful create
-        FederationServer* federationServer;
-        federationServer = new FederationServer(*this);
-        federationServer->setName(message->getFederationExecution());
-        federationServer->setLogicalTimeFactoryName(message->getLogicalTimeFactoryName());
-        try {
-          static_cast<ServerModel::Federation*>(federationServer)->insert(message->getFOMStringModuleList());
-        } catch (...) {
-          delete federationServer;
-          throw;
-        }
+        static_cast<ServerModel::Federation*>(federationServer)->insert(message->getFOMStringModuleList());
 
         // register this one
         insert(*federationServer);
@@ -1909,6 +1904,17 @@ public:
         response->setCreateFederationExecutionResponseType(CreateFederationExecutionResponseSuccess);
         send(connectHandle, response);
 
+      } catch (const InconsistentFDD& e) {
+        delete federationServer;
+
+        Log(ServerFederation, Info) << getServerPath() << ": Caught Exception creating federation execution \""
+                                    << e.getReason() << "\"." << std::endl;
+        SharedPtr<CreateFederationExecutionResponseMessage> response;
+        response = new CreateFederationExecutionResponseMessage;
+        response->setCreateFederationExecutionResponseType(CreateFederationExecutionResponseInconsistentFDD);
+        response->setExceptionString(e.getReason());
+        send(connectHandle, response);
+
       } catch (const Exception& e) {
         Log(ServerFederation, Info) << getServerPath() << ": Caught Exception creating federation execution \""
                                     << e.getReason() << "\"." << std::endl;
@@ -1916,6 +1922,15 @@ public:
         response = new CreateFederationExecutionResponseMessage;
         response->setCreateFederationExecutionResponseType(CreateFederationExecutionResponseRTIinternalError);
         response->setExceptionString(e.getReason());
+        send(connectHandle, response);
+
+      } catch (...) {
+        delete federationServer;
+
+        Log(ServerFederation, Info) << getServerPath() << ": Caught unknown Exception creating federation execution." << std::endl;
+        SharedPtr<CreateFederationExecutionResponseMessage> response;
+        response = new CreateFederationExecutionResponseMessage;
+        response->setCreateFederationExecutionResponseType(CreateFederationExecutionResponseRTIinternalError);
         send(connectHandle, response);
       }
     }

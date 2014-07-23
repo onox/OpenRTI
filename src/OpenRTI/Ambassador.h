@@ -118,6 +118,8 @@ public:
       throw FederationExecutionAlreadyExists(federationExecutionName);
     if (responseTypeStringPair.first == CreateFederationExecutionResponseCouldNotCreateLogicalTimeFactory)
       throw CouldNotCreateLogicalTimeFactory(logicalTimeFactoryName);
+    if (responseTypeStringPair.first == CreateFederationExecutionResponseInconsistentFDD)
+      throw InconsistentFDD(responseTypeStringPair.second);
     if (responseTypeStringPair.first != CreateFederationExecutionResponseSuccess)
       throw RTIinternalError(responseTypeStringPair.second);
   }

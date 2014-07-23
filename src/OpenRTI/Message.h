@@ -214,6 +214,7 @@ enum CreateFederationExecutionResponseType {
   CreateFederationExecutionResponseCouldNotOpenFDD,
   CreateFederationExecutionResponseErrorReadingFDD,
   CreateFederationExecutionResponseCouldNotCreateLogicalTimeFactory,
+  CreateFederationExecutionResponseInconsistentFDD,
   CreateFederationExecutionResponseRTIinternalError
 };
 
@@ -7369,6 +7370,7 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const CreateFederatio
   case CreateFederationExecutionResponseCouldNotOpenFDD: os << "CreateFederationExecutionResponseCouldNotOpenFDD"; break;
   case CreateFederationExecutionResponseErrorReadingFDD: os << "CreateFederationExecutionResponseErrorReadingFDD"; break;
   case CreateFederationExecutionResponseCouldNotCreateLogicalTimeFactory: os << "CreateFederationExecutionResponseCouldNotCreateLogicalTimeFactory"; break;
+  case CreateFederationExecutionResponseInconsistentFDD: os << "CreateFederationExecutionResponseInconsistentFDD"; break;
   case CreateFederationExecutionResponseRTIinternalError: os << "CreateFederationExecutionResponseRTIinternalError"; break;
   }
   return os;

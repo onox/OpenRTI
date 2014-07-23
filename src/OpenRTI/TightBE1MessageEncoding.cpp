@@ -720,11 +720,14 @@ public:
     case CreateFederationExecutionResponseCouldNotCreateLogicalTimeFactory:
       writeUInt32Compressed(4);
       break;
-    case CreateFederationExecutionResponseRTIinternalError:
+    case CreateFederationExecutionResponseInconsistentFDD:
       writeUInt32Compressed(5);
       break;
-    default:
+    case CreateFederationExecutionResponseRTIinternalError:
       writeUInt32Compressed(6);
+      break;
+    default:
+      writeUInt32Compressed(7);
       break;
     }
   }
@@ -2820,6 +2823,9 @@ public:
       value = CreateFederationExecutionResponseCouldNotCreateLogicalTimeFactory;
       break;
     case 5:
+      value = CreateFederationExecutionResponseInconsistentFDD;
+      break;
+    case 6:
       value = CreateFederationExecutionResponseRTIinternalError;
       break;
     default:
