@@ -3222,7 +3222,7 @@ RTI::RTIambassador::retract(RTI::EventRetractionHandle theHandle)
     privateRefs->retract(toOpenRTIMessageRetractionHandle(theHandle));
   } catch (const OpenRTI::InvalidMessageRetractionHandle& e) {
     throw RTI::InvalidRetractionHandle(OpenRTI::utf8ToLocale(e.what()).c_str());
-  } catch (const OpenRTI::TimeRegulationIsNotEnabled& e) {
+  } catch (const OpenRTI::TimeRegulationIsNotEnabled&) {
   } catch (const OpenRTI::MessageCanNoLongerBeRetracted& e) {
     throw RTI::InvalidRetractionHandle(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
@@ -4086,7 +4086,7 @@ RTI::RTIambassador::enableClassRelevanceAdvisorySwitch()
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     privateRefs->enableObjectClassRelevanceAdvisorySwitch();
-  } catch (const OpenRTI::ObjectClassRelevanceAdvisorySwitchIsOn& e) {
+  } catch (const OpenRTI::ObjectClassRelevanceAdvisorySwitchIsOn&) {
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::SaveInProgress& e) {
@@ -4113,7 +4113,7 @@ RTI::RTIambassador::disableClassRelevanceAdvisorySwitch()
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     privateRefs->disableObjectClassRelevanceAdvisorySwitch();
-  } catch (const OpenRTI::ObjectClassRelevanceAdvisorySwitchIsOff& e) {
+  } catch (const OpenRTI::ObjectClassRelevanceAdvisorySwitchIsOff&) {
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::SaveInProgress& e) {
@@ -4140,7 +4140,7 @@ RTI::RTIambassador::enableAttributeRelevanceAdvisorySwitch()
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     privateRefs->enableAttributeRelevanceAdvisorySwitch();
-  } catch (const OpenRTI::AttributeRelevanceAdvisorySwitchIsOn& e) {
+  } catch (const OpenRTI::AttributeRelevanceAdvisorySwitchIsOn&) {
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::SaveInProgress& e) {
@@ -4167,7 +4167,7 @@ RTI::RTIambassador::disableAttributeRelevanceAdvisorySwitch()
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     privateRefs->disableAttributeRelevanceAdvisorySwitch();
-  } catch (const OpenRTI::AttributeRelevanceAdvisorySwitchIsOff& e) {
+  } catch (const OpenRTI::AttributeRelevanceAdvisorySwitchIsOff&) {
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::SaveInProgress& e) {
@@ -4194,7 +4194,7 @@ RTI::RTIambassador::enableAttributeScopeAdvisorySwitch()
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     privateRefs->enableAttributeScopeAdvisorySwitch();
-  } catch (const OpenRTI::AttributeScopeAdvisorySwitchIsOn& e) {
+  } catch (const OpenRTI::AttributeScopeAdvisorySwitchIsOn&) {
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::SaveInProgress& e) {
@@ -4221,7 +4221,7 @@ RTI::RTIambassador::disableAttributeScopeAdvisorySwitch()
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     privateRefs->disableAttributeScopeAdvisorySwitch();
-  } catch (const OpenRTI::AttributeScopeAdvisorySwitchIsOff& e) {
+  } catch (const OpenRTI::AttributeScopeAdvisorySwitchIsOff&) {
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::SaveInProgress& e) {
@@ -4248,7 +4248,7 @@ RTI::RTIambassador::enableInteractionRelevanceAdvisorySwitch()
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     privateRefs->enableInteractionRelevanceAdvisorySwitch();
-  } catch (const OpenRTI::InteractionRelevanceAdvisorySwitchIsOn& e) {
+  } catch (const OpenRTI::InteractionRelevanceAdvisorySwitchIsOn&) {
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::SaveInProgress& e) {
@@ -4275,7 +4275,7 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
   RTIambPrivateRefs::ConcurrentAccessGuard concurrentAccessGuard(*privateRefs);
   try {
     privateRefs->disableInteractionRelevanceAdvisorySwitch();
-  } catch (const OpenRTI::InteractionRelevanceAdvisorySwitchIsOff& e) {
+  } catch (const OpenRTI::InteractionRelevanceAdvisorySwitchIsOff&) {
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
     throw RTI::FederateNotExecutionMember(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::SaveInProgress& e) {
