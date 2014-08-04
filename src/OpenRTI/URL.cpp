@@ -75,7 +75,7 @@ quote(const std::string& unquoted, bool pathMode = false)
         quote(quoted, *i);
       break;
     default:
-      if (*i <= 127) {
+      if (((unsigned char)*i) <= 127) {
         quoted.push_back(*i);
       } else {
         quote(quoted, *i);
