@@ -2309,7 +2309,7 @@ public:
       throw FederateNotExecutionMember();
     if (!messageRetractionHandle.valid())
       throw InvalidMessageRetractionHandle(messageRetractionHandle.toString());
-    if (!messageRetractionHandle.getFederateHandle() != getFederateHandle())
+    if (messageRetractionHandle.getFederateHandle() != getFederateHandle())
       throw InvalidMessageRetractionHandle(messageRetractionHandle.toString());
     if (!getTimeManagement()->getTimeRegulationEnabled())
       throw TimeRegulationIsNotEnabled();
@@ -2414,7 +2414,7 @@ public:
     for (RegionHandleVector::const_iterator i = regionHandleVector.begin(); i != regionHandleVector.end(); ++i) {
       if (!i->valid())
         throw InvalidRegion(i->toString());
-      if (!i->getFederateHandle() != getFederateHandle())
+      if (i->getFederateHandle() != getFederateHandle())
         throw RegionNotCreatedByThisFederate(i->toString());
       Federate::RegionData* region = _federate->getRegion(*i);
       if (!region)
@@ -2446,7 +2446,7 @@ public:
     Federate::RegionData* region = _federate->getRegion(regionHandle);
     if (!region)
       throw InvalidRegion(regionHandle.toString());
-    if (!regionHandle.getFederateHandle() != getFederateHandle())
+    if (regionHandle.getFederateHandle() != getFederateHandle())
       throw RegionNotCreatedByThisFederate(regionHandle.toString());
 
     // FIXME check for in use
