@@ -131,15 +131,9 @@ typedef std::string String;
 
 typedef uint32_t Unsigned;
 
-typedef int32_t Int;
-
-typedef size_t SizeType;
-
 typedef double Double;
 
 typedef std::vector<AttributeHandle> AttributeHandleVector;
-
-typedef std::set<FederateHandle> FederateHandleSet;
 
 typedef std::vector<FederateHandle> FederateHandleVector;
 
@@ -154,8 +148,6 @@ typedef std::vector<ObjectInstanceHandle> ObjectInstanceHandleVector;
 typedef std::vector<RegionHandle> RegionHandleVector;
 
 typedef std::vector<ModuleHandle> ModuleHandleVector;
-
-typedef std::set<ModuleHandle> ModuleHandleSet;
 
 typedef std::vector<String> StringVector;
 
@@ -275,22 +267,14 @@ typedef std::vector<FOMStringModule> FOMStringModuleList;
 class FOMTransportationType;
 typedef std::vector<FOMTransportationType> FOMTransportationTypeList;
 
-typedef std::map<String, FOMTransportationType> FOMTransportationTypeMap;
-
 class FOMDimension;
 typedef std::vector<FOMDimension> FOMDimensionList;
-
-typedef std::map<String, FOMDimension> FOMDimensionMap;
 
 class FOMRoutingSpace;
 typedef std::vector<FOMRoutingSpace> FOMRoutingSpaceList;
 
-typedef std::map<String, FOMRoutingSpace> FOMRoutingSpaceMap;
-
 class FOMParameter;
 typedef std::vector<FOMParameter> FOMParameterList;
-
-typedef std::map<String, FOMParameter> FOMParameterMap;
 
 class FOMInteractionClass;
 typedef std::vector<FOMInteractionClass> FOMInteractionClassList;
@@ -376,15 +360,9 @@ typedef std::string String;
 
 typedef uint32_t Unsigned;
 
-typedef int32_t Int;
-
-typedef size_t SizeType;
-
 typedef double Double;
 
 typedef std::vector<AttributeHandle> AttributeHandleVector;
-
-typedef std::set<FederateHandle> FederateHandleSet;
 
 typedef std::vector<FederateHandle> FederateHandleVector;
 
@@ -399,8 +377,6 @@ typedef std::vector<ObjectInstanceHandle> ObjectInstanceHandleVector;
 typedef std::vector<RegionHandle> RegionHandleVector;
 
 typedef std::vector<ModuleHandle> ModuleHandleVector;
-
-typedef std::set<ModuleHandle> ModuleHandleSet;
 
 typedef std::vector<String> StringVector;
 
@@ -1805,8 +1781,6 @@ private:
 
 typedef std::vector<FOMTransportationType> FOMTransportationTypeList;
 
-typedef std::map<String, FOMTransportationType> FOMTransportationTypeMap;
-
 class OPENRTI_API FOMDimension {
 public:
   FOMDimension() : 
@@ -1902,8 +1876,6 @@ private:
 };
 
 typedef std::vector<FOMDimension> FOMDimensionList;
-
-typedef std::map<String, FOMDimension> FOMDimensionMap;
 
 class OPENRTI_API FOMRoutingSpace {
 public:
@@ -2001,8 +1973,6 @@ private:
 
 typedef std::vector<FOMRoutingSpace> FOMRoutingSpaceList;
 
-typedef std::map<String, FOMRoutingSpace> FOMRoutingSpaceMap;
-
 class OPENRTI_API FOMParameter {
 public:
   FOMParameter() : 
@@ -2083,8 +2053,6 @@ private:
 };
 
 typedef std::vector<FOMParameter> FOMParameterList;
-
-typedef std::map<String, FOMParameter> FOMParameterMap;
 
 class OPENRTI_API FOMInteractionClass {
 public:
@@ -6825,22 +6793,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const AttributeHandle
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
-operator<<(std::basic_ostream<char_type, traits_type>& os, const FederateHandleSet& value)
-{
-  os << "{ ";
-  FederateHandleSet::const_iterator i = value.begin();
-  if (i != value.end()) {
-    os << *i;
-    while (++i != value.end()) {
-      os << ", " << *i;
-    }
-  }
-  os << " }";
-  return os;
-}
-
-template<typename char_type, typename traits_type>
-std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const FederateHandleVector& value)
 {
   os << "{ ";
@@ -6941,22 +6893,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const ModuleHandleVec
 {
   os << "{ ";
   ModuleHandleVector::const_iterator i = value.begin();
-  if (i != value.end()) {
-    os << *i;
-    while (++i != value.end()) {
-      os << ", " << *i;
-    }
-  }
-  os << " }";
-  return os;
-}
-
-template<typename char_type, typename traits_type>
-std::basic_ostream<char_type, traits_type>&
-operator<<(std::basic_ostream<char_type, traits_type>& os, const ModuleHandleSet& value)
-{
-  os << "{ ";
-  ModuleHandleSet::const_iterator i = value.begin();
   if (i != value.end()) {
     os << *i;
     while (++i != value.end()) {
@@ -7756,22 +7692,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMTransportati
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
-operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMTransportationTypeMap& value)
-{
-  os << "{ ";
-  FOMTransportationTypeMap::const_iterator i = value.begin();
-  if (i != value.end()) {
-    os << i->first << ": " << i->second;
-    while (++i != value.end()) {
-      os << ", " << i->first << ": " << i->second;
-    }
-  }
-  os << " }";
-  return os;
-}
-
-template<typename char_type, typename traits_type>
-std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMDimension& value)
 {
   os << "{ ";
@@ -7794,22 +7714,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMDimensionLis
     os << *i;
     while (++i != value.end()) {
       os << ", " << *i;
-    }
-  }
-  os << " }";
-  return os;
-}
-
-template<typename char_type, typename traits_type>
-std::basic_ostream<char_type, traits_type>&
-operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMDimensionMap& value)
-{
-  os << "{ ";
-  FOMDimensionMap::const_iterator i = value.begin();
-  if (i != value.end()) {
-    os << i->first << ": " << i->second;
-    while (++i != value.end()) {
-      os << ", " << i->first << ": " << i->second;
     }
   }
   os << " }";
@@ -7848,22 +7752,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMRoutingSpace
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
-operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMRoutingSpaceMap& value)
-{
-  os << "{ ";
-  FOMRoutingSpaceMap::const_iterator i = value.begin();
-  if (i != value.end()) {
-    os << i->first << ": " << i->second;
-    while (++i != value.end()) {
-      os << ", " << i->first << ": " << i->second;
-    }
-  }
-  os << " }";
-  return os;
-}
-
-template<typename char_type, typename traits_type>
-std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMParameter& value)
 {
   os << "{ ";
@@ -7884,22 +7772,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMParameterLis
     os << *i;
     while (++i != value.end()) {
       os << ", " << *i;
-    }
-  }
-  os << " }";
-  return os;
-}
-
-template<typename char_type, typename traits_type>
-std::basic_ostream<char_type, traits_type>&
-operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMParameterMap& value)
-{
-  os << "{ ";
-  FOMParameterMap::const_iterator i = value.begin();
-  if (i != value.end()) {
-    os << i->first << ": " << i->second;
-    while (++i != value.end()) {
-      os << ", " << i->first << ": " << i->second;
     }
   }
   os << " }";

@@ -330,16 +330,6 @@ public:
     writeUInt32Compressed(value);
   }
 
-  void writeInt(const int32_t& value)
-  {
-    writeInt32Compressed(value);
-  }
-
-  void writeSizeType(const size_t& value)
-  {
-    writeSizeTCompressed(value);
-  }
-
   void writeDouble(const double& value)
   {
     writeFloat64Compressed(value);
@@ -428,14 +418,6 @@ public:
     }
   }
 
-  void writeFederateHandleSet(const FederateHandleSet& value)
-  {
-    writeSizeTCompressed(value.size());
-    for (FederateHandleSet::const_iterator i = value.begin(); i != value.end(); ++i) {
-      writeFederateHandle(*i);
-    }
-  }
-
   void writeFederateHandleVector(const FederateHandleVector& value)
   {
     writeSizeTCompressed(value.size());
@@ -488,14 +470,6 @@ public:
   {
     writeSizeTCompressed(value.size());
     for (ModuleHandleVector::const_iterator i = value.begin(); i != value.end(); ++i) {
-      writeModuleHandle(*i);
-    }
-  }
-
-  void writeModuleHandleSet(const ModuleHandleSet& value)
-  {
-    writeSizeTCompressed(value.size());
-    for (ModuleHandleSet::const_iterator i = value.begin(); i != value.end(); ++i) {
       writeModuleHandle(*i);
     }
   }
@@ -974,15 +948,6 @@ public:
     }
   }
 
-  void writeFOMTransportationTypeMap(const FOMTransportationTypeMap& value)
-  {
-    writeSizeTCompressed(value.size());
-    for (FOMTransportationTypeMap::const_iterator i = value.begin(); i != value.end(); ++i) {
-      writeString(i->first);
-      writeFOMTransportationType(i->second);
-    }
-  }
-
   void writeFOMDimension(const FOMDimension& value)
   {
     writeString(value.getName());
@@ -995,15 +960,6 @@ public:
     writeSizeTCompressed(value.size());
     for (FOMDimensionList::const_iterator i = value.begin(); i != value.end(); ++i) {
       writeFOMDimension(*i);
-    }
-  }
-
-  void writeFOMDimensionMap(const FOMDimensionMap& value)
-  {
-    writeSizeTCompressed(value.size());
-    for (FOMDimensionMap::const_iterator i = value.begin(); i != value.end(); ++i) {
-      writeString(i->first);
-      writeFOMDimension(i->second);
     }
   }
 
@@ -1022,15 +978,6 @@ public:
     }
   }
 
-  void writeFOMRoutingSpaceMap(const FOMRoutingSpaceMap& value)
-  {
-    writeSizeTCompressed(value.size());
-    for (FOMRoutingSpaceMap::const_iterator i = value.begin(); i != value.end(); ++i) {
-      writeString(i->first);
-      writeFOMRoutingSpace(i->second);
-    }
-  }
-
   void writeFOMParameter(const FOMParameter& value)
   {
     writeString(value.getName());
@@ -1042,15 +989,6 @@ public:
     writeSizeTCompressed(value.size());
     for (FOMParameterList::const_iterator i = value.begin(); i != value.end(); ++i) {
       writeFOMParameter(*i);
-    }
-  }
-
-  void writeFOMParameterMap(const FOMParameterMap& value)
-  {
-    writeSizeTCompressed(value.size());
-    for (FOMParameterMap::const_iterator i = value.begin(); i != value.end(); ++i) {
-      writeString(i->first);
-      writeFOMParameter(i->second);
     }
   }
 
@@ -2422,16 +2360,6 @@ public:
     value = readUInt32Compressed();
   }
 
-  void readInt(int32_t& value)
-  {
-    value = readInt32Compressed();
-  }
-
-  void readSizeType(size_t& value)
-  {
-    value = readSizeTCompressed();
-  }
-
   void readDouble(double& value)
   {
     value = readFloat64Compressed();
@@ -2520,16 +2448,6 @@ public:
     }
   }
 
-  void readFederateHandleSet(FederateHandleSet& value)
-  {
-    size_t size = readSizeTCompressed();
-    for (; size != 0; --size) {
-      FederateHandle scalar;
-      readFederateHandle(scalar);
-      value.insert(scalar);
-    }
-  }
-
   void readFederateHandleVector(FederateHandleVector& value)
   {
     value.resize(readSizeTCompressed());
@@ -2585,16 +2503,6 @@ public:
     value.resize(readSizeTCompressed());
     for (ModuleHandleVector::iterator i = value.begin(); i != value.end(); ++i) {
       readModuleHandle(*i);
-    }
-  }
-
-  void readModuleHandleSet(ModuleHandleSet& value)
-  {
-    size_t size = readSizeTCompressed();
-    for (; size != 0; --size) {
-      ModuleHandle scalar;
-      readModuleHandle(scalar);
-      value.insert(scalar);
     }
   }
 
@@ -3076,16 +2984,6 @@ public:
     }
   }
 
-  void readFOMTransportationTypeMap(FOMTransportationTypeMap& value)
-  {
-    size_t size = readSizeTCompressed();
-    for (; size != 0; --size) {
-      String key;
-      readString(key);
-      readFOMTransportationType(value[key]);
-    }
-  }
-
   void readFOMDimension(FOMDimension& value)
   {
     readString(value.getName());
@@ -3098,16 +2996,6 @@ public:
     value.resize(readSizeTCompressed());
     for (FOMDimensionList::iterator i = value.begin(); i != value.end(); ++i) {
       readFOMDimension(*i);
-    }
-  }
-
-  void readFOMDimensionMap(FOMDimensionMap& value)
-  {
-    size_t size = readSizeTCompressed();
-    for (; size != 0; --size) {
-      String key;
-      readString(key);
-      readFOMDimension(value[key]);
     }
   }
 
@@ -3126,16 +3014,6 @@ public:
     }
   }
 
-  void readFOMRoutingSpaceMap(FOMRoutingSpaceMap& value)
-  {
-    size_t size = readSizeTCompressed();
-    for (; size != 0; --size) {
-      String key;
-      readString(key);
-      readFOMRoutingSpace(value[key]);
-    }
-  }
-
   void readFOMParameter(FOMParameter& value)
   {
     readString(value.getName());
@@ -3147,16 +3025,6 @@ public:
     value.resize(readSizeTCompressed());
     for (FOMParameterList::iterator i = value.begin(); i != value.end(); ++i) {
       readFOMParameter(*i);
-    }
-  }
-
-  void readFOMParameterMap(FOMParameterMap& value)
-  {
-    size_t size = readSizeTCompressed();
-    for (; size != 0; --size) {
-      String key;
-      readString(key);
-      readFOMParameter(value[key]);
     }
   }
 

@@ -101,9 +101,6 @@
   <type name="Bool" ctype="bool" encoding="Bool"/>
   <type name="String" ctype="std::string" encoding="String"/>
   <type name="Unsigned" ctype="uint32_t" encoding="UInt32"/>
-  <type name="Int" ctype="int32_t" encoding="Int32"/>
-  <!-- FIXME Make that UInt64 -->
-  <type name="SizeType" ctype="size_t" encoding="SizeT"/>
   <type name="Double" ctype="double" encoding="Float64"/>
 
   <type name="FederationHandle" ctype="FederationHandle" encoding="UInt16"/>
@@ -125,7 +122,6 @@
   <type name="RegionHandle" ctype="RegionHandle" encoding="UInt64"/>
 
   <type name="AttributeHandleVector" type="vector" scalar="AttributeHandle"/>
-  <type name="FederateHandleSet" type="set" scalar="FederateHandle"/>
   <type name="FederateHandleVector" type="vector" scalar="FederateHandle"/>
   <type name="ParameterHandleVector" type="vector" scalar="ParameterHandle"/>
   <type name="DimensionHandleVector" type="vector" scalar="DimensionHandle"/>
@@ -133,7 +129,6 @@
   <type name="ObjectInstanceHandleVector" type="vector" scalar="ObjectInstanceHandle"/>
   <type name="RegionHandleVector" type="vector" scalar="RegionHandle"/>
   <type name="ModuleHandleVector" type="vector" scalar="ModuleHandle"/>
-  <type name="ModuleHandleSet" type="set" scalar="ModuleHandle"/>
 
   <type name="StringVector" type="vector" scalar="String"/>
   <type name="StringSet" type="set" scalar="String"/>
@@ -312,7 +307,6 @@
     <field name="TransportationType" type="TransportationType"/>
   </type>
   <type name="FOMTransportationTypeList" type="vector" scalar="FOMTransportationType"/>
-  <type name="FOMTransportationTypeMap" type="map" key="String" value="FOMTransportationType"/>
 
   <type name="FOMDimension" type="struct" copyOnWrite="true">
     <field name="Name" type="String"/>
@@ -320,7 +314,6 @@
     <field name="UpperBound" type="Unsigned"/>
   </type>
   <type name="FOMDimensionList" type="vector" scalar="FOMDimension"/>
-  <type name="FOMDimensionMap" type="map" key="String" value="FOMDimension"/>
 
   <type name="FOMRoutingSpace" type="struct" copyOnWrite="true">
     <field name="Name" type="String"/>
@@ -328,14 +321,12 @@
     <field name="DimensionHandleSet" type="DimensionHandleSet"/>
   </type>
   <type name="FOMRoutingSpaceList" type="vector" scalar="FOMRoutingSpace"/>
-  <type name="FOMRoutingSpaceMap" type="map" key="String" value="FOMRoutingSpace"/>
 
   <type name="FOMParameter" type="struct" copyOnWrite="true">
     <field name="Name" type="String"/>
     <field name="ParameterHandle" type="ParameterHandle"/>
   </type>
   <type name="FOMParameterList" type="vector" scalar="FOMParameter"/>
-  <type name="FOMParameterMap" type="map" key="String" value="FOMParameter"/>
 
   <type name="FOMInteractionClass" type="struct" copyOnWrite="true">
     <field name="Name" type="String"/>
