@@ -29,15 +29,13 @@
 namespace OpenRTI {
 
 template<typename T>
-class OPENRTI_LOCAL Hash {
-public:
-  std::size_t operator()(const T& handle) const
-  { return handle.getHash(); }
+struct OPENRTI_LOCAL Hash {
+  std::size_t operator()(const T& value) const
+  { return 0; }
 };
 
 template<>
-class OPENRTI_LOCAL Hash<std::string> {
-public:
+struct OPENRTI_LOCAL Hash<std::string> {
   std::size_t operator()(const std::string& string) const
   {
     std::size_t hash = 0;
@@ -48,8 +46,7 @@ public:
 };
 
 template<>
-class OPENRTI_LOCAL Hash<std::vector<std::string> > {
-public:
+struct OPENRTI_LOCAL Hash<std::vector<std::string> > {
   std::size_t operator()(const std::vector<std::string>& stringVector) const
   {
     std::size_t hash = 0;

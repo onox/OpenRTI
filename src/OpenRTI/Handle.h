@@ -31,6 +31,9 @@
 namespace OpenRTI {
 
 template<typename T>
+class Hash;
+
+template<typename T>
 class OPENRTI_LOCAL Handle {
 public:
   typedef T value_type;
@@ -80,8 +83,8 @@ public:
   bool operator!=(const Handle& handle) const
   { return _handle != handle._handle; }
 
-  const T& getHash() const
-  { return _handle; }
+  std::size_t getHash() const
+  { return std::size_t(_handle); }
 
   std::string getReservedName(const char* prefix) const
   {
@@ -143,6 +146,12 @@ public:                                                           \
   }                                                               \
 };                                                                \
                                                                   \
+template<>                                                        \
+struct OPENRTI_LOCAL Hash<HandleName> {                           \
+  std::size_t operator()(const HandleName& handle) const          \
+  { return handle.getHash(); }                                    \
+};                                                                \
+                                                                  \
 template<typename char_type, typename traits_type>                \
 inline                                                            \
 std::basic_ostream<char_type, traits_type>&                       \
@@ -198,6 +207,13 @@ public:
   }
 };
 
+template<>
+class OPENRTI_LOCAL Hash<MessageRetractionHandle> {
+public:
+  std::size_t operator()(const MessageRetractionHandle& handle) const
+  { return handle.getHash(); }
+};
+
 // The regions are private to the creator, so prefix the regions with the federate handle,
 // This way we can avoid tracking the region handles globally.
 DECLARE_HANDLE_TYPE(LocalRegionHandle, uint32_t)
@@ -225,6 +241,13 @@ public:
     stream << "RegionHandle(" << getFederateHandle().getHandle() << "," << getLocalRegionHandle().getHandle() << ")";
     return stream.str();
   }
+};
+
+template<>
+class OPENRTI_LOCAL Hash<RegionHandle> {
+public:
+  std::size_t operator()(const RegionHandle& handle) const
+  { return handle.getHash(); }
 };
 
 #undef DECLARE_HANDLE_TYPE
