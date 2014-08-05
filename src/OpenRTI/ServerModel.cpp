@@ -962,15 +962,15 @@ Module::~Module()
 }
 
 void
-Module::setModuleHandle(const FOMModuleHandle& moduleHandle)
+Module::setModuleHandle(const ModuleHandle& moduleHandle)
 {
-  HandleStringEntity<Module, FOMModuleHandle>::_setHandle(moduleHandle);
+  HandleStringEntity<Module, ModuleHandle>::_setHandle(moduleHandle);
 }
 
 void
 Module::setContent(const std::string& content)
 {
-  HandleStringEntity<Module, FOMModuleHandle>::_setString(content);
+  HandleStringEntity<Module, ModuleHandle>::_setString(content);
 }
 
 void
@@ -1005,7 +1005,7 @@ Module::getIsInUse() const
 void
 Module::getModule(FOMModule& module)
 {
-  module.setFOMModuleHandle(getModuleHandle());
+  module.setModuleHandle(getModuleHandle());
   /// FIXME
   // FOMSwitchList _switchList;
   module.setArtificialInteractionRoot(getArtificialInteractionRoot());
@@ -2114,13 +2114,13 @@ Federation::getOrCreate(Module& module, const FOMObjectClass& fomObjectClass)
 Module*
 Federation::getOrCreate(const FOMModule& fomModule, bool isBaseModule)
 {
-  Module::HandleMap::iterator i = _moduleHandleModuleMap.find(fomModule.getFOMModuleHandle());
+  Module::HandleMap::iterator i = _moduleHandleModuleMap.find(fomModule.getModuleHandle());
   if (i != _moduleHandleModuleMap.end()) {
     return i.get();
   } else {
-    _moduleHandleAllocator.take(fomModule.getFOMModuleHandle());
+    _moduleHandleAllocator.take(fomModule.getModuleHandle());
     Module* module = new Module(*this);
-    module->setModuleHandle(fomModule.getFOMModuleHandle());
+    module->setModuleHandle(fomModule.getModuleHandle());
     module->setContent(fomModule.getContent());
     module->setIsBaseModule(isBaseModule);
     module->setArtificialInteractionRoot(fomModule.getArtificialInteractionRoot());
@@ -2187,7 +2187,7 @@ Federation::insert(Federate& federate, const FOMModuleList& fomModuleList)
 }
 
 void
-Federation::erase(const FOMModuleHandle& moduleHandle)
+Federation::erase(const ModuleHandle& moduleHandle)
 {
   Module::HandleMap::iterator i = _moduleHandleModuleMap.find(moduleHandle);
   OpenRTIAssert(i != _moduleHandleModuleMap.end());
@@ -2265,7 +2265,7 @@ Federation::getBaseModuleList(FOMModuleList& moduleList)
 }
 
 Module*
-Federation::getModule(const FOMModuleHandle& moduleHandle)
+Federation::getModule(const ModuleHandle& moduleHandle)
 {
   Module::HandleMap::iterator i = _moduleHandleModuleMap.find(moduleHandle);
   if (i == _moduleHandleModuleMap.end())

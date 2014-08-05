@@ -135,7 +135,7 @@ typedef HandleAllocator<ObjectInstanceHandle> ObjectInstanceHandleAllocator;
 typedef HandleAllocator<FederateHandle> FederateHandleAllocator;
 typedef HandleAllocator<FederationHandle> FederationHandleAllocator;
 
-typedef HandleAllocator<FOMModuleHandle> FOMModuleHandleAllocator;
+typedef HandleAllocator<ModuleHandle> ModuleHandleAllocator;
 typedef HandleAllocator<DimensionHandle> DimensionHandleAllocator;
 typedef HandleAllocator<InteractionClassHandle> InteractionClassHandleAllocator;
 typedef HandleAllocator<ObjectClassHandle> ObjectClassHandleAllocator;

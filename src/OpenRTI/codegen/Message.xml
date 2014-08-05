@@ -107,7 +107,7 @@
   <type name="Double" ctype="double" encoding="Float64"/>
 
   <type name="FederationHandle" ctype="FederationHandle" encoding="UInt16"/>
-  <type name="FOMModuleHandle" ctype="FOMModuleHandle" encoding="UInt16"/>
+  <type name="ModuleHandle" ctype="ModuleHandle" encoding="UInt16"/>
 
   <type name="AttributeHandle" ctype="AttributeHandle" encoding="UInt32"/>
   <type name="DimensionHandle" ctype="DimensionHandle" encoding="UInt32"/>
@@ -132,8 +132,8 @@
   <type name="DimensionHandleSet" type="set" scalar="DimensionHandle"/>
   <type name="ObjectInstanceHandleVector" type="vector" scalar="ObjectInstanceHandle"/>
   <type name="RegionHandleVector" type="vector" scalar="RegionHandle"/>
-  <type name="FOMModuleHandleVector" type="vector" scalar="FOMModuleHandle"/>
-  <type name="FOMModuleHandleSet" type="set" scalar="FOMModuleHandle"/>
+  <type name="ModuleHandleVector" type="vector" scalar="ModuleHandle"/>
+  <type name="ModuleHandleSet" type="set" scalar="ModuleHandle"/>
 
   <type name="StringVector" type="vector" scalar="String"/>
   <type name="StringSet" type="set" scalar="String"/>
@@ -379,7 +379,7 @@
   <type name="FOMSwitchList" type="vector" scalar="FOMSwitch"/>
 
   <type name="FOMModule" type="struct" copyOnWrite="true">
-    <field name="FOMModuleHandle" type="FOMModuleHandle"/>
+    <field name="ModuleHandle" type="ModuleHandle"/>
     <field name="TransportationTypeList" type="FOMTransportationTypeList"/>
     <field name="DimensionList" type="FOMDimensionList"/>
     <field name="RoutingSpaceList" type="FOMRoutingSpaceList"/>

@@ -153,9 +153,9 @@ typedef std::vector<ObjectInstanceHandle> ObjectInstanceHandleVector;
 
 typedef std::vector<RegionHandle> RegionHandleVector;
 
-typedef std::vector<FOMModuleHandle> FOMModuleHandleVector;
+typedef std::vector<ModuleHandle> ModuleHandleVector;
 
-typedef std::set<FOMModuleHandle> FOMModuleHandleSet;
+typedef std::set<ModuleHandle> ModuleHandleSet;
 
 typedef std::vector<String> StringVector;
 
@@ -398,9 +398,9 @@ typedef std::vector<ObjectInstanceHandle> ObjectInstanceHandleVector;
 
 typedef std::vector<RegionHandle> RegionHandleVector;
 
-typedef std::vector<FOMModuleHandle> FOMModuleHandleVector;
+typedef std::vector<ModuleHandle> ModuleHandleVector;
 
-typedef std::set<FOMModuleHandle> FOMModuleHandleSet;
+typedef std::set<ModuleHandle> ModuleHandleSet;
 
 typedef std::vector<String> StringVector;
 
@@ -2661,16 +2661,16 @@ public:
   FOMModule() : 
     _impl(new Implementation)
   { }
-  void setFOMModuleHandle(const FOMModuleHandle& value)
-  { getImpl()._fOMModuleHandle = value; }
+  void setModuleHandle(const ModuleHandle& value)
+  { getImpl()._moduleHandle = value; }
 #if 201103L <= __cplusplus
-  void setFOMModuleHandle(FOMModuleHandle&& value)
-  { getImpl()._fOMModuleHandle = value; }
+  void setModuleHandle(ModuleHandle&& value)
+  { getImpl()._moduleHandle = value; }
 #endif
-  FOMModuleHandle& getFOMModuleHandle()
-  { return getImpl()._fOMModuleHandle; }
-  const FOMModuleHandle& getFOMModuleHandle() const
-  { return getConstImpl()._fOMModuleHandle; }
+  ModuleHandle& getModuleHandle()
+  { return getImpl()._moduleHandle; }
+  const ModuleHandle& getModuleHandle() const
+  { return getConstImpl()._moduleHandle; }
 
   void setTransportationTypeList(const FOMTransportationTypeList& value)
   { getImpl()._transportationTypeList = value; }
@@ -2791,7 +2791,7 @@ public:
   {
     if (_impl.get() == rhs._impl.get())
       return true;
-    if (getFOMModuleHandle() != rhs.getFOMModuleHandle()) return false;
+    if (getModuleHandle() != rhs.getModuleHandle()) return false;
     if (getTransportationTypeList() != rhs.getTransportationTypeList()) return false;
     if (getDimensionList() != rhs.getDimensionList()) return false;
     if (getRoutingSpaceList() != rhs.getRoutingSpaceList()) return false;
@@ -2808,8 +2808,8 @@ public:
   {
     if (_impl.get() == rhs._impl.get())
       return false;
-    if (getFOMModuleHandle() < rhs.getFOMModuleHandle()) return true;
-    if (rhs.getFOMModuleHandle() < getFOMModuleHandle()) return false;
+    if (getModuleHandle() < rhs.getModuleHandle()) return true;
+    if (rhs.getModuleHandle() < getModuleHandle()) return false;
     if (getTransportationTypeList() < rhs.getTransportationTypeList()) return true;
     if (rhs.getTransportationTypeList() < getTransportationTypeList()) return false;
     if (getDimensionList() < rhs.getDimensionList()) return true;
@@ -2842,7 +2842,7 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
-    FOMModuleHandle _fOMModuleHandle;
+    ModuleHandle _moduleHandle;
     FOMTransportationTypeList _transportationTypeList;
     FOMDimensionList _dimensionList;
     FOMRoutingSpaceList _routingSpaceList;
@@ -6949,10 +6949,10 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const RegionHandleVec
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
-operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModuleHandleVector& value)
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ModuleHandleVector& value)
 {
   os << "{ ";
-  FOMModuleHandleVector::const_iterator i = value.begin();
+  ModuleHandleVector::const_iterator i = value.begin();
   if (i != value.end()) {
     os << *i;
     while (++i != value.end()) {
@@ -6965,10 +6965,10 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModuleHandle
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
-operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModuleHandleSet& value)
+operator<<(std::basic_ostream<char_type, traits_type>& os, const ModuleHandleSet& value)
 {
   os << "{ ";
-  FOMModuleHandleSet::const_iterator i = value.begin();
+  ModuleHandleSet::const_iterator i = value.begin();
   if (i != value.end()) {
     os << *i;
     while (++i != value.end()) {
@@ -8085,7 +8085,7 @@ std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const FOMModule& value)
 {
   os << "{ ";
-  os << "fOMModuleHandle: " << value.getFOMModuleHandle();
+  os << "moduleHandle: " << value.getModuleHandle();
   os << ", ";
   os << "transportationTypeList: " << value.getTransportationTypeList();
   os << ", ";

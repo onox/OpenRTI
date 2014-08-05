@@ -350,7 +350,7 @@ public:
     writeUInt16Compressed(value);
   }
 
-  void writeFOMModuleHandle(const FOMModuleHandle& value)
+  void writeModuleHandle(const ModuleHandle& value)
   {
     writeUInt16Compressed(value);
   }
@@ -484,19 +484,19 @@ public:
     }
   }
 
-  void writeFOMModuleHandleVector(const FOMModuleHandleVector& value)
+  void writeModuleHandleVector(const ModuleHandleVector& value)
   {
     writeSizeTCompressed(value.size());
-    for (FOMModuleHandleVector::const_iterator i = value.begin(); i != value.end(); ++i) {
-      writeFOMModuleHandle(*i);
+    for (ModuleHandleVector::const_iterator i = value.begin(); i != value.end(); ++i) {
+      writeModuleHandle(*i);
     }
   }
 
-  void writeFOMModuleHandleSet(const FOMModuleHandleSet& value)
+  void writeModuleHandleSet(const ModuleHandleSet& value)
   {
     writeSizeTCompressed(value.size());
-    for (FOMModuleHandleSet::const_iterator i = value.begin(); i != value.end(); ++i) {
-      writeFOMModuleHandle(*i);
+    for (ModuleHandleSet::const_iterator i = value.begin(); i != value.end(); ++i) {
+      writeModuleHandle(*i);
     }
   }
 
@@ -1137,7 +1137,7 @@ public:
 
   void writeFOMModule(const FOMModule& value)
   {
-    writeFOMModuleHandle(value.getFOMModuleHandle());
+    writeModuleHandle(value.getModuleHandle());
     writeFOMTransportationTypeList(value.getTransportationTypeList());
     writeFOMDimensionList(value.getDimensionList());
     writeFOMRoutingSpaceList(value.getRoutingSpaceList());
@@ -2443,7 +2443,7 @@ public:
     value = readUInt16Compressed();
   }
 
-  void readFOMModuleHandle(FOMModuleHandle& value)
+  void readModuleHandle(ModuleHandle& value)
   {
     value = readUInt16Compressed();
   }
@@ -2581,20 +2581,20 @@ public:
     }
   }
 
-  void readFOMModuleHandleVector(FOMModuleHandleVector& value)
+  void readModuleHandleVector(ModuleHandleVector& value)
   {
     value.resize(readSizeTCompressed());
-    for (FOMModuleHandleVector::iterator i = value.begin(); i != value.end(); ++i) {
-      readFOMModuleHandle(*i);
+    for (ModuleHandleVector::iterator i = value.begin(); i != value.end(); ++i) {
+      readModuleHandle(*i);
     }
   }
 
-  void readFOMModuleHandleSet(FOMModuleHandleSet& value)
+  void readModuleHandleSet(ModuleHandleSet& value)
   {
     size_t size = readSizeTCompressed();
     for (; size != 0; --size) {
-      FOMModuleHandle scalar;
-      readFOMModuleHandle(scalar);
+      ModuleHandle scalar;
+      readModuleHandle(scalar);
       value.insert(scalar);
     }
   }
@@ -3244,7 +3244,7 @@ public:
 
   void readFOMModule(FOMModule& value)
   {
-    readFOMModuleHandle(value.getFOMModuleHandle());
+    readModuleHandle(value.getModuleHandle());
     readFOMTransportationTypeList(value.getTransportationTypeList());
     readFOMDimensionList(value.getDimensionList());
     readFOMRoutingSpaceList(value.getRoutingSpaceList());

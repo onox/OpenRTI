@@ -161,7 +161,7 @@ DECLARE_HANDLE_TYPE(ParameterHandle, uint32_t)
 
 DECLARE_HANDLE_TYPE(FederateHandle, uint32_t)
 DECLARE_HANDLE_TYPE(FederationHandle, uint16_t)
-DECLARE_HANDLE_TYPE(FOMModuleHandle, uint16_t)
+DECLARE_HANDLE_TYPE(ModuleHandle, uint16_t)
 
 DECLARE_HANDLE_TYPE(ConnectHandle, unsigned)
 

@@ -1455,10 +1455,10 @@ private:
 
 ////////////////////////////////////////////////////////////
 
-class OPENRTI_LOCAL Module : public HandleStringEntity<Module, FOMModuleHandle> {
+class OPENRTI_LOCAL Module : public HandleStringEntity<Module, ModuleHandle> {
 public:
-  typedef HandleStringEntity<Module, FOMModuleHandle>::HandleMap HandleMap;
-  typedef HandleStringEntity<Module, FOMModuleHandle>::StringMap ContentMap;
+  typedef HandleStringEntity<Module, ModuleHandle>::HandleMap HandleMap;
+  typedef HandleStringEntity<Module, ModuleHandle>::StringMap ContentMap;
 
   Module(Federation& federation);
   ~Module();
@@ -1468,12 +1468,12 @@ public:
   Federation& getFederation()
   { return _federation; }
 
-  const FOMModuleHandle& getModuleHandle() const
-  { return HandleStringEntity<Module, FOMModuleHandle>::_getHandle(); }
-  void setModuleHandle(const FOMModuleHandle& moduleHandle);
+  const ModuleHandle& getModuleHandle() const
+  { return HandleStringEntity<Module, ModuleHandle>::_getHandle(); }
+  void setModuleHandle(const ModuleHandle& moduleHandle);
 
   const std::string& getContent() const
-  { return HandleStringEntity<Module, FOMModuleHandle>::_getString(); }
+  { return HandleStringEntity<Module, ModuleHandle>::_getString(); }
   void setContent(const std::string& content);
 
   // True if this model was provided on federation create.
@@ -1759,13 +1759,13 @@ public:
   void insert(Federate& federate, const FOMModuleList& fomModuleList);
 
   /// Must be unreferenced if being erased
-  void erase(const FOMModuleHandle& moduleHandle);
+  void erase(const ModuleHandle& moduleHandle);
   void erase(Module& module);
 
   /// To push this to other server nodes, we need to collect the module data for the message.
   void getBaseModuleList(FOMModuleList& moduleList);
 
-  Module* getModule(const FOMModuleHandle& moduleHandle);
+  Module* getModule(const ModuleHandle& moduleHandle);
 
   Dimension* getDimension(const DimensionHandle& dimensionHandle);
   UpdateRate* getUpdateRate(const UpdateRateHandle& updateRateHandle);
@@ -1850,7 +1850,7 @@ private:
   // Module/ObjectModel dependent
   Module::ContentMap _moduleContentModuleMap;
   Module::HandleMap _moduleHandleModuleMap;
-  HandleAllocator<FOMModuleHandle> _moduleHandleAllocator;
+  HandleAllocator<ModuleHandle> _moduleHandleAllocator;
 
   /// FIXME, take these to map any name type string combination to one of the two fixed backend types
   // OrderType::NameMap _orderTypeNameOrderTypeMap;
