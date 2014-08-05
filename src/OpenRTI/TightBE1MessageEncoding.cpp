@@ -1167,7 +1167,6 @@ public:
   {
     writeString(value.getFederationExecution());
     writeString(value.getLogicalTimeFactoryName());
-    writeStringVector(value.getFOMModuleFileList());
     writeFOMStringModuleList(value.getFOMStringModuleList());
   }
 
@@ -3274,7 +3273,6 @@ public:
   {
     readString(value.getFederationExecution());
     readString(value.getLogicalTimeFactoryName());
-    readStringVector(value.getFOMModuleFileList());
     readFOMStringModuleList(value.getFOMStringModuleList());
   }
 

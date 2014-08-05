@@ -120,7 +120,6 @@ CreateFederationExecutionRequestMessage::operator==(const CreateFederationExecut
 {
   if (getFederationExecution() != rhs.getFederationExecution()) return false;
   if (getLogicalTimeFactoryName() != rhs.getLogicalTimeFactoryName()) return false;
-  if (getFOMModuleFileList() != rhs.getFOMModuleFileList()) return false;
   if (getFOMStringModuleList() != rhs.getFOMStringModuleList()) return false;
   return true;
 }
@@ -132,8 +131,6 @@ CreateFederationExecutionRequestMessage::operator<(const CreateFederationExecuti
   if (rhs.getFederationExecution() < getFederationExecution()) return false;
   if (getLogicalTimeFactoryName() < rhs.getLogicalTimeFactoryName()) return true;
   if (rhs.getLogicalTimeFactoryName() < getLogicalTimeFactoryName()) return false;
-  if (getFOMModuleFileList() < rhs.getFOMModuleFileList()) return true;
-  if (rhs.getFOMModuleFileList() < getFOMModuleFileList()) return false;
   if (getFOMStringModuleList() < rhs.getFOMStringModuleList()) return true;
   if (rhs.getFOMStringModuleList() < getFOMStringModuleList()) return false;
   return false;

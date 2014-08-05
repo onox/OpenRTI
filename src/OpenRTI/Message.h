@@ -2951,17 +2951,6 @@ public:
   const String& getLogicalTimeFactoryName() const
   { return _logicalTimeFactoryName; }
 
-  void setFOMModuleFileList(const StringVector& value)
-  { _fOMModuleFileList = value; }
-#if 201103L <= __cplusplus
-  void setFOMModuleFileList(StringVector&& value)
-  { _fOMModuleFileList = value; }
-#endif
-  StringVector& getFOMModuleFileList()
-  { return _fOMModuleFileList; }
-  const StringVector& getFOMModuleFileList() const
-  { return _fOMModuleFileList; }
-
   void setFOMStringModuleList(const FOMStringModuleList& value)
   { _fOMStringModuleList = value; }
 #if 201103L <= __cplusplus
@@ -2976,7 +2965,6 @@ public:
 private:
   String _federationExecution;
   String _logicalTimeFactoryName;
-  StringVector _fOMModuleFileList;
   FOMStringModuleList _fOMStringModuleList;
 };
 
@@ -8144,8 +8132,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const CreateFederatio
   os << "federationExecution: " << value.getFederationExecution();
   os << ", ";
   os << "logicalTimeFactoryName: " << value.getLogicalTimeFactoryName();
-  os << ", ";
-  os << "fOMModuleFileList: " << value.getFOMModuleFileList();
   os << ", ";
   os << "fOMStringModuleList: " << value.getFOMStringModuleList();
   os << " }";

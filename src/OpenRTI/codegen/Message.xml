@@ -405,9 +405,6 @@
   <message type="CreateFederationExecutionRequest">
     <field name="FederationExecution" type="String"/>
     <field name="LogicalTimeFactoryName" type="String"/>
-    <!-- The file is currently unused since we parse the file in the ambassador,
-         but if we need server side file handling the file name should be here. -->
-    <field name="FOMModuleFileList" type="StringVector"/>
     <!-- The already parsed list of FOM modules. -->
     <field name="FOMStringModuleList" type="FOMStringModuleList"/>
   </message>
