@@ -2849,7 +2849,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ConnectionLostMessage& rhs) const;
   bool operator<(const ConnectionLostMessage& rhs) const;
   bool operator!=(const ConnectionLostMessage& rhs) const
@@ -2885,7 +2885,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const CreateFederationExecutionRequestMessage& rhs) const;
   bool operator<(const CreateFederationExecutionRequestMessage& rhs) const;
   bool operator!=(const CreateFederationExecutionRequestMessage& rhs) const
@@ -2945,7 +2945,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const CreateFederationExecutionResponseMessage& rhs) const;
   bool operator<(const CreateFederationExecutionResponseMessage& rhs) const;
   bool operator!=(const CreateFederationExecutionResponseMessage& rhs) const
@@ -2993,7 +2993,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const DestroyFederationExecutionRequestMessage& rhs) const;
   bool operator<(const DestroyFederationExecutionRequestMessage& rhs) const;
   bool operator!=(const DestroyFederationExecutionRequestMessage& rhs) const
@@ -3029,7 +3029,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const DestroyFederationExecutionResponseMessage& rhs) const;
   bool operator<(const DestroyFederationExecutionResponseMessage& rhs) const;
   bool operator!=(const DestroyFederationExecutionResponseMessage& rhs) const
@@ -3065,7 +3065,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const EnumerateFederationExecutionsRequestMessage& rhs) const;
   bool operator<(const EnumerateFederationExecutionsRequestMessage& rhs) const;
   bool operator!=(const EnumerateFederationExecutionsRequestMessage& rhs) const
@@ -3089,7 +3089,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const EnumerateFederationExecutionsResponseMessage& rhs) const;
   bool operator<(const EnumerateFederationExecutionsResponseMessage& rhs) const;
   bool operator!=(const EnumerateFederationExecutionsResponseMessage& rhs) const
@@ -3125,7 +3125,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const InsertFederationExecutionMessage& rhs) const;
   bool operator<(const InsertFederationExecutionMessage& rhs) const;
   bool operator!=(const InsertFederationExecutionMessage& rhs) const
@@ -3209,7 +3209,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ShutdownFederationExecutionMessage& rhs) const;
   bool operator<(const ShutdownFederationExecutionMessage& rhs) const;
   bool operator!=(const ShutdownFederationExecutionMessage& rhs) const
@@ -3245,7 +3245,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const EraseFederationExecutionMessage& rhs) const;
   bool operator<(const EraseFederationExecutionMessage& rhs) const;
   bool operator!=(const EraseFederationExecutionMessage& rhs) const
@@ -3281,7 +3281,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ReleaseFederationHandleMessage& rhs) const;
   bool operator<(const ReleaseFederationHandleMessage& rhs) const;
   bool operator!=(const ReleaseFederationHandleMessage& rhs) const
@@ -3317,7 +3317,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const JoinFederationExecutionRequestMessage& rhs) const;
   bool operator<(const JoinFederationExecutionRequestMessage& rhs) const;
   bool operator!=(const JoinFederationExecutionRequestMessage& rhs) const
@@ -3401,7 +3401,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const JoinFederationExecutionResponseMessage& rhs) const;
   bool operator<(const JoinFederationExecutionResponseMessage& rhs) const;
   bool operator!=(const JoinFederationExecutionResponseMessage& rhs) const
@@ -3509,7 +3509,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ResignFederationExecutionLeafRequestMessage& rhs) const;
   bool operator<(const ResignFederationExecutionLeafRequestMessage& rhs) const;
   bool operator!=(const ResignFederationExecutionLeafRequestMessage& rhs) const
@@ -3569,7 +3569,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ResignFederationExecutionRequestMessage& rhs) const;
   bool operator<(const ResignFederationExecutionRequestMessage& rhs) const;
   bool operator!=(const ResignFederationExecutionRequestMessage& rhs) const
@@ -3617,7 +3617,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const JoinFederateNotifyMessage& rhs) const;
   bool operator<(const JoinFederateNotifyMessage& rhs) const;
   bool operator!=(const JoinFederateNotifyMessage& rhs) const
@@ -3689,7 +3689,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ResignFederateNotifyMessage& rhs) const;
   bool operator<(const ResignFederateNotifyMessage& rhs) const;
   bool operator!=(const ResignFederateNotifyMessage& rhs) const
@@ -3737,7 +3737,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ChangeAutomaticResignDirectiveMessage& rhs) const;
   bool operator<(const ChangeAutomaticResignDirectiveMessage& rhs) const;
   bool operator!=(const ChangeAutomaticResignDirectiveMessage& rhs) const
@@ -3797,7 +3797,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const RegisterFederationSynchronizationPointMessage& rhs) const;
   bool operator<(const RegisterFederationSynchronizationPointMessage& rhs) const;
   bool operator!=(const RegisterFederationSynchronizationPointMessage& rhs) const
@@ -3881,7 +3881,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const RegisterFederationSynchronizationPointResponseMessage& rhs) const;
   bool operator<(const RegisterFederationSynchronizationPointResponseMessage& rhs) const;
   bool operator!=(const RegisterFederationSynchronizationPointResponseMessage& rhs) const
@@ -3953,7 +3953,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const AnnounceSynchronizationPointMessage& rhs) const;
   bool operator<(const AnnounceSynchronizationPointMessage& rhs) const;
   bool operator!=(const AnnounceSynchronizationPointMessage& rhs) const
@@ -4037,7 +4037,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const SynchronizationPointAchievedMessage& rhs) const;
   bool operator<(const SynchronizationPointAchievedMessage& rhs) const;
   bool operator!=(const SynchronizationPointAchievedMessage& rhs) const
@@ -4109,7 +4109,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const FederationSynchronizedMessage& rhs) const;
   bool operator<(const FederationSynchronizedMessage& rhs) const;
   bool operator!=(const FederationSynchronizedMessage& rhs) const
@@ -4181,7 +4181,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const EnableTimeRegulationRequestMessage& rhs) const;
   bool operator<(const EnableTimeRegulationRequestMessage& rhs) const;
   bool operator!=(const EnableTimeRegulationRequestMessage& rhs) const
@@ -4253,7 +4253,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const EnableTimeRegulationResponseMessage& rhs) const;
   bool operator<(const EnableTimeRegulationResponseMessage& rhs) const;
   bool operator!=(const EnableTimeRegulationResponseMessage& rhs) const
@@ -4337,7 +4337,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const DisableTimeRegulationRequestMessage& rhs) const;
   bool operator<(const DisableTimeRegulationRequestMessage& rhs) const;
   bool operator!=(const DisableTimeRegulationRequestMessage& rhs) const
@@ -4385,7 +4385,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const CommitLowerBoundTimeStampMessage& rhs) const;
   bool operator<(const CommitLowerBoundTimeStampMessage& rhs) const;
   bool operator!=(const CommitLowerBoundTimeStampMessage& rhs) const
@@ -4469,7 +4469,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const CommitLowerBoundTimeStampResponseMessage& rhs) const;
   bool operator<(const CommitLowerBoundTimeStampResponseMessage& rhs) const;
   bool operator!=(const CommitLowerBoundTimeStampResponseMessage& rhs) const
@@ -4541,7 +4541,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const LockedByNextMessageRequestMessage& rhs) const;
   bool operator<(const LockedByNextMessageRequestMessage& rhs) const;
   bool operator!=(const LockedByNextMessageRequestMessage& rhs) const
@@ -4601,7 +4601,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const TimeConstrainedEnabledMessage& rhs) const;
   bool operator<(const TimeConstrainedEnabledMessage& rhs) const;
   bool operator!=(const TimeConstrainedEnabledMessage& rhs) const
@@ -4625,7 +4625,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const TimeRegulationEnabledMessage& rhs) const;
   bool operator<(const TimeRegulationEnabledMessage& rhs) const;
   bool operator!=(const TimeRegulationEnabledMessage& rhs) const
@@ -4649,7 +4649,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const TimeAdvanceGrantedMessage& rhs) const;
   bool operator<(const TimeAdvanceGrantedMessage& rhs) const;
   bool operator!=(const TimeAdvanceGrantedMessage& rhs) const
@@ -4673,7 +4673,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const InsertRegionMessage& rhs) const;
   bool operator<(const InsertRegionMessage& rhs) const;
   bool operator!=(const InsertRegionMessage& rhs) const
@@ -4721,7 +4721,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const CommitRegionMessage& rhs) const;
   bool operator<(const CommitRegionMessage& rhs) const;
   bool operator!=(const CommitRegionMessage& rhs) const
@@ -4769,7 +4769,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const EraseRegionMessage& rhs) const;
   bool operator<(const EraseRegionMessage& rhs) const;
   bool operator!=(const EraseRegionMessage& rhs) const
@@ -4817,7 +4817,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ChangeInteractionClassPublicationMessage& rhs) const;
   bool operator<(const ChangeInteractionClassPublicationMessage& rhs) const;
   bool operator!=(const ChangeInteractionClassPublicationMessage& rhs) const
@@ -4877,7 +4877,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ChangeObjectClassPublicationMessage& rhs) const;
   bool operator<(const ChangeObjectClassPublicationMessage& rhs) const;
   bool operator!=(const ChangeObjectClassPublicationMessage& rhs) const
@@ -4949,7 +4949,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ChangeInteractionClassSubscriptionMessage& rhs) const;
   bool operator<(const ChangeInteractionClassSubscriptionMessage& rhs) const;
   bool operator!=(const ChangeInteractionClassSubscriptionMessage& rhs) const
@@ -5009,7 +5009,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ChangeObjectClassSubscriptionMessage& rhs) const;
   bool operator<(const ChangeObjectClassSubscriptionMessage& rhs) const;
   bool operator!=(const ChangeObjectClassSubscriptionMessage& rhs) const
@@ -5081,7 +5081,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const RegistrationForObjectClassMessage& rhs) const;
   bool operator<(const RegistrationForObjectClassMessage& rhs) const;
   bool operator!=(const RegistrationForObjectClassMessage& rhs) const
@@ -5129,7 +5129,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const AttributesInScopeMessage& rhs) const;
   bool operator<(const AttributesInScopeMessage& rhs) const;
   bool operator!=(const AttributesInScopeMessage& rhs) const
@@ -5189,7 +5189,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const TurnUpdatesOnForInstanceMessage& rhs) const;
   bool operator<(const TurnUpdatesOnForInstanceMessage& rhs) const;
   bool operator!=(const TurnUpdatesOnForInstanceMessage& rhs) const
@@ -5261,7 +5261,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const TurnInteractionsOnMessage& rhs) const;
   bool operator<(const TurnInteractionsOnMessage& rhs) const;
   bool operator!=(const TurnInteractionsOnMessage& rhs) const
@@ -5309,7 +5309,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const InteractionMessage& rhs) const;
   bool operator<(const InteractionMessage& rhs) const;
   bool operator!=(const InteractionMessage& rhs) const
@@ -5407,7 +5407,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const TimeStampedInteractionMessage& rhs) const;
   bool operator<(const TimeStampedInteractionMessage& rhs) const;
   bool operator!=(const TimeStampedInteractionMessage& rhs) const
@@ -5541,7 +5541,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ObjectInstanceHandlesRequestMessage& rhs) const;
   bool operator<(const ObjectInstanceHandlesRequestMessage& rhs) const;
   bool operator!=(const ObjectInstanceHandlesRequestMessage& rhs) const
@@ -5601,7 +5601,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ObjectInstanceHandlesResponseMessage& rhs) const;
   bool operator<(const ObjectInstanceHandlesResponseMessage& rhs) const;
   bool operator!=(const ObjectInstanceHandlesResponseMessage& rhs) const
@@ -5661,7 +5661,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ReleaseMultipleObjectInstanceNameHandlePairsMessage& rhs) const;
   bool operator<(const ReleaseMultipleObjectInstanceNameHandlePairsMessage& rhs) const;
   bool operator!=(const ReleaseMultipleObjectInstanceNameHandlePairsMessage& rhs) const
@@ -5709,7 +5709,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ReserveObjectInstanceNameRequestMessage& rhs) const;
   bool operator<(const ReserveObjectInstanceNameRequestMessage& rhs) const;
   bool operator!=(const ReserveObjectInstanceNameRequestMessage& rhs) const
@@ -5769,7 +5769,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ReserveObjectInstanceNameResponseMessage& rhs) const;
   bool operator<(const ReserveObjectInstanceNameResponseMessage& rhs) const;
   bool operator!=(const ReserveObjectInstanceNameResponseMessage& rhs) const
@@ -5841,7 +5841,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ReserveMultipleObjectInstanceNameRequestMessage& rhs) const;
   bool operator<(const ReserveMultipleObjectInstanceNameRequestMessage& rhs) const;
   bool operator!=(const ReserveMultipleObjectInstanceNameRequestMessage& rhs) const
@@ -5901,7 +5901,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const ReserveMultipleObjectInstanceNameResponseMessage& rhs) const;
   bool operator<(const ReserveMultipleObjectInstanceNameResponseMessage& rhs) const;
   bool operator!=(const ReserveMultipleObjectInstanceNameResponseMessage& rhs) const
@@ -5973,7 +5973,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const InsertObjectInstanceMessage& rhs) const;
   bool operator<(const InsertObjectInstanceMessage& rhs) const;
   bool operator!=(const InsertObjectInstanceMessage& rhs) const
@@ -6057,7 +6057,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const DeleteObjectInstanceMessage& rhs) const;
   bool operator<(const DeleteObjectInstanceMessage& rhs) const;
   bool operator!=(const DeleteObjectInstanceMessage& rhs) const
@@ -6129,7 +6129,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const TimeStampedDeleteObjectInstanceMessage& rhs) const;
   bool operator<(const TimeStampedDeleteObjectInstanceMessage& rhs) const;
   bool operator!=(const TimeStampedDeleteObjectInstanceMessage& rhs) const
@@ -6237,7 +6237,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const AttributeUpdateMessage& rhs) const;
   bool operator<(const AttributeUpdateMessage& rhs) const;
   bool operator!=(const AttributeUpdateMessage& rhs) const
@@ -6335,7 +6335,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const TimeStampedAttributeUpdateMessage& rhs) const;
   bool operator<(const TimeStampedAttributeUpdateMessage& rhs) const;
   bool operator!=(const TimeStampedAttributeUpdateMessage& rhs) const
@@ -6469,7 +6469,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const RequestAttributeUpdateMessage& rhs) const;
   bool operator<(const RequestAttributeUpdateMessage& rhs) const;
   bool operator!=(const RequestAttributeUpdateMessage& rhs) const
@@ -6541,7 +6541,7 @@ public:
   virtual void out(std::ostream& os) const;
   virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
 
-  bool operator==(const AbstractMessage& rhs) const;
+  virtual bool operator==(const AbstractMessage& rhs) const;
   bool operator==(const RequestClassAttributeUpdateMessage& rhs) const;
   bool operator<(const RequestClassAttributeUpdateMessage& rhs) const;
   bool operator!=(const RequestClassAttributeUpdateMessage& rhs) const

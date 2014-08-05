@@ -671,7 +671,7 @@ class MessageDataType(StructDataType):
         sourceStream.writeline('virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;')
         sourceStream.writeline()
 
-        sourceStream.writeline('bool operator==(const AbstractMessage& rhs) const;')
+        sourceStream.writeline('virtual bool operator==(const AbstractMessage& rhs) const;')
         sourceStream.writeline('bool operator==(const {name}& rhs) const;'.format(name = self.getName()))
         sourceStream.writeline('bool operator<(const {name}& rhs) const;'.format(name = self.getName()))
         sourceStream.writeline('bool operator!=(const {name}& rhs) const'.format(name = self.getName()))
