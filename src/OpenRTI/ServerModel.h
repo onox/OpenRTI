@@ -1787,8 +1787,6 @@ public:
   /// Access and modify Federates in this Federation
   bool isFederateNameInUse(const std::string& name) const;
 
-  // Federate* createFederate(const std::string& name, const FOMStringModuleList& stringModuleList);
-  // Federate* createFederate(const std::string& name, const FederateHandle& federateHandle, const FOMModuleList& fomModuleList);
   void insert(Federate& federate);
   void erase(const FederateHandle& federateHandle);
   void erase(Federate& federate);

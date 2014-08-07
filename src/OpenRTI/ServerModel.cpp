@@ -2389,38 +2389,6 @@ Federation::isFederateNameInUse(const std::string& name) const
   return _federateNameFederateMap.find(name) != _federateNameFederateMap.end();
 }
 
-// Federate*
-// Federation::createFederate(const std::string& name, const FOMStringModuleList& stringModuleList)
-// {
-//   Federate* federate = new Federate(*this);
-//   federate->setName(name);
-//   insert(*federate);
-//   try {
-//     insert(*federate, stringModuleList);
-//   } catch (...) {
-//     erase(*federate);
-//     throw;
-//   }
-//   return federate;
-// }
-
-// Federate*
-// Federation::createFederate(const std::string& name, const FederateHandle& federateHandle,
-//                            const FOMModuleList& fomModuleList)
-// {
-//   Federate* federate = new Federate(*this);
-//   federate->setName(name);
-//   federate->setFederateHandle(federateHandle);
-//   insert(*federate);
-//   try {
-//     insert(*federate, fomModuleList);
-//   } catch (...) {
-//     erase(*federate);
-//     throw;
-//   }
-//   return federate;
-// }
-
 void
 Federation::insert(Federate& federate)
 {
