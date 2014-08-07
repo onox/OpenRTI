@@ -68,11 +68,11 @@ public:
     ServerModel::Federate* federate = new ServerModel::Federate(*this);
     federate->setName(message->getFederateName());
     federate->setFederateType(message->getFederateType());
-    ServerModel::Federation::insert(*federate);
+    insert(*federate);
     try {
-      ServerModel::Federation::insert(*federate, message->getFOMStringModuleList());
+      insert(*federate, message->getFOMStringModuleList());
     } catch (OpenRTI::Exception& e) {
-      ServerModel::Federation::erase(*federate);
+      erase(*federate);
 
       SharedPtr<JoinFederationExecutionResponseMessage> response;
       response = new JoinFederationExecutionResponseMessage;
@@ -90,14 +90,11 @@ public:
     federationConnect->insert(*federate);
     pushFederation(connectHandle);
 
-    FOMModuleList moduleList;
-    federate->getModuleList(moduleList);
-
     // Respond with Success
     SharedPtr<JoinFederationExecutionResponseMessage> response;
     response = new JoinFederationExecutionResponseMessage;
     response->setJoinFederationExecutionResponseType(JoinFederationExecutionResponseSuccess);
-    response->setFOMModuleList(moduleList);
+    federate->getModuleList(response->getFOMModuleList());
     response->setFederationHandle(getFederationHandle());
     response->setFederateHandle(federate->getFederateHandle());
     response->setFederateName(federate->getName());
@@ -143,7 +140,7 @@ public:
     federate->setFederateType(message->getFederateType());
 
     // here insert the fom
-    ServerModel::Federation::insert(*federate, message->getFOMModuleList());
+    insert(*federate, message->getFOMModuleList());
 
     // send all children the notification about the new federate except the one that gets the join response
     SharedPtr<JoinFederateNotifyMessage> notify = new JoinFederateNotifyMessage;
@@ -1533,9 +1530,7 @@ public:
     // FIXME add the server options
 
     // FIXME push them as required
-    FOMModuleList moduleList;
-    getBaseModuleList(moduleList);
-    message->setFOMModuleList(moduleList);
+    getBaseModuleList(message->getFOMModuleList());
     federationConnect->send(message);
 
     /// FIXME currently these are all flushed when an EraseFederationExecutionMessage is recieved.
@@ -1890,7 +1885,7 @@ public:
       federationServer->setName(message->getFederationExecution());
       federationServer->setLogicalTimeFactoryName(message->getLogicalTimeFactoryName());
       try {
-        static_cast<ServerModel::Federation*>(federationServer)->insert(message->getFOMStringModuleList());
+        federationServer->insert(message->getFOMStringModuleList());
 
         // register this one
         insert(*federationServer);
@@ -2406,7 +2401,7 @@ public:
     // Remove that from the federations.
     for (ServerModel::Federation::HandleMap::iterator i = getFederationHandleFederationMap().begin();
          i != getFederationHandleFederationMap().end(); ++i)
-      static_cast<FederationServer&>(*i).removeConnect(connectHandle);
+      i->removeConnect(connectHandle);
 
     // And remove it here
     Node::erase(connectHandle);
