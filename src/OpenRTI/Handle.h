@@ -31,7 +31,7 @@
 namespace OpenRTI {
 
 template<typename T>
-class Hash;
+struct Hash;
 
 template<typename T>
 class OPENRTI_LOCAL Handle {
@@ -208,7 +208,7 @@ public:
 };
 
 template<>
-class OPENRTI_LOCAL Hash<MessageRetractionHandle> {
+struct OPENRTI_LOCAL Hash<MessageRetractionHandle> {
 public:
   std::size_t operator()(const MessageRetractionHandle& handle) const
   { return handle.getHash(); }
@@ -244,7 +244,7 @@ public:
 };
 
 template<>
-class OPENRTI_LOCAL Hash<RegionHandle> {
+struct OPENRTI_LOCAL Hash<RegionHandle> {
 public:
   std::size_t operator()(const RegionHandle& handle) const
   { return handle.getHash(); }
