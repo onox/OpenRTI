@@ -193,7 +193,7 @@ NetworkServer::listenInet(const std::string& node, const std::string& service, i
     try {
       listenInet(address, backlog);
       success = true;
-    } catch (const OpenRTI::Exception& e) {
+    } catch (const OpenRTI::Exception&) {
       if (addressList.empty() && !success)
         throw;
     }
@@ -250,7 +250,7 @@ NetworkServer::connectParentInetServer(const std::string& host, const std::strin
     try {
       connectParentInetServer(addressList.front(), abstime);
       return;
-    } catch (const OpenRTI::Exception& e) {
+    } catch (const OpenRTI::Exception&) {
       addressList.pop_front();
       if (addressList.empty())
         throw;
