@@ -24,7 +24,6 @@
 #include "Message.h"
 #include "AbstractMessageSender.h"
 #include "LogStream.h"
-#include "NameHandleMap.h"
 #include "ServerModel.h"
 #include "ServerOptions.h"
 
