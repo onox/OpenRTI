@@ -294,6 +294,27 @@ protected:
 
 ////////////////////////////////////////////////////////////
 
+template<typename T, typename H>
+class OPENRTI_LOCAL HandleListEntity : public IntrusiveUnorderedMap<H, T>::Hook, public IntrusiveList<T, 0>::Hook {
+public:
+  typedef IntrusiveUnorderedMap<H, T> HandleMap;
+  typedef IntrusiveList<T, 0> FirstList;
+
+protected:
+  HandleListEntity()
+  { }
+  HandleListEntity(const H& handle) :
+    IntrusiveUnorderedMap<H, T>::Hook(handle)
+  { }
+
+  const H& _getHandle() const
+  { return HandleMap::Hook::getKey(); }
+  void _setHandle(const H& handle)
+  { HandleMap::Hook::setKey(handle); }
+};
+
+////////////////////////////////////////////////////////////
+
 template<typename T, typename H, typename S = std::string>
 class OPENRTI_LOCAL HandleStringEntity : public IntrusiveUnorderedMap<H, T>::Hook, public IntrusiveUnorderedMap<S, T>::Hook {
 public:
@@ -419,19 +440,17 @@ private:
 class FederationConnect;
 class ObjectInstance;
 
-class OPENRTI_LOCAL ObjectInstanceConnect :
-    public IntrusiveUnorderedMap<ConnectHandle, ObjectInstanceConnect>::Hook,
-    public IntrusiveList<ObjectInstanceConnect, 0>::Hook {
+class OPENRTI_LOCAL ObjectInstanceConnect : public HandleListEntity<ObjectInstanceConnect, ConnectHandle> {
 public:
-  typedef IntrusiveUnorderedMap<ConnectHandle, ObjectInstanceConnect> HandleMap;
-  typedef IntrusiveList<ObjectInstanceConnect, 0> FirstList;
+  typedef HandleListEntity<ObjectInstanceConnect, ConnectHandle>::HandleMap HandleMap;
+  typedef HandleListEntity<ObjectInstanceConnect, ConnectHandle>::FirstList FirstList;
 
   ObjectInstanceConnect(ObjectInstance& objectInstance, FederationConnect& federationConnect);
   ~ObjectInstanceConnect();
 
   /// The connect handle to identify this connect
   const ConnectHandle& getConnectHandle() const
-  { return IntrusiveUnorderedMap<ConnectHandle, ObjectInstanceConnect>::Hook::getKey(); }
+  { return HandleMap::Hook::getKey(); }
   void setConnectHandle(const ConnectHandle& connectHandle);
 
   const ObjectInstance& getObjectInstance() const
@@ -537,7 +556,7 @@ private:
 // class Federate;
 // class Synchronization;
 
-// class OPENRTI_LOCAL SynchronizationFederate : public HandleEntity<SynchronizationFederate, FederateHandle>, public IntrusiveList<SynchronizationFederate, 0>::Hook,  {
+// class OPENRTI_LOCAL SynchronizationFederate : public HandleListEntity<SynchronizationFederate, FederateHandle>,  {
 // public:
 //   SynchronizationFederate(Synchronization& synchronization, Federate& federate) :
 //     _synchronization(synchronization),
@@ -1196,18 +1215,17 @@ private:
 
 class AttributeDefinition;
 
-class OPENRTI_LOCAL ClassAttribute : public HandleEntity<ClassAttribute, AttributeHandle>,
-                                     public IntrusiveList<ClassAttribute, 0>::Hook,
+class OPENRTI_LOCAL ClassAttribute : public HandleListEntity<ClassAttribute, AttributeHandle>,
                                      public PublishSubscribe /*FIXME*/ {
 public:
-  typedef HandleEntity<ClassAttribute, AttributeHandle>::HandleMap HandleMap;
-  typedef IntrusiveList<ClassAttribute, 0> FirstList;
+  typedef HandleListEntity<ClassAttribute, AttributeHandle>::HandleMap HandleMap;
+  typedef HandleListEntity<ClassAttribute, AttributeHandle>::FirstList FirstList;
 
   ClassAttribute(ObjectClass& objectClass, AttributeDefinition& attributeDefinition);
   ~ClassAttribute();
 
   const AttributeHandle& getAttributeHandle() const
-  { return HandleEntity<ClassAttribute, AttributeHandle>::_getHandle(); }
+  { return HandleListEntity<ClassAttribute, AttributeHandle>::_getHandle(); }
   void setAttributeHandle(const AttributeHandle& attributeHandle);
 
   const ObjectClass& getObjectClass() const

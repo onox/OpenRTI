@@ -77,7 +77,7 @@ ObjectInstanceConnect::~ObjectInstanceConnect()
 void
 ObjectInstanceConnect::setConnectHandle(const ConnectHandle& connectHandle)
 {
-  IntrusiveUnorderedMap<ConnectHandle, ObjectInstanceConnect>::Hook::setKey(connectHandle);
+  HandleMap::Hook::setKey(connectHandle);
 }
 
 ////////////////////////////////////////////////////////////
@@ -697,7 +697,7 @@ ClassAttribute::~ClassAttribute()
 void
 ClassAttribute::setAttributeHandle(const AttributeHandle& attributeHandle)
 {
-  HandleEntity<ClassAttribute, AttributeHandle>::_setHandle(attributeHandle);
+  HandleListEntity<ClassAttribute, AttributeHandle>::_setHandle(attributeHandle);
 }
 
 ////////////////////////////////////////////////////////////
