@@ -26,6 +26,7 @@
 #include <RTI/VariableLengthData.h>
 #include <RTI/encoding/DataElement.h>
 
+#include <algorithm>
 #include <limits>
 #include <cstring>
 #include <vector>
