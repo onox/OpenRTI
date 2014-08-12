@@ -2533,7 +2533,9 @@ NodeConnect::NodeConnect() :
 NodeConnect::~NodeConnect()
 {
   // We need to make sure that this list got processed before deletion.
-  OpenRTIAssert(_federationConnectList.empty());
+  // FIXME
+  // OpenRTIAssert(_federationConnectList.empty());
+  _federationConnectList.clear();
 }
 
 void
