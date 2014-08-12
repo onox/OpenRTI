@@ -599,7 +599,8 @@ public:
       // The requestor needs to know which federates he needs to wait for.
       // see an explanation in the ambassador's time management code
 
-      OpenRTIAssert(!federate->getIsTimeRegulating());
+      if (federate->getIsTimeRegulating())
+        throw MessageError("EnableTimeRegulationRequestMessage for already time regulaitng federate!");
       insertTimeRegulating(*federate);
       federate->setTimeAdvanceTimeStamp(message->getTimeStamp());
       federate->setNextMessageTimeStamp(message->getTimeStamp());
@@ -622,9 +623,10 @@ public:
     ServerModel::Federate* federate = getFederate(message->getFederateHandle());
     if (!federate)
       throw MessageError("DisableTimeRegulationRequestMessage from unknown Federate!");
+    if (!federate->getIsTimeRegulating())
+      throw MessageError("DisableTimeRegulationRequestMessage for non time regulating Federate!");
     // Don't bail out on anything. If the federate dies in between, we might need to clean up somehow
     broadcast(connectHandle, message);
-    OpenRTIAssert(federate->getIsTimeRegulating());
     eraseTimeRegulating(*federate);
   }
   void accept(const ConnectHandle& connectHandle, const CommitLowerBoundTimeStampMessage* message)
@@ -697,7 +699,6 @@ public:
       ServerModel::Region* region = getOrCreateRegion(i->first);
       if (!region)
         throw MessageError("CommitRegionMessage for unknown Region!");
-      OpenRTIAssert(region);
       region->_regionValue = i->second;
     }
 
