@@ -2721,6 +2721,7 @@ Node::insert(Federation& federation)
 void
 Node::erase(Federation& federation)
 {
+  OpenRTIAssert(!federation.hasJoinedChildren());
   Log(ServerFederation, Info) << getServerPath() << ": Released FederationHandle in child server for \""
                               << federation.getName() << "\"!" << std::endl;
   _federationHandleAllocator.put(federation.getFederationHandle());
@@ -2736,6 +2737,7 @@ Node::insertName(Federation& federation)
 void
 Node::eraseName(Federation& federation)
 {
+  OpenRTIAssert(!federation.hasJoinedChildren());
   Log(ServerFederation, Info) << getServerPath() << ": Destroyed federation execution in child server for \""
                               << federation.getName() << "\"!" << std::endl;
   _federationNameFederationMap.unlink(federation);

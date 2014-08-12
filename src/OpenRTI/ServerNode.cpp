@@ -1972,11 +1972,11 @@ public:
           // ... we are not the lower most server node that still knows that federation,
           // so forward this to all children.
           federationServer->broadcastEraseFederationExecution();
-          eraseFederationName(*federationServer);
+          eraseName(*federationServer);
         } else {
           // ... we are the lower most server node that still knows about that federation,
           // so just throw away the federation handle.
-          eraseFederation(*federationServer);
+          erase(*federationServer);
         }
 
         // ... and just respond with Success
@@ -2022,8 +2022,7 @@ public:
     OpenRTIAssert(connectHandle.valid());
     if (!isParentConnect(connectHandle))
       throw MessageError("Received InsertFederationExecutionMessage through a child connect!");
-
-    if (_federationNameFederationMap.find(message->getFederationName()) != _federationNameFederationMap.end())
+    if (getFederation(message->getFederationName()))
       throw MessageError("Received InsertFederationExecutionMessage for an already existing federation!");
     FederationHandle federationHandle = message->getFederationHandle();
     if (!federationHandle.valid())
@@ -2032,7 +2031,7 @@ public:
     // FIXME: revisit, how to handle this
     // if (federationServer)
     //   throw MessageError("Received InsertFederationExecutionMessage for an already existing federation!");
-    if (federationServer && !getFederation(federationServer->getName())) {
+    if (federationServer) {
       // reinsert the already existing datastructure to get the index by name back
       insertName(*federationServer);
       return;
@@ -2099,7 +2098,7 @@ public:
       // ... we are not the lower most server node that still knows that federation,
       // so forward this to all children.
       federationServer->broadcastEraseFederationExecution();
-      eraseFederationName(*federationServer);
+      eraseName(*federationServer);
     } else {
       // ... we are the lower most server node that still knows about that federation,
       // so respond with releasing the federation handle.
@@ -2107,7 +2106,7 @@ public:
       response = new ReleaseFederationHandleMessage;
       response->setFederationHandle(federationHandle);
       sendToParent(response);
-      eraseFederation(*federationServer);
+      erase(*federationServer);
     }
   }
   // Erase a federation handle from the server node, this is part of the two way shutdown with a child
@@ -2148,7 +2147,7 @@ public:
     if (isRootServer())
       return;
     sendToParent(message);
-    eraseFederation(*federationServer);
+    erase(*federationServer);
   }
 
   // The Join messages
@@ -2463,16 +2462,6 @@ private:
     insert(*federationServer);
 
     return federationServer;
-  }
-  void eraseFederationName(FederationServer& federationServer)
-  {
-    OpenRTIAssert(!federationServer.hasJoinedChildren());
-    eraseName(federationServer);
-  }
-  void eraseFederation(FederationServer& federationServer)
-  {
-    OpenRTIAssert(!federationServer.hasJoinedChildren());
-    erase(federationServer);
   }
 
   /// Messages that require a response from the root server.
