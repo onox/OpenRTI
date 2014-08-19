@@ -11,6 +11,7 @@ OpenRTI-0.6.0 (development)
  * Reorder build files to improve running tests on windows.
  * Implement update rate parsing for rti1516e.
  * Implement federate object modules also on join.
+ * Make std::wstring values contain utf-16/utf-32 instead of ucs-2/ucs-4.
 
  * For a more detailed list of changes see the git history.
 

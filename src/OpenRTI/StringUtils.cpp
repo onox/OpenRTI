@@ -25,12 +25,69 @@
 #include <cstdlib>
 #include <cstring>
 #include <cwchar>
+#include <limits>
 #include <sstream>
 
 #include "OpenRTIConfig.h"
 #include "Types.h"
 
 namespace OpenRTI {
+
+template<typename D, typename S>
+static void
+utfToUtf(std::basic_string<D>& dst, const S* srcBegin, const S* srcEnd)
+{
+  const unsigned srcBits = std::numeric_limits<S>::digits + std::numeric_limits<S>::is_signed;
+  // The below does
+  // const uint32_t srcValueMask = (uint32_t(1) << srcBits) - 1;
+  // without the risk of having a shift over the whole width of the datatype which behaves undefined
+  const uint32_t srcValueMask = (uint32_t(1) << (srcBits - 1)) ^ ((uint32_t(1) << (srcBits - 1)) - 1);
+  const uint32_t srcUpperBit = uint32_t(1) << (srcBits - 1);
+  const uint32_t srcSecondBit = uint32_t(1) << (srcBits - 2);
+  const uint32_t srcContinuationMask = srcSecondBit - 1;
+
+  const unsigned dstBits = std::numeric_limits<D>::digits + std::numeric_limits<D>::is_signed;
+  const uint32_t dstUpperBit = uint32_t(1) << (dstBits - 1);
+  const unsigned dstContinuationBits = dstBits - 2;
+  const uint32_t dstContinuationMask = (uint32_t(1) << dstContinuationBits) - 1;
+
+  for (const S* i = srcBegin; i != srcEnd; ++i) {
+    uint32_t cp = (srcValueMask & uint32_t(*i));
+    if (cp & srcUpperBit) {
+      cp &= ~srcUpperBit;
+      uint32_t mask = srcSecondBit;
+      while ((cp & mask) && ++i != srcEnd) {
+        cp &= ~mask;
+        mask <<= (srcBits - 3);
+        cp <<= (srcBits - 2);
+        cp |= (srcContinuationMask & *i);
+      }
+    }
+
+    // now cp contains the codepoint value
+
+    // in case of a single character encodable codepoint
+    if (cp < dstUpperBit) {
+      dst.push_back(D(cp));
+    } else {
+      // Counts the number of continuation bytes
+      unsigned count = 1;
+      uint32_t tmp = (cp >> (2*dstContinuationBits - 1));
+      while (tmp) {
+        tmp >>= (dstContinuationBits - 1);
+        ++count;
+      }
+
+      // The leading byte containing the count encoded here
+      dst.push_back(D((~((dstUpperBit >> count) - 1)) | (cp >> count*dstContinuationBits)));
+      // and all the continuation bytes
+      do {
+        --count;
+        dst.push_back(D(dstUpperBit | ((cp >> count*dstContinuationBits) & dstContinuationMask)));
+      } while (count);
+    }
+  }
+}
 
 OPENRTI_API bool
 caseCompare(const std::string& l, const char* r)
@@ -88,36 +145,7 @@ OPENRTI_API std::string
 ucsToUtf8(const std::wstring& ucs)
 {
   std::string utf;
-  // reserve a bit more than needed, string values are usually small
-  utf.reserve(6*ucs.size());
-  for (std::wstring::const_iterator i = ucs.begin(); i != ucs.end(); ++i) {
-    uint32_t wc = *i;
-    if (wc <= 0x7f) {
-      utf.push_back(wc);
-    } else if (wc <= 0x1fff + 0x80) {
-      wc -= 0x80;
-      utf.push_back(0x80 | (wc >> 7));
-      utf.push_back(0x80 | (wc & 0x7f));
-    } else if (wc <= 0x7ffff + 0x0002080) {
-      wc -= 0x0002080;
-      utf.push_back(0xc0 | (wc >> 14));
-      utf.push_back(0x80 | ((wc >> 7) & 0x7f));
-      utf.push_back(0x80 | (wc & 0x7f));
-    } else if (wc <= 0x1ffffff + 0x0082080) {
-      wc -= 0x0082080;
-      utf.push_back(0xe0 | (wc >> 21));
-      utf.push_back(0x80 | ((wc >> 14) & 0x7f));
-      utf.push_back(0x80 | ((wc >> 7) & 0x7f));
-      utf.push_back(0x80 | (wc & 0x7f));
-    } else {
-      wc -= 0x2082080;
-      utf.push_back(0xf0 | (wc >> 28));
-      utf.push_back(0x80 | ((wc >> 21) & 0x7f));
-      utf.push_back(0x80 | ((wc >> 14) & 0x7f));
-      utf.push_back(0x80 | ((wc >> 7) & 0x7f));
-      utf.push_back(0x80 | (wc & 0x7f));
-    }
-  }
+  utfToUtf(utf, ucs.data(), ucs.data() + ucs.size());
   return utf;
 }
 
@@ -125,23 +153,7 @@ OPENRTI_API std::wstring
 utf8ToUcs(const std::string& utf)
 {
   std::wstring ucs;
-  // reserve a bit more than needed, string values are usually small in our cases
-  ucs.reserve(utf.size());
-  std::string::const_iterator i = utf.begin();
-  while (i != utf.end()) {
-    std::wstring::value_type c = 0xff & std::wstring::value_type(*i++);
-    if (c & 0x80) {
-      c &= 0x7f;
-      uint32_t mask = 0x40;
-      while ((c & mask) && i != utf.end()) {
-        c &= std::wstring::value_type(~mask);
-        mask <<= 5;
-        c <<= 6;
-        c |= (0x3f & (*i++));
-      }
-    }
-    ucs.push_back(c);
-  }
+  utfToUtf(ucs, utf.data(), utf.data() + utf.size());
   return ucs;
 }
 
@@ -152,24 +164,7 @@ utf8ToUcs(const char* utf)
     return std::wstring();
 
   std::wstring ucs;
-  size_t size = std::strlen(utf);
-  // reserve a bit more than needed, string values are usually small in our cases
-  ucs.reserve(size);
-  size_t i = 0;
-  while (i < size) {
-    std::wstring::value_type c = 0xff & std::wstring::value_type(utf[i++]);
-    if (c & 0x80) {
-      c &= 0x7f;
-      uint32_t mask = 0x40;
-      while ((c & mask) && i < size) {
-        c &= std::wstring::value_type(~mask);
-        mask <<= 5;
-        c <<= 6;
-        c |= (0x3f & (utf[i++]));
-      }
-    }
-    ucs.push_back(c);
-  }
+  utfToUtf(ucs, utf, utf + std::strlen(utf));
   return ucs;
 }
 
@@ -219,6 +214,53 @@ asciiToUtf8(const char* ascii)
   utf8.resize(len);
   std::copy(ascii, ascii+len, utf8.begin());
   return utf8;
+}
+
+OPENRTI_API VariableLengthData
+utf8ToUtf16BE(const std::string& utf8, bool bom)
+{
+  VariableLengthData utf16;
+  utf16.reserve(2*utf8.size() + 2);
+
+  // The BOM
+  if (bom) {
+    utf16.resize(2);
+    utf16.setAlignedUInt16BE(0xfeff, 0);
+  }
+
+  size_t i = 0;
+  while (i < utf8.size()) {
+    uint32_t c = 0xff & uint32_t(utf8[i++]);
+    if (c & 0x80) {
+      c &= 0x7f;
+      uint32_t mask = 0x40;
+      while ((c & mask) && i < utf8.size()) {
+        c &= uint32_t(~mask);
+        mask <<= 5;
+        c <<= 6;
+        c |= (0x3f & (utf8[i++]));
+      }
+    }
+
+    if (c <= 0x7fff) {
+      std::size_t offset = utf16.size();
+      utf16.resize(offset + 2);
+      utf16.setAlignedUInt16BE(c, offset);
+    } else if (c <= 0x1fffffff) {
+      std::size_t offset = utf16.size();
+      utf16.resize(offset + 4);
+      utf16.setAlignedUInt16BE(0xc000 | ((c >> 15) & 0x1fff), offset);
+      utf16.setAlignedUInt16BE(0x8000 | (c & 0x3fff), offset + 2);
+    } else {
+      std::size_t offset = utf16.size();
+      utf16.resize(offset + 6);
+      utf16.setAlignedUInt16BE(0xe000 | ((c >> 30) & 0x0fff), offset);
+      utf16.setAlignedUInt16BE(0x8000 | ((c >> 15) & 0x3fff), offset + 2);
+      utf16.setAlignedUInt16BE(0x8000 | (c & 0x3fff), offset + 4);
+    }
+  }
+
+  return utf16;
 }
 
 OPENRTI_API std::vector<std::string>

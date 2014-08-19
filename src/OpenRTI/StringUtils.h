@@ -30,6 +30,7 @@
 #include <vector>
 
 #include "Export.h"
+#include "VariableLengthData.h"
 
 namespace OpenRTI {
 
@@ -95,6 +96,9 @@ inline std::string utf8ToLocale(const char* utf)
 
 OPENRTI_API std::string
 asciiToUtf8(const char* ascii);
+
+OPENRTI_API VariableLengthData
+utf8ToUtf16BE(const std::string& utf8, bool bom = false);
 
 OPENRTI_API std::vector<std::string>
 split(const std::string& s, const char* c = ", \t\n");
