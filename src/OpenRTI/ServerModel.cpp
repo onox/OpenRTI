@@ -486,6 +486,24 @@ ParameterDefinitionModule::~ParameterDefinitionModule()
 
 ////////////////////////////////////////////////////////////
 
+ClassParameter::ClassParameter(InteractionClass& interactionClass, ParameterDefinition& parameterDefinition) :
+  _interactionClass(interactionClass),
+  _parameterDefinition(parameterDefinition)
+{
+}
+
+ClassParameter::~ClassParameter()
+{
+}
+
+void
+ClassParameter::setParameterHandle(const ParameterHandle& parameterHandle)
+{
+  HandleListEntity<ClassParameter, ParameterHandle>::_setHandle(parameterHandle);
+}
+
+////////////////////////////////////////////////////////////
+
 ParameterDefinition::ParameterDefinition(InteractionClass& interactionClass) :
   _interactionClass(interactionClass)
 {
@@ -515,8 +533,14 @@ InteractionClass::InteractionClass(Federation& federation, InteractionClass* par
   _orderType(),
   _transportationType()
 {
-  if (_parentInteractionClass)
+  if (_parentInteractionClass) {
     _parentInteractionClass->_childInteractionClassList.push_back(*this);
+
+    for (ClassParameter::HandleMap::iterator i = _parentInteractionClass->_parameterHandleClassParameterMap.begin();
+         i != _parentInteractionClass->_parameterHandleClassParameterMap.end(); ++i) {
+      insertClassParameterFor(i->getParameterDefinition());
+    }
+  }
 }
 
 InteractionClass::~InteractionClass()
@@ -640,6 +664,7 @@ InteractionClass::insert(ParameterDefinition& parameterDefinition)
 {
   _parameterHandleParameterMap.insert(parameterDefinition);
   _parameterNameParameterMap.insert(parameterDefinition);
+  insertClassParameterFor(parameterDefinition);
 }
 
 ParameterDefinition*
@@ -656,6 +681,27 @@ InteractionClass::getParameterDefinition(const ParameterHandle& parameterHandle)
 {
   ParameterDefinition::HandleMap::iterator i = _parameterHandleParameterMap.find(parameterHandle);
   if (i == _parameterHandleParameterMap.end())
+    return 0;
+  return i.get();
+}
+
+void
+InteractionClass::insertClassParameterFor(ParameterDefinition& parameterDefinition)
+{
+  ClassParameter* classParameter = new ClassParameter(*this, parameterDefinition);
+  classParameter->setParameterHandle(parameterDefinition.getParameterHandle());
+  _parameterHandleClassParameterMap.insert(*classParameter);
+  parameterDefinition.insert(*classParameter);
+
+  for (ChildList::iterator i = _childInteractionClassList.begin(); i != _childInteractionClassList.end(); ++i)
+    i->insertClassParameterFor(parameterDefinition);
+}
+
+ClassParameter*
+InteractionClass::getClassParameter(const ParameterHandle& parameterHandle)
+{
+  ClassParameter::HandleMap::iterator i = _parameterHandleClassParameterMap.find(parameterHandle);
+  if (i == _parameterHandleClassParameterMap.end())
     return 0;
   return i.get();
 }

@@ -1023,6 +1023,41 @@ private:
 
 ////////////////////////////////////////////////////////////
 
+class InteractionClass;
+class ParameterDefinition;
+
+class OPENRTI_LOCAL ClassParameter : public HandleListEntity<ClassParameter, ParameterHandle> {
+public:
+  typedef HandleListEntity<ClassParameter, ParameterHandle>::HandleMap HandleMap;
+  typedef HandleListEntity<ClassParameter, ParameterHandle>::FirstList FirstList;
+
+  ClassParameter(InteractionClass& interactionClass, ParameterDefinition& parameterDefinition);
+  ~ClassParameter();
+
+  const ParameterHandle& getParameterHandle() const
+  { return HandleListEntity<ClassParameter, ParameterHandle>::_getHandle(); }
+  void setParameterHandle(const ParameterHandle& parameterHandle);
+
+  const InteractionClass& getInteractionClass() const
+  { return _interactionClass; }
+  InteractionClass& getInteractionClass()
+  { return _interactionClass; }
+
+  const ParameterDefinition& getParameterDefinition() const
+  { return _parameterDefinition; }
+  ParameterDefinition& getParameterDefinition()
+  { return _parameterDefinition; }
+
+private:
+  ClassParameter(const ClassParameter&);
+  ClassParameter& operator=(const ClassParameter&);
+
+  InteractionClass& _interactionClass;
+  ParameterDefinition& _parameterDefinition;
+};
+
+////////////////////////////////////////////////////////////
+
 class OPENRTI_LOCAL ParameterDefinition : public HandleStringEntity<ParameterDefinition, ParameterHandle> {
 public:
   typedef HandleStringEntity<ParameterDefinition, ParameterHandle>::HandleMap HandleMap;
@@ -1044,11 +1079,18 @@ public:
   InteractionClass& getInteractionClass()
   { return _interactionClass; }
 
+  void insert(ClassParameter& classParameter)
+  { _classParameterList.push_back(classParameter); }
+  ClassParameter::FirstList& getClassParameterList()
+  { return _classParameterList; }
+
 private:
   ParameterDefinition(const ParameterDefinition&);
   ParameterDefinition& operator=(const ParameterDefinition&);
 
   InteractionClass& _interactionClass;
+
+  ClassParameter::FirstList _classParameterList;
 };
 
 ////////////////////////////////////////////////////////////
@@ -1105,6 +1147,11 @@ public:
   ParameterDefinition::HandleMap& getParameterHandleParameterMap()
   { return _parameterHandleParameterMap; }
 
+  void insertClassParameterFor(ParameterDefinition& parameterDefinition);
+  ClassParameter* getClassParameter(const ParameterHandle& parameterHandle);
+  ClassParameter::HandleMap& getParameterHandleClassParameterMap()
+  { return _parameterHandleClassParameterMap; }
+
   void insert(InteractionClassModule& interactionClassModule)
   { _interactionClassModuleList.push_back(interactionClassModule); }
   InteractionClassModule::SecondList& getInteractionClassModuleList()
@@ -1155,6 +1202,8 @@ private:
 
   ParameterDefinition::HandleMap _parameterHandleParameterMap;
   ParameterDefinition::NameMap _parameterNameParameterMap;
+
+  ClassParameter::HandleMap _parameterHandleClassParameterMap;
 };
 
 ////////////////////////////////////////////////////////////
