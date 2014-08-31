@@ -282,6 +282,12 @@ public:
       ++size;
     return size;
   }
+  /// returns true if the map contains at most one element
+  bool single() const
+  { return ++begin() == end(); }
+  /// returns true if the map contains exactly one element
+  bool unique() const
+  { return !empty() && single(); }
 
   iterator begin()
   { return iterator(_intrusiveListHook._next); }

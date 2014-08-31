@@ -114,6 +114,12 @@ public:
   // Truely O(n)!!
   size_type size() const
   { return _list.size(); }
+  /// returns true if the map contains at most one element
+  bool single() const
+  { return _list.single(); }
+  /// returns true if the map contains exactly one element
+  bool unique() const
+  { return _list.unique(); }
 
   iterator begin()
   { return _list.begin(); }
