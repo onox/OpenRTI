@@ -1390,20 +1390,79 @@ public:
   void accept(const ConnectHandle& connectHandle, const InteractionMessage* message)
   {
     ServerModel::InteractionClass* interactionClass = getInteractionClass(message->getInteractionClassHandle());
-    // This might happen with FOM modules
     if (!interactionClass)
-      return;
+      throw MessageError("Received InteractionMessage for unknown interaction class!");
     // Send to all subscribed connects except the originating one
-    send(interactionClass->_cumulativeSubscribedConnectHandleSet, connectHandle, message);
+    for (ConnectHandleSet::const_iterator i = interactionClass->_cumulativeSubscribedConnectHandleSet.begin();
+         i != interactionClass->_cumulativeSubscribedConnectHandleSet.end(); ++i) {
+      if (*i == connectHandle)
+        continue;
+      ServerModel::InteractionClass* currentInteractionClass = interactionClass;
+      while (currentInteractionClass) {
+        if (currentInteractionClass->getSubscriptionType(*i) != Unsubscribed) {
+          if (currentInteractionClass == interactionClass) {
+            send(*i, message);
+          } else {
+            SharedPtr<InteractionMessage> message2 = new InteractionMessage;
+            message2->setFederationHandle(message->getFederationHandle());
+            message2->setFederateHandle(message->getFederateHandle());
+            message2->setTransportationType(message->getTransportationType());
+            message2->setTag(message->getTag());
+            message2->getParameterValues().reserve(message->getParameterValues().size());
+            for (ParameterValueVector::const_iterator j = message->getParameterValues().begin();
+                 j != message->getParameterValues().end(); ++j) {
+              if (!currentInteractionClass->getClassParameter(j->getParameterHandle()))
+                continue;
+              message2->getParameterValues().push_back(*j);
+            }
+            message2->setInteractionClassHandle(currentInteractionClass->getInteractionClassHandle());
+            send(*i, message2);
+          }
+          break;
+        }
+        currentInteractionClass = currentInteractionClass->getParentInteractionClass();
+      }
+    }
   }
   void accept(const ConnectHandle& connectHandle, const TimeStampedInteractionMessage* message)
   {
     ServerModel::InteractionClass* interactionClass = getInteractionClass(message->getInteractionClassHandle());
-    // This might happen with FOM modules
     if (!interactionClass)
-      return;
+      throw MessageError("Received TimeStampedInteractionMessage for unknown interaction class!");
     // Send to all subscribed connects except the originating one
-    send(interactionClass->_cumulativeSubscribedConnectHandleSet, connectHandle, message);
+    for (ConnectHandleSet::const_iterator i = interactionClass->_cumulativeSubscribedConnectHandleSet.begin();
+         i != interactionClass->_cumulativeSubscribedConnectHandleSet.end(); ++i) {
+      if (*i == connectHandle)
+        continue;
+      ServerModel::InteractionClass* currentInteractionClass = interactionClass;
+      while (currentInteractionClass) {
+        if (currentInteractionClass->getSubscriptionType(*i) != Unsubscribed) {
+          if (currentInteractionClass == interactionClass) {
+            send(*i, message);
+          } else {
+            SharedPtr<TimeStampedInteractionMessage> message2 = new TimeStampedInteractionMessage;
+            message2->setFederationHandle(message->getFederationHandle());
+            message2->setFederateHandle(message->getFederateHandle());
+            message2->setOrderType(message->getOrderType());
+            message2->setTransportationType(message->getTransportationType());
+            message2->setTag(message->getTag());
+            message2->setTimeStamp(message->getTimeStamp());
+            message2->setMessageRetractionHandle(message->getMessageRetractionHandle());
+            message2->getParameterValues().reserve(message->getParameterValues().size());
+            for (ParameterValueVector::const_iterator j = message->getParameterValues().begin();
+                 j != message->getParameterValues().end(); ++j) {
+              if (!currentInteractionClass->getClassParameter(j->getParameterHandle()))
+                continue;
+              message2->getParameterValues().push_back(*j);
+            }
+            message2->setInteractionClassHandle(currentInteractionClass->getInteractionClassHandle());
+            send(*i, message2);
+          }
+          break;
+        }
+        currentInteractionClass = currentInteractionClass->getParentInteractionClass();
+      }
+    }
   }
 
   void accept(const ConnectHandle& connectHandle, const RequestAttributeUpdateMessage* message)
