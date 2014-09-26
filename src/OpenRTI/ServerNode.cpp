@@ -2459,7 +2459,7 @@ public:
     // Remove that from the federations.
     for (ServerModel::Federation::HandleMap::iterator i = getFederationHandleFederationMap().begin();
          i != getFederationHandleFederationMap().end(); ++i)
-      i->removeConnect(connectHandle);
+      static_cast<FederationServer*>(i.get())->removeConnect(connectHandle);
 
     // And remove it here
     Node::erase(connectHandle);
