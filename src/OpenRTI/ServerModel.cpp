@@ -2497,6 +2497,7 @@ Federation::eraseTimeRegulating(Federate& federate)
   FederationConnect* federationConnect = federate.getFederationConnect();
   // We can only be time regulating if this exists and provides us with a link
   OpenRTIAssert(federationConnect);
+  OpenRTIAssert(federationConnect->getIsTimeRegulating());
   federationConnect->eraseTimeRegulating(federate);
   if (!federationConnect->getTimeRegulatingFederateList().empty())
     return;

@@ -678,7 +678,7 @@ class NodeConnect;
 class Federation;
 class FederationConnect;
 
-class OPENRTI_LOCAL Federate : public HandleStringEntity<Federate, FederateHandle>, public IntrusiveList<Federate, 0>::Hook,public IntrusiveList<Federate, 1>::Hook {
+class OPENRTI_LOCAL Federate : public HandleStringEntity<Federate, FederateHandle>, public IntrusiveList<Federate, 0>::Hook, public IntrusiveList<Federate, 1>::Hook {
 public:
   typedef HandleStringEntity<Federate, FederateHandle>::HandleMap HandleMap;
   typedef HandleStringEntity<Federate, FederateHandle>::StringMap NameMap;
@@ -744,7 +744,10 @@ public:
   void setCommitId(Unsigned commitId);
 
   void setFederationConnect(FederationConnect* federationConnect)
-  { _federationConnect = federationConnect; }
+  {
+    OpenRTIAssert(federationConnect || !getIsTimeRegulating());
+    _federationConnect = federationConnect;
+  }
   FederationConnect* getFederationConnect() const
   { return _federationConnect; }
   ConnectHandle getConnectHandle() const;
