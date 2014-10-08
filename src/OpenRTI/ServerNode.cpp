@@ -1754,6 +1754,15 @@ public:
           accept(connectHandle, eraseRegionMessage.get());
         }
 
+        // Remove from time management, needs to happen before the federation connect is removed
+        if (federate->getIsTimeRegulating()) {
+          eraseTimeRegulating(*federate);
+          SharedPtr<DisableTimeRegulationRequestMessage> request = new DisableTimeRegulationRequestMessage;
+          request->setFederationHandle(getFederationHandle());
+          request->setFederateHandle(federate->getFederateHandle());
+          broadcast(connectHandle, request);
+        }
+
         // Remove from connects
         federationConnect->erase(*federate);
         Log(ServerFederate, Info) << getServerPath() << ": Resigning federate " << federate->getFederateHandle()
