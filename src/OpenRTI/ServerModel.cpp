@@ -511,6 +511,7 @@ ParameterDefinition::ParameterDefinition(InteractionClass& interactionClass) :
 
 ParameterDefinition::~ParameterDefinition()
 {
+  _classParameterList.clear();
 }
 
 void
@@ -545,6 +546,7 @@ InteractionClass::InteractionClass(Federation& federation, InteractionClass* par
 
 InteractionClass::~InteractionClass()
 {
+  _parameterHandleClassParameterMap.clear();
   eraseParameterDefinitions();
   OpenRTIAssert(_parameterHandleParameterMap.empty());
   OpenRTIAssert(_parameterNameParameterMap.empty());
