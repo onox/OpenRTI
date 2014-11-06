@@ -93,16 +93,26 @@ LeafServerThread::_Registry::connect(const URL& url, const StringStringListMap& 
   /// This is be default the rti server node.
   /// For testing we can plug something different
   SharedPtr<AbstractServerNode> serverNode;
-  serverNode = createServerNode();
-  if (!serverNode.valid())
+  try {
+    serverNode = createServerNode();
+  } catch (...) {
+  }
+  if (!serverNode.valid()) {
+    _urlServerMap.erase(i);
     return SharedPtr<AbstractConnect>();
+  }
   serverNode->getServerOptions().setServerName("ambassadorConnect");
 
   /// Depending on the url create a server
   SharedPtr<AbstractServer> server;
-  server = createServer(url, serverNode);
-  if (!server.valid())
+  try {
+    server = createServer(url, serverNode);
+  } catch (...) {
+  }
+  if (!server.valid()) {
+    _urlServerMap.erase(i);
     return SharedPtr<AbstractConnect>();
+  }
 
   i->second = new LeafServerThread(server);
   i->second->_iterator = i;
@@ -163,6 +173,7 @@ LeafServerThread::_Registry::createServerNode()
 LeafServerThread::LeafServerThread(const SharedPtr<AbstractServer>& server) :
   _server(server)
 {
+  OpenRTIAssert(_server.valid());
 }
 
 LeafServerThread::~LeafServerThread(void)
