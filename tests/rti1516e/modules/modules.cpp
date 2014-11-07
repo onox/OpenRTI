@@ -518,9 +518,10 @@ public:
         return false;
       }
 
-      for (unsigned j = 0; j < 100; ++j) {
+      for (unsigned j = 0; j < 1; ++j) {
         std::vector<std::wstring> additionalFomModules;
-        _moduleList.buildModuleList(additionalFomModules, getRandomNumber());
+        // FIXME temporarily disable additional fom modules for this 0.6 release
+        // _moduleList.buildModuleList(additionalFomModules, getRandomNumber());
 
         std::vector<std::wstring> fullFomModules = fomModules;
         fullFomModules.insert(fullFomModules.end(), additionalFomModules.begin(), additionalFomModules.end());
