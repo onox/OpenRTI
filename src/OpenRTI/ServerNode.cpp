@@ -1786,9 +1786,6 @@ public:
     OpenRTIAssert(federationConnect);
     OpenRTIAssert(federationConnect->getIsParentConnect() || !federationConnect->getHasFederates());
 
-    if (federationConnect->getIsParentConnect())
-      Log(ServerConnect, Error) << getServerPath() << ": Removing parent connect!" << std::endl;
-
     // Finally remove what is referencing the old connect handle
     // ServerModel::Federation::erase(*federationConnect);
     delete federationConnect;
@@ -2464,6 +2461,10 @@ public:
   void removeConnect(const ConnectHandle& connectHandle)
   {
     bool isParent = isParentConnect(connectHandle);
+
+    // Hmm, we need a server node shutdown mechanism instead of asking for isIdle here
+    if (isParent && !isIdle())
+      Log(ServerConnect, Error) << getServerPath() << ": Removing parent connect!" << std::endl;
 
     // Remove that from the federations.
     for (ServerModel::Federation::HandleMap::iterator i = getFederationHandleFederationMap().begin();
