@@ -175,6 +175,8 @@ struct SocketEventDispatcher::PrivateData {
         }
         if (socketEvent->getEnableWrite()) {
           FD_SET(socket, &writefds);
+          // In case of a failed connect we get the exception
+          FD_SET(socket, &exceptfds);
           if (nfds < int(socket))
             nfds = int(socket);
         }
@@ -227,7 +229,7 @@ struct SocketEventDispatcher::PrivateData {
           if (socket != INVALID_SOCKET && socket != SOCKET_ERROR) {
             if (FD_ISSET(socket, &readfds))
               dispatcher.read(socketEvent);
-            if (FD_ISSET(socket, &writefds))
+            if (FD_ISSET(socket, &writefds) || FD_ISSET(socket, &exceptfds))
               dispatcher.write(socketEvent);
           }
         }
