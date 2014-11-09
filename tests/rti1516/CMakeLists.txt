@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Test directories should be listed here in sensible testing order
 ADD_SUBDIRECTORY(link)
+ADD_SUBDIRECTORY(connect)
 ADD_SUBDIRECTORY(create)
 ADD_SUBDIRECTORY(join)
 ADD_SUBDIRECTORY(fddget)
