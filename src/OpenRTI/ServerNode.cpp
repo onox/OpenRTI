@@ -2249,6 +2249,9 @@ public:
     // Such a response must originate from the parent.
     if (!isParentConnect(connectHandle))
       throw MessageError("Received JoinFederationExecutionResponseMessage through a child connect!");
+    // We need to have something left here
+    if (_pendingMessageList.empty())
+      throw MessageError("No pending JoinFederationExecutionResponseMessage!");
 
     ConnectHandle requestConnectHandle = _pendingMessageList.front().first;
     if (message->getJoinFederationExecutionResponseType() == JoinFederationExecutionResponseSuccess) {
