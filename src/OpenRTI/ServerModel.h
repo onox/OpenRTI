@@ -811,6 +811,7 @@ private:
 template<typename T, typename H, typename S = std::string>
 class OPENRTI_LOCAL ModuleEntity : public HandleStringEntity<T, H, S> {
 public:
+
   // True if we have seen this somewhere in this current attempt to
   // insert a set of modules. Is also true for newly allocated entities
   // as this means that they were inserted with this set of modules.
@@ -1806,12 +1807,12 @@ public:
   void clearAvailableForResolve();
 
   /// Either insert a new entity or checks if the provided entity is
-  /// compatible with the existing one. Returns the entity.
-  Dimension* getCheckOrCreate(Module& module, const FOMStringDimension& stringDimension);
-  UpdateRate* getCheckOrCreate(Module& module, const FOMStringUpdateRate& stringUpdateRate);
-  InteractionClass* getCheckOrCreate(Module& module, const FOMStringInteractionClass& stringInteractionClass);
-  ObjectClass* getCheckOrCreate(Module& module, const FOMStringObjectClass& stringObjectClass);
-  Module* getOrCreate(const FOMStringModule& stringModule, bool isBaseModule);
+  /// compatible with the existing one. Returns true if the entity was newly created.
+  bool getCheckOrCreate(Module& module, const FOMStringDimension& stringDimension);
+  bool getCheckOrCreate(Module& module, const FOMStringUpdateRate& stringUpdateRate);
+  bool getCheckOrCreate(Module& module, const FOMStringInteractionClass& stringInteractionClass);
+  bool getCheckOrCreate(Module& module, const FOMStringObjectClass& stringObjectClass);
+  ModuleHandle insert(const FOMStringModule& stringModule, bool isBaseModule);
 
   /// Either insert a new entity or creates a new one.
   /// Throws a message error if an existing one does not match the provided.
@@ -1823,17 +1824,16 @@ public:
 
   /// This is for inserting the initial object model
   void insert(const FOMStringModuleList& stringModuleList);
+  void insert(ModuleHandleVector& moduleHandleVector, const FOMStringModuleList& stringModuleList);
   void insert(const FOMModuleList& fomModuleList);
-
-  void insert(Federate& federate, const FOMStringModuleList& stringModuleList);
-  void insert(Federate& federate, const FOMModuleList& fomModuleList);
 
   /// Must be unreferenced if being erased
   void erase(const ModuleHandle& moduleHandle);
   void erase(Module& module);
 
   /// To push this to other server nodes, we need to collect the module data for the message.
-  void getBaseModuleList(FOMModuleList& moduleList);
+  void getModuleList(FOMModuleList& moduleList) const;
+  void getModuleList(FOMModuleList& moduleList, const ModuleHandleVector& moduleHandleVector) const;
 
   Module* getModule(const ModuleHandle& moduleHandle);
 
@@ -1903,17 +1903,6 @@ private:
   // the federation for a valid connect for a given connect handle.
   // Here a fast index keyed by connect handle helps a lot, so we have a map here.
   FederationConnect::HandleMap _connectHandleFederationConnectMap;
-
-  // For all the object model string maps:
-  // We need to distinguish between root object model entries,
-  // entries from other non root models and own entries.
-  // On join a federate might only use and reference entities that
-  // are either from the base object model or are included in
-  // one of the modules provided on join. Thus, for tracking this,
-  // we mark all entities if they are available for resolve.
-  // When trying to insert a new set of modules, at first this flag
-  // is cleared on all non root object model entities and again
-  // set if the entity is provided with the object model.
 
   // Module/ObjectModel dependent
   Module::ContentMap _moduleContentModuleMap;

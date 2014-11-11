@@ -428,7 +428,6 @@ InsertFederationExecutionMessage::operator==(const InsertFederationExecutionMess
   if (getFederationName() != rhs.getFederationName()) return false;
   if (getLogicalTimeFactoryName() != rhs.getLogicalTimeFactoryName()) return false;
   if (getConfigurationParameterMap() != rhs.getConfigurationParameterMap()) return false;
-  if (getFOMModuleList() != rhs.getFOMModuleList()) return false;
   return true;
 }
 
@@ -443,8 +442,6 @@ InsertFederationExecutionMessage::operator<(const InsertFederationExecutionMessa
   if (rhs.getLogicalTimeFactoryName() < getLogicalTimeFactoryName()) return false;
   if (getConfigurationParameterMap() < rhs.getConfigurationParameterMap()) return true;
   if (rhs.getConfigurationParameterMap() < getConfigurationParameterMap()) return false;
-  if (getFOMModuleList() < rhs.getFOMModuleList()) return true;
-  if (rhs.getFOMModuleList() < getFOMModuleList()) return false;
   return false;
 }
 
@@ -598,6 +595,59 @@ ReleaseFederationHandleMessage::operator<(const ReleaseFederationHandleMessage& 
   return false;
 }
 
+InsertModulesMessage::InsertModulesMessage()
+{
+}
+
+InsertModulesMessage::~InsertModulesMessage()
+{
+}
+
+const char*
+InsertModulesMessage::getTypeName() const
+{
+  return "InsertModulesMessage";
+}
+
+void
+InsertModulesMessage::out(std::ostream& os) const
+{
+  os << "InsertModulesMessage " << *this;
+}
+
+void
+InsertModulesMessage::dispatch(const AbstractMessageDispatcher& dispatcher) const
+{
+  dispatcher.accept(*this);
+}
+
+bool
+InsertModulesMessage::operator==(const AbstractMessage& rhs) const
+{
+  const InsertModulesMessage* message = dynamic_cast<const InsertModulesMessage*>(&rhs);
+  if (!message)
+    return false;
+  return operator==(*message);
+}
+
+bool
+InsertModulesMessage::operator==(const InsertModulesMessage& rhs) const
+{
+  if (getFederationHandle() != rhs.getFederationHandle()) return false;
+  if (getFOMModuleList() != rhs.getFOMModuleList()) return false;
+  return true;
+}
+
+bool
+InsertModulesMessage::operator<(const InsertModulesMessage& rhs) const
+{
+  if (getFederationHandle() < rhs.getFederationHandle()) return true;
+  if (rhs.getFederationHandle() < getFederationHandle()) return false;
+  if (getFOMModuleList() < rhs.getFOMModuleList()) return true;
+  if (rhs.getFOMModuleList() < getFOMModuleList()) return false;
+  return false;
+}
+
 JoinFederationExecutionRequestMessage::JoinFederationExecutionRequestMessage()
 {
 }
@@ -704,7 +754,6 @@ JoinFederationExecutionResponseMessage::operator==(const JoinFederationExecution
   if (getFederateHandle() != rhs.getFederateHandle()) return false;
   if (getFederateType() != rhs.getFederateType()) return false;
   if (getFederateName() != rhs.getFederateName()) return false;
-  if (getFOMModuleList() != rhs.getFOMModuleList()) return false;
   return true;
 }
 
@@ -723,8 +772,6 @@ JoinFederationExecutionResponseMessage::operator<(const JoinFederationExecutionR
   if (rhs.getFederateType() < getFederateType()) return false;
   if (getFederateName() < rhs.getFederateName()) return true;
   if (rhs.getFederateName() < getFederateName()) return false;
-  if (getFOMModuleList() < rhs.getFOMModuleList()) return true;
-  if (rhs.getFOMModuleList() < getFOMModuleList()) return false;
   return false;
 }
 

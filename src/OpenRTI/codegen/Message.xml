@@ -426,8 +426,6 @@
     <field name="LogicalTimeFactoryName" type="String"/>
     <!-- Maximum backward compatible string based key value map describing the rti capabilites. -->
     <field name="ConfigurationParameterMap" type="ConfigurationParameterMap"/>
-    <!-- May be the mom?? FIXME -->
-    <field name="FOMModuleList" type="FOMModuleList"/>
   </message>
   <!-- Tell a parent that we want to get rid of this federation connect.
        If the connect is really idle at the time thie message is recieved
@@ -446,6 +444,14 @@
   <!-- Send this to the parent if the federation handle is no longer in use, not even for the shutdown procedure. -->
   <message type="ReleaseFederationHandle">
     <field name="FederationHandle" type="FederationHandle"/>
+  </message>
+
+  <!-- Insert a set of new modules into the federation.
+       Don't need the erase since once inserted they persist
+  -->
+  <message type="InsertModules">
+    <field name="FederationHandle" type="FederationHandle"/>
+    <field name="FOMModuleList" type="FOMModuleList"/>
   </message>
 
   <!-- Join federation execution -->
@@ -471,8 +477,6 @@
     <field name="FederateType" type="String"/>
     <!-- The new federates unique name -->
     <field name="FederateName" type="String"/>
-    <!-- The list of required fom modules -->
-    <field name="FOMModuleList" type="FOMModuleList"/>
   </message>
 
   <!-- Resign federation execution as sent from the ambassador.

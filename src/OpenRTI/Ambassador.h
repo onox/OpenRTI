@@ -3992,7 +3992,6 @@ public:
     _federate = new Federate;
     _federate->setFederationHandle(message.getFederationHandle());
     _federate->setLogicalTimeFactoryName(message.getLogicalTimeFactoryName());
-    _federate->insertFOMModuleList(message.getFOMModuleList());
 
     ConfigurationParameterMap::const_iterator i;
     // time regulation is by default permitted, but may be denied due to parent server policy

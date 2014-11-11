@@ -1594,7 +1594,7 @@ Federation::clearAvailableForResolve()
   }
 }
 
-Dimension*
+bool
 Federation::getCheckOrCreate(Module& module, const FOMStringDimension& stringDimension)
 {
   Dimension::NameMap::iterator i;
@@ -1609,7 +1609,7 @@ Federation::getCheckOrCreate(Module& module, const FOMStringDimension& stringDim
     }
     module.insert(*i);
     i->setAvailableForResolve(true);
-    return i.get();
+    return false;
   } else {
     Dimension* dimension = new Dimension(*this);
     dimension->setName(stringDimension.getName());
@@ -1617,11 +1617,11 @@ Federation::getCheckOrCreate(Module& module, const FOMStringDimension& stringDim
     dimension->setUpperBound(stringDimension.getUpperBound());
     insert(*dimension);
     module.insert(*dimension);
-    return dimension;
+    return true;
   }
 }
 
-UpdateRate*
+bool
 Federation::getCheckOrCreate(Module& module, const FOMStringUpdateRate& stringUpdateRate)
 {
   UpdateRate::NameMap::iterator i;
@@ -1636,7 +1636,7 @@ Federation::getCheckOrCreate(Module& module, const FOMStringUpdateRate& stringUp
     }
     module.insert(*i);
     i->setAvailableForResolve(true);
-    return i.get();
+    return false;
   } else {
     UpdateRate* updateRate = new UpdateRate(*this);
     updateRate->setName(stringUpdateRate.getName());
@@ -1644,11 +1644,11 @@ Federation::getCheckOrCreate(Module& module, const FOMStringUpdateRate& stringUp
     updateRate->setRate(stringUpdateRate.getRate());
     insert(*updateRate);
     module.insert(*updateRate);
-    return updateRate;
+    return true;
   }
 }
 
-InteractionClass*
+bool
 Federation::getCheckOrCreate(Module& module, const FOMStringInteractionClass& stringInteractionClass)
 {
   InteractionClass::NameMap::iterator i;
@@ -1717,7 +1717,7 @@ Federation::getCheckOrCreate(Module& module, const FOMStringInteractionClass& st
     if (!stringInteractionClass.getParameterList().empty())
       module.insertParameters(*i);
 
-    return i.get();
+    return false;
   } else {
     InteractionClass* parentInteractionClass;
     parentInteractionClass = resolveParentInteractionClass(stringInteractionClass.getName());
@@ -1763,11 +1763,11 @@ Federation::getCheckOrCreate(Module& module, const FOMStringInteractionClass& st
       nextParameterHandle = ParameterHandle(nextParameterHandle.getHandle() + 1);
     }
 
-    return interactionClass;
+    return true;
   }
 }
 
-ObjectClass*
+bool
 Federation::getCheckOrCreate(Module& module, const FOMStringObjectClass& stringObjectClass)
 {
   ObjectClass::NameMap::iterator i;
@@ -1838,7 +1838,7 @@ Federation::getCheckOrCreate(Module& module, const FOMStringObjectClass& stringO
     if (!stringObjectClass.getAttributeList().empty())
       module.insertAttributes(*i);
 
-    return i.get();
+    return false;
   } else {
     ObjectClass* parentObjectClass;
     parentObjectClass = resolveParentObjectClass(stringObjectClass.getName());
@@ -1884,52 +1884,60 @@ Federation::getCheckOrCreate(Module& module, const FOMStringObjectClass& stringO
       nextAttributeHandle = AttributeHandle(nextAttributeHandle.getHandle() + 1);
     }
 
-    return objectClass;
+    return true;
   }
 }
 
-Module*
-Federation::getOrCreate(const FOMStringModule& stringModule, bool isBaseModule)
+ModuleHandle
+Federation::insert(const FOMStringModule& stringModule, bool isBaseModule)
 {
-  Module::ContentMap::iterator i = _moduleContentModuleMap.find(stringModule.getContent());
-  if (i != _moduleContentModuleMap.end()) {
-    return i.get();
-  } else {
-    Module* module = new Module(*this);
-    module->setModuleHandle(_moduleHandleAllocator.get());
-    module->setContent(stringModule.getContent());
-    module->setIsBaseModule(isBaseModule);
-    module->setArtificialInteractionRoot(stringModule.getArtificialInteractionRoot());
-    module->setArtificialObjectRoot(stringModule.getArtificialObjectRoot());
-    insert(*module);
+  Module* module = new Module(*this);
+  module->setModuleHandle(_moduleHandleAllocator.get());
+  module->setContent(stringModule.getContent());
+  module->setIsBaseModule(isBaseModule);
+  module->setArtificialInteractionRoot(stringModule.getArtificialInteractionRoot());
+  module->setArtificialObjectRoot(stringModule.getArtificialObjectRoot());
+  insert(*module);
 
-    try {
-      for (FOMStringDimensionList::const_iterator j = stringModule.getDimensionList().begin();
-           j != stringModule.getDimensionList().end(); ++j) {
-        Dimension* dimension = getCheckOrCreate(*module, *j);
-      }
+  bool created = false;
+  try {
 
-      for (FOMStringUpdateRateList::const_iterator j = stringModule.getUpdateRateList().begin();
-           j != stringModule.getUpdateRateList().end(); ++j) {
-        UpdateRate* updateRate = getCheckOrCreate(*module, *j);
-      }
-
-      for (FOMStringInteractionClassList::const_iterator j = stringModule.getInteractionClassList().begin();
-           j != stringModule.getInteractionClassList().end(); ++j) {
-        InteractionClass* interactionClass = getCheckOrCreate(*module, *j);
-      }
-
-      for (FOMStringObjectClassList::const_iterator j = stringModule.getObjectClassList().begin();
-           j != stringModule.getObjectClassList().end(); ++j) {
-        ObjectClass* objectClass = getCheckOrCreate(*module, *j);
-      }
-
-      return module;
-    } catch (...) {
-      erase(*module);
-      throw;
+    for (FOMStringDimensionList::const_iterator j = stringModule.getDimensionList().begin();
+         j != stringModule.getDimensionList().end(); ++j) {
+      if (getCheckOrCreate(*module, *j))
+        created = true;
     }
+
+    for (FOMStringUpdateRateList::const_iterator j = stringModule.getUpdateRateList().begin();
+         j != stringModule.getUpdateRateList().end(); ++j) {
+      if (getCheckOrCreate(*module, *j))
+        created = true;
+    }
+
+    for (FOMStringInteractionClassList::const_iterator j = stringModule.getInteractionClassList().begin();
+         j != stringModule.getInteractionClassList().end(); ++j) {
+      if (getCheckOrCreate(*module, *j))
+        created = true;
+    }
+
+    for (FOMStringObjectClassList::const_iterator j = stringModule.getObjectClassList().begin();
+         j != stringModule.getObjectClassList().end(); ++j) {
+      if (getCheckOrCreate(*module, *j))
+        created = true;
+    }
+
+    if (!created) {
+      erase(*module);
+      return ModuleHandle();
+    }
+
+    return module->getModuleHandle();
+  } catch (...) {
+    erase(*module);
+    throw;
   }
+
+  return ModuleHandle();
 }
 
 Dimension*
@@ -2202,8 +2210,25 @@ Federation::getOrCreate(const FOMModule& fomModule, bool isBaseModule)
 void
 Federation::insert(const FOMStringModuleList& stringModuleList)
 {
-  for (FOMStringModuleList::const_iterator i = stringModuleList.begin(); i != stringModuleList.end(); ++i) {
-    getOrCreate(*i, true);
+  ModuleHandleVector moduleHandleVector;
+  insert(moduleHandleVector, stringModuleList);
+}
+
+void
+Federation::insert(ModuleHandleVector& moduleHandleVector, const FOMStringModuleList& stringModuleList)
+{
+  moduleHandleVector.reserve(stringModuleList.size());
+  try {
+    for (FOMStringModuleList::const_iterator i = stringModuleList.begin(); i != stringModuleList.end(); ++i) {
+      ModuleHandle moduleHandle = insert(*i, true);
+      if (moduleHandle.valid())
+        moduleHandleVector.push_back(moduleHandle);
+    }
+  } catch (...) {
+    for (ModuleHandleVector::iterator i = moduleHandleVector.begin(); i != moduleHandleVector.end(); ++i)
+      erase(*i);
+    moduleHandleVector.clear();
+    throw;
   }
 }
 
@@ -2212,25 +2237,6 @@ Federation::insert(const FOMModuleList& fomModuleList)
 {
   for (FOMModuleList::const_iterator i = fomModuleList.begin(); i != fomModuleList.end(); ++i) {
     getOrCreate(*i, true);
-  }
-}
-
-void
-Federation::insert(Federate& federate, const FOMStringModuleList& stringModuleList)
-{
-  for (FOMStringModuleList::const_iterator i = stringModuleList.begin(); i != stringModuleList.end(); ++i) {
-    Module* module = getOrCreate(*i, false);
-    federate.insert(*module);
-  }
-}
-
-void
-Federation::insert(Federate& federate, const FOMModuleList& fomModuleList)
-{
-  // Here this just has to work
-  for (FOMModuleList::const_iterator i = fomModuleList.begin(); i != fomModuleList.end(); ++i) {
-    Module* module = getOrCreate(*i, false);
-    federate.insert(*module);
   }
 }
 
@@ -2300,15 +2306,24 @@ Federation::erase(Module& module)
 }
 
 void
-Federation::getBaseModuleList(FOMModuleList& moduleList)
+Federation::getModuleList(FOMModuleList& moduleList) const
 {
   moduleList.reserve(_moduleHandleModuleMap.size());
   for (Module::HandleMap::iterator i = _moduleHandleModuleMap.begin();
        i != _moduleHandleModuleMap.end(); ++i) {
-    if (!i->getIsBaseModule())
-      continue;
     moduleList.push_back(FOMModule());
     i->getModule(moduleList.back());
+  }
+}
+
+void
+Federation::getModuleList(FOMModuleList& moduleList, const ModuleHandleVector& moduleHandleVector) const
+{
+  for (ModuleHandleVector::const_iterator i = moduleHandleVector.begin(); i != moduleHandleVector.end(); ++i) {
+    Module::HandleMap::iterator j = _moduleHandleModuleMap.find(*i);
+    OpenRTIAssert(j != _moduleHandleModuleMap.end());
+    moduleList.push_back(FOMModule());
+    j->getModule(moduleList.back());
   }
 }
 
@@ -2462,9 +2477,6 @@ Federation::erase(Federate& federate)
   while (!federate.getFederateModuleList().empty()) {
     Module& module = federate.getFederateModuleList().back().getModule();
     federate.getFederateModuleList().pop_back();
-    if (module.getIsInUse())
-      continue;
-    erase(module);
   }
   _federateHandleAllocator.put(federate.getFederateHandle());
   Federate::HandleMap::erase(federate);

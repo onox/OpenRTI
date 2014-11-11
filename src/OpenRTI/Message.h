@@ -305,6 +305,7 @@ class InsertFederationExecutionMessage;
 class ShutdownFederationExecutionMessage;
 class EraseFederationExecutionMessage;
 class ReleaseFederationHandleMessage;
+class InsertModulesMessage;
 class JoinFederationExecutionRequestMessage;
 class JoinFederationExecutionResponseMessage;
 class ResignFederationExecutionLeafRequestMessage;
@@ -3181,23 +3182,11 @@ public:
   const ConfigurationParameterMap& getConfigurationParameterMap() const
   { return _configurationParameterMap; }
 
-  void setFOMModuleList(const FOMModuleList& value)
-  { _fOMModuleList = value; }
-#if 201103L <= __cplusplus
-  void setFOMModuleList(FOMModuleList&& value)
-  { _fOMModuleList = value; }
-#endif
-  FOMModuleList& getFOMModuleList()
-  { return _fOMModuleList; }
-  const FOMModuleList& getFOMModuleList() const
-  { return _fOMModuleList; }
-
 private:
   FederationHandle _federationHandle;
   String _federationName;
   String _logicalTimeFactoryName;
   ConfigurationParameterMap _configurationParameterMap;
-  FOMModuleList _fOMModuleList;
 };
 
 class OPENRTI_API ShutdownFederationExecutionMessage : public AbstractMessage {
@@ -3306,6 +3295,54 @@ public:
 
 private:
   FederationHandle _federationHandle;
+};
+
+class OPENRTI_API InsertModulesMessage : public AbstractMessage {
+public:
+  InsertModulesMessage();
+  virtual ~InsertModulesMessage();
+
+  virtual const char* getTypeName() const;
+  virtual void out(std::ostream& os) const;
+  virtual void dispatch(const AbstractMessageDispatcher& dispatcher) const;
+
+  virtual bool operator==(const AbstractMessage& rhs) const;
+  bool operator==(const InsertModulesMessage& rhs) const;
+  bool operator<(const InsertModulesMessage& rhs) const;
+  bool operator!=(const InsertModulesMessage& rhs) const
+  { return !operator==(rhs); }
+  bool operator>(const InsertModulesMessage& rhs) const
+  { return rhs.operator<(*this); }
+  bool operator>=(const InsertModulesMessage& rhs) const
+  { return !operator<(rhs); }
+  bool operator<=(const InsertModulesMessage& rhs) const
+  { return !operator>(rhs); }
+
+  void setFederationHandle(const FederationHandle& value)
+  { _federationHandle = value; }
+#if 201103L <= __cplusplus
+  void setFederationHandle(FederationHandle&& value)
+  { _federationHandle = value; }
+#endif
+  FederationHandle& getFederationHandle()
+  { return _federationHandle; }
+  const FederationHandle& getFederationHandle() const
+  { return _federationHandle; }
+
+  void setFOMModuleList(const FOMModuleList& value)
+  { _fOMModuleList = value; }
+#if 201103L <= __cplusplus
+  void setFOMModuleList(FOMModuleList&& value)
+  { _fOMModuleList = value; }
+#endif
+  FOMModuleList& getFOMModuleList()
+  { return _fOMModuleList; }
+  const FOMModuleList& getFOMModuleList() const
+  { return _fOMModuleList; }
+
+private:
+  FederationHandle _federationHandle;
+  FOMModuleList _fOMModuleList;
 };
 
 class OPENRTI_API JoinFederationExecutionRequestMessage : public AbstractMessage {
@@ -3479,17 +3516,6 @@ public:
   const String& getFederateName() const
   { return _federateName; }
 
-  void setFOMModuleList(const FOMModuleList& value)
-  { _fOMModuleList = value; }
-#if 201103L <= __cplusplus
-  void setFOMModuleList(FOMModuleList&& value)
-  { _fOMModuleList = value; }
-#endif
-  FOMModuleList& getFOMModuleList()
-  { return _fOMModuleList; }
-  const FOMModuleList& getFOMModuleList() const
-  { return _fOMModuleList; }
-
 private:
   FederationHandle _federationHandle;
   JoinFederationExecutionResponseType _joinFederationExecutionResponseType;
@@ -3497,7 +3523,6 @@ private:
   FederateHandle _federateHandle;
   String _federateType;
   String _federateName;
-  FOMModuleList _fOMModuleList;
 };
 
 class OPENRTI_API ResignFederationExecutionLeafRequestMessage : public AbstractMessage {
@@ -8073,8 +8098,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const InsertFederatio
   os << "logicalTimeFactoryName: " << value.getLogicalTimeFactoryName();
   os << ", ";
   os << "configurationParameterMap: " << value.getConfigurationParameterMap();
-  os << ", ";
-  os << "fOMModuleList: " << value.getFOMModuleList();
   os << " }";
   return os;
 }
@@ -8105,6 +8128,18 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const ReleaseFederati
 {
   os << "{ ";
   os << "federationHandle: " << value.getFederationHandle();
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const InsertModulesMessage& value)
+{
+  os << "{ ";
+  os << "federationHandle: " << value.getFederationHandle();
+  os << ", ";
+  os << "fOMModuleList: " << value.getFOMModuleList();
   os << " }";
   return os;
 }
@@ -8143,8 +8178,6 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const JoinFederationE
   os << "federateType: " << value.getFederateType();
   os << ", ";
   os << "federateName: " << value.getFederateName();
-  os << ", ";
-  os << "fOMModuleList: " << value.getFOMModuleList();
   os << " }";
   return os;
 }

@@ -1139,7 +1139,6 @@ public:
     writeString(value.getFederationName());
     writeString(value.getLogicalTimeFactoryName());
     writeConfigurationParameterMap(value.getConfigurationParameterMap());
-    writeFOMModuleList(value.getFOMModuleList());
   }
 
   void writeShutdownFederationExecutionMessage(const ShutdownFederationExecutionMessage& value)
@@ -1155,6 +1154,12 @@ public:
   void writeReleaseFederationHandleMessage(const ReleaseFederationHandleMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
+  }
+
+  void writeInsertModulesMessage(const InsertModulesMessage& value)
+  {
+    writeFederationHandle(value.getFederationHandle());
+    writeFOMModuleList(value.getFOMModuleList());
   }
 
   void writeJoinFederationExecutionRequestMessage(const JoinFederationExecutionRequestMessage& value)
@@ -1174,7 +1179,6 @@ public:
     writeFederateHandle(value.getFederateHandle());
     writeString(value.getFederateType());
     writeString(value.getFederateName());
-    writeFOMModuleList(value.getFOMModuleList());
   }
 
   void writeResignFederationExecutionLeafRequestMessage(const ResignFederationExecutionLeafRequestMessage& value)
@@ -1657,11 +1661,21 @@ public:
   }
 
   void
-  encode(TightBE1MessageEncoding& messageEncoding, const JoinFederationExecutionRequestMessage& message) const
+  encode(TightBE1MessageEncoding& messageEncoding, const InsertModulesMessage& message) const
   {
     EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());
     EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
     encodeStream.writeUInt16Compressed(12);
+    encodeStream.writeInsertModulesMessage(message);
+    headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
+  }
+
+  void
+  encode(TightBE1MessageEncoding& messageEncoding, const JoinFederationExecutionRequestMessage& message) const
+  {
+    EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());
+    EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
+    encodeStream.writeUInt16Compressed(13);
     encodeStream.writeJoinFederationExecutionRequestMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1671,7 +1685,7 @@ public:
   {
     EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());
     EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
-    encodeStream.writeUInt16Compressed(13);
+    encodeStream.writeUInt16Compressed(14);
     encodeStream.writeJoinFederationExecutionResponseMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1681,7 +1695,7 @@ public:
   {
     EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());
     EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
-    encodeStream.writeUInt16Compressed(14);
+    encodeStream.writeUInt16Compressed(15);
     encodeStream.writeResignFederationExecutionRequestMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1691,7 +1705,7 @@ public:
   {
     EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());
     EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
-    encodeStream.writeUInt16Compressed(15);
+    encodeStream.writeUInt16Compressed(16);
     encodeStream.writeJoinFederateNotifyMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1701,7 +1715,7 @@ public:
   {
     EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());
     EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
-    encodeStream.writeUInt16Compressed(16);
+    encodeStream.writeUInt16Compressed(17);
     encodeStream.writeResignFederateNotifyMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -1711,7 +1725,7 @@ public:
   {
     EncodeDataStream headerStream(messageEncoding.addScratchWriteBuffer());
     EncodeStream encodeStream(messageEncoding.addScratchWriteBuffer(), messageEncoding);
-    encodeStream.writeUInt16Compressed(17);
+    encodeStream.writeUInt16Compressed(18);
     encodeStream.writeChangeAutomaticResignDirectiveMessage(message);
     headerStream.writeUInt32BE(uint32_t(encodeStream.size()));
   }
@@ -3175,7 +3189,6 @@ public:
     readString(value.getFederationName());
     readString(value.getLogicalTimeFactoryName());
     readConfigurationParameterMap(value.getConfigurationParameterMap());
-    readFOMModuleList(value.getFOMModuleList());
   }
 
   void readShutdownFederationExecutionMessage(ShutdownFederationExecutionMessage& value)
@@ -3191,6 +3204,12 @@ public:
   void readReleaseFederationHandleMessage(ReleaseFederationHandleMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
+  }
+
+  void readInsertModulesMessage(InsertModulesMessage& value)
+  {
+    readFederationHandle(value.getFederationHandle());
+    readFOMModuleList(value.getFOMModuleList());
   }
 
   void readJoinFederationExecutionRequestMessage(JoinFederationExecutionRequestMessage& value)
@@ -3210,7 +3229,6 @@ public:
     readFederateHandle(value.getFederateHandle());
     readString(value.getFederateType());
     readString(value.getFederateName());
-    readFOMModuleList(value.getFOMModuleList());
   }
 
   void readResignFederationExecutionLeafRequestMessage(ResignFederationExecutionLeafRequestMessage& value)
@@ -3761,26 +3779,30 @@ TightBE1MessageEncoding::decodeBody(const VariableLengthData& variableLengthData
     decodeStream.readReleaseFederationHandleMessage(static_cast<ReleaseFederationHandleMessage&>(*_message));
     break;
   case 12:
+    _message = new InsertModulesMessage;
+    decodeStream.readInsertModulesMessage(static_cast<InsertModulesMessage&>(*_message));
+    break;
+  case 13:
     _message = new JoinFederationExecutionRequestMessage;
     decodeStream.readJoinFederationExecutionRequestMessage(static_cast<JoinFederationExecutionRequestMessage&>(*_message));
     break;
-  case 13:
+  case 14:
     _message = new JoinFederationExecutionResponseMessage;
     decodeStream.readJoinFederationExecutionResponseMessage(static_cast<JoinFederationExecutionResponseMessage&>(*_message));
     break;
-  case 14:
+  case 15:
     _message = new ResignFederationExecutionRequestMessage;
     decodeStream.readResignFederationExecutionRequestMessage(static_cast<ResignFederationExecutionRequestMessage&>(*_message));
     break;
-  case 15:
+  case 16:
     _message = new JoinFederateNotifyMessage;
     decodeStream.readJoinFederateNotifyMessage(static_cast<JoinFederateNotifyMessage&>(*_message));
     break;
-  case 16:
+  case 17:
     _message = new ResignFederateNotifyMessage;
     decodeStream.readResignFederateNotifyMessage(static_cast<ResignFederateNotifyMessage&>(*_message));
     break;
-  case 17:
+  case 18:
     _message = new ChangeAutomaticResignDirectiveMessage;
     decodeStream.readChangeAutomaticResignDirectiveMessage(static_cast<ChangeAutomaticResignDirectiveMessage&>(*_message));
     break;

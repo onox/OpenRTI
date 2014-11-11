@@ -50,6 +50,12 @@ public:
     }
   }
 
+  void accept(const ConnectHandle& connectHandle, const InsertModulesMessage* message)
+  {
+    broadcastToChildren(message);
+    insert(message->getFOMModuleList());
+  }
+
   void accept(const ConnectHandle& connectHandle, const JoinFederationExecutionRequestMessage* message)
   {
     OpenRTIAssert(isRootServer());
@@ -63,23 +69,34 @@ public:
       return;
     }
 
+    // Try to extend the object model
+    if (!message->getFOMStringModuleList().empty()) {
+      ModuleHandleVector moduleHandleVector;
+      try {
+        insert(moduleHandleVector, message->getFOMStringModuleList());
+      } catch (OpenRTI::Exception& e) {
+        SharedPtr<JoinFederationExecutionResponseMessage> response;
+        response = new JoinFederationExecutionResponseMessage;
+        response->setJoinFederationExecutionResponseType(JoinFederationExecutionResponseInconsistentFDD);
+        response->setExceptionString(e.what());
+        getServerNode().send(connectHandle, response);
+        return;
+      }
+
+      if (!moduleHandleVector.empty()) {
+        SharedPtr<InsertModulesMessage> insertModules;
+        insertModules = new InsertModulesMessage;
+        getModuleList(insertModules->getFOMModuleList(), moduleHandleVector);
+        insertModules->setFederationHandle(getFederationHandle());
+        broadcastToChildren(insertModules);
+      }
+    }
+
     // ... insert a new federate ...
     ServerModel::Federate* federate = new ServerModel::Federate(*this);
     federate->setName(message->getFederateName());
     federate->setFederateType(message->getFederateType());
     insert(*federate);
-    try {
-      insert(*federate, message->getFOMStringModuleList());
-    } catch (OpenRTI::Exception& e) {
-      erase(*federate);
-
-      SharedPtr<JoinFederationExecutionResponseMessage> response;
-      response = new JoinFederationExecutionResponseMessage;
-      response->setJoinFederationExecutionResponseType(JoinFederationExecutionResponseInconsistentFDD);
-      response->setExceptionString(e.what());
-      getServerNode().send(connectHandle, response);
-      return;
-    }
 
     // Survived so far, insert a new federation connect
     ServerModel::NodeConnect* nodeConnect = getServerNode().getNodeConnect(connectHandle);
@@ -93,7 +110,6 @@ public:
     SharedPtr<JoinFederationExecutionResponseMessage> response;
     response = new JoinFederationExecutionResponseMessage;
     response->setJoinFederationExecutionResponseType(JoinFederationExecutionResponseSuccess);
-    federate->getModuleList(response->getFOMModuleList());
     response->setFederationHandle(getFederationHandle());
     response->setFederateHandle(federate->getFederateHandle());
     response->setFederateName(federate->getName());
@@ -137,9 +153,6 @@ public:
     ServerModel::Federate* federate = insertFederate(requestConnectHandle, message->getFederateName(), federateHandle);
     OpenRTIAssert(federate);
     federate->setFederateType(message->getFederateType());
-
-    // here insert the fom
-    insert(*federate, message->getFOMModuleList());
 
     // send all children the notification about the new federate except the one that gets the join response
     SharedPtr<JoinFederateNotifyMessage> notify = new JoinFederateNotifyMessage;
@@ -1587,10 +1600,13 @@ public:
     if (!federationConnect->getPermitTimeRegulation())
       message->getConfigurationParameterMap()["permitTimeRegulation"].push_back("false");
     // FIXME add the server options
-
-    // FIXME push them as required
-    getBaseModuleList(message->getFOMModuleList());
     federationConnect->send(message);
+
+    SharedPtr<InsertModulesMessage> insertModules;
+    insertModules = new InsertModulesMessage;
+    insertModules->setFederationHandle(getFederationHandle());
+    getModuleList(insertModules->getFOMModuleList());
+    federationConnect->send(insertModules);
 
     /// FIXME currently these are all flushed when an EraseFederationExecutionMessage is recieved.
     /// FIXME Make that more explicit????
@@ -2105,7 +2121,6 @@ public:
     federationServer = insertFederation(message->getFederationName(), federationHandle);
     federationServer->setParentConfigurationParameterMap(message->getConfigurationParameterMap());
     federationServer->setLogicalTimeFactoryName(message->getLogicalTimeFactoryName());
-    federationServer->insert(message->getFOMModuleList());
     // FIXME add the server options
   }
   // A child server or an ambassador sends this request to be removed from the federation execution.
@@ -2325,6 +2340,10 @@ public:
     request->setFederationHandle(message->getFederationHandle());
     accept(connectHandle, request.get());
   }
+
+  // Insert a set of object modules into the federation
+  void accept(const ConnectHandle& connectHandle, const InsertModulesMessage* message)
+  { acceptDownstreamFederationMessage(connectHandle, message); }
 
   // Message to inform federates about newly joined federates
   void accept(const ConnectHandle& connectHandle, const JoinFederateNotifyMessage* message)

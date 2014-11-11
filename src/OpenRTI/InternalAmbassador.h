@@ -70,6 +70,7 @@ public:
   void acceptInternalMessage(const ShutdownFederationExecutionMessage& message);
   void acceptInternalMessage(const EraseFederationExecutionMessage& message);
   void acceptInternalMessage(const ReleaseFederationHandleMessage& message);
+  void acceptInternalMessage(const InsertModulesMessage& message);
   void acceptInternalMessage(const JoinFederationExecutionRequestMessage& message);
   void acceptInternalMessage(const JoinFederationExecutionResponseMessage& message);
   void acceptInternalMessage(const ResignFederationExecutionRequestMessage& message);

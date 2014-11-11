@@ -38,6 +38,7 @@ class InsertFederationExecutionMessage;
 class ShutdownFederationExecutionMessage;
 class EraseFederationExecutionMessage;
 class ReleaseFederationHandleMessage;
+class InsertModulesMessage;
 class JoinFederationExecutionRequestMessage;
 class JoinFederationExecutionResponseMessage;
 class ResignFederationExecutionLeafRequestMessage;
@@ -102,6 +103,7 @@ public:
   virtual void accept(const ShutdownFederationExecutionMessage&) const = 0;
   virtual void accept(const EraseFederationExecutionMessage&) const = 0;
   virtual void accept(const ReleaseFederationHandleMessage&) const = 0;
+  virtual void accept(const InsertModulesMessage&) const = 0;
   virtual void accept(const JoinFederationExecutionRequestMessage&) const = 0;
   virtual void accept(const JoinFederationExecutionResponseMessage&) const = 0;
   virtual void accept(const ResignFederationExecutionLeafRequestMessage&) const = 0;
@@ -169,6 +171,7 @@ public:
   virtual void accept(const ShutdownFederationExecutionMessage& message) const { _t(message); }
   virtual void accept(const EraseFederationExecutionMessage& message) const { _t(message); }
   virtual void accept(const ReleaseFederationHandleMessage& message) const { _t(message); }
+  virtual void accept(const InsertModulesMessage& message) const { _t(message); }
   virtual void accept(const JoinFederationExecutionRequestMessage& message) const { _t(message); }
   virtual void accept(const JoinFederationExecutionResponseMessage& message) const { _t(message); }
   virtual void accept(const ResignFederationExecutionLeafRequestMessage& message) const { _t(message); }
@@ -238,6 +241,7 @@ public:
   virtual void accept(const ShutdownFederationExecutionMessage& message) const { _t(message); }
   virtual void accept(const EraseFederationExecutionMessage& message) const { _t(message); }
   virtual void accept(const ReleaseFederationHandleMessage& message) const { _t(message); }
+  virtual void accept(const InsertModulesMessage& message) const { _t(message); }
   virtual void accept(const JoinFederationExecutionRequestMessage& message) const { _t(message); }
   virtual void accept(const JoinFederationExecutionResponseMessage& message) const { _t(message); }
   virtual void accept(const ResignFederationExecutionLeafRequestMessage& message) const { _t(message); }

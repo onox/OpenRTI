@@ -159,6 +159,15 @@ InternalAmbassador::acceptInternalMessage(const ReleaseFederationHandleMessage& 
 }
 
 void
+InternalAmbassador::acceptInternalMessage(const InsertModulesMessage& message)
+{
+  Federate* federate = getFederate();
+  if (!federate)
+    return;
+  federate->insertFOMModuleList(message.getFOMModuleList());
+}
+
+void
 InternalAmbassador::acceptInternalMessage(const JoinFederationExecutionRequestMessage& message)
 {
 }
@@ -172,7 +181,6 @@ InternalAmbassador::acceptInternalMessage(const JoinFederationExecutionResponseM
   federate->setFederateHandle(message.getFederateHandle());
   federate->setFederateName(message.getFederateName());
   federate->setFederateType(message.getFederateType());
-  federate->insertFOMModuleList(message.getFOMModuleList());
 }
 
 void
