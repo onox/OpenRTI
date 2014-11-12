@@ -864,7 +864,6 @@ public:
   { return _upperBound; }
   void setUpperBound(const Unsigned& upperBound);
 
-  bool getIsBaseModule();
   bool getIsReferencedByAnyModule() const;
   bool getIsInUse() const;
 
@@ -940,7 +939,6 @@ public:
   { return _rate; }
   void setRate(const double& rate);
 
-  bool getIsBaseModule();
   bool getIsReferencedByAnyModule() const;
   bool getIsInUse() const;
 
@@ -1121,10 +1119,8 @@ public:
   ChildList& getChildInteractionClassList()
   { return _childInteractionClassList; }
 
-  bool getIsBaseModule();
   bool getIsReferencedByAnyModule() const;
   bool getIsInUse() const;
-  bool getAreParemetersBaseModule();
   bool getAreParametersReferencedByAnyModule() const;
   bool getAreParametersInUse() const;
 
@@ -1370,10 +1366,8 @@ public:
   ChildList& getChildObjectClassList()
   { return _childObjectClassList; }
 
-  bool getIsBaseModule();
   bool getIsReferencedByAnyModule() const;
   bool getIsInUse() const;
-  bool getAreAttributesBaseModule();
   bool getAreAttributesReferencedByAnyModule() const;
   bool getAreAttributesInUse() const;
 
@@ -1534,11 +1528,6 @@ public:
   { return HandleStringEntity<Module, ModuleHandle>::_getString(); }
   void setContent(const std::string& content);
 
-  // True if this model was provided on federation create.
-  bool getIsBaseModule() const
-  { return _isBaseModule; }
-  void setIsBaseModule(bool isBaseModule);
-
   bool getArtificialInteractionRoot() const
   { return _artificialInteractionRoot; }
   void setArtificialInteractionRoot(bool artificialInteractionRoot);
@@ -1602,9 +1591,6 @@ private:
   Module& operator=(const Module&);
 
   Federation& _federation;
-
-  // True if this model was provided on federation create.
-  bool _isBaseModule;
 
   bool _artificialInteractionRoot;
   bool _artificialObjectRoot;
@@ -1791,7 +1777,7 @@ public:
   bool getCheckOrCreate(Module& module, const FOMStringUpdateRate& stringUpdateRate);
   bool getCheckOrCreate(Module& module, const FOMStringInteractionClass& stringInteractionClass);
   bool getCheckOrCreate(Module& module, const FOMStringObjectClass& stringObjectClass);
-  ModuleHandle insert(const FOMStringModule& stringModule, bool isBaseModule);
+  ModuleHandle insert(const FOMStringModule& stringModule);
 
   /// Either insert a new entity or creates a new one.
   /// Throws a message error if an existing one does not match the provided.
@@ -1799,7 +1785,7 @@ public:
   UpdateRate* getOrCreate(Module& module, const FOMUpdateRate& fomUpdateRate);
   InteractionClass* getOrCreate(Module& module, const FOMInteractionClass& fomInteractionClass);
   ObjectClass* getOrCreate(Module& module, const FOMObjectClass& fomObjectClass);
-  Module* getOrCreate(const FOMModule& fomModule, bool isBaseModule);
+  Module* getOrCreate(const FOMModule& fomModule);
 
   /// This is for inserting the initial object model
   void insert(const FOMStringModuleList& stringModuleList);

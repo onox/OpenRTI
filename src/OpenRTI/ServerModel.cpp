@@ -376,14 +376,6 @@ Dimension::setUpperBound(const Unsigned& upperBound)
 }
 
 bool
-Dimension::getIsBaseModule()
-{
-  if (_dimensionModuleList.empty())
-    return false;
-  return _dimensionModuleList.front().getModule().getIsBaseModule();
-}
-
-bool
 Dimension::getIsReferencedByAnyModule() const
 {
   return !_dimensionModuleList.empty();
@@ -440,14 +432,6 @@ void
 UpdateRate::setRate(const double& rate)
 {
   _rate = rate;
-}
-
-bool
-UpdateRate::getIsBaseModule()
-{
-  if (_updateRateModuleList.empty())
-    return false;
-  return _updateRateModuleList.front().getModule().getIsBaseModule();
 }
 
 bool
@@ -603,14 +587,6 @@ InteractionClass::getIsReferencedByAnyModule() const
 }
 
 bool
-InteractionClass::getIsBaseModule()
-{
-  if (_interactionClassModuleList.empty())
-    return false;
-  return _interactionClassModuleList.front().getModule().getIsBaseModule();
-}
-
-bool
 InteractionClass::getIsInUse() const
 {
   return getIsReferencedByAnyModule();
@@ -620,14 +596,6 @@ bool
 InteractionClass::getAreParametersReferencedByAnyModule() const
 {
   return !_parameterDefinitionModuleList.empty();
-}
-
-bool
-InteractionClass::getAreParemetersBaseModule()
-{
-  if (_parameterDefinitionModuleList.empty())
-    return false;
-  return _parameterDefinitionModuleList.front().getModule().getIsBaseModule();
 }
 
 bool
@@ -847,14 +815,6 @@ ObjectClass::getIsReferencedByAnyModule() const
 }
 
 bool
-ObjectClass::getIsBaseModule()
-{
-  if (_objectClassModuleList.empty())
-    return false;
-  return _objectClassModuleList.front().getModule().getIsBaseModule();
-}
-
-bool
 ObjectClass::getIsInUse() const
 {
   return getIsReferencedByAnyModule();
@@ -864,14 +824,6 @@ bool
 ObjectClass::getAreAttributesReferencedByAnyModule() const
 {
   return !_attributeDefinitionModuleList.empty();
-}
-
-bool
-ObjectClass::getAreAttributesBaseModule()
-{
-  if (_attributeDefinitionModuleList.empty())
-    return false;
-  return _attributeDefinitionModuleList.front().getModule().getIsBaseModule();
 }
 
 bool
@@ -993,7 +945,6 @@ ObjectClass::removeConnect(const ConnectHandle& connectHandle)
 
 Module::Module(Federation& federation) :
   _federation(federation),
-  _isBaseModule(false),
   _artificialInteractionRoot(false),
   _artificialObjectRoot(false)
 {
@@ -1022,12 +973,6 @@ Module::setContent(const std::string& content)
 }
 
 void
-Module::setIsBaseModule(bool isBaseModule)
-{
-  _isBaseModule = isBaseModule;
-}
-
-void
 Module::setArtificialInteractionRoot(bool artificialInteractionRoot)
 {
   _artificialInteractionRoot = artificialInteractionRoot;
@@ -1047,7 +992,7 @@ Module::getIsReferencedByAnyFederate() const
 bool
 Module::getIsInUse() const
 {
-  return getIsBaseModule() || getIsReferencedByAnyFederate();
+  return getIsReferencedByAnyFederate();
 }
 
 void
@@ -1324,7 +1269,6 @@ Federation::~Federation()
 
   // Throw away the base modules
   while (!_moduleHandleModuleMap.empty()) {
-    OpenRTIAssert(_moduleHandleModuleMap.back().getIsBaseModule());
     Federation::erase(_moduleHandleModuleMap.back());
   }
 
@@ -1853,12 +1797,11 @@ Federation::getCheckOrCreate(Module& module, const FOMStringObjectClass& stringO
 }
 
 ModuleHandle
-Federation::insert(const FOMStringModule& stringModule, bool isBaseModule)
+Federation::insert(const FOMStringModule& stringModule)
 {
   Module* module = new Module(*this);
   module->setModuleHandle(_moduleHandleAllocator.get());
   module->setContent(stringModule.getContent());
-  module->setIsBaseModule(isBaseModule);
   module->setArtificialInteractionRoot(stringModule.getArtificialInteractionRoot());
   module->setArtificialObjectRoot(stringModule.getArtificialObjectRoot());
   insert(*module);
@@ -2132,7 +2075,7 @@ Federation::getOrCreate(Module& module, const FOMObjectClass& fomObjectClass)
 }
 
 Module*
-Federation::getOrCreate(const FOMModule& fomModule, bool isBaseModule)
+Federation::getOrCreate(const FOMModule& fomModule)
 {
   Module::HandleMap::iterator i = _moduleHandleModuleMap.find(fomModule.getModuleHandle());
   if (i != _moduleHandleModuleMap.end()) {
@@ -2142,7 +2085,6 @@ Federation::getOrCreate(const FOMModule& fomModule, bool isBaseModule)
     Module* module = new Module(*this);
     module->setModuleHandle(fomModule.getModuleHandle());
     module->setContent(fomModule.getContent());
-    module->setIsBaseModule(isBaseModule);
     module->setArtificialInteractionRoot(fomModule.getArtificialInteractionRoot());
     module->setArtificialObjectRoot(fomModule.getArtificialObjectRoot());
     insert(*module);
@@ -2184,7 +2126,7 @@ Federation::insert(ModuleHandleVector& moduleHandleVector, const FOMStringModule
   moduleHandleVector.reserve(stringModuleList.size());
   try {
     for (FOMStringModuleList::const_iterator i = stringModuleList.begin(); i != stringModuleList.end(); ++i) {
-      ModuleHandle moduleHandle = insert(*i, true);
+      ModuleHandle moduleHandle = insert(*i);
       if (moduleHandle.valid())
         moduleHandleVector.push_back(moduleHandle);
     }
@@ -2200,7 +2142,7 @@ void
 Federation::insert(const FOMModuleList& fomModuleList)
 {
   for (FOMModuleList::const_iterator i = fomModuleList.begin(); i != fomModuleList.end(); ++i) {
-    getOrCreate(*i, true);
+    getOrCreate(*i);
   }
 }
 
