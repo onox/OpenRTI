@@ -645,35 +645,6 @@ private:
 
 ////////////////////////////////////////////////////////////
 
-class Federate;
-class Module;
-
-class OPENRTI_LOCAL FederateModule : public ListPair<FederateModule> {
-public:
-  FederateModule(Federate& federate, Module& module);
-  ~FederateModule();
-
-  const Federate& getFederate() const
-  { return _federate; }
-  Federate& getFederate()
-  { return _federate; }
-  const Module& getModule() const
-  { return _module; }
-  Module& getModule()
-  { return _module; }
-
-private:
-  FederateModule(const FederateModule&);
-  FederateModule& operator=(const FederateModule&);
-
-  Federate& _federate;
-  Module& _module;
-};
-
-
-
-////////////////////////////////////////////////////////////
-
 class NodeConnect;
 class Federation;
 class FederationConnect;
@@ -712,14 +683,6 @@ public:
   bool getResignPending() const
   { return _resignPending; }
   void setResignPending(bool resignPending);
-
-  FederateModule* insert(Module& module);
-  void getModuleList(FOMModuleList& moduleList);
-
-  void insert(FederateModule& federateModule)
-  { _federateModuleList.push_back(federateModule); }
-  FederateModule::FirstList& getFederateModuleList()
-  { return _federateModuleList; }
 
   Region* getRegion(const LocalRegionHandle& regionHandle);
   void insert(Region& region)
@@ -766,8 +729,6 @@ private:
   bool _resignPending;
 
   FederationConnect* _federationConnect;
-
-  FederateModule::FirstList _federateModuleList;
 
   // SynchronizationFederate::FirstList _synchronizationList;
 
@@ -1536,17 +1497,8 @@ public:
   { return _artificialObjectRoot; }
   void setArtificialObjectRoot(bool artificialObjectRoot);
 
-  bool getIsReferencedByAnyFederate() const;
-  bool getIsInUse() const;
-
   /// Read back the FOMModule context to send this with a message
   void getModule(FOMModule& module);
-
-  /// Federates referencong this module
-  void insert(FederateModule& federateModule)
-  { _federateModuleList.push_back(federateModule); }
-  FederateModule::SecondList& getFederateModuleList()
-  { return _federateModuleList; }
 
   // insert into this module
   DimensionModule* insert(Dimension& dimension);
@@ -1594,9 +1546,6 @@ private:
 
   bool _artificialInteractionRoot;
   bool _artificialObjectRoot;
-
-  // All federates referencing this module
-  FederateModule::SecondList _federateModuleList;
 
   // All dimensions that are referenced by this module
   DimensionModule::FirstList _dimensionModuleList;

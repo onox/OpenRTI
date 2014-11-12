@@ -205,18 +205,6 @@ Synchronization::setTag(const VariableLengthData& tag)
 
 ////////////////////////////////////////////////////////////
 
-FederateModule::FederateModule(Federate& federate, Module& module) :
-  _federate(federate),
-  _module(module)
-{
-}
-
-FederateModule::~FederateModule()
-{
-}
-
-////////////////////////////////////////////////////////////
-
 Federate::Federate(Federation& federation) :
   _federation(federation),
   _resignAction(CANCEL_THEN_DELETE_THEN_DIVEST),
@@ -259,27 +247,6 @@ void
 Federate::setResignPending(bool resignPending)
 {
   _resignPending = resignPending;
-}
-
-FederateModule*
-Federate::insert(Module& module)
-{
-  FederateModule* federateModule;
-  federateModule = new FederateModule(*this, module);
-  insert(*federateModule);
-  module.insert(*federateModule);
-  return federateModule;
-}
-
-void
-Federate::getModuleList(FOMModuleList& moduleList)
-{
-  moduleList.reserve(_federateModuleList.size());
-  for (FederateModule::FirstList::iterator i = _federateModuleList.begin();
-       i != _federateModuleList.end(); ++i) {
-    moduleList.push_back(FOMModule());
-    i->getModule().getModule(moduleList.back());
-  }
 }
 
 Region*
@@ -981,18 +948,6 @@ Module::setArtificialInteractionRoot(bool artificialInteractionRoot)
 void Module::setArtificialObjectRoot(bool artificialObjectRoot)
 {
   _artificialObjectRoot = artificialObjectRoot;
-}
-
-bool
-Module::getIsReferencedByAnyFederate() const
-{
-  return !_federateModuleList.empty();
-}
-
-bool
-Module::getIsInUse() const
-{
-  return getIsReferencedByAnyFederate();
 }
 
 void
@@ -2372,10 +2327,6 @@ Federation::erase(const FederateHandle& federateHandle)
 void
 Federation::erase(Federate& federate)
 {
-  while (!federate.getFederateModuleList().empty()) {
-    Module& module = federate.getFederateModuleList().back().getModule();
-    federate.getFederateModuleList().pop_back();
-  }
   _federateHandleAllocator.put(federate.getFederateHandle());
   Federate::HandleMap::erase(federate);
 }
