@@ -1717,26 +1717,25 @@ public:
 
   /// Either insert a new entity or checks if the provided entity is
   /// compatible with the existing one. Returns true if the entity was newly created.
-  bool getCheckOrCreate(Module& module, const FOMStringDimension& stringDimension);
-  bool getCheckOrCreate(Module& module, const FOMStringUpdateRate& stringUpdateRate);
-  bool getCheckOrCreate(Module& module, const FOMStringInteractionClass& stringInteractionClass);
-  bool getCheckOrCreate(Module& module, const FOMStringObjectClass& stringObjectClass);
+  bool insertOrCheck(Module& module, const FOMStringDimension& stringDimension);
+  bool insertOrCheck(Module& module, const FOMStringUpdateRate& stringUpdateRate);
+  bool insertOrCheck(Module& module, const FOMStringInteractionClass& stringInteractionClass);
+  bool insertOrCheck(Module& module, const FOMStringObjectClass& stringObjectClass);
+
+  /// This is for inserting the initial object model
   ModuleHandle insert(const FOMStringModule& stringModule);
+  void insert(const FOMStringModuleList& stringModuleList);
+  void insert(ModuleHandleVector& moduleHandleVector, const FOMStringModuleList& stringModuleList);
 
   /// Either insert a new entity or creates a new one.
   /// Throws a message error if an existing one does not match the provided.
-  Dimension* getOrCreate(Module& module, const FOMDimension& fomDimension);
-  UpdateRate* getOrCreate(Module& module, const FOMUpdateRate& fomUpdateRate);
-  InteractionClass* getOrCreate(Module& module, const FOMInteractionClass& fomInteractionClass);
-  ObjectClass* getOrCreate(Module& module, const FOMObjectClass& fomObjectClass);
-  Module* getOrCreate(const FOMModule& fomModule);
+  void insert(Module& module, const FOMDimension& fomDimension);
+  void insert(Module& module, const FOMUpdateRate& fomUpdateRate);
+  void insert(Module& module, const FOMInteractionClass& fomInteractionClass);
+  void insert(Module& module, const FOMObjectClass& fomObjectClass);
 
-  /// This is for inserting the initial object model
-  void insert(const FOMStringModuleList& stringModuleList);
-  void insert(ModuleHandleVector& moduleHandleVector, const FOMStringModuleList& stringModuleList);
+  void insert(const FOMModule& fomModule);
   void insert(const FOMModuleList& fomModuleList);
-
-  /// Must be unreferenced if being erased
   void erase(const ModuleHandle& moduleHandle);
   void erase(Module& module);
 

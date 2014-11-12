@@ -1462,7 +1462,7 @@ Federation::insert(Module& module)
 }
 
 bool
-Federation::getCheckOrCreate(Module& module, const FOMStringDimension& stringDimension)
+Federation::insertOrCheck(Module& module, const FOMStringDimension& stringDimension)
 {
   Dimension::NameMap::iterator i;
   i = _dimensionNameDimensionMap.find(stringDimension.getName());
@@ -1488,7 +1488,7 @@ Federation::getCheckOrCreate(Module& module, const FOMStringDimension& stringDim
 }
 
 bool
-Federation::getCheckOrCreate(Module& module, const FOMStringUpdateRate& stringUpdateRate)
+Federation::insertOrCheck(Module& module, const FOMStringUpdateRate& stringUpdateRate)
 {
   UpdateRate::NameMap::iterator i;
   i = _updateRateNameUpdateRateMap.find(stringUpdateRate.getName());
@@ -1514,7 +1514,7 @@ Federation::getCheckOrCreate(Module& module, const FOMStringUpdateRate& stringUp
 }
 
 bool
-Federation::getCheckOrCreate(Module& module, const FOMStringInteractionClass& stringInteractionClass)
+Federation::insertOrCheck(Module& module, const FOMStringInteractionClass& stringInteractionClass)
 {
   InteractionClass::NameMap::iterator i;
   i = _interactionClassNameInteractionClassMap.find(stringInteractionClass.getName());
@@ -1632,7 +1632,7 @@ Federation::getCheckOrCreate(Module& module, const FOMStringInteractionClass& st
 }
 
 bool
-Federation::getCheckOrCreate(Module& module, const FOMStringObjectClass& stringObjectClass)
+Federation::insertOrCheck(Module& module, const FOMStringObjectClass& stringObjectClass)
 {
   ObjectClass::NameMap::iterator i;
   i = _objectClassNameObjectClassMap.find(stringObjectClass.getName());
@@ -1766,25 +1766,25 @@ Federation::insert(const FOMStringModule& stringModule)
 
     for (FOMStringDimensionList::const_iterator j = stringModule.getDimensionList().begin();
          j != stringModule.getDimensionList().end(); ++j) {
-      if (getCheckOrCreate(*module, *j))
+      if (insertOrCheck(*module, *j))
         created = true;
     }
 
     for (FOMStringUpdateRateList::const_iterator j = stringModule.getUpdateRateList().begin();
          j != stringModule.getUpdateRateList().end(); ++j) {
-      if (getCheckOrCreate(*module, *j))
+      if (insertOrCheck(*module, *j))
         created = true;
     }
 
     for (FOMStringInteractionClassList::const_iterator j = stringModule.getInteractionClassList().begin();
          j != stringModule.getInteractionClassList().end(); ++j) {
-      if (getCheckOrCreate(*module, *j))
+      if (insertOrCheck(*module, *j))
         created = true;
     }
 
     for (FOMStringObjectClassList::const_iterator j = stringModule.getObjectClassList().begin();
          j != stringModule.getObjectClassList().end(); ++j) {
-      if (getCheckOrCreate(*module, *j))
+      if (insertOrCheck(*module, *j))
         created = true;
     }
 
@@ -1802,8 +1802,33 @@ Federation::insert(const FOMStringModule& stringModule)
   return ModuleHandle();
 }
 
-Dimension*
-Federation::getOrCreate(Module& module, const FOMDimension& fomDimension)
+void
+Federation::insert(const FOMStringModuleList& stringModuleList)
+{
+  ModuleHandleVector moduleHandleVector;
+  insert(moduleHandleVector, stringModuleList);
+}
+
+void
+Federation::insert(ModuleHandleVector& moduleHandleVector, const FOMStringModuleList& stringModuleList)
+{
+  moduleHandleVector.reserve(stringModuleList.size());
+  try {
+    for (FOMStringModuleList::const_iterator i = stringModuleList.begin(); i != stringModuleList.end(); ++i) {
+      ModuleHandle moduleHandle = insert(*i);
+      if (moduleHandle.valid())
+        moduleHandleVector.push_back(moduleHandle);
+    }
+  } catch (...) {
+    for (ModuleHandleVector::iterator i = moduleHandleVector.begin(); i != moduleHandleVector.end(); ++i)
+      erase(*i);
+    moduleHandleVector.clear();
+    throw;
+  }
+}
+
+void
+Federation::insert(Module& module, const FOMDimension& fomDimension)
 {
   Dimension::HandleMap::iterator i = _dimensionHandleDimensionMap.find(fomDimension.getDimensionHandle());
   if (i != _dimensionHandleDimensionMap.end()) {
@@ -1812,7 +1837,6 @@ Federation::getOrCreate(Module& module, const FOMDimension& fomDimension)
     if (fomDimension.getUpperBound() != i->getUpperBound())
       throw MessageError("Dimension upper bound does not match.");
     module.insert(*i);
-    return i.get();
   } else {
     _dimensionHandleAllocator.take(fomDimension.getDimensionHandle());
     Dimension* dimension = new Dimension(*this);
@@ -1821,12 +1845,11 @@ Federation::getOrCreate(Module& module, const FOMDimension& fomDimension)
     dimension->setUpperBound(fomDimension.getUpperBound());
     insert(*dimension);
     module.insert(*dimension);
-    return dimension;
   }
 }
 
-UpdateRate*
-Federation::getOrCreate(Module& module, const FOMUpdateRate& fomUpdateRate)
+void
+Federation::insert(Module& module, const FOMUpdateRate& fomUpdateRate)
 {
   UpdateRate::HandleMap::iterator i = _updateRateHandleUpdateRateMap.find(fomUpdateRate.getUpdateRateHandle());
   if (i != _updateRateHandleUpdateRateMap.end()) {
@@ -1835,7 +1858,6 @@ Federation::getOrCreate(Module& module, const FOMUpdateRate& fomUpdateRate)
     if (fomUpdateRate.getRate() != i->getRate())
       throw MessageError("UpdateRate rate does not match.");
     module.insert(*i);
-    return i.get();
   } else {
     _updateRateHandleAllocator.take(fomUpdateRate.getUpdateRateHandle());
     UpdateRate* updateRate = new UpdateRate(*this);
@@ -1844,12 +1866,11 @@ Federation::getOrCreate(Module& module, const FOMUpdateRate& fomUpdateRate)
     updateRate->setRate(fomUpdateRate.getRate());
     insert(*updateRate);
     module.insert(*updateRate);
-    return updateRate;
   }
 }
 
-InteractionClass*
-Federation::getOrCreate(Module& module, const FOMInteractionClass& fomInteractionClass)
+void
+Federation::insert(Module& module, const FOMInteractionClass& fomInteractionClass)
 {
   InteractionClass::HandleMap::iterator i;
   i = _interactionClassHandleInteractionClassMap.find(fomInteractionClass.getInteractionClassHandle());
@@ -1900,7 +1921,6 @@ Federation::getOrCreate(Module& module, const FOMInteractionClass& fomInteractio
       }
     }
     module.insert(*i);
-    return i.get();
   } else {
     InteractionClass* parentInteractionClass;
     parentInteractionClass = getInteractionClass(fomInteractionClass.getParentInteractionClassHandle());
@@ -1933,12 +1953,11 @@ Federation::getOrCreate(Module& module, const FOMInteractionClass& fomInteractio
       parameterDefinition->setParameterHandle(j->getParameterHandle());
       interactionClass->insert(*parameterDefinition);
     }
-    return interactionClass;
   }
 }
 
-ObjectClass*
-Federation::getOrCreate(Module& module, const FOMObjectClass& fomObjectClass)
+void
+Federation::insert(Module& module, const FOMObjectClass& fomObjectClass)
 {
   ObjectClass::HandleMap::iterator i;
   i = _objectClassHandleObjectClassMap.find(fomObjectClass.getObjectClassHandle());
@@ -1992,7 +2011,6 @@ Federation::getOrCreate(Module& module, const FOMObjectClass& fomObjectClass)
       }
     }
     module.insert(*i);
-    return i.get();
   } else {
     ObjectClass* parentObjectClass;
     parentObjectClass = getObjectClass(fomObjectClass.getParentObjectClassHandle());
@@ -2025,17 +2043,14 @@ Federation::getOrCreate(Module& module, const FOMObjectClass& fomObjectClass)
       attributeDefinition->setTransportationType(j->getTransportationType());
       attributeDefinition->_dimensionHandleSet = j->getDimensionHandleSet();
     }
-    return objectClass;
   }
 }
 
-Module*
-Federation::getOrCreate(const FOMModule& fomModule)
+void
+Federation::insert(const FOMModule& fomModule)
 {
   Module::HandleMap::iterator i = _moduleHandleModuleMap.find(fomModule.getModuleHandle());
-  if (i != _moduleHandleModuleMap.end()) {
-    return i.get();
-  } else {
+  if (i == _moduleHandleModuleMap.end()) {
     _moduleHandleAllocator.take(fomModule.getModuleHandle());
     Module* module = new Module(*this);
     module->setModuleHandle(fomModule.getModuleHandle());
@@ -2046,50 +2061,23 @@ Federation::getOrCreate(const FOMModule& fomModule)
 
     for (FOMDimensionList::const_iterator j = fomModule.getDimensionList().begin();
          j != fomModule.getDimensionList().end(); ++j) {
-      Dimension* dimension = getOrCreate(*module, *j);
+      insert(*module, *j);
     }
 
     for (FOMUpdateRateList::const_iterator j = fomModule.getUpdateRateList().begin();
          j != fomModule.getUpdateRateList().end(); ++j) {
-      UpdateRate* updateRate = getOrCreate(*module, *j);
+      insert(*module, *j);
     }
 
     for (FOMInteractionClassList::const_iterator j = fomModule.getInteractionClassList().begin();
          j != fomModule.getInteractionClassList().end(); ++j) {
-      InteractionClass* interactionClass = getOrCreate(*module, *j);
+      insert(*module, *j);
     }
 
     for (FOMObjectClassList::const_iterator j = fomModule.getObjectClassList().begin();
          j != fomModule.getObjectClassList().end(); ++j) {
-      ObjectClass* objectClass = getOrCreate(*module, *j);
+      insert(*module, *j);
     }
-
-    return module;
-  }
-}
-
-void
-Federation::insert(const FOMStringModuleList& stringModuleList)
-{
-  ModuleHandleVector moduleHandleVector;
-  insert(moduleHandleVector, stringModuleList);
-}
-
-void
-Federation::insert(ModuleHandleVector& moduleHandleVector, const FOMStringModuleList& stringModuleList)
-{
-  moduleHandleVector.reserve(stringModuleList.size());
-  try {
-    for (FOMStringModuleList::const_iterator i = stringModuleList.begin(); i != stringModuleList.end(); ++i) {
-      ModuleHandle moduleHandle = insert(*i);
-      if (moduleHandle.valid())
-        moduleHandleVector.push_back(moduleHandle);
-    }
-  } catch (...) {
-    for (ModuleHandleVector::iterator i = moduleHandleVector.begin(); i != moduleHandleVector.end(); ++i)
-      erase(*i);
-    moduleHandleVector.clear();
-    throw;
   }
 }
 
@@ -2097,7 +2085,7 @@ void
 Federation::insert(const FOMModuleList& fomModuleList)
 {
   for (FOMModuleList::const_iterator i = fomModuleList.begin(); i != fomModuleList.end(); ++i) {
-    getOrCreate(*i);
+    insert(*i);
   }
 }
 
