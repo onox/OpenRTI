@@ -609,11 +609,6 @@ public:
     _participatingFederates.insert(federateHandle);
     _waitFederates.insert(federateHandle);
   }
-  void insert(const FederateHandleSet& federateHandleSet)
-  {
-    _participatingFederates.insert(federateHandleSet.begin(), federateHandleSet.end());
-    _waitFederates.insert(federateHandleSet.begin(), federateHandleSet.end());
-  }
   // Call when a federate resigns
   void removeFederate(const FederateHandle& federateHandle)
   {
