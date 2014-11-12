@@ -476,7 +476,7 @@ public:
       std::vector<std::wstring> fomModules;
       // We are doing two different kinds of tests with this program.
       // If we have disjoint federates we test the whole infrastructure if we correctly fail
-      // with deveral mixed object models at different places. We test the the expected set
+      // with several mixed object models at different places. We test the the expected set
       // available entities for availability and unavailability - that means none of these
       // is allowed to bleed into a federate not having this in the union of supplied modules.
       // The second set of tests works on a shared federation where we still want to test
@@ -518,15 +518,17 @@ public:
         return false;
       }
 
-      for (unsigned j = 0; j < 1; ++j) {
+      for (unsigned j = 0; j < 10; ++j) {
         std::vector<std::wstring> additionalFomModules;
-        // FIXME temporarily disable additional fom modules for this 0.6 release
-        // _moduleList.buildModuleList(additionalFomModules, getRandomNumber());
+        _moduleList.buildModuleList(additionalFomModules, getRandomNumber());
 
         std::vector<std::wstring> fullFomModules = fomModules;
         fullFomModules.insert(fullFomModules.end(), additionalFomModules.begin(), additionalFomModules.end());
 
         bool expectJoinSuccess = _moduleList.fomModuleListValid(fullFomModules);
+        if (getDisjointFederations() && expectJoinSuccess)
+          fomModules = fullFomModules;
+
         bool successfullyJoined = false;
 
         try {
@@ -567,7 +569,10 @@ public:
             rti1516e::InteractionClassHandle interactionClassHandle;
             try {
               interactionClassHandle = ambassador.getInteractionClassHandle(i->first);
-              if (!expectedAvailable) {
+              // We can only know in the disjoint case what is finally not included
+              // in the object model, since other federates might have pushed object
+              // models that we don't know of
+              if (!expectedAvailable && getDisjointFederations()) {
                 std::wcout << L"getInteractionClassHandle(" << i->first
                            << L") does not fail as required!" << std::endl;
                 return false;
@@ -593,7 +598,10 @@ public:
                 bool expectedParameterAvailable = definedModule.getParameterDefined(i->first, *k);
                 try {
                   ambassador.getParameterHandle(interactionClassHandle, *k);
-                  if (!expectedParameterAvailable) {
+                  // We can only know in the disjoint case what is finally not included
+                  // in the object model, since other federates might have pushed object
+                  // models that we don't know of
+                  if (!expectedParameterAvailable && getDisjointFederations()) {
                     std::wcout << L"getParameterHandle(" << i->first << L", "
                                << *k << ") does not fail as required!" << std::endl;
                     return false;
@@ -623,7 +631,10 @@ public:
             rti1516e::ObjectClassHandle objectClassHandle;
             try {
               objectClassHandle = ambassador.getObjectClassHandle(i->first);
-              if (!expectedAvailable) {
+              // We can only know in the disjoint case what is finally not included
+              // in the object model, since other federates might have pushed object
+              // models that we don't know of
+              if (!expectedAvailable && getDisjointFederations()) {
                 std::wcout << L"getObjectClassHandle(" << i->first
                            << L") does not fail as required!" << std::endl;
                 return false;
@@ -649,7 +660,10 @@ public:
                 bool expectedAttributeAvailable = definedModule.getAttributeDefined(i->first, *k);
                 try {
                   ambassador.getAttributeHandle(objectClassHandle, *k);
-                  if (!expectedAttributeAvailable) {
+                  // We can only know in the disjoint case what is finally not included
+                  // in the object model, since other federates might have pushed object
+                  // models that we don't know of
+                  if (!expectedAttributeAvailable && getDisjointFederations()) {
                     std::wcout << L"getAttributeHandle(" << i->first << L", "
                                << *k << ") does not fail as required!" << std::endl;
                     return false;
