@@ -1562,38 +1562,6 @@ Federation::insert(Module& module)
   // _moduleContentModuleMap.insert(module);
 }
 
-void
-Federation::clearAvailableForResolve()
-{
-  for (Dimension::HandleMap::iterator i = _dimensionHandleDimensionMap.begin();
-       i != _dimensionHandleDimensionMap.end(); ++i) {
-    if (i->getIsBaseModule())
-      continue;
-    i->setAvailableForResolve(false);
-  }
-
-  for (UpdateRate::HandleMap::iterator i = _updateRateHandleUpdateRateMap.begin();
-       i != _updateRateHandleUpdateRateMap.end(); ++i) {
-    if (i->getIsBaseModule())
-      continue;
-    i->setAvailableForResolve(false);
-  }
-
-  for (InteractionClass::HandleMap::iterator i = _interactionClassHandleInteractionClassMap.begin();
-       i != _interactionClassHandleInteractionClassMap.end(); ++i) {
-    if (i->getIsBaseModule())
-      continue;
-    i->setAvailableForResolve(false);
-  }
-
-  for (ObjectClass::HandleMap::iterator i = _objectClassHandleObjectClassMap.begin();
-       i != _objectClassHandleObjectClassMap.end(); ++i) {
-    if (i->getIsBaseModule())
-      continue;
-    i->setAvailableForResolve(false);
-  }
-}
-
 bool
 Federation::getCheckOrCreate(Module& module, const FOMStringDimension& stringDimension)
 {
@@ -1608,7 +1576,6 @@ Federation::getCheckOrCreate(Module& module, const FOMStringDimension& stringDim
       throw InconsistentFDD(ss.str());
     }
     module.insert(*i);
-    i->setAvailableForResolve(true);
     return false;
   } else {
     Dimension* dimension = new Dimension(*this);
@@ -1635,7 +1602,6 @@ Federation::getCheckOrCreate(Module& module, const FOMStringUpdateRate& stringUp
       throw InconsistentFDD(ss.str());
     }
     module.insert(*i);
-    i->setAvailableForResolve(true);
     return false;
   } else {
     UpdateRate* updateRate = new UpdateRate(*this);
@@ -1712,7 +1678,6 @@ Federation::getCheckOrCreate(Module& module, const FOMStringInteractionClass& st
       }
     }
 
-    i->setAvailableForResolve(true);
     module.insert(*i);
     if (!stringInteractionClass.getParameterList().empty())
       module.insertParameters(*i);
@@ -1833,7 +1798,6 @@ Federation::getCheckOrCreate(Module& module, const FOMStringObjectClass& stringO
       }
     }
 
-    i->setAvailableForResolve(true);
     module.insert(*i);
     if (!stringObjectClass.getAttributeList().empty())
       module.insertAttributes(*i);
@@ -2404,8 +2368,6 @@ Federation::resolveDimension(const std::string& dimensionName)
   Dimension::NameMap::iterator i = _dimensionNameDimensionMap.find(dimensionName);
   if (i == _dimensionNameDimensionMap.end())
     return 0;
-  if (!i->getAvailableForResolve())
-    return 0;
   return i.get();
 }
 
@@ -2414,8 +2376,6 @@ Federation::resolveUpdateRate(const std::string& updateRateName)
 {
   UpdateRate::NameMap::iterator i = _updateRateNameUpdateRateMap.find(updateRateName);
   if (i == _updateRateNameUpdateRateMap.end())
-    return 0;
-  if (!i->getAvailableForResolve())
     return 0;
   return i.get();
 }
@@ -2428,8 +2388,6 @@ Federation::resolveParentInteractionClass(const StringVector& interactionClassNa
   InteractionClass::NameMap::iterator i = _interactionClassNameInteractionClassMap.find(parentInteractionClassName);
   if (i == _interactionClassNameInteractionClassMap.end())
     return 0;
-  if (!i->getAvailableForResolve())
-    return 0;
   return i.get();
 }
 
@@ -2440,8 +2398,6 @@ Federation::resolveParentObjectClass(const StringVector& objectClassName)
   parentObjectClassName.pop_back();
   ObjectClass::NameMap::iterator i = _objectClassNameObjectClassMap.find(parentObjectClassName);
   if (i == _objectClassNameObjectClassMap.end())
-    return 0;
-  if (!i->getAvailableForResolve())
     return 0;
   return i.get();
 }

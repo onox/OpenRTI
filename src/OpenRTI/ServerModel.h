@@ -812,25 +812,12 @@ template<typename T, typename H, typename S = std::string>
 class OPENRTI_LOCAL ModuleEntity : public HandleStringEntity<T, H, S> {
 public:
 
-  // True if we have seen this somewhere in this current attempt to
-  // insert a set of modules. Is also true for newly allocated entities
-  // as this means that they were inserted with this set of modules.
-  bool getAvailableForResolve() const
-  { return _availableForResolve; }
-  void setAvailableForResolve(bool availableForResolve)
-  { _availableForResolve = availableForResolve; }
-
 protected:
-  ModuleEntity() :
-    _availableForResolve(true)
+  ModuleEntity()
   { }
   ModuleEntity(const H& handle, const S& name) :
-    HandleStringEntity<T, H, S>(handle, name),
-    _availableForResolve(true)
+    HandleStringEntity<T, H, S>(handle, name)
   { }
-
-private:
-  bool _availableForResolve;
 };
 
 ////////////////////////////////////////////////////////////
@@ -1797,14 +1784,6 @@ public:
   void insert(InteractionClass& interactionClass);
   void insert(ObjectClass& objectClass);
   void insert(Module& module);
-
-  /// Clear the available for resolve flag on any non base model entity.
-  /// This is done before a new set of object module is inserted to ensure
-  /// that we only accept entities within these modules that are known either
-  /// in any base module or in the set of modules being inserted with this
-  /// federate (need to double check if this is legal or if this is even
-  /// more restrictive).
-  void clearAvailableForResolve();
 
   /// Either insert a new entity or checks if the provided entity is
   /// compatible with the existing one. Returns true if the entity was newly created.
