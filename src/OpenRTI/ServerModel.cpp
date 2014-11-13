@@ -365,15 +365,10 @@ UpdateRate::UpdateRate(Federation& federation) :
   _federation(federation),
   _rate(0)
 {
-  // if (getUpdateRateHandle().valid())
-  //   _federation._updateRateHandleAllocator.take(getUpdateRateHandle());
-  // else
-  //   setUpdateRateHandle(_federation._updateRateHandleAllocator.get());
 }
 
 UpdateRate::~UpdateRate()
 {
-  // _federation._updateRateHandleAllocator.put(getUpdateRateHandle());
   OpenRTIAssert(_updateRateModuleList.empty());
 }
 
