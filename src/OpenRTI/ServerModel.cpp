@@ -256,13 +256,13 @@ Synchronization::insert(Federate& federate)
 }
 
 void
-Synchronization::achieved(const FederateHandle& federateHandle)
+Synchronization::achieved(const FederateHandle& federateHandle, bool successful)
 {
   ServerModel::SynchronizationFederate::HandleMap::iterator i;
   i = _waitingFederateSyncronizationMap.find(federateHandle);
   if (i == _waitingFederateSyncronizationMap.end())
     return;
-  // OpenRTIAssert(_waitingFederateSyncronizationMap.find(i->getFederateHandle()) != _waitingFederateSyncronizationMap.end());
+  i->setSuccessful(successful);
   // OpenRTIAssert(_achievedFederateSyncronizationMap.find(i->getFederateHandle()) == _achievedFederateSyncronizationMap.end());
   // Note that no matter where we are currently linked,
   // this removes the entry from one of the maps

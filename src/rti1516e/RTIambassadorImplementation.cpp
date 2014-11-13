@@ -401,11 +401,14 @@ public:
 };
 class OPENRTI_LOCAL _O1516EFederateHandleSet : public rti1516e::FederateHandleSet {
 public:
-  _O1516EFederateHandleSet(const OpenRTI::FederateHandleVector& federateHandleVector)
+  _O1516EFederateHandleSet(const OpenRTI::FederateHandleBoolPairVector& federateHandleBoolPairVector)
   {
-    for (OpenRTI::FederateHandleVector::const_iterator i = federateHandleVector.begin();
-         i != federateHandleVector.end(); ++i)
-      insert(end(), OpenRTI::_O1516EFederateHandle(*i));
+    for (OpenRTI::FederateHandleBoolPairVector::const_iterator i = federateHandleBoolPairVector.begin();
+         i != federateHandleBoolPairVector.end(); ++i) {
+      if (!i->second)
+        continue;
+      insert(end(), OpenRTI::_O1516EFederateHandle(i->first));
+    }
   }
 };
 
@@ -640,7 +643,7 @@ public:
     }
   }
 
-  virtual void federationSynchronized(const std::string& label, const OpenRTI::FederateHandleVector& federateHandleVector)
+  virtual void federationSynchronized(const std::string& label, const OpenRTI::FederateHandleBoolPairVector& federateHandleBoolPairVector)
     throw ()
   {
     if (!_federateAmbassador) {
@@ -649,7 +652,7 @@ public:
     }
     try {
       OpenRTI::_O1516EString rti1516Label(label);
-      OpenRTI::_O1516EFederateHandleSet federateHandleSet(federateHandleVector);
+      OpenRTI::_O1516EFederateHandleSet federateHandleSet(federateHandleBoolPairVector);
       _federateAmbassador->federationSynchronized(rti1516Label, federateHandleSet);
     } catch (const rti1516e::Exception& e) {
       Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;

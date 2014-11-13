@@ -615,7 +615,7 @@ public:
   bool getIsWaitingFor(const FederateHandle& federateHandle);
 
   void insert(Federate& federate);
-  void achieved(const FederateHandle& federateHandle);
+  void achieved(const FederateHandle& federateHandle, bool successful);
 
   // private:
 

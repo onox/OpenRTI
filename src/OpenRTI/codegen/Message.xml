@@ -135,6 +135,9 @@
 
   <type name="VariableLengthData" ctype="VariableLengthData" encoding="VariableLengthData"/>
 
+  <type name="FederateHandleBoolPair" type="pair" first="FederateHandle" second="Bool"/>
+  <type name="FederateHandleBoolPairVector" type="vector" scalar="FederateHandleBoolPair"/>
+
   <type name="RangeBoundsValue" type="struct">
     <field name="LowerBound" type="Unsigned"/>
     <field name="UpperBound" type="Unsigned"/>
@@ -562,14 +565,12 @@
   <message type="SynchronizationPointAchieved">
     <field name="FederationHandle" type="FederationHandle"/>
     <field name="Label" type="String"/>
-    <field name="FederateHandleVector" type="FederateHandleVector"/>
-    <field name="SuccessfulFederateHandleVector" type="FederateHandleVector"/>
+    <field name="FederateHandleBoolPairVector" type="FederateHandleBoolPairVector"/>
   </message>
   <message type="FederationSynchronized">
     <field name="FederationHandle" type="FederationHandle"/>
     <field name="Label" type="String"/>
-    <field name="FederateHandleVector" type="FederateHandleVector"/>
-    <field name="SuccessfulFederateHandleVector" type="FederateHandleVector"/>
+    <field name="FederateHandleBoolPairVector" type="FederateHandleBoolPairVector"/>
   </message>
 
   <!-- Time management -->

@@ -497,6 +497,20 @@ public:
       _messageEncoding.addWriteBuffer(value);
   }
 
+  void writeFederateHandleBoolPair(const FederateHandleBoolPair& value)
+  {
+    writeFederateHandle(value.first);
+    writeBool(value.second);
+  }
+
+  void writeFederateHandleBoolPairVector(const FederateHandleBoolPairVector& value)
+  {
+    writeSizeTCompressed(value.size());
+    for (FederateHandleBoolPairVector::const_iterator i = value.begin(); i != value.end(); ++i) {
+      writeFederateHandleBoolPair(*i);
+    }
+  }
+
   void writeRangeBoundsValue(const RangeBoundsValue& value)
   {
     writeUnsigned(value.getLowerBound());
@@ -1245,16 +1259,14 @@ public:
   {
     writeFederationHandle(value.getFederationHandle());
     writeString(value.getLabel());
-    writeFederateHandleVector(value.getFederateHandleVector());
-    writeFederateHandleVector(value.getSuccessfulFederateHandleVector());
+    writeFederateHandleBoolPairVector(value.getFederateHandleBoolPairVector());
   }
 
   void writeFederationSynchronizedMessage(const FederationSynchronizedMessage& value)
   {
     writeFederationHandle(value.getFederationHandle());
     writeString(value.getLabel());
-    writeFederateHandleVector(value.getFederateHandleVector());
-    writeFederateHandleVector(value.getSuccessfulFederateHandleVector());
+    writeFederateHandleBoolPairVector(value.getFederateHandleBoolPairVector());
   }
 
   void writeEnableTimeRegulationRequestMessage(const EnableTimeRegulationRequestMessage& value)
@@ -2546,6 +2558,20 @@ public:
       _messageEncoding.addReadBuffer(size);
   }
 
+  void readFederateHandleBoolPair(FederateHandleBoolPair& value)
+  {
+    readFederateHandle(value.first);
+    readBool(value.second);
+  }
+
+  void readFederateHandleBoolPairVector(FederateHandleBoolPairVector& value)
+  {
+    value.resize(readSizeTCompressed());
+    for (FederateHandleBoolPairVector::iterator i = value.begin(); i != value.end(); ++i) {
+      readFederateHandleBoolPair(*i);
+    }
+  }
+
   void readRangeBoundsValue(RangeBoundsValue& value)
   {
     readUnsigned(value.getLowerBound());
@@ -3295,16 +3321,14 @@ public:
   {
     readFederationHandle(value.getFederationHandle());
     readString(value.getLabel());
-    readFederateHandleVector(value.getFederateHandleVector());
-    readFederateHandleVector(value.getSuccessfulFederateHandleVector());
+    readFederateHandleBoolPairVector(value.getFederateHandleBoolPairVector());
   }
 
   void readFederationSynchronizedMessage(FederationSynchronizedMessage& value)
   {
     readFederationHandle(value.getFederationHandle());
     readString(value.getLabel());
-    readFederateHandleVector(value.getFederateHandleVector());
-    readFederateHandleVector(value.getSuccessfulFederateHandleVector());
+    readFederateHandleBoolPairVector(value.getFederateHandleBoolPairVector());
   }
 
   void readEnableTimeRegulationRequestMessage(EnableTimeRegulationRequestMessage& value)

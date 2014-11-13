@@ -153,6 +153,10 @@ typedef std::vector<String> StringVector;
 
 typedef std::set<String> StringSet;
 
+typedef std::pair<FederateHandle, Bool> FederateHandleBoolPair;
+
+typedef std::vector<FederateHandleBoolPair> FederateHandleBoolPairVector;
+
 class RangeBoundsValue;
 typedef std::pair<DimensionHandle, RangeBoundsValue> DimensionHandleRangeBoundsValuePair;
 
@@ -382,6 +386,10 @@ typedef std::vector<ModuleHandle> ModuleHandleVector;
 typedef std::vector<String> StringVector;
 
 typedef std::set<String> StringSet;
+
+typedef std::pair<FederateHandle, Bool> FederateHandleBoolPair;
+
+typedef std::vector<FederateHandleBoolPair> FederateHandleBoolPairVector;
 
 class OPENRTI_API RangeBoundsValue {
 public:
@@ -4096,33 +4104,21 @@ public:
   const String& getLabel() const
   { return _label; }
 
-  void setFederateHandleVector(const FederateHandleVector& value)
-  { _federateHandleVector = value; }
+  void setFederateHandleBoolPairVector(const FederateHandleBoolPairVector& value)
+  { _federateHandleBoolPairVector = value; }
 #if 201103L <= __cplusplus
-  void setFederateHandleVector(FederateHandleVector&& value)
-  { _federateHandleVector = value; }
+  void setFederateHandleBoolPairVector(FederateHandleBoolPairVector&& value)
+  { _federateHandleBoolPairVector = value; }
 #endif
-  FederateHandleVector& getFederateHandleVector()
-  { return _federateHandleVector; }
-  const FederateHandleVector& getFederateHandleVector() const
-  { return _federateHandleVector; }
-
-  void setSuccessfulFederateHandleVector(const FederateHandleVector& value)
-  { _successfulFederateHandleVector = value; }
-#if 201103L <= __cplusplus
-  void setSuccessfulFederateHandleVector(FederateHandleVector&& value)
-  { _successfulFederateHandleVector = value; }
-#endif
-  FederateHandleVector& getSuccessfulFederateHandleVector()
-  { return _successfulFederateHandleVector; }
-  const FederateHandleVector& getSuccessfulFederateHandleVector() const
-  { return _successfulFederateHandleVector; }
+  FederateHandleBoolPairVector& getFederateHandleBoolPairVector()
+  { return _federateHandleBoolPairVector; }
+  const FederateHandleBoolPairVector& getFederateHandleBoolPairVector() const
+  { return _federateHandleBoolPairVector; }
 
 private:
   FederationHandle _federationHandle;
   String _label;
-  FederateHandleVector _federateHandleVector;
-  FederateHandleVector _successfulFederateHandleVector;
+  FederateHandleBoolPairVector _federateHandleBoolPairVector;
 };
 
 class OPENRTI_API FederationSynchronizedMessage : public AbstractMessage {
@@ -4168,33 +4164,21 @@ public:
   const String& getLabel() const
   { return _label; }
 
-  void setFederateHandleVector(const FederateHandleVector& value)
-  { _federateHandleVector = value; }
+  void setFederateHandleBoolPairVector(const FederateHandleBoolPairVector& value)
+  { _federateHandleBoolPairVector = value; }
 #if 201103L <= __cplusplus
-  void setFederateHandleVector(FederateHandleVector&& value)
-  { _federateHandleVector = value; }
+  void setFederateHandleBoolPairVector(FederateHandleBoolPairVector&& value)
+  { _federateHandleBoolPairVector = value; }
 #endif
-  FederateHandleVector& getFederateHandleVector()
-  { return _federateHandleVector; }
-  const FederateHandleVector& getFederateHandleVector() const
-  { return _federateHandleVector; }
-
-  void setSuccessfulFederateHandleVector(const FederateHandleVector& value)
-  { _successfulFederateHandleVector = value; }
-#if 201103L <= __cplusplus
-  void setSuccessfulFederateHandleVector(FederateHandleVector&& value)
-  { _successfulFederateHandleVector = value; }
-#endif
-  FederateHandleVector& getSuccessfulFederateHandleVector()
-  { return _successfulFederateHandleVector; }
-  const FederateHandleVector& getSuccessfulFederateHandleVector() const
-  { return _successfulFederateHandleVector; }
+  FederateHandleBoolPairVector& getFederateHandleBoolPairVector()
+  { return _federateHandleBoolPairVector; }
+  const FederateHandleBoolPairVector& getFederateHandleBoolPairVector() const
+  { return _federateHandleBoolPairVector; }
 
 private:
   FederationHandle _federationHandle;
   String _label;
-  FederateHandleVector _federateHandleVector;
-  FederateHandleVector _successfulFederateHandleVector;
+  FederateHandleBoolPairVector _federateHandleBoolPairVector;
 };
 
 class OPENRTI_API EnableTimeRegulationRequestMessage : public AbstractMessage {
@@ -6962,6 +6946,33 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const StringSet& valu
 
 template<typename char_type, typename traits_type>
 std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FederateHandleBoolPair& value)
+{
+  os << "{ ";
+  os << "first: " << value.first << ", ";
+  os << "second: " << value.second;
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
+operator<<(std::basic_ostream<char_type, traits_type>& os, const FederateHandleBoolPairVector& value)
+{
+  os << "{ ";
+  FederateHandleBoolPairVector::const_iterator i = value.begin();
+  if (i != value.end()) {
+    os << *i;
+    while (++i != value.end()) {
+      os << ", " << *i;
+    }
+  }
+  os << " }";
+  return os;
+}
+
+template<typename char_type, typename traits_type>
+std::basic_ostream<char_type, traits_type>&
 operator<<(std::basic_ostream<char_type, traits_type>& os, const RangeBoundsValue& value)
 {
   os << "{ ";
@@ -8311,9 +8322,7 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const Synchronization
   os << ", ";
   os << "label: " << value.getLabel();
   os << ", ";
-  os << "federateHandleVector: " << value.getFederateHandleVector();
-  os << ", ";
-  os << "successfulFederateHandleVector: " << value.getSuccessfulFederateHandleVector();
+  os << "federateHandleBoolPairVector: " << value.getFederateHandleBoolPairVector();
   os << " }";
   return os;
 }
@@ -8327,9 +8336,7 @@ operator<<(std::basic_ostream<char_type, traits_type>& os, const FederationSynch
   os << ", ";
   os << "label: " << value.getLabel();
   os << ", ";
-  os << "federateHandleVector: " << value.getFederateHandleVector();
-  os << ", ";
-  os << "successfulFederateHandleVector: " << value.getSuccessfulFederateHandleVector();
+  os << "federateHandleBoolPairVector: " << value.getFederateHandleBoolPairVector();
   os << " }";
   return os;
 }

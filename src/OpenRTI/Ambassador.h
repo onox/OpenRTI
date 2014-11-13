@@ -326,10 +326,8 @@ public:
     SharedPtr<SynchronizationPointAchievedMessage> message;
     message = new SynchronizationPointAchievedMessage;
     message->setFederationHandle(getFederationHandle());
-    message->getFederateHandleVector().push_back(getFederateHandle());
+    message->getFederateHandleBoolPairVector().push_back(FederateHandleBoolPair(getFederateHandle(), successfully));
     message->setLabel(label);
-    if (successfully)
-      message->getSuccessfulFederateHandleVector().push_back(getFederateHandle());
     send(message);
   }
 
@@ -3630,7 +3628,7 @@ public:
   {
     if (!_federate.valid())
       return;
-    federationSynchronized(message.getLabel(), message.getSuccessfulFederateHandleVector());
+    federationSynchronized(message.getLabel(), message.getFederateHandleBoolPairVector());
     _federate->eraseAnnouncedFederationSynchonizationLabel(message.getLabel());
   }
   void acceptCallbackMessage(const RegistrationForObjectClassMessage& message)
@@ -3862,7 +3860,7 @@ public:
     throw () = 0;
   virtual void announceSynchronizationPoint(const std::string& label, const VariableLengthData& tag)
     throw () = 0;
-  virtual void federationSynchronized(const std::string& label, const FederateHandleVector& federateHandleVector)
+  virtual void federationSynchronized(const std::string& label, const FederateHandleBoolPairVector& federateHandleBoolPairVector)
     throw () = 0;
 
   virtual void registrationForObjectClass(ObjectClassHandle objectClassHandle, bool start)

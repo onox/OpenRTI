@@ -241,7 +241,7 @@ public:
     }
   }
 
-  virtual void federationSynchronized(const std::string& label, const OpenRTI::FederateHandleVector&)
+  virtual void federationSynchronized(const std::string& label, const OpenRTI::FederateHandleBoolPairVector&)
     throw ()
   {
     if (!_federateAmbassador) {
