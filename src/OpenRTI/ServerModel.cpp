@@ -348,12 +348,6 @@ Dimension::getIsReferencedByAnyModule() const
   return !_dimensionModuleList.empty();
 }
 
-bool
-Dimension::getIsInUse() const
-{
-  return getIsReferencedByAnyModule();
-}
-
 ////////////////////////////////////////////////////////////
 
 UpdateRateModule::UpdateRateModule(UpdateRate& updateRate, Module& module) :
@@ -405,12 +399,6 @@ bool
 UpdateRate::getIsReferencedByAnyModule() const
 {
   return !_updateRateModuleList.empty();
-}
-
-bool
-UpdateRate::getIsInUse() const
-{
-  return getIsReferencedByAnyModule();
 }
 
 ////////////////////////////////////////////////////////////
@@ -549,26 +537,13 @@ InteractionClass::getParentInteractionClassHandle() const
 bool
 InteractionClass::getIsReferencedByAnyModule() const
 {
-  // return !_interactionClassModuleList.empty(); // FIXME??
   return !_interactionClassModuleList.empty() || !_parameterDefinitionModuleList.empty();
-}
-
-bool
-InteractionClass::getIsInUse() const
-{
-  return getIsReferencedByAnyModule();
 }
 
 bool
 InteractionClass::getAreParametersReferencedByAnyModule() const
 {
   return !_parameterDefinitionModuleList.empty();
-}
-
-bool
-InteractionClass::getAreParametersInUse() const
-{
-  return getAreParametersReferencedByAnyModule();
 }
 
 void
@@ -777,26 +752,13 @@ ObjectClass::getParentObjectClassHandle() const
 bool
 ObjectClass::getIsReferencedByAnyModule() const
 {
-  // return !_objectClassModuleList.empty(); // FIXME??
   return !_objectClassModuleList.empty() || !_attributeDefinitionModuleList.empty();
-}
-
-bool
-ObjectClass::getIsInUse() const
-{
-  return getIsReferencedByAnyModule();
 }
 
 bool
 ObjectClass::getAreAttributesReferencedByAnyModule() const
 {
   return !_attributeDefinitionModuleList.empty();
-}
-
-bool
-ObjectClass::getAreAttributesInUse() const
-{
-  return getAreAttributesReferencedByAnyModule();
 }
 
 void
@@ -2100,14 +2062,14 @@ Federation::erase(Module& module)
   while (!module.getParameterDefinitionModuleList().empty()) {
     InteractionClass& interactionClass = module.getParameterDefinitionModuleList().back().getInteractionClass();
     module.getParameterDefinitionModuleList().pop_back();
-    if (interactionClass.getAreParametersInUse())
+    if (interactionClass.getAreParametersReferencedByAnyModule())
       continue;
     interactionClass.eraseParameterDefinitions();
   }
   while (!module.getInteractionClassModuleList().empty()) {
     InteractionClass& interactionClass = module.getInteractionClassModuleList().back().getInteractionClass();
     module.getInteractionClassModuleList().pop_back();
-    if (interactionClass.getIsInUse())
+    if (interactionClass.getIsReferencedByAnyModule())
       continue;
     _interactionClassHandleAllocator.put(interactionClass.getInteractionClassHandle());
     InteractionClass::HandleMap::erase(interactionClass);
@@ -2116,14 +2078,14 @@ Federation::erase(Module& module)
   while (!module.getAttributeDefinitionModuleList().empty()) {
     ObjectClass& objectClass = module.getAttributeDefinitionModuleList().back().getObjectClass();
     module.getAttributeDefinitionModuleList().pop_back();
-    if (objectClass.getAreAttributesInUse())
+    if (objectClass.getAreAttributesReferencedByAnyModule())
       continue;
     objectClass.eraseAttributeDefinitions();
   }
   while (!module.getObjectClassModuleList().empty()) {
     ObjectClass& objectClass = module.getObjectClassModuleList().back().getObjectClass();
     module.getObjectClassModuleList().pop_back();
-    if (objectClass.getIsInUse())
+    if (objectClass.getIsReferencedByAnyModule())
       continue;
     _objectClassHandleAllocator.put(objectClass.getObjectClassHandle());
     ObjectClass::HandleMap::erase(objectClass);
@@ -2132,7 +2094,7 @@ Federation::erase(Module& module)
   while (!module.getUpdateRateModuleList().empty()) {
     UpdateRate& updateRate = module.getUpdateRateModuleList().back().getUpdateRate();
     module.getUpdateRateModuleList().pop_back();
-    if (updateRate.getIsInUse())
+    if (updateRate.getIsReferencedByAnyModule())
       continue;
     _updateRateHandleAllocator.put(updateRate.getUpdateRateHandle());
     UpdateRate::HandleMap::erase(updateRate);
@@ -2141,7 +2103,7 @@ Federation::erase(Module& module)
   while (!module.getDimensionModuleList().empty()) {
     Dimension& dimension = module.getDimensionModuleList().back().getDimension();
     module.getDimensionModuleList().pop_back();
-    if (dimension.getIsInUse())
+    if (dimension.getIsReferencedByAnyModule())
       continue;
     _dimensionHandleAllocator.put(dimension.getDimensionHandle());
     Dimension::HandleMap::erase(dimension);

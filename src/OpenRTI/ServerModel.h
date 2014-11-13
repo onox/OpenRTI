@@ -821,7 +821,6 @@ public:
   void setUpperBound(const Unsigned& upperBound);
 
   bool getIsReferencedByAnyModule() const;
-  bool getIsInUse() const;
 
   void insert(DimensionModule& dimensionModule)
   { _dimensionModuleList.push_back(dimensionModule); }
@@ -896,7 +895,6 @@ public:
   void setRate(const double& rate);
 
   bool getIsReferencedByAnyModule() const;
-  bool getIsInUse() const;
 
   void insert(UpdateRateModule& updateRateModule)
   { _updateRateModuleList.push_back(updateRateModule); }
@@ -1076,9 +1074,7 @@ public:
   { return _childInteractionClassList; }
 
   bool getIsReferencedByAnyModule() const;
-  bool getIsInUse() const;
   bool getAreParametersReferencedByAnyModule() const;
-  bool getAreParametersInUse() const;
 
   void eraseParameterDefinitions();
   std::size_t getNumParameterDefinitions() const;
@@ -1323,9 +1319,7 @@ public:
   { return _childObjectClassList; }
 
   bool getIsReferencedByAnyModule() const;
-  bool getIsInUse() const;
   bool getAreAttributesReferencedByAnyModule() const;
-  bool getAreAttributesInUse() const;
 
   void eraseAttributeDefinitions();
   std::size_t getNumAttributeDefinitions() const;
