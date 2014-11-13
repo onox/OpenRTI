@@ -553,22 +553,43 @@ private:
 
 ////////////////////////////////////////////////////////////
 
-// class Federate;
-// class Synchronization;
+class Federate;
+class Synchronization;
 
-// class OPENRTI_LOCAL SynchronizationFederate : public HandleListEntity<SynchronizationFederate, FederateHandle>,  {
-// public:
-//   SynchronizationFederate(Synchronization& synchronization, Federate& federate) :
-//     _synchronization(synchronization),
-//     _federate(federate),
-//     _successful(true)
-//   { }
+class OPENRTI_LOCAL SynchronizationFederate : public HandleListEntity<SynchronizationFederate, FederateHandle>  {
+public:
+  typedef HandleListEntity<SynchronizationFederate, FederateHandle>::HandleMap HandleMap;
+  typedef HandleListEntity<SynchronizationFederate, FederateHandle>::FirstList FirstList;
 
-//   Synchronization& _synchronization;
-//   Federate& _federate;
+  SynchronizationFederate(Synchronization& synchronization, Federate& federate);
+  ~SynchronizationFederate();
 
-//   bool _successful;
-// };
+  const FederateHandle& getFederateHandle() const
+  { return HandleListEntity<SynchronizationFederate, FederateHandle>::_getHandle(); }
+  void setFederateHandle(const FederateHandle& federateHandle);
+
+  const Synchronization& getSynchronization() const
+  { return _synchronization; }
+  Synchronization& getSynchronization()
+  { return _synchronization; }
+  const Federate& getFederate() const
+  { return _federate; }
+  Federate& getFederate()
+  { return _federate; }
+
+  bool getSuccessful() const
+  { return _successful; }
+  void setSuccessful(bool successful);
+
+private:
+  SynchronizationFederate(const SynchronizationFederate&);
+  SynchronizationFederate& operator=(const SynchronizationFederate&);
+
+  Synchronization& _synchronization;
+  Federate& _federate;
+
+  bool _successful;
+};
 
 ////////////////////////////////////////////////////////////
 
@@ -587,55 +608,31 @@ public:
   { return _tag; }
   void setTag(const VariableLengthData& tag);
 
-  void set(const FederateHandleVector& participatingFederates, const FederateHandleVector& joinedFederates)
-  {
-    if (participatingFederates.empty()) {
-      for (FederateHandleVector::const_iterator i = joinedFederates.begin(); i != joinedFederates.end(); ++i) {
-        _participatingFederates.insert(*i);
-        _waitFederates.insert(*i);
-      }
-      _addJoiningFederates = true;
-    } else {
-      for (FederateHandleVector::const_iterator i = participatingFederates.begin(); i != participatingFederates.end(); ++i) {
-        _participatingFederates.insert(*i);
-        _waitFederates.insert(*i);
-      }
-      _addJoiningFederates = false;
-    }
-  }
-  // Use this to build up the initial connect handle set
-  void insert(const FederateHandle& federateHandle)
-  {
-    _participatingFederates.insert(federateHandle);
-    _waitFederates.insert(federateHandle);
-  }
-  // Call when a federate resigns
-  void removeFederate(const FederateHandle& federateHandle)
-  {
-    _participatingFederates.erase(federateHandle);
-    _waitFederates.erase(federateHandle);
-    _successfulFederates.erase(federateHandle);
-  }
+  bool getAddJoiningFederates() const
+  { return _addJoiningFederates; }
+  void setAddJoiningFederates(bool addJoiningFederates);
+
+  bool getIsWaitingFor(const FederateHandle& federateHandle);
+
+  void insert(Federate& federate);
+  void achieved(const FederateHandle& federateHandle);
 
   // private:
-  bool _addJoiningFederates;
-  // The set of federates that was given in the RegisterFederationSynchronizationPoint.
-  // If this is empty all joined federates should be taken instead.
-  FederateHandleSet _participatingFederates;
-  // The set of federates we need to wait for until the synchronization point could be announced to the parent.
-  // This one must be filled with the the active federate handles in any case
-  FederateHandleSet _waitFederates;
-  // The set of federates that have set the successfully flag on synchronizationPointAchieved
-  FederateHandleSet _successfulFederates;
 
-  // SynchronizationFederate::SecondList _participatingFederateList;
-  // SynchronizationFederate::SecondList _waitingFederateList;
+  // The FederateHandle to SyncronizationFederate map of federates
+  // waiting for this synchronization point
+  SynchronizationFederate::HandleMap _waitingFederateSyncronizationMap;
+  // The FederateHandle to SyncronizationFederate map of federates
+  // that have achieved the synchronization point
+  SynchronizationFederate::HandleMap _achievedFederateSyncronizationMap;
 
 private:
   Synchronization(const Synchronization&);
   Synchronization& operator=(const Synchronization&);
 
   VariableLengthData _tag;
+
+  bool _addJoiningFederates;
 };
 
 ////////////////////////////////////////////////////////////
@@ -678,6 +675,10 @@ public:
   bool getResignPending() const
   { return _resignPending; }
   void setResignPending(bool resignPending);
+
+  void insert(SynchronizationFederate& synchronizationFederate);
+  SynchronizationFederate::FirstList& getSynchronizationFederateList()
+  { return _synchronizationFederateList; }
 
   Region* getRegion(const LocalRegionHandle& regionHandle);
   void insert(Region& region)
@@ -725,7 +726,7 @@ private:
 
   FederationConnect* _federationConnect;
 
-  // SynchronizationFederate::FirstList _synchronizationList;
+  SynchronizationFederate::FirstList _synchronizationFederateList;
 
   Region::HandleMap _regionHandleRegionMap;
 

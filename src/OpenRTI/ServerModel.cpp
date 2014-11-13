@@ -183,12 +183,39 @@ ObjectInstance::setObjectClass(ObjectClass* objectClass)
 
 ////////////////////////////////////////////////////////////
 
+SynchronizationFederate::SynchronizationFederate(Synchronization& synchronization, Federate& federate) :
+  _synchronization(synchronization),
+  _federate(federate),
+  _successful(false)
+{
+}
+
+SynchronizationFederate::~SynchronizationFederate()
+{
+}
+
+void
+SynchronizationFederate::setFederateHandle(const FederateHandle& federateHandle)
+{
+  HandleListEntity<SynchronizationFederate, FederateHandle>::_setHandle(federateHandle);
+}
+
+void
+SynchronizationFederate::setSuccessful(bool successful)
+{
+  _successful = successful;
+}
+
+////////////////////////////////////////////////////////////
+
 Synchronization::Synchronization()
 {
 }
 
 Synchronization::~Synchronization()
 {
+  _achievedFederateSyncronizationMap.clear();
+  _waitingFederateSyncronizationMap.clear();
 }
 
 void
@@ -201,6 +228,46 @@ void
 Synchronization::setTag(const VariableLengthData& tag)
 {
   _tag = tag;
+}
+
+void
+Synchronization::setAddJoiningFederates(bool addJoiningFederates)
+{
+  _addJoiningFederates = addJoiningFederates;
+}
+
+bool
+Synchronization::getIsWaitingFor(const FederateHandle& federateHandle)
+{
+  return _waitingFederateSyncronizationMap.find(federateHandle) != _waitingFederateSyncronizationMap.end();
+}
+
+void
+Synchronization::insert(Federate& federate)
+{
+  OpenRTIAssert(_waitingFederateSyncronizationMap.find(federate.getFederateHandle()) == _waitingFederateSyncronizationMap.end());
+  OpenRTIAssert(_achievedFederateSyncronizationMap.find(federate.getFederateHandle()) == _achievedFederateSyncronizationMap.end());
+  if (federate.getResignPending())
+    return;
+  SynchronizationFederate* synchronizationFederate = new SynchronizationFederate(*this, federate);
+  synchronizationFederate->setFederateHandle(federate.getFederateHandle());
+  federate.insert(*synchronizationFederate);
+  _waitingFederateSyncronizationMap.insert(*synchronizationFederate);
+}
+
+void
+Synchronization::achieved(const FederateHandle& federateHandle)
+{
+  ServerModel::SynchronizationFederate::HandleMap::iterator i;
+  i = _waitingFederateSyncronizationMap.find(federateHandle);
+  if (i == _waitingFederateSyncronizationMap.end())
+    return;
+  // OpenRTIAssert(_waitingFederateSyncronizationMap.find(i->getFederateHandle()) != _waitingFederateSyncronizationMap.end());
+  // OpenRTIAssert(_achievedFederateSyncronizationMap.find(i->getFederateHandle()) == _achievedFederateSyncronizationMap.end());
+  // Note that no matter where we are currently linked,
+  // this removes the entry from one of the maps
+  SynchronizationFederate::HandleMap::unlink(*i);
+  _achievedFederateSyncronizationMap.insert(*i);
 }
 
 ////////////////////////////////////////////////////////////
@@ -216,6 +283,7 @@ Federate::Federate(Federation& federation) :
 
 Federate::~Federate()
 {
+  _synchronizationFederateList.clear();
   _federationConnect = 0;
 }
 
@@ -241,6 +309,12 @@ void
 Federate::setResignAction(ResignAction resignAction)
 {
   _resignAction = resignAction;
+}
+
+void
+Federate::insert(SynchronizationFederate& synchronizationFederate)
+{
+  _synchronizationFederateList.push_back(synchronizationFederate);
 }
 
 void

@@ -128,10 +128,10 @@ public:
     for (ServerModel::Synchronization::NameMap::iterator j = _synchronizationNameSynchronizationMap.begin();
          j != _synchronizationNameSynchronizationMap.end(); ++j) {
       // only those with an auto expanding federate set
-      if (!j->_addJoiningFederates)
+      if (!j->getAddJoiningFederates())
         continue;
 
-      j->insert(federate->getFederateHandle());
+      j->insert(*federate);
 
       SharedPtr<AnnounceSynchronizationPointMessage> announce;
       announce = new AnnounceSynchronizationPointMessage;
@@ -139,7 +139,7 @@ public:
       announce->setLabel(j->getLabel());
       announce->setTag(j->getTag());
       announce->getFederateHandleVector().push_back(federate->getFederateHandle());
-      announce->setAddJoiningFederates(j->_addJoiningFederates);
+      announce->setAddJoiningFederates(j->getAddJoiningFederates());
       broadcastToChildren(announce);
     }
   }
@@ -186,6 +186,21 @@ public:
       request->setFederationHandle(getFederationHandle());
       request->setFederateHandle(federateHandle);
       broadcast(connectHandle, request);
+    }
+
+    for (ServerModel::SynchronizationFederate::FirstList::iterator k = federate->getSynchronizationFederateList().begin();
+         k != federate->getSynchronizationFederateList().end();) {
+      if (!k->getSynchronization().getIsWaitingFor(federate->getFederateHandle()))
+        ++k;
+      else {
+        SharedPtr<SynchronizationPointAchievedMessage> achieved;
+        achieved = new SynchronizationPointAchievedMessage;
+        achieved->setFederationHandle(getFederationHandle());
+        achieved->setLabel(k->getSynchronization().getLabel());
+        achieved->getFederateHandleVector().push_back(federate->getFederateHandle());
+        ++k;
+        accept(connectHandle, achieved.get());
+      }
     }
 
     // May be we need to put object deletion and that here and remove the second resign message again
@@ -385,12 +400,25 @@ public:
       ServerModel::Synchronization::NameMap::iterator i;
       i = _synchronizationNameSynchronizationMap.insert(*synchronization);
 
-      FederateHandleVector joinedFederates;
-      for (ServerModel::Federate::HandleMap::const_iterator j = getFederateHandleFederateMap().begin();
-           j != getFederateHandleFederateMap().end(); ++j) {
-        joinedFederates.push_back(j->getFederateHandle());
+      if (message->getFederateHandleVector().empty()) {
+        // In this case add all known federates and the future ones also
+        i->setAddJoiningFederates(true);
+        for (ServerModel::Federate::HandleMap::iterator j = getFederateHandleFederateMap().begin();
+             j != getFederateHandleFederateMap().end(); ++j) {
+          i->insert(*j);
+        }
+
+      } else {
+        // Add the ones noted in the message
+        i->setAddJoiningFederates(false);
+        for (FederateHandleVector::const_iterator j = message->getFederateHandleVector().begin();
+             j != message->getFederateHandleVector().end(); ++j) {
+          ServerModel::Federate* federate = getFederate(*j);
+          if (!federate)
+            continue;
+          i->insert(*federate);
+        }
       }
-      i->set(message->getFederateHandleVector(), joinedFederates);
       i->setTag(message->getTag());
 
       // Respond to the originator
@@ -411,7 +439,7 @@ public:
         // federateHandleVector.reserve(j->second->getFederateList().size());
         for (ServerModel::Federate::FirstList::const_iterator k = j->getFederateList().begin();
              k != j->getFederateList().end(); ++k) {
-          if (i->_waitFederates.find(k->getFederateHandle()) == i->_waitFederates.end())
+          if (!i->getIsWaitingFor(k->getFederateHandle()))
             continue;
           federateHandleVector.push_back(k->getFederateHandle());
         }
@@ -423,7 +451,7 @@ public:
         announce->setFederationHandle(getFederationHandle());
         announce->setLabel(message->getLabel());
         announce->setTag(i->getTag());
-        announce->setAddJoiningFederates(i->_addJoiningFederates);
+        announce->setAddJoiningFederates(i->getAddJoiningFederates());
         announce->getFederateHandleVector().swap(federateHandleVector);
         send(j->getConnectHandle(), announce);
       }
@@ -456,10 +484,10 @@ public:
       synchronization->setLabel(message->getLabel());
       i = _synchronizationNameSynchronizationMap.insert(*synchronization);
       i->setTag(message->getTag());
-      i->_addJoiningFederates = message->getAddJoiningFederates();
+      i->setAddJoiningFederates(message->getAddJoiningFederates());
     } else {
       // label is already there
-      if (!i->_addJoiningFederates)
+      if (!i->getAddJoiningFederates())
         throw MessageError("Receiving incremental synchronization point update for fixed federate handle synchronization point!");
       if (!message->getAddJoiningFederates())
         throw MessageError("Receiving incremental synchronization point update for fixed federate handle synchronization point!");
@@ -485,7 +513,7 @@ public:
         if (federateHandleVector.empty())
           federateHandleVector.reserve(message->getFederateHandleVector().size());
         federateHandleVector.push_back(*j);
-        i->insert(*j);
+        i->insert(*federate);
     }
 
     // ... then send them out throught the connect.
@@ -509,42 +537,45 @@ public:
 
     for (FederateHandleVector::const_iterator j = message->getFederateHandleVector().begin();
          j != message->getFederateHandleVector().end(); ++j) {
-      i->_waitFederates.erase(*j);
+      i->achieved(*j);
     }
     for (FederateHandleVector::const_iterator j = message->getSuccessfulFederateHandleVector().begin();
          j != message->getSuccessfulFederateHandleVector().end(); ++j) {
-      i->_successfulFederates.insert(*j);
+      ServerModel::SynchronizationFederate::HandleMap::iterator k = i->_achievedFederateSyncronizationMap.find(*j);
+      if (k == i->_achievedFederateSyncronizationMap.end())
+        continue;
+      k->setSuccessful(true);
     }
-    if (i->_waitFederates.empty()) {
+    if (i->_waitingFederateSyncronizationMap.empty()) {
       if (isRootServer()) {
         SharedPtr<FederationSynchronizedMessage> response;
         response = new FederationSynchronizedMessage;
         response->setFederationHandle(getFederationHandle());
         response->setLabel(message->getLabel());
-        response->getFederateHandleVector().reserve(i->_participatingFederates.size());
-        for (FederateHandleSet::const_iterator j = i->_participatingFederates.begin();
-             j != i->_participatingFederates.end(); ++j)
-          response->getFederateHandleVector().push_back(*j);
-        response->getSuccessfulFederateHandleVector().reserve(i->_successfulFederates.size());
-        for (FederateHandleSet::const_iterator j = i->_successfulFederates.begin();
-             j != i->_successfulFederates.end(); ++j)
-          response->getSuccessfulFederateHandleVector().push_back(*j);
+        // response->getFederateHandleVector().reserve(i->_achievedFederateSyncronizationMap.size());
+        // response->getSuccessfulFederateHandleVector().reserve(i->_achievedFederateSyncronizationMap.size());
+        for (ServerModel::SynchronizationFederate::HandleMap::iterator j = i->_achievedFederateSyncronizationMap.begin();
+             j != i->_achievedFederateSyncronizationMap.end(); ++j) {
+          response->getFederateHandleVector().push_back(j->getFederateHandle());
+          if (j->getSuccessful())
+            response->getSuccessfulFederateHandleVector().push_back(j->getFederateHandle());
+        }
         broadcastToChildren(response->getFederateHandleVector(), response);
         ServerModel::Synchronization::NameMap::erase(*i);
       } else {
-        SharedPtr<SynchronizationPointAchievedMessage> notify;
-        notify = new SynchronizationPointAchievedMessage;
-        notify->setFederationHandle(getFederationHandle());
-        notify->setLabel(message->getLabel());
-        notify->getFederateHandleVector().reserve(i->_participatingFederates.size());
-        for (FederateHandleSet::const_iterator j = i->_participatingFederates.begin();
-             j != i->_participatingFederates.end(); ++j)
-          notify->getFederateHandleVector().push_back(*j);
-        notify->getSuccessfulFederateHandleVector().reserve(i->_successfulFederates.size());
-        for (FederateHandleSet::const_iterator j = i->_successfulFederates.begin();
-             j != i->_successfulFederates.end(); ++j)
-          notify->getSuccessfulFederateHandleVector().push_back(*j);
-        sendToParent(notify);
+        SharedPtr<SynchronizationPointAchievedMessage> achieved;
+        achieved = new SynchronizationPointAchievedMessage;
+        achieved->setFederationHandle(getFederationHandle());
+        achieved->setLabel(message->getLabel());
+        // achieved->getFederateHandleVector().reserve(i->_achievedFederateSyncronizationMap.size());
+        // achieved->getSuccessfulFederateHandleVector().reserve(i->_achievedFederateSyncronizationMap.size());
+        for (ServerModel::SynchronizationFederate::HandleMap::iterator j = i->_achievedFederateSyncronizationMap.begin();
+             j != i->_achievedFederateSyncronizationMap.end(); ++j) {
+          achieved->getFederateHandleVector().push_back(j->getFederateHandle());
+          if (j->getSuccessful())
+            achieved->getSuccessfulFederateHandleVector().push_back(j->getFederateHandle());
+        }
+        sendToParent(achieved);
       }
     }
   }
@@ -1779,6 +1810,21 @@ public:
           broadcast(connectHandle, request);
         }
 
+        for (ServerModel::SynchronizationFederate::FirstList::iterator k = federate->getSynchronizationFederateList().begin();
+             k != federate->getSynchronizationFederateList().end();) {
+          if (!k->getSynchronization().getIsWaitingFor(federate->getFederateHandle()))
+            ++k;
+          else {
+            SharedPtr<SynchronizationPointAchievedMessage> achieved;
+            achieved = new SynchronizationPointAchievedMessage;
+            achieved->setFederationHandle(getFederationHandle());
+            achieved->setLabel(k->getSynchronization().getLabel());
+            achieved->getFederateHandleVector().push_back(federate->getFederateHandle());
+            ++k;
+            accept(connectHandle, achieved.get());
+          }
+        }
+
         // Remove from connects
         federationConnect->erase(*federate);
         Log(ServerFederate, Info) << getServerPath() << ": Resigning federate " << federate->getFederateHandle()
@@ -1836,14 +1882,6 @@ public:
     // The time management stuff
     if (federate.getIsTimeRegulating())
       eraseTimeRegulating(federate);
-
-    // Remove from synchronization state
-    // FIXME: complete synchronization states if this is the last they wait for.
-    // FIXME: have a list of labels that this federate participates - so avoid traversing all
-    for (ServerModel::Synchronization::NameMap::iterator j = _synchronizationNameSynchronizationMap.begin();
-         j != _synchronizationNameSynchronizationMap.end(); ++j) {
-      j->removeFederate(federate.getFederateHandle());
-    }
 
     // Remove from connects
     ServerModel::FederationConnect* federationConnect = federate.getFederationConnect();
