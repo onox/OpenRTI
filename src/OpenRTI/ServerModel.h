@@ -1463,10 +1463,9 @@ private:
 
 ////////////////////////////////////////////////////////////
 
-class OPENRTI_LOCAL Module : public HandleStringEntity<Module, ModuleHandle> {
+class OPENRTI_LOCAL Module : public HandleEntity<Module, ModuleHandle> {
 public:
-  typedef HandleStringEntity<Module, ModuleHandle>::HandleMap HandleMap;
-  typedef HandleStringEntity<Module, ModuleHandle>::StringMap ContentMap;
+  typedef HandleEntity<Module, ModuleHandle>::HandleMap HandleMap;
 
   Module(Federation& federation);
   ~Module();
@@ -1477,11 +1476,11 @@ public:
   { return _federation; }
 
   const ModuleHandle& getModuleHandle() const
-  { return HandleStringEntity<Module, ModuleHandle>::_getHandle(); }
+  { return HandleEntity<Module, ModuleHandle>::_getHandle(); }
   void setModuleHandle(const ModuleHandle& moduleHandle);
 
   const std::string& getContent() const
-  { return HandleStringEntity<Module, ModuleHandle>::_getString(); }
+  { return _content; }
   void setContent(const std::string& content);
 
   bool getArtificialInteractionRoot() const
@@ -1538,6 +1537,8 @@ private:
   Module& operator=(const Module&);
 
   Federation& _federation;
+
+  std::string _content;
 
   bool _artificialInteractionRoot;
   bool _artificialObjectRoot;
@@ -1813,7 +1814,6 @@ private:
   FederationConnect::HandleMap _connectHandleFederationConnectMap;
 
   // Module/ObjectModel dependent
-  Module::ContentMap _moduleContentModuleMap;
   Module::HandleMap _moduleHandleModuleMap;
   HandleAllocator<ModuleHandle> _moduleHandleAllocator;
 

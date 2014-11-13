@@ -930,13 +930,13 @@ Module::~Module()
 void
 Module::setModuleHandle(const ModuleHandle& moduleHandle)
 {
-  HandleStringEntity<Module, ModuleHandle>::_setHandle(moduleHandle);
+  HandleEntity<Module, ModuleHandle>::_setHandle(moduleHandle);
 }
 
 void
 Module::setContent(const std::string& content)
 {
-  HandleStringEntity<Module, ModuleHandle>::_setString(content);
+  _content = content;
 }
 
 void
@@ -1456,9 +1456,6 @@ Federation::insert(Module& module)
 {
   OpenRTIAssert(_moduleHandleModuleMap.find(module.getModuleHandle()) == _moduleHandleModuleMap.end());
   _moduleHandleModuleMap.insert(module);
-  // FIXME
-  // OpenRTIAssert(_moduleContentModuleMap.find(module.getContent()) == _moduleContentModuleMap.end());
-  // _moduleContentModuleMap.insert(module);
 }
 
 bool
