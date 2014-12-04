@@ -1409,6 +1409,15 @@ public:
     }
   }
 
+  void accumulateAllPublications(ConnectHandleSet& connectHandleSet)
+  {
+    connectHandleSet.insert(getPrivilegeToDeleteClassAttribute()->getPublishingConnectHandleSet().begin(),
+                            getPrivilegeToDeleteClassAttribute()->getPublishingConnectHandleSet().end());
+    for (ChildList::iterator i = getChildObjectClassList().begin(); i != getChildObjectClassList().end(); ++i) {
+      i->accumulateAllPublications(connectHandleSet);
+    }
+  }
+
 private:
   ObjectClass(const ObjectClass&);
   ObjectClass& operator=(const ObjectClass&);

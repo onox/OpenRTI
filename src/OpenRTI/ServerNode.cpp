@@ -1533,46 +1533,14 @@ public:
   }
   void accept(const ConnectHandle& connectHandle, const RequestClassAttributeUpdateMessage* message)
   {
-    typedef std::map<ConnectHandle, SharedPtr<RequestClassAttributeUpdateMessage> > ConnectMessageMap;
-
     ObjectClassHandle objectClassHandle = message->getObjectClassHandle();
     ServerModel::ObjectClass* objectClass = ServerModel::Federation::getObjectClass(objectClassHandle);
     if (!objectClass)
       throw MessageError("Received RequestClassAttributeUpdateMessage for unknown object class!");
 
-    // Find the server connects that own the attributes and build up a message for those
-    ConnectMessageMap connectMessageMap;
-    for (AttributeHandleVector::const_iterator i = message->getAttributeHandles().begin();
-         i != message->getAttributeHandles().end(); ++i) {
-      // FIXME: improove that, less allocations, Probably use std::list of connect handles, insert, sort, unique, pool of handle elements
-      ConnectHandleSet connectHandleSet;
-      for (ServerModel::ObjectInstance::FirstList::iterator l = objectClass->getObjectInstanceList().begin();
-           l != objectClass->getObjectInstanceList().end(); ++l) {
-        ServerModel::InstanceAttribute* instanceAttribute = l->getInstanceAttribute(*i);
-        if (!instanceAttribute) // FIXME this is more an error ...
-          continue;
-        // The connect handle that owns this attribute
-        ConnectHandle connectHandle = instanceAttribute->getOwnerConnectHandle();
-        if (!connectHandle.valid())
-          continue;
-        connectHandleSet.insert(connectHandle);
-      }
-      for (ConnectHandleSet::const_iterator l = connectHandleSet.begin();
-           l != connectHandleSet.end(); ++l) {
-        ConnectMessageMap::iterator k = connectMessageMap.find(*l);
-        if (k == connectMessageMap.end()) {
-          k = connectMessageMap.insert(ConnectMessageMap::value_type(connectHandle, new RequestClassAttributeUpdateMessage)).first;
-          k->second->setFederationHandle(getFederationHandle());
-          k->second->setObjectClassHandle(objectClassHandle);
-          k->second->setTag(message->getTag());
-          k->second->getAttributeHandles().reserve(message->getAttributeHandles().size());
-        }
-        k->second->getAttributeHandles().push_back(*i);
-      }
-    }
-    for (ConnectMessageMap::iterator i = connectMessageMap.begin(); i != connectMessageMap.end(); ++i) {
-      send(i->first, i->second);
-    }
+    ConnectHandleSet connectHandleSet;
+    objectClass->accumulateAllPublications(connectHandleSet);
+    send(connectHandleSet, connectHandle, message);
   }
 
   template<typename M>
