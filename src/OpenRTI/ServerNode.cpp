@@ -1535,7 +1535,7 @@ public:
   {
     typedef std::map<ConnectHandle, SharedPtr<RequestClassAttributeUpdateMessage> > ConnectMessageMap;
 
-    ObjectInstanceHandle objectClassHandle = message->getObjectClassHandle();
+    ObjectClassHandle objectClassHandle = message->getObjectClassHandle();
     ServerModel::ObjectClass* objectClass = ServerModel::Federation::getObjectClass(objectClassHandle);
     if (!objectClass)
       throw MessageError("Received RequestClassAttributeUpdateMessage for unknown object class!");
