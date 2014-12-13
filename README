@@ -221,6 +221,60 @@ So, for the standard conformance question we will need some override somewhere
 in the future to disable interpretation of federation execution names as urls.
 
 
+Server
+------
+
+The standalone server application is called 'rtinode'.
+The default operation of rtinode is to listen and respond on any ip adress
+at port 14321 for incomming rti connections.
+Accepted command line options are:
+
+  -b
+     Run in the background.
+
+  -c <configuration file>
+     Read the server configuraton from the given configuration file.
+
+  -f <socket file>
+     Start up a server only listening on the provided unix socket file
+     name. This corresponds to a pipe:///<socket file>/<FederationName>
+     url at ambassador connect time.
+     The option is only available on unix like operating systems.
+
+  -i <inet address>
+     Start up a server only listening on the provided tcp/ip address.
+     Valid adresses are address:port pairs like you find in a lot of
+     ip based server configurations.
+     This corresponds to a rti://address[:port]/<FederationName> url at
+     ambassador connect time.
+     Provided with an url used for connecting to a server node, the
+     protocol/address/service is extracted from that and a listening server
+     set up accordingly.
+
+     To determine the tcp/ip address to bind the server, the
+     address/service provided is split into a host/service pair
+     separated by the last double colon that is found in the address and
+     this pair is entered into the getaddrinfo libc call. The first
+     working address is used to put up a listening socket for rtinode.
+     
+     That means that the exact address that is used to listen on depends
+     on your systems behavior and name resolution setup. This is expecially
+     true for the selection of ipv4/ipv6 and the resolution of names
+     provided with the host or service part of the above argument.
+     
+     Nevertheless, a set of commonly working examples are:
+       '*:1234' to listen on any address on port 1234.
+       '[::]:14536' to listen on the any ipv6 address on port 14536.
+       'localhost' to restrict listening to the ip address that is
+          configured for localhost. The result depends on what your
+          system thinks 'localhost' should be. Since no port
+          is given the default 14321 port is used.
+
+  -p <url>
+     Act as a child server by connecting to the parent server at the
+     provided url.
+      
+
 LogicalTime
 -----------
 
