@@ -2,6 +2,7 @@ OpenRTI-0.7.0 (development)
 ---------------------------
 
  * Implement federate object modules also on join.
+ * Bail out on any failure experienced during rtinode startup.
 
  * For a more detailed list of changes see the git history.
 

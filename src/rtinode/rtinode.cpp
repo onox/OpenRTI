@@ -76,6 +76,8 @@ main(int argc, char* argv[])
       } catch (const Exception& e) {
         std::cerr << "Could not set up server from config file:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;
+        _networkServer = NULL;
+        return EXIT_FAILURE;
       }
       break;
     case 'f':
@@ -87,12 +89,14 @@ main(int argc, char* argv[])
       } catch (const Exception& e) {
         std::cerr << "Could not set up pipe server transport:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;
+        _networkServer = NULL;
+        return EXIT_FAILURE;
       }
       break;
     case 'h':
       usage(argv[0]);
-      exit(EXIT_SUCCESS);
-      break;
+      _networkServer = NULL;
+      return EXIT_SUCCESS;
     case 'i':
       try {
         defaultListen = false;
@@ -103,6 +107,8 @@ main(int argc, char* argv[])
       } catch (const Exception& e) {
         std::cerr << "Could not set up inet server transport:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;
+        _networkServer = NULL;
+        return EXIT_FAILURE;
       }
       break;
     case 'p':
@@ -118,6 +124,8 @@ main(int argc, char* argv[])
       } catch (const Exception& e) {
         std::cerr << "Could not connect parent server:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;
+        _networkServer = NULL;
+        return EXIT_FAILURE;
       }
       break;
     }
@@ -133,6 +141,7 @@ main(int argc, char* argv[])
       } catch (const Exception& e) {
         std::cerr << "Could not set up default inet server transport:" << std::endl;
         std::cerr << utf8ToLocale(e.getReason()) << std::endl;
+        _networkServer = NULL;
         return EXIT_FAILURE;
       }
     }
