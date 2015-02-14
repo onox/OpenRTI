@@ -1,9 +1,13 @@
-OpenRTI-0.7.0 (development)
+OpenRTI-0.8.0 (development)
+---------------------------
+
+ * For a more detailed list of changes see the git history.
+
+OpenRTI-0.7.0 (2015-02-14)
 ---------------------------
 
  * Implement federate object modules also on join.
  * Bail out on any failure experienced during rtinode startup.
-
  * For a more detailed list of changes see the git history.
 
 OpenRTI-0.6.0 (2014-11-22)
