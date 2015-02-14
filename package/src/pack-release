@@ -1,0 +1,10 @@
+#!/bin/sh
+
+pktag="${1}"
+if [ "x${pktag}" == "x" ] ; then
+   echo "No tag to pack given. Aborting!"
+   exit 1
+fi
+
+git archive --prefix="${pktag}/" "${pktag}" | bzip2 > /tmp/"${pktag}.tar.bz2"
+echo "Written package to \"/tmp/${pktag}.tar.bz2\""
