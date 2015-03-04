@@ -1,7 +1,9 @@
-OpenRTI-0.7.1 (??)
-------------------
+OpenRTI-0.7.1 (2015-03-05)
+--------------------------
 
  * Disable the compression due to issues found with huge messages.
+ * Changed the protocol version to stable 8.
+   So 0.7.1 will be incompatible to 0.7 over the wire.
 
 OpenRTI-0.7.0 (2015-02-14)
 ---------------------------
