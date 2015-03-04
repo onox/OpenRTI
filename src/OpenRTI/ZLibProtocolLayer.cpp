@@ -100,6 +100,9 @@ public:
     _inStream.next_out = 0;
     _inStream.avail_out = 0;
 
+    if (bytesRead == 0)
+      return -1;
+
     return bytesRead;
   }
 
