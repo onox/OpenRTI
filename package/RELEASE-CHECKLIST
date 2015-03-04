@@ -1,0 +1,10 @@
+* Tests have passed?
+  
+* Make sure the protocol version is non beta
+* Create a release branch
+* Complete the CHANGES file
+* Update the packaging version numbers
+* Add a release tag
+
+* Update the CHANGES file in master
+
