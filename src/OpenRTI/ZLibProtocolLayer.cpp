@@ -187,7 +187,7 @@ public:
 };
 
 ZLibProtocolLayer::ZLibProtocolLayer() :
-  _protocolSocket(new ProtocolSocket(Z_DEFAULT_COMPRESSION))
+  _protocolSocket(new ProtocolSocket(Z_BEST_SPEED))
 {
 }
 
