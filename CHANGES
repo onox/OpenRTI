@@ -1,3 +1,8 @@
+OpenRTI-0.7.1 (??)
+------------------
+
+ * Disable the compression due to issues found with huge messages.
+
 OpenRTI-0.7.0 (2015-02-14)
 ---------------------------
 

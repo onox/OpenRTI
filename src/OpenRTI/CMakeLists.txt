@@ -127,7 +127,8 @@ ELSE(EXPAT_FOUND)
   )
 ENDIF(EXPAT_FOUND)
 
-INCLUDE(FindZLIB)
+# We seem to have issues with zlib compression, so disable in the release branch
+# INCLUDE(FindZLIB)
 IF(ZLIB_FOUND)
   INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
   ADD_DEFINITIONS(-DOPENRTI_HAVE_ZLIB)
