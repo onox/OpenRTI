@@ -46,10 +46,10 @@ public:
   void listenPipe(const std::string& address, int backlog);
 
   void connectParentServer(const URL& url, const Clock& abstime);
-  void connectParentInetServer(const std::string& host, const std::string& service, const Clock& abstime);
-  void connectParentInetServer(const SocketAddress& socketAddress, const Clock& abstime);
+  void connectParentInetServer(const std::string& host, const std::string& service, bool compress, const Clock& abstime);
+  void connectParentInetServer(const SocketAddress& socketAddress, bool compress, const Clock& abstime);
   void connectParentPipeServer(const std::string& name, const Clock& abstime);
-  void connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool local);
+  void connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool compress);
 
   SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap);
   SharedPtr<AbstractMessageSender> insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap);

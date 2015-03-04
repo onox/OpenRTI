@@ -166,7 +166,7 @@ NetworkServer::setUpFromConfig(std::istream& stream)
 void
 NetworkServer::listen(const URL& url, int backlog)
 {
-  if (url.getProtocol() == "rti") {
+  if (url.getProtocol() == "rti" || url.getProtocol() == "rtic") {
     std::string host = url.getHost();
     if (host.empty())
       host = OpenRTI_DEFAULT_HOST_STRING;
@@ -223,14 +223,17 @@ NetworkServer::listenPipe(const std::string& address, int backlog)
 void
 NetworkServer::connectParentServer(const URL& url, const Clock& abstime)
 {
-  if (url.getProtocol() == "rti") {
+  if (url.getProtocol() == "rti" || url.getProtocol() == "rtic") {
     std::string host = url.getHost();
     if (host.empty())
       host = OpenRTI_DEFAULT_HOST_STRING;
     std::string service = url.getService();
     if (service.empty())
       service = OpenRTI_DEFAULT_PORT_STRING;
-    connectParentInetServer(host, service, abstime);
+    bool compress = false;
+    if (url.getProtocol() == "rtic")
+      compress = true;
+    connectParentInetServer(host, service, compress, abstime);
   } else if (url.getProtocol() == "pipe" || url.getProtocol() == "file") {
     std::string path = url.getPath();
     if (path.empty())
@@ -242,13 +245,13 @@ NetworkServer::connectParentServer(const URL& url, const Clock& abstime)
 }
 
 void
-NetworkServer::connectParentInetServer(const std::string& host, const std::string& service, const Clock& abstime)
+NetworkServer::connectParentInetServer(const std::string& host, const std::string& service, bool compress, const Clock& abstime)
 {
   // Note that here the may be lenghty name lookup for the connection address happens
   std::list<SocketAddress> addressList = SocketAddress::resolve(host, service, false);
   while (!addressList.empty()) {
     try {
-      connectParentInetServer(addressList.front(), abstime);
+      connectParentInetServer(addressList.front(), compress, abstime);
       return;
     } catch (const OpenRTI::Exception&) {
       addressList.pop_front();
@@ -261,11 +264,11 @@ NetworkServer::connectParentInetServer(const std::string& host, const std::strin
 }
 
 void
-NetworkServer::connectParentInetServer(const SocketAddress& socketAddress, const Clock& abstime)
+NetworkServer::connectParentInetServer(const SocketAddress& socketAddress, bool compress, const Clock& abstime)
 {
   SharedPtr<SocketTCP> socketStream = new SocketTCP;
   socketStream->connect(socketAddress);
-  connectParentStreamServer(socketStream, abstime, socketAddress.isLocal());
+  connectParentStreamServer(socketStream, abstime, compress);
 }
 
 void
@@ -275,16 +278,16 @@ NetworkServer::connectParentPipeServer(const std::string& name, const Clock& abs
   SharedPtr<SocketPipe> socketStream = new SocketPipe;
   socketStream->connect(name);
 
-  connectParentStreamServer(socketStream, abstime, true);
+  connectParentStreamServer(socketStream, abstime, false);
 }
 
 // Creates a new server thread that is connected to a parent server through the socket stream
 void
-NetworkServer::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool local)
+NetworkServer::connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool compress)
 {
   // Set up the server configured option map
   StringStringListMap connectOptions;
-  if (getServerNode().getServerOptions()._preferCompression && !local) {
+  if (compress) {
     connectOptions["compression"].push_back("zlib");
     connectOptions["compression"].push_back("lzma");
   } else {

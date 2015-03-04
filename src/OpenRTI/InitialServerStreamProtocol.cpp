@@ -102,27 +102,29 @@ InitialServerStreamProtocol::readOptionMap(const StringStringListMap& clientOpti
   responseValueMap["encoding"].push_back(encodingList.front());
   responseValueMap["compression"].clear();
 
-  i = clientOptionMap.find("compression");
-  if (i != clientOptionMap.end()) {
-    for (StringList::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
+  if (_networkServer.getServerNode().getServerOptions()._preferCompression) {
+    i = clientOptionMap.find("compression");
+    if (i != clientOptionMap.end()) {
+      for (StringList::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {
 // #if defined(OPENRTI_HAVE_XZ)
-//         if (*j == "lzma") {
-//           SharedPtr<LZMACompressionProtocolLayer> layer = new LZMACompressionProtocolLayer;
-//           layer->setProtocolLayer(protocolStack);
-//           protocolStack = layer;
-//           responseValueMap["compression"].push_back("lzma");
-//           break;
-//         }
+//           if (*j == "lzma") {
+//             SharedPtr<LZMACompressionProtocolLayer> layer = new LZMACompressionProtocolLayer;
+//             layer->setProtocolLayer(protocolStack);
+//             protocolStack = layer;
+//             responseValueMap["compression"].push_back("lzma");
+//             break;
+//           }
 // #endif
 #if defined(OPENRTI_HAVE_ZLIB)
-      if (*j == "zlib") {
-        SharedPtr<ZLibProtocolLayer> layer = new ZLibProtocolLayer;
-        layer->setProtocolLayer(protocolStack);
-        protocolStack = layer;
-        responseValueMap["compression"].push_back("zlib");
-        break;
-      }
+        if (*j == "zlib") {
+          SharedPtr<ZLibProtocolLayer> layer = new ZLibProtocolLayer;
+          layer->setProtocolLayer(protocolStack);
+          protocolStack = layer;
+          responseValueMap["compression"].push_back("zlib");
+          break;
+        }
 #endif
+      }
     }
   }
   if (responseValueMap["compression"].empty())

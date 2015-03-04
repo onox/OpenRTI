@@ -139,6 +139,15 @@ rti:
  This is the preferred tcp/ip protocol variant for networked
  communication.
 
+rtic:
+ Like rti above but compresses the data stream if available on both transport
+ ends. Compression needs extra cpu cycles and introduces some latency spent in
+ compression of the transfered messages. Nevertheless if your available
+ bandwidth is limited, this can help getting the data over the line.
+ This url is accepted even if compression is not available on one or both
+ of the communication ends. In such a case the data is not compressed before
+ it gets sent over the wire.
+
 http: (currently just an idea)
  This is a less efficient variant of the rti protocol for networked
  communication. The trick is that his kind of connection uses standard

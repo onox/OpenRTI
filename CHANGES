@@ -1,6 +1,8 @@
 OpenRTI-0.8.0 (development)
 ---------------------------
 
+ * Rework zlib transport compression selection.
+ 
  * For a more detailed list of changes see the git history.
 
 OpenRTI-0.7.0 (2015-02-14)

@@ -66,7 +66,7 @@ public:
     typedef std::list<SocketAddress> AddressList;
     AddressList addressList;
 
-    SocketAddress listeningAddress = startServer(SocketAddress());
+    SocketAddress listeningAddress = startServer(SocketAddress(), false);
     addressList.push_back(listeningAddress);
 
     AddressList parentAddressList = addressList;
@@ -74,7 +74,7 @@ public:
       AddressList currentAddressList;
       for (AddressList::iterator j = parentAddressList.begin(); j != parentAddressList.end(); ++j) {
         for (unsigned k = 0; k < numClientsPerServers; ++k) {
-          listeningAddress = startServer(*j);
+          listeningAddress = startServer(*j, k%2);
           addressList.push_back(listeningAddress);
           currentAddressList.push_back(listeningAddress);
           if (numServers <= addressList.size())
@@ -103,7 +103,7 @@ public:
 private:
   class ServerThread : public Thread {
   public:
-    void setupServer(const std::string& host, const SocketAddress& parentAddress)
+    void setupServer(const std::string& host, const SocketAddress& parentAddress, bool compress)
     {
       std::list<SocketAddress> addressList = SocketAddress::resolve(host, "0", true);
       // Set up a stream socket for the server connect
@@ -124,7 +124,7 @@ private:
 
       if (parentAddress.valid()) {
         Clock abstime = Clock::now() + Clock::fromSeconds(1);
-        _server.connectParentInetServer(parentAddress, abstime);
+        _server.connectParentInetServer(parentAddress, compress, abstime);
       }
 
       start();
@@ -147,10 +147,10 @@ private:
     SocketAddress _address;
   };
 
-  SocketAddress startServer(const SocketAddress& parentAddress)
+  SocketAddress startServer(const SocketAddress& parentAddress, bool compress)
   {
     SharedPtr<ServerThread> serverThread = new ServerThread;
-    serverThread->setupServer("localhost", parentAddress);
+    serverThread->setupServer("localhost", parentAddress, compress);
     _serverThreadList.push_back(serverThread);
     return serverThread->getAddress();
   }
