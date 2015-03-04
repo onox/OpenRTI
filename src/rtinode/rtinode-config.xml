@@ -3,23 +3,18 @@
   <!-- This is an example configuration file for an rtinode server. -->
 
   <!-- Connect to the given parent server. -->
+  <!-- <parentServer url="rtic://root.openrti.org:14321"/> -->
   <parentServer url="rti://root.openrti.org:14321"/>
 
-  <!-- The server default for time regulation.
-       This is also active for in binary threads that are
-       running in the servers binary.
-  -->
+  <!-- The server default for time regulation. -->
   <permitTimeRegulation enable="true"/>
+  <!-- The server default for compression for accepted connections. -->
   <enableZLibCompression enable="true"/>
 
-  <!-- Listen on any network socket on the default port.
-       Disable clients getting time regulating.
-  -->
-  <!-- <listen protocol="rti" address="*" service="14321"/> -->
-  <listen url="rti://*:14321/"/>
+  <!-- Listen on any network socket on the default port. -->
+  <!-- <listen protocol="rti" address="::" service="14321"/> -->
+  <listen url="rti://[::]:14321/"/>
 
-  <!-- Listen on a local unix domain socket.
-       Enable clients getting time regulating.
-  -->
+  <!-- Listen on a local unix domain socket. -->
   <listen url="pipe:///tmp/rtinode-server-socket"/>
 </OpenRTIServerConfig>
