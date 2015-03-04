@@ -145,6 +145,23 @@ public:
     // FIXME may be move this into the write call below?
     _more = more || i != bufferRange.second;
 
+    // Need to terminate the buffer when nothing else is pending
+    if (!_more) {
+      do {
+        if (_outStream.avail_out == 0) {
+          size_t size = _writeBuffer.front().size();
+          _writeBuffer.front().resize(7 + size);
+          _outStream.next_out = (Bytef*)_writeBuffer.front().data(size);
+          _outStream.avail_out = 7;
+        }
+        int ret = deflate(&_outStream, Z_SYNC_FLUSH);
+        OpenRTIAssert(ret != Z_STREAM_ERROR);
+        // The zlib documentation reads to me that this check is not needed,
+        // but it looks like it actually is?
+        if (ret == Z_STREAM_END) break;
+      } while (_outStream.avail_out == 0);
+    }
+
     return bytesWritten;
   }
 
@@ -260,22 +277,10 @@ ZLibProtocolLayer::write(AbstractProtocolSocket& protocolSocket)
     _protocolSocket->_outStream.next_out = (Bytef*)_protocolSocket->_writeBuffer.front().data();
     _protocolSocket->_outStream.avail_out = size;
 
-    // Call the nested write
+    // Call the nested write, fill the write buffer to get food to compress
     do {
       NestedProtocolLayer::write(*_protocolSocket);
     } while (_protocolSocket->_outStream.avail_out && _protocolSocket->_more);
-
-    if (!_protocolSocket->_more) {
-      do {
-        if (_protocolSocket->_outStream.avail_out == 0) {
-          size_t size = _protocolSocket->_writeBuffer.front().size();
-          _protocolSocket->_writeBuffer.front().resize(6 + size);
-          _protocolSocket->_outStream.next_out = (Bytef*)_protocolSocket->_writeBuffer.front().data(size);
-          _protocolSocket->_outStream.avail_out = 6;
-        }
-        int ret = deflate(&_protocolSocket->_outStream, Z_SYNC_FLUSH);
-      } while (_protocolSocket->_outStream.avail_out == 0);
-    }
 
     size = _protocolSocket->_writeBuffer.front().size() - _protocolSocket->_outStream.avail_out;
     _protocolSocket->_writeBuffer.front().resize(size);
