@@ -81,23 +81,6 @@ SocketAddress::isInet6() const
   return addr->sa_family == AF_INET6;
 }
 
-bool
-SocketAddress::isLocal() const
-{
-  if (isPipe())
-    return true;
-  if (isInet4()) {
-    const struct sockaddr_in* addr = (const struct sockaddr_in*)SocketAddress::PrivateData::sockaddr(_privateData.get());
-    return addr->sin_addr.s_addr == INADDR_LOOPBACK;
-  }
-  if (isInet6()) {
-    struct in6_addr local = IN6ADDR_LOOPBACK_INIT;
-    const struct sockaddr_in6* addr = (const struct sockaddr_in6*)SocketAddress::PrivateData::sockaddr(_privateData.get());
-    return memcmp(&addr->sin6_addr, &local, sizeof(local)) == 0;
-  }
-  return false;
-}
-
 std::string
 SocketAddress::getNumericName() const
 {
