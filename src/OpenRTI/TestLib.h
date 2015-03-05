@@ -166,49 +166,29 @@ public:
   // times and succeed exactly once.
   class FederationBarrier : public Referenced {
   public:
-    FederationBarrier(unsigned numInitialThreads) :
-      _numInitialThreads(numInitialThreads),
-      _numThreads(0),
+    FederationBarrier(unsigned numThreads) :
+      _numThreads(numThreads),
       _numWaitingThreads(0),
-      _numReleasedThreads(0),
+      _serial(-17),
       _successCount(0),
-      _failCount(0),
-      _done(false)
+      _failCount(0)
     { }
 
     void addThread()
     {
       ScopeLock scopeLock(_mutex);
-      ++_numThreads;
-      --_numInitialThreads;
-      if (_numInitialThreads == 0)
-        _condition.broadcast();
-      else {
-        do {
-          _condition.wait(_mutex);
-        } while (_numInitialThreads);
+      if (_numThreads == ++_numWaitingThreads) {
+        _resetAndSignal();
+      } else {
+        _wait();
       }
     }
     bool removeThread()
     {
       ScopeLock scopeLock(_mutex);
-      --_numThreads;
-      if (!_done) {
-        if (_numWaitingThreads == _numThreads) {
-          _done = true;
-          _numWaitingThreads = 0;
-          _condition.broadcast();
-          if (_numThreads && !_checkUniqueSuccess())
-            return false;
-          _successCount = 0;
-          _failCount = 0;
-        }
-      } else {
-        if (_numReleasedThreads == _numThreads) {
-          _done = false;
-          _numReleasedThreads = 0;
-          _condition.broadcast();
-        }
+      if (--_numThreads == _numWaitingThreads) {
+        _resetAndSignal();
+        return _checkUniqueSuccessAndClear();
       }
       return true;
     }
@@ -217,79 +197,60 @@ public:
     {
       ScopeLock scopeLock(_mutex);
       ++_successCount;
-      if (++_numWaitingThreads == _numThreads) {
-        _done = true;
-        _numWaitingThreads = 0;
-        _condition.broadcast();
-        if (!_checkUniqueSuccess())
-          return false;
-        _successCount = 0;
-        _failCount = 0;
+      if (_numThreads == ++_numWaitingThreads) {
+        _resetAndSignal();
+        return _checkUniqueSuccessAndClear();
       } else {
-        do {
-          _condition.wait(_mutex);
-        } while (!_done);
+        _wait();
+        return true;
       }
-      if (++_numReleasedThreads == _numThreads) {
-        _done = false;
-        _numReleasedThreads = 0;
-        _condition.broadcast();
-      } else {
-        do {
-          _condition.wait(_mutex);
-        } while (_done);
-      }
-      return true;
     }
     bool fail()
     {
       ScopeLock scopeLock(_mutex);
       ++_failCount;
-      if (++_numWaitingThreads == _numThreads) {
-        _done = true;
-        _numWaitingThreads = 0;
-        _condition.broadcast();
-        if (!_checkUniqueSuccess())
-          return false;
-        _successCount = 0;
-        _failCount = 0;
+      if (_numThreads == ++_numWaitingThreads) {
+        _resetAndSignal();
+        return _checkUniqueSuccessAndClear();
       } else {
-        do {
-          _condition.wait(_mutex);
-        } while (!_done);
+        _wait();
+        return true;
       }
-      if (++_numReleasedThreads == _numThreads) {
-        _done = false;
-        _numReleasedThreads = 0;
-        _condition.broadcast();
-      } else {
-        do {
-          _condition.wait(_mutex);
-        } while (_done);
-      }
-      return true;
     }
 
   private:
-    bool _checkUniqueSuccess()
+    void _resetAndSignal()
     {
-      if (_successCount == 1)
-        return true;
-      std::cout << "Aborting due to non unique success: successCount = " << _successCount << std::endl;
+      _numWaitingThreads = 0;
+      ++_serial;
+      _condition.broadcast();
+    }
+    void _wait()
+    {
+      unsigned serial = _serial;
+      do {
+        _condition.wait(_mutex);
+      } while (serial == _serial);
+    }
+    bool _checkUniqueSuccessAndClear()
+    {
+      bool success = _successCount == std::min(1u, _numThreads);
+      if (!success)
+        std::cout << "Aborting due to non unique success: successCount = " << _successCount << std::endl;
       _successCount = 0;
       _failCount = 0;
-      return false;
+      return success;
     }
 
     Mutex _mutex;
     Condition _condition;
-    unsigned _numInitialThreads;
+
     unsigned _numThreads;
     unsigned _numWaitingThreads;
-    unsigned _numReleasedThreads;
+    unsigned _serial;
+
     unsigned _successCount;
     unsigned _failCount;
-    bool _done;
   };
 
   class LBTS : public Referenced {
