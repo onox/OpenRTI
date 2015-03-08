@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -158,7 +158,7 @@ AbstractServer::_ConnectOperation::~_ConnectOperation()
 void
 AbstractServer::_ConnectOperation::operator()(AbstractServer& serverLoop)
 {
-  _connectHandle = serverLoop._sendConnect(_messageSender, _clientOptions);
+  _connectHandle = serverLoop._sendConnect(_messageSender, _clientOptions, false /*parent*/);
 
   ScopeLock scopeLock(_mutex);
   _done = true;
@@ -201,9 +201,7 @@ AbstractServer::_DisconnectOperation::~_DisconnectOperation()
 void
 AbstractServer::_DisconnectOperation::operator()(AbstractServer& serverLoop)
 {
-  serverLoop._eraseConnect(_connectHandle);
-  if (serverLoop.getServerNode().isIdle())
-    serverLoop.setDone(true);
+  serverLoop._sendDisconnect(_connectHandle);
 }
 
 class OPENRTI_LOCAL AbstractServer::_DoneOperation : public AbstractServer::_Operation {
@@ -227,32 +225,32 @@ AbstractServer::_DoneOperation::operator()(AbstractServer& serverLoop)
   serverLoop._sendDone(true);
 }
 
-class OPENRTI_LOCAL AbstractServer::_MessageSender : public AbstractMessageSender {
+class OPENRTI_LOCAL AbstractServer::_PostingMessageSender : public AbstractMessageSender {
 public:
-  _MessageSender(const ConnectHandle& connectHandle, const SharedPtr<AbstractServer>& serverLoop);
-  virtual ~_MessageSender();
+  _PostingMessageSender(const SharedPtr<AbstractServer>& serverLoop, const ConnectHandle& connectHandle);
+  virtual ~_PostingMessageSender();
 
   virtual void send(const SharedPtr<const AbstractMessage>& message);
   virtual void close();
 
 private:
-  ConnectHandle _connectHandle;
   SharedPtr<AbstractServer> _serverLoop;
+  ConnectHandle _connectHandle;
 };
 
-AbstractServer::_MessageSender::_MessageSender(const ConnectHandle& connectHandle, const SharedPtr<AbstractServer>& serverLoop) :
-  _connectHandle(connectHandle),
-  _serverLoop(serverLoop)
+AbstractServer::_PostingMessageSender::_PostingMessageSender(const SharedPtr<AbstractServer>& serverLoop, const ConnectHandle& connectHandle) :
+  _serverLoop(serverLoop),
+  _connectHandle(connectHandle)
 {
   OpenRTIAssert(serverLoop.valid());
 }
 
-AbstractServer::_MessageSender::~_MessageSender()
+AbstractServer::_PostingMessageSender::~_PostingMessageSender()
 {
 }
 
 void
-AbstractServer::_MessageSender::send(const SharedPtr<const AbstractMessage>& message)
+AbstractServer::_PostingMessageSender::send(const SharedPtr<const AbstractMessage>& message)
 {
   if (!_connectHandle.valid())
     return;
@@ -260,13 +258,54 @@ AbstractServer::_MessageSender::send(const SharedPtr<const AbstractMessage>& mes
 }
 
 void
-AbstractServer::_MessageSender::close()
+AbstractServer::_PostingMessageSender::close()
 {
   if (!_connectHandle.valid())
     return;
-  SharedPtr<_DisconnectOperation> disconnectOperation;
-  disconnectOperation = new _DisconnectOperation(_connectHandle);
-  _serverLoop->_postOperation(disconnectOperation);
+  _serverLoop->_postDisconnect(_connectHandle);
+  _connectHandle = ConnectHandle();
+}
+
+class OPENRTI_LOCAL AbstractServer::_SendingMessageSender : public AbstractMessageSender {
+public:
+  _SendingMessageSender(const SharedPtr<AbstractServerNode>& serverNode, const ConnectHandle& connectHandle);
+  virtual ~_SendingMessageSender();
+  virtual void send(const SharedPtr<const AbstractMessage>& message);
+  virtual void close();
+
+private:
+  SharedPtr<AbstractServerNode> _serverNode;
+  ConnectHandle _connectHandle;
+};
+
+AbstractServer::_SendingMessageSender::_SendingMessageSender(const SharedPtr<AbstractServerNode>& serverNode, const ConnectHandle& connectHandle) :
+  _serverNode(serverNode),
+  _connectHandle(connectHandle)
+{
+}
+
+AbstractServer::_SendingMessageSender::~_SendingMessageSender()
+{
+  close();
+}
+
+void
+AbstractServer::_SendingMessageSender::send(const SharedPtr<const AbstractMessage>& message)
+{
+  if (!_serverNode.valid())
+    throw RTIinternalError("Trying to send message to a closed MessageSender");
+  if (!message.valid())
+    return;
+  _serverNode->_dispatchMessage(message.get(), _connectHandle);
+}
+
+void
+AbstractServer::_SendingMessageSender::close()
+{
+  if (!_serverNode.valid())
+    return;
+  _serverNode->_eraseConnect(_connectHandle);
+  _serverNode = 0;
   _connectHandle = ConnectHandle();
 }
 
@@ -293,46 +332,56 @@ AbstractServer::getServerNode()
   return *_serverNode;
 }
 
-SharedPtr<AbstractMessageSender>
-AbstractServer::connect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
+SharedPtr<AbstractConnect>
+AbstractServer::postConnect(const StringStringListMap& clientOptions)
 {
-  SharedPtr<_ConnectOperation> connectOperation;
-  connectOperation = new _ConnectOperation(messageSender, clientOptions);
-  _postOperation(connectOperation);
-  connectOperation->wait();
-
-  ConnectHandle connectHandle = connectOperation->getConnectHandle();
+  SharedPtr<ThreadMessageQueue> messageQueue = new ThreadMessageQueue;
+  ConnectHandle connectHandle = _postConnect(messageQueue->getMessageSender(), clientOptions);
   if (!connectHandle.valid())
     return 0;
-  return new _MessageSender(connectHandle, this);
+  SharedPtr<AbstractMessageSender> messageSender;
+  messageSender = new _PostingMessageSender(this, connectHandle);
+  return new _Connect(messageSender, messageQueue);
 }
 
 SharedPtr<AbstractConnect>
-AbstractServer::connect(const StringStringListMap& clientOptions)
+AbstractServer::sendConnect(const StringStringListMap& optionMap, bool parent)
 {
-  SharedPtr<ThreadMessageQueue> threadMessageQueue = new ThreadMessageQueue;
-  SharedPtr<AbstractMessageSender> messageSender = connect(threadMessageQueue->getMessageSender(), clientOptions);
-  if (!messageSender.valid())
+  SharedPtr<LocalMessageQueue> messageQueue = new LocalMessageQueue;
+  ConnectHandle connectHandle = _sendConnect(messageQueue->getMessageSender(), optionMap, parent);
+  if (!connectHandle.valid())
     return 0;
-  return new _Connect(messageSender, threadMessageQueue);
+  SharedPtr<AbstractMessageSender> messageSender;
+  messageSender = new _SendingMessageSender(&getServerNode(), connectHandle);
+  return new _Connect(messageSender, messageQueue);
 }
 
 ConnectHandle
-AbstractServer::_sendConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
+AbstractServer::_sendConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions, bool parent)
 {
   OpenRTIAssert(messageSender.valid());
-  if (getDone()) {
+  if (getDone())
     return ConnectHandle();
+  if (parent) {
+    return getServerNode()._insertParentConnect(messageSender, clientOptions);
   } else {
     return getServerNode()._insertConnect(messageSender, clientOptions);
   }
 }
 
 void
-AbstractServer::_eraseConnect(const ConnectHandle& connectHandle)
+AbstractServer::_sendEraseConnect(const ConnectHandle& connectHandle)
 {
   OpenRTIAssert(connectHandle.valid());
   getServerNode()._eraseConnect(connectHandle);
+}
+
+void
+AbstractServer::_sendDisconnect(const ConnectHandle& connectHandle)
+{
+  _sendEraseConnect(connectHandle);
+  if (getServerNode().isIdle())
+    setDone(true);
 }
 
 void
@@ -353,6 +402,26 @@ void
 AbstractServer::_sendDone(bool done)
 {
   _done = done;
+}
+
+ConnectHandle
+AbstractServer::_postConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions)
+{
+  SharedPtr<_ConnectOperation> connectOperation;
+  connectOperation = new _ConnectOperation(messageSender, clientOptions);
+  _postOperation(connectOperation);
+  connectOperation->wait();
+  return connectOperation->getConnectHandle();
+}
+
+void
+AbstractServer::_postDisconnect(const ConnectHandle& connectHandle)
+{
+  if (!connectHandle.valid())
+    return;
+  SharedPtr<_DisconnectOperation> disconnectOperation;
+  disconnectOperation = new _DisconnectOperation(connectHandle);
+  _postOperation(disconnectOperation);
 }
 
 void

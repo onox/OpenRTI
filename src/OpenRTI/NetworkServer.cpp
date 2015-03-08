@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -46,36 +46,6 @@
 #include "StringUtils.h"
 
 namespace OpenRTI {
-
-class OPENRTI_LOCAL NetworkServer::_ToServerMessageSender : public AbstractMessageSender {
-public:
-  _ToServerMessageSender(const SharedPtr<AbstractServerNode>& serverNode, const ConnectHandle& connectHandle) :
-    _serverNode(serverNode),
-    _connectHandle(connectHandle)
-  { }
-  virtual ~_ToServerMessageSender()
-  { close(); }
-  virtual void send(const SharedPtr<const AbstractMessage>& message)
-  {
-    if (!_serverNode.valid())
-      throw RTIinternalError("Trying to send message to a closed MessageSender");
-    if (!message.valid())
-      return;
-    _serverNode->_dispatchMessage(message.get(), _connectHandle);
-  }
-  virtual void close()
-  {
-    if (!_serverNode.valid())
-      return;
-    _serverNode->_eraseConnect(_connectHandle);
-    _serverNode = 0;
-    _connectHandle = ConnectHandle();
-  }
-
-private:
-  SharedPtr<AbstractServerNode> _serverNode;
-  ConnectHandle _connectHandle;
-};
 
 NetworkServer::NetworkServer() :
   AbstractServer(new ServerNode)
@@ -312,24 +282,6 @@ NetworkServer::connectParentStreamServer(const SharedPtr<SocketStream>& socketSt
   }
 
   setDone(false);
-}
-
-SharedPtr<AbstractMessageSender>
-NetworkServer::insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap)
-{
-  ConnectHandle connectHandle = getServerNode()._insertConnect(messageSender, optionMap);
-  if (!connectHandle.valid())
-    return SharedPtr<AbstractMessageSender>();
-  return new _ToServerMessageSender(&getServerNode(), connectHandle);
-}
-
-SharedPtr<AbstractMessageSender>
-NetworkServer::insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap)
-{
-  ConnectHandle connectHandle = getServerNode()._insertParentConnect(messageSender, optionMap);
-  if (!connectHandle.valid())
-    return SharedPtr<AbstractMessageSender>();
-  return new _ToServerMessageSender(&getServerNode(), connectHandle);
 }
 
 int

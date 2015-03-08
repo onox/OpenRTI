@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -22,7 +22,6 @@
 #include "LogStream.h"
 #include "NetworkServer.h"
 #include "MessageEncodingRegistry.h"
-#include "NetworkServerConnect.h"
 #include "ServerOptions.h"
 #include "ZLibProtocolLayer.h"
 
@@ -76,9 +75,6 @@ InitialClientStreamProtocol::setConnectOptions(StringStringListMap connectOption
 void
 InitialClientStreamProtocol::readOptionMap(const StringStringListMap& optionMap)
 {
-  // For now, just stop processing once we have recieved the connect reply
-  _networkServer.setDone(true);
-
   // Check for an error response
   StringStringListMap::const_iterator i = optionMap.find("error");
   if (i != optionMap.end()) {
@@ -100,10 +96,11 @@ InitialClientStreamProtocol::readOptionMap(const StringStringListMap& optionMap)
     throw RTIinternalError("Unable to do server given encoding!");
   }
 
-  // FIXME May be get this from the Server?
-  // This way we could get a connect that matches the network servers idea of threading?
-  SharedPtr<NetworkServerConnect> connect = new NetworkServerConnect;
-  connect->connectParent(_networkServer, optionMap);
+  // Get a new parent connect from the server implementation.
+  SharedPtr<AbstractConnect> connect;
+  connect = _networkServer.sendConnect(optionMap, true /*parent*/);
+  if (!connect.valid())
+    throw RTIinternalError("Could not get an internal connect structure from the server!");
   messageProtocol->setConnect(connect);
 
   // This is the part of the protocol stack that replaces this initial stuff.
@@ -136,6 +133,9 @@ InitialClientStreamProtocol::readOptionMap(const StringStringListMap& optionMap)
 
   _successfulConnect = true;
   setFollowupProtocol(protocolStack);
+
+  // For now, just stop processing once we have recieved the connect reply
+  _networkServer.setDone(true);
 }
 
 void

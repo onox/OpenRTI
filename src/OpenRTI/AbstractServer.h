@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -56,8 +56,8 @@ public:
   { _postDone(); }
 
   /// Connect to the server - independent of the actual implementation
-  SharedPtr<AbstractMessageSender> connect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);
-  SharedPtr<AbstractConnect> connect(const StringStringListMap& clientOptions);
+  SharedPtr<AbstractConnect> postConnect(const StringStringListMap& clientOptions);
+  SharedPtr<AbstractConnect> sendConnect(const StringStringListMap& clientOptions, bool parent);
 
 protected:
   typedef std::pair<SharedPtr<const AbstractMessage>, ConnectHandle> _MessageConnectHandlePair;
@@ -71,8 +71,9 @@ protected:
   typedef std::list<SharedPtr<_Operation> > _OperationList;
 
   // Connect to the server from the local thread
-  ConnectHandle _sendConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);
-  void _eraseConnect(const ConnectHandle& connectHandle);
+  ConnectHandle _sendConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions, bool parent);
+  void _sendEraseConnect(const ConnectHandle& connectHandle);
+  void _sendDisconnect(const ConnectHandle& connectHandle);
 
   // Use this to send something from within this current servers thread to this server.
   void _sendMessage(const _MessageConnectHandlePair& messageConnectHandlePair);
@@ -82,6 +83,11 @@ protected:
   // Use this to send something from a different thread to this server.
   virtual void _postMessage(const _MessageConnectHandlePair& messageConnectHandlePair) = 0;
   virtual void _postOperation(const SharedPtr<_Operation>& operation) = 0;
+
+  // From a different thread, connect/disconnect to the server
+  ConnectHandle _postConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& clientOptions);
+  void _postDisconnect(const ConnectHandle& connectHandle);
+  // From a different thread, shut down the server
   void _postDone();
 
   class OPENRTI_API _Queue {
@@ -108,7 +114,8 @@ private:
   class _ConnectOperation;
   class _DisconnectOperation;
   class _DoneOperation;
-  class _MessageSender;
+  class _PostingMessageSender;
+  class _SendingMessageSender;
 
   SharedPtr<AbstractServerNode> _serverNode;
 

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -51,9 +51,6 @@ public:
   void connectParentPipeServer(const std::string& name, const Clock& abstime);
   void connectParentStreamServer(const SharedPtr<SocketStream>& socketStream, const Clock& abstime, bool compress);
 
-  SharedPtr<AbstractMessageSender> insertConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap);
-  SharedPtr<AbstractMessageSender> insertParentConnect(const SharedPtr<AbstractMessageSender>& messageSender, const StringStringListMap& optionMap);
-
   virtual int exec();
 
 protected:
@@ -63,8 +60,6 @@ protected:
   virtual void _postOperation(const SharedPtr<_Operation>& operation);
 
 private:
-  class _ToServerMessageSender;
-
   NetworkServer(const NetworkServer&);
   NetworkServer& operator=(const NetworkServer&);
 

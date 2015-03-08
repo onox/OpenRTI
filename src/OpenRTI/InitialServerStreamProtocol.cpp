@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -22,7 +22,6 @@
 #include "LogStream.h"
 #include "NetworkServer.h"
 #include "MessageEncodingRegistry.h"
-#include "NetworkServerConnect.h"
 #include "ServerOptions.h"
 #include "ZLibProtocolLayer.h"
 
@@ -86,10 +85,13 @@ InitialServerStreamProtocol::readOptionMap(const StringStringListMap& clientOpti
   SharedPtr<AbstractMessageEncoding> messageProtocol;
   messageProtocol = MessageEncodingRegistry::instance().getEncoding(encodingList.front());
 
-  // FIXME May be get this from the Server?
-  // This way we could get a connect that matches the network servers idea of threading?
-  SharedPtr<NetworkServerConnect> connect = new NetworkServerConnect;
-  connect->connect(_networkServer, clientOptionMap);
+  // Get a new client connect from the server implementation.
+  SharedPtr<AbstractConnect> connect;
+  connect = _networkServer.sendConnect(clientOptionMap, false /*parent*/);
+  if (!connect.valid()) {
+    errorResponse("Could not get an internal connect structure from the server!");
+    return;
+  }
   messageProtocol->setConnect(connect);
 
   // This is the part of the protocol stack that replaces this initial stuff.

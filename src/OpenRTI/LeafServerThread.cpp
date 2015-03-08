@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -183,7 +183,7 @@ LeafServerThread::~LeafServerThread(void)
 SharedPtr<AbstractConnect>
 LeafServerThread::connect(const StringStringListMap& clientOptions)
 {
-  return _server->connect(clientOptions);
+  return _server->postConnect(clientOptions);
 }
 
 void
