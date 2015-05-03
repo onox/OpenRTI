@@ -30,7 +30,6 @@ SET(LIB_RTI1516_SOURCES
 	Exception.cpp
 	FederateAmbassador.cpp
 	Handle.cpp
-	HandleImplementation.h
 	LogicalTime.cpp
 	LogicalTimeFactory.cpp
 	LogicalTimeInterval.cpp
@@ -41,7 +40,6 @@ SET(LIB_RTI1516_SOURCES
 	RTIambassadorImplementation.cpp
 	RTI1516LogicalTimeFactory.cpp
 	VariableLengthData.cpp
-	VariableLengthDataImplementation.h
 	Version.cpp
 )
 

@@ -54,7 +54,6 @@ SET(LIB_RTI1516E_SOURCES
         Exception.cpp
         FederateAmbassador.cpp
         Handle.cpp
-        HandleImplementation.h
         HLAfixedArray.cpp
         HLAfixedRecord.cpp
         HLAopaqueData.cpp
@@ -73,7 +72,6 @@ SET(LIB_RTI1516E_SOURCES
         NullFederateAmbassador.cpp
         RangeBounds.cpp
         VariableLengthData.cpp
-        VariableLengthDataImplementation.h
         Version.cpp
         RTI1516ELogicalTimeFactory.cpp
         RTIambassador.cpp
