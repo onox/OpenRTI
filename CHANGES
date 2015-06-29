@@ -2,6 +2,7 @@ OpenRTI-0.8.0 (development)
 ---------------------------
 
  * Rework zlib transport compression selection.
+ * Fix a relative RPATH expansion issue.
  
  * For a more detailed list of changes see the git history.
 
