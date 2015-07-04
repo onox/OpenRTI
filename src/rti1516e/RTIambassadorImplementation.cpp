@@ -46,6 +46,9 @@
 #include "RTI1516Efloat64TimeFactory.h"
 #include "VariableLengthDataImplementation.h"
 
+// Embed the HLAstandardMIM hard into the library as a last resort
+#include "HLAstandardMIM.inc"
+
 namespace OpenRTI {
 
 static std::list<std::string> findHLAstandardMIMCandidates()
@@ -65,6 +68,36 @@ static std::list<std::string> findHLAstandardMIMCandidates()
   candidates.push_back(OPENRTI_DATAROOTDIR "/rti1516e/HLAstandardMIM.xml");
 
   return candidates;
+}
+
+static void loadHLAstandardMIM(OpenRTI::FOMStringModuleList& fomModuleList)
+{
+  std::list<std::string> candidates = findHLAstandardMIMCandidates();
+  for (std::list<std::string>::const_iterator i = candidates.begin(); i != candidates.end(); ++i) {
+    std::ifstream stream(utf8ToLocale(*i).c_str());
+    if (!stream.is_open())
+      continue;
+
+    try {
+      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
+      break;
+    } catch (const OpenRTI::Exception& e) {
+      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
+    } catch (...) {
+      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
+    }
+  }
+  if (fomModuleList.empty()) {
+    std::string s(HLAstandardMIM_xml, sizeof(HLAstandardMIM_xml));
+    std::istringstream stream(s);
+    try {
+      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
+    } catch (const OpenRTI::Exception& e) {
+      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
+    } catch (...) {
+      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
+    }
+  }
 }
 
 static OpenRTI::CallbackModel translate(rti1516e::CallbackModel callbackModel)
@@ -1696,25 +1729,9 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
 {
   // Make sure we can read the fdd file
   OpenRTI::FOMStringModuleList fomModuleList;
-  {
-    std::list<std::string> candidates = findHLAstandardMIMCandidates();
-    for (std::list<std::string>::const_iterator i = candidates.begin(); i != candidates.end(); ++i) {
-      std::ifstream stream(utf8ToLocale(*i).c_str());
-      if (!stream.is_open())
-        continue;
 
-      try {
-        fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
-        break;
-      } catch (const OpenRTI::Exception& e) {
-        throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
-      } catch (...) {
-        throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
-      }
-    }
-    if (fomModuleList.empty())
-      throw rti1516e::RTIinternalError(std::wstring(L"Could not find \"HLAstandardMIM.xml\"."));
-  }
+  // Preload the HLAstandardMIM module
+  loadHLAstandardMIM(fomModuleList);
 
   {
     std::ifstream stream(OpenRTI::ucsToLocale(fomModule).c_str());
@@ -1760,25 +1777,9 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
          rti1516e::RTIinternalError)
 {
   OpenRTI::FOMStringModuleList fomModuleList;
-  {
-    std::list<std::string> candidates = findHLAstandardMIMCandidates();
-    for (std::list<std::string>::const_iterator i = candidates.begin(); i != candidates.end(); ++i) {
-      std::ifstream stream(utf8ToLocale(*i).c_str());
-      if (!stream.is_open())
-        continue;
 
-      try {
-        fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
-        break;
-      } catch (const OpenRTI::Exception& e) {
-        throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
-      } catch (...) {
-        throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
-      }
-    }
-    if (fomModuleList.empty())
-      throw rti1516e::RTIinternalError(std::wstring(L"Could not find \"HLAstandardMIM.xml\"."));
-  }
+  // Preload the HLAstandardMIM module
+  loadHLAstandardMIM(fomModuleList);
 
   for (std::vector<std::wstring>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i) {
     std::ifstream stream(OpenRTI::ucsToLocale(*i).c_str());
