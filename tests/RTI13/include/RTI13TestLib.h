@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -110,7 +110,7 @@ namespace OpenRTI {
 //     return u;
 // }
 
-class RTI13TestAmbassador : public RTITest::Ambassador, public RTI::FederateAmbassador {
+class OPENRTI_LOCAL RTI13TestAmbassador : public RTITest::Ambassador, public RTI::FederateAmbassador {
 public:
   RTI13TestAmbassador(const RTITest::ConstructorArgs& constructorArgs) :
     RTITest::Ambassador(constructorArgs),
@@ -640,7 +640,7 @@ private:
   std::set<std::string> _federateSet;
 };
 
-class RTI13SimpleAmbassador : public RTI::FederateAmbassador {
+class OPENRTI_LOCAL RTI13SimpleAmbassador : public RTI::FederateAmbassador {
 public:
   RTI13SimpleAmbassador() :
     // _fail(false),

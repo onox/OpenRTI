@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -46,7 +46,7 @@ enum TimeAdvanceMode {
 };
 
 template<typename LogicalTime, typename LogicalTimeInterval>
-class TestAmbassador : public RTI1516TestAmbassador {
+class OPENRTI_LOCAL TestAmbassador : public RTI1516TestAmbassador {
 public:
   typedef std::pair<LogicalTime, bool> LogicalTimePair;
 
@@ -901,7 +901,7 @@ private:
   bool _fail;
 };
 
-class Test : public RTITest {
+class OPENRTI_LOCAL Test : public RTITest {
 public:
   Test(int argc, const char* const argv[]) :
     RTITest(argc, argv, false),

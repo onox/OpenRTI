@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -44,7 +44,7 @@
 
 namespace OpenRTI {
 
-class ServerPool {
+class OPENRTI_LOCAL ServerPool {
 public:
   ServerPool()
   {
@@ -101,7 +101,7 @@ public:
   }
 
 private:
-  class ServerThread : public Thread {
+  class OPENRTI_LOCAL ServerThread : public Thread {
   public:
     void setupServer(const std::string& host, const SocketAddress& parentAddress, bool compress)
     {
@@ -159,12 +159,12 @@ private:
   ServerThreadList _serverThreadList;
 };
 
-class RTITest {
+class OPENRTI_LOCAL RTITest {
 public:
   // Helper class to test things lie create federation execution
   // where many concurrent attempts to do the same must fail n-1
   // times and succeed exactly once.
-  class FederationBarrier : public Referenced {
+  class OPENRTI_LOCAL FederationBarrier : public Referenced {
   public:
     FederationBarrier(unsigned numThreads) :
       _numThreads(numThreads),
@@ -253,7 +253,7 @@ public:
     unsigned _failCount;
   };
 
-  class LBTS : public Referenced {
+  class OPENRTI_LOCAL LBTS : public Referenced {
   public:
     LBTS(unsigned numInitialThreads)
     {
@@ -310,7 +310,7 @@ public:
     SharedPtr<LBTS> _lbts;
     Rand _rand;
   };
-  class Ambassador : public Referenced {
+  class OPENRTI_LOCAL Ambassador : public Referenced {
   public:
     Ambassador(const ConstructorArgs& constructorArgs) :
       _constructorArgs(constructorArgs),
@@ -544,7 +544,7 @@ public:
 private:
   typedef std::vector<std::wstring> ArgumentList;
 
-  class AmbassadorThread : public Thread {
+  class OPENRTI_LOCAL AmbassadorThread : public Thread {
   public:
     AmbassadorThread(const SharedPtr<Ambassador>& testAmbassador) :
       _testAmbassador(testAmbassador),

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -29,7 +29,7 @@ class Ambassador;
 class InternalAmbassador;
 
 template<typename T>
-class OPENRTI_API TimeManagement : public InternalTimeManagement {
+class OPENRTI_LOCAL TimeManagement : public InternalTimeManagement {
 public:
   typedef T Traits;
 

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -30,7 +30,7 @@
 
 using namespace OpenRTI;
 
-class TestAmbassador : public RTI1516TestAmbassador {
+class OPENRTI_LOCAL TestAmbassador : public RTI1516TestAmbassador {
 public:
   TestAmbassador(const RTITest::ConstructorArgs& constructorArgs) :
     RTI1516TestAmbassador(constructorArgs)
@@ -219,7 +219,7 @@ public:
   NameReservationMap _nameReservationMap;
 };
 
-class Test : public RTITest {
+class OPENRTI_LOCAL Test : public RTITest {
 public:
   Test(int argc, const char* const argv[]) :
     RTITest(argc, argv, false)

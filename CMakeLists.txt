@@ -102,6 +102,11 @@ ELSE()
 ENDIF()
 SET(OPENRTI_INSTALL_WITH_RPATH ${OPENRTI_INSTALL_WITH_RPATH_DEFAULT} CACHE BOOL "Build shared libraries with builtin search path.")
 
+# We really want to hide all the OpenRTI private symbols.
+IF(OPENRTI_BUILD_SHARED)
+  ADD_DEFINITIONS(-DOPENRTI_DLL)
+ENDIF()
+
 INCLUDE(CheckCXXSourceRuns)
 IF(OPENRTI_INSTALL_WITH_RPATH)
   SET(CMAKE_REQUIRED_FLAGS "-Wl,--enable-new-dtags")

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -116,7 +116,7 @@ toUnsigned(const rti1516::VariableLengthData& variableLengthData)
     return u;
 }
 
-class RTI1516TestAmbassador : public RTITest::Ambassador, public rti1516::FederateAmbassador {
+class OPENRTI_LOCAL RTI1516TestAmbassador : public RTITest::Ambassador, public rti1516::FederateAmbassador {
 public:
   RTI1516TestAmbassador(const RTITest::ConstructorArgs& constructorArgs) :
     RTITest::Ambassador(constructorArgs),
@@ -865,7 +865,7 @@ private:
   std::set<std::wstring> _federateSet;
 };
 
-class RTI1516SimpleAmbassador : public rti1516::FederateAmbassador {
+class OPENRTI_LOCAL RTI1516SimpleAmbassador : public rti1516::FederateAmbassador {
 public:
   RTI1516SimpleAmbassador() :
     // _fail(false),
@@ -2143,7 +2143,7 @@ private:
   // ObjectInstanceMap _objectInstanceMap;
 };
 
-class RTI1516SimpleLogAmbassador : public RTI1516SimpleAmbassador {
+class OPENRTI_LOCAL RTI1516SimpleLogAmbassador : public RTI1516SimpleAmbassador {
 public:
   RTI1516SimpleLogAmbassador() :
     _fail(false)

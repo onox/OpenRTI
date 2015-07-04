@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -37,7 +37,7 @@ enum RequestType {
   Finished
 };
 
-class TestResponderAmbassador : public RTI1516TestAmbassador {
+class OPENRTI_LOCAL TestResponderAmbassador : public RTI1516TestAmbassador {
 public:
   TestResponderAmbassador(const RTITest::ConstructorArgs& constructorArgs) :
     RTI1516TestAmbassador(constructorArgs)
@@ -278,7 +278,7 @@ public:
   unsigned _finishedCount;
 };
 
-class TestRequestorAmbassador : public RTI1516TestAmbassador {
+class OPENRTI_LOCAL TestRequestorAmbassador : public RTI1516TestAmbassador {
 public:
   TestRequestorAmbassador(const RTITest::ConstructorArgs& constructorArgs) :
     RTI1516TestAmbassador(constructorArgs)
@@ -489,7 +489,7 @@ public:
   rti1516::ParameterHandle class3Parameter3Handle;
 };
 
-class Test : public RTITest {
+class OPENRTI_LOCAL Test : public RTITest {
 public:
   Test(int argc, const char* const argv[]) :
     RTITest(argc, argv, false),

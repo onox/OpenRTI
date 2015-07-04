@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2014 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -34,7 +34,7 @@
 
 using namespace OpenRTI;
 
-struct InteractionClass {
+struct OPENRTI_LOCAL InteractionClass {
   std::set<std::wstring> _parameterNames;
 
   void insert(const std::wstring& name)
@@ -43,7 +43,7 @@ struct InteractionClass {
   { return _parameterNames.find(name) != _parameterNames.end(); }
 };
 
-struct ObjectClass {
+struct OPENRTI_LOCAL ObjectClass {
   std::set<std::wstring> _attributeNames;
 
   void insert(const std::wstring& name)
@@ -52,7 +52,7 @@ struct ObjectClass {
   { return _attributeNames.find(name) != _attributeNames.end(); }
 };
 
-struct Module {
+struct OPENRTI_LOCAL Module {
   std::wstring _name;
   std::set<std::wstring> _incompatibleModuleNames;
 
@@ -105,7 +105,7 @@ struct Module {
   }
 };
 
-struct ModuleList {
+struct OPENRTI_LOCAL ModuleList {
   ModuleList()
   {
     {
@@ -456,7 +456,7 @@ static std::vector<std::wstring> prependPath(const std::wstring& path, const std
   return withPath;
 }
 
-class TestAmbassador : public RTITest::Ambassador {
+class OPENRTI_LOCAL TestAmbassador : public RTITest::Ambassador {
 public:
   TestAmbassador(const RTITest::ConstructorArgs& constructorArgs) :
     RTITest::Ambassador(constructorArgs)
@@ -744,7 +744,7 @@ public:
   ModuleList _moduleList;
 };
 
-class Test : public RTITest {
+class OPENRTI_LOCAL Test : public RTITest {
 public:
   Test(int argc, const char* const argv[]) :
     RTITest(argc, argv, false)
