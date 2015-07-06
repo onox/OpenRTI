@@ -28,9 +28,9 @@
 namespace OpenRTI {
 
 SocketServerAcceptEvent::SocketServerAcceptEvent(const SharedPtr<SocketServer>& socketServer,
-                                                 NetworkServer& networkServer) :
+                                                 AbstractServer& abstractServer) :
   _socketServer(socketServer),
-  _networkServer(networkServer)
+  _abstractServer(abstractServer)
 {
 }
 
@@ -48,7 +48,7 @@ SocketServerAcceptEvent::read(SocketEventDispatcher& dispatcher)
   /// IDEA: peek into the read data to see if this is an OpenRTI or a HTTP request
 
   SharedPtr<ProtocolSocketEvent> protocolSocketEvent = new ProtocolSocketEvent(s);
-  protocolSocketEvent->setProtocolLayer(new InitialServerStreamProtocol(_networkServer));
+  protocolSocketEvent->setProtocolLayer(new InitialServerStreamProtocol(_abstractServer));
   dispatcher.insert(protocolSocketEvent);
 }
 

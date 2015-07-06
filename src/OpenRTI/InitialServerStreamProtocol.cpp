@@ -20,17 +20,15 @@
 #include "InitialServerStreamProtocol.h"
 
 #include "LogStream.h"
-#include "NetworkServer.h"
+#include "AbstractServer.h"
 #include "MessageEncodingRegistry.h"
 #include "ServerOptions.h"
 #include "ZLibProtocolLayer.h"
 
 namespace OpenRTI {
 
-class NetworkServer;
-
-InitialServerStreamProtocol::InitialServerStreamProtocol(NetworkServer& networkServer) :
-  _networkServer(networkServer)
+InitialServerStreamProtocol::InitialServerStreamProtocol(AbstractServer& abstractServer) :
+  _abstractServer(abstractServer)
 {
   // Add space for the initial header
   addScratchReadBuffer(12);
@@ -79,7 +77,7 @@ InitialServerStreamProtocol::readOptionMap(const StringStringListMap& clientOpti
 
   // Preload this with the server nodes configuration
   StringStringListMap responseValueMap;
-  responseValueMap = _networkServer.getServerNode().getServerOptions()._optionMap;
+  responseValueMap = _abstractServer.getServerNode().getServerOptions()._optionMap;
 
   // Since we already asked for the common encodings, this must be successful now.
   SharedPtr<AbstractMessageEncoding> messageProtocol;
@@ -87,7 +85,7 @@ InitialServerStreamProtocol::readOptionMap(const StringStringListMap& clientOpti
 
   // Get a new client connect from the server implementation.
   SharedPtr<AbstractConnect> connect;
-  connect = _networkServer.sendConnect(clientOptionMap, false /*parent*/);
+  connect = _abstractServer.sendConnect(clientOptionMap, false /*parent*/);
   if (!connect.valid()) {
     errorResponse("Could not get an internal connect structure from the server!");
     return;
@@ -104,7 +102,7 @@ InitialServerStreamProtocol::readOptionMap(const StringStringListMap& clientOpti
   responseValueMap["encoding"].push_back(encodingList.front());
   responseValueMap["compression"].clear();
 
-  if (_networkServer.getServerNode().getServerOptions()._preferCompression) {
+  if (_abstractServer.getServerNode().getServerOptions()._preferCompression) {
     i = clientOptionMap.find("compression");
     if (i != clientOptionMap.end()) {
       for (StringList::const_iterator j = i->second.begin(); j != i->second.end(); ++j) {

@@ -20,21 +20,21 @@
 #include "InitialClientStreamProtocol.h"
 
 #include "LogStream.h"
-#include "NetworkServer.h"
+#include "AbstractServer.h"
 #include "MessageEncodingRegistry.h"
 #include "ServerOptions.h"
 #include "ZLibProtocolLayer.h"
 
 namespace OpenRTI {
 
-InitialClientStreamProtocol::InitialClientStreamProtocol(NetworkServer& networkServer) :
-  _networkServer(networkServer),
+InitialClientStreamProtocol::InitialClientStreamProtocol(AbstractServer& abstractServer) :
+  _abstractServer(abstractServer),
   _successfulConnect(false)
 {
 }
 
-InitialClientStreamProtocol::InitialClientStreamProtocol(NetworkServer& networkServer, const StringStringListMap& connectOptions) :
-  _networkServer(networkServer),
+InitialClientStreamProtocol::InitialClientStreamProtocol(AbstractServer& abstractServer, const StringStringListMap& connectOptions) :
+  _abstractServer(abstractServer),
   _successfulConnect(false)
 {
   setConnectOptions(connectOptions);
@@ -98,7 +98,7 @@ InitialClientStreamProtocol::readOptionMap(const StringStringListMap& optionMap)
 
   // Get a new parent connect from the server implementation.
   SharedPtr<AbstractConnect> connect;
-  connect = _networkServer.sendConnect(optionMap, true /*parent*/);
+  connect = _abstractServer.sendConnect(optionMap, true /*parent*/);
   if (!connect.valid())
     throw RTIinternalError("Could not get an internal connect structure from the server!");
   messageProtocol->setConnect(connect);
@@ -135,14 +135,14 @@ InitialClientStreamProtocol::readOptionMap(const StringStringListMap& optionMap)
   setFollowupProtocol(protocolStack);
 
   // For now, just stop processing once we have recieved the connect reply
-  _networkServer.setDone(true);
+  _abstractServer.setDone(true);
 }
 
 void
 InitialClientStreamProtocol::error(const Exception& e)
 {
   // On error with the parent connect also stop the connect attempt
-  _networkServer.setDone(true);
+  _abstractServer.setDone(true);
   // Store the error description
   _errorMessage = e.getReason();
   _successfulConnect = false;
