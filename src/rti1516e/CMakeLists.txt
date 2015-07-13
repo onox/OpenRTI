@@ -1,4 +1,4 @@
-# The directory containing the public api for RTI13
+# The directory containing the public api for rti1516e
 SET(RTI1516E_HEADER_PATH ${CMAKE_SOURCE_DIR}/include/rti1516e)
 SET(RTI1516E_DATA_PATH ${CMAKE_SOURCE_DIR}/share/rti1516e)
 
@@ -89,7 +89,7 @@ SET(LIB_FEDTIME1516E_SOURCES
         LogicalTimeFactoryFactory.cpp
 )
 
-# rti1516, the circular reference is tricky on win32
+# rti1516e, the circular reference is tricky on win32
 IF(OPENRTI_BUILD_SHARED)
   ADD_LIBRARY(rti1516e SHARED ${LIB_RTI1516E_SOURCES})
   SET_PROPERTY(TARGET rti1516e APPEND PROPERTY COMPILE_DEFINITIONS BUILDING_RTI)
@@ -127,7 +127,7 @@ IF(MACOS)
   SET_PROPERTY(TARGET rti1516e APPEND PROPERTY LINK_FLAGS "-Wl,-undefined,dynamic_lookup ${OPENRTI_BIND_AT_LOAD}")
 ENDIF()
 
-# libfedtime1516
+# libfedtime1516e
 IF(OPENRTI_BUILD_SHARED)
   ADD_LIBRARY(fedtime1516e SHARED ${LIB_FEDTIME1516E_SOURCES})
   SET_PROPERTY(TARGET fedtime1516e APPEND PROPERTY COMPILE_DEFINITIONS BUILDING_FEDTIME)

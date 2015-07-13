@@ -1,4 +1,4 @@
-# The directory containing the public api for RTI13
+# The directory containing the public api for rti1516
 SET(RTI1516_HEADER_PATH ${CMAKE_SOURCE_DIR}/include/rti1516)
 SET(RTI1516_DATA_PATH ${CMAKE_SOURCE_DIR}/share/rti1516)
 
