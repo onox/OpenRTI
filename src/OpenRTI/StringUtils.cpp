@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -71,8 +71,8 @@ utfToUtf(std::basic_string<D>& dst, const S* srcBegin, const S* srcEnd)
       dst.push_back(D(cp));
     } else {
       // Counts the number of continuation bytes
-      unsigned count = 1;
-      uint32_t tmp = (cp >> (2*dstContinuationBits - 1));
+      unsigned count = 0;
+      uint32_t tmp = (cp >> dstContinuationBits);
       while (tmp) {
         tmp >>= (dstContinuationBits - 1);
         ++count;
