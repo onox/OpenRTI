@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2011-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2011-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -16,10 +16,6 @@
  * along with OpenRTI.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
-// This time, the first include is above the api include.
-// the rti1516/Exception header misses that.
-#include <iosfwd>
 
 #include <RTI/encoding/HLAvariableArray.h>
 

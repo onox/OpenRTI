@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -19,10 +19,6 @@
 
 #ifndef RTI1516Einteger64TimeFactory_h
 #define RTI1516Einteger64TimeFactory_h
-
-// This time, the first include is above the api include.
-// the rti1516/Exception header misses that.
-#include <iosfwd>
 
 #include <RTI/LogicalTime.h>
 #include <RTI/LogicalTimeInterval.h>
