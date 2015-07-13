@@ -391,12 +391,12 @@ private:
   Hook _intrusiveListHook;
 };
 
-template<unsigned n>
+template<typename T, unsigned n>
 class OPENRTI_LOCAL _ListTag {};
 
 template<typename T, unsigned tag = 0>
-class OPENRTI_LOCAL IntrusiveList : public _IntrusiveList<T, _ListTag<tag> > {
-  typedef _IntrusiveList<T, _ListTag<tag> > _Implementation;
+class OPENRTI_LOCAL IntrusiveList : public _IntrusiveList<T, _ListTag<T, tag> > {
+  typedef _IntrusiveList<T, _ListTag<T, tag> > _Implementation;
 public:
   IntrusiveList()
   { }
