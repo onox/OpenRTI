@@ -275,13 +275,13 @@ NetworkServer::connectParentStreamServer(const SharedPtr<SocketStream>& socketSt
     _dispatcher.exec(abstime);
   } while (Clock::now() <= abstime && !_dispatcher.getDone());
 
+  setDone(false);
+
   if (!clientStreamProtocol->getSuccessfulConnect()) {
     if (!clientStreamProtocol->getErrorMessage().empty())
       throw RTIinternalError(clientStreamProtocol->getErrorMessage());
     throw RTIinternalError("Timeout connecting to parent server!");
   }
-
-  setDone(false);
 }
 
 int
