@@ -616,7 +616,7 @@ public:
       OpenRTI::_O1516EString rti1516FaultDescription(faultDescription);
       _federateAmbassador->connectionLost(rti1516FaultDescription);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -631,7 +631,7 @@ public:
       _O1516EFederationExecutionInformationVector federationInformations(federationExecutionInformationVector);
       _federateAmbassador->reportFederationExecutions(federationInformations);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -656,7 +656,7 @@ public:
         break;
       }
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -672,7 +672,7 @@ public:
       OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
       _federateAmbassador->announceSynchronizationPoint(rti1516Label, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -688,7 +688,7 @@ public:
       OpenRTI::_O1516EFederateHandleSet federateHandleSet(federateHandleBoolPairVector);
       _federateAmbassador->federationSynchronized(rti1516Label, federateHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -958,7 +958,7 @@ public:
       else
         _federateAmbassador->stopRegistrationForObjectClass(rti1516Handle);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -976,7 +976,7 @@ public:
       else
         _federateAmbassador->turnInteractionsOff(rti1516Handle);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -995,7 +995,7 @@ public:
       OpenRTI::_O1516EString rti1516ObjectInstanceName(objectInstanceName);
       _federateAmbassador->objectInstanceNameReservationSucceeded(rti1516ObjectInstanceName);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
   virtual void objectInstanceNameReservationFailed(const std::string& objectInstanceName)
@@ -1009,7 +1009,7 @@ public:
       OpenRTI::_O1516EString rti1516ObjectInstanceName(objectInstanceName);
       _federateAmbassador->objectInstanceNameReservationFailed(rti1516ObjectInstanceName);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1024,7 +1024,7 @@ public:
       OpenRTI::_O1516EStringSet rti1516ObjectInstanceName(objectInstanceNames);
       _federateAmbassador->multipleObjectInstanceNameReservationSucceeded(rti1516ObjectInstanceName);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
   virtual void multipleObjectInstanceNameReservationFailed(const std::vector<std::string>& objectInstanceNames)
@@ -1038,7 +1038,7 @@ public:
       OpenRTI::_O1516EStringSet rti1516ObjectInstanceName(objectInstanceNames);
       _federateAmbassador->multipleObjectInstanceNameReservationFailed(rti1516ObjectInstanceName);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1060,7 +1060,7 @@ public:
       OpenRTI::_O1516EString rti1516Name(name);
       _federateAmbassador->discoverObjectInstance(rti1516ObjectInstanceHandle, rti1516ObjectClassHandle, rti1516Name);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1085,7 +1085,7 @@ public:
                                                     rti1516SentOrderType, rti1516TransportationType, rti1516SupplementalReflectInfo);
       }
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
@@ -1112,7 +1112,7 @@ public:
                                                     rti1516ReceivedOrderType, rti1516SupplementalReflectInfo);
       }
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
@@ -1142,7 +1142,7 @@ public:
                                                     rti1516SupplementalReflectInfo);
       }
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1161,7 +1161,7 @@ public:
       _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516SentOrderType,
                                                 rti1516SupplementalRemoveInfo);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
@@ -1181,7 +1181,7 @@ public:
       _federateAmbassador->removeObjectInstance(rti1516ObjectInstanceHandle, rti1516Tag, rti1516SentOrderType,
                                                 logicalTime, rti1516ReceivedOrderType, rti1516SupplementalRemoveInfo);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
@@ -1204,7 +1204,7 @@ public:
                                                 logicalTime, rti1516ReceivedOrderType, rti1516MessageRetractionHandle,
                                                 rti1516SupplementalRemoveInfo);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1229,7 +1229,7 @@ public:
                                                 rti1516SentOrderType, rti1516TransportationType, rti1516SupplementalReceiveInfo);
       }
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
@@ -1256,7 +1256,7 @@ public:
                                                 rti1516SupplementalReceiveInfo);
       }
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
@@ -1284,7 +1284,7 @@ public:
                                                 rti1516MessageRetractionHandle, rti1516SupplementalReceiveInfo);
       }
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1303,7 +1303,7 @@ public:
       OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
       _federateAmbassador->attributesInScope(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1322,7 +1322,7 @@ public:
       OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
       _federateAmbassador->attributesOutOfScope(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1343,7 +1343,7 @@ public:
       OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
       _federateAmbassador->provideAttributeValueUpdate(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1367,7 +1367,7 @@ public:
         _federateAmbassador->turnUpdatesOnForObjectInstance(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516UpdateRate);
       }
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1386,7 +1386,7 @@ public:
       OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
       _federateAmbassador->turnUpdatesOffForObjectInstance(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1411,7 +1411,7 @@ public:
       OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
       _federateAmbassador->requestAttributeOwnershipAssumption(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1430,7 +1430,7 @@ public:
       OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
       _federateAmbassador->requestDivestitureConfirmation(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1451,7 +1451,7 @@ public:
       OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
       _federateAmbassador->attributeOwnershipAcquisitionNotification(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1470,7 +1470,7 @@ public:
       OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
       _federateAmbassador->attributeOwnershipUnavailable(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1491,7 +1491,7 @@ public:
       OpenRTI::_O1516EVariableLengthData rti1516Tag(tag);
       _federateAmbassador->requestAttributeOwnershipRelease(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet, rti1516Tag);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1510,7 +1510,7 @@ public:
       OpenRTI::_O1516EAttributeHandleSet rti1516AttributeHandleSet(attributeHandleVector);
       _federateAmbassador->confirmAttributeOwnershipAcquisitionCancellation(rti1516ObjectInstanceHandle, rti1516AttributeHandleSet);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1534,7 +1534,7 @@ public:
                                                     rti1516AttributeHandle,
                                                     rti1516FederateHandle);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1552,7 +1552,7 @@ public:
       OpenRTI::_O1516EAttributeHandle rti1516AttributeHandle(attributeHandle);
       _federateAmbassador->attributeIsNotOwned(rti1516ObjectInstanceHandle, rti1516AttributeHandle);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1570,7 +1570,7 @@ public:
       OpenRTI::_O1516EAttributeHandle rti1516AttributeHandle(attributeHandle);
       _federateAmbassador->attributeIsOwnedByRTI(rti1516ObjectInstanceHandle, rti1516AttributeHandle);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1590,7 +1590,7 @@ public:
     try {
       _federateAmbassador->timeRegulationEnabled(logicalTime);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1606,7 +1606,7 @@ public:
     try {
       _federateAmbassador->timeConstrainedEnabled(logicalTime);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1622,7 +1622,7 @@ public:
     try {
       _federateAmbassador->timeAdvanceGrant(logicalTime);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
@@ -1640,7 +1640,7 @@ public:
       OpenRTI::_O1516EMessageRetractionHandle rti1516MessageRetractionHandle(messageRetractionHandle);
       _federateAmbassador->requestRetraction(rti1516MessageRetractionHandle);
     } catch (const rti1516e::Exception& e) {
-      Log(FederateAmbassador, Warning) << "Caught an rti1516 exception in callback: " << e.what() << std::endl;
+      Log(FederateAmbassador, Warning) << "Caught an rti1516e exception in callback: " << e.what() << std::endl;
     }
   }
 
