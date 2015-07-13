@@ -61,7 +61,7 @@ operator<<(std::wostream& stream, Exception const& e)
   A::what() const throw()                      \
   {                                            \
     std::wstringstream stream;                 \
-    stream << "rti1516::" #A ": " << _msg;     \
+    stream << "rti1516e::" #A ": " << _msg;     \
     return stream.str();                       \
   }
 
