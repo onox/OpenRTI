@@ -1013,63 +1013,69 @@ Module::getModule(FOMModule& module)
     fomUpdateRate.setRate(updateRate.getRate());
   }
 
-  module.getInteractionClassList().reserve(_interactionClassModuleList.size());
-  for (InteractionClassModule::FirstList::iterator i = _interactionClassModuleList.begin(), j = _parameterDefinitionModuleList.begin();
-       i != _interactionClassModuleList.end(); ++i) {
-    InteractionClass& interactionClass = i->getInteractionClass();
-    module.getInteractionClassList().push_back(FOMInteractionClass());
-    FOMInteractionClass& fomInteractionClass = module.getInteractionClassList().back();
-    fomInteractionClass.setName(interactionClass.getName().back());
-    fomInteractionClass.setInteractionClassHandle(interactionClass.getInteractionClassHandle());
-    fomInteractionClass.setParentInteractionClassHandle(interactionClass.getParentInteractionClassHandle());
-    fomInteractionClass.setOrderType(interactionClass.getOrderType());
-    fomInteractionClass.setTransportationType(interactionClass.getTransportationType());
-    fomInteractionClass.setDimensionHandleSet(interactionClass._dimensionHandleSet);
+  {
+    module.getInteractionClassList().reserve(_interactionClassModuleList.size());
+    ParameterDefinitionModule::FirstList::iterator j = _parameterDefinitionModuleList.begin();
+    for (InteractionClassModule::FirstList::iterator i = _interactionClassModuleList.begin();
+         i != _interactionClassModuleList.end(); ++i) {
+      InteractionClass& interactionClass = i->getInteractionClass();
+      module.getInteractionClassList().push_back(FOMInteractionClass());
+      FOMInteractionClass& fomInteractionClass = module.getInteractionClassList().back();
+      fomInteractionClass.setName(interactionClass.getName().back());
+      fomInteractionClass.setInteractionClassHandle(interactionClass.getInteractionClassHandle());
+      fomInteractionClass.setParentInteractionClassHandle(interactionClass.getParentInteractionClassHandle());
+      fomInteractionClass.setOrderType(interactionClass.getOrderType());
+      fomInteractionClass.setTransportationType(interactionClass.getTransportationType());
+      fomInteractionClass.setDimensionHandleSet(interactionClass._dimensionHandleSet);
 
-    // Check if we also reference the parameters with this module
-    if (j == _parameterDefinitionModuleList.end())
-      continue;
-    if (interactionClass.getInteractionClassHandle() != j->getInteractionClass().getInteractionClassHandle())
-      continue;
-    // If so, add them too
-    ++j;
-    fomInteractionClass.getParameterList().reserve(interactionClass.getNumParameterDefinitions());
-    for (ParameterDefinition::HandleMap::iterator k = interactionClass.getParameterHandleParameterMap().begin();
-         k != interactionClass.getParameterHandleParameterMap().end(); ++k) {
-      fomInteractionClass.getParameterList().push_back(FOMParameter());
-      FOMParameter& fomParameter = fomInteractionClass.getParameterList().back();
-      fomParameter.setName(k->getName());
-      fomParameter.setParameterHandle(k->getParameterHandle());
+      // Check if we also reference the parameters with this module
+      if (j == _parameterDefinitionModuleList.end())
+        continue;
+      if (interactionClass.getInteractionClassHandle() != j->getInteractionClass().getInteractionClassHandle())
+        continue;
+      // If so, add them too
+      ++j;
+      fomInteractionClass.getParameterList().reserve(interactionClass.getNumParameterDefinitions());
+      for (ParameterDefinition::HandleMap::iterator k = interactionClass.getParameterHandleParameterMap().begin();
+           k != interactionClass.getParameterHandleParameterMap().end(); ++k) {
+        fomInteractionClass.getParameterList().push_back(FOMParameter());
+        FOMParameter& fomParameter = fomInteractionClass.getParameterList().back();
+        fomParameter.setName(k->getName());
+        fomParameter.setParameterHandle(k->getParameterHandle());
+      }
     }
   }
 
-  module.getObjectClassList().reserve(_objectClassModuleList.size());
-  for (ObjectClassModule::FirstList::iterator i = _objectClassModuleList.begin(), j = _attributeDefinitionModuleList.begin();
-       i != _objectClassModuleList.end(); ++i) {
-    ObjectClass& objectClass = i->getObjectClass();
-    module.getObjectClassList().push_back(FOMObjectClass());
-    FOMObjectClass& fomObjectClass = module.getObjectClassList().back();
-    fomObjectClass.setName(objectClass.getName().back());
-    fomObjectClass.setObjectClassHandle(objectClass.getObjectClassHandle());
-    fomObjectClass.setParentObjectClassHandle(objectClass.getParentObjectClassHandle());
+  {
+    module.getObjectClassList().reserve(_objectClassModuleList.size());
+    AttributeDefinitionModule::FirstList::iterator j = _attributeDefinitionModuleList.begin();
+    for (ObjectClassModule::FirstList::iterator i = _objectClassModuleList.begin();
+         i != _objectClassModuleList.end(); ++i) {
+      ObjectClass& objectClass = i->getObjectClass();
+      module.getObjectClassList().push_back(FOMObjectClass());
+      FOMObjectClass& fomObjectClass = module.getObjectClassList().back();
+      fomObjectClass.setName(objectClass.getName().back());
+      fomObjectClass.setObjectClassHandle(objectClass.getObjectClassHandle());
+      fomObjectClass.setParentObjectClassHandle(objectClass.getParentObjectClassHandle());
 
-    // Check if we also reference the attributes with this module
-    if (j == _attributeDefinitionModuleList.end())
-      continue;
-    if (objectClass.getObjectClassHandle() != j->getObjectClass().getObjectClassHandle())
-      continue;
-    // If so, add them too
-    ++j;
-    fomObjectClass.getAttributeList().reserve(objectClass.getNumAttributeDefinitions());
-    for (AttributeDefinition::HandleMap::iterator k = objectClass.getAttributeHandleAttributeDefinitionMap().begin();
-         k != objectClass.getAttributeHandleAttributeDefinitionMap().end(); ++k) {
-      fomObjectClass.getAttributeList().push_back(FOMAttribute());
-      FOMAttribute& fomAttribute = fomObjectClass.getAttributeList().back();
-      fomAttribute.setName(k->getName());
-      fomAttribute.setAttributeHandle(k->getAttributeHandle());
-      fomAttribute.setOrderType(k->getOrderType());
-      fomAttribute.setTransportationType(k->getTransportationType());
-      fomAttribute.setDimensionHandleSet(k->_dimensionHandleSet);
+      // Check if we also reference the attributes with this module
+      if (j == _attributeDefinitionModuleList.end())
+        continue;
+      if (objectClass.getObjectClassHandle() != j->getObjectClass().getObjectClassHandle())
+        continue;
+      // If so, add them too
+      ++j;
+      fomObjectClass.getAttributeList().reserve(objectClass.getNumAttributeDefinitions());
+      for (AttributeDefinition::HandleMap::iterator k = objectClass.getAttributeHandleAttributeDefinitionMap().begin();
+           k != objectClass.getAttributeHandleAttributeDefinitionMap().end(); ++k) {
+        fomObjectClass.getAttributeList().push_back(FOMAttribute());
+        FOMAttribute& fomAttribute = fomObjectClass.getAttributeList().back();
+        fomAttribute.setName(k->getName());
+        fomAttribute.setAttributeHandle(k->getAttributeHandle());
+        fomAttribute.setOrderType(k->getOrderType());
+        fomAttribute.setTransportationType(k->getTransportationType());
+        fomAttribute.setDimensionHandleSet(k->_dimensionHandleSet);
+      }
     }
   }
 }
