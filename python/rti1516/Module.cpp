@@ -6066,15 +6066,37 @@ PyRTIambassador_evokeMultipleCallbacks(PyRTIambassadorObject *self, PyObject *ar
 static PyObject *
 PyRTIambassador_enableCallbacks(PyRTIambassadorObject *self, PyObject *args)
 {
-  PyErr_SetString(PyExc_TypeError, "enableCallbacks not supported by the python binding!");
-  return 0;
+  if (!PyArg_UnpackTuple(args, "enableCallbacks", 0, 0))
+    return 0;
+
+  try {
+    self->ob_value->enableCallbacks();
+
+    Py_IncRef(Py_None);
+    return Py_None;
+  }
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
 }
 
 static PyObject *
 PyRTIambassador_disableCallbacks(PyRTIambassadorObject *self, PyObject *args)
 {
-  PyErr_SetString(PyExc_TypeError, "disableCallbacks not supported by the python binding!");
-  return 0;
+  if (!PyArg_UnpackTuple(args, "disableCallbacks", 0, 0))
+    return 0;
+
+  try {
+    self->ob_value->disableCallbacks();
+
+    Py_IncRef(Py_None);
+    return Py_None;
+  }
+  CATCH_C_EXCEPTION(FederateNotExecutionMember)
+  CATCH_C_EXCEPTION(SaveInProgress)
+  CATCH_C_EXCEPTION(RestoreInProgress)
+  CATCH_C_EXCEPTION(RTIinternalError)
 }
 
 static PyObject *
