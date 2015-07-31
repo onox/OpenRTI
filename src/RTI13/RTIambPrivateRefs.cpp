@@ -1130,7 +1130,8 @@ RTI::RTIambassador::createFederationExecution(const char* federationExecutionNam
 
   OpenRTI::FOMStringModuleList fomModules;
   try {
-    if (OpenRTI::matchExtension(fedFile, ".fed"))
+    stream >> std::skipws;
+    if (stream.peek() == '(')
       fomModules.push_back(OpenRTI::FEDFileReader::read(stream));
     else
       fomModules.push_back(OpenRTI::FDD1516FileReader::read(stream));
