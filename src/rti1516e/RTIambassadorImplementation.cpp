@@ -69,6 +69,17 @@ static std::list<std::string> findHLAstandardMIMCandidates()
   return candidates;
 }
 
+static void loadModule(OpenRTI::FOMStringModuleList& fomModuleList, std::istream& stream)
+{
+  try {
+    fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
+  } catch (const OpenRTI::Exception& e) {
+    throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
+  }
+}
+
 static void loadHLAstandardMIM(OpenRTI::FOMStringModuleList& fomModuleList)
 {
   std::list<std::string> candidates = findHLAstandardMIMCandidates();
@@ -77,26 +88,40 @@ static void loadHLAstandardMIM(OpenRTI::FOMStringModuleList& fomModuleList)
     if (!stream.is_open())
       continue;
 
-    try {
-      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
-      break;
-    } catch (const OpenRTI::Exception& e) {
-      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
-    } catch (...) {
-      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
-    }
+    loadModule(fomModuleList, stream);
+    break;
   }
   if (fomModuleList.empty()) {
     std::string s(HLAstandardMIM_xml, sizeof(HLAstandardMIM_xml));
     std::istringstream stream(s);
-    try {
-      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
-    } catch (const OpenRTI::Exception& e) {
-      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
-    } catch (...) {
-      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
-    }
+    loadModule(fomModuleList, stream);
   }
+}
+
+static void loadModule(OpenRTI::FOMStringModuleList& fomModuleList, const std::wstring& fomModule)
+{
+  if (fomModule.empty())
+    throw rti1516e::CouldNotOpenFDD(L"Empty module.");
+  std::ifstream stream(OpenRTI::ucsToLocale(fomModule).c_str());
+  if (stream.is_open()) {
+    loadModule(fomModuleList, stream);
+  } else if (fomModule.compare(0, 8, L"file:///") == 0) {
+    loadModule(fomModuleList, fomModule.substr(8));
+  } else if (fomModule.compare(0, 16, L"data:text/plain,") == 0) {
+    std::stringstream stream(ucsToUtf8(fomModule.substr(16)));
+    loadModule(fomModuleList, stream);
+  } else if (fomModule.compare(0, 6, L"data:,") == 0) {
+    std::stringstream stream(ucsToUtf8(fomModule.substr(6)));
+    loadModule(fomModuleList, stream);
+  } else {
+    throw rti1516e::CouldNotOpenFDD(fomModule);
+  }
+}
+
+static void loadModules(OpenRTI::FOMStringModuleList& fomModuleList, const std::vector<std::wstring>& fomModules)
+{
+  for (std::vector<std::wstring>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i)
+    loadModule(fomModuleList, *i);
 }
 
 static OpenRTI::CallbackModel translate(rti1516e::CallbackModel callbackModel)
@@ -1731,19 +1756,8 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
 
   // Preload the HLAstandardMIM module
   loadHLAstandardMIM(fomModuleList);
-
-  {
-    std::ifstream stream(OpenRTI::ucsToLocale(fomModule).c_str());
-    if (!stream.is_open())
-      throw rti1516e::CouldNotOpenFDD(fomModule);
-    try {
-      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
-    } catch (const OpenRTI::Exception& e) {
-      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
-    } catch (...) {
-      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
-    }
-  }
+  // And load the one given in the argument
+  loadModule(fomModuleList, fomModule);
 
   try {
     std::string utf8FederationExecutionName = OpenRTI::ucsToUtf8(federationExecutionName);
@@ -1779,20 +1793,8 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
 
   // Preload the HLAstandardMIM module
   loadHLAstandardMIM(fomModuleList);
-
-  for (std::vector<std::wstring>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i) {
-    std::ifstream stream(OpenRTI::ucsToLocale(*i).c_str());
-    if (!stream.is_open())
-      throw rti1516e::CouldNotOpenFDD(*i);
-
-    try {
-      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
-    } catch (const OpenRTI::Exception& e) {
-      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
-    } catch (...) {
-      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
-    }
-  }
+  // Load the ones given in the argument
+  loadModules(fomModuleList, fomModules);
 
   try {
     _ambassadorInterface->createFederationExecution(ucsToUtf8(federationExecutionName), fomModuleList, ucsToUtf8(logicalTimeImplementationName));
@@ -1829,31 +1831,20 @@ RTIambassadorImplementation::createFederationExecutionWithMIM (std::wstring cons
 {
   OpenRTI::FOMStringModuleList fomModuleList;
 
-  std::ifstream stream(OpenRTI::ucsToLocale(mimModule).c_str());
-  if (!stream.is_open())
-    throw rti1516e::CouldNotOpenMIM(mimModule);
-
   try {
-    fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
-  } catch (const OpenRTI::Exception& e) {
-    throw rti1516e::ErrorReadingMIM(OpenRTI::utf8ToUcs(e.what()));
+    loadModule(fomModuleList, mimModule);
+  } catch (const rti1516e::CouldNotOpenFDD& e) {
+    throw rti1516e::CouldNotOpenMIM(e.what());
+  } catch (const rti1516e::ErrorReadingFDD& e) {
+    throw rti1516e::ErrorReadingMIM(e.what());
+  } catch (const rti1516e::Exception& e) {
+    throw rti1516e::RTIinternalError(e.what());
   } catch (...) {
     throw rti1516e::RTIinternalError(L"Unknown error while reading mim file");
   }
 
-  for (std::vector<std::wstring>::const_iterator i = fomModules.begin(); i != fomModules.end(); ++i) {
-    std::ifstream stream(OpenRTI::ucsToLocale(*i).c_str());
-    if (!stream.is_open())
-      throw rti1516e::CouldNotOpenFDD(*i);
-
-    try {
-      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
-    } catch (const OpenRTI::Exception& e) {
-      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
-    } catch (...) {
-      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
-    }
-  }
+  // Load the ones given in the argument
+  loadModules(fomModuleList, fomModules);
 
   try {
     _ambassadorInterface->createFederationExecution(ucsToUtf8(federationExecutionName), fomModuleList, ucsToUtf8(logicalTimeImplementationName));
@@ -1927,20 +1918,8 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
          rti1516e::RTIinternalError)
 {
   OpenRTI::FOMStringModuleList fomModuleList;
-
-  for (std::vector<std::wstring>::const_iterator i = additionalFomModules.begin(); i != additionalFomModules.end(); ++i) {
-    std::ifstream stream(OpenRTI::ucsToLocale(*i).c_str());
-    if (!stream.is_open())
-      throw rti1516e::CouldNotOpenFDD(*i);
-
-    try {
-      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
-    } catch (const OpenRTI::Exception& e) {
-      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
-    } catch (...) {
-      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
-    }
-  }
+  // Load the ones given in the argument
+  loadModules(fomModuleList, additionalFomModules);
 
   try {
     if (_ambassadorInterface->_inCallback)
@@ -1989,20 +1968,8 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
          rti1516e::RTIinternalError)
 {
   OpenRTI::FOMStringModuleList fomModuleList;
-
-  for (std::vector<std::wstring>::const_iterator i = additionalFomModules.begin(); i != additionalFomModules.end(); ++i) {
-    std::ifstream stream(OpenRTI::ucsToLocale(*i).c_str());
-    if (!stream.is_open())
-      throw rti1516e::CouldNotOpenFDD(*i);
-
-    try {
-      fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
-    } catch (const OpenRTI::Exception& e) {
-      throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
-    } catch (...) {
-      throw rti1516e::RTIinternalError(L"Unknown error while reading fdd file");
-    }
-  }
+  // Load the ones given in the argument
+  loadModules(fomModuleList, additionalFomModules);
 
   try {
     if (_ambassadorInterface->_inCallback)

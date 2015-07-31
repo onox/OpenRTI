@@ -6,6 +6,7 @@ OpenRTI-0.8.0 (development)
  * Embed the rti1516e::HLAstandardMIM.xml file into librti1516e.
  * Provide a rti1516e python binding.
  * Accept a url=<url> in rti1516 connect arguments.
+ * Implement loading fom modules from data: uri's as in rfc2397.
  
  * For a more detailed list of changes see the git history.
 

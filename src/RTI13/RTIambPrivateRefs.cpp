@@ -38,6 +38,41 @@
 #include "StringUtils.h"
 #include "TemplateTimeManagement.h"
 
+static void loadModule(OpenRTI::FOMStringModuleList& fomModuleList, std::istream& stream)
+{
+  try {
+    stream >> std::skipws;
+    if (stream.peek() == '(')
+      fomModuleList.push_back(OpenRTI::FEDFileReader::read(stream));
+    else
+      fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream));
+  } catch (const OpenRTI::Exception& e) {
+    throw RTI::ErrorReadingFED(e.what());
+  } catch (...) {
+    throw RTI::RTIinternalError("Unknown error while reading fed file");
+  }
+}
+
+static void loadModule(OpenRTI::FOMStringModuleList& fomModuleList, const std::string& fomModule)
+{
+  if (fomModule.empty())
+    throw RTI::CouldNotOpenFED("Empty module.");
+  std::ifstream stream(OpenRTI::utf8ToLocale(fomModule).c_str());
+  if (stream.is_open()) {
+    loadModule(fomModuleList, stream);
+  } else if (fomModule.compare(0, 8, "file:///") == 0) {
+    loadModule(fomModuleList, fomModule.substr(8));
+  } else if (fomModule.compare(0, 16, "data:text/plain,") == 0) {
+    std::stringstream stream(fomModule.substr(16));
+    loadModule(fomModuleList, stream);
+  } else if (fomModule.compare(0, 6, "data:,") == 0) {
+    std::stringstream stream(fomModule.substr(6));
+    loadModule(fomModuleList, stream);
+  } else {
+    throw RTI::CouldNotOpenFED(fomModule.c_str());
+  }
+}
+
 static OpenRTI::URL federationExecutionToUrl(const std::string& federationExecutionName)
 {
   OpenRTI::URL url;
@@ -1124,27 +1159,13 @@ RTI::RTIambassador::createFederationExecution(const char* federationExecutionNam
   // Make sure we can read the fed file
   if (!fedFile)
     throw RTI::CouldNotOpenFED("fedFile is NULL!");
-  std::ifstream stream(fedFile);
-  if (!stream.is_open())
-    throw RTI::CouldNotOpenFED(fedFile);
-
-  OpenRTI::FOMStringModuleList fomModules;
-  try {
-    stream >> std::skipws;
-    if (stream.peek() == '(')
-      fomModules.push_back(OpenRTI::FEDFileReader::read(stream));
-    else
-      fomModules.push_back(OpenRTI::FDD1516FileReader::read(stream));
-  } catch (const OpenRTI::Exception& e) {
-    throw RTI::ErrorReadingFED(OpenRTI::utf8ToLocale(e.what()).c_str());
-  } catch (...) {
-    throw RTI::RTIinternalError("Unknown error");
-  }
+  OpenRTI::FOMStringModuleList fomModuleList;
+  loadModule(fomModuleList, fedFile);
 
   try {
     OpenRTI::URL url = federationExecutionToUrl(OpenRTI::localeToUtf8(federationExecutionName));
     privateRefs->ensureConnected(url);
-    privateRefs->createFederationExecution(OpenRTI::getFilePart(url.getPath()), fomModules, "HLAfloat64Time");
+    privateRefs->createFederationExecution(OpenRTI::getFilePart(url.getPath()), fomModuleList, "HLAfloat64Time");
   } catch (const OpenRTI::FederationExecutionAlreadyExists& e) {
     throw RTI::FederationExecutionAlreadyExists(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const std::exception& e) {

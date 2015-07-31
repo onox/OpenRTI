@@ -47,6 +47,37 @@
 
 namespace OpenRTI {
 
+static void loadModule(OpenRTI::FOMStringModuleList& fomModuleList, std::istream& stream)
+{
+  try {
+    fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream));
+  } catch (const OpenRTI::Exception& e) {
+    throw rti1516::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
+  } catch (...) {
+    throw rti1516::RTIinternalError(L"Unknown error while reading fdd file");
+  }
+}
+
+static void loadModule(OpenRTI::FOMStringModuleList& fomModuleList, const std::wstring& fomModule)
+{
+  if (fomModule.empty())
+    throw rti1516::CouldNotOpenFDD(L"Empty module.");
+  std::ifstream stream(OpenRTI::ucsToLocale(fomModule).c_str());
+  if (stream.is_open()) {
+    loadModule(fomModuleList, stream);
+  } else if (fomModule.compare(0, 8, L"file:///") == 0) {
+    loadModule(fomModuleList, fomModule.substr(8));
+  } else if (fomModule.compare(0, 16, L"data:text/plain,") == 0) {
+    std::stringstream stream(ucsToUtf8(fomModule.substr(16)));
+    loadModule(fomModuleList, stream);
+  } else if (fomModule.compare(0, 6, L"data:,") == 0) {
+    std::stringstream stream(ucsToUtf8(fomModule.substr(6)));
+    loadModule(fomModuleList, stream);
+  } else {
+    throw rti1516::CouldNotOpenFDD(fomModule);
+  }
+}
+
 static URL federationExecutionToUrl(const std::string& federationExecutionName)
 {
   URL url;
@@ -1471,20 +1502,8 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
          rti1516::CouldNotCreateLogicalTimeFactory,
          rti1516::RTIinternalError)
 {
-  // Make sure we can read the fdd file
-  std::ifstream stream(OpenRTI::ucsToLocale(fullPathNameToTheFDDfile).c_str());
-  if (!stream.is_open())
-    throw rti1516::CouldNotOpenFDD(fullPathNameToTheFDDfile);
-
   OpenRTI::FOMStringModuleList fomModuleList;
-  try {
-    fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream));
-  } catch (const OpenRTI::Exception& e) {
-    throw rti1516::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
-  } catch (...) {
-    throw rti1516::RTIinternalError(L"Unknown error while reading fdd file");
-  }
-
+  loadModule(fomModuleList, fullPathNameToTheFDDfile);
 
   try {
     OpenRTI::URL url = federationExecutionToUrl(OpenRTI::ucsToUtf8(federationExecutionName));
