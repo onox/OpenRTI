@@ -417,7 +417,7 @@ PyObject_GetRangeBounds(rti1516::RangeBounds& rangeBounds, PyObject* o)
 {
   if (!PySequence_Check(o))
     return false;
-  if (!PySequence_Size(o) != 2)
+  if (PySequence_Size(o) != 2)
     return false;
 
   PyObject* first = PySequence_GetItem(o, 0);
