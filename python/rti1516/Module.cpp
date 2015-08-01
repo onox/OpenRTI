@@ -447,7 +447,7 @@ PyObject_GetRangeBounds(rti1516::RangeBounds& rangeBounds, PyObject* o)
     long ob_hash;                                                       \
   };                                                                    \
                                                                         \
-  static int                                                            \
+  static void                                                           \
   HandleKind ## _dealloc(Py ## HandleKind *o)                           \
   {                                                                     \
     o->ob_value.rti1516::HandleKind::~HandleKind();                     \
