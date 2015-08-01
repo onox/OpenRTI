@@ -7136,7 +7136,7 @@ PyObject_NewRTIambassador(PyTypeObject *type, PyObject *args, PyObject *kwds)
   return (PyObject*)self;
 }
 
-static int
+static void
 PyRTIambassadorObject_dealloc(PyRTIambassadorObject *o)
 {
   o->PyRTIambassadorObject::~PyRTIambassadorObject();
