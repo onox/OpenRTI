@@ -23,6 +23,7 @@
 #include <iosfwd>
 #include <list>
 #include "Export.h"
+#include "Handle.h"
 #include "Referenced.h"
 
 namespace OpenRTI {
@@ -61,6 +62,11 @@ public:
   // The default implementation returns true. Interaction and attribute
   // update messages will provide a dynamic implementation for that.
   virtual bool getReliable() const;
+
+  // Returns the object instance handle this message is targeting at.
+  // The default implementation returns an invalid handle.
+  // This is used to throw out messages for object instances that are already deleted.
+  virtual ObjectInstanceHandle getObjectInstanceHandleForMessage() const;
 };
 
 inline std::ostream&

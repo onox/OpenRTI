@@ -31,4 +31,10 @@ AbstractMessage::getReliable() const
   return true;
 }
 
+ObjectInstanceHandle
+AbstractMessage::getObjectInstanceHandleForMessage() const
+{
+  return ObjectInstanceHandle();
+}
+
 } // namespace OpenRTI

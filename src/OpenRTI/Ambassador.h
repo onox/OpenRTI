@@ -3703,6 +3703,8 @@ public:
   {
     if (!_federate.valid())
       return;
+    if (!_timeManagement.valid())
+      return;
     ObjectInstanceHandle objectInstanceHandle = message.getObjectInstanceHandle();
     Federate::ObjectInstance* objectInstance = _federate->getObjectInstance(objectInstanceHandle);
     if (!objectInstance)
@@ -3711,6 +3713,7 @@ public:
     if (objectClass) {
       if (Unsubscribed != objectClass->getEffectiveSubscriptionType()) {
         removeObjectInstance(message.getObjectInstanceHandle(), message.getTag(), OpenRTI::RECEIVE, message.getFederateHandle());
+        _timeManagement->eraseMessagesForObjectInstance(*this, message.getObjectInstanceHandle());
       }
     }
     _releaseObjectInstance(message.getObjectInstanceHandle());
@@ -3728,6 +3731,7 @@ public:
     if (Federate::ObjectClass* objectClass = _federate->getObjectClass(objectInstance->getObjectClassHandle())) {
       if (Unsubscribed != objectClass->getEffectiveSubscriptionType()) {
         _timeManagement->removeObjectInstance(*this, message);
+        _timeManagement->eraseMessagesForObjectInstance(*this, message.getObjectInstanceHandle());
       }
     }
     _releaseObjectInstance(message.getObjectInstanceHandle());

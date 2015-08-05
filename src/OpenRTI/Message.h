@@ -5150,6 +5150,8 @@ public:
   bool operator<=(const AttributesInScopeMessage& rhs) const
   { return !operator>(rhs); }
 
+  virtual ObjectInstanceHandle getObjectInstanceHandleForMessage() const;
+
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
 #if 201103L <= __cplusplus
@@ -5209,6 +5211,8 @@ public:
   { return !operator<(rhs); }
   bool operator<=(const TurnUpdatesOnForInstanceMessage& rhs) const
   { return !operator>(rhs); }
+
+  virtual ObjectInstanceHandle getObjectInstanceHandleForMessage() const;
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
@@ -5994,6 +5998,8 @@ public:
   bool operator<=(const InsertObjectInstanceMessage& rhs) const
   { return !operator>(rhs); }
 
+  virtual ObjectInstanceHandle getObjectInstanceHandleForMessage() const;
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
 #if 201103L <= __cplusplus
@@ -6078,6 +6084,8 @@ public:
   bool operator<=(const DeleteObjectInstanceMessage& rhs) const
   { return !operator>(rhs); }
 
+  virtual ObjectInstanceHandle getObjectInstanceHandleForMessage() const;
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
 #if 201103L <= __cplusplus
@@ -6149,6 +6157,8 @@ public:
   { return !operator<(rhs); }
   bool operator<=(const TimeStampedDeleteObjectInstanceMessage& rhs) const
   { return !operator>(rhs); }
+
+  virtual ObjectInstanceHandle getObjectInstanceHandleForMessage() const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -6260,6 +6270,8 @@ public:
 
   virtual bool getReliable() const;
 
+  virtual ObjectInstanceHandle getObjectInstanceHandleForMessage() const;
+
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
 #if 201103L <= __cplusplus
@@ -6357,6 +6369,8 @@ public:
   { return !operator>(rhs); }
 
   virtual bool getReliable() const;
+
+  virtual ObjectInstanceHandle getObjectInstanceHandleForMessage() const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
@@ -6489,6 +6503,8 @@ public:
   { return !operator<(rhs); }
   bool operator<=(const RequestAttributeUpdateMessage& rhs) const
   { return !operator>(rhs); }
+
+  virtual ObjectInstanceHandle getObjectInstanceHandleForMessage() const;
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }

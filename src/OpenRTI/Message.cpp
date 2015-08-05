@@ -2337,6 +2337,12 @@ AttributesInScopeMessage::operator<(const AttributesInScopeMessage& rhs) const
   return false;
 }
 
+ObjectInstanceHandle
+AttributesInScopeMessage::getObjectInstanceHandleForMessage() const
+{
+  return getObjectInstanceHandle();
+}
+
 TurnUpdatesOnForInstanceMessage::TurnUpdatesOnForInstanceMessage()
 {
 }
@@ -2394,6 +2400,12 @@ TurnUpdatesOnForInstanceMessage::operator<(const TurnUpdatesOnForInstanceMessage
   if (getOn() < rhs.getOn()) return true;
   if (rhs.getOn() < getOn()) return false;
   return false;
+}
+
+ObjectInstanceHandle
+TurnUpdatesOnForInstanceMessage::getObjectInstanceHandleForMessage() const
+{
+  return getObjectInstanceHandle();
 }
 
 TurnInteractionsOnMessage::TurnInteractionsOnMessage()
@@ -2513,12 +2525,12 @@ InteractionMessage::operator<(const InteractionMessage& rhs) const
   if (rhs.getParameterValues() < getParameterValues()) return false;
   return false;
 }
+
 bool
 InteractionMessage::getReliable() const
 {
   return getTransportationType() == RELIABLE;
 }
-
 
 TimeStampedInteractionMessage::TimeStampedInteractionMessage()
 {
@@ -2593,12 +2605,12 @@ TimeStampedInteractionMessage::operator<(const TimeStampedInteractionMessage& rh
   if (rhs.getParameterValues() < getParameterValues()) return false;
   return false;
 }
+
 bool
 TimeStampedInteractionMessage::getReliable() const
 {
   return getTransportationType() == RELIABLE;
 }
-
 
 ObjectInstanceHandlesRequestMessage::ObjectInstanceHandlesRequestMessage()
 {
@@ -3057,6 +3069,12 @@ InsertObjectInstanceMessage::operator<(const InsertObjectInstanceMessage& rhs) c
   return false;
 }
 
+ObjectInstanceHandle
+InsertObjectInstanceMessage::getObjectInstanceHandleForMessage() const
+{
+  return getObjectInstanceHandle();
+}
+
 DeleteObjectInstanceMessage::DeleteObjectInstanceMessage()
 {
 }
@@ -3114,6 +3132,12 @@ DeleteObjectInstanceMessage::operator<(const DeleteObjectInstanceMessage& rhs) c
   if (getTag() < rhs.getTag()) return true;
   if (rhs.getTag() < getTag()) return false;
   return false;
+}
+
+ObjectInstanceHandle
+DeleteObjectInstanceMessage::getObjectInstanceHandleForMessage() const
+{
+  return getObjectInstanceHandle();
 }
 
 TimeStampedDeleteObjectInstanceMessage::TimeStampedDeleteObjectInstanceMessage()
@@ -3184,6 +3208,12 @@ TimeStampedDeleteObjectInstanceMessage::operator<(const TimeStampedDeleteObjectI
   return false;
 }
 
+ObjectInstanceHandle
+TimeStampedDeleteObjectInstanceMessage::getObjectInstanceHandleForMessage() const
+{
+  return getObjectInstanceHandle();
+}
+
 AttributeUpdateMessage::AttributeUpdateMessage()
 {
 }
@@ -3248,12 +3278,18 @@ AttributeUpdateMessage::operator<(const AttributeUpdateMessage& rhs) const
   if (rhs.getAttributeValues() < getAttributeValues()) return false;
   return false;
 }
+
 bool
 AttributeUpdateMessage::getReliable() const
 {
   return getTransportationType() == RELIABLE;
 }
 
+ObjectInstanceHandle
+AttributeUpdateMessage::getObjectInstanceHandleForMessage() const
+{
+  return getObjectInstanceHandle();
+}
 
 TimeStampedAttributeUpdateMessage::TimeStampedAttributeUpdateMessage()
 {
@@ -3328,12 +3364,18 @@ TimeStampedAttributeUpdateMessage::operator<(const TimeStampedAttributeUpdateMes
   if (rhs.getAttributeValues() < getAttributeValues()) return false;
   return false;
 }
+
 bool
 TimeStampedAttributeUpdateMessage::getReliable() const
 {
   return getTransportationType() == RELIABLE;
 }
 
+ObjectInstanceHandle
+TimeStampedAttributeUpdateMessage::getObjectInstanceHandleForMessage() const
+{
+  return getObjectInstanceHandle();
+}
 
 RequestAttributeUpdateMessage::RequestAttributeUpdateMessage()
 {
@@ -3392,6 +3434,12 @@ RequestAttributeUpdateMessage::operator<(const RequestAttributeUpdateMessage& rh
   if (getTag() < rhs.getTag()) return true;
   if (rhs.getTag() < getTag()) return false;
   return false;
+}
+
+ObjectInstanceHandle
+RequestAttributeUpdateMessage::getObjectInstanceHandleForMessage() const
+{
+  return getObjectInstanceHandle();
 }
 
 RequestClassAttributeUpdateMessage::RequestClassAttributeUpdateMessage()

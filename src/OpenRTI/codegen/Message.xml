@@ -680,12 +680,14 @@
     <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
     <field name="AttributeHandles" type="AttributeHandleVector"/>
     <field name="InScope" type="Bool"/>
+    <objectInstance expression="getObjectInstanceHandle()"/>
   </message>
   <message type="TurnUpdatesOnForInstance">
     <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
     <field name="AttributeHandles" type="AttributeHandleVector"/>
     <field name="UpdateRate" type="String"/>
     <field name="On" type="Bool"/>
+    <objectInstance expression="getObjectInstanceHandle()"/>
   </message>
   <message type="TurnInteractionsOn">
     <field name="InteractionClassHandle" type="InteractionClassHandle"/>
@@ -780,6 +782,7 @@
     <field name="Name" type="String"/>
     <!-- Contains the owner federates for each attribute handle and may be some region associations? FIXME -->
     <field name="AttributeStateVector" type="AttributeStateVector"/>
+    <objectInstance expression="getObjectInstanceHandle()"/>
   </message>
 
   <!-- Obsolete -->
@@ -788,6 +791,7 @@
     <field name="FederateHandle" type="FederateHandle"/>
     <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
     <field name="Tag" type="VariableLengthData"/>
+    <objectInstance expression="getObjectInstanceHandle()"/>
   </message>
   <message type="TimeStampedDeleteObjectInstance">
     <field name="FederationHandle" type="FederationHandle"/>
@@ -797,6 +801,7 @@
     <field name="Tag" type="VariableLengthData"/>
     <field name="TimeStamp" type="VariableLengthData"/>
     <field name="MessageRetractionHandle" type="MessageRetractionHandle"/>
+    <objectInstance expression="getObjectInstanceHandle()"/>
   </message>
 
 
@@ -811,6 +816,7 @@
   <!-- <message type="DestroyObjectInstance"> -->
   <!--   <field name="FederationHandle" type="FederationHandle"/> -->
   <!--   <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/> -->
+  <!--   <objectInstance expression="getObjectInstanceHandle()"/> -->
   <!-- </message> -->
 
   <!-- Attribute updates -->
@@ -822,6 +828,7 @@
     <field name="TransportationType" type="TransportationType"/>
     <field name="AttributeValues" type="AttributeValueVector"/>
     <reliable expression="getTransportationType() == RELIABLE"/>
+    <objectInstance expression="getObjectInstanceHandle()"/>
   </message>
   <message type="TimeStampedAttributeUpdate">
     <field name="FederationHandle" type="FederationHandle"/>
@@ -834,6 +841,7 @@
     <field name="TransportationType" type="TransportationType"/>
     <field name="AttributeValues" type="AttributeValueVector"/>
     <reliable expression="getTransportationType() == RELIABLE"/>
+    <objectInstance expression="getObjectInstanceHandle()"/>
   </message>
 
 
@@ -842,6 +850,7 @@
     <field name="ObjectInstanceHandle" type="ObjectInstanceHandle"/>
     <field name="AttributeHandles" type="AttributeHandleVector"/>
     <field name="Tag" type="VariableLengthData"/>
+    <objectInstance expression="getObjectInstanceHandle()"/>
   </message>
   <message type="RequestClassAttributeUpdate">
     <field name="FederationHandle" type="FederationHandle"/>

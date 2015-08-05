@@ -70,6 +70,7 @@ public:
   virtual void reflectAttributeValues(Ambassador<T>& ambassador, const Federate::ObjectClass& objectClass,
                                       const TimeStampedAttributeUpdateMessage& message) = 0;
   virtual void removeObjectInstance(Ambassador<T>& ambassador, const TimeStampedDeleteObjectInstanceMessage& message) = 0;
+  virtual void eraseMessagesForObjectInstance(Ambassador<T>& ambassador, const ObjectInstanceHandle& objectInstanceHandle) = 0;
   virtual void receiveInteraction(Ambassador<T>& ambassador, const Federate::InteractionClass& interactionClass,
                                   const InteractionClassHandle& interactionClassHandle, const TimeStampedInteractionMessage& message) = 0;
 };

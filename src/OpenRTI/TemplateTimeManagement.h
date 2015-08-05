@@ -612,11 +612,19 @@ public:
     if (_messageListPool.empty()) {
       _MessageListElement* messageListElement = new _MessageListElement(&message);
       _logicalTimeMessageListMap[logicalTimePair].push_back(*messageListElement);
+      if (message.getObjectInstanceHandleForMessage().valid()) {
+        messageListElement->setObjectInstanceHandle(message.getObjectInstanceHandleForMessage());
+        _objectInstanceHandleMessageListElementMap.insert(*messageListElement);
+      }
     } else {
       _MessageListElement& messageListElement = _messageListPool.front();
       messageListElement.unlink();
       messageListElement._message = &message;
       _logicalTimeMessageListMap[logicalTimePair].push_back(messageListElement);
+      if (message.getObjectInstanceHandleForMessage().valid()) {
+        messageListElement.setObjectInstanceHandle(message.getObjectInstanceHandleForMessage());
+        _objectInstanceHandleMessageListElementMap.insert(messageListElement);
+      }
     }
   }
   virtual void queueReceiveOrderMessage(InternalAmbassador& ambassador, const AbstractMessage& message)
@@ -624,11 +632,19 @@ public:
     if (_messageListPool.empty()) {
       _MessageListElement* messageListElement = new _MessageListElement(&message);
       _receiveOrderMessages.push_back(*messageListElement);
+      if (message.getObjectInstanceHandleForMessage().valid()) {
+        messageListElement->setObjectInstanceHandle(message.getObjectInstanceHandleForMessage());
+        _objectInstanceHandleMessageListElementMap.insert(*messageListElement);
+      }
     } else {
       _MessageListElement& messageListElement = _messageListPool.front();
       messageListElement.unlink();
       messageListElement._message = &message;
       _receiveOrderMessages.push_back(messageListElement);
+      if (message.getObjectInstanceHandleForMessage().valid()) {
+        messageListElement.setObjectInstanceHandle(message.getObjectInstanceHandleForMessage());
+        _objectInstanceHandleMessageListElementMap.insert(messageListElement);
+      }
     }
   }
 
@@ -991,6 +1007,19 @@ public:
     }
   }
 
+  virtual void eraseMessagesForObjectInstance(Ambassador<T>& ambassador, const ObjectInstanceHandle& objectInstanceHandle)
+  {
+    // Remove messages targeting this object instance from the pending messages
+    typename _ObjectInstanceHandleMessageListElementMap::iterator i;
+    i = _objectInstanceHandleMessageListElementMap.find(objectInstanceHandle);
+    while (i != _objectInstanceHandleMessageListElementMap.end() && i->getObjectInstanceHandle() == objectInstanceHandle) {
+      _MessageListElement& messageListElement = *i++;
+      messageListElement.unlink();
+      messageListElement._message.clear();
+      _messageListPool.push_back(messageListElement);
+    }
+  }
+
   virtual void receiveInteraction(Ambassador<T>& ambassador, const Federate::InteractionClass& interactionClass,
                                   const InteractionClassHandle& interactionClassHandle, const TimeStampedInteractionMessage& message)
   {
@@ -1014,7 +1043,7 @@ public:
     if (_receiveOrderMessagesPermitted()) {
       if (!_receiveOrderMessages.empty()) {
         _MessageListElement& messageListElement = _receiveOrderMessages.front();
-        _receiveOrderMessages.unlink_front();
+        messageListElement.unlink();
         SharedPtr<const AbstractMessage> message;
         message.swap(messageListElement._message);
         _messageListPool.push_back(messageListElement);
@@ -1034,7 +1063,7 @@ public:
         break;
 
       _MessageListElement& messageListElement = _logicalTimeMessageListMap.begin()->second.front();
-      _logicalTimeMessageListMap.begin()->second.unlink_front();
+      messageListElement.unlink();
       SharedPtr<const AbstractMessage> message;
       message.swap(messageListElement._message);
       _messageListPool.push_back(messageListElement);
@@ -1098,17 +1127,6 @@ public:
       return logicalTimePair.first;
   }
 
-  // Holds a message to be queued into a list
-  struct OPENRTI_LOCAL _MessageListElement : public IntrusiveList<_MessageListElement>::Hook {
-    _MessageListElement(const AbstractMessage* message) : _message(message)
-    { }
-    void unlink()
-    { IntrusiveList<_MessageListElement>::unlink(*this); }
-    SharedPtr<const AbstractMessage> _message;
-  };
-  // Holds a message to be queued into the list
-  typedef IntrusiveList<_MessageListElement> _MessageList;
-
   // The current logical time of this federate
   // This is also the current guarantee that we have alive for inbound messages
   // Its not legal anymore to deliver a timestamped message with a timestamp smaller than this
@@ -1144,6 +1162,26 @@ public:
 
   Unsigned _commitId;
 
+  // Holds a message to be queued into a list
+  struct OPENRTI_LOCAL _MessageListElement :
+         public IntrusiveList<_MessageListElement>::Hook,
+         public IntrusiveUnorderedMap<ObjectInstanceHandle, _MessageListElement>::Hook {
+    _MessageListElement(const AbstractMessage* message) : _message(message)
+    { }
+    void unlink()
+    {
+      IntrusiveList<_MessageListElement>::unlink(*this);
+      IntrusiveUnorderedMap<ObjectInstanceHandle, _MessageListElement>::unlink(*this);
+      IntrusiveUnorderedMap<ObjectInstanceHandle, _MessageListElement>::Hook::setKey(ObjectInstanceHandle());
+    }
+    const ObjectInstanceHandle& getObjectInstanceHandle() const
+    { return IntrusiveUnorderedMap<ObjectInstanceHandle, _MessageListElement>::Hook::getKey(); }
+    void setObjectInstanceHandle(const ObjectInstanceHandle& objectInstanceHandle)
+    { IntrusiveUnorderedMap<ObjectInstanceHandle, _MessageListElement>::Hook::setKey(objectInstanceHandle); }
+    SharedPtr<const AbstractMessage> _message;
+  };
+  typedef IntrusiveList<_MessageListElement> _MessageList;
+
   // The timestamped queued messages
   typedef std::map<LogicalTimePair, _MessageList> LogicalTimeMessageListMap;
   LogicalTimeMessageListMap _logicalTimeMessageListMap;
@@ -1153,6 +1191,10 @@ public:
 
   // List elements for reuse
   _MessageList _messageListPool;
+
+  // List elements that reference a specific object instance
+  typedef IntrusiveUnorderedMap<ObjectInstanceHandle, _MessageListElement> _ObjectInstanceHandleMessageListElementMap;
+  _ObjectInstanceHandleMessageListElementMap _objectInstanceHandleMessageListElementMap;
 
   // The logical time factory required to do our job
   LogicalTimeFactory _logicalTimeFactory;

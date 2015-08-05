@@ -642,7 +642,8 @@ class MessageDataType(StructDataType):
     def __init__(self, name, parentTypeName = None):
         StructDataType.__init__(self, name, parentTypeName)
         self.__reliableExpression = None
-
+        self.__objectInstanceExpression = None
+         
     def isMessage(self):
         return True
 
@@ -651,6 +652,12 @@ class MessageDataType(StructDataType):
 
     def getReliableExpression(self):
         return self.__reliableExpression
+
+    def setObjectInstanceExpression(self, objectInstanceExpression):
+        self.__objectInstanceExpression = objectInstanceExpression
+
+    def getObjectInstanceExpression(self):
+        return self.__objectInstanceExpression
 
     def writeForwardDeclaration(self, sourceStream):
         sourceStream.writeline('class {name};'.format(name = self.getName()))
@@ -686,6 +693,10 @@ class MessageDataType(StructDataType):
 
         if self.getReliableExpression():
             sourceStream.writeline('virtual bool getReliable() const;')
+            sourceStream.writeline()
+
+        if self.getObjectInstanceExpression():
+            sourceStream.writeline('virtual ObjectInstanceHandle getObjectInstanceHandleForMessage() const;')
             sourceStream.writeline()
 
         for field in self.getFieldList():
@@ -763,12 +774,20 @@ class MessageDataType(StructDataType):
         sourceStream.writeline('}')
 
         if self.getReliableExpression():
+            sourceStream.writeline()
             sourceStream.writeline('bool')
             sourceStream.writeline('{name}::getReliable() const'.format(name = self.getName()))
             sourceStream.writeline('{')
             sourceStream.writeline('  return {expression};'.format(expression = self.getReliableExpression()))
             sourceStream.writeline('}')
+
+        if self.getObjectInstanceExpression():
             sourceStream.writeline()
+            sourceStream.writeline('ObjectInstanceHandle')
+            sourceStream.writeline('{name}::getObjectInstanceHandleForMessage() const'.format(name = self.getName()))
+            sourceStream.writeline('{')
+            sourceStream.writeline('  return {expression};'.format(expression = self.getObjectInstanceExpression()))
+            sourceStream.writeline('}')
 
         sourceStream.writeline()
 
@@ -1432,6 +1451,8 @@ class TypeMap(object):
                             message.addField(field.prop('name'), field.prop('type'))
                         elif field.type == 'element' and field.name == 'reliable':
                             message.setReliableExpression(field.prop('expression'))
+                        elif field.type == 'element' and field.name == 'objectInstance':
+                            message.setObjectInstanceExpression(field.prop('expression'))
                         field = field.next
                     self.addType(message)
 
