@@ -23,6 +23,8 @@
 #include "TimeManagement.h"
 
 #include "FederateHandleLowerBoundTimeStampMap.h"
+#include "IntrusiveList.h"
+#include "IntrusiveUnorderedMap.h"
 
 namespace OpenRTI {
 
@@ -68,7 +70,14 @@ public:
     _targetLookahead = _currentLookahead;
   }
   virtual ~TemplateTimeManagement()
-  { }
+  {
+    while (!_logicalTimeMessageListMap.empty()) {
+      _logicalTimeMessageListMap.begin()->second.clear();
+      _logicalTimeMessageListMap.erase(_logicalTimeMessageListMap.begin());
+    }
+    _receiveOrderMessages.clear();
+    _messageListPool.clear();
+  }
 
   /// This is: don't do time advance to the past
   virtual bool isLogicalTimeInThePast(const NativeLogicalTime& logicalTime)
@@ -601,20 +610,25 @@ public:
   void queueTimeStampedMessage(const LogicalTimePair& logicalTimePair, const AbstractMessage& message)
   {
     if (_messageListPool.empty()) {
-      _logicalTimeMessageListMap[logicalTimePair].push_back(&message);
+      _MessageListElement* messageListElement = new _MessageListElement(&message);
+      _logicalTimeMessageListMap[logicalTimePair].push_back(*messageListElement);
     } else {
-      MessageList& messageList = _logicalTimeMessageListMap[logicalTimePair];
-      messageList.splice(messageList.end(), _messageListPool, _messageListPool.begin());
-      messageList.back() = &message;
+      _MessageListElement& messageListElement = _messageListPool.front();
+      messageListElement.unlink();
+      messageListElement._message = &message;
+      _logicalTimeMessageListMap[logicalTimePair].push_back(messageListElement);
     }
   }
   virtual void queueReceiveOrderMessage(InternalAmbassador& ambassador, const AbstractMessage& message)
   {
     if (_messageListPool.empty()) {
-      _receiveOrderMessages.push_back(&message);
+      _MessageListElement* messageListElement = new _MessageListElement(&message);
+      _receiveOrderMessages.push_back(*messageListElement);
     } else {
-      _receiveOrderMessages.splice(_receiveOrderMessages.end(), _messageListPool, _messageListPool.begin());
-      _receiveOrderMessages.back() = &message;
+      _MessageListElement& messageListElement = _messageListPool.front();
+      messageListElement.unlink();
+      messageListElement._message = &message;
+      _receiveOrderMessages.push_back(messageListElement);
     }
   }
 
@@ -999,9 +1013,12 @@ public:
   {
     if (_receiveOrderMessagesPermitted()) {
       if (!_receiveOrderMessages.empty()) {
+        _MessageListElement& messageListElement = _receiveOrderMessages.front();
+        _receiveOrderMessages.unlink_front();
         SharedPtr<const AbstractMessage> message;
-        message.swap(_receiveOrderMessages.front());
-        _messageListPool.splice(_messageListPool.begin(), _receiveOrderMessages, _receiveOrderMessages.begin());
+        message.swap(messageListElement._message);
+        _messageListPool.push_back(messageListElement);
+
         message->dispatch(dispatcher);
         return true;
       }
@@ -1015,11 +1032,15 @@ public:
       }
       if (!_timeStampOrderMessagesPermitted())
         break;
+
+      _MessageListElement& messageListElement = _logicalTimeMessageListMap.begin()->second.front();
+      _logicalTimeMessageListMap.begin()->second.unlink_front();
       SharedPtr<const AbstractMessage> message;
-      message.swap(_logicalTimeMessageListMap.begin()->second.front());
-      _messageListPool.splice(_messageListPool.begin(), _logicalTimeMessageListMap.begin()->second, _logicalTimeMessageListMap.begin()->second.begin());
+      message.swap(messageListElement._message);
+      _messageListPool.push_back(messageListElement);
       if (_logicalTimeMessageListMap.begin()->second.empty())
         _logicalTimeMessageListMap.erase(_logicalTimeMessageListMap.begin());
+
       message->dispatch(dispatcher);
       return true;
     }
@@ -1077,6 +1098,17 @@ public:
       return logicalTimePair.first;
   }
 
+  // Holds a message to be queued into a list
+  struct OPENRTI_LOCAL _MessageListElement : public IntrusiveList<_MessageListElement>::Hook {
+    _MessageListElement(const AbstractMessage* message) : _message(message)
+    { }
+    void unlink()
+    { IntrusiveList<_MessageListElement>::unlink(*this); }
+    SharedPtr<const AbstractMessage> _message;
+  };
+  // Holds a message to be queued into the list
+  typedef IntrusiveList<_MessageListElement> _MessageList;
+
   // The current logical time of this federate
   // This is also the current guarantee that we have alive for inbound messages
   // Its not legal anymore to deliver a timestamped message with a timestamp smaller than this
@@ -1113,14 +1145,14 @@ public:
   Unsigned _commitId;
 
   // The timestamped queued messages
-  typedef std::map<LogicalTimePair, MessageList> LogicalTimeMessageListMap;
+  typedef std::map<LogicalTimePair, _MessageList> LogicalTimeMessageListMap;
   LogicalTimeMessageListMap _logicalTimeMessageListMap;
 
   // List of receive order messages ready to be queued for callback
-  MessageList _receiveOrderMessages;
+  _MessageList _receiveOrderMessages;
 
   // List elements for reuse
-  MessageList _messageListPool;
+  _MessageList _messageListPool;
 
   // The logical time factory required to do our job
   LogicalTimeFactory _logicalTimeFactory;
