@@ -400,12 +400,21 @@ class OPENRTI_LOCAL IntrusiveList : public _IntrusiveList<T, _ListTag<T, tag> > 
 public:
   IntrusiveList()
   { }
+  IntrusiveList(const IntrusiveList& intrusiveList)
+  { OpenRTIAssert(intrusiveList.empty()); }
+#if 201103L <= __cplusplus
+  IntrusiveList(IntrusiveList&& intrusiveList)
+  { _Implementation::swap(intrusiveList); }
+#endif
   ~IntrusiveList()
   { OpenRTIAssert(_Implementation::empty()); }
 
-private:
-  IntrusiveList(const IntrusiveList&);
-  IntrusiveList& operator=(const IntrusiveList&);
+  IntrusiveList& operator=(const IntrusiveList& intrusiveList)
+  { OpenRTIAssert(_Implementation::empty()); OpenRTIAssert(intrusiveList.empty()); return *this; }
+#if 201103L <= __cplusplus
+  IntrusiveList& operator=(IntrusiveList&& intrusiveList)
+  { _Implementation::swap(intrusiveList); return *this; }
+#endif
 };
 
 } // namespace OpenRTI

@@ -106,8 +106,21 @@ public:
   IntrusiveUnorderedMap(const size_type& numBuckets = 128) :
     _bucketVector(numBuckets)
   { }
+  IntrusiveUnorderedMap(const IntrusiveUnorderedMap& intrusiveUnorderedMap)
+  { OpenRTIAssert(intrusiveUnorderedMap.empty()); }
+#if 201103L <= __cplusplus
+  IntrusiveUnorderedMap(IntrusiveUnorderedMap&& intrusiveUnorderedMap)
+  { swap(intrusiveUnorderedMap); }
+#endif
   ~IntrusiveUnorderedMap()
   { OpenRTIAssert(empty()); }
+
+  IntrusiveUnorderedMap& operator=(const IntrusiveUnorderedMap& intrusiveUnorderedMap)
+  { OpenRTIAssert(empty()); OpenRTIAssert(intrusiveUnorderedMap.empty()); return *this; }
+#if 201103L <= __cplusplus
+  IntrusiveUnorderedMap& operator=(IntrusiveUnorderedMap&& intrusiveUnorderedMap)
+  { swap(intrusiveUnorderedMap); return *this; }
+#endif
 
   bool empty() const
   { return _list.empty(); }
@@ -225,9 +238,6 @@ public:
   { return _list.back(); }
 
 private:
-  IntrusiveUnorderedMap(const IntrusiveUnorderedMap&);
-  IntrusiveUnorderedMap& operator=(const IntrusiveUnorderedMap&);
-
   static const Hook& _select(const_reference t)
   { return static_cast<const Hook&>(t); }
   static Hook& _select(reference t)
