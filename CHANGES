@@ -5,6 +5,7 @@ OpenRTI-0.8.0 (development)
  * Fix a relative RPATH expansion issue.
  * Embed the rti1516e::HLAstandardMIM.xml file into librti1516e.
  * Provide a rti1516e python binding.
+ * Accept a url=<url> in rti1516 connect arguments.
  
  * For a more detailed list of changes see the git history.
 

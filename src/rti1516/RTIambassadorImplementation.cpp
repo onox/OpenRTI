@@ -377,6 +377,8 @@ public:
           _defaultUrl.setService(url.getService());
         } else if (key == "protocol") {
           _defaultUrl.setProtocol(value);
+        } else if (key == "url") {
+          _defaultUrl = URL::fromUrl(value);
         } else {
           _stringStringListMap[key].push_back(value);
         }
