@@ -409,20 +409,20 @@ public:
   { return _ownerConnectHandle; }
   void setOwnerConnectHandle(const ConnectHandle& connectHandle)
   {
-    _recieveingConnects.erase(connectHandle);
+    _receivingConnects.erase(connectHandle);
     _ownerConnectHandle = connectHandle;
   }
 
   void removeConnect(const ConnectHandle& connectHandle)
   {
-    _recieveingConnects.erase(connectHandle);
+    _receivingConnects.erase(connectHandle);
     if (_ownerConnectHandle == connectHandle)
       _ownerConnectHandle = ConnectHandle();
   }
 
   // Because of attribute ownership, it is clear for an object attribute where the update
-  // stems from, so just have a set of connect handles that want to recieve the updates
-  ConnectHandleSet _recieveingConnects;
+  // stems from, so just have a set of connect handles that want to receive the updates
+  ConnectHandleSet _receivingConnects;
 
   /// The connect this attribute is owned by
   ConnectHandle _ownerConnectHandle;
@@ -1388,13 +1388,13 @@ public:
       if (!instanceAttribute)
         continue;
 
-      // Don't add the owner to the list of connect handles that recieve this attribute
+      // Don't add the owner to the list of connect handles that receive this attribute
       if (instanceAttribute->getOwnerConnectHandle() == connectHandle)
         continue;
 
       if (subscribe) {
-        // Insert the connect handle into the recieving connects
-        if (!instanceAttribute->_recieveingConnects.insert(connectHandle).second)
+        // Insert the connect handle into the receiving connects
+        if (!instanceAttribute->_receivingConnects.insert(connectHandle).second)
           continue;
 
         // Note that we need to insert this object instance into this connect
@@ -1402,8 +1402,8 @@ public:
           objectInstanceList.push_back(i.get());
 
       } else {
-        // Erase the connect handle from the recieving connects
-        if (instanceAttribute->_recieveingConnects.erase(connectHandle) == 0)
+        // Erase the connect handle from the receiving connects
+        if (instanceAttribute->_receivingConnects.erase(connectHandle) == 0)
           continue;
       }
     }

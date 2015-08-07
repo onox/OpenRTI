@@ -49,7 +49,7 @@ public:
     std::memset(&_outStream, 0, sizeof(_outStream));
   }
 
-  // Can be called from the consuming layer to recieve ready to read data
+  // Can be called from the consuming layer to receive ready to read data
   virtual ssize_t recv(const BufferRange& bufferRange, bool peek)
   {
     OpenRTIAssert(!peek);

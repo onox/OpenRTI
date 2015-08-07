@@ -131,7 +131,7 @@ public:
       }
     }
 
-    // All is published, now subscribe step by step and see what we recieve
+    // All is published, now subscribe step by step and see what we receive
 
     for (ObjectClassAttributeHandleSet::const_iterator i = _objectClassAttributeHandleSet.begin();
          i != _objectClassAttributeHandleSet.end(); ++i) {

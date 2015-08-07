@@ -740,11 +740,11 @@ public:
   {
     if (_timeConstrainedEnabled && strncmp("withoutTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;
-        std::wcout << L"Got timestamp order message that was recieved as receive order!" << std::endl;
+        std::wcout << L"Got timestamp order message that was received as receive order!" << std::endl;
     }
     if (sentOrder != rti1516::RECEIVE) {
         _fail = true;
-        std::wcout << L"Got recieve order message that was recieved as timestamp order!" << std::endl;
+        std::wcout << L"Got receive order message that was received as timestamp order!" << std::endl;
     }
   }
 
@@ -763,7 +763,7 @@ public:
   {
     if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;
-        std::wcout << L"Got recieve order message that was recieved as timestamp order!" << std::endl;
+        std::wcout << L"Got receive order message that was received as timestamp order!" << std::endl;
     }
     if (receivedOrder == rti1516::TIMESTAMP && sentOrder != rti1516::TIMESTAMP) {
         _fail = true;
@@ -796,7 +796,7 @@ public:
   {
     if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;
-        std::wcout << L"Got recieve order message over timestamped delivery!" << std::endl;
+        std::wcout << L"Got receive order message over timestamped delivery!" << std::endl;
     }
     if (receivedOrder == rti1516::TIMESTAMP && sentOrder != rti1516::TIMESTAMP) {
         _fail = true;

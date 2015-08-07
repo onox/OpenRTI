@@ -431,7 +431,7 @@
     <field name="ConfigurationParameterMap" type="ConfigurationParameterMap"/>
   </message>
   <!-- Tell a parent that we want to get rid of this federation connect.
-       If the connect is really idle at the time thie message is recieved
+       If the connect is really idle at the time thie message is received
        in the parent, the parent sends then an EraseFederationExecution message.
   -->
   <message type="ShutdownFederationExecution">
@@ -593,7 +593,7 @@
   </message>
   <!-- Is sent when a federate has requested a time advance.
        The logical time that is sent is the time advance plus the lookahead.
-       Having recieved that message means, that this federate will not send
+       Having received that message means, that this federate will not send
        timestamped messages with a timestamp before the timestamp given in
        this message.
   -->

@@ -43,7 +43,7 @@ public:
   /// Send a message
   void send(const SharedPtr<const AbstractMessage>& message);
 
-  /// Recieve a message and put it into the internal message processing,
+  /// Receive a message and put it into the internal message processing,
   /// Returns true if there is an other pending message.
   bool receiveAndDispatchInternalMessage(const Clock& abstime);
   template<typename F>

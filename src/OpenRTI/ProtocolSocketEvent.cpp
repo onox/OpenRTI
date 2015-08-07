@@ -32,7 +32,7 @@ struct OPENRTI_LOCAL ProtocolSocketEvent::ProtocolSocket : public AbstractProtoc
   virtual ~ProtocolSocket()
   { }
 
-  /// Can be called from the consuming layer to recieve ready to read data
+  /// Can be called from the consuming layer to receive ready to read data
   virtual ssize_t recv(const BufferRange& bufferRange, bool peek)
   { return _socketStream->recv(bufferRange, peek); }
   /// Can be called from the consuming layer to send something into this protocol layer

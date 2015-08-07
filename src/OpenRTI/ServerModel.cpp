@@ -48,7 +48,7 @@ InstanceAttribute::InstanceAttribute(ObjectInstance& objectInstance, ClassAttrib
 {
   setAttributeHandle(_classAttribute.getAttributeHandle());
   /// FIXME
-  _recieveingConnects = _classAttribute._cumulativeSubscribedConnectHandleSet;
+  _receivingConnects = _classAttribute._cumulativeSubscribedConnectHandleSet;
 }
 
 InstanceAttribute::~InstanceAttribute()

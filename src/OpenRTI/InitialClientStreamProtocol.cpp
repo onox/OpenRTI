@@ -134,7 +134,7 @@ InitialClientStreamProtocol::readOptionMap(const StringStringListMap& optionMap)
   _successfulConnect = true;
   setFollowupProtocol(protocolStack);
 
-  // For now, just stop processing once we have recieved the connect reply
+  // For now, just stop processing once we have received the connect reply
   _abstractServer.setDone(true);
 }
 

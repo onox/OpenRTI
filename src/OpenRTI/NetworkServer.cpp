@@ -270,7 +270,7 @@ NetworkServer::connectParentStreamServer(const SharedPtr<SocketStream>& socketSt
   protocolSocketEvent->setProtocolLayer(clientStreamProtocol);
   _dispatcher.insert(protocolSocketEvent);
 
-  // Process messages until we have either recieved the servers response or the timeout expires
+  // Process messages until we have either received the servers response or the timeout expires
   do {
     _dispatcher.exec(abstime);
   } while (Clock::now() <= abstime && !_dispatcher.getDone());

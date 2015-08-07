@@ -170,7 +170,7 @@ public:
     FederateHandle federateHandle = message->getFederateHandle();
     ServerModel::Federate* federate = getFederate(federateHandle);
     if (!federate)
-      throw MessageError("Recieved ResignFederationExecutionRequestMessage for invalid federate handle!");
+      throw MessageError("Received ResignFederationExecutionRequestMessage for invalid federate handle!");
 
     // already done so ... just waiting for the response
     if (federate->getResignPending())
@@ -665,9 +665,9 @@ public:
   {
     ServerModel::Federate* federate = getFederate(message->getFederateHandle());
     if (!federate)
-      throw MessageError("Recieved CommitLowerBoundTimeStampMessage from unknown Federate!");
+      throw MessageError("Received CommitLowerBoundTimeStampMessage from unknown Federate!");
     if (!federate->getIsTimeRegulating())
-      throw MessageError("Recieved CommitLowerBoundTimeStampMessage for non time regulating Federate!");
+      throw MessageError("Received CommitLowerBoundTimeStampMessage for non time regulating Federate!");
 
     switch (message->getCommitType()) {
     case TimeAdvanceCommit:
@@ -1049,7 +1049,7 @@ public:
   // These are maintained at the root server. Clients can request handles from the root server
   // the root server then sends the requested amount of unused object instance handles to the client.
   // The reponse is sent to the requesting federate and each server node on the way registers a
-  // refrence of the recieving connect handle to this object instance handle.
+  // refrence of the receiving connect handle to this object instance handle.
   // An ambassador requests a bunch of handles at join time. Then, on object creation,
   // the ambassador has very likely some free handles available. So in effect we even have the
   // object instance registration without any latency. With every new registered object, the
@@ -1289,7 +1289,7 @@ public:
     }
 
     // If still unreferenced, ignore the insert and unref again in the parent
-    // this can happen if we subscribed and unsubscribed at the server before we recieved the insert that is triggered by the subscribe request.
+    // this can happen if we subscribed and unsubscribed at the server before we received the insert that is triggered by the subscribe request.
     if (!objectInstance) {
       OpenRTIAssert(isParentConnect(connectHandle));
 
@@ -1309,7 +1309,7 @@ public:
         instanceAttribute->setOwnerConnectHandle(connectHandle);
       }
 
-      send(objectInstance->getPrivilegeToDeleteInstanceAttribute()->_recieveingConnects, message);
+      send(objectInstance->getPrivilegeToDeleteInstanceAttribute()->_receivingConnects, message);
     }
   }
   void accept(const ConnectHandle& connectHandle, const DeleteObjectInstanceMessage* message)
@@ -1323,8 +1323,8 @@ public:
       return;
 
     // send that to all servers that have seen that object instance at some time
-    OpenRTIAssert(objectInstance->getPrivilegeToDeleteInstanceAttribute()->_recieveingConnects.count(connectHandle) == 0);
-    send(objectInstance->getPrivilegeToDeleteInstanceAttribute()->_recieveingConnects, message);
+    OpenRTIAssert(objectInstance->getPrivilegeToDeleteInstanceAttribute()->_receivingConnects.count(connectHandle) == 0);
+    send(objectInstance->getPrivilegeToDeleteInstanceAttribute()->_receivingConnects, message);
   }
   void accept(const ConnectHandle& connectHandle, const TimeStampedDeleteObjectInstanceMessage* message)
   {
@@ -1337,8 +1337,8 @@ public:
       return;
 
     // send that to all servers that have seen that object instance at some time
-    OpenRTIAssert(objectInstance->getPrivilegeToDeleteInstanceAttribute()->_recieveingConnects.count(connectHandle) == 0);
-    send(objectInstance->getPrivilegeToDeleteInstanceAttribute()->_recieveingConnects, message);
+    OpenRTIAssert(objectInstance->getPrivilegeToDeleteInstanceAttribute()->_receivingConnects.count(connectHandle) == 0);
+    send(objectInstance->getPrivilegeToDeleteInstanceAttribute()->_receivingConnects, message);
   }
 
   void accept(const ConnectHandle& connectHandle, const AttributeUpdateMessage* message)
@@ -1360,8 +1360,8 @@ public:
       ServerModel::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(i->getAttributeHandle());
       if (!instanceAttribute)
         continue;
-      for (ConnectHandleSet::const_iterator j = instanceAttribute->_recieveingConnects.begin();
-           j != instanceAttribute->_recieveingConnects.end(); ++j) {
+      for (ConnectHandleSet::const_iterator j = instanceAttribute->_receivingConnects.begin();
+           j != instanceAttribute->_receivingConnects.end(); ++j) {
         connectHandleAttributeValueVectorMap[*j].reserve(message->getAttributeValues().size());
         connectHandleAttributeValueVectorMap[*j].push_back(*i);
       }
@@ -1394,8 +1394,8 @@ public:
       ServerModel::InstanceAttribute* instanceAttribute = objectInstance->getInstanceAttribute(i->getAttributeHandle());
       if (!instanceAttribute)
         continue;
-      for (ConnectHandleSet::const_iterator j = instanceAttribute->_recieveingConnects.begin();
-           j != instanceAttribute->_recieveingConnects.end(); ++j) {
+      for (ConnectHandleSet::const_iterator j = instanceAttribute->_receivingConnects.begin();
+           j != instanceAttribute->_receivingConnects.end(); ++j) {
         connectHandleAttributeValueVectorMap[*j].reserve(message->getAttributeValues().size());
         connectHandleAttributeValueVectorMap[*j].push_back(*i);
       }
@@ -1595,7 +1595,7 @@ public:
     getModuleList(insertModules->getFOMModuleList());
     federationConnect->send(insertModules);
 
-    /// FIXME currently these are all flushed when an EraseFederationExecutionMessage is recieved.
+    /// FIXME currently these are all flushed when an EraseFederationExecutionMessage is received.
     /// FIXME Make that more explicit????
     for (ServerModel::Federate::HandleMap::const_iterator i = getFederateHandleFederateMap().begin();
          i != getFederateHandleFederateMap().end(); ++i) {

@@ -192,7 +192,7 @@ public:
 
     InternalTimeManagement::setTimeConstrainedMode(InternalTimeManagement::TimeConstrainedEnablePending);
 
-    // 8.6 tells that after getting time constrained the federate can recieve messages
+    // 8.6 tells that after getting time constrained the federate can receive messages
     // with timestamp == the granted logical time as time stamp order messages.
     // So, since this call introduces contraints on incomming messages, just set second to zero.
     _pendingLogicalTime.first = _logicalTime.first;
@@ -392,7 +392,7 @@ public:
     // Ok, this is tricky. As long as we are waiting for the root servers reply, we need to assume that the
     // time regulation request hits the root server when this federate is already joined, which means it will
     // get the request and respond to us with a reply we need to wait for.
-    // When we have already recieved the root servers response, the new federate just gets the information that we are
+    // When we have already received the root servers response, the new federate just gets the information that we are
     // already time regulating - in which case we do not get a response from that federate.
     if (_timeRegulationEnableFederateHandleSet.count(ambassador.getFederate()->getFederateHandle())) {
       _timeRegulationEnableFederateHandleSet.insert(message.getFederateHandle());
@@ -424,7 +424,7 @@ public:
       // The responses just takes the direct route back.
 
       if (!InternalTimeManagement::getTimeRegulationEnablePending()) {
-        Log(Network, Warning) << "Recieved own EnableTimeRegulationRequestMessage without waiting for that to happen!" << std::endl;
+        Log(Network, Warning) << "Received own EnableTimeRegulationRequestMessage without waiting for that to happen!" << std::endl;
         return;
       }
       _timeRegulationEnableFederateHandleSet.erase(ambassador.getFederate()->getFederateHandle());
@@ -482,7 +482,7 @@ public:
   virtual void acceptInternalMessage(InternalAmbassador& ambassador, const EnableTimeRegulationResponseMessage& message)
   {
     if (!InternalTimeManagement::getTimeRegulationEnablePending()) {
-      Log(Network, Warning) << "Recieved EnableTimeRegulationResponseMessage without waiting for that to happen!" << std::endl;
+      Log(Network, Warning) << "Received EnableTimeRegulationResponseMessage without waiting for that to happen!" << std::endl;
       return;
     }
 
@@ -576,13 +576,13 @@ public:
     if (InternalTimeManagement::getTimeConstrainedEnabled() && canAdvanceTo(LogicalTimePair(logicalTime, 1))) {
       Log(Network, Warning) << "Dropping illegal time stamp order message!\n"
                             << "You may communicate with a buggy federate ambassador." << std::endl;
-      OpenRTIAssert(!"Recieved illegal timestamp order message!");
+      OpenRTIAssert(!"Received illegal timestamp order message!");
       return;
     }
     if (InternalTimeManagement::getTimeConstrainedEnabled() && LogicalTimePair(logicalTime, 1) < _logicalTime) {
       Log(Network, Warning) << "Dropping illegal time stamp order message!\n"
                             << "You may communicate with a buggy federate ambassador." << std::endl;
-      OpenRTIAssert(!"Recieved illegal timestamp order message!");
+      OpenRTIAssert(!"Received illegal timestamp order message!");
       return;
     }
     queueTimeStampedMessage(ambassador, LogicalTimePair(logicalTime, -1), message);
