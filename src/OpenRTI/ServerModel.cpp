@@ -58,7 +58,7 @@ InstanceAttribute::~InstanceAttribute()
 void
 InstanceAttribute::setAttributeHandle(const AttributeHandle& attributeHandle)
 {
-  return HandleEntity<InstanceAttribute, AttributeHandle>::_setHandle(attributeHandle);
+  HandleEntity<InstanceAttribute, AttributeHandle>::_setHandle(attributeHandle);
 }
 
 ////////////////////////////////////////////////////////////
