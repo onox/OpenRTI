@@ -34,13 +34,15 @@ enum RequestType {
   Interaction1,
   Interaction2,
   Interaction3,
-  Finished
+  Finished,
+  Undefined
 };
 
 class OPENRTI_LOCAL TestResponderAmbassador : public RTI1516TestAmbassador {
 public:
   TestResponderAmbassador(const RTITest::ConstructorArgs& constructorArgs) :
-    RTI1516TestAmbassador(constructorArgs)
+    RTI1516TestAmbassador(constructorArgs),
+    _fail(false)
   { }
   virtual ~TestResponderAmbassador()
     throw ()
@@ -48,9 +50,8 @@ public:
 
   virtual bool execJoined(rti1516::RTIambassador& ambassador)
   {
-    rti1516::InteractionClassHandle requestHandle;
     try {
-      requestHandle = ambassador.getInteractionClassHandle(L"Request");
+      _requestInteractionClassHandle = ambassador.getInteractionClassHandle(L"Request");
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -60,7 +61,7 @@ public:
     }
 
     try {
-      _requestTypeHandle = ambassador.getParameterHandle(requestHandle, L"requestType");
+      _requestTypeHandle = ambassador.getParameterHandle(_requestInteractionClassHandle, L"requestType");
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -134,7 +135,7 @@ public:
     }
 
     try {
-      ambassador.subscribeInteractionClass(requestHandle);
+      ambassador.subscribeInteractionClass(_requestInteractionClassHandle);
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -144,6 +145,7 @@ public:
     }
 
     try {
+      ambassador.publishInteractionClass(_requestInteractionClassHandle);
       ambassador.publishInteractionClass(interactionClassHandle0);
       ambassador.publishInteractionClass(interactionClassHandle1);
       ambassador.publishInteractionClass(interactionClassHandle2);
@@ -173,6 +175,8 @@ public:
             return false;
           }
         }
+        if (_fail)
+          return false;
 
       } catch (const rti1516::Exception& e) {
         std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -188,11 +192,11 @@ public:
 
         rti1516::InteractionClassHandle interactionClassHandle;
         rti1516::ParameterHandleValueMap parameterValues;
-        rti1516::VariableLengthData tag = toVariableLengthData(Clock::now());
 
         switch (_requestType) {
         case Finished:
-          std::wcout << L"unexpected Request type Finished!" << std::endl;
+        case Undefined:
+          std::wcout << L"Unexpected Request type!" << std::endl;
           return false;
         case Interaction0:
           interactionClassHandle = interactionClassHandle0;
@@ -217,7 +221,12 @@ public:
           break;
         }
 
-        ambassador.sendInteraction(interactionClassHandle, parameterValues, tag);
+        ambassador.sendInteraction(interactionClassHandle, parameterValues, _requestFederate);
+
+        // Also send when we reponded, so that the requestor knows when we have sent something
+        parameterValues.clear();
+        parameterValues[_requestTypeHandle] = toVariableLengthData(unsigned(_requestType));
+        ambassador.sendInteraction(_requestInteractionClassHandle, parameterValues, _requestFederate);
 
       } catch (const rti1516::Exception& e) {
         std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -232,6 +241,7 @@ public:
       return false;
 
     try {
+      ambassador.unpublishInteractionClass(_requestInteractionClassHandle);
       ambassador.unpublishInteractionClass(interactionClassHandle0);
       ambassador.unpublishInteractionClass(interactionClassHandle1);
       ambassador.unpublishInteractionClass(interactionClassHandle2);
@@ -244,7 +254,7 @@ public:
     }
 
     try {
-      ambassador.unsubscribeInteractionClass(requestHandle);
+      ambassador.unsubscribeInteractionClass(_requestInteractionClassHandle);
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -266,32 +276,52 @@ public:
              rti1516::InteractionClassNotSubscribed,
              rti1516::FederateInternalError)
   {
-    _requestType = RequestType(toUnsigned(parameterValues.find(_requestTypeHandle)->second));
+    if (interactionClassHandle != _requestInteractionClassHandle) {
+      std::wcout << L"Received interaction class that was not subscribed!" << std::endl;
+      _fail = true;
+      _receivedInteraction = true;
+    }
+
+    // Retrieve what we should respond to
+    rti1516::ParameterHandleValueMap::const_iterator i = parameterValues.find(_requestTypeHandle);
+    if (i != parameterValues.end())
+      _requestType = RequestType(toUnsigned(i->second));
     if (_requestType == Finished)
       ++_finishedCount;
+    _requestFederate = tag;
     _receivedInteraction = true;
   }
 
   bool _receivedInteraction;
+  bool _fail;
+  rti1516::InteractionClassHandle _requestInteractionClassHandle;
   rti1516::ParameterHandle _requestTypeHandle;
   RequestType _requestType;
+  rti1516::VariableLengthData _requestFederate;
   unsigned _finishedCount;
 };
 
 class OPENRTI_LOCAL TestRequestorAmbassador : public RTI1516TestAmbassador {
 public:
   TestRequestorAmbassador(const RTITest::ConstructorArgs& constructorArgs) :
-    RTI1516TestAmbassador(constructorArgs)
+    RTI1516TestAmbassador(constructorArgs),
+    _time(0),
+    _interactionCount(0),
+    _receivedInteraction(false),
+    _receivedRequestType(Undefined),
+    _subscriptionMask(0),
+    _fail(false)
   { }
   virtual ~TestRequestorAmbassador()
     throw ()
-  { }
+  {
+    std::wcout << L"Average roundtrip time: " << _time / double(_interactionCount) << L"s." << std::endl;
+  }
 
   virtual bool execJoined(rti1516::RTIambassador& ambassador)
   {
-    rti1516::InteractionClassHandle requestHandle;
     try {
-      requestHandle = ambassador.getInteractionClassHandle(L"Request");
+      _requestInteractionClassHandle = ambassador.getInteractionClassHandle(L"Request");
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -302,7 +332,7 @@ public:
 
     rti1516::ParameterHandle requestTypeHandle;
     try {
-      requestTypeHandle = ambassador.getParameterHandle(requestHandle, L"requestType");
+      requestTypeHandle = ambassador.getParameterHandle(_requestInteractionClassHandle, L"requestType");
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -312,10 +342,10 @@ public:
     }
 
     try {
-      interactionClassHandle0 = ambassador.getInteractionClassHandle(L"InteractionClass0");
-      interactionClassHandle1 = ambassador.getInteractionClassHandle(L"InteractionClass1");
-      interactionClassHandle2 = ambassador.getInteractionClassHandle(L"InteractionClass2");
-      interactionClassHandle3 = ambassador.getInteractionClassHandle(L"InteractionClass3");
+      _interactionClassHandles[0] = ambassador.getInteractionClassHandle(L"InteractionClass0");
+      _interactionClassHandles[1] = ambassador.getInteractionClassHandle(L"InteractionClass1");
+      _interactionClassHandles[2] = ambassador.getInteractionClassHandle(L"InteractionClass2");
+      _interactionClassHandles[3] = ambassador.getInteractionClassHandle(L"InteractionClass3");
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -325,15 +355,15 @@ public:
     }
 
     try {
-      class0Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle0, L"parameter0");
-      class1Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle1, L"parameter0");
-      class1Parameter1Handle = ambassador.getParameterHandle(interactionClassHandle1, L"parameter1");
-      class2Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter0");
-      class2Parameter1Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter1");
-      class2Parameter2Handle = ambassador.getParameterHandle(interactionClassHandle2, L"parameter2");
-      class3Parameter0Handle = ambassador.getParameterHandle(interactionClassHandle3, L"parameter0");
-      class3Parameter1Handle = ambassador.getParameterHandle(interactionClassHandle3, L"parameter1");
-      class3Parameter3Handle = ambassador.getParameterHandle(interactionClassHandle3, L"parameter3");
+      class0Parameter0Handle = ambassador.getParameterHandle(_interactionClassHandles[0], L"parameter0");
+      class1Parameter0Handle = ambassador.getParameterHandle(_interactionClassHandles[1], L"parameter0");
+      class1Parameter1Handle = ambassador.getParameterHandle(_interactionClassHandles[1], L"parameter1");
+      class2Parameter0Handle = ambassador.getParameterHandle(_interactionClassHandles[2], L"parameter0");
+      class2Parameter1Handle = ambassador.getParameterHandle(_interactionClassHandles[2], L"parameter1");
+      class2Parameter2Handle = ambassador.getParameterHandle(_interactionClassHandles[2], L"parameter2");
+      class3Parameter0Handle = ambassador.getParameterHandle(_interactionClassHandles[3], L"parameter0");
+      class3Parameter1Handle = ambassador.getParameterHandle(_interactionClassHandles[3], L"parameter1");
+      class3Parameter3Handle = ambassador.getParameterHandle(_interactionClassHandles[3], L"parameter3");
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -343,7 +373,7 @@ public:
     }
 
     try {
-      ambassador.publishInteractionClass(requestHandle);
+      ambassador.publishInteractionClass(_requestInteractionClassHandle);
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -353,10 +383,7 @@ public:
     }
 
     try {
-      ambassador.subscribeInteractionClass(interactionClassHandle0);
-      ambassador.subscribeInteractionClass(interactionClassHandle1);
-      ambassador.subscribeInteractionClass(interactionClassHandle2);
-      ambassador.subscribeInteractionClass(interactionClassHandle3);
+      ambassador.subscribeInteractionClass(_requestInteractionClassHandle);
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -368,37 +395,20 @@ public:
     if (!waitForAllFederates(ambassador))
       return false;
 
-    double t = 0;
-    for (unsigned i = 0; i < 100; ++i) {
-
-      Clock clock = Clock::now();
-
+    for (unsigned i = 0; i < 0xf; ++i) {
       try {
-        rti1516::ParameterHandleValueMap parameterValues;
-        rti1516::VariableLengthData tag = toVariableLengthData("parameter0");
-        parameterValues[requestTypeHandle] = toVariableLengthData(unsigned(Interaction1));
-        ambassador.sendInteraction(requestHandle, parameterValues, tag);
-
-      } catch (const rti1516::Exception& e) {
-        std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
-        return false;
-      } catch (...) {
-        std::wcout << L"Unknown Exception!" << std::endl;
-        return false;
-      }
-
-      try {
-        _receivedInteraction = false;
-        Clock timeout = Clock::now() + Clock::fromSeconds(10);
-        while (!_receivedInteraction) {
-          if (ambassador.evokeCallback(10.0))
-            continue;
-          if (timeout < Clock::now()) {
-            std::wcout << L"Timeout waiting for response!" << std::endl;
-            return false;
+        // Change subscriptions due to the subscription mask
+        for (unsigned j = 0; j < 4; ++j) {
+          unsigned mask = (1u << j);
+          if ((_subscriptionMask ^ i) & mask) {
+            if (i & mask) {
+              ambassador.subscribeInteractionClass(_interactionClassHandles[j]);
+            } else {
+              ambassador.unsubscribeInteractionClass(_interactionClassHandles[j]);
+            }
           }
         }
-
+        _subscriptionMask = i;
       } catch (const rti1516::Exception& e) {
         std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
         return false;
@@ -407,17 +417,65 @@ public:
         return false;
       }
 
-      clock = Clock::now() - clock;
-      t += 1e-9*clock.getNSec();
-    }
+      for (unsigned j = 0; j < 4; ++j) {
+        for (unsigned k = 0; k < 2; ++k) {
 
-    std::cout << t / 100 << std::endl;
+          Clock clock = Clock::now();
+
+          RequestType requestedType = RequestType(j);
+
+          try {
+            rti1516::ParameterHandleValueMap parameterValues;
+            parameterValues[requestTypeHandle] = toVariableLengthData(unsigned(requestedType));
+            ambassador.sendInteraction(_requestInteractionClassHandle, parameterValues, getFederateHandle().encode());
+
+          } catch (const rti1516::Exception& e) {
+            std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+            return false;
+          } catch (...) {
+            std::wcout << L"Unknown Exception!" << std::endl;
+            return false;
+          }
+
+          try {
+            _receivedInteraction = false;
+            _receivedRequestType = Undefined;
+
+            Clock timeout = Clock::now() + Clock::fromSeconds(10);
+            while (!_receivedInteraction) {
+              if (ambassador.evokeCallback(10.0))
+                continue;
+              if (timeout < Clock::now()) {
+                std::wcout << L"Timeout waiting for response!" << std::endl;
+                return false;
+              }
+            }
+            if (_fail)
+              return false;
+          } catch (const rti1516::Exception& e) {
+            std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+            return false;
+          } catch (...) {
+            std::wcout << L"Unknown Exception!" << std::endl;
+            return false;
+          }
+
+          if (_receivedRequestType != getExpectedReponseType(requestedType)) {
+            std::wcout << L"Received wrong Interaction class!" << std::endl;
+            return false;
+          }
+
+          clock = Clock::now() - clock;
+          _time += 1e-9*clock.getNSec();
+          ++_interactionCount;
+        }
+      }
+    }
 
     try {
       rti1516::ParameterHandleValueMap parameterValues;
-      rti1516::VariableLengthData tag = toVariableLengthData("parameter0");
       parameterValues[requestTypeHandle] = toVariableLengthData(unsigned(Finished));
-      ambassador.sendInteraction(requestHandle, parameterValues, tag);
+      ambassador.sendInteraction(_requestInteractionClassHandle, parameterValues, getFederateHandle().encode());
 
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -431,7 +489,7 @@ public:
       return false;
 
     try {
-      ambassador.unpublishInteractionClass(requestHandle);
+      ambassador.unpublishInteractionClass(_requestInteractionClassHandle);
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -441,10 +499,11 @@ public:
     }
 
     try {
-      ambassador.unsubscribeInteractionClass(interactionClassHandle0);
-      ambassador.unsubscribeInteractionClass(interactionClassHandle1);
-      ambassador.unsubscribeInteractionClass(interactionClassHandle2);
-      ambassador.unsubscribeInteractionClass(interactionClassHandle3);
+      for (unsigned i = 0; i < 4; ++i) {
+        if (_subscriptionMask & (1u << i))
+          ambassador.unsubscribeInteractionClass(_interactionClassHandles[i]);
+      }
+      _subscriptionMask = 0;
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
       return false;
@@ -466,17 +525,83 @@ public:
              rti1516::InteractionClassNotSubscribed,
              rti1516::FederateInternalError)
   {
-    _clock = toClock(tag);
-    _receivedInteraction = true;
+    for (unsigned i = 0; i < 4; ++i) {
+      if (interactionClassHandle == _interactionClassHandles[i] && !(_subscriptionMask & (1u << i))) {
+        std::wcout << L"Received interaction class that was not subscribed!" << std::endl;
+        _fail = true;
+        _receivedInteraction = true;
+      }
+    }
+
+    if (getFederateHandle().encode() != tag)
+      return;
+
+    if (interactionClassHandle == _interactionClassHandles[0])
+      _receivedRequestType = Interaction0;
+    else if (interactionClassHandle == _interactionClassHandles[1])
+      _receivedRequestType = Interaction1;
+    else if (interactionClassHandle == _interactionClassHandles[2])
+      _receivedRequestType = Interaction2;
+    else if (interactionClassHandle == _interactionClassHandles[3])
+      _receivedRequestType = Interaction3;
+    else if (interactionClassHandle == _requestInteractionClassHandle)
+      _receivedInteraction = true;
+    else
+      _receivedRequestType = Undefined;
   }
 
-  Clock _clock;
-  bool _receivedInteraction;
+  RequestType getExpectedReponseType(RequestType sentResponseType) const
+  {
+    switch (sentResponseType) {
+    case Interaction0:
+      if (_subscriptionMask & (1u << 0))
+        return Interaction0;
+      else
+        return Undefined;
+    case Interaction1:
+      if (_subscriptionMask & (1u << 1))
+        return Interaction1;
+      else if (_subscriptionMask & (1u << 0))
+        return Interaction0;
+      else
+        return Undefined;
+    case Interaction2:
+      if (_subscriptionMask & (1u << 2))
+        return Interaction2;
+      else if (_subscriptionMask & (1u << 1))
+        return Interaction1;
+      else if (_subscriptionMask & (1u << 0))
+        return Interaction0;
+      else
+        return Undefined;
+    case Interaction3:
+      if (_subscriptionMask & (1u << 3))
+        return Interaction3;
+      else if (_subscriptionMask & (1u << 1))
+        return Interaction1;
+      else if (_subscriptionMask & (1u << 0))
+        return Interaction0;
+      else
+        return Undefined;
+    case Finished:
+    case Undefined:
+    default:
+      return Undefined;
+    };
+  }
 
-  rti1516::InteractionClassHandle interactionClassHandle0;
-  rti1516::InteractionClassHandle interactionClassHandle1;
-  rti1516::InteractionClassHandle interactionClassHandle2;
-  rti1516::InteractionClassHandle interactionClassHandle3;
+  double _time;
+  unsigned _interactionCount;
+
+  bool _receivedInteraction;
+  RequestType _receivedRequestType;
+
+  unsigned _subscriptionMask;
+
+  bool _fail;
+
+  rti1516::InteractionClassHandle _requestInteractionClassHandle;
+  rti1516::InteractionClassHandle _interactionClassHandles[4];
 
   rti1516::ParameterHandle class0Parameter0Handle;
   rti1516::ParameterHandle class1Parameter0Handle;
