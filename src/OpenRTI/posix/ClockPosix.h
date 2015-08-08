@@ -46,39 +46,17 @@ struct OPENRTI_LOCAL ClockPosix {
   {
     struct timespec ts;
     ts.tv_nsec = nsec % 1000000000;
-    uint64_t sec = nsec - ts.tv_nsec;
+    uint64_t sec = nsec/uint64_t(1000000000);
     if (uint64_t(std::numeric_limits<time_t>::max()) < sec) {
       ts.tv_nsec = 999999999;
       ts.tv_sec = std::numeric_limits<time_t>::max();
     } else {
-      ts.tv_sec = sec / 1000000000;
+      ts.tv_sec = sec;
     }
     return ts;
   }
   static uint64_t toNSec(const struct timespec& ts)
   { return uint64_t(ts.tv_nsec) + uint64_t(ts.tv_sec) * 1000000000; }
-
-  static struct timeval toTimeval(const uint64_t& nsec)
-  {
-    struct timeval tv;
-    if (std::numeric_limits<uint64_t>::max() - 500 <= nsec) {
-      tv.tv_usec = 999999;
-      tv.tv_sec = std::numeric_limits<time_t>::max();
-    } else {
-      uint64_t usec = (nsec + 500) / 1000;
-      if (uint64_t(std::numeric_limits<time_t>::max()) < usec) {
-        tv.tv_usec = 999999;
-        tv.tv_sec = std::numeric_limits<time_t>::max();
-      } else {
-        uint64_t frac = usec % 1000000;
-        tv.tv_usec = (long)frac;
-        tv.tv_sec = (long)((usec - frac) / 1000000);
-      }
-    }
-    return tv;
-  }
-  static uint64_t toNSec(const struct timeval& tv)
-  { return uint64_t(tv.tv_usec)*1000 + uint64_t(tv.tv_sec) * 1000000000; }
 
   static int toIntMSec(const uint64_t& nsec)
   {
