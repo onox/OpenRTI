@@ -393,6 +393,10 @@ typedef std::vector<FederateHandleBoolPair> FederateHandleBoolPairVector;
 
 class OPENRTI_API RangeBoundsValue {
 public:
+  RangeBoundsValue() :
+    _lowerBound(),
+    _upperBound()
+  { }
   void setLowerBound(const Unsigned& value)
   { _lowerBound = value; }
 #if 201103L <= __cplusplus
@@ -472,6 +476,9 @@ typedef std::pair<AttributeHandle, RegionValueList> AttributeHandleRegionValueLi
 
 class OPENRTI_API AttributeState {
 public:
+  AttributeState() :
+    _attributeHandle()
+  { }
   void setAttributeHandle(const AttributeHandle& value)
   { _attributeHandle = value; }
 #if 201103L <= __cplusplus
@@ -515,6 +522,10 @@ typedef std::vector<AttributeState> AttributeStateVector;
 
 class OPENRTI_API ParameterValue {
 public:
+  ParameterValue() :
+    _parameterHandle(),
+    _value()
+  { }
   void setParameterHandle(const ParameterHandle& value)
   { _parameterHandle = value; }
 #if 201103L <= __cplusplus
@@ -574,6 +585,10 @@ typedef std::vector<ParameterValue> ParameterValueVector;
 
 class OPENRTI_API AttributeValue {
 public:
+  AttributeValue() :
+    _attributeHandle(),
+    _value()
+  { }
   void setAttributeHandle(const AttributeHandle& value)
   { _attributeHandle = value; }
 #if 201103L <= __cplusplus
@@ -641,6 +656,10 @@ typedef std::vector<FederateHandleRestoreStatusPair> FederateHandleRestoreStatus
 
 class OPENRTI_API FederationExecutionInformation {
 public:
+  FederationExecutionInformation() :
+    _federationExecutionName(),
+    _logicalTimeFactoryName()
+  { }
   void setFederationExecutionName(const String& value)
   { _federationExecutionName = value; }
 #if 201103L <= __cplusplus
@@ -707,7 +726,7 @@ typedef std::map<String, StringVector> ConfigurationParameterMap;
 class OPENRTI_API FOMStringTransportationType {
 public:
   FOMStringTransportationType() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -750,6 +769,9 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name()
+    { }
     String _name;
   };
 
@@ -773,7 +795,7 @@ typedef std::vector<FOMStringTransportationType> FOMStringTransportationTypeList
 class OPENRTI_API FOMStringDimension {
 public:
   FOMStringDimension() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -830,6 +852,10 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _upperBound()
+    { }
     String _name;
     Unsigned _upperBound;
   };
@@ -854,7 +880,7 @@ typedef std::vector<FOMStringDimension> FOMStringDimensionList;
 class OPENRTI_API FOMStringRoutingSpace {
 public:
   FOMStringRoutingSpace() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -911,6 +937,10 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _dimensionSet()
+    { }
     String _name;
     StringSet _dimensionSet;
   };
@@ -935,7 +965,7 @@ typedef std::vector<FOMStringRoutingSpace> FOMStringRoutingSpaceList;
 class OPENRTI_API FOMStringParameter {
 public:
   FOMStringParameter() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -978,6 +1008,9 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name()
+    { }
     String _name;
   };
 
@@ -1001,7 +1034,7 @@ typedef std::vector<FOMStringParameter> FOMStringParameterList;
 class OPENRTI_API FOMStringInteractionClass {
 public:
   FOMStringInteractionClass() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const StringVector& value)
   { getImpl()._name = value; }
@@ -1114,6 +1147,14 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _orderType(),
+      _transportationType(),
+      _routingSpace(),
+      _dimensionSet(),
+      _parameterList()
+    { }
     StringVector _name;
     String _orderType;
     String _transportationType;
@@ -1142,7 +1183,7 @@ typedef std::vector<FOMStringInteractionClass> FOMStringInteractionClassList;
 class OPENRTI_API FOMStringAttribute {
 public:
   FOMStringAttribute() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -1241,6 +1282,13 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _orderType(),
+      _transportationType(),
+      _routingSpace(),
+      _dimensionSet()
+    { }
     String _name;
     String _orderType;
     String _transportationType;
@@ -1268,7 +1316,7 @@ typedef std::vector<FOMStringAttribute> FOMStringAttributeList;
 class OPENRTI_API FOMStringObjectClass {
 public:
   FOMStringObjectClass() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const StringVector& value)
   { getImpl()._name = value; }
@@ -1325,6 +1373,10 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _attributeList()
+    { }
     StringVector _name;
     FOMStringAttributeList _attributeList;
   };
@@ -1349,7 +1401,7 @@ typedef std::vector<FOMStringObjectClass> FOMStringObjectClassList;
 class OPENRTI_API FOMStringUpdateRate {
 public:
   FOMStringUpdateRate() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -1406,6 +1458,10 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _rate()
+    { }
     String _name;
     Double _rate;
   };
@@ -1430,7 +1486,7 @@ typedef std::vector<FOMStringUpdateRate> FOMStringUpdateRateList;
 class OPENRTI_API FOMStringSwitch {
 public:
   FOMStringSwitch() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setSwitchesType(const SwitchesType& value)
   { getImpl()._switchesType = value; }
@@ -1487,6 +1543,10 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _switchesType(),
+      _enabled()
+    { }
     SwitchesType _switchesType;
     Bool _enabled;
   };
@@ -1511,7 +1571,7 @@ typedef std::vector<FOMStringSwitch> FOMStringSwitchList;
 class OPENRTI_API FOMStringModule {
 public:
   FOMStringModule() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setContent(const String& value)
   { getImpl()._content = value; }
@@ -1680,6 +1740,18 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _content(),
+      _transportationTypeList(),
+      _dimensionList(),
+      _routingSpaceList(),
+      _interactionClassList(),
+      _objectClassList(),
+      _updateRateList(),
+      _switchList(),
+      _artificialInteractionRoot(),
+      _artificialObjectRoot()
+    { }
     String _content;
     FOMStringTransportationTypeList _transportationTypeList;
     FOMStringDimensionList _dimensionList;
@@ -1712,7 +1784,7 @@ typedef std::vector<FOMStringModule> FOMStringModuleList;
 class OPENRTI_API FOMTransportationType {
 public:
   FOMTransportationType() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -1769,6 +1841,10 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _transportationType()
+    { }
     String _name;
     TransportationType _transportationType;
   };
@@ -1793,7 +1869,7 @@ typedef std::vector<FOMTransportationType> FOMTransportationTypeList;
 class OPENRTI_API FOMDimension {
 public:
   FOMDimension() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -1864,6 +1940,11 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _dimensionHandle(),
+      _upperBound()
+    { }
     String _name;
     DimensionHandle _dimensionHandle;
     Unsigned _upperBound;
@@ -1889,7 +1970,7 @@ typedef std::vector<FOMDimension> FOMDimensionList;
 class OPENRTI_API FOMRoutingSpace {
 public:
   FOMRoutingSpace() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -1960,6 +2041,11 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _spaceHandle(),
+      _dimensionHandleSet()
+    { }
     String _name;
     SpaceHandle _spaceHandle;
     DimensionHandleSet _dimensionHandleSet;
@@ -1985,7 +2071,7 @@ typedef std::vector<FOMRoutingSpace> FOMRoutingSpaceList;
 class OPENRTI_API FOMParameter {
 public:
   FOMParameter() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -2042,6 +2128,10 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _parameterHandle()
+    { }
     String _name;
     ParameterHandle _parameterHandle;
   };
@@ -2066,7 +2156,7 @@ typedef std::vector<FOMParameter> FOMParameterList;
 class OPENRTI_API FOMInteractionClass {
 public:
   FOMInteractionClass() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -2193,6 +2283,15 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _interactionClassHandle(),
+      _parentInteractionClassHandle(),
+      _orderType(),
+      _transportationType(),
+      _dimensionHandleSet(),
+      _parameterList()
+    { }
     String _name;
     InteractionClassHandle _interactionClassHandle;
     InteractionClassHandle _parentInteractionClassHandle;
@@ -2222,7 +2321,7 @@ typedef std::vector<FOMInteractionClass> FOMInteractionClassList;
 class OPENRTI_API FOMAttribute {
 public:
   FOMAttribute() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -2321,6 +2420,13 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _attributeHandle(),
+      _orderType(),
+      _transportationType(),
+      _dimensionHandleSet()
+    { }
     String _name;
     AttributeHandle _attributeHandle;
     OrderType _orderType;
@@ -2348,7 +2454,7 @@ typedef std::vector<FOMAttribute> FOMAttributeList;
 class OPENRTI_API FOMObjectClass {
 public:
   FOMObjectClass() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -2433,6 +2539,12 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _objectClassHandle(),
+      _parentObjectClassHandle(),
+      _attributeList()
+    { }
     String _name;
     ObjectClassHandle _objectClassHandle;
     ObjectClassHandle _parentObjectClassHandle;
@@ -2459,7 +2571,7 @@ typedef std::vector<FOMObjectClass> FOMObjectClassList;
 class OPENRTI_API FOMUpdateRate {
 public:
   FOMUpdateRate() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
@@ -2530,6 +2642,11 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _name(),
+      _updateRateHandle(),
+      _rate()
+    { }
     String _name;
     UpdateRateHandle _updateRateHandle;
     Double _rate;
@@ -2555,7 +2672,7 @@ typedef std::vector<FOMUpdateRate> FOMUpdateRateList;
 class OPENRTI_API FOMSwitch {
 public:
   FOMSwitch() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setSwitchesType(const SwitchesType& value)
   { getImpl()._switchesType = value; }
@@ -2612,6 +2729,10 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _switchesType(),
+      _enabled()
+    { }
     SwitchesType _switchesType;
     Bool _enabled;
   };
@@ -2636,7 +2757,7 @@ typedef std::vector<FOMSwitch> FOMSwitchList;
 class OPENRTI_API FOMModule {
 public:
   FOMModule() : 
-    _impl(new Implementation)
+    _impl(new Implementation())
   { }
   void setModuleHandle(const ModuleHandle& value)
   { getImpl()._moduleHandle = value; }
@@ -2819,6 +2940,19 @@ public:
   { return !operator>(rhs); }
 private:
   struct OPENRTI_API Implementation : public Referenced {
+    Implementation() :
+      _moduleHandle(),
+      _transportationTypeList(),
+      _dimensionList(),
+      _routingSpaceList(),
+      _interactionClassList(),
+      _objectClassList(),
+      _updateRateList(),
+      _switchList(),
+      _artificialInteractionRoot(),
+      _artificialObjectRoot(),
+      _content()
+    { }
     ModuleHandle _moduleHandle;
     FOMTransportationTypeList _transportationTypeList;
     FOMDimensionList _dimensionList;

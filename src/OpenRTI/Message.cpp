@@ -30,7 +30,8 @@
 
 namespace OpenRTI {
 
-ConnectionLostMessage::ConnectionLostMessage()
+ConnectionLostMessage::ConnectionLostMessage() :
+  _faultDescription()
 {
 }
 
@@ -80,7 +81,10 @@ ConnectionLostMessage::operator<(const ConnectionLostMessage& rhs) const
   return false;
 }
 
-CreateFederationExecutionRequestMessage::CreateFederationExecutionRequestMessage()
+CreateFederationExecutionRequestMessage::CreateFederationExecutionRequestMessage() :
+  _federationExecution(),
+  _logicalTimeFactoryName(),
+  _fOMStringModuleList()
 {
 }
 
@@ -136,7 +140,9 @@ CreateFederationExecutionRequestMessage::operator<(const CreateFederationExecuti
   return false;
 }
 
-CreateFederationExecutionResponseMessage::CreateFederationExecutionResponseMessage()
+CreateFederationExecutionResponseMessage::CreateFederationExecutionResponseMessage() :
+  _createFederationExecutionResponseType(),
+  _exceptionString()
 {
 }
 
@@ -189,7 +195,8 @@ CreateFederationExecutionResponseMessage::operator<(const CreateFederationExecut
   return false;
 }
 
-DestroyFederationExecutionRequestMessage::DestroyFederationExecutionRequestMessage()
+DestroyFederationExecutionRequestMessage::DestroyFederationExecutionRequestMessage() :
+  _federationExecution()
 {
 }
 
@@ -239,7 +246,8 @@ DestroyFederationExecutionRequestMessage::operator<(const DestroyFederationExecu
   return false;
 }
 
-DestroyFederationExecutionResponseMessage::DestroyFederationExecutionResponseMessage()
+DestroyFederationExecutionResponseMessage::DestroyFederationExecutionResponseMessage() :
+  _destroyFederationExecutionResponseType()
 {
 }
 
@@ -336,7 +344,8 @@ EnumerateFederationExecutionsRequestMessage::operator<(const EnumerateFederation
   return false;
 }
 
-EnumerateFederationExecutionsResponseMessage::EnumerateFederationExecutionsResponseMessage()
+EnumerateFederationExecutionsResponseMessage::EnumerateFederationExecutionsResponseMessage() :
+  _federationExecutionInformationVector()
 {
 }
 
@@ -386,7 +395,11 @@ EnumerateFederationExecutionsResponseMessage::operator<(const EnumerateFederatio
   return false;
 }
 
-InsertFederationExecutionMessage::InsertFederationExecutionMessage()
+InsertFederationExecutionMessage::InsertFederationExecutionMessage() :
+  _federationHandle(),
+  _federationName(),
+  _logicalTimeFactoryName(),
+  _configurationParameterMap()
 {
 }
 
@@ -445,7 +458,8 @@ InsertFederationExecutionMessage::operator<(const InsertFederationExecutionMessa
   return false;
 }
 
-ShutdownFederationExecutionMessage::ShutdownFederationExecutionMessage()
+ShutdownFederationExecutionMessage::ShutdownFederationExecutionMessage() :
+  _federationHandle()
 {
 }
 
@@ -495,7 +509,8 @@ ShutdownFederationExecutionMessage::operator<(const ShutdownFederationExecutionM
   return false;
 }
 
-EraseFederationExecutionMessage::EraseFederationExecutionMessage()
+EraseFederationExecutionMessage::EraseFederationExecutionMessage() :
+  _federationHandle()
 {
 }
 
@@ -545,7 +560,8 @@ EraseFederationExecutionMessage::operator<(const EraseFederationExecutionMessage
   return false;
 }
 
-ReleaseFederationHandleMessage::ReleaseFederationHandleMessage()
+ReleaseFederationHandleMessage::ReleaseFederationHandleMessage() :
+  _federationHandle()
 {
 }
 
@@ -595,7 +611,9 @@ ReleaseFederationHandleMessage::operator<(const ReleaseFederationHandleMessage& 
   return false;
 }
 
-InsertModulesMessage::InsertModulesMessage()
+InsertModulesMessage::InsertModulesMessage() :
+  _federationHandle(),
+  _fOMModuleList()
 {
 }
 
@@ -648,7 +666,12 @@ InsertModulesMessage::operator<(const InsertModulesMessage& rhs) const
   return false;
 }
 
-JoinFederationExecutionRequestMessage::JoinFederationExecutionRequestMessage()
+JoinFederationExecutionRequestMessage::JoinFederationExecutionRequestMessage() :
+  _federationExecution(),
+  _federateType(),
+  _federateName(),
+  _fOMStringModuleList(),
+  _configurationParameterMap()
 {
 }
 
@@ -710,7 +733,13 @@ JoinFederationExecutionRequestMessage::operator<(const JoinFederationExecutionRe
   return false;
 }
 
-JoinFederationExecutionResponseMessage::JoinFederationExecutionResponseMessage()
+JoinFederationExecutionResponseMessage::JoinFederationExecutionResponseMessage() :
+  _federationHandle(),
+  _joinFederationExecutionResponseType(),
+  _exceptionString(),
+  _federateHandle(),
+  _federateType(),
+  _federateName()
 {
 }
 
@@ -775,7 +804,10 @@ JoinFederationExecutionResponseMessage::operator<(const JoinFederationExecutionR
   return false;
 }
 
-ResignFederationExecutionLeafRequestMessage::ResignFederationExecutionLeafRequestMessage()
+ResignFederationExecutionLeafRequestMessage::ResignFederationExecutionLeafRequestMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _resignAction()
 {
 }
 
@@ -831,7 +863,9 @@ ResignFederationExecutionLeafRequestMessage::operator<(const ResignFederationExe
   return false;
 }
 
-ResignFederationExecutionRequestMessage::ResignFederationExecutionRequestMessage()
+ResignFederationExecutionRequestMessage::ResignFederationExecutionRequestMessage() :
+  _federationHandle(),
+  _federateHandle()
 {
 }
 
@@ -884,7 +918,11 @@ ResignFederationExecutionRequestMessage::operator<(const ResignFederationExecuti
   return false;
 }
 
-JoinFederateNotifyMessage::JoinFederateNotifyMessage()
+JoinFederateNotifyMessage::JoinFederateNotifyMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _federateType(),
+  _federateName()
 {
 }
 
@@ -943,7 +981,9 @@ JoinFederateNotifyMessage::operator<(const JoinFederateNotifyMessage& rhs) const
   return false;
 }
 
-ResignFederateNotifyMessage::ResignFederateNotifyMessage()
+ResignFederateNotifyMessage::ResignFederateNotifyMessage() :
+  _federationHandle(),
+  _federateHandle()
 {
 }
 
@@ -996,7 +1036,10 @@ ResignFederateNotifyMessage::operator<(const ResignFederateNotifyMessage& rhs) c
   return false;
 }
 
-ChangeAutomaticResignDirectiveMessage::ChangeAutomaticResignDirectiveMessage()
+ChangeAutomaticResignDirectiveMessage::ChangeAutomaticResignDirectiveMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _resignAction()
 {
 }
 
@@ -1052,7 +1095,12 @@ ChangeAutomaticResignDirectiveMessage::operator<(const ChangeAutomaticResignDire
   return false;
 }
 
-RegisterFederationSynchronizationPointMessage::RegisterFederationSynchronizationPointMessage()
+RegisterFederationSynchronizationPointMessage::RegisterFederationSynchronizationPointMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _label(),
+  _tag(),
+  _federateHandleVector()
 {
 }
 
@@ -1114,7 +1162,11 @@ RegisterFederationSynchronizationPointMessage::operator<(const RegisterFederatio
   return false;
 }
 
-RegisterFederationSynchronizationPointResponseMessage::RegisterFederationSynchronizationPointResponseMessage()
+RegisterFederationSynchronizationPointResponseMessage::RegisterFederationSynchronizationPointResponseMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _label(),
+  _registerFederationSynchronizationPointResponseType()
 {
 }
 
@@ -1173,7 +1225,12 @@ RegisterFederationSynchronizationPointResponseMessage::operator<(const RegisterF
   return false;
 }
 
-AnnounceSynchronizationPointMessage::AnnounceSynchronizationPointMessage()
+AnnounceSynchronizationPointMessage::AnnounceSynchronizationPointMessage() :
+  _federationHandle(),
+  _label(),
+  _tag(),
+  _addJoiningFederates(),
+  _federateHandleVector()
 {
 }
 
@@ -1235,7 +1292,10 @@ AnnounceSynchronizationPointMessage::operator<(const AnnounceSynchronizationPoin
   return false;
 }
 
-SynchronizationPointAchievedMessage::SynchronizationPointAchievedMessage()
+SynchronizationPointAchievedMessage::SynchronizationPointAchievedMessage() :
+  _federationHandle(),
+  _label(),
+  _federateHandleBoolPairVector()
 {
 }
 
@@ -1291,7 +1351,10 @@ SynchronizationPointAchievedMessage::operator<(const SynchronizationPointAchieve
   return false;
 }
 
-FederationSynchronizedMessage::FederationSynchronizedMessage()
+FederationSynchronizedMessage::FederationSynchronizedMessage() :
+  _federationHandle(),
+  _label(),
+  _federateHandleBoolPairVector()
 {
 }
 
@@ -1347,7 +1410,11 @@ FederationSynchronizedMessage::operator<(const FederationSynchronizedMessage& rh
   return false;
 }
 
-EnableTimeRegulationRequestMessage::EnableTimeRegulationRequestMessage()
+EnableTimeRegulationRequestMessage::EnableTimeRegulationRequestMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _timeStamp(),
+  _commitId()
 {
 }
 
@@ -1406,7 +1473,12 @@ EnableTimeRegulationRequestMessage::operator<(const EnableTimeRegulationRequestM
   return false;
 }
 
-EnableTimeRegulationResponseMessage::EnableTimeRegulationResponseMessage()
+EnableTimeRegulationResponseMessage::EnableTimeRegulationResponseMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _respondingFederateHandle(),
+  _timeStampValid(),
+  _timeStamp()
 {
 }
 
@@ -1468,7 +1540,9 @@ EnableTimeRegulationResponseMessage::operator<(const EnableTimeRegulationRespons
   return false;
 }
 
-DisableTimeRegulationRequestMessage::DisableTimeRegulationRequestMessage()
+DisableTimeRegulationRequestMessage::DisableTimeRegulationRequestMessage() :
+  _federationHandle(),
+  _federateHandle()
 {
 }
 
@@ -1521,7 +1595,12 @@ DisableTimeRegulationRequestMessage::operator<(const DisableTimeRegulationReques
   return false;
 }
 
-CommitLowerBoundTimeStampMessage::CommitLowerBoundTimeStampMessage()
+CommitLowerBoundTimeStampMessage::CommitLowerBoundTimeStampMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _timeStamp(),
+  _commitType(),
+  _commitId()
 {
 }
 
@@ -1583,7 +1662,11 @@ CommitLowerBoundTimeStampMessage::operator<(const CommitLowerBoundTimeStampMessa
   return false;
 }
 
-CommitLowerBoundTimeStampResponseMessage::CommitLowerBoundTimeStampResponseMessage()
+CommitLowerBoundTimeStampResponseMessage::CommitLowerBoundTimeStampResponseMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _sendingFederateHandle(),
+  _commitId()
 {
 }
 
@@ -1642,7 +1725,10 @@ CommitLowerBoundTimeStampResponseMessage::operator<(const CommitLowerBoundTimeSt
   return false;
 }
 
-LockedByNextMessageRequestMessage::LockedByNextMessageRequestMessage()
+LockedByNextMessageRequestMessage::LockedByNextMessageRequestMessage() :
+  _federationHandle(),
+  _sendingFederateHandle(),
+  _lockedByNextMessage()
 {
 }
 
@@ -1839,7 +1925,9 @@ TimeAdvanceGrantedMessage::operator<(const TimeAdvanceGrantedMessage& rhs) const
   return false;
 }
 
-InsertRegionMessage::InsertRegionMessage()
+InsertRegionMessage::InsertRegionMessage() :
+  _federationHandle(),
+  _regionHandleDimensionHandleSetPairVector()
 {
 }
 
@@ -1892,7 +1980,9 @@ InsertRegionMessage::operator<(const InsertRegionMessage& rhs) const
   return false;
 }
 
-CommitRegionMessage::CommitRegionMessage()
+CommitRegionMessage::CommitRegionMessage() :
+  _federationHandle(),
+  _regionHandleRegionValuePairVector()
 {
 }
 
@@ -1945,7 +2035,9 @@ CommitRegionMessage::operator<(const CommitRegionMessage& rhs) const
   return false;
 }
 
-EraseRegionMessage::EraseRegionMessage()
+EraseRegionMessage::EraseRegionMessage() :
+  _federationHandle(),
+  _regionHandleVector()
 {
 }
 
@@ -1998,7 +2090,10 @@ EraseRegionMessage::operator<(const EraseRegionMessage& rhs) const
   return false;
 }
 
-ChangeInteractionClassPublicationMessage::ChangeInteractionClassPublicationMessage()
+ChangeInteractionClassPublicationMessage::ChangeInteractionClassPublicationMessage() :
+  _federationHandle(),
+  _publicationType(),
+  _interactionClassHandle()
 {
 }
 
@@ -2054,7 +2149,11 @@ ChangeInteractionClassPublicationMessage::operator<(const ChangeInteractionClass
   return false;
 }
 
-ChangeObjectClassPublicationMessage::ChangeObjectClassPublicationMessage()
+ChangeObjectClassPublicationMessage::ChangeObjectClassPublicationMessage() :
+  _federationHandle(),
+  _publicationType(),
+  _objectClassHandle(),
+  _attributeHandles()
 {
 }
 
@@ -2113,7 +2212,10 @@ ChangeObjectClassPublicationMessage::operator<(const ChangeObjectClassPublicatio
   return false;
 }
 
-ChangeInteractionClassSubscriptionMessage::ChangeInteractionClassSubscriptionMessage()
+ChangeInteractionClassSubscriptionMessage::ChangeInteractionClassSubscriptionMessage() :
+  _federationHandle(),
+  _subscriptionType(),
+  _interactionClassHandle()
 {
 }
 
@@ -2169,7 +2271,11 @@ ChangeInteractionClassSubscriptionMessage::operator<(const ChangeInteractionClas
   return false;
 }
 
-ChangeObjectClassSubscriptionMessage::ChangeObjectClassSubscriptionMessage()
+ChangeObjectClassSubscriptionMessage::ChangeObjectClassSubscriptionMessage() :
+  _federationHandle(),
+  _subscriptionType(),
+  _objectClassHandle(),
+  _attributeHandles()
 {
 }
 
@@ -2228,7 +2334,9 @@ ChangeObjectClassSubscriptionMessage::operator<(const ChangeObjectClassSubscript
   return false;
 }
 
-RegistrationForObjectClassMessage::RegistrationForObjectClassMessage()
+RegistrationForObjectClassMessage::RegistrationForObjectClassMessage() :
+  _objectClassHandle(),
+  _start()
 {
 }
 
@@ -2281,7 +2389,10 @@ RegistrationForObjectClassMessage::operator<(const RegistrationForObjectClassMes
   return false;
 }
 
-AttributesInScopeMessage::AttributesInScopeMessage()
+AttributesInScopeMessage::AttributesInScopeMessage() :
+  _objectInstanceHandle(),
+  _attributeHandles(),
+  _inScope()
 {
 }
 
@@ -2343,7 +2454,11 @@ AttributesInScopeMessage::getObjectInstanceHandleForMessage() const
   return getObjectInstanceHandle();
 }
 
-TurnUpdatesOnForInstanceMessage::TurnUpdatesOnForInstanceMessage()
+TurnUpdatesOnForInstanceMessage::TurnUpdatesOnForInstanceMessage() :
+  _objectInstanceHandle(),
+  _attributeHandles(),
+  _updateRate(),
+  _on()
 {
 }
 
@@ -2408,7 +2523,9 @@ TurnUpdatesOnForInstanceMessage::getObjectInstanceHandleForMessage() const
   return getObjectInstanceHandle();
 }
 
-TurnInteractionsOnMessage::TurnInteractionsOnMessage()
+TurnInteractionsOnMessage::TurnInteractionsOnMessage() :
+  _interactionClassHandle(),
+  _on()
 {
 }
 
@@ -2461,7 +2578,13 @@ TurnInteractionsOnMessage::operator<(const TurnInteractionsOnMessage& rhs) const
   return false;
 }
 
-InteractionMessage::InteractionMessage()
+InteractionMessage::InteractionMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _interactionClassHandle(),
+  _transportationType(),
+  _tag(),
+  _parameterValues()
 {
 }
 
@@ -2532,7 +2655,16 @@ InteractionMessage::getReliable() const
   return getTransportationType() == RELIABLE;
 }
 
-TimeStampedInteractionMessage::TimeStampedInteractionMessage()
+TimeStampedInteractionMessage::TimeStampedInteractionMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _interactionClassHandle(),
+  _orderType(),
+  _transportationType(),
+  _tag(),
+  _timeStamp(),
+  _messageRetractionHandle(),
+  _parameterValues()
 {
 }
 
@@ -2612,7 +2744,10 @@ TimeStampedInteractionMessage::getReliable() const
   return getTransportationType() == RELIABLE;
 }
 
-ObjectInstanceHandlesRequestMessage::ObjectInstanceHandlesRequestMessage()
+ObjectInstanceHandlesRequestMessage::ObjectInstanceHandlesRequestMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _count()
 {
 }
 
@@ -2668,7 +2803,10 @@ ObjectInstanceHandlesRequestMessage::operator<(const ObjectInstanceHandlesReques
   return false;
 }
 
-ObjectInstanceHandlesResponseMessage::ObjectInstanceHandlesResponseMessage()
+ObjectInstanceHandlesResponseMessage::ObjectInstanceHandlesResponseMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _objectInstanceHandleNamePairVector()
 {
 }
 
@@ -2724,7 +2862,9 @@ ObjectInstanceHandlesResponseMessage::operator<(const ObjectInstanceHandlesRespo
   return false;
 }
 
-ReleaseMultipleObjectInstanceNameHandlePairsMessage::ReleaseMultipleObjectInstanceNameHandlePairsMessage()
+ReleaseMultipleObjectInstanceNameHandlePairsMessage::ReleaseMultipleObjectInstanceNameHandlePairsMessage() :
+  _federationHandle(),
+  _objectInstanceHandleVector()
 {
 }
 
@@ -2777,7 +2917,10 @@ ReleaseMultipleObjectInstanceNameHandlePairsMessage::operator<(const ReleaseMult
   return false;
 }
 
-ReserveObjectInstanceNameRequestMessage::ReserveObjectInstanceNameRequestMessage()
+ReserveObjectInstanceNameRequestMessage::ReserveObjectInstanceNameRequestMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _name()
 {
 }
 
@@ -2833,7 +2976,11 @@ ReserveObjectInstanceNameRequestMessage::operator<(const ReserveObjectInstanceNa
   return false;
 }
 
-ReserveObjectInstanceNameResponseMessage::ReserveObjectInstanceNameResponseMessage()
+ReserveObjectInstanceNameResponseMessage::ReserveObjectInstanceNameResponseMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _objectInstanceHandleNamePair(),
+  _success()
 {
 }
 
@@ -2892,7 +3039,10 @@ ReserveObjectInstanceNameResponseMessage::operator<(const ReserveObjectInstanceN
   return false;
 }
 
-ReserveMultipleObjectInstanceNameRequestMessage::ReserveMultipleObjectInstanceNameRequestMessage()
+ReserveMultipleObjectInstanceNameRequestMessage::ReserveMultipleObjectInstanceNameRequestMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _nameList()
 {
 }
 
@@ -2948,7 +3098,11 @@ ReserveMultipleObjectInstanceNameRequestMessage::operator<(const ReserveMultiple
   return false;
 }
 
-ReserveMultipleObjectInstanceNameResponseMessage::ReserveMultipleObjectInstanceNameResponseMessage()
+ReserveMultipleObjectInstanceNameResponseMessage::ReserveMultipleObjectInstanceNameResponseMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _objectInstanceHandleNamePairVector(),
+  _success()
 {
 }
 
@@ -3007,7 +3161,12 @@ ReserveMultipleObjectInstanceNameResponseMessage::operator<(const ReserveMultipl
   return false;
 }
 
-InsertObjectInstanceMessage::InsertObjectInstanceMessage()
+InsertObjectInstanceMessage::InsertObjectInstanceMessage() :
+  _federationHandle(),
+  _objectClassHandle(),
+  _objectInstanceHandle(),
+  _name(),
+  _attributeStateVector()
 {
 }
 
@@ -3075,7 +3234,11 @@ InsertObjectInstanceMessage::getObjectInstanceHandleForMessage() const
   return getObjectInstanceHandle();
 }
 
-DeleteObjectInstanceMessage::DeleteObjectInstanceMessage()
+DeleteObjectInstanceMessage::DeleteObjectInstanceMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _objectInstanceHandle(),
+  _tag()
 {
 }
 
@@ -3140,7 +3303,14 @@ DeleteObjectInstanceMessage::getObjectInstanceHandleForMessage() const
   return getObjectInstanceHandle();
 }
 
-TimeStampedDeleteObjectInstanceMessage::TimeStampedDeleteObjectInstanceMessage()
+TimeStampedDeleteObjectInstanceMessage::TimeStampedDeleteObjectInstanceMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _objectInstanceHandle(),
+  _orderType(),
+  _tag(),
+  _timeStamp(),
+  _messageRetractionHandle()
 {
 }
 
@@ -3214,7 +3384,13 @@ TimeStampedDeleteObjectInstanceMessage::getObjectInstanceHandleForMessage() cons
   return getObjectInstanceHandle();
 }
 
-AttributeUpdateMessage::AttributeUpdateMessage()
+AttributeUpdateMessage::AttributeUpdateMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _objectInstanceHandle(),
+  _tag(),
+  _transportationType(),
+  _attributeValues()
 {
 }
 
@@ -3291,7 +3467,16 @@ AttributeUpdateMessage::getObjectInstanceHandleForMessage() const
   return getObjectInstanceHandle();
 }
 
-TimeStampedAttributeUpdateMessage::TimeStampedAttributeUpdateMessage()
+TimeStampedAttributeUpdateMessage::TimeStampedAttributeUpdateMessage() :
+  _federationHandle(),
+  _federateHandle(),
+  _objectInstanceHandle(),
+  _tag(),
+  _timeStamp(),
+  _messageRetractionHandle(),
+  _orderType(),
+  _transportationType(),
+  _attributeValues()
 {
 }
 
@@ -3377,7 +3562,11 @@ TimeStampedAttributeUpdateMessage::getObjectInstanceHandleForMessage() const
   return getObjectInstanceHandle();
 }
 
-RequestAttributeUpdateMessage::RequestAttributeUpdateMessage()
+RequestAttributeUpdateMessage::RequestAttributeUpdateMessage() :
+  _federationHandle(),
+  _objectInstanceHandle(),
+  _attributeHandles(),
+  _tag()
 {
 }
 
@@ -3442,7 +3631,11 @@ RequestAttributeUpdateMessage::getObjectInstanceHandleForMessage() const
   return getObjectInstanceHandle();
 }
 
-RequestClassAttributeUpdateMessage::RequestClassAttributeUpdateMessage()
+RequestClassAttributeUpdateMessage::RequestClassAttributeUpdateMessage() :
+  _federationHandle(),
+  _objectClassHandle(),
+  _attributeHandles(),
+  _tag()
 {
 }
 

@@ -525,11 +525,26 @@ class StructDataType(DataType):
 
         if self.__cow:
             sourceStream.writeline('{name}() : '.format(name = self.getName()))
-            sourceStream.writeline('  _impl(new Implementation)')
+            sourceStream.writeline('  _impl(new Implementation())')
             sourceStream.writeline('{ }')
             valuePrefix = 'getImpl().'
             constValuePrefix = 'getConstImpl().'
         else:
+            fieldCount = len(self.getFieldList())
+            if fieldCount == 0:
+                sourceStream.writeline('{name}()'.format(name = self.getName()))
+            else:
+                sourceStream.writeline('{name}() :'.format(name = self.getName()))
+            sourceStream.pushIndent()
+            index = 0
+            for field in self.getFieldList():
+                line = '{memberName}()'.format(memberName = field.getMemberName())
+                index = index + 1
+                if index < fieldCount:
+                    line += ','
+                sourceStream.writeline(line)
+            sourceStream.popIndent()
+            sourceStream.writeline('{ }')
             valuePrefix = ''
             constValuePrefix = ''
 
@@ -589,6 +604,23 @@ class StructDataType(DataType):
             sourceStream.writeline('struct OPENRTI_API Implementation : public Referenced {')
             sourceStream.pushIndent()
 
+            fieldCount = len(self.getFieldList())
+            if fieldCount == 0:
+                sourceStream.writeline('Implementation()'.format(name = self.getName()))
+            else:
+                sourceStream.writeline('Implementation() :'.format(name = self.getName()))
+            sourceStream.pushIndent()
+            index = 0
+            for field in self.getFieldList():
+                line = '{memberName}()'.format(memberName = field.getMemberName())
+                index = index + 1
+                if index < fieldCount:
+                    line += ','
+                sourceStream.writeline(line)
+            sourceStream.popIndent()
+            sourceStream.writeline('{ }')
+ 
+            
         for field in self.__fieldList:
             field.writeMemberInstance(sourceStream)
 
@@ -717,7 +749,20 @@ class MessageDataType(StructDataType):
         sourceStream.writeline()
 
     def writeImplementation(self, sourceStream):
-        sourceStream.writeline('{name}::{name}()'.format(name = self.getName()))
+        fieldCount = len(self.getFieldList())
+        if fieldCount == 0:
+            sourceStream.writeline('{name}::{name}()'.format(name = self.getName()))
+        else:
+            sourceStream.writeline('{name}::{name}() :'.format(name = self.getName()))
+        sourceStream.pushIndent()
+        index = 0
+        for field in self.getFieldList():
+            line = '{memberName}()'.format(memberName = field.getMemberName())
+            index = index + 1
+            if index < fieldCount:
+                line += ','
+            sourceStream.writeline(line)
+        sourceStream.popIndent()
         sourceStream.writeline('{')
         sourceStream.writeline('}')
         sourceStream.writeline()
