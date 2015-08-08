@@ -547,57 +547,62 @@ public:
   {
   }
 
-  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle, const rti1516::AttributeHandleValueMap&,
-                                      const rti1516::VariableLengthData&, rti1516::OrderType, rti1516::TransportationType,
+  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
+                                      const rti1516::VariableLengthData& tag, rti1516::OrderType orderType, rti1516::TransportationType transportationType,
                                       const rti1516::RegionHandleSet&)
     throw (rti1516::ObjectInstanceNotKnown,
            rti1516::AttributeNotRecognized,
            rti1516::AttributeNotSubscribed,
            rti1516::FederateInternalError)
   {
+    reflectAttributeValues(objectInstanceHandle, attributeHandleValueMap, tag, orderType, transportationType);
   }
 
-  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle, const rti1516::AttributeHandleValueMap&,
-                                      const rti1516::VariableLengthData&, rti1516::OrderType, rti1516::TransportationType,
+  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
+                                      const rti1516::VariableLengthData& tag, rti1516::OrderType orderType, rti1516::TransportationType transportationType,
                                       const rti1516::LogicalTime&, rti1516::OrderType)
     throw (rti1516::ObjectInstanceNotKnown,
            rti1516::AttributeNotRecognized,
            rti1516::AttributeNotSubscribed,
            rti1516::FederateInternalError)
   {
+    reflectAttributeValues(objectInstanceHandle, attributeHandleValueMap, tag, orderType, transportationType);
   }
 
-  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle, const rti1516::AttributeHandleValueMap&,
-                                      const rti1516::VariableLengthData&, rti1516::OrderType, rti1516::TransportationType,
-                                      const rti1516::LogicalTime&, rti1516::OrderType, const rti1516::RegionHandleSet&)
+  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
+                                      const rti1516::VariableLengthData& tag, rti1516::OrderType orderType, rti1516::TransportationType transportationType,
+                                      const rti1516::LogicalTime& logicalTime, rti1516::OrderType receivedOrder, const rti1516::RegionHandleSet&)
     throw (rti1516::ObjectInstanceNotKnown,
            rti1516::AttributeNotRecognized,
            rti1516::AttributeNotSubscribed,
            rti1516::FederateInternalError)
   {
+    reflectAttributeValues(objectInstanceHandle, attributeHandleValueMap, tag, orderType, transportationType, logicalTime, receivedOrder);
   }
 
-  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle, const rti1516::AttributeHandleValueMap&,
-                                      const rti1516::VariableLengthData&, rti1516::OrderType, rti1516::TransportationType,
-                                      const rti1516::LogicalTime&, rti1516::OrderType, rti1516::MessageRetractionHandle)
-    throw (rti1516::ObjectInstanceNotKnown,
-           rti1516::AttributeNotRecognized,
-           rti1516::AttributeNotSubscribed,
-           rti1516::InvalidLogicalTime,
-           rti1516::FederateInternalError)
-  {
-  }
-
-  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle, const rti1516::AttributeHandleValueMap&,
-                                      const rti1516::VariableLengthData&, rti1516::OrderType, rti1516::TransportationType,
-                                      const rti1516::LogicalTime&, rti1516::OrderType, rti1516::MessageRetractionHandle,
-                                      const rti1516::RegionHandleSet&)
+  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
+                                      const rti1516::VariableLengthData& tag, rti1516::OrderType orderType, rti1516::TransportationType transportationType,
+                                      const rti1516::LogicalTime& logicalTime, rti1516::OrderType receivedOrder, rti1516::MessageRetractionHandle)
     throw (rti1516::ObjectInstanceNotKnown,
            rti1516::AttributeNotRecognized,
            rti1516::AttributeNotSubscribed,
            rti1516::InvalidLogicalTime,
            rti1516::FederateInternalError)
   {
+    reflectAttributeValues(objectInstanceHandle, attributeHandleValueMap, tag, orderType, transportationType, logicalTime, receivedOrder);
+  }
+
+  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
+                                      const rti1516::VariableLengthData& tag, rti1516::OrderType orderType, rti1516::TransportationType transportationType,
+                                      const rti1516::LogicalTime& logicalTime, rti1516::OrderType receivedOrder, rti1516::MessageRetractionHandle,
+                                      const rti1516::RegionHandleSet& regionHandleSet)
+    throw (rti1516::ObjectInstanceNotKnown,
+           rti1516::AttributeNotRecognized,
+           rti1516::AttributeNotSubscribed,
+           rti1516::InvalidLogicalTime,
+           rti1516::FederateInternalError)
+  {
+    reflectAttributeValues(objectInstanceHandle, attributeHandleValueMap, tag, orderType, transportationType, logicalTime, receivedOrder, regionHandleSet);
   }
 
   virtual void receiveInteraction(rti1516::InteractionClassHandle, const rti1516::ParameterHandleValueMap&,
@@ -609,14 +614,15 @@ public:
   {
   }
 
-  virtual void receiveInteraction(rti1516::InteractionClassHandle, const rti1516::ParameterHandleValueMap&,
-                                  const rti1516::VariableLengthData&, rti1516::OrderType, rti1516::TransportationType,
+  virtual void receiveInteraction(rti1516::InteractionClassHandle theInteraction, const rti1516::ParameterHandleValueMap& theParameterValues,
+                                  const rti1516::VariableLengthData& theUserSuppliedTag, rti1516::OrderType sentOrder, rti1516::TransportationType theType,
                                   const rti1516::RegionHandleSet&)
     throw (rti1516::InteractionClassNotRecognized,
            rti1516::InteractionParameterNotRecognized,
            rti1516::InteractionClassNotSubscribed,
            rti1516::FederateInternalError)
   {
+    receiveInteraction(theInteraction, theParameterValues, theUserSuppliedTag, sentOrder, theType);
   }
 
   virtual void receiveInteraction(rti1516::InteractionClassHandle theInteraction,
@@ -631,6 +637,7 @@ public:
            rti1516::InteractionClassNotSubscribed,
            rti1516::FederateInternalError)
   {
+    receiveInteraction(theInteraction, theParameterValues, theUserSuppliedTag, sentOrder, theType);
   }
 
   virtual void receiveInteraction(rti1516::InteractionClassHandle theInteraction,
@@ -646,6 +653,7 @@ public:
            rti1516::InteractionClassNotSubscribed,
            rti1516::FederateInternalError)
   {
+    receiveInteraction(theInteraction, theParameterValues, theUserSuppliedTag, sentOrder, theType, theTime, receivedOrder);
   }
 
   virtual void receiveInteraction(rti1516::InteractionClassHandle theInteraction,
@@ -662,6 +670,7 @@ public:
            rti1516::InvalidLogicalTime,
            rti1516::FederateInternalError)
   {
+    receiveInteraction(theInteraction, theParameterValues, theUserSuppliedTag, sentOrder, theType, theTime, receivedOrder);
   }
 
   virtual void receiveInteraction(rti1516::InteractionClassHandle theInteraction,
@@ -679,6 +688,7 @@ public:
            rti1516::InvalidLogicalTime,
            rti1516::FederateInternalError)
   {
+    receiveInteraction(theInteraction, theParameterValues, theUserSuppliedTag, sentOrder, theType, theTime, receivedOrder, theSentRegionHandleSet);
   }
 
   virtual void removeObjectInstance(rti1516::ObjectInstanceHandle theObject,
@@ -697,6 +707,7 @@ public:
     throw (rti1516::ObjectInstanceNotKnown,
            rti1516::FederateInternalError)
   {
+    removeObjectInstance(theObject, theUserSuppliedTag, sentOrder);
   }
 
   virtual void removeObjectInstance(rti1516::ObjectInstanceHandle theObject,
@@ -709,6 +720,7 @@ public:
            rti1516::InvalidLogicalTime,
            rti1516::FederateInternalError)
   {
+    removeObjectInstance(theObject, theUserSuppliedTag, sentOrder, theTime, receivedOrder);
   }
 
   virtual void attributesInScope(rti1516::ObjectInstanceHandle theObject,
