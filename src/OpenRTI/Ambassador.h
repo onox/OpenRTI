@@ -3487,20 +3487,19 @@ public:
   bool evokeCallback(double approximateMinimumTimeInSeconds)
     // throw (RTIinternalError)
   {
-    Clock clock = Clock::now();
-    clock += Clock::fromSeconds(approximateMinimumTimeInSeconds);
+    Clock clock = addSecondsSaturate(Clock::now(), approximateMinimumTimeInSeconds);
     return dispatchCallback(clock);
   }
 
   bool evokeMultipleCallbacks(double approximateMinimumTimeInSeconds, double approximateMaximumTimeInSeconds)
     // throw (RTIinternalError)
   {
-    Clock clock = Clock::now();
-    clock += Clock::fromSeconds(approximateMinimumTimeInSeconds);
+    Clock reference = Clock::now();
+    Clock clock = addSecondsSaturate(reference, approximateMinimumTimeInSeconds);
     if (!dispatchCallback(clock))
       return false;
 
-    clock = Clock::now() + Clock::fromSeconds(approximateMaximumTimeInSeconds);
+    clock = addSecondsSaturate(reference, approximateMaximumTimeInSeconds);
     do {
       if (!dispatchCallback(Clock::initial()))
         return false;

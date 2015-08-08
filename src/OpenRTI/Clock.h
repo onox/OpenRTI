@@ -110,6 +110,18 @@ Clock operator-(const Clock& clock1, const Clock& clock2)
 // Clock operator/(const Clock& clock1, const Clock& clock2)
 // { return Clock(clock1) /= clock2; }
 
+inline
+Clock addSecondsSaturate(const Clock& clock, const double& seconds)
+{
+  double nsecs = 1e9*seconds;
+  if (nsecs <= -double(clock.getNSec()))
+    return Clock::initial();
+  else if (double((Clock::final() - clock).getNSec()) <= nsecs)
+    return Clock::final();
+  else
+    return clock + Clock::fromNSec(uint64_t(nsecs));
+}
+
 template<typename char_type, typename traits_type>
 inline
 std::basic_ostream<char_type, traits_type>&
