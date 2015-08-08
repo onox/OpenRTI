@@ -3495,9 +3495,15 @@ public:
     // throw (RTIinternalError)
   {
     Clock reference = Clock::now();
+    // 10.42 [...] The service shall continue to process available callbacks
+    // until the minimum time specified wall clock time. At that
+    // wall clock time if there are no additional callbacks to be
+    // delivered to the federate, the service shall complete.
     Clock clock = addSecondsSaturate(reference, approximateMinimumTimeInSeconds);
-    if (!dispatchCallback(clock))
-      return false;
+    do {
+      if (!dispatchCallback(clock))
+        return false;
+    } while (Clock::now() <= clock);
 
     clock = addSecondsSaturate(reference, approximateMaximumTimeInSeconds);
     do {
