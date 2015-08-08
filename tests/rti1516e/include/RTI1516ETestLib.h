@@ -37,6 +37,19 @@
 
 namespace OpenRTI {
 
+inline bool
+operator==(const rti1516e::VariableLengthData& lhs, const rti1516e::VariableLengthData& rhs)
+{
+  unsigned long size = lhs.size();
+  if (size != rhs.size())
+    return false;
+  return 0 == memcmp(lhs.data(), rhs.data(), size);
+}
+
+inline bool
+operator!=(const rti1516e::VariableLengthData& lhs, const rti1516e::VariableLengthData& rhs)
+{ return !operator==(lhs, rhs); }
+
 inline rti1516e::VariableLengthData
 toVariableLengthData(const char* s)
 {
