@@ -1254,7 +1254,7 @@ Federation::~Federation()
   // OpenRTIAssert(_synchronizationNameSynchronizationMap.empty());
   _synchronizationNameSynchronizationMap.clear();
 
-  OpenRTIAssert(_federateNameFederateMap.empty());
+  _federateHandleFederateMap.clear();
   OpenRTIAssert(_federateHandleFederateMap.empty());
 
   OpenRTIAssert(_timeRegulatingFederationConnectList.empty());
