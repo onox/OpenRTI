@@ -1002,10 +1002,7 @@ public:
           request->getAttributeStateVector().push_back(attributeState);
         }
         if (!isParentConnect(connectHandle)) {
-          ServerModel::ObjectInstance* objectInstance = getObjectInstance((*j)->getObjectInstanceHandle());
-          if (!objectInstance)
-            objectInstance = insertObjectInstance((*j)->getObjectInstanceHandle(), (*j)->getName());
-          objectInstance->reference(*federationConnect);
+          (*j)->reference(*federationConnect);
         }
         federationConnect->send(request);
       }
