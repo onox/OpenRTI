@@ -64,16 +64,13 @@ public:
   void acceptInternalMessage(const AbstractMessage& message);
   /// Internal message processing methods
   void acceptInternalMessage(const ConnectionLostMessage& message);
-  void acceptInternalMessage(const EnumerateFederationExecutionsRequestMessage& message);
   void acceptInternalMessage(const EnumerateFederationExecutionsResponseMessage& message);
   virtual void acceptInternalMessage(const InsertFederationExecutionMessage& message) = 0;
   void acceptInternalMessage(const ShutdownFederationExecutionMessage& message);
   void acceptInternalMessage(const EraseFederationExecutionMessage& message);
   void acceptInternalMessage(const ReleaseFederationHandleMessage& message);
   void acceptInternalMessage(const InsertModulesMessage& message);
-  void acceptInternalMessage(const JoinFederationExecutionRequestMessage& message);
   void acceptInternalMessage(const JoinFederationExecutionResponseMessage& message);
-  void acceptInternalMessage(const ResignFederationExecutionRequestMessage& message);
   void acceptInternalMessage(const JoinFederateNotifyMessage& message);
   void acceptInternalMessage(const ResignFederateNotifyMessage& message);
   void acceptInternalMessage(const ChangeAutomaticResignDirectiveMessage& message);
@@ -98,12 +95,8 @@ public:
   void acceptInternalMessage(const TurnInteractionsOnMessage& message);
   void acceptInternalMessage(const InteractionMessage& message);
   void acceptInternalMessage(const TimeStampedInteractionMessage& message);
-  void acceptInternalMessage(const ObjectInstanceHandlesRequestMessage& message);
   void acceptInternalMessage(const ObjectInstanceHandlesResponseMessage& message);
-  void acceptInternalMessage(const ReleaseMultipleObjectInstanceNameHandlePairsMessage& message);
-  void acceptInternalMessage(const ReserveObjectInstanceNameRequestMessage& message);
   void acceptInternalMessage(const ReserveObjectInstanceNameResponseMessage& message);
-  void acceptInternalMessage(const ReserveMultipleObjectInstanceNameRequestMessage& message);
   void acceptInternalMessage(const ReserveMultipleObjectInstanceNameResponseMessage& message);
   void acceptInternalMessage(const InsertObjectInstanceMessage& message);
   void acceptInternalMessage(const DeleteObjectInstanceMessage& message);

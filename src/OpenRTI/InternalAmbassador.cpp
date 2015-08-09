@@ -127,11 +127,6 @@ InternalAmbassador::acceptInternalMessage(const ConnectionLostMessage& message)
 }
 
 void
-InternalAmbassador::acceptInternalMessage(const EnumerateFederationExecutionsRequestMessage& message)
-{
-}
-
-void
 InternalAmbassador::acceptInternalMessage(const EnumerateFederationExecutionsResponseMessage& message)
 {
 }
@@ -168,11 +163,6 @@ InternalAmbassador::acceptInternalMessage(const InsertModulesMessage& message)
 }
 
 void
-InternalAmbassador::acceptInternalMessage(const JoinFederationExecutionRequestMessage& message)
-{
-}
-
-void
 InternalAmbassador::acceptInternalMessage(const JoinFederationExecutionResponseMessage& message)
 {
   Federate* federate = getFederate();
@@ -181,11 +171,6 @@ InternalAmbassador::acceptInternalMessage(const JoinFederationExecutionResponseM
   federate->setFederateHandle(message.getFederateHandle());
   federate->setFederateName(message.getFederateName());
   federate->setFederateType(message.getFederateType());
-}
-
-void
-InternalAmbassador::acceptInternalMessage(const ResignFederationExecutionRequestMessage& message)
-{
 }
 
 void
@@ -349,11 +334,6 @@ InternalAmbassador::acceptInternalMessage(const TimeStampedInteractionMessage& m
 }
 
 void
-InternalAmbassador::acceptInternalMessage(const ObjectInstanceHandlesRequestMessage& message)
-{
-}
-
-void
 InternalAmbassador::acceptInternalMessage(const ObjectInstanceHandlesResponseMessage& message)
 {
   Federate* federate = getFederate();
@@ -363,24 +343,9 @@ InternalAmbassador::acceptInternalMessage(const ObjectInstanceHandlesResponseMes
 }
 
 void
-InternalAmbassador::acceptInternalMessage(const ReleaseMultipleObjectInstanceNameHandlePairsMessage& message)
-{
-}
-
-void
-InternalAmbassador::acceptInternalMessage(const ReserveObjectInstanceNameRequestMessage& message)
-{
-}
-
-void
 InternalAmbassador::acceptInternalMessage(const ReserveObjectInstanceNameResponseMessage& message)
 {
   queueCallback(message);
-}
-
-void
-InternalAmbassador::acceptInternalMessage(const ReserveMultipleObjectInstanceNameRequestMessage& message)
-{
 }
 
 void
