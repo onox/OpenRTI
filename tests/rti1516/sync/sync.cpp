@@ -29,7 +29,7 @@
 
 #include <RTI1516TestLib.h>
 
-using namespace OpenRTI;
+namespace OpenRTI {
 
 class OPENRTI_LOCAL TestAmbassador : public RTI1516TestAmbassador {
 public:
@@ -61,9 +61,11 @@ public:
   }
 };
 
+}
+
 int
 main(int argc, char* argv[])
 {
-  Test test(argc, argv);
+  OpenRTI::Test test(argc, argv);
   return test.exec();
 }

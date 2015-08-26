@@ -27,7 +27,7 @@
 
 #include <RTI1516TestLib.h>
 
-using namespace OpenRTI;
+namespace OpenRTI {
 
 enum RequestType {
   Interaction0,
@@ -632,9 +632,11 @@ private:
   unsigned _count;
 };
 
+}
+
 int
 main(int argc, char* argv[])
 {
-  Test test(argc, argv);
+  OpenRTI::Test test(argc, argv);
   return test.exec();
 }

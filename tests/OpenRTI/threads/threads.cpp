@@ -218,28 +218,26 @@ protected:
 
 } // namespace OpenRTI
 
-using namespace OpenRTI;
-
 int
 main(int argc, char* argv[])
 {
-  if (!ThreadTest::exec()) {
+  if (!OpenRTI::ThreadTest::exec()) {
     std::cerr << "ThreadTest failed!" << std::endl;
     return EXIT_FAILURE;
   }
-  if (!DetachedTest::exec()) {
+  if (!OpenRTI::DetachedTest::exec()) {
     std::cerr << "DetachedTest failed!" << std::endl;
     return EXIT_FAILURE;
   }
-  if (!AtomicTest::exec()) {
+  if (!OpenRTI::AtomicTest::exec()) {
     std::cerr << "AtomicTest failed!" << std::endl;
     return EXIT_FAILURE;
   }
-  if (!MutexTest::exec()) {
+  if (!OpenRTI::MutexTest::exec()) {
     std::cerr << "MutexTest failed!" << std::endl;
     return EXIT_FAILURE;
   }
-  if (!ConditionTest::exec()) {
+  if (!OpenRTI::ConditionTest::exec()) {
     std::cerr << "ConditionTest failed!" << std::endl;
     return EXIT_FAILURE;
   }

@@ -33,7 +33,7 @@
 // That means all but one must fail.
 // But exactly one must be successful.
 
-using namespace OpenRTI;
+namespace OpenRTI {
 
 class OPENRTI_LOCAL TestAmbassador : public RTITest::Ambassador {
 public:
@@ -238,9 +238,11 @@ public:
   }
 };
 
+}
+
 int
 main(int argc, char* argv[])
 {
-  Test test(argc, argv);
+  OpenRTI::Test test(argc, argv);
   return test.exec();
 }

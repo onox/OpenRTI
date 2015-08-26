@@ -22,10 +22,8 @@
 
 #include "SocketAddress.h"
 
-using namespace OpenRTI;
-
 static bool
-testSelfRelations(const SocketAddress& socketAddress)
+testSelfRelations(const OpenRTI::SocketAddress& socketAddress)
 {
   if (socketAddress != socketAddress)
     return false;
@@ -44,14 +42,14 @@ testSelfRelations(const SocketAddress& socketAddress)
 }
 
 static bool
-testNumericNameResolvesToItSelf(const SocketAddress& socketAddress, bool passive)
+testNumericNameResolvesToItSelf(const OpenRTI::SocketAddress& socketAddress, bool passive)
 {
   std::string name = socketAddress.getNumericName();
-  SocketAddressList addressList = SocketAddress::resolve(name, passive);
+  OpenRTI::SocketAddressList addressList = OpenRTI::SocketAddress::resolve(name, passive);
   // Ok, since the resolve step injects the infiniband addresses, just check if we have one that resolves back
   // FIXME rethink this
   bool matched = false;
-  for (SocketAddressList::const_iterator i = addressList.begin(); i != addressList.end(); ++i) {
+  for (OpenRTI::SocketAddressList::const_iterator i = addressList.begin(); i != addressList.end(); ++i) {
     if (!i->valid())
       return false;
     if (i->isPipe() != socketAddress.isPipe())
@@ -70,7 +68,7 @@ testNumericNameResolvesToItSelf(const SocketAddress& socketAddress, bool passive
 
 int main(int argc, char* argv[])
 {
-  SocketAddress socketAddress;
+  OpenRTI::SocketAddress socketAddress;
   if (socketAddress.valid())
     return EXIT_FAILURE;
   if (socketAddress.isPipe())
@@ -82,10 +80,10 @@ int main(int argc, char* argv[])
   if (!testSelfRelations(socketAddress))
     return EXIT_FAILURE;
 
-  SocketAddressList addressList;
+  OpenRTI::SocketAddressList addressList;
 
-  addressList = SocketAddress::resolve("0.0.0.0", true);
-  for (SocketAddressList::const_iterator i = addressList.begin(); i != addressList.end(); ++i) {
+  addressList = OpenRTI::SocketAddress::resolve("0.0.0.0", true);
+  for (OpenRTI::SocketAddressList::const_iterator i = addressList.begin(); i != addressList.end(); ++i) {
     if (!i->valid())
       return EXIT_FAILURE;
     if (i->isPipe())
@@ -100,8 +98,8 @@ int main(int argc, char* argv[])
       return EXIT_FAILURE;
   }
 
-  addressList = SocketAddress::resolve("::", true);
-  for (SocketAddressList::const_iterator i = addressList.begin(); i != addressList.end(); ++i) {
+  addressList = OpenRTI::SocketAddress::resolve("::", true);
+  for (OpenRTI::SocketAddressList::const_iterator i = addressList.begin(); i != addressList.end(); ++i) {
     if (!i->valid())
       return EXIT_FAILURE;
     if (i->isPipe())

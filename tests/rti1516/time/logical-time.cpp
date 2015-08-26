@@ -29,8 +29,6 @@
 #include <Options.h>
 #include <StringUtils.h>
 
-using namespace OpenRTI;
-
 // FIXME adapt the tests to check for these explicitly.
 //
 // The standard paper wants:
@@ -58,7 +56,7 @@ main(int argc, char* argv[])
 {
   std::string implementationName;
 
-  Options options(argc, argv);
+  OpenRTI::Options options(argc, argv);
   while (options.next("F:")) {
     switch (options.getOptChar()) {
     case 'F':
@@ -68,7 +66,7 @@ main(int argc, char* argv[])
   }
 
   std::auto_ptr<rti1516::LogicalTimeFactory> factory;
-  factory = rti1516::LogicalTimeFactoryFactory::makeLogicalTimeFactory(localeToUcs(implementationName));
+  factory = rti1516::LogicalTimeFactoryFactory::makeLogicalTimeFactory(OpenRTI::localeToUcs(implementationName));
   if (!factory.get()) {
     std::cerr << "Can not create logical time factory: \"" << implementationName << "\"!" << std::endl;
     return EXIT_FAILURE;
@@ -188,7 +186,7 @@ main(int argc, char* argv[])
       std::cerr << "Initial time plus epsilon is not greater than initial time!" << std::endl;
       return EXIT_FAILURE;
     }
-    // std::cout << "Time: " << ucsToLocale(logicalTime->toString()) << std::endl;
+    // std::cout << "Time: " << OpenRTI::ucsToLocale(logicalTime->toString()) << std::endl;
   }
 
   return EXIT_SUCCESS;

@@ -31,14 +31,12 @@
 #include <sys/resource.h>
 #endif
 
-using namespace OpenRTI;
-
 static void usage(const char* argv0)
 {
   std::cerr << argv0 << ": [-b] [-c configfile] [-f file] [-h] [-i address] [-p parent]" << std::endl;
 }
 
-static NetworkServer* _networkServer = NULL;
+static OpenRTI::NetworkServer* _networkServer = NULL;
 
 static void sighandler(int sig)
 {
@@ -50,7 +48,7 @@ static void sighandler(int sig)
 int
 main(int argc, char* argv[])
 {
-  NetworkServer networkServer;
+  OpenRTI::NetworkServer networkServer;
   _networkServer = &networkServer;
 
   // We want to stop gracefully
@@ -63,7 +61,7 @@ main(int argc, char* argv[])
   bool background = false;
   bool defaultListen = true;
 
-  Options options(argc, argv);
+  OpenRTI::Options options(argc, argv);
   while (options.next("bc:f:hi:p:s")) {
     switch (options.getOptChar()) {
     case 'b':
@@ -73,9 +71,9 @@ main(int argc, char* argv[])
       try {
         defaultListen = false;
         networkServer.setUpFromConfig(options.getArgument());
-      } catch (const Exception& e) {
+      } catch (const OpenRTI::Exception& e) {
         std::cerr << "Could not set up server from config file:" << std::endl;
-        std::cerr << utf8ToLocale(e.getReason()) << std::endl;
+        std::cerr << OpenRTI::utf8ToLocale(e.getReason()) << std::endl;
         _networkServer = NULL;
         return EXIT_FAILURE;
       }
@@ -83,12 +81,12 @@ main(int argc, char* argv[])
     case 'f':
       try {
         defaultListen = false;
-        URL url = URL::fromUrl(localeToUtf8(options.getArgument()));
+        OpenRTI::URL url = OpenRTI::URL::fromUrl(OpenRTI::localeToUtf8(options.getArgument()));
         url.setProtocol("pipe");
         networkServer.listen(url, 20);
-      } catch (const Exception& e) {
+      } catch (const OpenRTI::Exception& e) {
         std::cerr << "Could not set up pipe server transport:" << std::endl;
-        std::cerr << utf8ToLocale(e.getReason()) << std::endl;
+        std::cerr << OpenRTI::utf8ToLocale(e.getReason()) << std::endl;
         _networkServer = NULL;
         return EXIT_FAILURE;
       }
@@ -100,30 +98,30 @@ main(int argc, char* argv[])
     case 'i':
       try {
         defaultListen = false;
-        URL url = URL::fromUrl(localeToUtf8(options.getArgument()));
+        OpenRTI::URL url = OpenRTI::URL::fromUrl(OpenRTI::localeToUtf8(options.getArgument()));
         if (url.getProtocol().empty())
           url.setProtocol("rti");
         networkServer.listen(url, 20);
-      } catch (const Exception& e) {
+      } catch (const OpenRTI::Exception& e) {
         std::cerr << "Could not set up inet server transport:" << std::endl;
-        std::cerr << utf8ToLocale(e.getReason()) << std::endl;
+        std::cerr << OpenRTI::utf8ToLocale(e.getReason()) << std::endl;
         _networkServer = NULL;
         return EXIT_FAILURE;
       }
       break;
     case 'p':
       try {
-        URL url = URL::fromUrl(localeToUtf8(options.getArgument()));
+        OpenRTI::URL url = OpenRTI::URL::fromUrl(OpenRTI::localeToUtf8(options.getArgument()));
         if (url.getProtocol().empty()) {
           if (!url.getPath().empty())
             url.setProtocol("pipe");
           else
             url.setProtocol("rti");
         }
-        networkServer.connectParentServer(url, Clock::now() + Clock::fromSeconds(75));
-      } catch (const Exception& e) {
+        networkServer.connectParentServer(url, OpenRTI::Clock::now() + OpenRTI::Clock::fromSeconds(75));
+      } catch (const OpenRTI::Exception& e) {
         std::cerr << "Could not connect parent server:" << std::endl;
-        std::cerr << utf8ToLocale(e.getReason()) << std::endl;
+        std::cerr << OpenRTI::utf8ToLocale(e.getReason()) << std::endl;
         _networkServer = NULL;
         return EXIT_FAILURE;
       }
@@ -134,13 +132,13 @@ main(int argc, char* argv[])
   if (defaultListen) {
     // Try to listen on all sockets by default
     try {
-      networkServer.listen(URL::fromUrl("rti://::"), 20);
-    } catch (const Exception&) {
+      networkServer.listen(OpenRTI::URL::fromUrl("rti://::"), 20);
+    } catch (const OpenRTI::Exception&) {
       try {
-        networkServer.listen(URL::fromUrl("rti://0.0.0.0"), 20);
-      } catch (const Exception& e) {
+        networkServer.listen(OpenRTI::URL::fromUrl("rti://0.0.0.0"), 20);
+      } catch (const OpenRTI::Exception& e) {
         std::cerr << "Could not set up default inet server transport:" << std::endl;
-        std::cerr << utf8ToLocale(e.getReason()) << std::endl;
+        std::cerr << OpenRTI::utf8ToLocale(e.getReason()) << std::endl;
         _networkServer = NULL;
         return EXIT_FAILURE;
       }

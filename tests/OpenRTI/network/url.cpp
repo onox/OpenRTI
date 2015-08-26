@@ -22,10 +22,8 @@
 
 #include "URL.h"
 
-using namespace OpenRTI;
-
 static bool
-test(const URL& url)
+test(const OpenRTI::URL& url)
 {
   if (url != url)
     return false;
@@ -40,7 +38,7 @@ test(const URL& url)
   // if (!(url >= url))
   //   return false;
 
-  URL url2 = URL::fromUrl(url.str());
+  OpenRTI::URL url2 = OpenRTI::URL::fromUrl(url.str());
   if (url2 != url)
     return false;
   if (url2.str() != url.str())
@@ -51,7 +49,7 @@ test(const URL& url)
 
 int main(int argc, char* argv[])
 {
-  URL url;
+  OpenRTI::URL url;
   url.setProtocol("http");
   if (!test(url))
     return EXIT_FAILURE;
@@ -68,9 +66,9 @@ int main(int argc, char* argv[])
   if (!test(url))
     return EXIT_FAILURE;
 
-  StringPairVector queries;
-  queries.push_back(StringPair("key1", "value1"));
-  queries.push_back(StringPair("key2", "value2"));
+  OpenRTI::StringPairVector queries;
+  queries.push_back(OpenRTI::StringPair("key1", "value1"));
+  queries.push_back(OpenRTI::StringPair("key2", "value2"));
   url.setQuery(queries);
   if (!test(url))
     return EXIT_FAILURE;

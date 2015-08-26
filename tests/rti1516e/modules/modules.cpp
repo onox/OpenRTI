@@ -32,7 +32,7 @@
 #include <TestLib.h>
 #include <RTI1516ETestLib.h>
 
-using namespace OpenRTI;
+namespace OpenRTI {
 
 struct OPENRTI_LOCAL InteractionClass {
   std::set<std::wstring> _parameterNames;
@@ -769,9 +769,11 @@ public:
   }
 };
 
+}
+
 int
 main(int argc, char* argv[])
 {
-  Test test(argc, argv);
+  OpenRTI::Test test(argc, argv);
   return test.exec();
 }
