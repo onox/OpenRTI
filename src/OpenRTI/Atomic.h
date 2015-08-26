@@ -243,7 +243,7 @@ private:
 #endif
 
 #if defined(OpenRTI_ATOMIC_USE_MUTEX)
-  Mutex _mutex;
+  mutable Mutex _mutex;
 #endif
 #if defined(OpenRTI_ATOMIC_USE_WIN32_INTERLOCKED)
   volatile long _value;
