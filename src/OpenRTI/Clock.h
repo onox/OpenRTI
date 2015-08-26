@@ -46,10 +46,28 @@ public:
   static Clock max()
   { return Clock(std::numeric_limits<uint64_t>::max()); }
 
+  /// Conversion from seconds, note that these conversions saturate
   static Clock fromSeconds(int seconds)
-  { return Clock(seconds*uint64_t(1000000000)); }
+  {
+    if (seconds <= 0)
+      return zero();
+    else if (std::numeric_limits<uint64_t>::max()/uint64_t(1000000000) <= seconds)
+      return max();
+    else
+      return Clock(seconds*uint64_t(1000000000));
+  }
   static Clock fromSeconds(const double& seconds)
-  { return Clock(uint64_t(seconds*1000000000)); }
+  {
+    if (seconds <= 0.0)
+      return zero();
+    else {
+      double nsec = 1e9*seconds;
+      if (double(std::numeric_limits<uint64_t>::max()) <= nsec)
+        return max();
+      return Clock(uint64_t(nsec));
+    }
+  }
+  /// Conversion from nanoseconds
   static Clock fromNSec(const uint64_t& nsec)
   { return Clock(nsec); }
 
@@ -58,15 +76,21 @@ public:
   void setNSec(const uint64_t& nsec)
   { _nsec = nsec; }
 
-  // Arithmetic
+  // Arithmetic, note that these two do not wrap.
   Clock& operator+=(const Clock& clock)
   {
-    _nsec += clock._nsec;
+    if (~_nsec <= clock._nsec)
+      _nsec = std::numeric_limits<uint64_t>::max();
+    else
+      _nsec += clock._nsec;
     return *this;
   }
   Clock& operator-=(const Clock& clock)
   {
-    _nsec -= clock._nsec;
+    if (_nsec <= clock._nsec)
+      _nsec = 0;
+    else
+      _nsec -= clock._nsec;
     return *this;
   }
 
@@ -107,18 +131,6 @@ Clock operator-(const Clock& clock1, const Clock& clock2)
 // inline
 // Clock operator/(const Clock& clock1, const Clock& clock2)
 // { return Clock(clock1) /= clock2; }
-
-inline
-Clock addSecondsSaturate(const Clock& clock, const double& seconds)
-{
-  double nsecs = 1e9*seconds;
-  if (nsecs <= -double(clock.getNSec()))
-    return Clock::zero();
-  else if (double((Clock::max() - clock).getNSec()) <= nsecs)
-    return Clock::max();
-  else
-    return clock + Clock::fromNSec(uint64_t(nsecs));
-}
 
 template<typename char_type, typename traits_type>
 inline

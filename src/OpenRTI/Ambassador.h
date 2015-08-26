@@ -3487,7 +3487,7 @@ public:
   bool evokeCallback(double approximateMinimumTimeInSeconds)
     // throw (RTIinternalError)
   {
-    Clock clock = addSecondsSaturate(Clock::now(), approximateMinimumTimeInSeconds);
+    Clock clock = Clock::now() + Clock::fromSeconds(approximateMinimumTimeInSeconds);
     return dispatchCallback(clock);
   }
 
@@ -3499,13 +3499,13 @@ public:
     // until the minimum time specified wall clock time. At that
     // wall clock time if there are no additional callbacks to be
     // delivered to the federate, the service shall complete.
-    Clock clock = addSecondsSaturate(reference, approximateMinimumTimeInSeconds);
+    Clock clock = reference + Clock::fromSeconds(approximateMinimumTimeInSeconds);
     do {
       if (!dispatchCallback(clock))
         return false;
     } while (Clock::now() <= clock);
 
-    clock = addSecondsSaturate(reference, approximateMaximumTimeInSeconds);
+    clock = reference + Clock::fromSeconds(approximateMaximumTimeInSeconds);
     do {
       if (!dispatchCallback(Clock::zero()))
         return false;
