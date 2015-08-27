@@ -20,10 +20,13 @@
 #ifndef OpenRTI_RTI1516TestLib_h
 #define OpenRTI_RTI1516TestLib_h
 
+#include <algorithm>
 #include <cstring>
+#include <iterator>
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 #include <RTI/FederateAmbassador.h>
 #include <RTI/RTIambassadorFactory.h>
@@ -894,6 +897,7 @@ class OPENRTI_LOCAL RTI1516SimpleAmbassador : public rti1516::FederateAmbassador
 public:
   RTI1516SimpleAmbassador() :
     // _fail(false),
+    _useDataUrlObjectModels(false),
     _timeRegulationEnabled(false),
     _timeConstrainedEnabled(false),
     _timeAdvancePending(false)
@@ -904,6 +908,11 @@ public:
 
   // bool getFail() const
   // { return _fail; }
+
+  void setUseDataUrlObjectModels(bool useDataUrlObjectModels)
+  { _useDataUrlObjectModels = useDataUrlObjectModels; }
+  bool getUseDataUrlObjectModels() const
+  { return _useDataUrlObjectModels; }
 
   bool getTimeRegulationEnabled() const
   { return _timeRegulationEnabled; }
@@ -928,8 +937,9 @@ public:
     _logicalTimeFactory = rti1516::LogicalTimeFactoryFactory::makeLogicalTimeFactory(logicalTimeImplementationName);
   }
 
-  void createFederationExecution(const std::wstring& federationExecutionName, const std::wstring& fddFile)
+  void createFederationExecution(const std::wstring& federationExecutionName, std::wstring fddFile)
   {
+    _replaceFileWithDataIfNeeded(fddFile);
     _ambassador->createFederationExecution(federationExecutionName, fddFile, _logicalTimeImplementationName);
   }
 
@@ -2107,6 +2117,24 @@ protected:
   // { _fail = true; }
 
 private:
+  void _replaceFileWithDataIfNeeded(std::wstring& fddFile)
+  {
+    if (!_useDataUrlObjectModels)
+      return;
+    // already a data url
+    if (fddFile.compare(0, 5, L"data:") == 0)
+      return;
+    std::wifstream stream;
+    if (fddFile.compare(0, 8, L"file:///") == 0)
+      stream.open(OpenRTI::ucsToLocale(fddFile.substr(8)).c_str());
+    else
+      stream.open(OpenRTI::ucsToLocale(fddFile).c_str());
+    if (!stream.is_open())
+      return;
+    fddFile = L"data:,";
+    std::copy(std::istreambuf_iterator<wchar_t>(stream), std::istreambuf_iterator<wchar_t>(), std::back_inserter(fddFile));
+  }
+
   // bool _verifyGrantedLogicalTime(const rti1516::LogicalTime& logicalTime) const
   // { return logicalTime == *_grantedLogicalTime; }
 
@@ -2142,6 +2170,8 @@ private:
   // bool _fail;
 
   std::auto_ptr<rti1516::RTIambassador> _ambassador;
+
+  bool _useDataUrlObjectModels;
 
   std::wstring _logicalTimeImplementationName;
   std::auto_ptr<rti1516::LogicalTimeFactory> _logicalTimeFactory;

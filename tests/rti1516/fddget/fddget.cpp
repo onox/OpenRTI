@@ -35,6 +35,7 @@ int
 main(int argc, char* argv[])
 {
   std::wstring federationExecutionName(L"federationExecutionName");
+  bool useDataUrlObjectModels = false;
   std::wstring fullPathNameToTheFDDfile(L"fdd.xml");
 
   std::wstring objectClassName;
@@ -47,13 +48,16 @@ main(int argc, char* argv[])
 
   OpenRTI::Options options(argc, argv);
   std::vector<std::wstring> args;
-  while (options.next("a:d:i:F:o:O:p:")) {
+  while (options.next("a:d:Di:F:o:O:p:")) {
     switch (options.getOptChar()) {
     case 'a':
       attributeNameVector.push_back(OpenRTI::localeToUcs(options.getArgument()));
       break;
     case 'd':
       dimensionNameVector.push_back(OpenRTI::localeToUcs(options.getArgument()));
+      break;
+    case 'D':
+      useDataUrlObjectModels = true;
       break;
     case 'i':
       interactionClassName = OpenRTI::localeToUcs(options.getArgument());
@@ -77,6 +81,7 @@ main(int argc, char* argv[])
   }
 
   OpenRTI::RTI1516SimpleAmbassador ambassador;
+  ambassador.setUseDataUrlObjectModels(useDataUrlObjectModels);
 
   ambassador.connect(args);
 

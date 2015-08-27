@@ -20,9 +20,12 @@
 #ifndef OpenRTI_RTI13TestLib_h
 #define OpenRTI_RTI13TestLib_h
 
+#include <algorithm>
+#include <iterator>
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 #include <RTI.hh>
 #include <fedtime.hh>
@@ -644,6 +647,7 @@ class OPENRTI_LOCAL RTI13SimpleAmbassador : public RTI::FederateAmbassador {
 public:
   RTI13SimpleAmbassador() :
     // _fail(false),
+    _useDataUrlObjectModels(false),
     _timeRegulationEnabled(false),
     _timeConstrainedEnabled(false),
     _timeAdvancePending(false)
@@ -654,6 +658,11 @@ public:
 
   // bool getFail() const
   // { return _fail; }
+
+  void setUseDataUrlObjectModels(bool useDataUrlObjectModels)
+  { _useDataUrlObjectModels = useDataUrlObjectModels; }
+  bool getUseDataUrlObjectModels() const
+  { return _useDataUrlObjectModels; }
 
   bool getTimeRegulationEnabled() const
   { return _timeRegulationEnabled; }
@@ -670,8 +679,9 @@ public:
     _ambassador.reset(new RTI::RTIambassador);
   }
 
-  void createFederationExecution(const std::string& federationExecutionName, const std::string& fddFile)
+  void createFederationExecution(const std::string& federationExecutionName, std::string fddFile)
   {
+    _replaceFileWithDataIfNeeded(fddFile);
     _ambassador->createFederationExecution(federationExecutionName.c_str(), fddFile.c_str());
   }
 
@@ -1547,6 +1557,24 @@ protected:
   // { _fail = true; }
 
 private:
+  void _replaceFileWithDataIfNeeded(std::string& fddFile)
+  {
+    if (!_useDataUrlObjectModels)
+      return;
+    // already a data url
+    if (fddFile.compare(0, 5, "data:") == 0)
+      return;
+    std::ifstream stream;
+    if (fddFile.compare(0, 8, "file:///") == 0)
+      stream.open(fddFile.substr(8).c_str());
+    else
+      stream.open(fddFile.c_str());
+    if (!stream.is_open())
+      return;
+    fddFile = "data:,";
+    std::copy(std::istreambuf_iterator<char>(stream), std::istreambuf_iterator<char>(), std::back_inserter(fddFile));
+  }
+
   // bool _verifyGrantedFedTime(const RTI::FedTime& logicalTime) const
   // { return logicalTime == *_grantedFedTime; }
 
@@ -1582,6 +1610,8 @@ private:
   // bool _fail;
 
   std::auto_ptr<RTI::RTIambassador> _ambassador;
+
+  bool _useDataUrlObjectModels;
 
   RTI::FederateHandle _federateHandle;
 

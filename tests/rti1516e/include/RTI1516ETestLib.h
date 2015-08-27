@@ -20,10 +20,13 @@
 #ifndef OpenRTI_RTI1516ETestLib_h
 #define OpenRTI_RTI1516ETestLib_h
 
+#include <algorithm>
 #include <cstring>
+#include <iterator>
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 #include <RTI/FederateAmbassador.h>
 #include <RTI/RTIambassadorFactory.h>
@@ -749,6 +752,7 @@ private:
 class OPENRTI_LOCAL RTI1516ESimpleAmbassador : public rti1516e::FederateAmbassador {
 public:
   RTI1516ESimpleAmbassador() :
+    _useDataUrlObjectModels(false),
     // _fail(false),
     _timeRegulationEnabled(false),
     _timeConstrainedEnabled(false),
@@ -757,6 +761,11 @@ public:
   virtual ~RTI1516ESimpleAmbassador()
     throw ()
   { }
+
+  void setUseDataUrlObjectModels(bool useDataUrlObjectModels)
+  { _useDataUrlObjectModels = useDataUrlObjectModels; }
+  bool getUseDataUrlObjectModels() const
+  { return _useDataUrlObjectModels; }
 
   // bool getFail() const
   // { return _fail; }
@@ -785,17 +794,21 @@ public:
     _logicalTimeFactory = rti1516e::LogicalTimeFactoryFactory::makeLogicalTimeFactory(logicalTimeImplementationName);
   }
 
-  void createFederationExecution(const std::wstring& federationExecutionName, const std::wstring& fddFile)
+  void createFederationExecution(const std::wstring& federationExecutionName, std::wstring fddFile)
   {
+    _replaceFileWithDataIfNeeded(fddFile);
     _ambassador->createFederationExecution(federationExecutionName, fddFile, _logicalTimeImplementationName);
   }
-  void createFederationExecution(const std::wstring& federationExecutionName, const std::vector<std::wstring>& fomModules)
+  void createFederationExecution(const std::wstring& federationExecutionName, std::vector<std::wstring> fomModules)
   {
+    _replaceFilesWithDataIfNeeded(fomModules);
     _ambassador->createFederationExecution(federationExecutionName, fomModules, _logicalTimeImplementationName);
   }
-  void createFederationExecutionWithMIM(const std::wstring& federationExecutionName, const std::vector<std::wstring>& fomModules,
-                                        const std::wstring& mimModule)
+  void createFederationExecutionWithMIM(const std::wstring& federationExecutionName, std::vector<std::wstring> fomModules,
+                                        std::wstring mimModule)
   {
+    _replaceFilesWithDataIfNeeded(fomModules);
+    _replaceFileWithDataIfNeeded(mimModule);
     _ambassador->createFederationExecutionWithMIM(federationExecutionName, fomModules, mimModule, _logicalTimeImplementationName);
   }
 
@@ -806,8 +819,9 @@ public:
 
   const rti1516e::FederateHandle& joinFederationExecution(const std::wstring& federateType,
                                                           const std::wstring& federationExecutionName,
-                                                          std::vector<std::wstring> const& additionalFomModules=std::vector<std::wstring>())
+                                                          std::vector<std::wstring> additionalFomModules = std::vector<std::wstring>())
   {
+    _replaceFilesWithDataIfNeeded(additionalFomModules);
     _federateHandle = _ambassador->joinFederationExecution(federateType, federationExecutionName, additionalFomModules);
     _grantedLogicalTime = _logicalTimeFactory->makeInitial();
     return _federateHandle;
@@ -815,8 +829,9 @@ public:
 
   const rti1516e::FederateHandle& joinFederationExecution(const std::wstring& federateName, const std::wstring& federateType,
                                                           const std::wstring& federationExecutionName,
-                                                          std::vector<std::wstring> const& additionalFomModules=std::vector<std::wstring>())
+                                                          std::vector<std::wstring> additionalFomModules = std::vector<std::wstring>())
   {
+    _replaceFilesWithDataIfNeeded(additionalFomModules);
     _federateHandle = _ambassador->joinFederationExecution(federateName, federateType, federationExecutionName, additionalFomModules);
     _grantedLogicalTime = _logicalTimeFactory->makeInitial();
     return _federateHandle;
@@ -1957,6 +1972,30 @@ protected:
   // { _fail = true; }
 
 private:
+  void _replaceFileWithDataIfNeeded(std::wstring& fddFile)
+  {
+    if (!_useDataUrlObjectModels)
+      return;
+    // already a data url
+    if (fddFile.compare(0, 5, L"data:") == 0)
+      return;
+    std::wifstream stream;
+    if (fddFile.compare(0, 8, L"file:///") == 0)
+      stream.open(OpenRTI::ucsToLocale(fddFile.substr(8)).c_str());
+    else
+      stream.open(OpenRTI::ucsToLocale(fddFile).c_str());
+    if (!stream.is_open())
+      return;
+    fddFile = L"data:,";
+    std::copy(std::istreambuf_iterator<wchar_t>(stream), std::istreambuf_iterator<wchar_t>(), std::back_inserter(fddFile));
+  }
+
+  void _replaceFilesWithDataIfNeeded(std::vector<std::wstring>& fomModules)
+  {
+    for (std::vector<std::wstring>::iterator i = fomModules.begin(); i != fomModules.end(); ++i)
+      _replaceFileWithDataIfNeeded(*i);
+  }
+
   // bool _verifyGrantedLogicalTime(const rti1516e::LogicalTime& logicalTime) const
   // { return logicalTime == *_grantedLogicalTime; }
 
@@ -1992,6 +2031,8 @@ private:
   // bool _fail;
 
   std::auto_ptr<rti1516e::RTIambassador> _ambassador;
+
+  bool _useDataUrlObjectModels;
 
   std::wstring _logicalTimeImplementationName;
   std::auto_ptr<rti1516e::LogicalTimeFactory> _logicalTimeFactory;

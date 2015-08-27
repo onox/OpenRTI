@@ -32,6 +32,7 @@ int
 main(int argc, char* argv[])
 {
   std::string federationExecutionName("federationExecutionName");
+  bool useDataUrlObjectModels = false;
   std::string fullPathNameToTheFDDfile("fdd.fed");
 
   std::string objectClassName;
@@ -42,10 +43,13 @@ main(int argc, char* argv[])
 
   OpenRTI::Options options(argc, argv);
   std::vector<std::string> args;
-  while (options.next("a:i:F:o:O:p:")) {
+  while (options.next("a:Di:F:o:O:p:")) {
     switch (options.getOptChar()) {
     case 'a':
       attributeNameVector.push_back(options.getArgument());
+      break;
+    case 'D':
+      useDataUrlObjectModels = true;
       break;
     case 'i':
       interactionClassName = options.getArgument();
@@ -69,6 +73,7 @@ main(int argc, char* argv[])
   }
 
   OpenRTI::RTI13SimpleAmbassador ambassador;
+  ambassador.setUseDataUrlObjectModels(useDataUrlObjectModels);
 
   ambassador.connect(args);
 

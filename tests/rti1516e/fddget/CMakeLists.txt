@@ -54,3 +54,8 @@ ADD_TEST(rti1516e/fddget-1516e-16 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fddget-1516
 ADD_TEST(rti1516e/fddget-1516e-17 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fddget-1516e" -O "${CMAKE_CURRENT_SOURCE_DIR}/fdd-2.xml"
   -o ObjectClass3 -a HLAprivilegeToDeleteObject -a ObjectClass3.Attribute3
   -i InteractionClass3 -p InteractionClass3.Parameter3)
+
+# Just repeat one of the tests with data: url object models
+ADD_TEST(rti1516e/fddget-1516e-20 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fddget-1516e" -D -O "${CMAKE_CURRENT_SOURCE_DIR}/fdd-2.xml"
+  -o ObjectClass3 -a HLAprivilegeToDeleteObject -a Attribute3
+  -i InteractionClass3 -p Parameter3)

@@ -54,3 +54,8 @@ ADD_TEST(rti13/fddget-13-16 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fddget-13" -O "${
 ADD_TEST(rti13/fddget-13-17 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fddget-13" -O "${CMAKE_CURRENT_SOURCE_DIR}/fdd-2.fed"
   -o ObjectClass3 -a privilegeToDelete -a ObjectClass3.Attribute3
   -i InteractionClass3 -p InteractionClass3.Parameter3)
+
+
+ADD_TEST(rti13/fddget-13-20 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fddget-13" -D -O "${CMAKE_CURRENT_SOURCE_DIR}/fdd-2.fed"
+  -o ObjectClass3 -a privilegeToDelete -a Attribute3
+  -i InteractionClass3 -p Parameter3)
