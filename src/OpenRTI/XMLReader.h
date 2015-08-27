@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -21,6 +21,7 @@
 #define OpenRTI_XML_XMLReader_h
 
 #include <iosfwd>
+#include <string>
 
 #include "Referenced.h"
 #include "SharedPtr.h"
@@ -35,7 +36,7 @@ namespace XML {
 class OPENRTI_API XMLReader : public Referenced {
 public:
   virtual ~XMLReader(void);
-  virtual void parse(std::istream& stream) = 0;
+  virtual void parse(std::istream& stream, const std::string& encoding) = 0;
 
   ContentHandler* getContentHandler(void) const;
   void setContentHandler(ContentHandler* contentHandler);

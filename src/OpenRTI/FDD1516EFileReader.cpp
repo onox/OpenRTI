@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -659,7 +659,7 @@ FDD1516EContentHandler::characters(const char* data, unsigned length)
 }
 
 FOMStringModule
-FDD1516EFileReader::read(std::istream& stream)
+FDD1516EFileReader::read(std::istream& stream, const std::string& encoding)
 {
   // Set up the fdd parser
   SharedPtr<XML::XMLReader> reader;
@@ -670,7 +670,7 @@ FDD1516EFileReader::read(std::istream& stream)
   SharedPtr<DefaultErrorHandler> errorHandler = new DefaultErrorHandler;
   reader->setErrorHandler(errorHandler.get());
 
-  reader->parse(stream);
+  reader->parse(stream, encoding);
 
   std::string errorMessage = errorHandler->getMessages();
   if (!errorMessage.empty())

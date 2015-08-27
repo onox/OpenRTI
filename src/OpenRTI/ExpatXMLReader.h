@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -30,7 +30,7 @@ public:
   ExpatXMLReader(void);
   virtual ~ExpatXMLReader(void);
   // returns bool instead of void to signal errors
-  virtual void parse(std::istream& stream);
+  virtual void parse(std::istream& stream, const std::string& encoding);
 };
 
 } // namespace XML

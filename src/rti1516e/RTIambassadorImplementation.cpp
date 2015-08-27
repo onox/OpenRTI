@@ -69,10 +69,10 @@ static std::list<std::string> findHLAstandardMIMCandidates()
   return candidates;
 }
 
-static void loadModule(OpenRTI::FOMStringModuleList& fomModuleList, std::istream& stream)
+static void loadModule(OpenRTI::FOMStringModuleList& fomModuleList, std::istream& stream, const std::string& encoding)
 {
   try {
-    fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream));
+    fomModuleList.push_back(OpenRTI::FDD1516EFileReader::read(stream, encoding));
   } catch (const OpenRTI::Exception& e) {
     throw rti1516e::ErrorReadingFDD(OpenRTI::utf8ToUcs(e.what()));
   } catch (...) {
@@ -88,13 +88,13 @@ static void loadHLAstandardMIM(OpenRTI::FOMStringModuleList& fomModuleList)
     if (!stream.is_open())
       continue;
 
-    loadModule(fomModuleList, stream);
+    loadModule(fomModuleList, stream, std::string());
     break;
   }
   if (fomModuleList.empty()) {
     std::string s(HLAstandardMIM_xml, sizeof(HLAstandardMIM_xml));
     std::istringstream stream(s);
-    loadModule(fomModuleList, stream);
+    loadModule(fomModuleList, stream, "UTF-8");
   }
 }
 
@@ -104,15 +104,15 @@ static void loadModule(OpenRTI::FOMStringModuleList& fomModuleList, const std::w
     throw rti1516e::CouldNotOpenFDD(L"Empty module.");
   std::ifstream stream(OpenRTI::ucsToLocale(fomModule).c_str());
   if (stream.is_open()) {
-    loadModule(fomModuleList, stream);
+    loadModule(fomModuleList, stream, std::string());
   } else if (fomModule.compare(0, 8, L"file:///") == 0) {
     loadModule(fomModuleList, fomModule.substr(8));
   } else if (fomModule.compare(0, 16, L"data:text/plain,") == 0) {
     std::stringstream stream(ucsToUtf8(fomModule.substr(16)));
-    loadModule(fomModuleList, stream);
+    loadModule(fomModuleList, stream, "UTF-8");
   } else if (fomModule.compare(0, 6, L"data:,") == 0) {
     std::stringstream stream(ucsToUtf8(fomModule.substr(6)));
-    loadModule(fomModuleList, stream);
+    loadModule(fomModuleList, stream, "UTF-8");
   } else {
     throw rti1516e::CouldNotOpenFDD(fomModule);
   }

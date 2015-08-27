@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -21,6 +21,7 @@
 #define OpenRTI_FDD1516FileReader_h
 
 #include <iosfwd>
+#include <string>
 #include "Export.h"
 
 namespace OpenRTI {
@@ -29,7 +30,7 @@ class FOMStringModule;
 
 class OPENRTI_API FDD1516FileReader {
 public:
-  static FOMStringModule read(std::istream& stream);
+  static FOMStringModule read(std::istream& stream, const std::string& encoding);
 };
 
 } // namespace OpenRTI

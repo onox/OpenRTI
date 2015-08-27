@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -216,12 +216,15 @@ ExpatXMLReader::~ExpatXMLReader(void)
 }
 
 void
-ExpatXMLReader::parse(std::istream& stream)
+ExpatXMLReader::parse(std::istream& stream, const std::string& encoding)
 {
   UserData userData;
   userData.reader = this;
-  userData.parser = XML_ParserCreate(0);
 //   XML_Parser parser = XML_ParserCreateNS(0, ':');
+  if (encoding.empty())
+    userData.parser = XML_ParserCreate(0);
+  else
+    userData.parser = XML_ParserCreate(encoding.c_str());
   XML_SetUserData(userData.parser, &userData);
   XML_SetElementHandler(userData.parser, ExpatStartElement, ExpatEndElement);
   XML_SetCharacterDataHandler(userData.parser, ExpatCharacterData);

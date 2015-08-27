@@ -101,7 +101,7 @@ NetworkServer::setUpFromConfig(std::istream& stream)
   SharedPtr<DefaultErrorHandler> errorHandler = new DefaultErrorHandler;
   reader->setErrorHandler(errorHandler.get());
 
-  reader->parse(stream);
+  reader->parse(stream, "UTF-8");
 
   std::string errorMessage = errorHandler->getMessages();
   if (!errorMessage.empty())

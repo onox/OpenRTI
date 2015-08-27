@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -45,7 +45,7 @@ static void loadModule(OpenRTI::FOMStringModuleList& fomModuleList, std::istream
     if (stream.peek() == '(')
       fomModuleList.push_back(OpenRTI::FEDFileReader::read(stream));
     else
-      fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream));
+      fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream, std::string()));
   } catch (const OpenRTI::Exception& e) {
     throw RTI::ErrorReadingFED(e.what());
   } catch (...) {
