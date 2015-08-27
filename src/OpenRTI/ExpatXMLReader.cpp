@@ -192,23 +192,6 @@ ExpatComment(void* userData, const char* data)
   }
 }
 
-#ifdef HAVE_XML_SETSKIPPEDENTITYHANDLER
-static void
-ExpatSkippedEntity(void *userData, const char *entityName, int)
-{
-  try {
-  ContentHandler* contentHandler = userDataToContentHandler(userData);
-  if (contentHandler)
-    contentHandler->skippedEntity(entityName);
-  } catch (Exception& e) {
-    userDataSetException(userData, e.getReason());
-    XML_StopParser(userDataToParser(userData), XML_FALSE);
-  } catch (...) {
-    XML_StopParser(userDataToParser(userData), XML_FALSE);
-  }
-}
-#endif
-
 static void
 ExpatProcessingInstructions(void* userData, const char* target, const char* data)
 {
@@ -223,60 +206,6 @@ ExpatProcessingInstructions(void* userData, const char* target, const char* data
     XML_StopParser(userDataToParser(userData), XML_FALSE);
   }
 }
-
-#if defined(DTD_PARSING)
-static int
-ExpatExternalEntityRefHandler(XML_Parser parentParser, const XML_Char *context,
-                              const XML_Char *base, const XML_Char *systemId, const XML_Char *publicId)
-{
-  // XML_GetUserData(parentParser);
-
-  XML_Parser parser = XML_ExternalEntityParserCreate(parentParser, context, 0/*encoding*/);
-
-  std::ifstream stream("/home/flightgear/src/cvs/OpenRTI/OpenRTI/hla.dtd");
-
-  unsigned bufSize = 32*1024;
-  char* buf = new char[bufSize];
-  while (!stream.eof()) {
-    if (!stream.good()) {
-      // if (mErrorHandler.valid())
-      //   mErrorHandler->fatalError("ExpatXMLReader: "
-      //                             "Can not read from input stream",
-      //                             XML_GetCurrentLineNumber(parser),
-      //                             XML_GetCurrentColumnNumber(parser));
-      XML_ParserFree(parser);
-      delete [] buf;
-      return 0;
-    }
-
-    stream.read(buf, bufSize);
-    if (!XML_Parse(parser, buf, int(stream.gcount()), 0)) {
-      // if (mErrorHandler.valid())
-      //   mErrorHandler->fatalError("ExpatXMLReader: Error from Parser",
-      //                             XML_GetCurrentLineNumber(parser),
-      //                             XML_GetCurrentColumnNumber(parser));
-      XML_ParserFree(parser);
-      delete [] buf;
-      return 0;
-    }
-  }
-
-  if (!XML_Parse(parser, buf, 0, 1)) {
-    // if (mErrorHandler.valid())
-    //   mErrorHandler->fatalError("ExpatXMLReader: Error from Parser",
-    //                             XML_GetCurrentLineNumber(parser),
-    //                             XML_GetCurrentColumnNumber(parser));
-    XML_ParserFree(parser);
-    delete [] buf;
-    return 0;
-  }
-
-  XML_ParserFree(parser);
-  delete [] buf;
-
-  return 1;
-}
-#endif
 
 ExpatXMLReader::ExpatXMLReader(void)
 {
@@ -298,16 +227,6 @@ ExpatXMLReader::parse(std::istream& stream)
   XML_SetCharacterDataHandler(userData.parser, ExpatCharacterData);
   XML_SetProcessingInstructionHandler(userData.parser, ExpatProcessingInstructions);
   XML_SetCommentHandler(userData.parser, ExpatComment);
-#ifdef HAVE_XML_SETSKIPPEDENTITYHANDLER
-  XML_SetSkippedEntityHandler(userData.parser, ExpatSkippedEntity);
-#endif
-
-#if defined(DTD_PARSING)
-  // force to use a dtd
-  XML_SetParamEntityParsing(userData.parser, XML_PARAM_ENTITY_PARSING_ALWAYS);
-  XML_SetExternalEntityRefHandler(userData.parser, ExpatExternalEntityRefHandler);
-  XML_UseForeignDTD(userData.parser, XML_TRUE);
-#endif
 
   if (mContentHandler.valid())
     mContentHandler->startDocument();
