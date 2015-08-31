@@ -81,20 +81,28 @@ PyObject_NewString(const std::wstring& string)
 static bool
 PyObject_GetString(std::wstring& string, PyObject* o)
 {
-  PyObject* u = PyUnicode_FromObject(o);
-  if (!u)
+  if (PyString_Check(o)) {
+    Py_ssize_t size = PyString_Size(o);
+    string.resize(size);
+    if (size) {
+      const char* ptr = PyString_AsString(o);
+      std::copy(ptr, ptr + size, string.begin());
+    }
+    return true;
+
+  } else if (PyUnicode_Check(o)) {
+    Py_ssize_t size = PyUnicode_GetSize(o);
+    string.resize(size);
+    if (size) {
+      const Py_UNICODE* ptr = PyUnicode_AsUnicode(o);
+      std::copy(ptr, ptr + size, string.begin());
+    }
+    return true;
+
+  } else {
+
     return false;
-
-  Py_ssize_t size = PyUnicode_GetSize(u);
-  string.resize(size);
-  if (size) {
-    Py_UNICODE* ptr = PyUnicode_AsUnicode(u);
-    std::copy(ptr, ptr + size, string.begin());
   }
-
-  Py_DecRef(u);
-
-  return true;
 }
 
 // Don't care for errors, just try to get something printable
