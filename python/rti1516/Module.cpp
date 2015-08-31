@@ -536,6 +536,9 @@ PyObject_GetRangeBounds(rti1516::RangeBounds& rangeBounds, PyObject* o)
     return PyBool_FromLong(o->ob_value.isValid());                      \
   }                                                                     \
                                                                         \
+  static PyObject*                                                      \
+  HandleKind ## _new(PyTypeObject *type, PyObject *args, PyObject *);   \
+                                                                        \
   static PyMethodDef HandleKind ## _methods[] =                         \
   {                                                                     \
     {"encode", (PyCFunction)HandleKind ## _encode, METH_VARARGS, ""},   \
@@ -572,7 +575,29 @@ PyObject_GetRangeBounds(rti1516::RangeBounds& rangeBounds, PyObject* o)
     0,                                  /* tp_iter */                   \
     0,                                  /* tp_iternext */               \
     HandleKind ## _methods,             /* tp_methods */                \
+    0,                                  /* tp_members */                \
+    0,                                  /* tp_getset */                 \
+    0,                                  /* tp_base */                   \
+    0,                                  /* tp_dict */                   \
+    0,                                  /* tp_descr_get */              \
+    0,                                  /* tp_descr_set */              \
+    0,                                  /* tp_dictoffset */             \
+    0,                                  /* tp_init */                   \
+    0,                                  /* tp_alloc */                  \
+    (newfunc)HandleKind ## _new,        /* tp_new */                    \
   };                                                                    \
+                                                                        \
+  static PyObject*                                                      \
+  HandleKind ## _new(PyTypeObject *type, PyObject *args, PyObject *)    \
+  {                                                                     \
+    Py ## HandleKind *self;                                             \
+    self = PyObject_New(Py ## HandleKind, &Py ## HandleKind ## Type);   \
+    if (!self)                                                          \
+      return 0;                                                         \
+    new (&self->ob_value) rti1516:: HandleKind();                       \
+    self->ob_hash = VariableLengthData_hash(self->ob_value.encode());   \
+    return (PyObject*)self;                                             \
+  }                                                                     \
                                                                         \
   static PyObject*                                                      \
   PyObject_New ## HandleKind(const rti1516:: HandleKind& handle)        \
