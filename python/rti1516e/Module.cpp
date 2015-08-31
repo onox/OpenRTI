@@ -7268,6 +7268,8 @@ INITFUNCNAME(void)
   PyModule_AddObject(module, "FederateHandle", (PyObject*)&PyFederateHandleType);
   Py_IncRef((PyObject*)&PyObjectClassHandleType);
   PyModule_AddObject(module, "ObjectClassHandle", (PyObject*)&PyObjectClassHandleType);
+  Py_IncRef((PyObject*)&PyObjectInstanceHandleType);
+  PyModule_AddObject(module, "ObjectInstanceHandle", (PyObject*)&PyObjectInstanceHandleType);
   Py_IncRef((PyObject*)&PyInteractionClassHandleType);
   PyModule_AddObject(module, "InteractionClassHandle", (PyObject*)&PyInteractionClassHandleType);
   Py_IncRef((PyObject*)&PyAttributeHandleType);
