@@ -2845,8 +2845,8 @@ PyRTIambassador_createFederationExecutionWithMIM(PyRTIambassadorObject *self, Py
 
   // Handle the overload with the fom modules list
   std::vector<std::wstring> fomModuleList;
-  if (!PyObject_GetStringOrStringVector(fomModuleList, arg2)) {
-    PyErr_SetString(PyExc_TypeError, "fomModule needs to be a string!");
+  if (!PyObject_GetStringVector(fomModuleList, arg2)) {
+    PyErr_SetString(PyExc_TypeError, "fomModuleList needs to be a string list!");
     return 0;
   }
 
