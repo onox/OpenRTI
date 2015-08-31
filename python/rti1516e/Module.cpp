@@ -2784,9 +2784,11 @@ PyRTIambassador_createFederationExecution(PyRTIambassadorObject *self, PyObject 
 
   // Handle the overload with the fom modules list
   std::vector<std::wstring> fomModuleList;
-  if (!PyObject_GetStringOrStringVector(fomModuleList, arg2)) {
-    PyErr_SetString(PyExc_TypeError, "fomModule needs to be a string!");
-    return 0;
+  if (arg2) {
+    if (!PyObject_GetStringOrStringVector(fomModuleList, arg2)) {
+      PyErr_SetString(PyExc_TypeError, "fomModuleList needs to be a string list!");
+      return 0;
+    }
   }
 
   std::wstring logicalTimeImplementationName;
@@ -2928,31 +2930,39 @@ PyRTIambassador_joinFederationExecution(PyRTIambassadorObject *self, PyObject *a
   if (!PyArg_UnpackTuple(args, "joinFederationExecution", 2, 4, &arg1, &arg2, &arg3, &arg4))
     return 0;
 
-  std::wstring federateType;
-  if (!PyObject_GetString(federateType, arg1)) {
-    PyErr_SetString(PyExc_TypeError, "federateType needs to be a string!");
-    return 0;
-  }
-
   bool useFederateName = false;
   std::wstring federateName;
+  std::wstring federateType;
   std::wstring federationExecutionName;
   std::vector<std::wstring> additionalFomModules;
   if (!arg4) {
     if (arg3 && PyObject_GetString(federationExecutionName, arg3)) {
-      if (!PyObject_GetString(federateName, arg2)) {
+      if (!PyObject_GetString(federateName, arg1)) {
         PyErr_SetString(PyExc_TypeError, "federateName needs to be a string!");
         return 0;
       }
+      if (!PyObject_GetString(federateType, arg2)) {
+        PyErr_SetString(PyExc_TypeError, "federateType needs to be a string!");
+        return 0;
+      }
+
       useFederateName = true;
 
     } else if (arg3 && PyObject_GetStringVector(additionalFomModules, arg3)) {
+      if (!PyObject_GetString(federateType, arg1)) {
+        PyErr_SetString(PyExc_TypeError, "federateType needs to be a string!");
+        return 0;
+      }
       if (!PyObject_GetString(federationExecutionName, arg2)) {
         PyErr_SetString(PyExc_TypeError, "federationExecutionName needs to be a string!");
         return 0;
       }
 
     } else if (!arg3) {
+      if (!PyObject_GetString(federateType, arg1)) {
+        PyErr_SetString(PyExc_TypeError, "federateType needs to be a string!");
+        return 0;
+      }
       if (!PyObject_GetString(federationExecutionName, arg2)) {
         PyErr_SetString(PyExc_TypeError, "federationExecutionName needs to be a string!");
         return 0;
@@ -2964,8 +2974,13 @@ PyRTIambassador_joinFederationExecution(PyRTIambassadorObject *self, PyObject *a
     }
 
   } else {
-    if (!PyObject_GetString(federateName, arg2)) {
+    if (!PyObject_GetString(federateName, arg1)) {
       PyErr_SetString(PyExc_TypeError, "federateName needs to be a string!");
+      return 0;
+    }
+
+    if (!PyObject_GetString(federateType, arg2)) {
+      PyErr_SetString(PyExc_TypeError, "federateType needs to be a string!");
       return 0;
     }
 
@@ -2986,9 +3001,9 @@ PyRTIambassador_joinFederationExecution(PyRTIambassadorObject *self, PyObject *a
 
     rti1516e::FederateHandle federateHandle;
     if (useFederateName)
-      federateHandle = self->ob_value->joinFederationExecution(federateType, federationExecutionName, additionalFomModules);
+      federateHandle = self->ob_value->joinFederationExecution(federateName, federateType, federationExecutionName, additionalFomModules);
     else
-      federateHandle = self->ob_value->joinFederationExecution(federateType, federateName, federationExecutionName, additionalFomModules);
+      federateHandle = self->ob_value->joinFederationExecution(federateType, federationExecutionName, additionalFomModules);
 
     std::wstring logicaltimeFactoryName = self->ob_value->getTimeFactory()->getName();
     if (logicaltimeFactoryName != L"HLAfloat64Time" && logicaltimeFactoryName != L"HLAinteger64Time") {
