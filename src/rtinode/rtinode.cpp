@@ -36,20 +36,50 @@ static void usage(const char* argv0)
   std::cerr << argv0 << ": [-b] [-c configfile] [-f file] [-h] [-i address] [-p parent]" << std::endl;
 }
 
-static OpenRTI::NetworkServer* _networkServer = NULL;
+class SignalNetworkServer : public OpenRTI::NetworkServer {
+public:
+  SignalNetworkServer();
+  virtual ~SignalNetworkServer();
 
-static void sighandler(int sig)
+  static void setDoneStatic();
+
+private:
+  static SignalNetworkServer* _networkServer;
+};
+
+SignalNetworkServer::SignalNetworkServer()
+{
+  _networkServer = this;
+}
+
+SignalNetworkServer::~SignalNetworkServer()
+{
+  _networkServer = NULL;
+}
+
+void
+SignalNetworkServer::setDoneStatic()
 {
   if (!_networkServer)
     return;
   _networkServer->setDone(true);
 }
 
+SignalNetworkServer* SignalNetworkServer::_networkServer = NULL;
+
+extern "C" {
+
+static void sighandler(int sig)
+{
+  SignalNetworkServer::setDoneStatic();
+}
+
+}
+
 int
 main(int argc, char* argv[])
 {
-  OpenRTI::NetworkServer networkServer;
-  _networkServer = &networkServer;
+  SignalNetworkServer networkServer;
 
   // We want to stop gracefully
 #ifndef _WIN32
@@ -74,7 +104,6 @@ main(int argc, char* argv[])
       } catch (const OpenRTI::Exception& e) {
         std::cerr << "Could not set up server from config file:" << std::endl;
         std::cerr << OpenRTI::utf8ToLocale(e.getReason()) << std::endl;
-        _networkServer = NULL;
         return EXIT_FAILURE;
       }
       break;
@@ -87,13 +116,11 @@ main(int argc, char* argv[])
       } catch (const OpenRTI::Exception& e) {
         std::cerr << "Could not set up pipe server transport:" << std::endl;
         std::cerr << OpenRTI::utf8ToLocale(e.getReason()) << std::endl;
-        _networkServer = NULL;
         return EXIT_FAILURE;
       }
       break;
     case 'h':
       usage(argv[0]);
-      _networkServer = NULL;
       return EXIT_SUCCESS;
     case 'i':
       try {
@@ -105,7 +132,6 @@ main(int argc, char* argv[])
       } catch (const OpenRTI::Exception& e) {
         std::cerr << "Could not set up inet server transport:" << std::endl;
         std::cerr << OpenRTI::utf8ToLocale(e.getReason()) << std::endl;
-        _networkServer = NULL;
         return EXIT_FAILURE;
       }
       break;
@@ -122,7 +148,6 @@ main(int argc, char* argv[])
       } catch (const OpenRTI::Exception& e) {
         std::cerr << "Could not connect parent server:" << std::endl;
         std::cerr << OpenRTI::utf8ToLocale(e.getReason()) << std::endl;
-        _networkServer = NULL;
         return EXIT_FAILURE;
       }
       break;
@@ -139,7 +164,6 @@ main(int argc, char* argv[])
       } catch (const OpenRTI::Exception& e) {
         std::cerr << "Could not set up default inet server transport:" << std::endl;
         std::cerr << OpenRTI::utf8ToLocale(e.getReason()) << std::endl;
-        _networkServer = NULL;
         return EXIT_FAILURE;
       }
     }
@@ -160,8 +184,5 @@ main(int argc, char* argv[])
   setrlimit(RLIMIT_NOFILE, &limit);
 #endif
 
-  int ret = networkServer.exec();
-  _networkServer = NULL;
-
-  return ret;
+  return networkServer.exec();
 }
