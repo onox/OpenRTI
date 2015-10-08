@@ -29,7 +29,6 @@ ENABLE_TESTING()
 
 # Settings
 ENABLE_LANGUAGE(C)
-SET(CMAKE_VERBOSE_MAKEFILE 1 CACHE BOOL "")
 
 # Some whole project sensible defines
 IF(UNIX)
