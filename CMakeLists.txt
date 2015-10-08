@@ -30,6 +30,10 @@ ENABLE_TESTING()
 # Settings
 ENABLE_LANGUAGE(C)
 
+# Starting with cmake 3.1 we can easily change the
+# c++ standard version using
+# SET(CMAKE_CXX_STANDARD 14)
+
 # Some whole project sensible defines
 IF(UNIX)
   # Make sure we get the right libc functions

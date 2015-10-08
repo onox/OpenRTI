@@ -12,7 +12,7 @@ The key features are:
 * In process RTI.
 * Server tree hierarchy.
 * Shortest path is in memory without copying data.
-* Only depends on a c++98 compiler/stl.
+* Only depends on a c++98 compiler/stl or newer.
 
 
 Installation
@@ -56,8 +56,8 @@ and a usually included stl implementation.
 This aims to ease the installation and should keep potential collisions
 with respect to run time libraries possible required by the calling
 application at a bare minimum.
-OpenRTI requires a c++98 implementation, but can be compiled also with
-a c++11 compiler and stl library.
+OpenRTI requires at least an c++98 implementation, but can be compiled
+also with a c++11 compiler and stl library.
 
 OpenRTI can make use of additional components like zlib for on the wire
 compression, that is used if it is available. OpenRTI's on the wire
@@ -68,6 +68,20 @@ The python binding is obviously only available if python is available.
 That said, much more specifically, there is no dependency on boost
 as of today and there will not be any in the future. The same goes for
 any other dependency library that is not strictly needed.
+
+
+C++ language standard version
+-----------------------------
+
+C++11/14 Should just work.
+Starting with cmake 3.1 you can enable use of an other standard version
+conveniently in the build system by setting the CMAKE_CXX_STANDARD cmake
+variable to an appropriate value.
+For example switching to c++11 can be achieved via adding
+the -DCMAKE_CXX_STANDARD=11 command line option to the initial
+cmake command.
+Consult the cmake documentation for more information on setting cmake
+variables.
 
 
 Platforms
