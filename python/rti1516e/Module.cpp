@@ -7233,7 +7233,7 @@ static PyTypeObject PyRTIambassadorType = {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static PyMethodDef _rti1516e_methods[] = {
+static PyMethodDef rti1516e_methods[] = {
     {NULL, NULL}
 };
 
@@ -7241,20 +7241,20 @@ static PyMethodDef _rti1516e_methods[] = {
 
 static struct PyModuleDef moduledef = {
         PyModuleDef_HEAD_INIT,
-        "_rti1516e",
+        "rti1516e",
         NULL,
         -1,
-        _rti1516e_methods,
+        rti1516e_methods,
         NULL,
         NULL,
         NULL,
         NULL
 };
 
-# define INITFUNCNAME PyInit__rti1516e
+# define INITFUNCNAME PyInit_rti1516e
 # define INITERROR return NULL
 #else
-# define INITFUNCNAME init_rti1516e
+# define INITFUNCNAME initrti1516e
 # define INITERROR return
 #endif
 
@@ -7285,7 +7285,7 @@ INITFUNCNAME(void)
 #if PY_MAJOR_VERSION >= 3
   PyObject* module = PyModule_Create(&moduledef);
 #else
-  PyObject* module = Py_InitModule3("_rti1516e", _rti1516e_methods, "rti1516e RTI/HLA backend implementation.");
+  PyObject* module = Py_InitModule3("rti1516e", rti1516e_methods, "rti1516e RTI/HLA backend implementation.");
 #endif
 
   Py_IncRef((PyObject*)&PyFederateHandleType);
@@ -7366,11 +7366,11 @@ INITFUNCNAME(void)
   PyModule_AddIntConstant(module, "RELIABLE", rti1516e::RELIABLE);
   PyModule_AddIntConstant(module, "BEST_EFFORT", rti1516e::BEST_EFFORT);
 
-  PyRTI1516EException.setBorrowedRef(PyErr_NewException((char*)"_rti1516e.Exception", NULL, NULL));
+  PyRTI1516EException.setBorrowedRef(PyErr_NewException((char*)"rti1516e.Exception", NULL, NULL));
   PyModule_AddObject(module, "Exception", PyRTI1516EException.get());
 
 #define RTI_EXCEPTION(ExceptionKind)                                                                            \
-  PyRTI1516E ## ExceptionKind.setBorrowedRef(PyErr_NewException((char*)"_rti1516e." # ExceptionKind, PyRTI1516EException.get(), NULL)); \
+  PyRTI1516E ## ExceptionKind.setBorrowedRef(PyErr_NewException((char*)"rti1516e." # ExceptionKind, PyRTI1516EException.get(), NULL)); \
   PyModule_AddObject(module, # ExceptionKind, PyRTI1516E ## ExceptionKind.get());
 
   RTI_EXCEPTION(AlreadyConnected)
