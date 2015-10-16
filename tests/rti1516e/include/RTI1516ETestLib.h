@@ -660,6 +660,13 @@ public:
   {
   }
 
+  virtual void turnUpdatesOnForObjectInstance(rti1516e::ObjectInstanceHandle theObject,
+                                              rti1516e::AttributeHandleSet const & theAttributes,
+                                              std::wstring const & updateRateDesignator)
+    throw (rti1516e::FederateInternalError)
+  {
+  }
+
   virtual void turnUpdatesOffForObjectInstance(rti1516e::ObjectInstanceHandle theObject,
                                                rti1516e::AttributeHandleSet const & theAttributes)
     throw (rti1516e::FederateInternalError)

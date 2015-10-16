@@ -428,7 +428,7 @@ public:
   {
   }
 
-  virtual void requestFederationRestoreFailed(const char* label)
+  virtual void requestFederationRestoreFailed(const char* label, const char *)
     throw (RTI::FederateInternalError)
   {
   }
