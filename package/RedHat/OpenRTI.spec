@@ -9,12 +9,20 @@ Group: System Environment/Libraries
 Source0: %{name}-%{version}.tar.bz2
 #Source1: make-git-snapshot.sh
 
+%if 7 <= 0%{?rhel}
+%define _enable_python 1
+%else
+# Probably also earlier ...
+%if 20 <= 0%{?fedora}
+%define _enable_python 1
+%endif
+%endif
+
 Requires: expat
-# Requires: python
 
 BuildRequires: cmake
 BuildRequires: expat-devel
-#BuildRequires: python-devel
+%{?_enable_python:BuildRequires: python-devel}
 
 %description
 HLA/RTI runtime infrastructure package
@@ -26,6 +34,17 @@ Requires: %{name} = %{version}-%{release}
 
 %description devel
 HLA/RTI runtime infrastructure development package
+
+%if 0%{?_enable_python:1}
+%package -n python-%{name}
+Summary: HLA/RTI runtime infrastructure python binding
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+Requires: python
+
+%description -n python-%{name}
+HLA/RTI runtime infrastructure python binding
+%endif
 
 # %package -n rtinode
 # Summary: HLA/RTI server node
@@ -41,7 +60,7 @@ HLA/RTI runtime infrastructure development package
 mkdir -p BUILD
 pushd BUILD
 CFLAGS="${RPM_OPT_FLAGS} -pthread"
-%cmake ../OpenRTI-%{version}
+%cmake -DOPENRTI_ENABLE_PYTHON_BINDINGS=%{?_enable_python:TRUE}%{!?_enable_python:FALSE} ../OpenRTI-%{version}
 make VERBOSE=1 %{?_smp_mflags}
 popd
 
@@ -112,5 +131,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libfedtime1516e.so
 %{_libdir}/librti1516e.so
 
+%if 0%{?_enable_python:1}
+%files -n python-%{name}
+# rti1516* python bindings
+%defattr(-,root,root,-)
+%{python2_sitearch}/rti1516.so
+%{python2_sitearch}/rti1516e.so
+%endif
 
 #%changelog
