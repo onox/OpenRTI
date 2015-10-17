@@ -92,6 +92,8 @@ SET(OPENRTI_ENABLE_RTI13 ON CACHE BOOL "Build and install the RTI13 interface.")
 SET(OPENRTI_ENABLE_RTI1516 ON CACHE BOOL "Build and install the RTI1516 interface.")
 SET(OPENRTI_ENABLE_RTI1516E ON CACHE BOOL "Build and install the RTI1516E interface (EXPERIMENTAL).")
 
+SET(OPENRTI_ENABLE_PYTHON_BINDINGS ON CACHE BOOL "Build python binding extension modules.")
+
 IF(UNIX)
   # the RPATH to be used when installing, but only if it's not a system directory
   LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_FULL_LIBDIR}" isSystemDir)
