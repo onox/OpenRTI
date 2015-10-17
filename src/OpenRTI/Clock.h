@@ -71,10 +71,12 @@ public:
   {
     if (seconds <= 0)
       return zero();
-    else if (std::numeric_limits<uint64_t>::max()/uint64_t(1000000000) <= seconds)
+    // Note that the unsigned cast has a guarantee to be the same
+    // width than the int in the input argument. Those get upcasted
+    // to the bigger unsigned then.
+    if (std::numeric_limits<uint64_t>::max()/uint64_t(1000000000) <= unsigned(seconds))
       return max();
-    else
-      return Clock(seconds*uint64_t(1000000000));
+    return Clock(seconds*uint64_t(1000000000));
   }
   static Clock fromSeconds(const double& seconds)
   {
