@@ -4,6 +4,8 @@
 * Create a release branch
 * Complete the CHANGES file
 * Update the packaging version numbers
+  Top level cmake file
+  rpm spec file
 * Add a release tag
 
 * Update the CHANGES file in master
