@@ -120,16 +120,25 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/NullFederateAmbassador.hh
 %{_libdir}/libRTI-NG.so
 %{_libdir}/libFedTime.so
+%{_libdir}/pkgconfig/RTI-NG.pc
+%{_libdir}/pkgconfig/FedTime.pc
+%{_libdir}/pkgconfig/hla-rti13.pc
 
 # rti1516 development files
 %{_includedir}/rti1516
 %{_libdir}/libfedtime1516.so
 %{_libdir}/librti1516.so
+%{_libdir}/pkgconfig/rti1516.pc
+%{_libdir}/pkgconfig/fedtime1516.pc
+%{_libdir}/pkgconfig/hla-rti1516.pc
 
 # rti1516e development files
 %{_includedir}/rti1516e
 %{_libdir}/libfedtime1516e.so
 %{_libdir}/librti1516e.so
+%{_libdir}/pkgconfig/rti1516e.pc
+%{_libdir}/pkgconfig/fedtime1516e.pc
+%{_libdir}/pkgconfig/hla-rti1516e.pc
 
 %if 0%{?_enable_python:1}
 %files -n python-%{name}
