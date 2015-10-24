@@ -111,13 +111,7 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-,root,root,-)
 # The RTI13 development files
-%{_includedir}/federateAmbServices.hh
-%{_includedir}/RTI.hh
-%{_includedir}/baseTypes.hh
-%{_includedir}/RTItypes.hh
-%{_includedir}/fedtime.hh
-%{_includedir}/RTIambServices.hh
-%{_includedir}/NullFederateAmbassador.hh
+%{_includedir}/RTI13
 %{_libdir}/libRTI-NG.so
 %{_libdir}/libFedTime.so
 %{_libdir}/pkgconfig/RTI-NG.pc
