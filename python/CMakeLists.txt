@@ -1,5 +1,6 @@
 # Try to find out if we have python
 IF(OPENRTI_ENABLE_PYTHON_BINDINGS)
+  FIND_PACKAGE(PythonInterp)
   IF(CMAKE_VERSION VERSION_GREATER 2.8.7)
     FIND_PACKAGE(PythonLibs)
   ELSE()
