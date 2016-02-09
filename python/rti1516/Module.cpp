@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -81,6 +81,7 @@ PyObject_NewString(const std::wstring& string)
 static bool
 PyObject_GetString(std::wstring& string, PyObject* o)
 {
+#if PY_MAJOR_VERSION < 3
   if (PyString_Check(o)) {
     Py_ssize_t size = PyString_Size(o);
     string.resize(size);
@@ -90,7 +91,20 @@ PyObject_GetString(std::wstring& string, PyObject* o)
     }
     return true;
 
-  } else if (PyUnicode_Check(o)) {
+  } else
+#else
+  if (PyBytes_Check(o)) {
+    Py_ssize_t size = PyBytes_Size(o);
+    string.resize(size);
+    if (size) {
+      const char* ptr = PyBytes_AsString(o);
+      std::copy(ptr, ptr + size, string.begin());
+    }
+    return true;
+
+  } else
+#endif
+  if (PyUnicode_Check(o)) {
     Py_ssize_t size = PyUnicode_GetSize(o);
     string.resize(size);
     if (size) {
