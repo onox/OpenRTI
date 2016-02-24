@@ -191,6 +191,20 @@ public:
   _ForwardIntrusiveListIterator operator--(int)
   { _ForwardIntrusiveListIterator i(*this); _IntrusiveListIterator<T, Tag>::_decrement(); return i; }
 
+  // convenience methods not required by the bidirectional iterator
+  template<typename D>
+  _ForwardIntrusiveListIterator& operator +=(D n)
+  { std::advance(*this, n); return *this; }
+  template<typename D>
+  _ForwardIntrusiveListIterator& operator -=(D n)
+  { std::advance(*this, -n); return *this; }
+  template<typename D>
+  _ForwardIntrusiveListIterator operator+(D n) const
+  { return _ForwardIntrusiveListIterator(*this) += n; }
+  template<typename D>
+  _ForwardIntrusiveListIterator operator-(D n) const
+  { return _ForwardIntrusiveListIterator(*this) -= n; }
+
   // Remove this entry from the list, and reinitialize this list node
   // _ForwardIntrusiveListIterator unlink(void)
   // { return _ForwardIntrusiveListIterator(_intrusiveListHook->_unlink_get_next()); }
@@ -232,6 +246,20 @@ public:
   { _ReverseIntrusiveListIterator i(*this); _IntrusiveListIterator<T, Tag>::_decrement(); return i; }
   _ReverseIntrusiveListIterator operator--(int)
   { _ReverseIntrusiveListIterator i(*this); _IntrusiveListIterator<T, Tag>::_increment(); return i; }
+
+  // convenience methods not required by the bidirectional iterator
+  template<typename D>
+  _ReverseIntrusiveListIterator& operator +=(D n)
+  { std::advance(*this, n); return *this; }
+  template<typename D>
+  _ReverseIntrusiveListIterator& operator -=(D n)
+  { std::advance(*this, -n); return *this; }
+  template<typename D>
+  _ReverseIntrusiveListIterator operator+(D n) const
+  { return _ReverseIntrusiveListIterator(*this) += n; }
+  template<typename D>
+  _ReverseIntrusiveListIterator operator-(D n) const
+  { return _ReverseIntrusiveListIterator(*this) -= n; }
 
   // Remove this entry from the list, and reinitialize this list node
   // _ReverseIntrusiveListIterator unlink(void)
