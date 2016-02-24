@@ -4575,9 +4575,11 @@ PyRTIambassador_queryGALT(PyRTIambassadorObject *self, PyObject *args)
 
   try {
 
-    self->ob_value->queryGALT(*logicalTime);
+    if (self->ob_value->queryGALT(*logicalTime))
+      return PyObject_NewLogicalTime(*logicalTime);
 
-    return PyObject_NewLogicalTime(*logicalTime);
+    Py_IncRef(Py_None);
+    return Py_None;
   }
   CATCH_C_EXCEPTION(FederateNotExecutionMember)
   CATCH_C_EXCEPTION(SaveInProgress)
@@ -4623,9 +4625,11 @@ PyRTIambassador_queryLITS(PyRTIambassadorObject *self, PyObject *args)
 
   try {
 
-    self->ob_value->queryLITS(*logicalTime);
+    if (self->ob_value->queryLITS(*logicalTime))
+      return PyObject_NewLogicalTime(*logicalTime);
 
-    return PyObject_NewLogicalTime(*logicalTime);
+    Py_IncRef(Py_None);
+    return Py_None;
   }
   CATCH_C_EXCEPTION(FederateNotExecutionMember)
   CATCH_C_EXCEPTION(SaveInProgress)
