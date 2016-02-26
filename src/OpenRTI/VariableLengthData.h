@@ -37,7 +37,7 @@ class VariableLengthData;
 typedef std::list<VariableLengthData> VariableLengthDataList;
 
 /// Class for an opaque byte array.
-/// The class behaves similar to a std::vector as it does not reallocate when clearing or
+/// The class behaves similarly to a std::vector as it does not reallocate when clearing or
 /// resizing to a smaller size.
 /// The class uses reference counting for the actual data and does copy on write.
 /// Subranges of such a byte array can be handled by just referencing the same data with
@@ -45,7 +45,7 @@ typedef std::list<VariableLengthData> VariableLengthDataList;
 /// Also allocation is delayed to the point a non const data pointer is requested.
 /// This is used for the network buffer handling where the decoder attaches
 /// VariableLengthData just with the desired size. But the network reading code
-/// assignes the structs in the most efficient way.
+/// assigns the structs in the most efficient way.
 /// As a side effect of this, it is possible to get a zero pointer, even if the
 /// the size of the array is non zero. This happens when a fresh array is resized
 /// but never written. On a const access the pointer is still zero.

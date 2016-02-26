@@ -65,7 +65,7 @@ public:
 private:
   /// The event dispatcher this event is attached to
   SocketEventDispatcher* _socketEventDispatcher;
-  /// If attahced, the iterator into the dispatchers SocketEventList
+  /// If attached, the iterator into the dispatcher's SocketEventList
   SocketEventList::iterator _iterator;
   /// The absolute time of the timeout
   Clock _timeout;

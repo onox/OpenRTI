@@ -1917,7 +1917,7 @@ public:
     // Must be downstream here
     if (!isParentConnect(connectHandle))
       throw MessageError(std::string("Received ") + message->getTypeName() + " through a child connect!");
-    // need to have a connect handle to resond to
+    // need to have a connect handle to resend to
     if (_pendingMessageList.empty())
       throw MessageError(std::string("No pending ") + message->getTypeName() + "!");
     // report downstream to the originator
