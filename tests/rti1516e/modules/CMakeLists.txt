@@ -1,6 +1,10 @@
 ADD_EXECUTABLE(modules-1516e modules.cpp)
 TARGET_LINK_LIBRARIES(modules-1516e rti1516e fedtime1516e OpenRTI)
 
+IF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+  SET_PROPERTY(TARGET modules-1516e PROPERTY FOLDER "Tests")
+ENDIF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+
 # # No server - thread protocol, one ambassador
 # ADD_TEST(rti1516e/modules-1516e-1 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/modules-1516e" -S0 -A1 -D -O "${CMAKE_CURRENT_SOURCE_DIR}")
 # # No server - thread protocol, 10 ambassadors

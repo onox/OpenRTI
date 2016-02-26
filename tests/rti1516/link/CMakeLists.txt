@@ -1,3 +1,7 @@
 # Test if dynamic linking works as required by the standard
 ADD_EXECUTABLE(link-1516 link.cpp)
 TARGET_LINK_LIBRARIES(link-1516 rti1516 fedtime1516)
+
+IF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+  SET_PROPERTY(TARGET link-1516 PROPERTY FOLDER "Tests")
+ENDIF(OPENRTI_ENABLE_PROJECT_FOLDERS)

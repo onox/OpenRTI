@@ -2,6 +2,10 @@
 ADD_EXECUTABLE(interaction-1516 interaction.cpp)
 TARGET_LINK_LIBRARIES(interaction-1516 rti1516 fedtime1516 OpenRTI)
 
+IF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+  SET_PROPERTY(TARGET interaction-1516 PROPERTY FOLDER "Tests")
+ENDIF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+
 # No server - thread protocol, one ambassador
 ADD_TEST(rti1516/interaction-1516-1 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/interaction-1516" -S0 -A1 -O "${CMAKE_CURRENT_SOURCE_DIR}/fdd.xml")
 # No server - thread protocol, 10 ambassadors
