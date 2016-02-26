@@ -2,6 +2,10 @@
 ADD_EXECUTABLE(fddget-1516 fddget.cpp)
 TARGET_LINK_LIBRARIES(fddget-1516 rti1516 fedtime1516 OpenRTI)
 
+IF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+  SET_PROPERTY(TARGET fddget-1516 PROPERTY FOLDER "Tests")
+ENDIF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+
 # FIXME also test for the privilegeToDelete?? REALLY??
 # ADD_TEST(rti1516/fddget-1516-1 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fddget-1516" -O "${CMAKE_CURRENT_SOURCE_DIR}/fdd-1.xml"
 #   -o HLAobjectRoot -a HLAprivilegeToDeleteObject -a privilegeToDelete -i HLAinteractionRoot)

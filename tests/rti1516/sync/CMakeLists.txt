@@ -1,6 +1,10 @@
 ADD_EXECUTABLE(sync-1516 sync.cpp)
 TARGET_LINK_LIBRARIES(sync-1516 rti1516 fedtime1516 OpenRTI)
 
+IF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+  SET_PROPERTY(TARGET sync-1516 PROPERTY FOLDER "Tests")
+ENDIF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+
 # No server - thread protocol, one ambassador
 ADD_TEST(rti1516/sync-1516-1 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/sync-1516" -S0 -A1 -O "${RTI1516_FDD_FILE}")
 # No server - thread protocol, 10 ambassadors

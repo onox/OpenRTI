@@ -1,6 +1,10 @@
 ADD_EXECUTABLE(logical-time-1516 logical-time.cpp)
 TARGET_LINK_LIBRARIES(logical-time-1516 fedtime1516 OpenRTI)
 
+IF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+  SET_PROPERTY(TARGET logical-time-1516 PROPERTY FOLDER "Tests")
+ENDIF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+
 # Test the different logical times by getting the values form the logical time factory
 ADD_TEST(rti1516/logical-time-1516-1 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/logical-time-1516")
 ADD_TEST(rti1516/logical-time-1516-2 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/logical-time-1516" -F HLAfloat64Time)
@@ -10,6 +14,10 @@ ADD_TEST(rti1516/logical-time-1516-5 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/logical-
 
 ADD_EXECUTABLE(concurrent-time-1516 concurrent-time.cpp)
 TARGET_LINK_LIBRARIES(concurrent-time-1516 rti1516 fedtime1516 OpenRTI)
+
+IF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+  SET_PROPERTY(TARGET concurrent-time-1516 PROPERTY FOLDER "Tests")
+ENDIF(OPENRTI_ENABLE_PROJECT_FOLDERS)
 
 # This is just to see if the opaque time implementation works as well
 # FIXME currently M0

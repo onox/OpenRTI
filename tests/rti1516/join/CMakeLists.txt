@@ -1,6 +1,10 @@
 ADD_EXECUTABLE(join-1516 join.cpp)
 TARGET_LINK_LIBRARIES(join-1516 rti1516 fedtime1516 OpenRTI)
 
+IF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+  SET_PROPERTY(TARGET join-1516 PROPERTY FOLDER "Tests")
+ENDIF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+
 # No server - thread protocol, one ambassador
 ADD_TEST(rti1516/join-1516-1 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/join-1516" -S0 -A1 -O "${RTI1516_FDD_FILE}")
 # No server - thread protocol, 10 ambassadors
@@ -14,6 +18,10 @@ ADD_TEST(rti1516/join-1516-5 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/join-1516" -S5 -
 
 ADD_EXECUTABLE(concurrent-join-1516 concurrent-join.cpp)
 TARGET_LINK_LIBRARIES(concurrent-join-1516 rti1516 fedtime1516 OpenRTI)
+
+IF(OPENRTI_ENABLE_PROJECT_FOLDERS)
+  SET_PROPERTY(TARGET concurrent-join-1516 PROPERTY FOLDER "Tests")
+ENDIF(OPENRTI_ENABLE_PROJECT_FOLDERS)
 
 # No server - thread protocol, one ambassador
 ADD_TEST(rti1516/concurrent-join-1516-1 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/concurrent-join-1516" -S0 -A10 -O "${RTI1516_FDD_FILE}")

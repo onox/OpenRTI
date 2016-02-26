@@ -1,4 +1,4 @@
-# Just for propper recursion
+# Just for proper recursion
 ADD_SUBDIRECTORY(OpenRTI)
 IF(OPENRTI_ENABLE_RTI13)
   ADD_SUBDIRECTORY(RTI13)
