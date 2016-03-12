@@ -131,6 +131,18 @@ IF(MACOS)
   ENDIF()
 ENDIF()
 
+# Work around some linux linkers that seem to default to --as-needed
+# Actually this also works around cmake reordering the link dependencies
+# ... well and not to forget that the problem originates from that
+# /creative/ way enable user defined logical times for an RTI.
+# Not sure if this is the right approach, but seems to help for now.
+SET(CMAKE_REQUIRED_FLAGS "-Wl,--no-as-needed")
+CHECK_CXX_SOURCE_RUNS("int main() { return 0; }" hasNoAsNeeded)
+SET(CMAKE_REQUIRED_FLAGS "")
+IF(hasNoAsNeeded)
+  SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--no-as-needed")
+ENDIF()
+
 SET(OPENRTI_DATAROOTDIR "${CMAKE_INSTALL_FULL_DATAROOTDIR}/OpenRTI" CACHE PATH "Path where OpenRTI puts runtime required paths." FORCE)
 
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
