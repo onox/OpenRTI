@@ -7196,7 +7196,7 @@ PyObject_NewRTIambassador(PyTypeObject *type, PyObject *args, PyObject *kwds)
   std::auto_ptr<rti1516e::RTIambassador> ambassador;
   ambassador = rti1516e::RTIambassadorFactory().createRTIambassador();
   if (!ambassador.get()) {
-    PyErr_SetObject(PyRTI1516ERTIinternalError.get(), PyString_FromString("Cannot create RTIambassador!"));
+    PyErr_SetObject(PyRTI1516ERTIinternalError.get(), PyUnicode_FromString("Cannot create RTIambassador!"));
     return 0;
   }
 
