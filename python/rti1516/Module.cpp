@@ -6488,11 +6488,18 @@ PyObject_NewRTIambassador(PyTypeObject *type, PyObject *args, PyObject *kwds)
     stringArgs.push_back(string);
   }
 
+  std::auto_ptr<rti1516::RTIambassador> ambassador;
+  ambassador = rti1516::RTIambassadorFactory().createRTIambassador(stringArgs);
+  if (!ambassador.get()) {
+    PyErr_SetObject(PyRTI1516RTIinternalError.get(), PyString_FromString("Cannot create RTIambassador!"));
+    return 0;
+  }
+
   PyRTIambassadorObject *self = PyObject_New(PyRTIambassadorObject, type);
   if (!self)
     return 0;
   new (self) PyRTIambassadorObject;
-  self->ob_value = rti1516::RTIambassadorFactory().createRTIambassador(stringArgs);
+  self->ob_value = ambassador;
   return (PyObject*)self;
 }
 
