@@ -6269,14 +6269,14 @@ RTIambassadorImplementation::decodeFederateHandle(rti1516e::VariableLengthData c
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
+  if (!_ambassadorInterface->isConnected())
+    throw rti1516e::NotConnected(L"decodeFederateHandle()");
+  if (!_ambassadorInterface->getFederate())
+    throw rti1516e::FederateNotExecutionMember(L"decodeFederateHandle()");
   try {
     return rti1516e::FederateHandleFriend::decode(encodedValue);
   } catch (const OpenRTI::CouldNotDecode& e) {
     throw rti1516e::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::FederateNotExecutionMember& e) {
-    throw rti1516e::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::NotConnected& e) {
-    throw rti1516e::NotConnected(OpenRTI::utf8ToUcs(e.what()));
   } catch (const std::exception& e) {
     throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
   } catch (...) {
@@ -6291,14 +6291,14 @@ RTIambassadorImplementation::decodeObjectClassHandle(rti1516e::VariableLengthDat
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
+  if (!_ambassadorInterface->isConnected())
+    throw rti1516e::NotConnected(L"decodeObjectClassHandle()");
+  if (!_ambassadorInterface->getFederate())
+    throw rti1516e::FederateNotExecutionMember(L"decodeObjectClassHandle()");
   try {
     return rti1516e::ObjectClassHandleFriend::decode(encodedValue);
   } catch (const OpenRTI::CouldNotDecode& e) {
     throw rti1516e::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::FederateNotExecutionMember& e) {
-    throw rti1516e::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::NotConnected& e) {
-    throw rti1516e::NotConnected(OpenRTI::utf8ToUcs(e.what()));
   } catch (const std::exception& e) {
     throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
   } catch (...) {
@@ -6313,14 +6313,14 @@ RTIambassadorImplementation::decodeInteractionClassHandle(rti1516e::VariableLeng
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
+  if (!_ambassadorInterface->isConnected())
+    throw rti1516e::NotConnected(L"decodeInteractionClassHandle()");
+  if (!_ambassadorInterface->getFederate())
+    throw rti1516e::FederateNotExecutionMember(L"decodeInteractionClassHandle()");
   try {
     return rti1516e::InteractionClassHandleFriend::decode(encodedValue);
   } catch (const OpenRTI::CouldNotDecode& e) {
     throw rti1516e::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::FederateNotExecutionMember& e) {
-    throw rti1516e::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::NotConnected& e) {
-    throw rti1516e::NotConnected(OpenRTI::utf8ToUcs(e.what()));
   } catch (const std::exception& e) {
     throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
   } catch (...) {
@@ -6335,14 +6335,14 @@ RTIambassadorImplementation::decodeObjectInstanceHandle(rti1516e::VariableLength
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
+  if (!_ambassadorInterface->isConnected())
+    throw rti1516e::NotConnected(L"decodeObjectInstanceHandle()");
+  if (!_ambassadorInterface->getFederate())
+    throw rti1516e::FederateNotExecutionMember(L"decodeObjectInstanceHandle()");
   try {
     return rti1516e::ObjectInstanceHandleFriend::decode(encodedValue);
   } catch (const OpenRTI::CouldNotDecode& e) {
     throw rti1516e::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::FederateNotExecutionMember& e) {
-    throw rti1516e::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::NotConnected& e) {
-    throw rti1516e::NotConnected(OpenRTI::utf8ToUcs(e.what()));
   } catch (const std::exception& e) {
     throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
   } catch (...) {
@@ -6357,14 +6357,14 @@ RTIambassadorImplementation::decodeAttributeHandle(rti1516e::VariableLengthData 
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
+  if (!_ambassadorInterface->isConnected())
+    throw rti1516e::NotConnected(L"decodeAttributeHandle()");
+  if (!_ambassadorInterface->getFederate())
+    throw rti1516e::FederateNotExecutionMember(L"decodeAttributeHandle()");
   try {
     return rti1516e::AttributeHandleFriend::decode(encodedValue);
   } catch (const OpenRTI::CouldNotDecode& e) {
     throw rti1516e::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::FederateNotExecutionMember& e) {
-    throw rti1516e::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::NotConnected& e) {
-    throw rti1516e::NotConnected(OpenRTI::utf8ToUcs(e.what()));
   } catch (const std::exception& e) {
     throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
   } catch (...) {
@@ -6379,14 +6379,14 @@ RTIambassadorImplementation::decodeParameterHandle(rti1516e::VariableLengthData 
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
+  if (!_ambassadorInterface->isConnected())
+    throw rti1516e::NotConnected(L"decodeParameterHandle()");
+  if (!_ambassadorInterface->getFederate())
+    throw rti1516e::FederateNotExecutionMember(L"decodeParameterHandle()");
   try {
     return rti1516e::ParameterHandleFriend::decode(encodedValue);
   } catch (const OpenRTI::CouldNotDecode& e) {
     throw rti1516e::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::FederateNotExecutionMember& e) {
-    throw rti1516e::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::NotConnected& e) {
-    throw rti1516e::NotConnected(OpenRTI::utf8ToUcs(e.what()));
   } catch (const std::exception& e) {
     throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
   } catch (...) {
@@ -6401,14 +6401,14 @@ RTIambassadorImplementation::decodeDimensionHandle(rti1516e::VariableLengthData 
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
+  if (!_ambassadorInterface->isConnected())
+    throw rti1516e::NotConnected(L"decodeDimensionHandle()");
+  if (!_ambassadorInterface->getFederate())
+    throw rti1516e::FederateNotExecutionMember(L"decodeDimensionHandle()");
   try {
     return rti1516e::DimensionHandleFriend::decode(encodedValue);
   } catch (const OpenRTI::CouldNotDecode& e) {
     throw rti1516e::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::FederateNotExecutionMember& e) {
-    throw rti1516e::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::NotConnected& e) {
-    throw rti1516e::NotConnected(OpenRTI::utf8ToUcs(e.what()));
   } catch (const std::exception& e) {
     throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
   } catch (...) {
@@ -6423,14 +6423,14 @@ RTIambassadorImplementation::decodeMessageRetractionHandle(rti1516e::VariableLen
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
+  if (!_ambassadorInterface->isConnected())
+    throw rti1516e::NotConnected(L"decodeMessageRetractionHandle()");
+  if (!_ambassadorInterface->getFederate())
+    throw rti1516e::FederateNotExecutionMember(L"decodeMessageRetractionHandle()");
   try {
     return rti1516e::MessageRetractionHandleFriend::decode(encodedValue);
   } catch (const OpenRTI::CouldNotDecode& e) {
     throw rti1516e::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::FederateNotExecutionMember& e) {
-    throw rti1516e::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::NotConnected& e) {
-    throw rti1516e::NotConnected(OpenRTI::utf8ToUcs(e.what()));
   } catch (const std::exception& e) {
     throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
   } catch (...) {
@@ -6445,14 +6445,14 @@ RTIambassadorImplementation::decodeRegionHandle(rti1516e::VariableLengthData con
          rti1516e::NotConnected,
          rti1516e::RTIinternalError)
 {
+  if (!_ambassadorInterface->isConnected())
+    throw rti1516e::NotConnected(L"decodeRegionHandle()");
+  if (!_ambassadorInterface->getFederate())
+    throw rti1516e::FederateNotExecutionMember(L"decodeRegionHandle()");
   try {
     return rti1516e::RegionHandleFriend::decode(encodedValue);
   } catch (const OpenRTI::CouldNotDecode& e) {
     throw rti1516e::CouldNotDecode(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::FederateNotExecutionMember& e) {
-    throw rti1516e::FederateNotExecutionMember(OpenRTI::utf8ToUcs(e.what()));
-  } catch (const OpenRTI::NotConnected& e) {
-    throw rti1516e::NotConnected(OpenRTI::utf8ToUcs(e.what()));
   } catch (const std::exception& e) {
     throw rti1516e::RTIinternalError(OpenRTI::utf8ToUcs(e.what()));
   } catch (...) {
