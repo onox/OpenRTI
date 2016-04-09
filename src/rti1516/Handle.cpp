@@ -161,7 +161,7 @@ namespace rti1516
   {                                                                     \
     OpenRTI::HandleKind handle;                                         \
     if (encodedValue.size() < handle.getEncodedLength())                \
-      throw CouldNotDecode(L"Handle");                                  \
+      throw OpenRTI::CouldNotDecode(#HandleKind);                       \
     handle.decode(encodedValue.data());                                 \
     _impl = HandleKind##Implementation::create(handle);                 \
     HandleKind##Implementation::get(_impl);                             \
