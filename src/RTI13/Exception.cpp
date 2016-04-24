@@ -76,13 +76,13 @@ RTI::Exception::operator=(const Exception& exception)
   return *this;
 }
 
-std::ostream RTI_EXPORT&
+std::ostream&
 operator<<(std::ostream& os, const RTI::Exception* ex)
 {
   return os << "RTI::Exception: reason: " << ex->_reason << " name: " << ex->_name;
 }
 
-std::ostream RTI_EXPORT&
+std::ostream&
 operator<<(std::ostream& os, const RTI::Exception& ex)
 {
   return os << "RTI::Exception: reason: " << ex._reason << " name: " << ex._name;

@@ -167,7 +167,7 @@ namespace rti1516
     HandleKind##Implementation::get(_impl);                             \
   }                                                                     \
                                                                         \
-  std::wostream RTI_EXPORT&                                             \
+  std::wostream&                                                        \
   operator<<(std::wostream& stream, HandleKind const& handle)           \
   {                                                                     \
     return stream << handle.toString();                                 \
