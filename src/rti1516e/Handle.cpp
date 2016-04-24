@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -82,7 +82,7 @@ namespace rti1516e
                                                                         \
   long HandleKind::hash() const                                         \
   {                                                                     \
-    return HandleKind##Implementation::getHandle(_impl);                \
+    return long(HandleKind##Implementation::getHandle(_impl));          \
   }                                                                     \
                                                                         \
   VariableLengthData                                                    \

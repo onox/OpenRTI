@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -31,7 +31,7 @@ FederateHandleSetImplementation::~FederateHandleSetImplementation()
 RTI::ULong
 FederateHandleSetImplementation::size() const
 {
-  return _federateHandleVector.size();
+  return RTI::ULong(_federateHandleVector.size());
 }
 
 RTI::FederateHandle

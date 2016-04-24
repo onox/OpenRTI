@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2014 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -66,7 +66,7 @@ main(int argc, char* argv[])
     try {
       listenAddress = listeningNetworkServer->listenInet(address, 1);
       success = true;
-    } catch (const OpenRTI::Exception& e) {
+    } catch (const OpenRTI::Exception&) {
       continue;
     }
 
@@ -92,7 +92,7 @@ main(int argc, char* argv[])
       ambassador.createFederationExecution(federationExecutionName, fullPathNameToTheFDDfile);
       std::wcout << L"Must not be able to connect to the given address" << std::endl;
       return EXIT_FAILURE;
-    } catch (const rti1516::RTIinternalError& e) {
+    } catch (const rti1516::RTIinternalError&) {
       // should report this
       // Note that rti1516 does not have a specific way to report connection failures.
       // So we check here aginst RTIinternalError.
@@ -114,9 +114,9 @@ main(int argc, char* argv[])
       ambassador.joinFederationExecution(L"federate", federationExecutionName);
       std::wcout << L"Must not be able to connect to the given address" << std::endl;
       return EXIT_FAILURE;
-    } catch (const rti1516::FederationExecutionDoesNotExist& e) {
+    } catch (const rti1516::FederationExecutionDoesNotExist&) {
       // should report this
-    } catch (const rti1516::RTIinternalError& e) {
+    } catch (const rti1516::RTIinternalError&) {
       // or this
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -136,9 +136,9 @@ main(int argc, char* argv[])
       ambassador.resignFederationExecution(rti1516::NO_ACTION);
       std::wcout << L"Must not be able to connect to the given address" << std::endl;
       return EXIT_FAILURE;
-    } catch (const rti1516::FederateNotExecutionMember& e) {
+    } catch (const rti1516::FederateNotExecutionMember&) {
       // should report this
-    } catch (const rti1516::RTIinternalError& e) {
+    } catch (const rti1516::RTIinternalError&) {
       // or this
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -158,9 +158,9 @@ main(int argc, char* argv[])
       ambassador.destroyFederationExecution(federationExecutionName);
       std::wcout << L"Must not be able to connect to the given address" << std::endl;
       return EXIT_FAILURE;
-    } catch (const rti1516::FederationExecutionDoesNotExist& e) {
+    } catch (const rti1516::FederationExecutionDoesNotExist&) {
       // should report this
-    } catch (const rti1516::RTIinternalError& e) {
+    } catch (const rti1516::RTIinternalError&) {
       // or this
     } catch (const rti1516::Exception& e) {
       std::wcout << e.what() << std::endl;

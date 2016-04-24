@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -277,7 +277,7 @@ RTIfedTime::getPrintableLength() const
 {
   std::stringstream stream;
   stream << _fedTime;
-  return stream.str().size() + 1;
+  return int(stream.str().size() + 1);
 }
 
 void

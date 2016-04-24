@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -58,7 +58,7 @@ toVariableLengthData(const char* s)
 {
     rti1516::VariableLengthData variableLengthData;
     if (s)
-        variableLengthData.setData(s, strlen(s));
+        variableLengthData.setData(s, (unsigned long)strlen(s));
     return variableLengthData;
 }
 
@@ -66,7 +66,7 @@ inline rti1516::VariableLengthData
 toVariableLengthData(const std::string& s)
 {
     rti1516::VariableLengthData variableLengthData;
-    variableLengthData.setData(s.data(), s.size());
+    variableLengthData.setData(s.data(), (unsigned long)s.size());
     return variableLengthData;
 }
 
@@ -82,7 +82,7 @@ inline rti1516::VariableLengthData
 toVariableLengthData(const std::wstring& s)
 {
     rti1516::VariableLengthData variableLengthData;
-    variableLengthData.setData(s.data(), sizeof(std::wstring::value_type)*s.size());
+    variableLengthData.setData(s.data(), (unsigned long)(sizeof(std::wstring::value_type)*s.size()));
     return variableLengthData;
 }
 
@@ -91,7 +91,7 @@ toWString(const rti1516::VariableLengthData& variableLengthData)
 {
     if (!variableLengthData.size())
         return std::wstring();
-    return std::wstring((const wchar_t*)variableLengthData.data(), variableLengthData.size()/sizeof(std::wstring::value_type));
+    return std::wstring((const wchar_t*)variableLengthData.data(), (unsigned long)(variableLengthData.size()/sizeof(std::wstring::value_type)));
 }
 
 inline rti1516::VariableLengthData
@@ -99,7 +99,7 @@ toVariableLengthData(const Clock& c)
 {
     // May be at some time make this endian safe
     rti1516::VariableLengthData variableLengthData;
-    variableLengthData.setData(&c, sizeof(c));
+    variableLengthData.setData(&c, (unsigned long)sizeof(c));
     return variableLengthData;
 }
 
@@ -109,7 +109,7 @@ toClock(const rti1516::VariableLengthData& variableLengthData)
     Clock c;
     // May be at some time make this endian safe
     if (variableLengthData.size() == sizeof(Clock))
-        memcpy(&c, variableLengthData.data(), sizeof(Clock));
+        memcpy(&c, variableLengthData.data(), (unsigned long)sizeof(Clock));
     return c;
 }
 
@@ -118,7 +118,7 @@ toVariableLengthData(unsigned u)
 {
     // May be at some time make this endian safe
     rti1516::VariableLengthData variableLengthData;
-    variableLengthData.setData(&u, sizeof(u));
+    variableLengthData.setData(&u, (unsigned long)sizeof(u));
     return variableLengthData;
 }
 

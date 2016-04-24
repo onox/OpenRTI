@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -31,7 +31,7 @@ AttributeHandleSetImplementation::~AttributeHandleSetImplementation()
 RTI::ULong
 AttributeHandleSetImplementation::size() const
 {
-  return _attributeHandleVector.size();
+  return RTI::ULong(_attributeHandleVector.size());
 }
 
 RTI::AttributeHandle
@@ -101,4 +101,3 @@ RTI::AttributeHandleSetFactory::create(ULong size)
 {
   return new AttributeHandleSetImplementation(size);
 }
-

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2014 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -134,8 +134,9 @@ public:                                                           \
   HandleName(const Handle<Type>& handle) :                        \
     Handle<Type>(handle)                                          \
   { }                                                             \
-  HandleName(const Type& handle) :                                \
-    Handle<Type>(handle)                                          \
+  template<typename T>                                            \
+  HandleName(const T& handle) :                                   \
+    Handle<Type>(Type(handle))                                    \
   { }                                                             \
                                                                   \
   std::string toString() const                                    \

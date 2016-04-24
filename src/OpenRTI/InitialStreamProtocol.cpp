@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -76,7 +76,7 @@ public:
 
   void writeStringStringListMap(const StringStringListMap& stringStringListMap)
   {
-    writeUInt32BE(stringStringListMap.size());
+    writeUInt32BE(uint32_t(stringStringListMap.size()));
     for (StringStringListMap::const_iterator i = stringStringListMap.begin(); i != stringStringListMap.end(); ++i) {
       writeString(i->first);
       writeStringList(i->second);
@@ -85,14 +85,14 @@ public:
 
   void writeStringList(const StringList& stringList)
   {
-    writeUInt32BE(stringList.size());
+    writeUInt32BE(uint32_t(stringList.size()));
     for (StringList::const_iterator i = stringList.begin(); i != stringList.end(); ++i)
       writeString(*i);
   }
 
   void writeString(const std::string& utf8)
   {
-    writeUInt32BE(utf8.size());
+    writeUInt32BE(uint32_t(utf8.size()));
     for (std::string::const_iterator i = utf8.begin(); i != utf8.end(); ++i)
       writeUInt8BE(*i);
     align(4);
@@ -125,7 +125,7 @@ InitialStreamProtocol::writeOptionMap(const StringStringListMap& stringStringLis
 
   // Write the message header
   headerStream.writeFixedString("OpenRTI\0", 8);
-  headerStream.writeUInt32BE(bodyStream.size() + 12);
+  headerStream.writeUInt32BE(uint32_t(bodyStream.size() + 12));
 }
 
 void

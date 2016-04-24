@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2015 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -183,7 +183,7 @@ ExpatComment(void* userData, const char* data)
   try {
     ContentHandler* contentHandler = userDataToContentHandler(userData);
     if (contentHandler)
-      contentHandler->comment(data, strlen(data));
+      contentHandler->comment(data, unsigned(strlen(data)));
   } catch (Exception& e) {
     userDataSetException(userData, e.getReason());
     XML_StopParser(userDataToParser(userData), XML_FALSE);

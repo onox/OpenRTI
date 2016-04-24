@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -74,7 +74,7 @@ public:
       AddressList currentAddressList;
       for (AddressList::iterator j = parentAddressList.begin(); j != parentAddressList.end(); ++j) {
         for (unsigned k = 0; k < numClientsPerServers; ++k) {
-          listeningAddress = startServer(*j, k%2);
+          listeningAddress = startServer(*j, k%2 == 1);
           addressList.push_back(listeningAddress);
           currentAddressList.push_back(listeningAddress);
           if (numServers <= addressList.size())
@@ -115,7 +115,7 @@ private:
           _address = _server.listenInet(address, 20);
           success = true;
           break;
-        } catch (const OpenRTI::Exception& e) {
+        } catch (const OpenRTI::Exception&) {
           if (addressList.empty() && !success)
             throw;
         }

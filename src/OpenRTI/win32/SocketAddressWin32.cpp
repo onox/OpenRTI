@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -158,7 +158,7 @@ SocketAddress::resolve(const std::string& address, const std::string& service, b
   SocketAddressList socketAddressList;
   struct addrinfo *res = ai;
   while (res) {
-    socketAddressList.push_back(SocketAddress(new PrivateData(res->ai_addr, res->ai_addrlen)));
+    socketAddressList.push_back(SocketAddress(new PrivateData(res->ai_addr, socklen_t(res->ai_addrlen))));
     res = res->ai_next;
   }
   ::freeaddrinfo(ai);

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -88,7 +88,7 @@ public:
   }
   VariableLengthData encodeLogicalTime(const rti1516e::LogicalTime& logicalTime)
   {
-    unsigned long encodedLength = logicalTime.encodedLength();
+    size_t encodedLength = logicalTime.encodedLength();
     VariableLengthData variableLengthData;
     variableLengthData.resize(encodedLength);
     logicalTime.encode(variableLengthData.data(), encodedLength);

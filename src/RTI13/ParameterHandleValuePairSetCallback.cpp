@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -34,7 +34,7 @@ ParameterHandleValuePairSetCallback::~ParameterHandleValuePairSetCallback()
 RTI::ULong
 ParameterHandleValuePairSetCallback::size() const
 {
-  return _parameterValues.size();
+  return RTI::ULong(_parameterValues.size());
 }
 
 RTI::Handle
@@ -77,7 +77,10 @@ ParameterHandleValuePairSetCallback::getValuePointer(RTI::ULong index, RTI::ULon
 {
   if (_parameterValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
-  length = _parameterValues[index].getValue().size();
+  size_t size = _parameterValues[index].getValue().size();
+  if (std::numeric_limits<RTI::ULong>::max() < size)
+    throw RTI::ArrayIndexOutOfBounds("Data size bigger than length data size");
+  length = static_cast<RTI::ULong>(size);
   _parameterValues[index].getValue().ensurePrivate();
   return _parameterValues[index].getValue().charData();
 }

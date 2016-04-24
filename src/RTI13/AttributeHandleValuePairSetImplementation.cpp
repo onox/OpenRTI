@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -31,7 +31,7 @@ AttributeHandleValuePairSetImplementation::~AttributeHandleValuePairSetImplement
 RTI::ULong
 AttributeHandleValuePairSetImplementation::size() const
 {
-  return _attributeValues.size();
+  return RTI::ULong(_attributeValues.size());
 }
 
 RTI::Handle
@@ -74,7 +74,10 @@ AttributeHandleValuePairSetImplementation::getValuePointer(RTI::ULong index, RTI
 {
   if (_attributeValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
-  length = _attributeValues[index].getValue().size();
+  size_t size = _attributeValues[index].getValue().size();
+  if (std::numeric_limits<RTI::ULong>::max() < size)
+    throw RTI::ArrayIndexOutOfBounds("Data size bigger than length data size");
+  length = static_cast<RTI::ULong>(size);
   _attributeValues[index].getValue().ensurePrivate();
   return _attributeValues[index].getValue().charData();
 }

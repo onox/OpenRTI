@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -47,7 +47,7 @@ SocketStream::send(const ConstBufferRange& bufferRange, bool more)
 #endif
 
     buffers[bufferCount].buf = (char*)i.data();
-    buffers[bufferCount].len = size;
+    buffers[bufferCount].len = ULONG(size);
     bytelen += size;
     i += size;
     ++bufferCount;
@@ -119,7 +119,7 @@ SocketStream::recv(const BufferRange& bufferRange, bool peek)
 #endif
 
     buffers[bufferCount].buf = (char*)i.data();
-    buffers[bufferCount].len = size;
+    buffers[bufferCount].len = ULONG(size);
     bytelen += size;
     i += size;
     ++bufferCount;

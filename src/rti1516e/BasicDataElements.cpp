@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2011-2015 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2011-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -233,13 +233,13 @@ getOctetBoundary() const
 
 Integer64 hash() const
 {
-  return _value;
+  return Integer64(_value);
 }
 )
 IMPLEMENT_ENCODING_HELPER_CLASS(HLAboolean, bool,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
-  _value = buffer[index];
+  _value = bool(buffer[index]);
   return index + 1;
 }
 
@@ -262,7 +262,7 @@ getOctetBoundary() const
 
 Integer64 hash() const
 {
-  return _value;
+  return Integer64(_value);
 }
 )
 IMPLEMENT_ENCODING_HELPER_CLASS(HLAbyte, Octet,
@@ -291,7 +291,7 @@ getOctetBoundary() const
 
 Integer64 hash() const
 {
-  return _value;
+  return Integer64(_value);
 }
 )
 IMPLEMENT_ENCODING_HELPER_CLASS( HLAoctet, Octet,
@@ -320,7 +320,7 @@ getOctetBoundary() const
 
 Integer64 hash() const
 {
-  return _value;
+  return Integer64(_value);
 }
 )
 
@@ -358,7 +358,7 @@ getOctetBoundary() const
 
 Integer64 hash() const
 {
-  return _value;
+  return Integer64(_value);
 }
 )
 
@@ -396,7 +396,7 @@ getOctetBoundary() const
 
 Integer64 hash() const
 {
-  return _value;
+  return Integer64(_value);
 }
 )
 IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger16LE, Integer16,
@@ -432,7 +432,7 @@ getOctetBoundary() const
 
 Integer64 hash() const
 {
-  return _value;
+  return Integer64(_value);
 }
 )
 IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger32BE, Integer32,
@@ -472,7 +472,7 @@ getOctetBoundary() const
 
 Integer64 hash() const
 {
-  return _value;
+  return Integer64(_value);
 }
 )
 IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger32LE, Integer32,
@@ -512,7 +512,7 @@ getOctetBoundary() const
 
 Integer64 hash() const
 {
-  return _value;
+  return Integer64(_value);
 }
 )
 IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger64BE, Integer64,
@@ -560,7 +560,7 @@ getOctetBoundary() const
 
 Integer64 hash() const
 {
-  return _value;
+  return Integer64(_value);
 }
 )
 IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger64LE, Integer64,
@@ -608,7 +608,7 @@ getOctetBoundary() const
 
 Integer64 hash() const
 {
-  return _value;
+  return Integer64(_value);
 }
 )
 IMPLEMENT_ENCODING_HELPER_CLASS( HLAoctetPairBE, OctetPair,
@@ -641,7 +641,7 @@ getOctetBoundary() const
 
 Integer64 hash() const
 {
-  return (Integer64(_value.first) << 8) | _value.second;
+  return (Integer64(_value.first) << 8) | Integer64(_value.second);
 }
 )
 IMPLEMENT_ENCODING_HELPER_CLASS( HLAoctetPairLE, OctetPair,
@@ -674,7 +674,7 @@ getOctetBoundary() const
 
 Integer64 hash() const
 {
-  return (Integer64(_value.first) << 8) | _value.second;
+  return (Integer64(_value.first) << 8) | Integer64(_value.second);
 }
 )
 
@@ -728,7 +728,7 @@ Integer64 hash() const
     float s;
   } u;
   u.s = _value;
-  return u.u;
+  return Integer64(u.u);
 }
 )
 IMPLEMENT_ENCODING_HELPER_CLASS( HLAfloat32LE, float,
@@ -780,7 +780,7 @@ Integer64 hash() const
     float s;
   } u;
   u.s = _value;
-  return u.u;
+  return Integer64(u.u);
 }
 )
 IMPLEMENT_ENCODING_HELPER_CLASS( HLAfloat64BE, double,
@@ -840,7 +840,7 @@ Integer64 hash() const
     double s;
   } u;
   u.s = _value;
-  return u.u;
+  return Integer64(u.u);
 }
 )
 IMPLEMENT_ENCODING_HELPER_CLASS( HLAfloat64LE, double,
@@ -900,7 +900,7 @@ Integer64 hash() const
     double s;
   } u;
   u.s = _value;
-  return u.u;
+  return Integer64(u.u);
 }
 )
 

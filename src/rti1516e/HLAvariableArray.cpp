@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2011-2015 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2011-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -62,12 +62,12 @@ public:
     unsigned int octetBoundary = getOctetBoundary();
     align(buffer, octetBoundary);
     size_t length = _dataElementVector.size();
-    if (std::numeric_limits<Integer32>::max() < length)
+    if (0xffffffffu < length)
       throw EncoderException(L"HLAvariableArray::encodeInto(): array size is too big to encode!");
-    buffer.push_back(length >> 24);
-    buffer.push_back(length >> 16);
-    buffer.push_back(length >> 8);
-    buffer.push_back(length);
+    buffer.push_back(Octet(0xff & (length >> 24)));
+    buffer.push_back(Octet(0xff & (length >> 16)));
+    buffer.push_back(Octet(0xff & (length >> 8)));
+    buffer.push_back(Octet(0xff & (length)));
     align(buffer, octetBoundary);
 
     for (DataElementVector::const_iterator i = _dataElementVector.begin(); i != _dataElementVector.end(); ++i) {
@@ -81,10 +81,10 @@ public:
   {
     unsigned int octetBoundary = getOctetBoundary();
     index = align(index, octetBoundary);
-    size_t length = Integer32(buffer[index]) << 24;
-    length |= Integer32(buffer[index + 1]) << 16;
-    length |= Integer32(buffer[index + 2]) << 8;
-    length |= Integer32(buffer[index + 3]);
+    size_t length = size_t(buffer[index]) << 24;
+    length |= size_t(buffer[index + 1]) << 16;
+    length |= size_t(buffer[index + 2]) << 8;
+    length |= size_t(buffer[index + 3]);
     index = align(index + 4, octetBoundary);
 
     while (length < _dataElementVector.size()) {

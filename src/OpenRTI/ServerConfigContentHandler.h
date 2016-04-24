@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -64,7 +64,7 @@ public:
   };
 
   unsigned getNumListenConfig() const
-  { return _listenConfig.size(); }
+  { return unsigned(_listenConfig.size()); }
 
   const ListenConfig& getListenConfig(unsigned index) const
   {

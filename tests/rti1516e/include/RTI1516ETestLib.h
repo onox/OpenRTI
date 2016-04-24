@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -43,7 +43,7 @@ namespace OpenRTI {
 inline bool
 operator==(const rti1516e::VariableLengthData& lhs, const rti1516e::VariableLengthData& rhs)
 {
-  unsigned long size = lhs.size();
+  size_t size = lhs.size();
   if (size != rhs.size())
     return false;
   return 0 == memcmp(lhs.data(), rhs.data(), size);

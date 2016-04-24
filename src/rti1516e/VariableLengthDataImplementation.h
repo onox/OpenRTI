@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2012 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -33,7 +33,7 @@ public:
   VariableLengthDataImplementation(const OpenRTI::VariableLengthData& variableLengthData) :
     _variableLengthData(variableLengthData)
   { }
-  VariableLengthDataImplementation(const void* data, unsigned long size) :
+  VariableLengthDataImplementation(const void* data, size_t size) :
     _variableLengthData(data, size)
   { }
   VariableLengthDataImplementation(const VariableLengthDataImplementation& v) :

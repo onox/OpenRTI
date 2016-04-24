@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -83,10 +83,10 @@ public:
     _lowerBoundReceiveTime = _lowerBoundSendTime;
     _upperBoundReceiveTime.setFinal();
 
-    bool enableConstrained = getRandomNumber() % 2;
-    bool enableRegulation = getRandomNumber() % 2;
-    bool enableConstrainedPastRegulation = getRandomNumber() % 2;
-    bool disableRegulationPastConstrained = getRandomNumber() % 2;
+    bool enableConstrained = (getRandomNumber() % 2) == 1;
+    bool enableRegulation = (getRandomNumber() % 2) == 1;
+    bool enableConstrainedPastRegulation = (getRandomNumber() % 2) == 1;
+    bool disableRegulationPastConstrained = (getRandomNumber() % 2) == 1;
 
     // Get some handles
     try {
@@ -866,10 +866,10 @@ public:
       return;
     if (logicalTimePair.second) {
       // smallest allowed message is logical time + 1
-      RTI1516TestAmbassador::setLBTS(logicalTimePair.first.getTime() + 1);
+      RTI1516TestAmbassador::setLBTS(unsigned(logicalTimePair.first.getTime() + 1));
     } else {
       // smallest allowed message is logical time
-      RTI1516TestAmbassador::setLBTS(logicalTimePair.first.getTime());
+      RTI1516TestAmbassador::setLBTS(unsigned(logicalTimePair.first.getTime()));
     }
   }
 

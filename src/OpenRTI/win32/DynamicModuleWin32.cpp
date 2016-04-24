@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2013-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2013-2016 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -40,7 +40,7 @@ DynamicModule::getFileNameForAddress(const void* address)
 
   std::vector<wchar_t> buf(MAX_PATH, 0);
   for (;;) {
-    DWORD retval = GetModuleFileNameW(handle, &buf.front(), buf.size());
+    DWORD retval = GetModuleFileNameW(handle, &buf.front(), DWORD(buf.size()));
     DWORD errorNumber = GetLastError();
     if (retval == buf.size() && errorNumber == ERROR_INSUFFICIENT_BUFFER) {
       buf.resize(buf.size()*2, 0);
