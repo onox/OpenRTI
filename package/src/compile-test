@@ -1,0 +1,97 @@
+#!/bin/sh
+
+# Crude compile test to check if all combinations build
+# The script needs an argument with the source directory
+if [ -z "$1" ] ; then
+    1>&2 echo "Need the source directory as a first argument"
+    exit 1
+fi
+
+builddir=/tmp/OpenRTI-compileTest-$$
+
+case `uname` in
+    CYGWIN*)
+        generators[0]="Visual Studio 14 2015 Win64"
+        generators[1]="Visual Studio 14 2015"
+        ;;
+    *)
+        generators[0]=""
+        ;;
+esac
+
+for generator in "${generators[@]}" ; do
+    for build_shared in TRUE FALSE ; do
+        for buildconfig in Debug Release RelWithDebInfo ; do
+            # Put this into a subshell
+            (
+                function cleanup {
+                    rm -rf "$builddir"
+                }
+                trap cleanup EXIT
+
+                mkdir "$builddir"
+                if [ "$?" != "0" ] ; then
+                    1>&2 echo "Cannot create temporary build directory"
+                    exit 1
+                fi
+                
+                cd "$builddir" &&
+                if [ "$?" != "0" ] ; then
+                    1>&2 echo "Cannot step into temporary build directory"
+                    exit 1
+                fi
+                if [ -z "$generator" ] ; then
+                    cmake \
+                      -DOPENRTI_BUILD_SHARED=$build_shared \
+                      -DCMAKE_BUILD_TYPE=$buildconfig \
+                      "$@"
+                    if [ "$?" != "0" ] ; then
+                        1>&2 echo "Configure step failed."
+                        exit 1
+                    fi
+                else
+                    cmake -G "$generator" \
+                      -DOPENRTI_BUILD_SHARED=$build_shared \
+                      -DCMAKE_BUILD_TYPE=$buildconfig \
+                      "$@"
+                    if [ "$?" != "0" ] ; then
+                        1>&2 echo "Configure step failed."
+                        exit 1
+                    fi
+                fi
+
+                case `uname` in
+                    CYGWIN*)
+                        cmake --build . --config $buildconfig
+                        if [ "$?" != "0" ] ; then
+                            1>&2 echo "Build step failed."
+                            exit 1
+                        fi
+                    ;;
+                    *)
+                        make -j8
+                        if [ "$?" != "0" ] ; then
+                            1>&2 echo "Build step failed."
+                            exit 1
+                        fi
+                    ;;
+                esac
+
+                case ${buildconfig}`uname` in
+                    *Linux|CYGWIN*Release)
+                        ctest --buildconfig $buildconfig
+                        if [ "$?" != "0" ] ; then
+                            1>&2 echo "Tests failed."
+                            exit 1
+                        fi
+                    ;;
+                    *)
+                    ;;
+                esac
+            )
+            if [ "$?" != "0" ] ; then
+                exit 1
+            fi
+        done
+    done
+done
