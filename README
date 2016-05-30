@@ -114,6 +114,62 @@ On HP-UX, OpenRTI is tested with
 CC='cc -Aa -mt' CXX='aCC -AA -mt' cmake ...
 
 
+Supported RTI Features
+----------------------
+
+In general OpenRTI supports HLA1.3, rti1516, rti1516e interfaces.
+The implementation among them is on the same level - according
+to the features available on the appropriate level.
+The basic transport is currently tcp/ip based so everything
+is basically delivered reliable. Object Model Modules are
+supported for rti1516e. Update rate reduction is not implemented.
+
+* Federation Management:
+  Connect/Disconnect is available.
+  Create/Destroy including Modules is available.
+  Join/Resign including Modules is available.
+  List is available.
+  Synchronization Points are available.
+  Save/Restore is not available.
+  Connection Lost is available (1).
+* Declaration Management
+  Publish/Subscribe for Object Class Attributes is available.
+  Publish/Subscribe for Interaction Classes is available.
+  Start/Stop Registration for Object Class is called whenever published (2).
+  Turn On/Off Interactions is called whenever published (2).
+* Object Management
+  Reserve/Release (Multiple) Object Instance Name is available.
+  Register/Discover/Delete/Remove Object Instance is available.
+  Update/Reflect Attribute Values is avaiable.
+  Send/Receive Interaction is available.
+  Local Delete Object Instance is missing.
+  Attributes In/out Of Scope is missing.
+  Request/Provide Attribute value update is available.
+  Turn Updates On/Off is missing.
+  Request Change/Query/Report Attribute Transportation is missing.
+  Request Change/Query/Report Interaction Transportation is missing.
+* Ownership Management
+  Is missing.
+* Time Management
+  Is available with the exception of message retraction.
+* Data Distribution Management
+  Is missing.
+* Support Services
+  Are available.
+* Management Object Model
+  Is present with the object model but does not provide any data or methods.
+
+(1) The general behavior of OpenRTI on lost connectsions does not
+    conform to the standard. But the cases where OpenRTI recognizes
+    a lost connection in the sense of the standard it is reported by
+    the Connection Lost service.
+(2) Rather than tracking subsriptions the service is only called
+    once the current rti ambassador published itself. This helps
+    for applications that rely on the callbacks being called but
+    does not help for reducing the load on the application.
+
+
+
 Operation
 ---------
 
