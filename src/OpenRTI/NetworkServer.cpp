@@ -193,7 +193,7 @@ NetworkServer::listenPipe(const std::string& address, int backlog)
 void
 NetworkServer::connectParentServer(const URL& url, const Clock& abstime)
 {
-  if (url.getProtocol() == "rti" || url.getProtocol() == "rtic") {
+  if (url.getProtocol().empty() || url.getProtocol() == "rti" || url.getProtocol() == "rtic") {
     std::string host = url.getHost();
     if (host.empty())
       host = OpenRTI_DEFAULT_HOST_STRING;

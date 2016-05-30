@@ -145,13 +145,13 @@ To select between the different modes of operation above, OpenRTI
 knows some protocols. This is the basic way of the transport used to
 communicate.
 
-thread:
- Just use the in memory communication between threads. This
- is the default as it does not require much setup.
-
 rti:
  This is the preferred tcp/ip protocol variant for networked
- communication.
+ communication. This is the default with a default hostname of localhost.
+
+thread:
+ Just use the in memory communication between threads within a single
+ application. Requires no external server setup and is extremely fast.
 
 rtic:
  Like rti above but compresses the data stream if available on both transport
