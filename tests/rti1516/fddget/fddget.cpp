@@ -34,7 +34,7 @@
 int
 main(int argc, char* argv[])
 {
-  std::wstring federationExecutionName(L"federationExecutionName");
+  std::wstring federationExecutionName(L"thread://federationExecutionName");
   bool useDataUrlObjectModels = false;
   std::wstring fullPathNameToTheFDDfile(L"fdd.xml");
 

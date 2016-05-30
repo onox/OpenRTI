@@ -31,7 +31,7 @@
 int
 main(int argc, char* argv[])
 {
-  std::string federationExecutionName("federationExecutionName");
+  std::string federationExecutionName("thread://federationExecutionName");
   bool useDataUrlObjectModels = false;
   std::string fullPathNameToTheFDDfile("fdd.fed");
 

@@ -92,7 +92,7 @@ main(int argc, char* argv[])
   ambassador.setUseDataUrlObjectModels(useDataUrlObjectModels);
 
   if (args.empty())
-    ambassador.connect(std::wstring());
+    ambassador.connect(L"thread://");
   else
     ambassador.connect(args[0]);
 
