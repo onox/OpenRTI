@@ -304,6 +304,13 @@ public:
     }
     // Log(Assert, Error) << "remove " << objectInstanceHandle.toString() << std::endl;
     _foreignObjectInstanceHandles.erase(objectInstanceHandle);
+
+    // Check if we got a single attribute update
+    if (1 != _objectInstanceHandleSet.erase(objectInstanceHandle)) {
+      Log(Assert, Error) << "Should have revieved at least a single message for "
+                         << objectInstanceHandle.toString() << std::endl;
+      _fail = true;
+    }
   }
 
   virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeValues,
@@ -313,7 +320,7 @@ public:
            rti1516::AttributeNotSubscribed,
            rti1516::FederateInternalError)
   {
-    _checkReflectedAttributeValues(attributeValues);
+    _checkReflectedAttributeValues(objectInstanceHandle, attributeValues);
   }
 
   virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeValues,
@@ -324,7 +331,7 @@ public:
            rti1516::AttributeNotSubscribed,
            rti1516::FederateInternalError)
   {
-    _checkReflectedAttributeValues(attributeValues);
+    _checkReflectedAttributeValues(objectInstanceHandle, attributeValues);
   }
 
   virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeValues,
@@ -335,7 +342,7 @@ public:
            rti1516::AttributeNotSubscribed,
            rti1516::FederateInternalError)
   {
-    _checkReflectedAttributeValues(attributeValues);
+    _checkReflectedAttributeValues(objectInstanceHandle, attributeValues);
   }
 
   virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeValues,
@@ -346,7 +353,7 @@ public:
            rti1516::AttributeNotSubscribed,
            rti1516::FederateInternalError)
   {
-    _checkReflectedAttributeValues(attributeValues);
+    _checkReflectedAttributeValues(objectInstanceHandle, attributeValues);
   }
 
   virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeValues,
@@ -358,7 +365,7 @@ public:
            rti1516::InvalidLogicalTime,
            rti1516::FederateInternalError)
   {
-    _checkReflectedAttributeValues(attributeValues);
+    _checkReflectedAttributeValues(objectInstanceHandle, attributeValues);
   }
 
   virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeValues,
@@ -371,11 +378,16 @@ public:
            rti1516::InvalidLogicalTime,
            rti1516::FederateInternalError)
   {
-    _checkReflectedAttributeValues(attributeValues);
+    _checkReflectedAttributeValues(objectInstanceHandle, attributeValues);
   }
 
-  void _checkReflectedAttributeValues(const rti1516::AttributeHandleValueMap& attributeValues)
+  void _checkReflectedAttributeValues(const rti1516::ObjectInstanceHandle& objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeValues)
   {
+    // Check if we got at most a single attribute update
+    if (!_objectInstanceHandleSet.insert(objectInstanceHandle).second) {
+      Log(Assert, Error) << "Duplicate reflectAttributeValues." << std::endl;
+      _fail = true;
+    }
     // Log(Assert, Error) << "reflect " << objectInstanceHandle.toString() << std::endl;
     for (rti1516::AttributeHandleValueMap::const_iterator i = attributeValues.begin();
          i != attributeValues.end(); ++i) {
@@ -395,6 +407,9 @@ public:
   // The available object class, attribute set
   typedef std::map<rti1516::ObjectClassHandle, rti1516::AttributeHandleSet> ObjectClassAttributeHandleSet;
   ObjectClassAttributeHandleSet _objectClassAttributeHandleSet;
+
+  typedef std::set<rti1516::ObjectInstanceHandle> ObjectInstanceHandleSet;
+  ObjectInstanceHandleSet _objectInstanceHandleSet;
 
   rti1516::ObjectClassHandle _expectedObjectClassHandle;
   rti1516::AttributeHandleSet _expectedAttributeHandles;
