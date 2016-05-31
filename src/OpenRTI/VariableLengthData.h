@@ -93,9 +93,9 @@ public:
     _size(value._size),
     _offset(value._offset)
   { }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   VariableLengthData(VariableLengthData&& value) :
-    _data(value._data),
+    _data(std::move(value._data)),
     _size(value._size),
     _offset(value._offset)
   { }
@@ -132,7 +132,7 @@ public:
     _offset = value._offset;
     return *this;
   }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   VariableLengthData&
   operator=(VariableLengthData&& value)
   {

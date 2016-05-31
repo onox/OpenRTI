@@ -108,7 +108,7 @@ public:
   { }
   IntrusiveUnorderedMap(const IntrusiveUnorderedMap& intrusiveUnorderedMap)
   { OpenRTIAssert(intrusiveUnorderedMap.empty()); }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   IntrusiveUnorderedMap(IntrusiveUnorderedMap&& intrusiveUnorderedMap)
   { swap(intrusiveUnorderedMap); }
 #endif
@@ -117,7 +117,7 @@ public:
 
   IntrusiveUnorderedMap& operator=(const IntrusiveUnorderedMap& intrusiveUnorderedMap)
   { OpenRTIAssert(empty()); OpenRTIAssert(intrusiveUnorderedMap.empty()); return *this; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   IntrusiveUnorderedMap& operator=(IntrusiveUnorderedMap&& intrusiveUnorderedMap)
   { swap(intrusiveUnorderedMap); return *this; }
 #endif

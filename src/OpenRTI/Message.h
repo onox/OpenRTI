@@ -399,9 +399,9 @@ public:
   { }
   void setLowerBound(const Unsigned& value)
   { _lowerBound = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setLowerBound(Unsigned&& value)
-  { _lowerBound = value; }
+  { _lowerBound = std::move(value); }
 #endif
   Unsigned& getLowerBound()
   { return _lowerBound; }
@@ -410,9 +410,9 @@ public:
 
   void setUpperBound(const Unsigned& value)
   { _upperBound = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setUpperBound(Unsigned&& value)
-  { _upperBound = value; }
+  { _upperBound = std::move(value); }
 #endif
   Unsigned& getUpperBound()
   { return _upperBound; }
@@ -481,9 +481,9 @@ public:
   { }
   void setAttributeHandle(const AttributeHandle& value)
   { _attributeHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeHandle(AttributeHandle&& value)
-  { _attributeHandle = value; }
+  { _attributeHandle = std::move(value); }
 #endif
   AttributeHandle& getAttributeHandle()
   { return _attributeHandle; }
@@ -528,9 +528,9 @@ public:
   { }
   void setParameterHandle(const ParameterHandle& value)
   { _parameterHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setParameterHandle(ParameterHandle&& value)
-  { _parameterHandle = value; }
+  { _parameterHandle = std::move(value); }
 #endif
   ParameterHandle& getParameterHandle()
   { return _parameterHandle; }
@@ -539,9 +539,9 @@ public:
 
   void setValue(const VariableLengthData& value)
   { _value = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setValue(VariableLengthData&& value)
-  { _value = value; }
+  { _value = std::move(value); }
 #endif
   VariableLengthData& getValue()
   { return _value; }
@@ -591,9 +591,9 @@ public:
   { }
   void setAttributeHandle(const AttributeHandle& value)
   { _attributeHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeHandle(AttributeHandle&& value)
-  { _attributeHandle = value; }
+  { _attributeHandle = std::move(value); }
 #endif
   AttributeHandle& getAttributeHandle()
   { return _attributeHandle; }
@@ -602,9 +602,9 @@ public:
 
   void setValue(const VariableLengthData& value)
   { _value = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setValue(VariableLengthData&& value)
-  { _value = value; }
+  { _value = std::move(value); }
 #endif
   VariableLengthData& getValue()
   { return _value; }
@@ -662,9 +662,9 @@ public:
   { }
   void setFederationExecutionName(const String& value)
   { _federationExecutionName = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationExecutionName(String&& value)
-  { _federationExecutionName = value; }
+  { _federationExecutionName = std::move(value); }
 #endif
   String& getFederationExecutionName()
   { return _federationExecutionName; }
@@ -673,9 +673,9 @@ public:
 
   void setLogicalTimeFactoryName(const String& value)
   { _logicalTimeFactoryName = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setLogicalTimeFactoryName(String&& value)
-  { _logicalTimeFactoryName = value; }
+  { _logicalTimeFactoryName = std::move(value); }
 #endif
   String& getLogicalTimeFactoryName()
   { return _logicalTimeFactoryName; }
@@ -730,9 +730,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -799,9 +799,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -810,9 +810,9 @@ public:
 
   void setUpperBound(const Unsigned& value)
   { getImpl()._upperBound = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setUpperBound(Unsigned&& value)
-  { getImpl()._upperBound = value; }
+  { getImpl()._upperBound = std::move(value); }
 #endif
   Unsigned& getUpperBound()
   { return getImpl()._upperBound; }
@@ -884,9 +884,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -895,9 +895,9 @@ public:
 
   void setDimensionSet(const StringSet& value)
   { getImpl()._dimensionSet = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setDimensionSet(StringSet&& value)
-  { getImpl()._dimensionSet = value; }
+  { getImpl()._dimensionSet = std::move(value); }
 #endif
   StringSet& getDimensionSet()
   { return getImpl()._dimensionSet; }
@@ -969,9 +969,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -1038,9 +1038,9 @@ public:
   { }
   void setName(const StringVector& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(StringVector&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   StringVector& getName()
   { return getImpl()._name; }
@@ -1049,9 +1049,9 @@ public:
 
   void setOrderType(const String& value)
   { getImpl()._orderType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setOrderType(String&& value)
-  { getImpl()._orderType = value; }
+  { getImpl()._orderType = std::move(value); }
 #endif
   String& getOrderType()
   { return getImpl()._orderType; }
@@ -1060,9 +1060,9 @@ public:
 
   void setTransportationType(const String& value)
   { getImpl()._transportationType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTransportationType(String&& value)
-  { getImpl()._transportationType = value; }
+  { getImpl()._transportationType = std::move(value); }
 #endif
   String& getTransportationType()
   { return getImpl()._transportationType; }
@@ -1071,9 +1071,9 @@ public:
 
   void setRoutingSpace(const String& value)
   { getImpl()._routingSpace = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setRoutingSpace(String&& value)
-  { getImpl()._routingSpace = value; }
+  { getImpl()._routingSpace = std::move(value); }
 #endif
   String& getRoutingSpace()
   { return getImpl()._routingSpace; }
@@ -1082,9 +1082,9 @@ public:
 
   void setDimensionSet(const StringSet& value)
   { getImpl()._dimensionSet = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setDimensionSet(StringSet&& value)
-  { getImpl()._dimensionSet = value; }
+  { getImpl()._dimensionSet = std::move(value); }
 #endif
   StringSet& getDimensionSet()
   { return getImpl()._dimensionSet; }
@@ -1093,9 +1093,9 @@ public:
 
   void setParameterList(const FOMStringParameterList& value)
   { getImpl()._parameterList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setParameterList(FOMStringParameterList&& value)
-  { getImpl()._parameterList = value; }
+  { getImpl()._parameterList = std::move(value); }
 #endif
   FOMStringParameterList& getParameterList()
   { return getImpl()._parameterList; }
@@ -1187,9 +1187,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -1198,9 +1198,9 @@ public:
 
   void setOrderType(const String& value)
   { getImpl()._orderType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setOrderType(String&& value)
-  { getImpl()._orderType = value; }
+  { getImpl()._orderType = std::move(value); }
 #endif
   String& getOrderType()
   { return getImpl()._orderType; }
@@ -1209,9 +1209,9 @@ public:
 
   void setTransportationType(const String& value)
   { getImpl()._transportationType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTransportationType(String&& value)
-  { getImpl()._transportationType = value; }
+  { getImpl()._transportationType = std::move(value); }
 #endif
   String& getTransportationType()
   { return getImpl()._transportationType; }
@@ -1220,9 +1220,9 @@ public:
 
   void setRoutingSpace(const String& value)
   { getImpl()._routingSpace = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setRoutingSpace(String&& value)
-  { getImpl()._routingSpace = value; }
+  { getImpl()._routingSpace = std::move(value); }
 #endif
   String& getRoutingSpace()
   { return getImpl()._routingSpace; }
@@ -1231,9 +1231,9 @@ public:
 
   void setDimensionSet(const StringSet& value)
   { getImpl()._dimensionSet = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setDimensionSet(StringSet&& value)
-  { getImpl()._dimensionSet = value; }
+  { getImpl()._dimensionSet = std::move(value); }
 #endif
   StringSet& getDimensionSet()
   { return getImpl()._dimensionSet; }
@@ -1320,9 +1320,9 @@ public:
   { }
   void setName(const StringVector& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(StringVector&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   StringVector& getName()
   { return getImpl()._name; }
@@ -1331,9 +1331,9 @@ public:
 
   void setAttributeList(const FOMStringAttributeList& value)
   { getImpl()._attributeList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeList(FOMStringAttributeList&& value)
-  { getImpl()._attributeList = value; }
+  { getImpl()._attributeList = std::move(value); }
 #endif
   FOMStringAttributeList& getAttributeList()
   { return getImpl()._attributeList; }
@@ -1405,9 +1405,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -1416,9 +1416,9 @@ public:
 
   void setRate(const Double& value)
   { getImpl()._rate = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setRate(Double&& value)
-  { getImpl()._rate = value; }
+  { getImpl()._rate = std::move(value); }
 #endif
   Double& getRate()
   { return getImpl()._rate; }
@@ -1490,9 +1490,9 @@ public:
   { }
   void setSwitchesType(const SwitchesType& value)
   { getImpl()._switchesType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setSwitchesType(SwitchesType&& value)
-  { getImpl()._switchesType = value; }
+  { getImpl()._switchesType = std::move(value); }
 #endif
   SwitchesType& getSwitchesType()
   { return getImpl()._switchesType; }
@@ -1501,9 +1501,9 @@ public:
 
   void setEnabled(const Bool& value)
   { getImpl()._enabled = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setEnabled(Bool&& value)
-  { getImpl()._enabled = value; }
+  { getImpl()._enabled = std::move(value); }
 #endif
   Bool& getEnabled()
   { return getImpl()._enabled; }
@@ -1575,9 +1575,9 @@ public:
   { }
   void setContent(const String& value)
   { getImpl()._content = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setContent(String&& value)
-  { getImpl()._content = value; }
+  { getImpl()._content = std::move(value); }
 #endif
   String& getContent()
   { return getImpl()._content; }
@@ -1586,9 +1586,9 @@ public:
 
   void setTransportationTypeList(const FOMStringTransportationTypeList& value)
   { getImpl()._transportationTypeList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTransportationTypeList(FOMStringTransportationTypeList&& value)
-  { getImpl()._transportationTypeList = value; }
+  { getImpl()._transportationTypeList = std::move(value); }
 #endif
   FOMStringTransportationTypeList& getTransportationTypeList()
   { return getImpl()._transportationTypeList; }
@@ -1597,9 +1597,9 @@ public:
 
   void setDimensionList(const FOMStringDimensionList& value)
   { getImpl()._dimensionList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setDimensionList(FOMStringDimensionList&& value)
-  { getImpl()._dimensionList = value; }
+  { getImpl()._dimensionList = std::move(value); }
 #endif
   FOMStringDimensionList& getDimensionList()
   { return getImpl()._dimensionList; }
@@ -1608,9 +1608,9 @@ public:
 
   void setRoutingSpaceList(const FOMStringRoutingSpaceList& value)
   { getImpl()._routingSpaceList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setRoutingSpaceList(FOMStringRoutingSpaceList&& value)
-  { getImpl()._routingSpaceList = value; }
+  { getImpl()._routingSpaceList = std::move(value); }
 #endif
   FOMStringRoutingSpaceList& getRoutingSpaceList()
   { return getImpl()._routingSpaceList; }
@@ -1619,9 +1619,9 @@ public:
 
   void setInteractionClassList(const FOMStringInteractionClassList& value)
   { getImpl()._interactionClassList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setInteractionClassList(FOMStringInteractionClassList&& value)
-  { getImpl()._interactionClassList = value; }
+  { getImpl()._interactionClassList = std::move(value); }
 #endif
   FOMStringInteractionClassList& getInteractionClassList()
   { return getImpl()._interactionClassList; }
@@ -1630,9 +1630,9 @@ public:
 
   void setObjectClassList(const FOMStringObjectClassList& value)
   { getImpl()._objectClassList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectClassList(FOMStringObjectClassList&& value)
-  { getImpl()._objectClassList = value; }
+  { getImpl()._objectClassList = std::move(value); }
 #endif
   FOMStringObjectClassList& getObjectClassList()
   { return getImpl()._objectClassList; }
@@ -1641,9 +1641,9 @@ public:
 
   void setUpdateRateList(const FOMStringUpdateRateList& value)
   { getImpl()._updateRateList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setUpdateRateList(FOMStringUpdateRateList&& value)
-  { getImpl()._updateRateList = value; }
+  { getImpl()._updateRateList = std::move(value); }
 #endif
   FOMStringUpdateRateList& getUpdateRateList()
   { return getImpl()._updateRateList; }
@@ -1652,9 +1652,9 @@ public:
 
   void setSwitchList(const FOMStringSwitchList& value)
   { getImpl()._switchList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setSwitchList(FOMStringSwitchList&& value)
-  { getImpl()._switchList = value; }
+  { getImpl()._switchList = std::move(value); }
 #endif
   FOMStringSwitchList& getSwitchList()
   { return getImpl()._switchList; }
@@ -1663,9 +1663,9 @@ public:
 
   void setArtificialInteractionRoot(const Bool& value)
   { getImpl()._artificialInteractionRoot = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setArtificialInteractionRoot(Bool&& value)
-  { getImpl()._artificialInteractionRoot = value; }
+  { getImpl()._artificialInteractionRoot = std::move(value); }
 #endif
   Bool& getArtificialInteractionRoot()
   { return getImpl()._artificialInteractionRoot; }
@@ -1674,9 +1674,9 @@ public:
 
   void setArtificialObjectRoot(const Bool& value)
   { getImpl()._artificialObjectRoot = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setArtificialObjectRoot(Bool&& value)
-  { getImpl()._artificialObjectRoot = value; }
+  { getImpl()._artificialObjectRoot = std::move(value); }
 #endif
   Bool& getArtificialObjectRoot()
   { return getImpl()._artificialObjectRoot; }
@@ -1788,9 +1788,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -1799,9 +1799,9 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { getImpl()._transportationType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTransportationType(TransportationType&& value)
-  { getImpl()._transportationType = value; }
+  { getImpl()._transportationType = std::move(value); }
 #endif
   TransportationType& getTransportationType()
   { return getImpl()._transportationType; }
@@ -1873,9 +1873,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -1884,9 +1884,9 @@ public:
 
   void setDimensionHandle(const DimensionHandle& value)
   { getImpl()._dimensionHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setDimensionHandle(DimensionHandle&& value)
-  { getImpl()._dimensionHandle = value; }
+  { getImpl()._dimensionHandle = std::move(value); }
 #endif
   DimensionHandle& getDimensionHandle()
   { return getImpl()._dimensionHandle; }
@@ -1895,9 +1895,9 @@ public:
 
   void setUpperBound(const Unsigned& value)
   { getImpl()._upperBound = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setUpperBound(Unsigned&& value)
-  { getImpl()._upperBound = value; }
+  { getImpl()._upperBound = std::move(value); }
 #endif
   Unsigned& getUpperBound()
   { return getImpl()._upperBound; }
@@ -1974,9 +1974,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -1985,9 +1985,9 @@ public:
 
   void setSpaceHandle(const SpaceHandle& value)
   { getImpl()._spaceHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setSpaceHandle(SpaceHandle&& value)
-  { getImpl()._spaceHandle = value; }
+  { getImpl()._spaceHandle = std::move(value); }
 #endif
   SpaceHandle& getSpaceHandle()
   { return getImpl()._spaceHandle; }
@@ -1996,9 +1996,9 @@ public:
 
   void setDimensionHandleSet(const DimensionHandleSet& value)
   { getImpl()._dimensionHandleSet = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setDimensionHandleSet(DimensionHandleSet&& value)
-  { getImpl()._dimensionHandleSet = value; }
+  { getImpl()._dimensionHandleSet = std::move(value); }
 #endif
   DimensionHandleSet& getDimensionHandleSet()
   { return getImpl()._dimensionHandleSet; }
@@ -2075,9 +2075,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -2086,9 +2086,9 @@ public:
 
   void setParameterHandle(const ParameterHandle& value)
   { getImpl()._parameterHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setParameterHandle(ParameterHandle&& value)
-  { getImpl()._parameterHandle = value; }
+  { getImpl()._parameterHandle = std::move(value); }
 #endif
   ParameterHandle& getParameterHandle()
   { return getImpl()._parameterHandle; }
@@ -2160,9 +2160,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -2171,9 +2171,9 @@ public:
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { getImpl()._interactionClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setInteractionClassHandle(InteractionClassHandle&& value)
-  { getImpl()._interactionClassHandle = value; }
+  { getImpl()._interactionClassHandle = std::move(value); }
 #endif
   InteractionClassHandle& getInteractionClassHandle()
   { return getImpl()._interactionClassHandle; }
@@ -2182,9 +2182,9 @@ public:
 
   void setParentInteractionClassHandle(const InteractionClassHandle& value)
   { getImpl()._parentInteractionClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setParentInteractionClassHandle(InteractionClassHandle&& value)
-  { getImpl()._parentInteractionClassHandle = value; }
+  { getImpl()._parentInteractionClassHandle = std::move(value); }
 #endif
   InteractionClassHandle& getParentInteractionClassHandle()
   { return getImpl()._parentInteractionClassHandle; }
@@ -2193,9 +2193,9 @@ public:
 
   void setOrderType(const OrderType& value)
   { getImpl()._orderType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setOrderType(OrderType&& value)
-  { getImpl()._orderType = value; }
+  { getImpl()._orderType = std::move(value); }
 #endif
   OrderType& getOrderType()
   { return getImpl()._orderType; }
@@ -2204,9 +2204,9 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { getImpl()._transportationType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTransportationType(TransportationType&& value)
-  { getImpl()._transportationType = value; }
+  { getImpl()._transportationType = std::move(value); }
 #endif
   TransportationType& getTransportationType()
   { return getImpl()._transportationType; }
@@ -2215,9 +2215,9 @@ public:
 
   void setDimensionHandleSet(const DimensionHandleSet& value)
   { getImpl()._dimensionHandleSet = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setDimensionHandleSet(DimensionHandleSet&& value)
-  { getImpl()._dimensionHandleSet = value; }
+  { getImpl()._dimensionHandleSet = std::move(value); }
 #endif
   DimensionHandleSet& getDimensionHandleSet()
   { return getImpl()._dimensionHandleSet; }
@@ -2226,9 +2226,9 @@ public:
 
   void setParameterList(const FOMParameterList& value)
   { getImpl()._parameterList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setParameterList(FOMParameterList&& value)
-  { getImpl()._parameterList = value; }
+  { getImpl()._parameterList = std::move(value); }
 #endif
   FOMParameterList& getParameterList()
   { return getImpl()._parameterList; }
@@ -2325,9 +2325,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -2336,9 +2336,9 @@ public:
 
   void setAttributeHandle(const AttributeHandle& value)
   { getImpl()._attributeHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeHandle(AttributeHandle&& value)
-  { getImpl()._attributeHandle = value; }
+  { getImpl()._attributeHandle = std::move(value); }
 #endif
   AttributeHandle& getAttributeHandle()
   { return getImpl()._attributeHandle; }
@@ -2347,9 +2347,9 @@ public:
 
   void setOrderType(const OrderType& value)
   { getImpl()._orderType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setOrderType(OrderType&& value)
-  { getImpl()._orderType = value; }
+  { getImpl()._orderType = std::move(value); }
 #endif
   OrderType& getOrderType()
   { return getImpl()._orderType; }
@@ -2358,9 +2358,9 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { getImpl()._transportationType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTransportationType(TransportationType&& value)
-  { getImpl()._transportationType = value; }
+  { getImpl()._transportationType = std::move(value); }
 #endif
   TransportationType& getTransportationType()
   { return getImpl()._transportationType; }
@@ -2369,9 +2369,9 @@ public:
 
   void setDimensionHandleSet(const DimensionHandleSet& value)
   { getImpl()._dimensionHandleSet = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setDimensionHandleSet(DimensionHandleSet&& value)
-  { getImpl()._dimensionHandleSet = value; }
+  { getImpl()._dimensionHandleSet = std::move(value); }
 #endif
   DimensionHandleSet& getDimensionHandleSet()
   { return getImpl()._dimensionHandleSet; }
@@ -2458,9 +2458,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -2469,9 +2469,9 @@ public:
 
   void setObjectClassHandle(const ObjectClassHandle& value)
   { getImpl()._objectClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectClassHandle(ObjectClassHandle&& value)
-  { getImpl()._objectClassHandle = value; }
+  { getImpl()._objectClassHandle = std::move(value); }
 #endif
   ObjectClassHandle& getObjectClassHandle()
   { return getImpl()._objectClassHandle; }
@@ -2480,9 +2480,9 @@ public:
 
   void setParentObjectClassHandle(const ObjectClassHandle& value)
   { getImpl()._parentObjectClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setParentObjectClassHandle(ObjectClassHandle&& value)
-  { getImpl()._parentObjectClassHandle = value; }
+  { getImpl()._parentObjectClassHandle = std::move(value); }
 #endif
   ObjectClassHandle& getParentObjectClassHandle()
   { return getImpl()._parentObjectClassHandle; }
@@ -2491,9 +2491,9 @@ public:
 
   void setAttributeList(const FOMAttributeList& value)
   { getImpl()._attributeList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeList(FOMAttributeList&& value)
-  { getImpl()._attributeList = value; }
+  { getImpl()._attributeList = std::move(value); }
 #endif
   FOMAttributeList& getAttributeList()
   { return getImpl()._attributeList; }
@@ -2575,9 +2575,9 @@ public:
   { }
   void setName(const String& value)
   { getImpl()._name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { getImpl()._name = value; }
+  { getImpl()._name = std::move(value); }
 #endif
   String& getName()
   { return getImpl()._name; }
@@ -2586,9 +2586,9 @@ public:
 
   void setUpdateRateHandle(const UpdateRateHandle& value)
   { getImpl()._updateRateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setUpdateRateHandle(UpdateRateHandle&& value)
-  { getImpl()._updateRateHandle = value; }
+  { getImpl()._updateRateHandle = std::move(value); }
 #endif
   UpdateRateHandle& getUpdateRateHandle()
   { return getImpl()._updateRateHandle; }
@@ -2597,9 +2597,9 @@ public:
 
   void setRate(const Double& value)
   { getImpl()._rate = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setRate(Double&& value)
-  { getImpl()._rate = value; }
+  { getImpl()._rate = std::move(value); }
 #endif
   Double& getRate()
   { return getImpl()._rate; }
@@ -2676,9 +2676,9 @@ public:
   { }
   void setSwitchesType(const SwitchesType& value)
   { getImpl()._switchesType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setSwitchesType(SwitchesType&& value)
-  { getImpl()._switchesType = value; }
+  { getImpl()._switchesType = std::move(value); }
 #endif
   SwitchesType& getSwitchesType()
   { return getImpl()._switchesType; }
@@ -2687,9 +2687,9 @@ public:
 
   void setEnabled(const Bool& value)
   { getImpl()._enabled = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setEnabled(Bool&& value)
-  { getImpl()._enabled = value; }
+  { getImpl()._enabled = std::move(value); }
 #endif
   Bool& getEnabled()
   { return getImpl()._enabled; }
@@ -2761,9 +2761,9 @@ public:
   { }
   void setModuleHandle(const ModuleHandle& value)
   { getImpl()._moduleHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setModuleHandle(ModuleHandle&& value)
-  { getImpl()._moduleHandle = value; }
+  { getImpl()._moduleHandle = std::move(value); }
 #endif
   ModuleHandle& getModuleHandle()
   { return getImpl()._moduleHandle; }
@@ -2772,9 +2772,9 @@ public:
 
   void setTransportationTypeList(const FOMTransportationTypeList& value)
   { getImpl()._transportationTypeList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTransportationTypeList(FOMTransportationTypeList&& value)
-  { getImpl()._transportationTypeList = value; }
+  { getImpl()._transportationTypeList = std::move(value); }
 #endif
   FOMTransportationTypeList& getTransportationTypeList()
   { return getImpl()._transportationTypeList; }
@@ -2783,9 +2783,9 @@ public:
 
   void setDimensionList(const FOMDimensionList& value)
   { getImpl()._dimensionList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setDimensionList(FOMDimensionList&& value)
-  { getImpl()._dimensionList = value; }
+  { getImpl()._dimensionList = std::move(value); }
 #endif
   FOMDimensionList& getDimensionList()
   { return getImpl()._dimensionList; }
@@ -2794,9 +2794,9 @@ public:
 
   void setRoutingSpaceList(const FOMRoutingSpaceList& value)
   { getImpl()._routingSpaceList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setRoutingSpaceList(FOMRoutingSpaceList&& value)
-  { getImpl()._routingSpaceList = value; }
+  { getImpl()._routingSpaceList = std::move(value); }
 #endif
   FOMRoutingSpaceList& getRoutingSpaceList()
   { return getImpl()._routingSpaceList; }
@@ -2805,9 +2805,9 @@ public:
 
   void setInteractionClassList(const FOMInteractionClassList& value)
   { getImpl()._interactionClassList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setInteractionClassList(FOMInteractionClassList&& value)
-  { getImpl()._interactionClassList = value; }
+  { getImpl()._interactionClassList = std::move(value); }
 #endif
   FOMInteractionClassList& getInteractionClassList()
   { return getImpl()._interactionClassList; }
@@ -2816,9 +2816,9 @@ public:
 
   void setObjectClassList(const FOMObjectClassList& value)
   { getImpl()._objectClassList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectClassList(FOMObjectClassList&& value)
-  { getImpl()._objectClassList = value; }
+  { getImpl()._objectClassList = std::move(value); }
 #endif
   FOMObjectClassList& getObjectClassList()
   { return getImpl()._objectClassList; }
@@ -2827,9 +2827,9 @@ public:
 
   void setUpdateRateList(const FOMUpdateRateList& value)
   { getImpl()._updateRateList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setUpdateRateList(FOMUpdateRateList&& value)
-  { getImpl()._updateRateList = value; }
+  { getImpl()._updateRateList = std::move(value); }
 #endif
   FOMUpdateRateList& getUpdateRateList()
   { return getImpl()._updateRateList; }
@@ -2838,9 +2838,9 @@ public:
 
   void setSwitchList(const FOMSwitchList& value)
   { getImpl()._switchList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setSwitchList(FOMSwitchList&& value)
-  { getImpl()._switchList = value; }
+  { getImpl()._switchList = std::move(value); }
 #endif
   FOMSwitchList& getSwitchList()
   { return getImpl()._switchList; }
@@ -2849,9 +2849,9 @@ public:
 
   void setArtificialInteractionRoot(const Bool& value)
   { getImpl()._artificialInteractionRoot = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setArtificialInteractionRoot(Bool&& value)
-  { getImpl()._artificialInteractionRoot = value; }
+  { getImpl()._artificialInteractionRoot = std::move(value); }
 #endif
   Bool& getArtificialInteractionRoot()
   { return getImpl()._artificialInteractionRoot; }
@@ -2860,9 +2860,9 @@ public:
 
   void setArtificialObjectRoot(const Bool& value)
   { getImpl()._artificialObjectRoot = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setArtificialObjectRoot(Bool&& value)
-  { getImpl()._artificialObjectRoot = value; }
+  { getImpl()._artificialObjectRoot = std::move(value); }
 #endif
   Bool& getArtificialObjectRoot()
   { return getImpl()._artificialObjectRoot; }
@@ -2871,9 +2871,9 @@ public:
 
   void setContent(const String& value)
   { getImpl()._content = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setContent(String&& value)
-  { getImpl()._content = value; }
+  { getImpl()._content = std::move(value); }
 #endif
   String& getContent()
   { return getImpl()._content; }
@@ -3006,9 +3006,9 @@ public:
 
   void setFaultDescription(const String& value)
   { _faultDescription = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFaultDescription(String&& value)
-  { _faultDescription = value; }
+  { _faultDescription = std::move(value); }
 #endif
   String& getFaultDescription()
   { return _faultDescription; }
@@ -3042,9 +3042,9 @@ public:
 
   void setFederationExecution(const String& value)
   { _federationExecution = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationExecution(String&& value)
-  { _federationExecution = value; }
+  { _federationExecution = std::move(value); }
 #endif
   String& getFederationExecution()
   { return _federationExecution; }
@@ -3053,9 +3053,9 @@ public:
 
   void setLogicalTimeFactoryName(const String& value)
   { _logicalTimeFactoryName = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setLogicalTimeFactoryName(String&& value)
-  { _logicalTimeFactoryName = value; }
+  { _logicalTimeFactoryName = std::move(value); }
 #endif
   String& getLogicalTimeFactoryName()
   { return _logicalTimeFactoryName; }
@@ -3064,9 +3064,9 @@ public:
 
   void setFOMStringModuleList(const FOMStringModuleList& value)
   { _fOMStringModuleList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFOMStringModuleList(FOMStringModuleList&& value)
-  { _fOMStringModuleList = value; }
+  { _fOMStringModuleList = std::move(value); }
 #endif
   FOMStringModuleList& getFOMStringModuleList()
   { return _fOMStringModuleList; }
@@ -3102,9 +3102,9 @@ public:
 
   void setCreateFederationExecutionResponseType(const CreateFederationExecutionResponseType& value)
   { _createFederationExecutionResponseType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setCreateFederationExecutionResponseType(CreateFederationExecutionResponseType&& value)
-  { _createFederationExecutionResponseType = value; }
+  { _createFederationExecutionResponseType = std::move(value); }
 #endif
   CreateFederationExecutionResponseType& getCreateFederationExecutionResponseType()
   { return _createFederationExecutionResponseType; }
@@ -3113,9 +3113,9 @@ public:
 
   void setExceptionString(const String& value)
   { _exceptionString = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setExceptionString(String&& value)
-  { _exceptionString = value; }
+  { _exceptionString = std::move(value); }
 #endif
   String& getExceptionString()
   { return _exceptionString; }
@@ -3150,9 +3150,9 @@ public:
 
   void setFederationExecution(const String& value)
   { _federationExecution = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationExecution(String&& value)
-  { _federationExecution = value; }
+  { _federationExecution = std::move(value); }
 #endif
   String& getFederationExecution()
   { return _federationExecution; }
@@ -3186,9 +3186,9 @@ public:
 
   void setDestroyFederationExecutionResponseType(const DestroyFederationExecutionResponseType& value)
   { _destroyFederationExecutionResponseType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setDestroyFederationExecutionResponseType(DestroyFederationExecutionResponseType&& value)
-  { _destroyFederationExecutionResponseType = value; }
+  { _destroyFederationExecutionResponseType = std::move(value); }
 #endif
   DestroyFederationExecutionResponseType& getDestroyFederationExecutionResponseType()
   { return _destroyFederationExecutionResponseType; }
@@ -3246,9 +3246,9 @@ public:
 
   void setFederationExecutionInformationVector(const FederationExecutionInformationVector& value)
   { _federationExecutionInformationVector = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationExecutionInformationVector(FederationExecutionInformationVector&& value)
-  { _federationExecutionInformationVector = value; }
+  { _federationExecutionInformationVector = std::move(value); }
 #endif
   FederationExecutionInformationVector& getFederationExecutionInformationVector()
   { return _federationExecutionInformationVector; }
@@ -3282,9 +3282,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -3293,9 +3293,9 @@ public:
 
   void setFederationName(const String& value)
   { _federationName = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationName(String&& value)
-  { _federationName = value; }
+  { _federationName = std::move(value); }
 #endif
   String& getFederationName()
   { return _federationName; }
@@ -3304,9 +3304,9 @@ public:
 
   void setLogicalTimeFactoryName(const String& value)
   { _logicalTimeFactoryName = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setLogicalTimeFactoryName(String&& value)
-  { _logicalTimeFactoryName = value; }
+  { _logicalTimeFactoryName = std::move(value); }
 #endif
   String& getLogicalTimeFactoryName()
   { return _logicalTimeFactoryName; }
@@ -3315,9 +3315,9 @@ public:
 
   void setConfigurationParameterMap(const ConfigurationParameterMap& value)
   { _configurationParameterMap = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setConfigurationParameterMap(ConfigurationParameterMap&& value)
-  { _configurationParameterMap = value; }
+  { _configurationParameterMap = std::move(value); }
 #endif
   ConfigurationParameterMap& getConfigurationParameterMap()
   { return _configurationParameterMap; }
@@ -3354,9 +3354,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -3390,9 +3390,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -3426,9 +3426,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -3462,9 +3462,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -3473,9 +3473,9 @@ public:
 
   void setFOMModuleList(const FOMModuleList& value)
   { _fOMModuleList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFOMModuleList(FOMModuleList&& value)
-  { _fOMModuleList = value; }
+  { _fOMModuleList = std::move(value); }
 #endif
   FOMModuleList& getFOMModuleList()
   { return _fOMModuleList; }
@@ -3510,9 +3510,9 @@ public:
 
   void setFederationExecution(const String& value)
   { _federationExecution = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationExecution(String&& value)
-  { _federationExecution = value; }
+  { _federationExecution = std::move(value); }
 #endif
   String& getFederationExecution()
   { return _federationExecution; }
@@ -3521,9 +3521,9 @@ public:
 
   void setFederateType(const String& value)
   { _federateType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateType(String&& value)
-  { _federateType = value; }
+  { _federateType = std::move(value); }
 #endif
   String& getFederateType()
   { return _federateType; }
@@ -3532,9 +3532,9 @@ public:
 
   void setFederateName(const String& value)
   { _federateName = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateName(String&& value)
-  { _federateName = value; }
+  { _federateName = std::move(value); }
 #endif
   String& getFederateName()
   { return _federateName; }
@@ -3543,9 +3543,9 @@ public:
 
   void setFOMStringModuleList(const FOMStringModuleList& value)
   { _fOMStringModuleList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFOMStringModuleList(FOMStringModuleList&& value)
-  { _fOMStringModuleList = value; }
+  { _fOMStringModuleList = std::move(value); }
 #endif
   FOMStringModuleList& getFOMStringModuleList()
   { return _fOMStringModuleList; }
@@ -3554,9 +3554,9 @@ public:
 
   void setConfigurationParameterMap(const ConfigurationParameterMap& value)
   { _configurationParameterMap = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setConfigurationParameterMap(ConfigurationParameterMap&& value)
-  { _configurationParameterMap = value; }
+  { _configurationParameterMap = std::move(value); }
 #endif
   ConfigurationParameterMap& getConfigurationParameterMap()
   { return _configurationParameterMap; }
@@ -3594,9 +3594,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -3605,9 +3605,9 @@ public:
 
   void setJoinFederationExecutionResponseType(const JoinFederationExecutionResponseType& value)
   { _joinFederationExecutionResponseType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setJoinFederationExecutionResponseType(JoinFederationExecutionResponseType&& value)
-  { _joinFederationExecutionResponseType = value; }
+  { _joinFederationExecutionResponseType = std::move(value); }
 #endif
   JoinFederationExecutionResponseType& getJoinFederationExecutionResponseType()
   { return _joinFederationExecutionResponseType; }
@@ -3616,9 +3616,9 @@ public:
 
   void setExceptionString(const String& value)
   { _exceptionString = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setExceptionString(String&& value)
-  { _exceptionString = value; }
+  { _exceptionString = std::move(value); }
 #endif
   String& getExceptionString()
   { return _exceptionString; }
@@ -3627,9 +3627,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -3638,9 +3638,9 @@ public:
 
   void setFederateType(const String& value)
   { _federateType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateType(String&& value)
-  { _federateType = value; }
+  { _federateType = std::move(value); }
 #endif
   String& getFederateType()
   { return _federateType; }
@@ -3649,9 +3649,9 @@ public:
 
   void setFederateName(const String& value)
   { _federateName = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateName(String&& value)
-  { _federateName = value; }
+  { _federateName = std::move(value); }
 #endif
   String& getFederateName()
   { return _federateName; }
@@ -3690,9 +3690,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -3701,9 +3701,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -3712,9 +3712,9 @@ public:
 
   void setResignAction(const ResignAction& value)
   { _resignAction = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setResignAction(ResignAction&& value)
-  { _resignAction = value; }
+  { _resignAction = std::move(value); }
 #endif
   ResignAction& getResignAction()
   { return _resignAction; }
@@ -3750,9 +3750,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -3761,9 +3761,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -3798,9 +3798,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -3809,9 +3809,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -3820,9 +3820,9 @@ public:
 
   void setFederateType(const String& value)
   { _federateType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateType(String&& value)
-  { _federateType = value; }
+  { _federateType = std::move(value); }
 #endif
   String& getFederateType()
   { return _federateType; }
@@ -3831,9 +3831,9 @@ public:
 
   void setFederateName(const String& value)
   { _federateName = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateName(String&& value)
-  { _federateName = value; }
+  { _federateName = std::move(value); }
 #endif
   String& getFederateName()
   { return _federateName; }
@@ -3870,9 +3870,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -3881,9 +3881,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -3918,9 +3918,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -3929,9 +3929,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -3940,9 +3940,9 @@ public:
 
   void setResignAction(const ResignAction& value)
   { _resignAction = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setResignAction(ResignAction&& value)
-  { _resignAction = value; }
+  { _resignAction = std::move(value); }
 #endif
   ResignAction& getResignAction()
   { return _resignAction; }
@@ -3978,9 +3978,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -3989,9 +3989,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -4000,9 +4000,9 @@ public:
 
   void setLabel(const String& value)
   { _label = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setLabel(String&& value)
-  { _label = value; }
+  { _label = std::move(value); }
 #endif
   String& getLabel()
   { return _label; }
@@ -4011,9 +4011,9 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTag(VariableLengthData&& value)
-  { _tag = value; }
+  { _tag = std::move(value); }
 #endif
   VariableLengthData& getTag()
   { return _tag; }
@@ -4022,9 +4022,9 @@ public:
 
   void setFederateHandleVector(const FederateHandleVector& value)
   { _federateHandleVector = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandleVector(FederateHandleVector&& value)
-  { _federateHandleVector = value; }
+  { _federateHandleVector = std::move(value); }
 #endif
   FederateHandleVector& getFederateHandleVector()
   { return _federateHandleVector; }
@@ -4062,9 +4062,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4073,9 +4073,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -4084,9 +4084,9 @@ public:
 
   void setLabel(const String& value)
   { _label = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setLabel(String&& value)
-  { _label = value; }
+  { _label = std::move(value); }
 #endif
   String& getLabel()
   { return _label; }
@@ -4095,9 +4095,9 @@ public:
 
   void setRegisterFederationSynchronizationPointResponseType(const RegisterFederationSynchronizationPointResponseType& value)
   { _registerFederationSynchronizationPointResponseType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setRegisterFederationSynchronizationPointResponseType(RegisterFederationSynchronizationPointResponseType&& value)
-  { _registerFederationSynchronizationPointResponseType = value; }
+  { _registerFederationSynchronizationPointResponseType = std::move(value); }
 #endif
   RegisterFederationSynchronizationPointResponseType& getRegisterFederationSynchronizationPointResponseType()
   { return _registerFederationSynchronizationPointResponseType; }
@@ -4134,9 +4134,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4145,9 +4145,9 @@ public:
 
   void setLabel(const String& value)
   { _label = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setLabel(String&& value)
-  { _label = value; }
+  { _label = std::move(value); }
 #endif
   String& getLabel()
   { return _label; }
@@ -4156,9 +4156,9 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTag(VariableLengthData&& value)
-  { _tag = value; }
+  { _tag = std::move(value); }
 #endif
   VariableLengthData& getTag()
   { return _tag; }
@@ -4167,9 +4167,9 @@ public:
 
   void setAddJoiningFederates(const Bool& value)
   { _addJoiningFederates = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAddJoiningFederates(Bool&& value)
-  { _addJoiningFederates = value; }
+  { _addJoiningFederates = std::move(value); }
 #endif
   Bool& getAddJoiningFederates()
   { return _addJoiningFederates; }
@@ -4178,9 +4178,9 @@ public:
 
   void setFederateHandleVector(const FederateHandleVector& value)
   { _federateHandleVector = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandleVector(FederateHandleVector&& value)
-  { _federateHandleVector = value; }
+  { _federateHandleVector = std::move(value); }
 #endif
   FederateHandleVector& getFederateHandleVector()
   { return _federateHandleVector; }
@@ -4218,9 +4218,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4229,9 +4229,9 @@ public:
 
   void setLabel(const String& value)
   { _label = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setLabel(String&& value)
-  { _label = value; }
+  { _label = std::move(value); }
 #endif
   String& getLabel()
   { return _label; }
@@ -4240,9 +4240,9 @@ public:
 
   void setFederateHandleBoolPairVector(const FederateHandleBoolPairVector& value)
   { _federateHandleBoolPairVector = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandleBoolPairVector(FederateHandleBoolPairVector&& value)
-  { _federateHandleBoolPairVector = value; }
+  { _federateHandleBoolPairVector = std::move(value); }
 #endif
   FederateHandleBoolPairVector& getFederateHandleBoolPairVector()
   { return _federateHandleBoolPairVector; }
@@ -4278,9 +4278,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4289,9 +4289,9 @@ public:
 
   void setLabel(const String& value)
   { _label = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setLabel(String&& value)
-  { _label = value; }
+  { _label = std::move(value); }
 #endif
   String& getLabel()
   { return _label; }
@@ -4300,9 +4300,9 @@ public:
 
   void setFederateHandleBoolPairVector(const FederateHandleBoolPairVector& value)
   { _federateHandleBoolPairVector = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandleBoolPairVector(FederateHandleBoolPairVector&& value)
-  { _federateHandleBoolPairVector = value; }
+  { _federateHandleBoolPairVector = std::move(value); }
 #endif
   FederateHandleBoolPairVector& getFederateHandleBoolPairVector()
   { return _federateHandleBoolPairVector; }
@@ -4338,9 +4338,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4349,9 +4349,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -4360,9 +4360,9 @@ public:
 
   void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTimeStamp(VariableLengthData&& value)
-  { _timeStamp = value; }
+  { _timeStamp = std::move(value); }
 #endif
   VariableLengthData& getTimeStamp()
   { return _timeStamp; }
@@ -4371,9 +4371,9 @@ public:
 
   void setCommitId(const Unsigned& value)
   { _commitId = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setCommitId(Unsigned&& value)
-  { _commitId = value; }
+  { _commitId = std::move(value); }
 #endif
   Unsigned& getCommitId()
   { return _commitId; }
@@ -4410,9 +4410,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4421,9 +4421,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -4432,9 +4432,9 @@ public:
 
   void setRespondingFederateHandle(const FederateHandle& value)
   { _respondingFederateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setRespondingFederateHandle(FederateHandle&& value)
-  { _respondingFederateHandle = value; }
+  { _respondingFederateHandle = std::move(value); }
 #endif
   FederateHandle& getRespondingFederateHandle()
   { return _respondingFederateHandle; }
@@ -4443,9 +4443,9 @@ public:
 
   void setTimeStampValid(const Bool& value)
   { _timeStampValid = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTimeStampValid(Bool&& value)
-  { _timeStampValid = value; }
+  { _timeStampValid = std::move(value); }
 #endif
   Bool& getTimeStampValid()
   { return _timeStampValid; }
@@ -4454,9 +4454,9 @@ public:
 
   void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTimeStamp(VariableLengthData&& value)
-  { _timeStamp = value; }
+  { _timeStamp = std::move(value); }
 #endif
   VariableLengthData& getTimeStamp()
   { return _timeStamp; }
@@ -4494,9 +4494,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4505,9 +4505,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -4542,9 +4542,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4553,9 +4553,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -4564,9 +4564,9 @@ public:
 
   void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTimeStamp(VariableLengthData&& value)
-  { _timeStamp = value; }
+  { _timeStamp = std::move(value); }
 #endif
   VariableLengthData& getTimeStamp()
   { return _timeStamp; }
@@ -4575,9 +4575,9 @@ public:
 
   void setCommitType(const LowerBoundTimeStampCommitType& value)
   { _commitType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setCommitType(LowerBoundTimeStampCommitType&& value)
-  { _commitType = value; }
+  { _commitType = std::move(value); }
 #endif
   LowerBoundTimeStampCommitType& getCommitType()
   { return _commitType; }
@@ -4586,9 +4586,9 @@ public:
 
   void setCommitId(const Unsigned& value)
   { _commitId = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setCommitId(Unsigned&& value)
-  { _commitId = value; }
+  { _commitId = std::move(value); }
 #endif
   Unsigned& getCommitId()
   { return _commitId; }
@@ -4626,9 +4626,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4637,9 +4637,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -4648,9 +4648,9 @@ public:
 
   void setSendingFederateHandle(const FederateHandle& value)
   { _sendingFederateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setSendingFederateHandle(FederateHandle&& value)
-  { _sendingFederateHandle = value; }
+  { _sendingFederateHandle = std::move(value); }
 #endif
   FederateHandle& getSendingFederateHandle()
   { return _sendingFederateHandle; }
@@ -4659,9 +4659,9 @@ public:
 
   void setCommitId(const Unsigned& value)
   { _commitId = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setCommitId(Unsigned&& value)
-  { _commitId = value; }
+  { _commitId = std::move(value); }
 #endif
   Unsigned& getCommitId()
   { return _commitId; }
@@ -4698,9 +4698,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4709,9 +4709,9 @@ public:
 
   void setSendingFederateHandle(const FederateHandle& value)
   { _sendingFederateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setSendingFederateHandle(FederateHandle&& value)
-  { _sendingFederateHandle = value; }
+  { _sendingFederateHandle = std::move(value); }
 #endif
   FederateHandle& getSendingFederateHandle()
   { return _sendingFederateHandle; }
@@ -4720,9 +4720,9 @@ public:
 
   void setLockedByNextMessage(const Bool& value)
   { _lockedByNextMessage = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setLockedByNextMessage(Bool&& value)
-  { _lockedByNextMessage = value; }
+  { _lockedByNextMessage = std::move(value); }
 #endif
   Bool& getLockedByNextMessage()
   { return _lockedByNextMessage; }
@@ -4830,9 +4830,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4841,9 +4841,9 @@ public:
 
   void setRegionHandleDimensionHandleSetPairVector(const RegionHandleDimensionHandleSetPairVector& value)
   { _regionHandleDimensionHandleSetPairVector = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setRegionHandleDimensionHandleSetPairVector(RegionHandleDimensionHandleSetPairVector&& value)
-  { _regionHandleDimensionHandleSetPairVector = value; }
+  { _regionHandleDimensionHandleSetPairVector = std::move(value); }
 #endif
   RegionHandleDimensionHandleSetPairVector& getRegionHandleDimensionHandleSetPairVector()
   { return _regionHandleDimensionHandleSetPairVector; }
@@ -4878,9 +4878,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4889,9 +4889,9 @@ public:
 
   void setRegionHandleRegionValuePairVector(const RegionHandleRegionValuePairVector& value)
   { _regionHandleRegionValuePairVector = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setRegionHandleRegionValuePairVector(RegionHandleRegionValuePairVector&& value)
-  { _regionHandleRegionValuePairVector = value; }
+  { _regionHandleRegionValuePairVector = std::move(value); }
 #endif
   RegionHandleRegionValuePairVector& getRegionHandleRegionValuePairVector()
   { return _regionHandleRegionValuePairVector; }
@@ -4926,9 +4926,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4937,9 +4937,9 @@ public:
 
   void setRegionHandleVector(const RegionHandleVector& value)
   { _regionHandleVector = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setRegionHandleVector(RegionHandleVector&& value)
-  { _regionHandleVector = value; }
+  { _regionHandleVector = std::move(value); }
 #endif
   RegionHandleVector& getRegionHandleVector()
   { return _regionHandleVector; }
@@ -4974,9 +4974,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -4985,9 +4985,9 @@ public:
 
   void setPublicationType(const PublicationType& value)
   { _publicationType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setPublicationType(PublicationType&& value)
-  { _publicationType = value; }
+  { _publicationType = std::move(value); }
 #endif
   PublicationType& getPublicationType()
   { return _publicationType; }
@@ -4996,9 +4996,9 @@ public:
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setInteractionClassHandle(InteractionClassHandle&& value)
-  { _interactionClassHandle = value; }
+  { _interactionClassHandle = std::move(value); }
 #endif
   InteractionClassHandle& getInteractionClassHandle()
   { return _interactionClassHandle; }
@@ -5034,9 +5034,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -5045,9 +5045,9 @@ public:
 
   void setPublicationType(const PublicationType& value)
   { _publicationType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setPublicationType(PublicationType&& value)
-  { _publicationType = value; }
+  { _publicationType = std::move(value); }
 #endif
   PublicationType& getPublicationType()
   { return _publicationType; }
@@ -5056,9 +5056,9 @@ public:
 
   void setObjectClassHandle(const ObjectClassHandle& value)
   { _objectClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectClassHandle(ObjectClassHandle&& value)
-  { _objectClassHandle = value; }
+  { _objectClassHandle = std::move(value); }
 #endif
   ObjectClassHandle& getObjectClassHandle()
   { return _objectClassHandle; }
@@ -5067,9 +5067,9 @@ public:
 
   void setAttributeHandles(const AttributeHandleVector& value)
   { _attributeHandles = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeHandles(AttributeHandleVector&& value)
-  { _attributeHandles = value; }
+  { _attributeHandles = std::move(value); }
 #endif
   AttributeHandleVector& getAttributeHandles()
   { return _attributeHandles; }
@@ -5106,9 +5106,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -5117,9 +5117,9 @@ public:
 
   void setSubscriptionType(const SubscriptionType& value)
   { _subscriptionType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setSubscriptionType(SubscriptionType&& value)
-  { _subscriptionType = value; }
+  { _subscriptionType = std::move(value); }
 #endif
   SubscriptionType& getSubscriptionType()
   { return _subscriptionType; }
@@ -5128,9 +5128,9 @@ public:
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setInteractionClassHandle(InteractionClassHandle&& value)
-  { _interactionClassHandle = value; }
+  { _interactionClassHandle = std::move(value); }
 #endif
   InteractionClassHandle& getInteractionClassHandle()
   { return _interactionClassHandle; }
@@ -5166,9 +5166,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -5177,9 +5177,9 @@ public:
 
   void setSubscriptionType(const SubscriptionType& value)
   { _subscriptionType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setSubscriptionType(SubscriptionType&& value)
-  { _subscriptionType = value; }
+  { _subscriptionType = std::move(value); }
 #endif
   SubscriptionType& getSubscriptionType()
   { return _subscriptionType; }
@@ -5188,9 +5188,9 @@ public:
 
   void setObjectClassHandle(const ObjectClassHandle& value)
   { _objectClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectClassHandle(ObjectClassHandle&& value)
-  { _objectClassHandle = value; }
+  { _objectClassHandle = std::move(value); }
 #endif
   ObjectClassHandle& getObjectClassHandle()
   { return _objectClassHandle; }
@@ -5199,9 +5199,9 @@ public:
 
   void setAttributeHandles(const AttributeHandleVector& value)
   { _attributeHandles = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeHandles(AttributeHandleVector&& value)
-  { _attributeHandles = value; }
+  { _attributeHandles = std::move(value); }
 #endif
   AttributeHandleVector& getAttributeHandles()
   { return _attributeHandles; }
@@ -5238,9 +5238,9 @@ public:
 
   void setObjectClassHandle(const ObjectClassHandle& value)
   { _objectClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectClassHandle(ObjectClassHandle&& value)
-  { _objectClassHandle = value; }
+  { _objectClassHandle = std::move(value); }
 #endif
   ObjectClassHandle& getObjectClassHandle()
   { return _objectClassHandle; }
@@ -5249,9 +5249,9 @@ public:
 
   void setStart(const Bool& value)
   { _start = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setStart(Bool&& value)
-  { _start = value; }
+  { _start = std::move(value); }
 #endif
   Bool& getStart()
   { return _start; }
@@ -5288,9 +5288,9 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectInstanceHandle(ObjectInstanceHandle&& value)
-  { _objectInstanceHandle = value; }
+  { _objectInstanceHandle = std::move(value); }
 #endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
@@ -5299,9 +5299,9 @@ public:
 
   void setAttributeHandles(const AttributeHandleVector& value)
   { _attributeHandles = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeHandles(AttributeHandleVector&& value)
-  { _attributeHandles = value; }
+  { _attributeHandles = std::move(value); }
 #endif
   AttributeHandleVector& getAttributeHandles()
   { return _attributeHandles; }
@@ -5310,9 +5310,9 @@ public:
 
   void setInScope(const Bool& value)
   { _inScope = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setInScope(Bool&& value)
-  { _inScope = value; }
+  { _inScope = std::move(value); }
 #endif
   Bool& getInScope()
   { return _inScope; }
@@ -5350,9 +5350,9 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectInstanceHandle(ObjectInstanceHandle&& value)
-  { _objectInstanceHandle = value; }
+  { _objectInstanceHandle = std::move(value); }
 #endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
@@ -5361,9 +5361,9 @@ public:
 
   void setAttributeHandles(const AttributeHandleVector& value)
   { _attributeHandles = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeHandles(AttributeHandleVector&& value)
-  { _attributeHandles = value; }
+  { _attributeHandles = std::move(value); }
 #endif
   AttributeHandleVector& getAttributeHandles()
   { return _attributeHandles; }
@@ -5372,9 +5372,9 @@ public:
 
   void setUpdateRate(const String& value)
   { _updateRate = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setUpdateRate(String&& value)
-  { _updateRate = value; }
+  { _updateRate = std::move(value); }
 #endif
   String& getUpdateRate()
   { return _updateRate; }
@@ -5383,9 +5383,9 @@ public:
 
   void setOn(const Bool& value)
   { _on = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setOn(Bool&& value)
-  { _on = value; }
+  { _on = std::move(value); }
 #endif
   Bool& getOn()
   { return _on; }
@@ -5422,9 +5422,9 @@ public:
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setInteractionClassHandle(InteractionClassHandle&& value)
-  { _interactionClassHandle = value; }
+  { _interactionClassHandle = std::move(value); }
 #endif
   InteractionClassHandle& getInteractionClassHandle()
   { return _interactionClassHandle; }
@@ -5433,9 +5433,9 @@ public:
 
   void setOn(const Bool& value)
   { _on = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setOn(Bool&& value)
-  { _on = value; }
+  { _on = std::move(value); }
 #endif
   Bool& getOn()
   { return _on; }
@@ -5472,9 +5472,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -5483,9 +5483,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -5494,9 +5494,9 @@ public:
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setInteractionClassHandle(InteractionClassHandle&& value)
-  { _interactionClassHandle = value; }
+  { _interactionClassHandle = std::move(value); }
 #endif
   InteractionClassHandle& getInteractionClassHandle()
   { return _interactionClassHandle; }
@@ -5505,9 +5505,9 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { _transportationType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTransportationType(TransportationType&& value)
-  { _transportationType = value; }
+  { _transportationType = std::move(value); }
 #endif
   TransportationType& getTransportationType()
   { return _transportationType; }
@@ -5516,9 +5516,9 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTag(VariableLengthData&& value)
-  { _tag = value; }
+  { _tag = std::move(value); }
 #endif
   VariableLengthData& getTag()
   { return _tag; }
@@ -5527,9 +5527,9 @@ public:
 
   void setParameterValues(const ParameterValueVector& value)
   { _parameterValues = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setParameterValues(ParameterValueVector&& value)
-  { _parameterValues = value; }
+  { _parameterValues = std::move(value); }
 #endif
   ParameterValueVector& getParameterValues()
   { return _parameterValues; }
@@ -5570,9 +5570,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -5581,9 +5581,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -5592,9 +5592,9 @@ public:
 
   void setInteractionClassHandle(const InteractionClassHandle& value)
   { _interactionClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setInteractionClassHandle(InteractionClassHandle&& value)
-  { _interactionClassHandle = value; }
+  { _interactionClassHandle = std::move(value); }
 #endif
   InteractionClassHandle& getInteractionClassHandle()
   { return _interactionClassHandle; }
@@ -5603,9 +5603,9 @@ public:
 
   void setOrderType(const OrderType& value)
   { _orderType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setOrderType(OrderType&& value)
-  { _orderType = value; }
+  { _orderType = std::move(value); }
 #endif
   OrderType& getOrderType()
   { return _orderType; }
@@ -5614,9 +5614,9 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { _transportationType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTransportationType(TransportationType&& value)
-  { _transportationType = value; }
+  { _transportationType = std::move(value); }
 #endif
   TransportationType& getTransportationType()
   { return _transportationType; }
@@ -5625,9 +5625,9 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTag(VariableLengthData&& value)
-  { _tag = value; }
+  { _tag = std::move(value); }
 #endif
   VariableLengthData& getTag()
   { return _tag; }
@@ -5636,9 +5636,9 @@ public:
 
   void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTimeStamp(VariableLengthData&& value)
-  { _timeStamp = value; }
+  { _timeStamp = std::move(value); }
 #endif
   VariableLengthData& getTimeStamp()
   { return _timeStamp; }
@@ -5647,9 +5647,9 @@ public:
 
   void setMessageRetractionHandle(const MessageRetractionHandle& value)
   { _messageRetractionHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setMessageRetractionHandle(MessageRetractionHandle&& value)
-  { _messageRetractionHandle = value; }
+  { _messageRetractionHandle = std::move(value); }
 #endif
   MessageRetractionHandle& getMessageRetractionHandle()
   { return _messageRetractionHandle; }
@@ -5658,9 +5658,9 @@ public:
 
   void setParameterValues(const ParameterValueVector& value)
   { _parameterValues = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setParameterValues(ParameterValueVector&& value)
-  { _parameterValues = value; }
+  { _parameterValues = std::move(value); }
 #endif
   ParameterValueVector& getParameterValues()
   { return _parameterValues; }
@@ -5702,9 +5702,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -5713,9 +5713,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -5724,9 +5724,9 @@ public:
 
   void setCount(const Unsigned& value)
   { _count = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setCount(Unsigned&& value)
-  { _count = value; }
+  { _count = std::move(value); }
 #endif
   Unsigned& getCount()
   { return _count; }
@@ -5762,9 +5762,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -5773,9 +5773,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -5784,9 +5784,9 @@ public:
 
   void setObjectInstanceHandleNamePairVector(const ObjectInstanceHandleNamePairVector& value)
   { _objectInstanceHandleNamePairVector = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectInstanceHandleNamePairVector(ObjectInstanceHandleNamePairVector&& value)
-  { _objectInstanceHandleNamePairVector = value; }
+  { _objectInstanceHandleNamePairVector = std::move(value); }
 #endif
   ObjectInstanceHandleNamePairVector& getObjectInstanceHandleNamePairVector()
   { return _objectInstanceHandleNamePairVector; }
@@ -5822,9 +5822,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -5833,9 +5833,9 @@ public:
 
   void setObjectInstanceHandleVector(const ObjectInstanceHandleVector& value)
   { _objectInstanceHandleVector = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectInstanceHandleVector(ObjectInstanceHandleVector&& value)
-  { _objectInstanceHandleVector = value; }
+  { _objectInstanceHandleVector = std::move(value); }
 #endif
   ObjectInstanceHandleVector& getObjectInstanceHandleVector()
   { return _objectInstanceHandleVector; }
@@ -5870,9 +5870,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -5881,9 +5881,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -5892,9 +5892,9 @@ public:
 
   void setName(const String& value)
   { _name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { _name = value; }
+  { _name = std::move(value); }
 #endif
   String& getName()
   { return _name; }
@@ -5930,9 +5930,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -5941,9 +5941,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -5952,9 +5952,9 @@ public:
 
   void setObjectInstanceHandleNamePair(const ObjectInstanceHandleNamePair& value)
   { _objectInstanceHandleNamePair = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectInstanceHandleNamePair(ObjectInstanceHandleNamePair&& value)
-  { _objectInstanceHandleNamePair = value; }
+  { _objectInstanceHandleNamePair = std::move(value); }
 #endif
   ObjectInstanceHandleNamePair& getObjectInstanceHandleNamePair()
   { return _objectInstanceHandleNamePair; }
@@ -5963,9 +5963,9 @@ public:
 
   void setSuccess(const Bool& value)
   { _success = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setSuccess(Bool&& value)
-  { _success = value; }
+  { _success = std::move(value); }
 #endif
   Bool& getSuccess()
   { return _success; }
@@ -6002,9 +6002,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -6013,9 +6013,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -6024,9 +6024,9 @@ public:
 
   void setNameList(const StringVector& value)
   { _nameList = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setNameList(StringVector&& value)
-  { _nameList = value; }
+  { _nameList = std::move(value); }
 #endif
   StringVector& getNameList()
   { return _nameList; }
@@ -6062,9 +6062,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -6073,9 +6073,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -6084,9 +6084,9 @@ public:
 
   void setObjectInstanceHandleNamePairVector(const ObjectInstanceHandleNamePairVector& value)
   { _objectInstanceHandleNamePairVector = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectInstanceHandleNamePairVector(ObjectInstanceHandleNamePairVector&& value)
-  { _objectInstanceHandleNamePairVector = value; }
+  { _objectInstanceHandleNamePairVector = std::move(value); }
 #endif
   ObjectInstanceHandleNamePairVector& getObjectInstanceHandleNamePairVector()
   { return _objectInstanceHandleNamePairVector; }
@@ -6095,9 +6095,9 @@ public:
 
   void setSuccess(const Bool& value)
   { _success = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setSuccess(Bool&& value)
-  { _success = value; }
+  { _success = std::move(value); }
 #endif
   Bool& getSuccess()
   { return _success; }
@@ -6136,9 +6136,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -6147,9 +6147,9 @@ public:
 
   void setObjectClassHandle(const ObjectClassHandle& value)
   { _objectClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectClassHandle(ObjectClassHandle&& value)
-  { _objectClassHandle = value; }
+  { _objectClassHandle = std::move(value); }
 #endif
   ObjectClassHandle& getObjectClassHandle()
   { return _objectClassHandle; }
@@ -6158,9 +6158,9 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectInstanceHandle(ObjectInstanceHandle&& value)
-  { _objectInstanceHandle = value; }
+  { _objectInstanceHandle = std::move(value); }
 #endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
@@ -6169,9 +6169,9 @@ public:
 
   void setName(const String& value)
   { _name = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setName(String&& value)
-  { _name = value; }
+  { _name = std::move(value); }
 #endif
   String& getName()
   { return _name; }
@@ -6180,9 +6180,9 @@ public:
 
   void setAttributeStateVector(const AttributeStateVector& value)
   { _attributeStateVector = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeStateVector(AttributeStateVector&& value)
-  { _attributeStateVector = value; }
+  { _attributeStateVector = std::move(value); }
 #endif
   AttributeStateVector& getAttributeStateVector()
   { return _attributeStateVector; }
@@ -6222,9 +6222,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -6233,9 +6233,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -6244,9 +6244,9 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectInstanceHandle(ObjectInstanceHandle&& value)
-  { _objectInstanceHandle = value; }
+  { _objectInstanceHandle = std::move(value); }
 #endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
@@ -6255,9 +6255,9 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTag(VariableLengthData&& value)
-  { _tag = value; }
+  { _tag = std::move(value); }
 #endif
   VariableLengthData& getTag()
   { return _tag; }
@@ -6296,9 +6296,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -6307,9 +6307,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -6318,9 +6318,9 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectInstanceHandle(ObjectInstanceHandle&& value)
-  { _objectInstanceHandle = value; }
+  { _objectInstanceHandle = std::move(value); }
 #endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
@@ -6329,9 +6329,9 @@ public:
 
   void setOrderType(const OrderType& value)
   { _orderType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setOrderType(OrderType&& value)
-  { _orderType = value; }
+  { _orderType = std::move(value); }
 #endif
   OrderType& getOrderType()
   { return _orderType; }
@@ -6340,9 +6340,9 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTag(VariableLengthData&& value)
-  { _tag = value; }
+  { _tag = std::move(value); }
 #endif
   VariableLengthData& getTag()
   { return _tag; }
@@ -6351,9 +6351,9 @@ public:
 
   void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTimeStamp(VariableLengthData&& value)
-  { _timeStamp = value; }
+  { _timeStamp = std::move(value); }
 #endif
   VariableLengthData& getTimeStamp()
   { return _timeStamp; }
@@ -6362,9 +6362,9 @@ public:
 
   void setMessageRetractionHandle(const MessageRetractionHandle& value)
   { _messageRetractionHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setMessageRetractionHandle(MessageRetractionHandle&& value)
-  { _messageRetractionHandle = value; }
+  { _messageRetractionHandle = std::move(value); }
 #endif
   MessageRetractionHandle& getMessageRetractionHandle()
   { return _messageRetractionHandle; }
@@ -6408,9 +6408,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -6419,9 +6419,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -6430,9 +6430,9 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectInstanceHandle(ObjectInstanceHandle&& value)
-  { _objectInstanceHandle = value; }
+  { _objectInstanceHandle = std::move(value); }
 #endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
@@ -6441,9 +6441,9 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTag(VariableLengthData&& value)
-  { _tag = value; }
+  { _tag = std::move(value); }
 #endif
   VariableLengthData& getTag()
   { return _tag; }
@@ -6452,9 +6452,9 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { _transportationType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTransportationType(TransportationType&& value)
-  { _transportationType = value; }
+  { _transportationType = std::move(value); }
 #endif
   TransportationType& getTransportationType()
   { return _transportationType; }
@@ -6463,9 +6463,9 @@ public:
 
   void setAttributeValues(const AttributeValueVector& value)
   { _attributeValues = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeValues(AttributeValueVector&& value)
-  { _attributeValues = value; }
+  { _attributeValues = std::move(value); }
 #endif
   AttributeValueVector& getAttributeValues()
   { return _attributeValues; }
@@ -6508,9 +6508,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -6519,9 +6519,9 @@ public:
 
   void setFederateHandle(const FederateHandle& value)
   { _federateHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederateHandle(FederateHandle&& value)
-  { _federateHandle = value; }
+  { _federateHandle = std::move(value); }
 #endif
   FederateHandle& getFederateHandle()
   { return _federateHandle; }
@@ -6530,9 +6530,9 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectInstanceHandle(ObjectInstanceHandle&& value)
-  { _objectInstanceHandle = value; }
+  { _objectInstanceHandle = std::move(value); }
 #endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
@@ -6541,9 +6541,9 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTag(VariableLengthData&& value)
-  { _tag = value; }
+  { _tag = std::move(value); }
 #endif
   VariableLengthData& getTag()
   { return _tag; }
@@ -6552,9 +6552,9 @@ public:
 
   void setTimeStamp(const VariableLengthData& value)
   { _timeStamp = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTimeStamp(VariableLengthData&& value)
-  { _timeStamp = value; }
+  { _timeStamp = std::move(value); }
 #endif
   VariableLengthData& getTimeStamp()
   { return _timeStamp; }
@@ -6563,9 +6563,9 @@ public:
 
   void setMessageRetractionHandle(const MessageRetractionHandle& value)
   { _messageRetractionHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setMessageRetractionHandle(MessageRetractionHandle&& value)
-  { _messageRetractionHandle = value; }
+  { _messageRetractionHandle = std::move(value); }
 #endif
   MessageRetractionHandle& getMessageRetractionHandle()
   { return _messageRetractionHandle; }
@@ -6574,9 +6574,9 @@ public:
 
   void setOrderType(const OrderType& value)
   { _orderType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setOrderType(OrderType&& value)
-  { _orderType = value; }
+  { _orderType = std::move(value); }
 #endif
   OrderType& getOrderType()
   { return _orderType; }
@@ -6585,9 +6585,9 @@ public:
 
   void setTransportationType(const TransportationType& value)
   { _transportationType = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTransportationType(TransportationType&& value)
-  { _transportationType = value; }
+  { _transportationType = std::move(value); }
 #endif
   TransportationType& getTransportationType()
   { return _transportationType; }
@@ -6596,9 +6596,9 @@ public:
 
   void setAttributeValues(const AttributeValueVector& value)
   { _attributeValues = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeValues(AttributeValueVector&& value)
-  { _attributeValues = value; }
+  { _attributeValues = std::move(value); }
 #endif
   AttributeValueVector& getAttributeValues()
   { return _attributeValues; }
@@ -6642,9 +6642,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -6653,9 +6653,9 @@ public:
 
   void setObjectInstanceHandle(const ObjectInstanceHandle& value)
   { _objectInstanceHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectInstanceHandle(ObjectInstanceHandle&& value)
-  { _objectInstanceHandle = value; }
+  { _objectInstanceHandle = std::move(value); }
 #endif
   ObjectInstanceHandle& getObjectInstanceHandle()
   { return _objectInstanceHandle; }
@@ -6664,9 +6664,9 @@ public:
 
   void setAttributeHandles(const AttributeHandleVector& value)
   { _attributeHandles = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeHandles(AttributeHandleVector&& value)
-  { _attributeHandles = value; }
+  { _attributeHandles = std::move(value); }
 #endif
   AttributeHandleVector& getAttributeHandles()
   { return _attributeHandles; }
@@ -6675,9 +6675,9 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTag(VariableLengthData&& value)
-  { _tag = value; }
+  { _tag = std::move(value); }
 #endif
   VariableLengthData& getTag()
   { return _tag; }
@@ -6714,9 +6714,9 @@ public:
 
   void setFederationHandle(const FederationHandle& value)
   { _federationHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setFederationHandle(FederationHandle&& value)
-  { _federationHandle = value; }
+  { _federationHandle = std::move(value); }
 #endif
   FederationHandle& getFederationHandle()
   { return _federationHandle; }
@@ -6725,9 +6725,9 @@ public:
 
   void setObjectClassHandle(const ObjectClassHandle& value)
   { _objectClassHandle = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setObjectClassHandle(ObjectClassHandle&& value)
-  { _objectClassHandle = value; }
+  { _objectClassHandle = std::move(value); }
 #endif
   ObjectClassHandle& getObjectClassHandle()
   { return _objectClassHandle; }
@@ -6736,9 +6736,9 @@ public:
 
   void setAttributeHandles(const AttributeHandleVector& value)
   { _attributeHandles = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setAttributeHandles(AttributeHandleVector&& value)
-  { _attributeHandles = value; }
+  { _attributeHandles = std::move(value); }
 #endif
   AttributeHandleVector& getAttributeHandles()
   { return _attributeHandles; }
@@ -6747,9 +6747,9 @@ public:
 
   void setTag(const VariableLengthData& value)
   { _tag = value; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   void setTag(VariableLengthData&& value)
-  { _tag = value; }
+  { _tag = std::move(value); }
 #endif
   VariableLengthData& getTag()
   { return _tag; }

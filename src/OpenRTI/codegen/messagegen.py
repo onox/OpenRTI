@@ -452,9 +452,9 @@ class StructField(object):
         memberName = self.getMemberName()
         sourceStream.writeline('void set{upperName}(const {typeName}& value)'.format(upperName = upperName, typeName = typeName))
         sourceStream.writeline('{{ {prefix}{memberName} = value; }}'.format(memberName = memberName, prefix = valuePrefix))
-        sourceStream.writelineNoIndent('#if 201103L <= __cplusplus')
+        sourceStream.writelineNoIndent('#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference')
         sourceStream.writeline('void set{upperName}({typeName}&& value)'.format(upperName = upperName, typeName = typeName))
-        sourceStream.writeline('{{ {prefix}{memberName} = value; }}'.format(memberName = memberName, prefix = valuePrefix))
+        sourceStream.writeline('{{ {prefix}{memberName} = std::move(value); }}'.format(memberName = memberName, prefix = valuePrefix))
         sourceStream.writelineNoIndent('#endif')
 
     def writeGetter(self, sourceStream, valuePrefix):

@@ -430,7 +430,7 @@ public:
   { }
   IntrusiveList(const IntrusiveList& intrusiveList)
   { OpenRTIAssert(intrusiveList.empty()); }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   IntrusiveList(IntrusiveList&& intrusiveList)
   { _Implementation::swap(intrusiveList); }
 #endif
@@ -439,7 +439,7 @@ public:
 
   IntrusiveList& operator=(const IntrusiveList& intrusiveList)
   { OpenRTIAssert(_Implementation::empty()); OpenRTIAssert(intrusiveList.empty()); return *this; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   IntrusiveList& operator=(IntrusiveList&& intrusiveList)
   { _Implementation::swap(intrusiveList); return *this; }
 #endif

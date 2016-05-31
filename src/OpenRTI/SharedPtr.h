@@ -37,7 +37,7 @@ public:
   { T::getFirst(_ptr); }
   SharedPtr(const SharedPtr& p) : _ptr(p.get())
   { T::get(_ptr); }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   SharedPtr(SharedPtr&& p) : _ptr(0)
   { swap(p); }
 #endif
@@ -49,7 +49,7 @@ public:
 
   SharedPtr& operator=(const SharedPtr& p)
   { assign(p.get()); return *this; }
-#if 201103L <= __cplusplus
+#if 201103L <= __cplusplus || 200610L <= __cpp_rvalue_reference
   SharedPtr& operator=(SharedPtr&& p)
   { swap(p); return *this; }
 #endif
