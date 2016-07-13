@@ -91,10 +91,18 @@ main(int argc, char* argv[])
   OpenRTI::RTI1516ESimpleAmbassador ambassador;
   ambassador.setUseDataUrlObjectModels(useDataUrlObjectModels);
 
-  if (args.empty())
-    ambassador.connect(L"thread://");
-  else
-    ambassador.connect(args[0]);
+  try {
+    if (args.empty())
+      ambassador.connect(L"thread://");
+    else
+      ambassador.connect(args[0]);
+  } catch (const rti1516e::Exception& e) {
+    std::wcout << L"rti1516e::Exception: \"" << e.what() << L"\"" << std::endl;
+    return EXIT_FAILURE;
+  } catch (...) {
+    std::wcout << L"Unknown Exception!" << std::endl;
+    return EXIT_FAILURE;
+  }
 
   // create, must work
   try {
