@@ -1,6 +1,6 @@
 Summary: HLA/RTI runtime infrastructure
 Name: OpenRTI
-Version: 0.7.1
+Version: 0.8.0
 Release: 1%{?dist}
 License: LGPL
 Group: System Environment/Libraries
