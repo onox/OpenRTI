@@ -1,4 +1,4 @@
-OpenRTI-0.8.0 (development)
+OpenRTI-0.8.0 (2016-07-31)
 ---------------------------
 
  * Switched default transport to rti://localhost.
@@ -10,7 +10,6 @@ OpenRTI-0.8.0 (development)
  * Implement loading fom modules from data: uri's as in rfc2397.
  * Remove the leading underscore from the python binding implementations.
  * Static builds should work now on most of the configurations.
- 
  * For a more detailed list of changes see the git history.
 
 OpenRTI-0.7.0 (2015-02-14)
