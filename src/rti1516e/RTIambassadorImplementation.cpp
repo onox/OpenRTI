@@ -462,7 +462,7 @@ public:
   {
     for (OpenRTI::FederateHandleBoolPairVector::const_iterator i = federateHandleBoolPairVector.begin();
          i != federateHandleBoolPairVector.end(); ++i) {
-      if (!i->second)
+      if (i->second)
         continue;
       insert(end(), OpenRTI::_O1516EFederateHandle(i->first));
     }
