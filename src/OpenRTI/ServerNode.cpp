@@ -2072,6 +2072,7 @@ public:
     OpenRTIAssert(isRootServer());
 
     SharedPtr<EnumerateFederationExecutionsResponseMessage> response;
+    response = new EnumerateFederationExecutionsResponseMessage;
     response->getFederationExecutionInformationVector().reserve(getFederationHandleFederationMap().size());
     for (ServerModel::Federation::HandleMap::iterator i = getFederationHandleFederationMap().begin();
          i != getFederationHandleFederationMap().end(); ++i) {
