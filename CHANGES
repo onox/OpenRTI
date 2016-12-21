@@ -2,6 +2,7 @@ OpenRTI-0.9.0 (development)
 ---------------------------
 
  * Correct the logic for rti1516e's Federation Synchronized service.
+ * Fix enumeration of federation executions.
 
  * For a more detailed list of changes see the git history.
 

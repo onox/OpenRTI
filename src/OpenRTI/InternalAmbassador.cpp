@@ -129,6 +129,7 @@ InternalAmbassador::acceptInternalMessage(const ConnectionLostMessage& message)
 void
 InternalAmbassador::acceptInternalMessage(const EnumerateFederationExecutionsResponseMessage& message)
 {
+  queueCallback(message);
 }
 
 // void
