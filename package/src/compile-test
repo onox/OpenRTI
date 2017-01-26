@@ -13,85 +13,105 @@ case `uname` in
     CYGWIN*)
         generators[0]="Visual Studio 14 2015 Win64"
         generators[1]="Visual Studio 14 2015"
+        # Puh, cl only understands a single standard that is baken in
+        stdflags[0]=""
+        ;;
+    Linux*)
+        generators[0]=""
+        case `cmake --version` in
+            cmake\ version\ 3.*)
+                stdflags[0]="-DCMAKE_CXX_STANDARD=98"
+                stdflags[1]="-DCMAKE_CXX_STANDARD=11"
+                # stdflags[2]="-DCMAKE_CXX_STANDARD=14"
+                ;;
+            *)
+                stdflags[0]=""
+                ;;
+        esac
         ;;
     *)
         generators[0]=""
+        stdflags[0]=""
         ;;
 esac
 
 for generator in "${generators[@]}" ; do
-    for build_shared in TRUE FALSE ; do
-        for buildconfig in Debug Release RelWithDebInfo ; do
-            # Put this into a subshell
-            (
-                function cleanup {
-                    rm -rf "$builddir"
-                }
-                trap cleanup EXIT
+    for stdflag in "${stdflags[@]}" ; do
+        for build_shared in TRUE FALSE ; do
+            for buildconfig in Debug Release RelWithDebInfo ; do
+                # Put this into a subshell
+                (
+                    function cleanup {
+                        rm -rf "$builddir"
+                    }
+                    trap cleanup EXIT
 
-                mkdir "$builddir"
-                if [ "$?" != "0" ] ; then
-                    1>&2 echo "Cannot create temporary build directory"
-                    exit 1
-                fi
-                
-                cd "$builddir" &&
-                if [ "$?" != "0" ] ; then
-                    1>&2 echo "Cannot step into temporary build directory"
-                    exit 1
-                fi
-                if [ -z "$generator" ] ; then
-                    cmake \
-                      -DOPENRTI_BUILD_SHARED=$build_shared \
-                      -DCMAKE_BUILD_TYPE=$buildconfig \
-                      "$@"
+                    mkdir "$builddir"
                     if [ "$?" != "0" ] ; then
-                        1>&2 echo "Configure step failed."
+                        1>&2 echo "Cannot create temporary build directory"
                         exit 1
                     fi
-                else
-                    cmake -G "$generator" \
-                      -DOPENRTI_BUILD_SHARED=$build_shared \
-                      -DCMAKE_BUILD_TYPE=$buildconfig \
-                      "$@"
-                    if [ "$?" != "0" ] ; then
-                        1>&2 echo "Configure step failed."
-                        exit 1
+
+                    cd "$builddir" &&
+                        if [ "$?" != "0" ] ; then
+                            1>&2 echo "Cannot step into temporary build directory"
+                            exit 1
+                        fi
+                    if [ -z "$generator" ] ; then
+                        cmake \
+                            -DOPENRTI_BUILD_SHARED=$build_shared \
+                            -DCMAKE_BUILD_TYPE=$buildconfig \
+                            "$stdflag" \
+                            "$@"
+                        if [ "$?" != "0" ] ; then
+                            1>&2 echo "Configure step failed."
+                            exit 1
+                        fi
+                    else
+                        cmake -G "$generator" \
+                              -DOPENRTI_BUILD_SHARED=$build_shared \
+                              -DCMAKE_BUILD_TYPE=$buildconfig \
+                              "$stdflag" \
+                              "$@"
+                        if [ "$?" != "0" ] ; then
+                            1>&2 echo "Configure step failed."
+                            exit 1
+                        fi
                     fi
+
+                    case `uname` in
+                        CYGWIN*)
+                            cmake --build . --config $buildconfig
+                            if [ "$?" != "0" ] ; then
+                                1>&2 echo "Build step failed."
+                                exit 1
+                            fi
+                            ;;
+                        *)
+                            make -j8
+                            if [ "$?" != "0" ] ; then
+                                1>&2 echo "Build step failed."
+                                exit 1
+                            fi
+                            ;;
+                    esac
+
+                    case ${buildconfig}`uname` in
+                        *Linux|CYGWIN*Release)
+                            ctest --buildconfig $buildconfig
+                            if [ "$?" != "0" ] ; then
+                                1>&2 echo "Tests failed."
+                                exit 1
+                            fi
+                            ;;
+                        *)
+                            ;;
+                    esac
+                )
+                if [ "$?" != "0" ] ; then
+                    exit 1
                 fi
-
-                case `uname` in
-                    CYGWIN*)
-                        cmake --build . --config $buildconfig
-                        if [ "$?" != "0" ] ; then
-                            1>&2 echo "Build step failed."
-                            exit 1
-                        fi
-                    ;;
-                    *)
-                        make -j8
-                        if [ "$?" != "0" ] ; then
-                            1>&2 echo "Build step failed."
-                            exit 1
-                        fi
-                    ;;
-                esac
-
-                case ${buildconfig}`uname` in
-                    *Linux|CYGWIN*Release)
-                        ctest --buildconfig $buildconfig
-                        if [ "$?" != "0" ] ; then
-                            1>&2 echo "Tests failed."
-                            exit 1
-                        fi
-                    ;;
-                    *)
-                    ;;
-                esac
-            )
-            if [ "$?" != "0" ] ; then
-                exit 1
-            fi
+            done
         done
     done
 done
