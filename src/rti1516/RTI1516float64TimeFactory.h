@@ -31,8 +31,8 @@
 #include <RTI/HLAfloat64Time.h>
 #include <RTI/HLAfloat64Interval.h>
 
+#include <cmath>
 #include <limits>
-#include <math.h>
 
 namespace OpenRTI {
 
@@ -60,7 +60,9 @@ public:
 
   static LogicalTime nextAfter(const LogicalTime& logicalTime)
   {
-#ifdef _WIN32
+#if 201103L <= __cplusplus
+    return std::nextafter(logicalTime, std::numeric_limits<double>::infinity());
+#elif defined _WIN32
     return _nextafter(logicalTime, std::numeric_limits<double>::infinity());
 #else
     return nextafter(logicalTime, std::numeric_limits<double>::infinity());

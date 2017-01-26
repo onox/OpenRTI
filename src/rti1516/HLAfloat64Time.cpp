@@ -23,9 +23,9 @@
 
 #include "RTI/HLAfloat64Time.h"
 
+#include <cmath>
 #include <limits>
 #include <sstream>
-#include <cmath>
 #include "VariableLengthDataImplementation.h"
 #include "ValueImplementation.h"
 #include "RTI/HLAfloat64Interval.h"
@@ -86,12 +86,14 @@ static inline bool isNaN(const double& fedTime)
 #endif
 }
 
-static inline double nextAfter(const double& fedTime, const double& direction)
+static inline double nextAfter(const double& logicalTime, const double& direction)
 {
-#ifdef _WIN32
-  return _nextafter(fedTime, direction);
+#if 201103L <= __cplusplus
+  return std::nextafter(logicalTime, direction);
+#elif defined _WIN32
+  return _nextafter(logicalTime, direction);
 #else
-  return nextafter(fedTime, direction);
+  return nextafter(logicalTime, direction);
 #endif
 }
 

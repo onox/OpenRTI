@@ -75,7 +75,9 @@ static inline bool isNaN(const double& fedTime)
 
 static inline double nextAfter(const double& fedTime, const double& direction)
 {
-#ifdef _WIN32
+#if 201103L <= __cplusplus
+  return std::nextafter(fedTime, direction);
+#elif defined _WIN32
   return _nextafter(fedTime, direction);
 #else
   return nextafter(fedTime, direction);
