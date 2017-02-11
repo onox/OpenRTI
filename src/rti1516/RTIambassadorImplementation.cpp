@@ -406,8 +406,12 @@ public:
           URL url = URL::fromProtocolAddress(_defaultUrl.getProtocol(), value);
           _defaultUrl.setHost(url.getHost());
           _defaultUrl.setService(url.getService());
+        } else if (key == "host" || key == "hostname") {
+          _defaultUrl.setHost(value);
         } else if (key == "protocol") {
           _defaultUrl.setProtocol(value);
+        } else if (key == "port" || key == "service") {
+          _defaultUrl.setService(value);
         } else if (key == "url") {
           _defaultUrl = URL::fromUrl(value);
         } else {
