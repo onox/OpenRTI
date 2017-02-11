@@ -262,19 +262,30 @@ like <key>=<value>. Supported keys are:
 protocol=<p>
   'thread' (default) use the smp, in memory connect.
   'rti' use the tcp/ip binary protocol on some custom port
-  'http' use the http encapsulated tcp/ip binary protocol on port 80
   'pipe' use the binary protocol on a named pipe
 
 address=<a>
   The interpretation depends on the protocol:
   For 'thread' this is ignored.
-  For 'rti' and 'http' this contains the host:port pair.
+  For 'rti' this contains the host:port pair.
   port can be omitted to use the appropriate default port.
   For 'pipe' this should contain the path to the named pipe.
+
+host=<a>
+hostname=<a>
+  Like address, but only sets the host name or ip address part.
+
+port=<p>
+service=<p>
+  Like address, but only sets the port number or service name part.
 
 timeout=<t>
   Sets initial packet timeouts for messages that happen synchronous.
   That is mostly for create, destroy, join and resign.
+
+url=<u>
+  You can directly use the url scheme as described above and as it
+  is used with rti1516e in the arguments to rti1516.
 
 
 Federation execution names and URLs
