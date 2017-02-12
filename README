@@ -159,7 +159,7 @@ supported for rti1516e. Update rate reduction is not implemented.
 * Management Object Model
   Is present with the object model but does not provide any data or methods.
 
-(1) The general behavior of OpenRTI on lost connectsions does not
+(1) The general behavior of OpenRTI on lost connections does not
     conform to the standard. But the cases where OpenRTI recognizes
     a lost connection in the sense of the standard it is reported by
     the Connection Lost service.
