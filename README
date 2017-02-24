@@ -194,6 +194,18 @@ are just exchanged in that program. While this is probably the fastest
 operation mode it is also the one that is the easiest to set up.
 
 
+Connecting to an rti
+--------------------
+
+As of this writing, there are three different c++ bindings available
+and implemented. All of them have different ways to connect, to an rti
+create a federation execution and finally join a federation execution.
+With OpenRTI all of them share a common backend implementation
+including the means of communication.
+Below a general description followed by the way how the possible
+connections are encoded into the api calls.
+
+
 Protocols
 ---------
 
@@ -251,8 +263,46 @@ The implementation is prepared to some degree to move protocols into a
 user provided shared library that could be loaded at runtime.
 
 
-Connecting to an rti
---------------------
+Federation execution names and URLs
+-----------------------------------
+
+For rti1516 it is easy to set the connect parameters in the string list.
+But the RTI13 layer does not have this.
+So, OpenRTI interprets federation execution names as urls:
+
+ <protocol>://<address>/<path>/<name>
+
+Where the protocol overrides the protocol field from the string list.
+The address is the network address of the server. The path contains the
+path to the named pipe if protocol is pipe and the name is just the plain
+name of the federation execution.
+
+This method does clearly break the rti1516 standard as you can connect to the
+same federation execution by different federation execution names depending
+on your server setup. But anyway I think that this is a useful idea to address
+different servers without relying on environment variables.
+
+So, for the standard conformance question we will need some override somewhere
+in the future to disable interpretation of federation execution names as urls.
+
+
+Connecting to an rti with RTI13
+-------------------------------
+
+This oldest binding does not have specific connect calls or arguments
+to any factory creating an RTI::RTIambassador.
+By that the RTI13 binding accepts the above described urls in any of
+calls refering to a federation execution.
+For example
+
+  ambassador.joinFederationExecution("rti://myserver:3324/JustMine")
+
+will try to connect to myserver on port 3324 with the rti protocol and
+join the Federation 'JustMine' there.
+
+
+Connecting to an rti with rti1516
+---------------------------------
 
 For rti1516 we have that string vector that is given to the ambassador
 when it is created. This vector can be used to configure the protocol
@@ -288,27 +338,13 @@ url=<u>
   is used with rti1516e in the arguments to rti1516.
 
 
-Federation execution names and URLs
------------------------------------
+Connecting to an rti with rti1516e
+----------------------------------
 
-For rti1516 it is easy to set the connect parameters in the string list.
-But the RTI13 layer does not have this.
-So, OpenRTI interprets federation execution names as urls:
-
- <protocol>://<address>/<path>/<name>
-
-Where the protocol overrides the protocol field from the string list.
-The address is the network address of the server. The path contains the
-path to the named pipe if protocol is pipe and the name is just the plain
-name of the federation execution.
-
-This method does clearly break the rti1516 standard as you can connect to the
-same federation execution by different federation execution names depending
-on your server setup. But anyway I think that this is a useful idea to address
-different servers without relying on environment variables.
-
-So, for the standard conformance question we will need some override somewhere
-in the future to disable interpretation of federation execution names as urls.
+The most recent rti1516e binding has a connect call which
+takes an url as described above to connect to an rti.
+The createFederationExecution and joinFederationExecution service
+finally takes the federation execution names as mandated by the standard.
 
 
 Server
