@@ -24,7 +24,12 @@ namespace rti1516e
    typedef char      Integer8;
    typedef short     Integer16;
    typedef int       Integer32;
-   typedef __int64    Integer64;
+#if defined(__GNUC__)
+   // gcc extension, but is 64 bits on any win32 target
+   typedef long long Integer64;
+#else
+   typedef __int64   Integer64;
+#endif
 #else
 #if defined(RTI_USE_64BIT_LONGS)
    typedef char      Integer8;
