@@ -142,9 +142,13 @@ ENDIF()
 # ... well and not to forget that the problem originates from that
 # /creative/ way enable user defined logical times for an RTI.
 # Not sure if this is the right approach, but seems to help for now.
-SET(CMAKE_REQUIRED_FLAGS "-Wl,--no-as-needed")
-CHECK_CXX_SOURCE_RUNS("int main() { return 0; }" hasNoAsNeeded)
-SET(CMAKE_REQUIRED_FLAGS "")
+IF(CMAKE_CROSSCOMPILING)
+  SET(hasNoAsNeeded FALSE)
+ELSE()
+  SET(CMAKE_REQUIRED_FLAGS "-Wl,--no-as-needed")
+  CHECK_CXX_SOURCE_RUNS("int main() { return 0; }" hasNoAsNeeded)
+  SET(CMAKE_REQUIRED_FLAGS "")
+ENDIF()
 IF(hasNoAsNeeded)
   SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--no-as-needed")
 ENDIF()
