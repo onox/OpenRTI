@@ -7,6 +7,7 @@ OpenRTI-0.9.0 (development)
  * Change the default include subdirectory for the old style api to RTI13.
  * Route CMAKE_<CONFIG>_POSTFIX correctly through the MSVC dll cyclic link.
  * Route CMAKE_<CONFIG>_POSTFIX correctly through the win32 gcc dll cyclic link.
+ * Use the 'd' postfix for binary incompatible MSVC debug libraries.
 
  * For a more detailed list of changes see the git history.
 

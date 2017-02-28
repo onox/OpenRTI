@@ -113,6 +113,11 @@ ELSE()
 ENDIF()
 SET(OPENRTI_INSTALL_WITH_RPATH ${OPENRTI_INSTALL_WITH_RPATH_DEFAULT} CACHE BOOL "Build shared libraries with builtin search path.")
 
+# The only known compiler with this binary incompatibility of debug libraries is cl
+IF(MSVC)
+  SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Filename postfix for debug libraries.")
+ENDIF()
+
 # We really want to hide all the OpenRTI private symbols.
 IF(OPENRTI_BUILD_SHARED)
   ADD_DEFINITIONS(-DOPENRTI_DLL)
