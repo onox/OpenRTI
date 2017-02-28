@@ -179,6 +179,18 @@ MACRO(OPENRTI_TARGET_POSITION_INDEPENDENT _target)
   ENDIF()
 ENDMACRO()
 
+FUNCTION(OPENRTI_SET_MSVC_STUB_DLL_NAME _target _name)
+  # Ideally we could use
+  #  SET_PROPERTY(TARGET fedtime1516Stub APPEND PROPERTY STATIC_LIBRARY_FLAGS_DEBUG "/DEF /NAME:$<TARGET_FILE:fedtime1516>")
+  # to get the final target file name as it is produced, but STATIC_LIBRARY_FLAGS does not evaluate generator expressions
+  SET_PROPERTY(TARGET ${_target} APPEND PROPERTY STATIC_LIBRARY_FLAGS "/DEF /NAME:${_name}.dll")
+  FOREACH(_config ${CMAKE_CONFIGURATION_TYPES})
+    STRING(TOUPPER ${_config} _CONFIG)
+    SET(_dllName "${_name}${CMAKE_${_CONFIG}_POSTFIX}.dll")
+    SET_PROPERTY(TARGET ${_target} APPEND PROPERTY STATIC_LIBRARY_FLAGS_${_CONFIG} "/DEF /NAME:${_dllName}.dll")
+  ENDFOREACH()
+ENDFUNCTION()
+
 ADD_SUBDIRECTORY(python)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(tests)
