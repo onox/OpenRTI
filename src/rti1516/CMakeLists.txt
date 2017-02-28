@@ -84,13 +84,14 @@ IF(OPENRTI_BUILD_SHARED)
   ELSEIF(MINGW OR CYGWIN)
     ADD_LIBRARY(fedtime1516Stub STATIC ${LIB_FEDTIME1516_SOURCES})
     SET_PROPERTY(TARGET fedtime1516Stub APPEND PROPERTY COMPILE_DEFINITIONS BUILDING_FEDTIME)
-    GET_PROPERTY(_stubArchiveFile TARGET fedtime1516Stub PROPERTY LOCATION)
+    STRING(TOUPPER ${CMAKE_BUILD_TYPE} _CONFIG)
+    SET(_fedtimeDllName libfedtime1516${CMAKE_${_CONFIG}_POSTFIX}.dll)
     ADD_CUSTOM_COMMAND(TARGET fedtime1516Stub
       POST_BUILD
-      COMMAND "${CMAKE_COMMAND}" -E remove -f libfedtime1516.dll.a
-      COMMAND "${DLLTOOL}" -Dlibfedtime1516.dll -llibfedtime1516.dll.a ${_stubArchiveFile}
-      COMMAND "${CMAKE_COMMAND}" -E remove -f ${_stubArchiveFile}
-      COMMAND "${CMAKE_COMMAND}" -E rename libfedtime1516.dll.a ${_stubArchiveFile}
+      COMMAND "${CMAKE_COMMAND}" -E remove -f ${_fedtimeDllName}.a
+      COMMAND "${DLLTOOL}" -D${_fedtimeDllName} -l${_fedtimeDllName}.a $<TARGET_FILE:fedtime1516Stub>
+      COMMAND "${CMAKE_COMMAND}" -E remove -f $<TARGET_FILE:fedtime1516Stub>
+      COMMAND "${CMAKE_COMMAND}" -E rename ${_fedtimeDllName}.a $<TARGET_FILE:fedtime1516Stub>
       )
     OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(rti1516 fedtime1516Stub OpenRTI)
   ELSE()

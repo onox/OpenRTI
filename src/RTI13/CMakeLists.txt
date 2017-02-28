@@ -53,13 +53,14 @@ IF(OPENRTI_BUILD_SHARED)
   ELSEIF(MINGW OR CYGWIN)
     ADD_LIBRARY(FedTimeStub STATIC ${LIB_FEDTIME_SOURCES})
     SET_PROPERTY(TARGET FedTimeStub APPEND PROPERTY COMPILE_DEFINITIONS FedTime_EXPORTS)
-    GET_PROPERTY(_stubArchiveFile TARGET FedTimeStub PROPERTY LOCATION)
+    STRING(TOUPPER ${CMAKE_BUILD_TYPE} _CONFIG)
+    SET(_fedtimeDllName libFedTime${CMAKE_${_CONFIG}_POSTFIX}.dll)
     ADD_CUSTOM_COMMAND(TARGET FedTimeStub
       POST_BUILD
-      COMMAND "${CMAKE_COMMAND}" -E remove -f libFedTime.dll.a
-      COMMAND "${DLLTOOL}" -DlibFedTime.dll -llibFedTime.dll.a ${_stubArchiveFile}
-      COMMAND "${CMAKE_COMMAND}" -E remove -f ${_stubArchiveFile}
-      COMMAND "${CMAKE_COMMAND}" -E rename libFedTime.dll.a ${_stubArchiveFile}
+      COMMAND "${CMAKE_COMMAND}" -E remove -f ${_fedtimeDllName}.a
+      COMMAND "${DLLTOOL}" -D${_fedtimeDllName} -l${_fedtimeDllName}.a $<TARGET_FILE:FedTimeStub>
+      COMMAND "${CMAKE_COMMAND}" -E remove -f $<TARGET_FILE:FedTimeStub>
+      COMMAND "${CMAKE_COMMAND}" -E rename ${_fedtimeDllName}.a $<TARGET_FILE:FedTimeStub>
       )
     OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(RTI-NG FedTimeStub OpenRTI)
   ELSE()
