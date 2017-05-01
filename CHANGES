@@ -1,4 +1,4 @@
-OpenRTI-0.9.0 (development)
+OpenRTI-0.9.0 (2017-05-01)
 ---------------------------
 
  * Correct the logic for rti1516e's Federation Synchronized service.
@@ -8,7 +8,6 @@ OpenRTI-0.9.0 (development)
  * Route CMAKE_<CONFIG>_POSTFIX correctly through the MSVC dll cyclic link.
  * Route CMAKE_<CONFIG>_POSTFIX correctly through the win32 gcc dll cyclic link.
  * Use the 'd' postfix for binary incompatible MSVC debug libraries.
-
  * For a more detailed list of changes see the git history.
 
 OpenRTI-0.8.0 (2016-07-31)
