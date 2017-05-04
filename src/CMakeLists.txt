@@ -1,4 +1,4 @@
-# Just for propper recursion
+# Just for proper recursion
 ADD_SUBDIRECTORY(OpenRTI)
 ADD_SUBDIRECTORY(rtinode)
 

@@ -31,7 +31,7 @@ public:
   SocketServerPipe();
 
   void bind(const std::string& file);
-  void listen(int backlog = 20);
+  void listen(int backlog = 20 /* TODO: Make configurable */);
 
   virtual SocketPipe* accept();
 

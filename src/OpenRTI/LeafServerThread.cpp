@@ -78,7 +78,7 @@ LeafServerThread::_Registry::connect(const URL& url, const StringStringListMap& 
   if (i != _urlServerMap.end()) {
     SharedPtr<AbstractConnect> connect = i->second->connect(clientOptions);
     /// Even if we have a server it might have already decided to stop working.
-    /// If it is working it is guarenteed to get at least a connect to this server thread.
+    /// If it is working it is guaranteed to get at least a connect to this server thread.
     if (connect.valid())
       return connect;
 
@@ -90,7 +90,7 @@ LeafServerThread::_Registry::connect(const URL& url, const StringStringListMap& 
     i = _urlServerMap.insert(UrlServerMap::value_type(url, SharedPtr<LeafServerThread>())).first;
   }
 
-  /// This is be default the rti server node.
+  /// This is by default the rti server node.
   /// For testing we can plug something different
   SharedPtr<AbstractServerNode> serverNode;
   try {

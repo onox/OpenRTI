@@ -32,7 +32,7 @@ namespace OpenRTI {
 /// FIXME may be here the double derived one???
 /// Ok, no double derived stuff here. It is just not clear which in/out pair to use.
 /// In this case it would be the send receive ends of the same message directions which is
-/// Not the same that one would expect when thinking at iostream.
+/// not the same that one would expect when thinking at iostream.
 /// So, no - no double derived stuff!
 class OPENRTI_LOCAL AbstractMessageQueue : public AbstractMessageReceiver {
 public:

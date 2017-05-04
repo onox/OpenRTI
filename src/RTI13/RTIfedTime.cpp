@@ -38,8 +38,8 @@ static inline const RTIfedTime& toRTIfedTime(const RTI::FedTime& fedTime)
 static inline bool isNaN(const double& fedTime)
 {
 #if 1
-  // Code that here ourselfs, compilers might decide to optimize isnan away
-  // because of some assumtions based on optimization flags
+  // Code that here ourselves; compilers might decide to optimize isnan away
+  // because of some assumptions based on optimization flags
 
   // Neat trick:
   // A nan has all bits in its exponent set and any bit in the mantissa.

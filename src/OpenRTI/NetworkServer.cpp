@@ -129,7 +129,7 @@ NetworkServer::setUpFromConfig(std::istream& stream)
       else
         url.setProtocol("pipe");
     }
-    listen(url, 20);
+    listen(url, 20 /*TODO: make configurable */);
   }
 }
 
@@ -217,7 +217,7 @@ NetworkServer::connectParentServer(const URL& url, const Clock& abstime)
 void
 NetworkServer::connectParentInetServer(const std::string& host, const std::string& service, bool compress, const Clock& abstime)
 {
-  // Note that here the may be lenghty name lookup for the connection address happens
+  // Note that here there may be lengthy name lookup for the connection address
   std::list<SocketAddress> addressList = SocketAddress::resolve(host, service, false);
   while (!addressList.empty()) {
     try {

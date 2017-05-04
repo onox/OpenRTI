@@ -34,13 +34,13 @@ public:
   LeafServerThread(const SharedPtr<AbstractServer>& server);
   virtual ~LeafServerThread(void);
 
-  /// Shutdow this thread and wait for it to finish.
+  /// Shutdown this thread and wait for it to finish.
   void postShutdown();
 
-  /// Connect to thi particular thread.
+  /// Connect to this particular thread.
   SharedPtr<AbstractConnect> connect(const StringStringListMap& clientOptions);
 
-  /// Call this to get a connect to a possibly new leaf server.
+  /// Call this to get a connection to a possibly new leaf server.
   static SharedPtr<AbstractConnect> connect(const URL& url, const StringStringListMap& clientOptions);
 
 protected:

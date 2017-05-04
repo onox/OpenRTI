@@ -32,13 +32,13 @@ namespace OpenRTI {
 // The input is implemented by the actual network side server.
 // This one must make sure that it fits the threading model of the network server side.
 // The output is implemented by this current class, probably just someting that dispatches into
-// this servers accept methods. But still, this is assumed to be driven single threaded.
+// this server's accept methods. But still, this is assumed to be driven single threaded.
 class OPENRTI_API AbstractServer : public Referenced {
 public:
   AbstractServer(const SharedPtr<AbstractServerNode>& serverNode);
   virtual ~AbstractServer();
 
-  /// The server node that processes the servers requests
+  /// The server node that processes the server's requests
   /// For debugging purpose this one is exchangable
   const AbstractServerNode& getServerNode() const;
   AbstractServerNode& getServerNode();
@@ -51,7 +51,7 @@ public:
   bool getDone() const
   { return _done; }
 
-  /// Supposed to be called from a differrent thread
+  /// Supposed to be called from a different thread
   void postDone()
   { _postDone(); }
 
@@ -75,7 +75,7 @@ protected:
   void _sendEraseConnect(const ConnectHandle& connectHandle);
   void _sendDisconnect(const ConnectHandle& connectHandle);
 
-  // Use this to send something from within this current servers thread to this server.
+  // Use this to send something from within this current server's thread to this server.
   void _sendMessage(const _MessageConnectHandlePair& messageConnectHandlePair);
   void _sendOperation(_Operation& operation);
   virtual void _sendDone(bool done);
