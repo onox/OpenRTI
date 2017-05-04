@@ -13,5 +13,9 @@ IF(OPENRTI_INSTALL_WITH_RPATH)
 ENDIF()
 TARGET_LINK_LIBRARIES(rtinode OpenRTI)
 
+# Use debug postix (workaround for cmake limitation?)
+# See http://stackoverflow.com/questions/28893450/
+SET_TARGET_PROPERTIES(rtinode PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
+
 INSTALL(TARGETS rtinode
   RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
