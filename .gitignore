@@ -9,3 +9,13 @@ Testing
 .gdb_history
 *~
 *.user
+*.sdf
+*.suo
+*.obj
+*.log
+*.tlog
+*.ib_pdb_index
+*.idb
+*.pdb
+*.filters
+*.ilk
