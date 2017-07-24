@@ -51,6 +51,15 @@ SocketServerTCP::bind(const SocketAddress& socketAddress)
   unsigned reuseaddr = 1;
   setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr, sizeof(reuseaddr));
 
+  // Looks like we need this to get ipv6 up correctly,
+  // don't care if there is an error, just try.
+#ifdef IPV6_V6ONLY
+  if (sockaddr->sa_family == AF_INET6) {
+    unsigned yes = 1;
+    setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, &yes, sizeof(yes));
+  }
+#endif
+
   socklen_t addrlen = SocketAddress::PrivateData::addrlen(socketAddress.constData());
   int ret = ::bind(fd, sockaddr, addrlen);
   if (ret == -1) {

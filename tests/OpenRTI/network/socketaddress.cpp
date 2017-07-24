@@ -114,5 +114,17 @@ int main(int argc, char* argv[])
       return EXIT_FAILURE;
   }
 
+  addressList = OpenRTI::SocketAddress::resolve(std::string(), true);
+  for (OpenRTI::SocketAddressList::const_iterator i = addressList.begin(); i != addressList.end(); ++i) {
+    if (!i->valid())
+      return EXIT_FAILURE;
+    if (i->isPipe())
+      return EXIT_FAILURE;
+    if (!testSelfRelations(*i))
+      return EXIT_FAILURE;
+    if (!testNumericNameResolvesToItSelf(*i, true))
+      return EXIT_FAILURE;
+  }
+
   return EXIT_SUCCESS;
 }

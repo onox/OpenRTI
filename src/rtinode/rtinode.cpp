@@ -157,15 +157,11 @@ main(int argc, char* argv[])
   if (defaultListen) {
     // Try to listen on all sockets by default
     try {
-      networkServer.listen(OpenRTI::URL::fromUrl("rti://::"), 20);
-    } catch (const OpenRTI::Exception&) {
-      try {
-        networkServer.listen(OpenRTI::URL::fromUrl("rti://0.0.0.0"), 20);
-      } catch (const OpenRTI::Exception& e) {
-        std::cerr << "Could not set up default inet server transport:" << std::endl;
-        std::cerr << OpenRTI::utf8ToLocale(e.getReason()) << std::endl;
-        return EXIT_FAILURE;
-      }
+      networkServer.listen(OpenRTI::URL::fromUrl("rti://"), 20);
+    } catch (const OpenRTI::Exception& e) {
+      std::cerr << "Could not set up default inet server transport:" << std::endl;
+      std::cerr << OpenRTI::utf8ToLocale(e.getReason()) << std::endl;
+      return EXIT_FAILURE;
     }
   }
 

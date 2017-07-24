@@ -166,9 +166,13 @@ SocketAddress::resolve(const std::string& address, const std::string& service, b
     hints.ai_flags = AI_PASSIVE;
 
   std::string localeAddress = utf8ToLocale(address);
+  // getaddrinfo returnd the wildcard address when NULL is given as the node argument
+  const char *localeAddressChar = NULL;
+  if (!localeAddress.empty())
+    localeAddressChar = localeAddress.c_str();
   std::string localeService = utf8ToLocale(service);
   struct addrinfo *ai = 0;
-  while (int ret = ::getaddrinfo(localeAddress.c_str(), localeService.c_str(), &hints, &ai)) {
+  while (int ret = ::getaddrinfo(localeAddressChar, localeService.c_str(), &hints, &ai)) {
     if (ret == EAI_AGAIN)
       continue;
     throw TransportError(localeToUtf8(gai_strerror(ret)));

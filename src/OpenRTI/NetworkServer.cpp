@@ -137,13 +137,10 @@ void
 NetworkServer::listen(const URL& url, int backlog)
 {
   if (url.getProtocol() == "rti" || url.getProtocol() == "rtic") {
-    std::string host = url.getHost();
-    if (host.empty())
-      host = OpenRTI_DEFAULT_HOST_STRING;
     std::string service = url.getService();
     if (service.empty())
       service = OpenRTI_DEFAULT_PORT_STRING;
-    listenInet(host, service, backlog);
+    listenInet(url.getHost(), service, backlog);
   } else if (url.getProtocol() == "pipe" || url.getProtocol() == "file") {
     listenPipe(url.getPath(), backlog);
   } else {

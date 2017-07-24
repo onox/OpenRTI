@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2004-2012 Mathias Froehlich 
+/* -*-c++-*- OpenRTI - Copyright (C) 2004-2017 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -41,6 +41,15 @@ SocketServerTCP::bind(const SocketAddress& socketAddress)
   SOCKET fd = socket(sockaddr->sa_family, SOCK_STREAM, 0);
   if (fd == INVALID_SOCKET)
     throw TransportError(errnoToUtf8(WSAGetLastError()));
+
+  // Looks like we need this to get ipv6 up correctly,
+  // don't care if there is an error, just try.
+#ifdef IPV6_V6ONLY
+  if (sockaddr->sa_family == AF_INET6) {
+    int yes = 1;
+    setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, (const char*)&yes, sizeof(yes));
+  }
+#endif
 
   // Hmm, on win32 the SO_REUSEADDR does not just allow binding on a TIME_WAIT socket but
   // also forcably allows two sockets to bind on the same address - which is not what what we want.
