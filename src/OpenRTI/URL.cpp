@@ -95,19 +95,19 @@ unquote(const std::string& quoted)
   for (std::string::const_iterator i = quoted.begin(); i != quoted.end(); ++i) {
     if (quotePos) {
       if ('0' <= *i && *i <= '9') {
-        (*unquoted.rend()) += (*i - '0');
+        (*unquoted.rbegin()) += (*i - '0');
       } else if ('A' <= *i && *i <= 'F') {
-        (*unquoted.rend()) += (*i - 'A' + 10);
+        (*unquoted.rbegin()) += (*i - 'A' + 10);
       } else if ('a' <= *i && *i <= 'f') {
-        (*unquoted.rend()) += (*i - 'a' + 10);
+        (*unquoted.rbegin()) += (*i - 'a' + 10);
       } else {
         // be tolerant and assume that the user really meant %
-        (*unquoted.rend()) = '%';
-        unquoted.push_back(*i);
+        (*unquoted.rbegin()) = '%';
+        i -= quotePos;
         quotePos = 0;
       }
       if (quotePos == 1) {
-        (*unquoted.rend()) <<= 4;
+        (*unquoted.rbegin()) <<= 4;
         ++quotePos;
       } else if (quotePos == 2) {
         quotePos = 0;
