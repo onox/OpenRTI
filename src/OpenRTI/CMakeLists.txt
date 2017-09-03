@@ -1,14 +1,14 @@
-INCLUDE(CheckIncludeFiles)
-# INCLUDE(CheckSymbolExists)
-# INCLUDE(CheckFunctionExists)
-INCLUDE(CheckCXXSourceCompiles)
+include(CheckIncludeFiles)
+# include(CheckSymbolExists)
+# include(CheckFunctionExists)
+include(CheckCXXSourceCompiles)
 
-CHECK_INCLUDE_FILES(cstdint OpenRTI_HAVE_CSTDINT)
-CHECK_INCLUDE_FILES(stdint.h OpenRTI_HAVE_STDINT_H)
-CHECK_INCLUDE_FILES(inttypes.h OpenRTI_HAVE_INTTYPES_H)
-IF(NOT WIN32)
-  SET(CMAKE_REQUIRED_LIBRARIES dl)
-  CHECK_CXX_SOURCE_COMPILES("
+check_include_files(cstdint OpenRTI_HAVE_CSTDINT)
+check_include_files(stdint.h OpenRTI_HAVE_STDINT_H)
+check_include_files(inttypes.h OpenRTI_HAVE_INTTYPES_H)
+if(NOT WIN32)
+  set(CMAKE_REQUIRED_LIBRARIES dl)
+  check_cxx_source_compiles("
 #define _GNU_SOURCE
 #include <dlfcn.h>
 int main(int argc, char* argv[])
@@ -18,12 +18,12 @@ int main(int argc, char* argv[])
   return 0;
 }
 " OpenRTI_HAVE_DLADDR)
-  SET(CMAKE_REQUIRED_LIBRARIES)
-  IF(OpenRTI_HAVE_DLADDR)
-    SET(DL_LIBRARIES dl)
-  ENDIF()
-ENDIF()
-CHECK_CXX_SOURCE_COMPILES("
+  set(CMAKE_REQUIRED_LIBRARIES)
+  if(OpenRTI_HAVE_DLADDR)
+    set(DL_LIBRARIES dl)
+  endif()
+endif()
+check_cxx_source_compiles("
 #include <alloca.h>
 int main(int argc, char* argv[])
 {
@@ -33,36 +33,36 @@ int main(int argc, char* argv[])
 " OpenRTI_HAVE_ALLOCA)
 
 # sigh, since we do network traffic, we should know that ...
-INCLUDE(TestBigEndian)
-TEST_BIG_ENDIAN(BIG_ENDIAN)
-IF(BIG_ENDIAN)
-  SET(OpenRTI_HOST_IS_BIG_ENDIAN 1)
-ELSE(BIG_ENDIAN)
-  SET(OpenRTI_HOST_IS_LITTLE_ENDIAN 1)
-ENDIF(BIG_ENDIAN)
+include(TestBigEndian)
+test_big_endian(BIG_ENDIAN)
+if(BIG_ENDIAN)
+  set(OpenRTI_HOST_IS_BIG_ENDIAN 1)
+else(BIG_ENDIAN)
+  set(OpenRTI_HOST_IS_LITTLE_ENDIAN 1)
+endif(BIG_ENDIAN)
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/OpenRTIConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/OpenRTIConfig.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/OpenRTIConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/OpenRTIConfig.h)
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-IF(LINUX)
-  ADD_DEFINITIONS(-D_XOPEN_SOURCE=600)
-  ADD_DEFINITIONS(-D_DEFAULT_SOURCE=1)
-ELSEIF(UNIX)
-  ADD_DEFINITIONS(-D_XOPEN_SOURCE_EXTENDED=1)
-ELSEIF(WIN32)
+if(LINUX)
+  add_definitions(-D_XOPEN_SOURCE=600)
+  add_definitions(-D_DEFAULT_SOURCE=1)
+elseif(UNIX)
+  add_definitions(-D_XOPEN_SOURCE_EXTENDED=1)
+elseif(WIN32)
   # for now, silence some win32 warnings - want to review that later ...
-  ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
   # We need XP/SP2 We are currently bound to the GetAddrInfo call introduced
   # in that version.
-  ADD_DEFINITIONS(-DWINVER=0x0502 -D_WIN32_WINNT=0x0502)
-ENDIF()
+  add_definitions(-DWINVER=0x0502 -D_WIN32_WINNT=0x0502)
+endif()
 
 
 # A bunch of sources that are operating system dependent.
-IF(WIN32)
-  SET(OpenRTI_OS_SOURCES
+if(WIN32)
+  set(OpenRTI_OS_SOURCES
     win32/AtomicWin32.cpp
     win32/ClockWin32.cpp
     win32/ConditionWin32.cpp
@@ -84,8 +84,8 @@ IF(WIN32)
     win32/ThreadLocalWin32.cpp
     win32/ThreadWin32.cpp
   )
-ELSE(WIN32)
-  SET(OpenRTI_OS_SOURCES
+else(WIN32)
+  set(OpenRTI_OS_SOURCES
     posix/AtomicPosix.cpp
     posix/ClockPosix.cpp
     posix/ConditionPosix.cpp
@@ -106,39 +106,39 @@ ELSE(WIN32)
     posix/ThreadLocalPosix.cpp
     posix/ThreadPosix.cpp
   )
-ENDIF(WIN32)
+endif(WIN32)
 
 # We use expat as xml parser, if not on the system, use our own probaby outdated version
-INCLUDE(FindEXPAT)
-IF(EXPAT_FOUND)
-  INCLUDE_DIRECTORIES(${EXPAT_INCLUDE_DIRS})
-ELSE(EXPAT_FOUND)
+include(FindEXPAT)
+if(EXPAT_FOUND)
+  include_directories(${EXPAT_INCLUDE_DIRS})
+else(EXPAT_FOUND)
   # Additions for expat
-  INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/xml)
-  ADD_DEFINITIONS(-DXML_STATIC)
-  ADD_DEFINITIONS(-DHAVE_MEMMOVE)
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/xml)
+  add_definitions(-DXML_STATIC)
+  add_definitions(-DHAVE_MEMMOVE)
 
-  SET(OpenRTI_EXPAT_SOURCES
+  set(OpenRTI_EXPAT_SOURCES
     xml/xmlparse.c
     xml/xmlrole.c
     xml/xmltok.c
     xml/xmltok_impl.c
     xml/xmltok_ns.c
   )
-ENDIF(EXPAT_FOUND)
+endif(EXPAT_FOUND)
 
-INCLUDE(FindZLIB)
-IF(ZLIB_FOUND)
-  INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
-  ADD_DEFINITIONS(-DOPENRTI_HAVE_ZLIB)
-  SET(OpenRTI_ZLIB_SOURCES
+include(FindZLIB)
+if(ZLIB_FOUND)
+  include_directories(${ZLIB_INCLUDE_DIRS})
+  add_definitions(-DOPENRTI_HAVE_ZLIB)
+  set(OpenRTI_ZLIB_SOURCES
     ZLibProtocolLayer.cpp
   )
-ELSE()
-  SET(OpenRTI_ZLIB_SOURCES "")
-ENDIF()
+else()
+  set(OpenRTI_ZLIB_SOURCES "")
+endif()
 
-SET(OpenRTI_SOURCES
+set(OpenRTI_SOURCES
   AbstractMessage.cpp
   AbstractMessageEncoding.cpp
   AbstractMessageSender.cpp
@@ -189,43 +189,43 @@ SET(OpenRTI_SOURCES
   ${OpenRTI_ZLIB_SOURCES}
 )
 
-IF(OPENRTI_BUILD_SHARED)
-  ADD_LIBRARY(OpenRTI SHARED ${OpenRTI_SOURCES})
-  SET_PROPERTY(TARGET OpenRTI APPEND PROPERTY COMPILE_DEFINITIONS OPENRTI_DLL)
-  SET_PROPERTY(TARGET OpenRTI APPEND PROPERTY COMPILE_DEFINITIONS OPENRTI_DLL_EXPORTS)
-  SET_PROPERTY(TARGET OpenRTI PROPERTY VERSION 1.0.0)
-  SET_PROPERTY(TARGET OpenRTI PROPERTY SOVERSION 1)
-ELSE()
-  ADD_LIBRARY(OpenRTI STATIC ${OpenRTI_SOURCES})
-  OPENRTI_TARGET_POSITION_INDEPENDENT(OpenRTI)
-ENDIF()
-SET_PROPERTY(TARGET OpenRTI PROPERTY OUTPUT_NAME OpenRTI)
-IF(EXPAT_FOUND)
-  OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(OpenRTI ${EXPAT_LIBRARIES})
-ENDIF(EXPAT_FOUND)
-IF(ZLIB_FOUND)
-  OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(OpenRTI ${ZLIB_LIBRARIES})
-ENDIF()
-IF(WIN32)
-  OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(OpenRTI ws2_32)
-ELSE(WIN32)
-  IF(SUNOS)
-    OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(OpenRTI socket)
-    OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(OpenRTI nsl)
-  ENDIF()
-  IF (NOT ANDROID)
-    OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(OpenRTI pthread)
-    IF (NOT MACOS)
-      OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(OpenRTI rt)
-    ENDIF()
-  ENDIF()
-  OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(OpenRTI m)
-ENDIF(WIN32)
-IF(DL_LIBRARIES)
-  OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(OpenRTI ${DL_LIBRARIES})
-ENDIF(DL_LIBRARIES)
+if(OPENRTI_BUILD_SHARED)
+  add_library(OpenRTI SHARED ${OpenRTI_SOURCES})
+  set_property(TARGET OpenRTI APPEND PROPERTY COMPILE_DEFINITIONS OPENRTI_DLL)
+  set_property(TARGET OpenRTI APPEND PROPERTY COMPILE_DEFINITIONS OPENRTI_DLL_EXPORTS)
+  set_property(TARGET OpenRTI PROPERTY VERSION 1.0.0)
+  set_property(TARGET OpenRTI PROPERTY SOVERSION 1)
+else()
+  add_library(OpenRTI STATIC ${OpenRTI_SOURCES})
+  openrti_target_position_independent(OpenRTI)
+endif()
+set_property(TARGET OpenRTI PROPERTY OUTPUT_NAME OpenRTI)
+if(EXPAT_FOUND)
+  openrti_target_link_private_libraries(OpenRTI ${EXPAT_LIBRARIES})
+endif(EXPAT_FOUND)
+if(ZLIB_FOUND)
+  openrti_target_link_private_libraries(OpenRTI ${ZLIB_LIBRARIES})
+endif()
+if(WIN32)
+  openrti_target_link_private_libraries(OpenRTI ws2_32)
+else(WIN32)
+  if(SUNOS)
+    openrti_target_link_private_libraries(OpenRTI socket)
+    openrti_target_link_private_libraries(OpenRTI nsl)
+  endif()
+  if (NOT ANDROID)
+    openrti_target_link_private_libraries(OpenRTI pthread)
+    if (NOT MACOS)
+      openrti_target_link_private_libraries(OpenRTI rt)
+    endif()
+  endif()
+  openrti_target_link_private_libraries(OpenRTI m)
+endif(WIN32)
+if(DL_LIBRARIES)
+  openrti_target_link_private_libraries(OpenRTI ${DL_LIBRARIES})
+endif(DL_LIBRARIES)
 
-INSTALL(TARGETS OpenRTI
+install(TARGETS OpenRTI
   PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
   RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
   LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"

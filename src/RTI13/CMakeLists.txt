@@ -1,15 +1,15 @@
 # The directory containing the public api for RTI13
-SET(RTI13_HEADER_PATH ${CMAKE_SOURCE_DIR}/include/RTI13)
+set(RTI13_HEADER_PATH ${CMAKE_SOURCE_DIR}/include/RTI13)
 
 # All the -I arguments
-INCLUDE_DIRECTORIES(${RTI13_HEADER_PATH})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${RTI13_HEADER_PATH})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 # The OpenRTI implementation files and may be build generated sources
-INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src/OpenRTI)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/OpenRTI)
+include_directories(${CMAKE_BINARY_DIR}/src/OpenRTI)
+include_directories(${CMAKE_SOURCE_DIR}/src/OpenRTI)
 
 # The Headers for libRTI-NG and libFedTime
-SET(RTI13_PUBLIC_HEADERS
+set(RTI13_PUBLIC_HEADERS
         ${RTI13_HEADER_PATH}/baseTypes.hh
         ${RTI13_HEADER_PATH}/federateAmbServices.hh
         ${RTI13_HEADER_PATH}/fedtime.hh
@@ -19,7 +19,7 @@ SET(RTI13_PUBLIC_HEADERS
         ${RTI13_HEADER_PATH}/RTItypes.hh
 )
 
-SET(LIB_RTI_NG_SOURCES
+set(LIB_RTI_NG_SOURCES
 	RTIambPrivateRefs.cpp
         AttributeHandleSetCallback.cpp
         AttributeHandleSetImplementation.cpp
@@ -32,78 +32,78 @@ SET(LIB_RTI_NG_SOURCES
         RTI13LogicalTimeFactory.cpp
 )
 
-SET(LIB_FEDTIME_SOURCES RTIfedTime.cpp)
+set(LIB_FEDTIME_SOURCES RTIfedTime.cpp)
 
-IF(OPENRTI_BUILD_SHARED)
-  ADD_LIBRARY(RTI-NG SHARED ${LIB_RTI_NG_SOURCES})
-  SET_PROPERTY(TARGET RTI-NG APPEND PROPERTY COMPILE_DEFINITIONS RTI_EXPORTS)
-  SET_PROPERTY(TARGET RTI-NG PROPERTY VERSION 1.3.0)
-  SET_PROPERTY(TARGET RTI-NG PROPERTY SOVERSION 1)
+if(OPENRTI_BUILD_SHARED)
+  add_library(RTI-NG SHARED ${LIB_RTI_NG_SOURCES})
+  set_property(TARGET RTI-NG APPEND PROPERTY COMPILE_DEFINITIONS RTI_EXPORTS)
+  set_property(TARGET RTI-NG PROPERTY VERSION 1.3.0)
+  set_property(TARGET RTI-NG PROPERTY SOVERSION 1)
 
   # RTI-NG, the circular reference is tricky on win32
-  IF(MSVC)
-    ADD_LIBRARY(FedTimeStub STATIC ${LIB_FEDTIME_SOURCES})
-    SET_PROPERTY(TARGET FedTimeStub APPEND PROPERTY COMPILE_DEFINITIONS FedTime_EXPORTS)
+  if(MSVC)
+    add_library(FedTimeStub STATIC ${LIB_FEDTIME_SOURCES})
+    set_property(TARGET FedTimeStub APPEND PROPERTY COMPILE_DEFINITIONS FedTime_EXPORTS)
     # Ideally we could use
-    #  SET_PROPERTY(TARGET FedTimeStub APPEND PROPERTY STATIC_LIBRARY_FLAGS_DEBUG "/DEF /NAME:$<TARGET_FILE:FedTime>")
+    #  set_property(TARGET FedTimeStub APPEND PROPERTY STATIC_LIBRARY_FLAGS_DEBUG "/DEF /NAME:$<TARGET_FILE:FedTime>")
     # to get the final target file name as it is produced, but STATIC_LIBRARY_FLAGS does not evaluate generator expressions
     # So use different variants of CMAKE_<CONFIG>_POSTFIX
-    OPENRTI_SET_MSVC_STUB_DLL_NAME(FedTimeStub FedTime)
-    OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(RTI-NG FedTimeStub OpenRTI)
-  ELSEIF(MINGW OR CYGWIN)
-    ADD_LIBRARY(FedTimeStub STATIC ${LIB_FEDTIME_SOURCES})
-    SET_PROPERTY(TARGET FedTimeStub APPEND PROPERTY COMPILE_DEFINITIONS FedTime_EXPORTS)
-    STRING(TOUPPER ${CMAKE_BUILD_TYPE} _CONFIG)
-    SET(_fedtimeDllName libFedTime${CMAKE_${_CONFIG}_POSTFIX}.dll)
-    ADD_CUSTOM_COMMAND(TARGET FedTimeStub
+    openrti_set_msvc_stub_dll_name(FedTimeStub FedTime)
+    openrti_target_link_private_libraries(RTI-NG FedTimeStub OpenRTI)
+  elseif(MINGW OR CYGWIN)
+    add_library(FedTimeStub STATIC ${LIB_FEDTIME_SOURCES})
+    set_property(TARGET FedTimeStub APPEND PROPERTY COMPILE_DEFINITIONS FedTime_EXPORTS)
+    string(TOUPPER ${CMAKE_BUILD_TYPE} _CONFIG)
+    set(_fedtimeDllName libFedTime${CMAKE_${_CONFIG}_POSTFIX}.dll)
+    add_custom_command(TARGET FedTimeStub
       POST_BUILD
       COMMAND "${CMAKE_COMMAND}" -E remove -f ${_fedtimeDllName}.a
       COMMAND "${DLLTOOL}" -D${_fedtimeDllName} -l${_fedtimeDllName}.a $<TARGET_FILE:FedTimeStub>
       COMMAND "${CMAKE_COMMAND}" -E remove -f $<TARGET_FILE:FedTimeStub>
       COMMAND "${CMAKE_COMMAND}" -E rename ${_fedtimeDllName}.a $<TARGET_FILE:FedTimeStub>
       )
-    OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(RTI-NG FedTimeStub OpenRTI)
-  ELSE()
-    OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(RTI-NG OpenRTI)
-    IF(OPENRTI_INSTALL_WITH_RPATH)
-      SET_PROPERTY(TARGET RTI-NG PROPERTY INSTALL_RPATH "$ORIGIN")
-      SET_PROPERTY(TARGET RTI-NG APPEND PROPERTY LINK_FLAGS "${OPENRTI_RPATH_LINK_FLAGS}")
-    ENDIF()
-  ENDIF()
-  IF(MACOS)
-    SET_PROPERTY(TARGET RTI-NG APPEND PROPERTY LINK_FLAGS "-Wl,-undefined,dynamic_lookup ${OPENRTI_BIND_AT_LOAD}")
-  ENDIF()
-ELSE()
-  ADD_LIBRARY(RTI-NG STATIC ${LIB_RTI_NG_SOURCES})
-  OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(RTI-NG FedTime OpenRTI)
-ENDIF()
+    openrti_target_link_private_libraries(RTI-NG FedTimeStub OpenRTI)
+  else()
+    openrti_target_link_private_libraries(RTI-NG OpenRTI)
+    if(OPENRTI_INSTALL_WITH_RPATH)
+      set_property(TARGET RTI-NG PROPERTY INSTALL_RPATH "$ORIGIN")
+      set_property(TARGET RTI-NG APPEND PROPERTY LINK_FLAGS "${OPENRTI_RPATH_LINK_FLAGS}")
+    endif()
+  endif()
+  if(MACOS)
+    set_property(TARGET RTI-NG APPEND PROPERTY LINK_FLAGS "-Wl,-undefined,dynamic_lookup ${OPENRTI_BIND_AT_LOAD}")
+  endif()
+else()
+  add_library(RTI-NG STATIC ${LIB_RTI_NG_SOURCES})
+  openrti_target_link_private_libraries(RTI-NG FedTime OpenRTI)
+endif()
 
 # libFedTime
-IF(OPENRTI_BUILD_SHARED)
-  ADD_LIBRARY(FedTime SHARED ${LIB_FEDTIME_SOURCES})
-  SET_PROPERTY(TARGET FedTime APPEND PROPERTY COMPILE_DEFINITIONS FedTime_EXPORTS)
-  SET_PROPERTY(TARGET FedTime PROPERTY VERSION 1.3.0)
-  SET_PROPERTY(TARGET FedTime PROPERTY SOVERSION 1)
-  IF(OPENRTI_INSTALL_WITH_RPATH)
-    SET_PROPERTY(TARGET FedTime PROPERTY INSTALL_RPATH "$ORIGIN")
-    SET_PROPERTY(TARGET FedTime APPEND PROPERTY LINK_FLAGS "${OPENRTI_RPATH_LINK_FLAGS}")
-  ENDIF()
-ELSE()
-  ADD_LIBRARY(FedTime STATIC ${LIB_FEDTIME_SOURCES})
-ENDIF()
-OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES(FedTime RTI-NG)
+if(OPENRTI_BUILD_SHARED)
+  add_library(FedTime SHARED ${LIB_FEDTIME_SOURCES})
+  set_property(TARGET FedTime APPEND PROPERTY COMPILE_DEFINITIONS FedTime_EXPORTS)
+  set_property(TARGET FedTime PROPERTY VERSION 1.3.0)
+  set_property(TARGET FedTime PROPERTY SOVERSION 1)
+  if(OPENRTI_INSTALL_WITH_RPATH)
+    set_property(TARGET FedTime PROPERTY INSTALL_RPATH "$ORIGIN")
+    set_property(TARGET FedTime APPEND PROPERTY LINK_FLAGS "${OPENRTI_RPATH_LINK_FLAGS}")
+  endif()
+else()
+  add_library(FedTime STATIC ${LIB_FEDTIME_SOURCES})
+endif()
+openrti_target_link_private_libraries(FedTime RTI-NG)
 
 
-INSTALL(TARGETS FedTime RTI-NG
+install(TARGETS FedTime RTI-NG
   RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
   LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
   ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
-INSTALL(FILES ${RTI13_PUBLIC_HEADERS}
+install(FILES ${RTI13_PUBLIC_HEADERS}
   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${OPENRTI_RTI13_INCLUDE_SUBDIR}")
 
-IF(UNIX)
-  INCLUDE(PkgConfig)
-  CREATE_PKG_CONFIG(RTI-NG "HLA/RTI 1.3 Communication Library." "${OPENRTI_RTI13_INCLUDE_SUBDIR}" "")
-  CREATE_PKG_CONFIG(FedTime "HLA/RTI 1.3 Time Library." "${OPENRTI_RTI13_INCLUDE_SUBDIR}" "")
-  CREATE_API_PKG_CONFIG(hla-rti13 "HLA/RTI 1.3 Libraries." RTI-NG FedTime)
-ENDIF()
+if(UNIX)
+  include(PkgConfig)
+  create_pkg_config(RTI-NG "HLA/RTI 1.3 Communication Library." "${OPENRTI_RTI13_INCLUDE_SUBDIR}" "")
+  create_pkg_config(FedTime "HLA/RTI 1.3 Time Library." "${OPENRTI_RTI13_INCLUDE_SUBDIR}" "")
+  create_api_pkg_config(hla-rti13 "HLA/RTI 1.3 Libraries." RTI-NG FedTime)
+endif()

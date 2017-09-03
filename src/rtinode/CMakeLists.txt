@@ -1,17 +1,17 @@
 # All the -I arguments
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 # The OpenRTI implementation files and may be build generated sources
-INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src/OpenRTI)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/OpenRTI)
+include_directories(${CMAKE_BINARY_DIR}/src/OpenRTI)
+include_directories(${CMAKE_SOURCE_DIR}/src/OpenRTI)
 
 # The standalone main server application
-ADD_EXECUTABLE(rtinode rtinode.cpp)
-IF(OPENRTI_INSTALL_WITH_RPATH)
-  SET_PROPERTY(TARGET rtinode PROPERTY INSTALL_RPATH "${CMAKE_INSTALL_FULL_LIBDIR}")
-# SET_PROPERTY(TARGET rtinode PROPERTY INSTALL_RPATH "\\\${ORIGIN}/../${CMAKE_INSTALL_LIBDIR}")
-  SET_PROPERTY(TARGET rtinode APPEND PROPERTY LINK_FLAGS "${OPENRTI_RPATH_LINK_FLAGS}")
-ENDIF()
-TARGET_LINK_LIBRARIES(rtinode OpenRTI)
+add_executable(rtinode rtinode.cpp)
+if(OPENRTI_INSTALL_WITH_RPATH)
+  set_property(TARGET rtinode PROPERTY INSTALL_RPATH "${CMAKE_INSTALL_FULL_LIBDIR}")
+# set_property(TARGET rtinode PROPERTY INSTALL_RPATH "\\\${ORIGIN}/../${CMAKE_INSTALL_LIBDIR}")
+  set_property(TARGET rtinode APPEND PROPERTY LINK_FLAGS "${OPENRTI_RPATH_LINK_FLAGS}")
+endif()
+target_link_libraries(rtinode OpenRTI)
 
-INSTALL(TARGETS rtinode
+install(TARGETS rtinode
   RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
