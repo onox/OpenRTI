@@ -256,6 +256,8 @@ HLAfixedRecord::getOctetBoundary() const
 bool
 HLAfixedRecord::isSameTypeAs(DataElement const& inData ) const
 {
+  if (!DataElement::isSameTypeAs(inData))
+    return false;
   const HLAfixedRecord* fixedRecord = dynamic_cast<const HLAfixedRecord*>(&inData);
   if (!fixedRecord)
     return false;

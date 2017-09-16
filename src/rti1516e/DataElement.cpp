@@ -19,6 +19,8 @@
 
 #include <RTI/encoding/DataElement.h>
 
+#include <typeinfo>
+
 namespace rti1516e
 {
 
@@ -29,7 +31,7 @@ DataElement::~DataElement()
 bool
 DataElement::isSameTypeAs(DataElement const& inData) const
 {
-  return false;
+  return typeid(*this) == typeid(inData);
 }
 
 Integer64

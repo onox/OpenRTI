@@ -219,6 +219,8 @@ HLAfixedArray::getOctetBoundary() const
 bool
 HLAfixedArray::isSameTypeAs(DataElement const& inData ) const
 {
+  if (!DataElement::isSameTypeAs(inData))
+    return false;
   const HLAfixedArray* fixedArray = dynamic_cast<const HLAfixedArray*>(&inData);
   if (!fixedArray)
     return false;

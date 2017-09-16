@@ -264,6 +264,8 @@ HLAvariableArray::size() const
 bool
 HLAvariableArray::isSameTypeAs(DataElement const& inData ) const
 {
+  if (!DataElement::isSameTypeAs(inData))
+    return false;
   const HLAvariableArray* variableArray = dynamic_cast<const HLAvariableArray*>(&inData);
   if (!variableArray)
     return false;
