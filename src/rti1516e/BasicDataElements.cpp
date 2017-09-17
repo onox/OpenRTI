@@ -145,6 +145,9 @@ void                                                                    \
 EncodableDataType::decode(VariableLengthData const & inData)            \
   throw (EncoderException)                                              \
 {                                                                       \
+  if (inData.size() != getEncodedLength())                              \
+    throw EncoderException(L"Encoded size does not match!");            \
+                                                                        \
   std::vector<Octet> buffer(inData.size());                             \
   std::memcpy(&buffer.front(), inData.data(), inData.size());           \
   decodeFrom(buffer, 0);                                                \
