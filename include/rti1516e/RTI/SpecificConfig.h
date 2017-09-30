@@ -59,6 +59,11 @@
 #endif // STATIC_FEDTIME
 
 #else // !_WIN32
+#if defined(__GNUC__) && (4 <= __GNUC__) && defined(RTI_DISABLE_WARNINGS)
+#pragma GCC diagnostic ignored "-Wdeprecated"
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 // no special qualfifers are necessary on non-WIN32 platforms
 #define RTI_EXPORT
 #define RTI_EXPORT_FEDTIME

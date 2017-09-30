@@ -1,6 +1,7 @@
 OpenRTI-0.10.0 (development)
 ----------------------------
 
+ * Silence gcc warnings - rti can't adhere to that.
  * For a more detailed list of changes see the git history.
 
 OpenRTI-0.9.0 (2017-05-01)

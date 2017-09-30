@@ -20,6 +20,10 @@
 #  define FEDTIME_EXPORT __declspec(dllimport)
 # endif
 #else
+# if defined(__GNUC__) && (4 <= __GNUC__)
+#  pragma GCC diagnostic ignored "-Wdeprecated"
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+# endif
 # define RTI_EXPORT
 # define FEDTIME_EXPORT
 #endif
