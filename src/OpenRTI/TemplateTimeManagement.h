@@ -952,8 +952,8 @@ public:
     // Note that the _outboundLowerBoundTimeStamp is already eactly computed when
     // the regulation responses are evaluated. This way we can take the exact bound value
     // here instead of the one past two times roundoff.
-    ambassador.timeRegulationEnabled(_logicalTimeFactory.getLogicalTime(_logicalTime.first));
     OpenRTIAssert(!InternalTimeManagement::getTimeRegulationEnabled() || _committedOutboundLowerBoundTimeStamp <= _toLogicalTime(_outboundLowerBoundTimeStamp));
+    ambassador.timeRegulationEnabled(_logicalTimeFactory.getLogicalTime(_logicalTime.first));
   }
   virtual void acceptCallbackMessage(Ambassador<T>& ambassador, const TimeAdvanceGrantedMessage& message)
   {
