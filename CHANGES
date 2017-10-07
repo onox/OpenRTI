@@ -1,6 +1,7 @@
 OpenRTI-0.10.0 (development)
 ----------------------------
 
+ * Remove special arithmetic handling for small logical times.
  * Fix logical time interval implementation for rti1516{,e}.
  * Fix logical time implementation for RTI13.
  * Try to prevent overflow with c++11 and infinite timeouts.
