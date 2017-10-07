@@ -192,7 +192,8 @@ HLAfloat64Interval::operator+=(const LogicalTimeInterval& logicalTimeInterval)
     value = std::min(sum, next);
     HLAfloat64IntervalImpl::setValue(_impl, value);
   } else /* if (interval == 0) */ {
-    // Nothing on zero
+    // Since we may have swapped the arguments above we may need to store something
+    HLAfloat64IntervalImpl::setValue(_impl, value);
   }
   return *this;
 }
@@ -222,7 +223,8 @@ HLAfloat64Interval::operator-=(const LogicalTimeInterval& logicalTimeInterval)
     value = std::min(sum, next);
     HLAfloat64IntervalImpl::setValue(_impl, value);
   } else /* if (interval == 0) */ {
-    // Nothing on zero
+    // Since we may have swapped the arguments above we may need to store something
+    HLAfloat64IntervalImpl::setValue(_impl, value);
   }
   return *this;
 }
