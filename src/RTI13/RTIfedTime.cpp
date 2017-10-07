@@ -171,7 +171,8 @@ RTIfedTime::operator+=(const RTI::FedTime& fedTime)
     value = std::min(sum, next);
     _fedTime = value;
   } else /* if (interval == 0) */ {
-    // Nothing on zero
+    // Since we may have swapped the arguments above we may need to store something
+    _fedTime = value;
   }
   return *this;
 }
@@ -201,7 +202,8 @@ RTIfedTime::operator-=(const RTI::FedTime& fedTime)
     value = std::min(sum, next);
     _fedTime = value;
   } else /* if (interval == 0) */ {
-    // Nothing on zero
+    // Since we may have swapped the arguments above we may need to store something
+    _fedTime = value;
   }
   return *this;
 }
