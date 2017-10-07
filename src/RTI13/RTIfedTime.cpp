@@ -181,8 +181,7 @@ RTI::FedTime&
 RTIfedTime::operator-=(const RTI::FedTime& fedTime)
   throw (RTI::InvalidFederationTime)
 {
-  // Note that we change the sign of the interval already here, so below you find just the code for the += operator
-  double interval = -toRTIfedTime(fedTime)._fedTime;
+  double interval = toRTIfedTime(fedTime)._fedTime;
   if (isNaN(interval))
     throw RTI::InvalidFederationTime("RTIfedTime is NaN!");
   double value = _fedTime;
@@ -192,14 +191,14 @@ RTIfedTime::operator-=(const RTI::FedTime& fedTime)
   if (fabs(value) < fabs(interval))
     std::swap(value, interval);
   if (0 < interval) {
-    double next = nextAfter(value, std::numeric_limits<double>::infinity());
-    double sum = value + interval;
-    value = std::max(sum, next);
+    double next = nextAfter(value, -std::numeric_limits<double>::infinity());
+    double sum = value - interval;
+    value = std::min(sum, next);
     _fedTime = value;
   } else if (interval < 0) {
-    double next = nextAfter(value, -std::numeric_limits<double>::infinity());
-    double sum = value + interval;
-    value = std::min(sum, next);
+    double next = nextAfter(value, std::numeric_limits<double>::infinity());
+    double sum = value - interval;
+    value = std::max(sum, next);
     _fedTime = value;
   } else /* if (interval == 0) */ {
     // Since we may have swapped the arguments above we may need to store something

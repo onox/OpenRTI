@@ -204,8 +204,7 @@ HLAfloat64Interval&
 HLAfloat64Interval::operator-=(const rti1516::LogicalTimeInterval& logicalTimeInterval)
   throw (rti1516::InvalidLogicalTimeInterval)
 {
-  // Note that we change the sign of the interval already here, so below you find just the code for the += operator
-  double interval = -HLAfloat64IntervalImpl::getValue(toHLAfloat64Interval(logicalTimeInterval)._impl);
+  double interval = HLAfloat64IntervalImpl::getValue(toHLAfloat64Interval(logicalTimeInterval)._impl);
   if (isNaN(interval))
     throw rti1516::InvalidLogicalTimeInterval(L"Logical time interval is NaN!");
   double value = HLAfloat64IntervalImpl::getValue(_impl);
@@ -215,14 +214,14 @@ HLAfloat64Interval::operator-=(const rti1516::LogicalTimeInterval& logicalTimeIn
   if (fabs(value) < fabs(interval))
     std::swap(value, interval);
   if (0 < interval) {
-    double next = nextAfter(value, std::numeric_limits<double>::infinity());
-    double sum = value + interval;
-    value = std::max(sum, next);
+    double next = nextAfter(value, -std::numeric_limits<double>::infinity());
+    double sum = value - interval;
+    value = std::min(sum, next);
     HLAfloat64IntervalImpl::setValue(_impl, value);
   } else if (interval < 0) {
-    double next = nextAfter(value, -std::numeric_limits<double>::infinity());
-    double sum = value + interval;
-    value = std::min(sum, next);
+    double next = nextAfter(value, std::numeric_limits<double>::infinity());
+    double sum = value - interval;
+    value = std::max(sum, next);
     HLAfloat64IntervalImpl::setValue(_impl, value);
   } else /* if (interval == 0) */ {
     // Since we may have swapped the arguments above we may need to store something
