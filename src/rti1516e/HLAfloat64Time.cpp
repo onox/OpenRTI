@@ -169,11 +169,15 @@ HLAfloat64Time::operator+=(const LogicalTimeInterval& logicalTimeInterval)
     double next = nextAfter(value, std::numeric_limits<double>::infinity());
     double sum = value + interval;
     value = std::max(sum, next);
+    if (isNaN(value))
+      throw rti1516e::IllegalTimeArithmetic(L"Result of logical time operation is NaN!");
     HLAfloat64TimeImpl::setValue(_impl, value);
   } else if (interval < 0) {
     double next = nextAfter(value, -std::numeric_limits<double>::infinity());
     double sum = value + interval;
     value = std::min(sum, next);
+    if (isNaN(value))
+      throw rti1516e::IllegalTimeArithmetic(L"Result of logical time operation is NaN!");
     HLAfloat64TimeImpl::setValue(_impl, value);
   } else /* if (interval == 0) */ {
     // Nothing on zero
@@ -195,11 +199,15 @@ HLAfloat64Time::operator-=(const LogicalTimeInterval& logicalTimeInterval)
     double next = nextAfter(value, -std::numeric_limits<double>::infinity());
     double sum = value - interval;
     value = std::min(sum, next);
+    if (isNaN(value))
+      throw rti1516e::IllegalTimeArithmetic(L"Result of logical time operation is NaN!");
     HLAfloat64TimeImpl::setValue(_impl, value);
   } else if (interval < 0) {
     double next = nextAfter(value, std::numeric_limits<double>::infinity());
     double sum = value - interval;
     value = std::max(sum, next);
+    if (isNaN(value))
+      throw rti1516e::IllegalTimeArithmetic(L"Result of logical time operation is NaN!");
     HLAfloat64TimeImpl::setValue(_impl, value);
   } else /* if (interval == 0) */ {
     // Nothing on zero

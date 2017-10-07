@@ -164,11 +164,15 @@ RTIfedTime::operator+=(const RTI::FedTime& fedTime)
     double next = nextAfter(value, std::numeric_limits<double>::infinity());
     double sum = value + interval;
     value = std::max(sum, next);
+    if (isNaN(value))
+      throw RTI::InvalidFederationTime("Result of RTIfedTime operation is NaN!");
     _fedTime = value;
   } else if (interval < 0) {
     double next = nextAfter(value, -std::numeric_limits<double>::infinity());
     double sum = value + interval;
     value = std::min(sum, next);
+    if (isNaN(value))
+      throw RTI::InvalidFederationTime("Result of RTIfedTime operation is NaN!");
     _fedTime = value;
   } else /* if (interval == 0) */ {
     // Since we may have swapped the arguments above we may need to store something
@@ -194,11 +198,15 @@ RTIfedTime::operator-=(const RTI::FedTime& fedTime)
     double next = nextAfter(value, -std::numeric_limits<double>::infinity());
     double sum = value - interval;
     value = std::min(sum, next);
+    if (isNaN(value))
+      throw RTI::InvalidFederationTime("Result of RTIfedTime operation is NaN!");
     _fedTime = value;
   } else if (interval < 0) {
     double next = nextAfter(value, std::numeric_limits<double>::infinity());
     double sum = value - interval;
     value = std::max(sum, next);
+    if (isNaN(value))
+      throw RTI::InvalidFederationTime("Result of RTIfedTime operation is NaN!");
     _fedTime = value;
   } else /* if (interval == 0) */ {
     // Since we may have swapped the arguments above we may need to store something
