@@ -1,6 +1,7 @@
 OpenRTI-0.10.0 (development)
 ----------------------------
 
+ * RTI13: Prefer rti13 fed files over xml files in fed file parsing.
  * Silence gcc warnings - rti can't adhere to that.
  * For a more detailed list of changes see the git history.
 

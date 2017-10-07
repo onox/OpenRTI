@@ -42,10 +42,10 @@ static void loadModule(OpenRTI::FOMStringModuleList& fomModuleList, std::istream
 {
   try {
     stream >> std::skipws;
-    if (stream.peek() == '(')
-      fomModuleList.push_back(OpenRTI::FEDFileReader::read(stream));
-    else
+    if (stream.peek() == '<')
       fomModuleList.push_back(OpenRTI::FDD1516FileReader::read(stream, std::string()));
+    else
+      fomModuleList.push_back(OpenRTI::FEDFileReader::read(stream));
   } catch (const OpenRTI::Exception& e) {
     throw RTI::ErrorReadingFED(e.what());
   } catch (...) {
