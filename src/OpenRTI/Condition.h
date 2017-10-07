@@ -70,7 +70,21 @@ public:
 #if 201103L <= __cplusplus
   bool wait_until(ScopeLock& scopeLock, const Clock& timeout)
   {
-    std::chrono::steady_clock::time_point tp(std::chrono::nanoseconds(timeout.getNSec()));
+    // Try to prevent overflow
+    std::chrono::nanoseconds nsec;
+    if (timeout.getNSec() <= std::chrono::nanoseconds::max().count())
+      nsec = std::chrono::nanoseconds(timeout.getNSec());
+    else
+      nsec = std::chrono::nanoseconds::max();
+
+    typedef std::chrono::steady_clock::duration duration_type;
+    duration_type duration;
+    if (nsec <= std::chrono::duration_cast<std::chrono::nanoseconds>(duration_type::max()))
+      duration = std::chrono::duration_cast<duration_type>(nsec);
+    else
+      duration = duration_type::max();
+
+    std::chrono::steady_clock::time_point tp = std::chrono::steady_clock::time_point(duration);
     return std::cv_status::timeout != _condition.wait_until(scopeLock, tp);
   }
 #else
