@@ -74,7 +74,7 @@ public:
     // Note that the unsigned cast has a guarantee to be the same
     // width than the int in the input argument. Those get upcasted
     // to the bigger unsigned then.
-    if (std::numeric_limits<uint64_t>::max()/uint64_t(1000000000) <= unsigned(seconds))
+    if (std::numeric_limits<uint64_t>::max()/uint64_t(1000000000) <= uint64_t(seconds))
       return max();
     return Clock(seconds*uint64_t(1000000000));
   }
