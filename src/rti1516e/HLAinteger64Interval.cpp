@@ -116,7 +116,23 @@ LogicalTimeInterval&
 HLAinteger64Interval::operator+=(const LogicalTimeInterval& logicalTimeInterval)
   throw (IllegalTimeArithmetic, InvalidLogicalTimeInterval)
 {
-  HLAinteger64IntervalImpl::setValue(_impl, HLAinteger64IntervalImpl::getValue(_impl) + HLAinteger64IntervalImpl::getValue(toHLAinteger64Interval(logicalTimeInterval)._impl));
+  int64_t interval = HLAinteger64IntervalImpl::getValue(toHLAinteger64Interval(logicalTimeInterval)._impl);
+  int64_t value = HLAinteger64IntervalImpl::getValue(_impl);
+  if (0 < interval) {
+    if (std::numeric_limits<int64_t>::max() - interval < value) {
+      value = std::numeric_limits<int64_t>::max();
+    } else {
+      value += interval;
+    }
+  } else if (interval < 0) {
+    if (value < std::numeric_limits<int64_t>::min() - interval) {
+      value = std::numeric_limits<int64_t>::min();
+    } else {
+      value += interval;
+    }
+  } else /* if (interval == 0) */ {
+  }
+  HLAinteger64IntervalImpl::setValue(_impl, value);
   return *this;
 }
 
@@ -124,7 +140,23 @@ LogicalTimeInterval&
 HLAinteger64Interval::operator-=(const LogicalTimeInterval& logicalTimeInterval)
   throw (IllegalTimeArithmetic, InvalidLogicalTimeInterval)
 {
-  HLAinteger64IntervalImpl::setValue(_impl, HLAinteger64IntervalImpl::getValue(_impl) - HLAinteger64IntervalImpl::getValue(toHLAinteger64Interval(logicalTimeInterval)._impl));
+  int64_t interval = HLAinteger64IntervalImpl::getValue(toHLAinteger64Interval(logicalTimeInterval)._impl);
+  int64_t value = HLAinteger64IntervalImpl::getValue(_impl);
+  if (0 < interval) {
+    if (value < std::numeric_limits<int64_t>::min() + interval) {
+      value = std::numeric_limits<int64_t>::min();
+    } else {
+      value -= interval;
+    }
+  } else if (interval < 0) {
+    if (std::numeric_limits<int64_t>::max() + interval < value) {
+      value = std::numeric_limits<int64_t>::max();
+    } else {
+      value -= interval;
+    }
+  } else /* if (interval == 0) */ {
+  }
+  HLAinteger64IntervalImpl::setValue(_impl, value);
   return *this;
 }
 

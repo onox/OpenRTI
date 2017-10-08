@@ -110,7 +110,23 @@ LogicalTime&
 HLAinteger64Time::operator+=(const LogicalTimeInterval& logicalTimeInterval)
   throw (IllegalTimeArithmetic, InvalidLogicalTimeInterval)
 {
-  HLAinteger64TimeImpl::setValue(_impl, HLAinteger64TimeImpl::getValue(_impl) + toHLAinteger64Interval(logicalTimeInterval).getInterval());
+  int64_t interval = toHLAinteger64Interval(logicalTimeInterval).getInterval();
+  int64_t value = HLAinteger64TimeImpl::getValue(_impl);
+  if (0 < interval) {
+    if (std::numeric_limits<int64_t>::max() - interval < value) {
+      value = std::numeric_limits<int64_t>::max();
+    } else {
+      value += interval;
+    }
+  } else if (interval < 0) {
+    if (value < std::numeric_limits<int64_t>::min() - interval) {
+      value = std::numeric_limits<int64_t>::min();
+    } else {
+      value += interval;
+    }
+  } else /* if (interval == 0) */ {
+  }
+  HLAinteger64TimeImpl::setValue(_impl, value);
   return *this;
 }
 
@@ -118,7 +134,23 @@ LogicalTime&
 HLAinteger64Time::operator-=(const LogicalTimeInterval& logicalTimeInterval)
   throw (IllegalTimeArithmetic, InvalidLogicalTimeInterval)
 {
-  HLAinteger64TimeImpl::setValue(_impl, HLAinteger64TimeImpl::getValue(_impl) - toHLAinteger64Interval(logicalTimeInterval).getInterval());
+  int64_t interval = toHLAinteger64Interval(logicalTimeInterval).getInterval();
+  int64_t value = HLAinteger64TimeImpl::getValue(_impl);
+  if (0 < interval) {
+    if (value < std::numeric_limits<int64_t>::min() + interval) {
+      value = std::numeric_limits<int64_t>::min();
+    } else {
+      value -= interval;
+    }
+  } else if (interval < 0) {
+    if (std::numeric_limits<int64_t>::max() + interval < value) {
+      value = std::numeric_limits<int64_t>::max();
+    } else {
+      value -= interval;
+    }
+  } else /* if (interval == 0) */ {
+  }
+  HLAinteger64TimeImpl::setValue(_impl, value);
   return *this;
 }
 
