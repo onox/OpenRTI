@@ -73,6 +73,17 @@ static inline bool isNaN(const double& fedTime)
 #endif
 }
 
+static inline double nextAfter(const double& fedTime, const double& direction)
+{
+#if 201103L <= __cplusplus
+  return std::nextafter(fedTime, direction);
+#elif defined _WIN32
+  return _nextafter(fedTime, direction);
+#else
+  return nextafter(fedTime, direction);
+#endif
+}
+
 static inline RTI::Boolean toBoolean(bool b)
 {
   return b ? RTI::RTI_TRUE : RTI::RTI_FALSE;
@@ -146,10 +157,27 @@ RTIfedTime::operator+=(const RTI::FedTime& fedTime)
   double value = _fedTime;
   if (isNaN(value))
     throw RTI::InvalidFederationTime("RTIfedTime is NaN!");
-  value += interval;
-  if (isNaN(value))
-    throw RTI::InvalidFederationTime("Result of RTIfedTime operation is NaN!");
-  _fedTime = value;
+  // Since we do not know which one is the interval and which one the value, assume the smaller one is the interval
+  if (fabs(value) < fabs(interval))
+    std::swap(value, interval);
+  if (0 < interval) {
+    double next = nextAfter(value, std::numeric_limits<double>::infinity());
+    double sum = value + interval;
+    value = std::max(sum, next);
+    if (isNaN(value))
+      throw RTI::InvalidFederationTime("Result of RTIfedTime operation is NaN!");
+    _fedTime = value;
+  } else if (interval < 0) {
+    double next = nextAfter(value, -std::numeric_limits<double>::infinity());
+    double sum = value + interval;
+    value = std::min(sum, next);
+    if (isNaN(value))
+      throw RTI::InvalidFederationTime("Result of RTIfedTime operation is NaN!");
+    _fedTime = value;
+  } else /* if (interval == 0) */ {
+    // Since we may have swapped the arguments above we may need to store something
+    _fedTime = value;
+  }
   return *this;
 }
 
@@ -163,10 +191,27 @@ RTIfedTime::operator-=(const RTI::FedTime& fedTime)
   double value = _fedTime;
   if (isNaN(value))
     throw RTI::InvalidFederationTime("RTIfedTime is NaN!");
-  value -= interval;
-  if (isNaN(value))
-    throw RTI::InvalidFederationTime("Result of RTIfedTime operation is NaN!");
-  _fedTime = value;
+  // Since we do not know which one is the interval and which one the value, assume the smaller one is the interval
+  if (fabs(value) < fabs(interval))
+    std::swap(value, interval);
+  if (0 < interval) {
+    double next = nextAfter(value, -std::numeric_limits<double>::infinity());
+    double sum = value - interval;
+    value = std::min(sum, next);
+    if (isNaN(value))
+      throw RTI::InvalidFederationTime("Result of RTIfedTime operation is NaN!");
+    _fedTime = value;
+  } else if (interval < 0) {
+    double next = nextAfter(value, std::numeric_limits<double>::infinity());
+    double sum = value - interval;
+    value = std::max(sum, next);
+    if (isNaN(value))
+      throw RTI::InvalidFederationTime("Result of RTIfedTime operation is NaN!");
+    _fedTime = value;
+  } else /* if (interval == 0) */ {
+    // Since we may have swapped the arguments above we may need to store something
+    _fedTime = value;
+  }
   return *this;
 }
 
