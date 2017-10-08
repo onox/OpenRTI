@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2012-2013 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2012-2017 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -164,29 +164,54 @@ main(int argc, char* argv[])
     std::cerr << "Can not create logical time: \"" << implementationName << "\"!" << std::endl;
     return EXIT_FAILURE;
   }
+  std::auto_ptr<rti1516::LogicalTimeInterval> logicalTimeInterval2 = factory->makeLogicalTimeInterval();
+  if (!logicalTimeInterval2.get()) {
+    std::cerr << "Can not create logical time interval: \"" << implementationName << "\"!" << std::endl;
+    return EXIT_FAILURE;
+  }
 
-  logicalTime->setInitial();
+  // For any order of magnitude in start time ...
   logicalTimeInterval->setEpsilon();
-  for (unsigned i = 0; i < 1000000; ++i) {
-    *logicalTime2 = *logicalTime;
+  for (;;) {
+    logicalTime->setInitial();
     *logicalTime += *logicalTimeInterval;
-    if (*logicalTime2 == *logicalTime) {
-      std::cerr << "Initial and initial time plus epsilon are equal!" << std::endl;
-      return EXIT_FAILURE;
+    *logicalTimeInterval += *logicalTimeInterval;
+    if (*finalTime <= *logicalTime)
+      break;
+
+    // ... check if we can add arbitrary small increments to huge ones
+    logicalTimeInterval2->setEpsilon();
+    for (;;) {
+      *logicalTime2 = *logicalTime;
+      *logicalTime += *logicalTimeInterval2;
+      *logicalTimeInterval2 += *logicalTimeInterval2;
+      if (*finalTime <= *logicalTime)
+        break;
+      if (*logicalTime2 == *logicalTime) {
+        std::cerr << "Previous time " << OpenRTI::ucsToLocale(logicalTime2->toString())
+                  << " and initial time plus epsilon " << OpenRTI::ucsToLocale(logicalTime->toString())
+                  << " are equal!" << std::endl;
+        return EXIT_FAILURE;
+      }
+      if (!(*logicalTime2 < *logicalTime)) {
+        std::cerr << "Initial time plus epsilon " << OpenRTI::ucsToLocale(logicalTime->toString())
+                  << " is not greater than previous time " << OpenRTI::ucsToLocale(logicalTime2->toString())
+                  << "!" << std::endl;
+        return EXIT_FAILURE;
+      }
+      if (*initialTime == *logicalTime) {
+        std::cerr << "Initial time " << OpenRTI::ucsToLocale(initialTime->toString())
+                  << " and initial time plus epsilon " << OpenRTI::ucsToLocale(logicalTime->toString())
+                  << " are equal!" << std::endl;
+        return EXIT_FAILURE;
+      }
+      if (!(*initialTime < *logicalTime)) {
+        std::cerr << "Initial time plus epsilon " << OpenRTI::ucsToLocale(logicalTime->toString())
+                  << " is not greater than initial time " << OpenRTI::ucsToLocale(initialTime->toString())
+                  << "!" << std::endl;
+        return EXIT_FAILURE;
+      }
     }
-    if (!(*logicalTime2 < *logicalTime)) {
-      std::cerr << "Initial time plus epsilon is not greater than initial time!" << std::endl;
-      return EXIT_FAILURE;
-    }
-    if (*initialTime == *logicalTime) {
-      std::cerr << "Initial and initial time plus epsilon are equal!" << std::endl;
-      return EXIT_FAILURE;
-    }
-    if (!(*initialTime < *logicalTime)) {
-      std::cerr << "Initial time plus epsilon is not greater than initial time!" << std::endl;
-      return EXIT_FAILURE;
-    }
-    // std::cout << "Time: " << OpenRTI::ucsToLocale(logicalTime->toString()) << std::endl;
   }
 
   return EXIT_SUCCESS;
