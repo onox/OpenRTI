@@ -9,3 +9,4 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Test directories should be listed here in sensible testing order
 add_subdirectory(link)
 add_subdirectory(fddget)
+add_subdirectory(time)
