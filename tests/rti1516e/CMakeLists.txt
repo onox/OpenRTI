@@ -14,4 +14,5 @@ endif()
 # Test directories should be listed here in sensible testing order
 add_subdirectory(link)
 add_subdirectory(fddget)
+add_subdirectory(time)
 add_subdirectory(modules)
