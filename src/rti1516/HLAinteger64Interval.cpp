@@ -24,6 +24,7 @@
 #include "RTI/HLAinteger64Interval.h"
 
 #include <iomanip>
+#include <limits>
 #include <sstream>
 #include "VariableLengthDataImplementation.h"
 #include "ValueImplementation.h"
