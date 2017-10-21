@@ -1402,6 +1402,10 @@ public:
           objectInstanceList.push_back(i.get());
 
       } else {
+        // Never remove a attribute 0 subsciption as pushing the instance information may race
+        if (attributeHandle == AttributeHandle(0))
+          continue;
+
         // Erase the connect handle from the receiving connects
         if (instanceAttribute->_receivingConnects.erase(connectHandle) == 0)
           continue;
