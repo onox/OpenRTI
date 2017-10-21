@@ -1016,31 +1016,6 @@ Federate::eraseObjectInstance(const ObjectInstanceHandle& objectInstanceHandle)
   _objectInstanceHandleMap.erase(i);
 }
 
-ObjectInstanceHandleVector
-Federate::getOwnedObjectInstanceHandles() const
-{
-  ObjectInstanceHandleVector objectInstanceHandleVector;
-  // FIXME: do not walk all! have a list of 'own objects'
-  for (ObjectInstanceHandleMap::const_iterator i = _objectInstanceHandleMap.begin(); i != _objectInstanceHandleMap.end(); ++i)
-    objectInstanceHandleVector.push_back(i->first);
-  return objectInstanceHandleVector;
-}
-
-ObjectInstanceHandleVector
-Federate::getReferencedObjectInstanceHandles() const
-{
-  ObjectInstanceHandleVector objectInstanceHandleVector = getOwnedObjectInstanceHandles();
-  for (NameObjectInstanceHandleMap::const_iterator i = _reservedNameObjectInstanceHandlePairs.begin();
-       i != _reservedNameObjectInstanceHandlePairs.end(); ++i)
-    objectInstanceHandleVector.push_back(i->second);
-  for (NameObjectInstanceHandleMap::const_iterator i = _privateNameObjectInstanceHandlePairs.begin();
-       i != _privateNameObjectInstanceHandlePairs.end(); ++i)
-    objectInstanceHandleVector.push_back(i->second);
-  std::sort(objectInstanceHandleVector.begin(), objectInstanceHandleVector.end());
-  objectInstanceHandleVector.erase(std::unique(objectInstanceHandleVector.begin(), objectInstanceHandleVector.end()), objectInstanceHandleVector.end());
-  return objectInstanceHandleVector;
-}
-
 void
 Federate::insertObjectInstanceHandleNamePairs(const ObjectInstanceHandleNamePairVector& objectInstanceHandleNamePairVector)
 {

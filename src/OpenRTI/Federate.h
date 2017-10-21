@@ -452,9 +452,6 @@ public:
   const ObjectInstanceHandleMap& getObjectInstanceHandleMap() const
   { return _objectInstanceHandleMap; }
 
-  ObjectInstanceHandleVector getOwnedObjectInstanceHandles() const;
-  ObjectInstanceHandleVector getReferencedObjectInstanceHandles() const;
-
   /// The pool of preallocated ObjectInstanceHandle - object names
   void insertObjectInstanceHandleNamePairs(const ObjectInstanceHandleNamePairVector& objectInstanceHandleNamePairVector);
   bool haveFreeObjectInstanceHandleNamePair() const;
