@@ -1107,6 +1107,10 @@ public:
       ServerModel::ObjectInstance* objectInstance = getObjectInstance(*i);
       if (!objectInstance)
         throw MessageError("Got ReleaseMultipleObjectInstanceNameHandlePairsMessage for an unknown object instance!");
+      for (ServerModel::InstanceAttribute::HandleMap::iterator j = objectInstance->getAttributeHandleInstanceAttributeMap().begin();
+           j != objectInstance->getAttributeHandleInstanceAttributeMap().end(); ++j) {
+        j->removeConnect(connectHandle);
+      }
       if (!objectInstance->unreference(connectHandle))
         continue;
       erase(*objectInstance);
@@ -1711,7 +1715,13 @@ public:
       SharedPtr<ReleaseMultipleObjectInstanceNameHandlePairsMessage> releaseMessage;
       for (ServerModel::ObjectInstanceConnect::FirstList::iterator j = connect->getObjectInstanceConnectList().begin();
            j != connect->getObjectInstanceConnectList().end();) {
+        // This is unreferencing the object instance.
+        // If nobody else references finally release the object instance handle.
         ServerModel::ObjectInstance& objectInstance = j->getObjectInstance();
+        for (ServerModel::InstanceAttribute::HandleMap::iterator k = objectInstance.getAttributeHandleInstanceAttributeMap().begin();
+             k != objectInstance.getAttributeHandleInstanceAttributeMap().end(); ++k) {
+          k->removeConnect(connectHandle);
+        }
         j = connect->getObjectInstanceConnectList().erase(j);
         if (!objectInstance.getConnectHandleObjectInstanceConnectMap().empty())
           continue;
