@@ -13,7 +13,21 @@
          sharing="Neither"
          dimensions="NA"
          transportation="HLAreliable"
-         order="Receive"/>
+         order="TimeStamp"/>
+      <objectClass
+          name="ObjectClass0"
+          sharing="PublishSubscribe">
+        <attribute
+            name="attribute0"
+            dataType="HLAopaqueData"
+            updateType="NA"
+            updateCondition="NA"
+            ownership="NoTransfer"
+            sharing="PublishSubscribe"
+            dimensions="NA"
+            transportation="HLAreliable"
+            order="TimeStamp"/>
+      </objectClass>
     </objectClass>
   </objects>
 

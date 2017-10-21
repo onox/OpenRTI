@@ -51,11 +51,12 @@ public:
   typedef std::pair<LogicalTime, bool> LogicalTimePair;
 
   TestAmbassador(const RTITest::ConstructorArgs& constructorArgs, unsigned lookahead,
-                 TimeAdvanceMode timeAdvanceMode, unsigned numTimesteps, unsigned numInteractions) :
+                 TimeAdvanceMode timeAdvanceMode, unsigned numTimesteps, unsigned numInteractions, unsigned numUpdates) :
     RTI1516TestAmbassador(constructorArgs),
     _testTimeAdvanceMode(timeAdvanceMode),
     _numTimesteps(numTimesteps),
     _numInteractions(numInteractions),
+    _numUpdates(numUpdates),
     _lookahead(lookahead),
     _timeRegulationEnabled(false),
     _timeConstrainedEnabled(false),
@@ -110,6 +111,26 @@ public:
     }
 
     try {
+      _objectClassHandle0 = ambassador.getObjectClassHandle(L"ObjectClass0");
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    try {
+      _class0Attribute0Handle = ambassador.getAttributeHandle(_objectClassHandle0, L"attribute0");
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    try {
       ambassador.queryLogicalTime(_logicalTime);
     } catch (const rti1516::Exception& e) {
       std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
@@ -128,14 +149,30 @@ public:
       return false;
 
     // Now that we are constrained, subscribe
-    try {
-      ambassador.subscribeInteractionClass(_interactionClassHandle0);
-    } catch (const rti1516::Exception& e) {
-      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
-      return false;
-    } catch (...) {
-      std::wcout << L"Unknown Exception!" << std::endl;
-      return false;
+    if (_numInteractions) {
+      try {
+        ambassador.subscribeInteractionClass(_interactionClassHandle0);
+      } catch (const rti1516::Exception& e) {
+        std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+        return false;
+      } catch (...) {
+        std::wcout << L"Unknown Exception!" << std::endl;
+        return false;
+      }
+    }
+
+    if (_numUpdates) {
+      try {
+        rti1516::AttributeHandleSet attributeHandleSet;
+        attributeHandleSet.insert(_class0Attribute0Handle);
+        ambassador.subscribeObjectClassAttributes(_objectClassHandle0, attributeHandleSet);
+      } catch (const rti1516::Exception& e) {
+        std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+        return false;
+      } catch (...) {
+        std::wcout << L"Unknown Exception!" << std::endl;
+        return false;
+      }
     }
 
     // Enable time regulation
@@ -143,14 +180,33 @@ public:
       return false;
 
     // Now that we are regulating, publish
-    try {
-      ambassador.publishInteractionClass(_interactionClassHandle0);
-    } catch (const rti1516::Exception& e) {
-      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
-      return false;
-    } catch (...) {
-      std::wcout << L"Unknown Exception!" << std::endl;
-      return false;
+    if (_numInteractions) {
+      try {
+        ambassador.publishInteractionClass(_interactionClassHandle0);
+      } catch (const rti1516::Exception& e) {
+        std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+        return false;
+      } catch (...) {
+        std::wcout << L"Unknown Exception!" << std::endl;
+        return false;
+      }
+    }
+
+    if (_numUpdates) {
+      try {
+        rti1516::AttributeHandleSet attributeHandleSet;
+        attributeHandleSet.insert(_class0Attribute0Handle);
+        ambassador.publishObjectClassAttributes(_objectClassHandle0, attributeHandleSet);
+      } catch (const rti1516::Exception& e) {
+        std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+        return false;
+      } catch (...) {
+        std::wcout << L"Unknown Exception!" << std::endl;
+        return false;
+      }
+
+      if (!createObjectInstance(ambassador))
+        return false;
     }
 
     // Ok, here time advance and so on
@@ -159,6 +215,11 @@ public:
       // Send some interactions.
       for (unsigned j = 0; j < _numInteractions; ++j) {
         if (!sendTimeStampedInteraction(ambassador, _logicalTime + LogicalTimeInterval(j)))
+          return false;
+      }
+
+      for (unsigned j = 0; j < _numUpdates; ++j) {
+        if (!sendTimeStampedUpdate(ambassador, _logicalTime + LogicalTimeInterval(j)))
           return false;
       }
 
@@ -244,6 +305,11 @@ public:
           return false;
       }
 
+      for (unsigned j = 0; j < _numUpdates; ++j) {
+        if (!sendTimeStampedUpdate(ambassador, _logicalTime + LogicalTimeInterval(j)))
+          return false;
+      }
+
       try {
         Clock timeout = Clock::now() + Clock::fromSeconds(50);
         while (_timeAdvancePending) {
@@ -264,6 +330,15 @@ public:
         return false;
       }
     }
+
+    // Try different logical times for a timestamped delete and ...
+    for (unsigned j = 0; j < _numUpdates; ++j) {
+      if (!sendTimeStampedDelete(ambassador, _logicalTime + LogicalTimeInterval(j)))
+        return false;
+    }
+    // ... finally delete the object instance
+    if (!sendDelete(ambassador))
+      return false;
 
     // Cleanup time management
 
@@ -643,6 +718,131 @@ public:
     return true;
   }
 
+  bool createObjectInstance(rti1516::RTIambassador& ambassador)
+  {
+    if (_objectInstanceHandle.isValid())
+      return true;
+
+    try {
+      _objectInstanceHandle = ambassador.registerObjectInstance(_objectClassHandle0);
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+    return true;
+  }
+
+  bool sendTimeStampedUpdate(rti1516::RTIambassador& ambassador, const LogicalTime& logicalTime)
+  {
+    if (!_objectInstanceHandle.isValid())
+      return true;
+
+    try {
+      rti1516::AttributeHandleValueMap attributeValues;
+      rti1516::VariableLengthData tag = toVariableLengthData("withTimestamp");
+      attributeValues[_class0Attribute0Handle] = _logicalTime.encode();
+      ambassador.updateAttributeValues(_objectInstanceHandle, attributeValues, tag, logicalTime);
+
+      if (_timeRegulationEnabled) {
+        // It's not ok to succeed if we try with an already passed logical time.
+        if (LogicalTimePair(logicalTime, false) < _lowerBoundSendTime) {
+          std::wcout << L"Accepted logical time in the past for message delivery!" << std::endl;
+          return false;
+        }
+      }
+
+    } catch (const rti1516::InvalidLogicalTime& e) {
+      if (_timeRegulationEnabled) {
+        // It's required to fail if we try with an already passed logical time.
+        if (_lowerBoundSendTime <= LogicalTimePair(logicalTime, false)) {
+          std::wcout << L"Not accepted message for logical time " << logicalTime
+                     << L" for a lower bound send time (" << _lowerBoundSendTime.first
+                     << L", " << _lowerBoundSendTime.second << L")!" << std::endl;
+          return false;
+        }
+      } else {
+        // No failure for non regulating federates
+        std::wcout << L"rti1516::InvalidLogicalTime: \"" << e.what() << L"\"" << std::endl;
+        return false;
+      }
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    return true;
+  }
+
+  bool sendDelete(rti1516::RTIambassador& ambassador)
+  {
+    if (!_objectInstanceHandle.isValid())
+      return true;
+
+    try {
+      rti1516::VariableLengthData tag = toVariableLengthData("withoutTimestamp");
+      ambassador.deleteObjectInstance(_objectInstanceHandle, tag);
+      _objectInstanceHandle = rti1516::ObjectInstanceHandle();
+
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    return true;
+  }
+
+  bool sendTimeStampedDelete(rti1516::RTIambassador& ambassador, const LogicalTime& logicalTime)
+  {
+    if (!_objectInstanceHandle.isValid())
+      return true;
+
+    try {
+      rti1516::VariableLengthData tag = toVariableLengthData("withTimestamp");
+      ambassador.deleteObjectInstance(_objectInstanceHandle, tag, logicalTime);
+      _objectInstanceHandle = rti1516::ObjectInstanceHandle();
+
+      if (_timeRegulationEnabled) {
+        // It's not ok to succeed if we try with an already passed logical time.
+        if (LogicalTimePair(logicalTime, false) < _lowerBoundSendTime) {
+          std::wcout << L"Accepted logical time in the past for message delivery!" << std::endl;
+          return false;
+        }
+      }
+
+    } catch (const rti1516::InvalidLogicalTime& e) {
+      if (_timeRegulationEnabled) {
+        // It's required to fail if we try with an already passed logical time.
+        if (_lowerBoundSendTime <= LogicalTimePair(logicalTime, false)) {
+          std::wcout << L"Not accepted message for logical time " << logicalTime
+                     << L" for a lower bound send time (" << _lowerBoundSendTime.first
+                     << L", " << _lowerBoundSendTime.second << L")!" << std::endl;
+          return false;
+        }
+      } else {
+        // No failure for non regulating federates
+        std::wcout << L"rti1516::InvalidLogicalTime: \"" << e.what() << L"\"" << std::endl;
+        return false;
+      }
+    } catch (const rti1516::Exception& e) {
+      std::wcout << L"rti1516::Exception: \"" << e.what() << L"\"" << std::endl;
+      return false;
+    } catch (...) {
+      std::wcout << L"Unknown Exception!" << std::endl;
+      return false;
+    }
+
+    return true;
+  }
+
   virtual void
   timeAdvanceGrant(const rti1516::LogicalTime& logicalTime)
     throw (rti1516::InvalidLogicalTime,
@@ -730,6 +930,118 @@ public:
     }
   }
 
+  virtual void discoverObjectInstance(rti1516::ObjectInstanceHandle, rti1516::ObjectClassHandle, const std::wstring&)
+    throw (rti1516::CouldNotDiscover,
+           rti1516::ObjectClassNotKnown,
+           rti1516::FederateInternalError)
+  {
+  }
+
+  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle, const rti1516::AttributeHandleValueMap&,
+                                      const rti1516::VariableLengthData& tag, rti1516::OrderType sentOrder, rti1516::TransportationType)
+    throw (rti1516::ObjectInstanceNotKnown,
+           rti1516::AttributeNotRecognized,
+           rti1516::AttributeNotSubscribed,
+           rti1516::FederateInternalError)
+  {
+    if (_timeConstrainedEnabled && strncmp("withoutTimestamp", (const char*)tag.data(), tag.size()) != 0) {
+        _fail = true;
+        std::wcout << L"Got timestamp order message that was received as receive order!" << std::endl;
+    }
+    if (sentOrder != rti1516::RECEIVE) {
+        _fail = true;
+        std::wcout << L"Got receive order message that was received as timestamp order!" << std::endl;
+    }
+  }
+
+  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
+                                      const rti1516::VariableLengthData& tag, rti1516::OrderType orderType, rti1516::TransportationType transportationType,
+                                      const rti1516::RegionHandleSet&)
+    throw (rti1516::ObjectInstanceNotKnown,
+           rti1516::AttributeNotRecognized,
+           rti1516::AttributeNotSubscribed,
+           rti1516::FederateInternalError)
+  {
+    reflectAttributeValues(objectInstanceHandle, attributeHandleValueMap, tag, orderType, transportationType);
+  }
+
+  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
+                                      const rti1516::VariableLengthData& tag, rti1516::OrderType sentOrder, rti1516::TransportationType transportationType,
+                                      const rti1516::LogicalTime& logicalTime, rti1516::OrderType receivedOrder)
+    throw (rti1516::ObjectInstanceNotKnown,
+           rti1516::AttributeNotRecognized,
+           rti1516::AttributeNotSubscribed,
+           rti1516::FederateInternalError)
+  {
+    if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
+        _fail = true;
+        std::wcout << L"Got receive order message that was received as timestamp order!" << std::endl;
+    }
+    if (receivedOrder == rti1516::TIMESTAMP && sentOrder != rti1516::TIMESTAMP) {
+        _fail = true;
+        std::wcout << L"Received timestamp order message that was sent as receive order!" << std::endl;
+    }
+    if (receivedOrder == rti1516::TIMESTAMP) {
+      if (_timeConstrainedEnabled) {
+        checkLogicalMessageTime(logicalTime);
+      } else {
+        _fail = true;
+        std::wcout << L"Received timestamp order message while time constrained disabled!" << std::endl;
+      }
+    }
+  }
+
+  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
+                                      const rti1516::VariableLengthData& tag, rti1516::OrderType orderType, rti1516::TransportationType transportationType,
+                                      const rti1516::LogicalTime& logicalTime, rti1516::OrderType receivedOrder, const rti1516::RegionHandleSet&)
+    throw (rti1516::ObjectInstanceNotKnown,
+           rti1516::AttributeNotRecognized,
+           rti1516::AttributeNotSubscribed,
+           rti1516::FederateInternalError)
+  {
+    reflectAttributeValues(objectInstanceHandle, attributeHandleValueMap, tag, orderType, transportationType, logicalTime, receivedOrder);
+  }
+
+  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
+                                      const rti1516::VariableLengthData& tag, rti1516::OrderType sentOrder, rti1516::TransportationType transportationType,
+                                      const rti1516::LogicalTime& logicalTime, rti1516::OrderType receivedOrder, rti1516::MessageRetractionHandle)
+    throw (rti1516::ObjectInstanceNotKnown,
+           rti1516::AttributeNotRecognized,
+           rti1516::AttributeNotSubscribed,
+           rti1516::InvalidLogicalTime,
+           rti1516::FederateInternalError)
+  {
+    if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
+        _fail = true;
+        std::wcout << L"Got receive order message over timestamped delivery!" << std::endl;
+    }
+    if (receivedOrder == rti1516::TIMESTAMP && sentOrder != rti1516::TIMESTAMP) {
+        _fail = true;
+        std::wcout << L"Received timestamp order message that was sent as receive order!" << std::endl;
+    }
+    if (receivedOrder == rti1516::TIMESTAMP) {
+      if (_timeConstrainedEnabled) {
+        checkLogicalMessageTime(logicalTime);
+      } else {
+        _fail = true;
+        std::wcout << L"Received timestamp order message while time constrained disabled!" << std::endl;
+      }
+    }
+  }
+
+  virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
+                                      const rti1516::VariableLengthData& tag, rti1516::OrderType orderType, rti1516::TransportationType transportationType,
+                                      const rti1516::LogicalTime& logicalTime, rti1516::OrderType receivedOrder, rti1516::MessageRetractionHandle,
+                                      const rti1516::RegionHandleSet& regionHandleSet)
+    throw (rti1516::ObjectInstanceNotKnown,
+           rti1516::AttributeNotRecognized,
+           rti1516::AttributeNotSubscribed,
+           rti1516::InvalidLogicalTime,
+           rti1516::FederateInternalError)
+  {
+    reflectAttributeValues(objectInstanceHandle, attributeHandleValueMap, tag, orderType, transportationType, logicalTime, receivedOrder, regionHandleSet);
+  }
+
   virtual void
   receiveInteraction(rti1516::InteractionClassHandle, const rti1516::ParameterHandleValueMap&,
                      const rti1516::VariableLengthData& tag, rti1516::OrderType sentOrder, rti1516::TransportationType)
@@ -812,6 +1124,76 @@ public:
     }
   }
 
+  virtual void removeObjectInstance(rti1516::ObjectInstanceHandle theObject,
+                                    rti1516::VariableLengthData const & tag,
+                                    rti1516::OrderType sentOrder)
+    throw (rti1516::ObjectInstanceNotKnown,
+           rti1516::FederateInternalError)
+  {
+    if (_timeConstrainedEnabled && strncmp("withoutTimestamp", (const char*)tag.data(), tag.size()) != 0) {
+        _fail = true;
+        std::wcout << L"Got timestamp order message that was received as receive order!" << std::endl;
+    }
+    if (sentOrder != rti1516::RECEIVE) {
+        _fail = true;
+        std::wcout << L"Got receive order message that was received as timestamp order!" << std::endl;
+    }
+  }
+
+  virtual void removeObjectInstance(rti1516::ObjectInstanceHandle theObject,
+                                    rti1516::VariableLengthData const & tag,
+                                    rti1516::OrderType sentOrder,
+                                    rti1516::LogicalTime const & logicalTime,
+                                    rti1516::OrderType receivedOrder)
+    throw (rti1516::ObjectInstanceNotKnown,
+           rti1516::FederateInternalError)
+  {
+    if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
+        _fail = true;
+        std::wcout << L"Got receive order message that was received as timestamp order!" << std::endl;
+    }
+    if (receivedOrder == rti1516::TIMESTAMP && sentOrder != rti1516::TIMESTAMP) {
+        _fail = true;
+        std::wcout << L"Received timestamp order message that was sent as receive order!" << std::endl;
+    }
+    if (receivedOrder == rti1516::TIMESTAMP) {
+      if (_timeConstrainedEnabled) {
+        checkLogicalMessageTime(logicalTime);
+      } else {
+        _fail = true;
+        std::wcout << L"Received timestamp order message while time constrained disabled!" << std::endl;
+      }
+    }
+  }
+
+  virtual void removeObjectInstance(rti1516::ObjectInstanceHandle theObject,
+                                    rti1516::VariableLengthData const & tag,
+                                    rti1516::OrderType sentOrder,
+                                    rti1516::LogicalTime const & logicalTime,
+                                    rti1516::OrderType receivedOrder,
+                                    rti1516::MessageRetractionHandle theHandle)
+    throw (rti1516::ObjectInstanceNotKnown,
+           rti1516::InvalidLogicalTime,
+           rti1516::FederateInternalError)
+  {
+    if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
+        _fail = true;
+        std::wcout << L"Got receive order message over timestamped delivery!" << std::endl;
+    }
+    if (receivedOrder == rti1516::TIMESTAMP && sentOrder != rti1516::TIMESTAMP) {
+        _fail = true;
+        std::wcout << L"Received timestamp order message that was sent as receive order!" << std::endl;
+    }
+    if (receivedOrder == rti1516::TIMESTAMP) {
+      if (_timeConstrainedEnabled) {
+        checkLogicalMessageTime(logicalTime);
+      } else {
+        _fail = true;
+        std::wcout << L"Received timestamp order message while time constrained disabled!" << std::endl;
+      }
+    }
+  }
+
   void checkLogicalMessageTime(rti1516::LogicalTime const & logicalTime)
   {
     if (LogicalTimePair(logicalTime, false) < _lowerBoundReceiveTime) {
@@ -877,10 +1259,16 @@ private:
   TimeAdvanceMode _testTimeAdvanceMode;
   unsigned _numTimesteps;
   unsigned _numInteractions;
+  unsigned _numUpdates;
   LogicalTimeInterval _lookahead;
 
   rti1516::InteractionClassHandle _interactionClassHandle0;
   rti1516::ParameterHandle _class0Parameter0Handle;
+
+  rti1516::ObjectClassHandle _objectClassHandle0;
+  rti1516::AttributeHandle _class0Attribute0Handle;
+
+  rti1516::ObjectInstanceHandle _objectInstanceHandle;
 
   LogicalTime _logicalTime;
 
@@ -909,9 +1297,10 @@ public:
     _lookahead(1),
     _timeAdvanceMode(AllTimeAdvanceRequests),
     _numTimesteps(100),
-    _numInteractions(4)
+    _numInteractions(4),
+    _numUpdates(4)
   {
-    insertOptionString("fI:L:N:T:");
+    insertOptionString("fI:L:N:T:U:");
   }
 
   virtual bool processOption(char optchar, const std::string& argument)
@@ -942,6 +1331,9 @@ public:
     case 'T':
       _numTimesteps = atoi(argument.c_str());
       return true;
+    case 'U':
+      _numUpdates = atoi(argument.c_str());
+      return true;
     default:
       return RTITest::processOption(optchar, argument);
     }
@@ -950,9 +1342,9 @@ public:
   virtual Ambassador* createAmbassador(const ConstructorArgs& constructorArgs)
   {
     if (_float)
-      return new TestAmbassador<HLAfloat64Time, HLAfloat64Interval>(constructorArgs, _lookahead, _timeAdvanceMode, _numTimesteps, _numInteractions);
+      return new TestAmbassador<HLAfloat64Time, HLAfloat64Interval>(constructorArgs, _lookahead, _timeAdvanceMode, _numTimesteps, _numInteractions, _numUpdates);
     else
-      return new TestAmbassador<HLAinteger64Time, HLAinteger64Interval>(constructorArgs, _lookahead, _timeAdvanceMode, _numTimesteps, _numInteractions);
+      return new TestAmbassador<HLAinteger64Time, HLAinteger64Interval>(constructorArgs, _lookahead, _timeAdvanceMode, _numTimesteps, _numInteractions, _numUpdates);
   }
 
 private:
@@ -961,6 +1353,7 @@ private:
   TimeAdvanceMode _timeAdvanceMode;
   unsigned _numTimesteps;
   unsigned _numInteractions;
+  unsigned _numUpdates;
 };
 
 }
