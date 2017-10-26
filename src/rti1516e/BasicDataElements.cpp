@@ -213,6 +213,8 @@ EncodableDataType::operator SimpleDataType() const                      \
 IMPLEMENT_ENCODING_HELPER_CLASS(HLAASCIIchar, char,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
+  if (buffer.size() < index + 1)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   _value = buffer[index];
   return index + 1;
 }
@@ -242,6 +244,8 @@ Integer64 hash() const
 IMPLEMENT_ENCODING_HELPER_CLASS(HLAboolean, bool,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
+  if (buffer.size() < index + 1)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   _value = bool(buffer[index]);
   return index + 1;
 }
@@ -271,6 +275,8 @@ Integer64 hash() const
 IMPLEMENT_ENCODING_HELPER_CLASS(HLAbyte, Octet,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
+  if (buffer.size() < index + 1)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   _value = buffer[index];
   return index + 1;
 }
@@ -297,9 +303,11 @@ Integer64 hash() const
   return Integer64(_value);
 }
 )
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAoctet, Octet,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAoctet, Octet,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
+  if (buffer.size() < index + 1)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   _value = buffer[index];
   return index + 1;
 }
@@ -328,10 +336,12 @@ Integer64 hash() const
 )
 
 // > 8 bit values, fixed endianess
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAunicodeChar, wchar_t,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAunicodeChar, wchar_t,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 2);
+  if (buffer.size() < index + 2)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   uint16_t u;
   u = uint16_t(uint8_t(buffer[index])) << 8;
   u |= uint16_t(uint8_t(buffer[index + 1]));
@@ -366,10 +376,12 @@ Integer64 hash() const
 )
 
 // > 8 bit values, both endianess
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger16BE, Integer16,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAinteger16BE, Integer16,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 2);
+  if (buffer.size() < index + 2)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   uint16_t u;
   u = uint16_t(uint8_t(buffer[index])) << 8;
   u |= uint16_t(uint8_t(buffer[index + 1]));
@@ -402,10 +414,12 @@ Integer64 hash() const
   return Integer64(_value);
 }
 )
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger16LE, Integer16,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAinteger16LE, Integer16,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 2);
+  if (buffer.size() < index + 2)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   uint16_t u;
   u = uint16_t(uint8_t(buffer[index]));
   u |= uint16_t(uint8_t(buffer[index + 1])) << 8;
@@ -438,10 +452,12 @@ Integer64 hash() const
   return Integer64(_value);
 }
 )
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger32BE, Integer32,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAinteger32BE, Integer32,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 4);
+  if (buffer.size() < index + 4)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   uint32_t u;
   u = uint32_t(uint8_t(buffer[index])) << 24;
   u |= uint32_t(uint8_t(buffer[index + 1])) << 16;
@@ -478,10 +494,12 @@ Integer64 hash() const
   return Integer64(_value);
 }
 )
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger32LE, Integer32,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAinteger32LE, Integer32,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 4);
+  if (buffer.size() < index + 4)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   uint32_t u;
   u = uint32_t(uint8_t(buffer[index]));
   u |= uint32_t(uint8_t(buffer[index + 1])) << 8;
@@ -518,10 +536,12 @@ Integer64 hash() const
   return Integer64(_value);
 }
 )
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger64BE, Integer64,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAinteger64BE, Integer64,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 8);
+  if (buffer.size() < index + 8)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   uint64_t u;
   u = uint64_t(uint8_t(buffer[index])) << 56;
   u |= uint64_t(uint8_t(buffer[index + 1])) << 48;
@@ -566,10 +586,12 @@ Integer64 hash() const
   return Integer64(_value);
 }
 )
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAinteger64LE, Integer64,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAinteger64LE, Integer64,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 8);
+  if (buffer.size() < index + 8)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   uint64_t u;
   u = uint64_t(uint8_t(buffer[index]));
   u |= uint64_t(uint8_t(buffer[index + 1])) << 8;
@@ -614,10 +636,12 @@ Integer64 hash() const
   return Integer64(_value);
 }
 )
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAoctetPairBE, OctetPair,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAoctetPairBE, OctetPair,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 2);
+  if (buffer.size() < index + 2)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   _value.first = buffer[index];
   _value.second = buffer[index + 1];
   return index + 2;
@@ -647,10 +671,12 @@ Integer64 hash() const
   return (Integer64(_value.first) << 8) | Integer64(_value.second);
 }
 )
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAoctetPairLE, OctetPair,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAoctetPairLE, OctetPair,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 2);
+  if (buffer.size() < index + 2)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   _value.second = buffer[index];
   _value.first = buffer[index + 1];
   return index + 2;
@@ -682,10 +708,12 @@ Integer64 hash() const
 )
 
 // float, > 8 bit values, both endianess
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAfloat32BE, float,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAfloat32BE, float,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 4);
+  if (buffer.size() < index + 4)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   union {
     uint32_t u;
     float s;
@@ -734,10 +762,12 @@ Integer64 hash() const
   return Integer64(u.u);
 }
 )
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAfloat32LE, float,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAfloat32LE, float,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 4);
+  if (buffer.size() < index + 4)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   union {
     uint32_t u;
     float s;
@@ -786,10 +816,12 @@ Integer64 hash() const
   return Integer64(u.u);
 }
 )
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAfloat64BE, double,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAfloat64BE, double,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 8);
+  if (buffer.size() < index + 8)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   union {
     uint64_t u;
     double s;
@@ -846,10 +878,12 @@ Integer64 hash() const
   return Integer64(u.u);
 }
 )
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAfloat64LE, double,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAfloat64LE, double,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 8);
+  if (buffer.size() < index + 8)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   union {
     uint64_t u;
     double s;
@@ -912,6 +946,8 @@ IMPLEMENT_ENCODING_HELPER_CLASS(HLAASCIIstring, std::string,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 4);
+  if (buffer.size() < index + 4)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   uint32_t u;
   u = uint32_t(uint8_t(buffer[index])) << 24;
   u |= uint32_t(uint8_t(buffer[index + 1])) << 16;
@@ -922,6 +958,8 @@ size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
     length = 0;
   index += 4;
 
+  if (buffer.size() < index + length)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   _value.clear();
   _value.reserve(length);
   while (0 < length--)
@@ -966,10 +1004,12 @@ Integer64 hash() const
   return hash;
 }
 )
-IMPLEMENT_ENCODING_HELPER_CLASS( HLAunicodeString, std::wstring,
+IMPLEMENT_ENCODING_HELPER_CLASS(HLAunicodeString, std::wstring,
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
   index = align(index, 4);
+  if (buffer.size() < index + 4)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   uint32_t u;
   u = uint32_t(uint8_t(buffer[index])) << 24;
   u |= uint32_t(uint8_t(buffer[index + 1])) << 16;
@@ -980,6 +1020,8 @@ size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
     length = 0;
   index += 4;
 
+  if (buffer.size() < index + 2*length)
+    throw EncoderException(L"Insufficient buffer size for decoding!");
   _value.clear();
   _value.reserve(length);
   while (0 < length--) {

@@ -81,6 +81,8 @@ public:
   {
     unsigned int octetBoundary = getOctetBoundary();
     index = align(index, octetBoundary);
+    if (buffer.size() < index + 4)
+      throw EncoderException(L"Insufficient buffer size for decoding!");
     size_t length = size_t(buffer[index]) << 24;
     length |= size_t(buffer[index + 1]) << 16;
     length |= size_t(buffer[index + 2]) << 8;
