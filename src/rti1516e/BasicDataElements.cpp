@@ -131,7 +131,8 @@ EncodableDataType::encode(VariableLengthData& inData) const             \
   std::vector<Octet> buffer;                                            \
   buffer.reserve(getEncodedLength());                                   \
   encodeInto(buffer);                                                   \
-  inData.setData(&buffer.front(), buffer.size());                       \
+  if (!buffer.empty())                                                  \
+    inData.setData(&buffer.front(), buffer.size());                     \
 }                                                                       \
                                                                         \
 void                                                                    \
@@ -149,7 +150,8 @@ EncodableDataType::decode(VariableLengthData const & inData)            \
     throw EncoderException(L"Encoded size does not match!");            \
                                                                         \
   std::vector<Octet> buffer(inData.size());                             \
-  std::memcpy(&buffer.front(), inData.data(), inData.size());           \
+  if (!buffer.empty())                                                  \
+    std::memcpy(&buffer.front(), inData.data(), inData.size());         \
   decodeFrom(buffer, 0);                                                \
 }                                                                       \
                                                                         \
