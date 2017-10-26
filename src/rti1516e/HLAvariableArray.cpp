@@ -36,11 +36,11 @@ namespace rti1516e
 class OPENRTI_LOCAL HLAvariableArrayImplementation {
 public:
   HLAvariableArrayImplementation(const DataElement& protoType) :
-    _protoType(protoType.clone())
+    _protoType(protoType.clone().release())
   {
   }
   HLAvariableArrayImplementation(const HLAvariableArrayImplementation& rhs) :
-    _protoType(rhs._protoType->clone())
+    _protoType(rhs._protoType->clone().release())
   {
     _dataElementVector.resize(rhs._dataElementVector.size(), 0);
     for (size_t i = 0; i < rhs._dataElementVector.size(); ++i) {
@@ -55,6 +55,8 @@ public:
       delete *i;
       *i = 0;
     }
+    delete _protoType;
+    _protoType = 0;
   }
 
   void encodeInto(std::vector<Octet>& buffer) const
@@ -175,7 +177,7 @@ public:
     return _protoType->isSameTypeAs(*rhs._protoType);
   }
 
-  std::auto_ptr<DataElement> _protoType;
+  DataElement* _protoType;
 
   typedef std::vector<DataElement*> DataElementVector;
   DataElementVector _dataElementVector;
