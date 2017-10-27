@@ -1148,10 +1148,6 @@ public:
     //        NotConnected,
     //        RTIinternalError)
   {
-    // Short circuit to invent an own name
-    if (objectInstanceName.empty())
-      return registerObjectInstance(objectClassHandle);
-
     // At first the complete error checks
     if (!isConnected())
       throw NotConnected();
@@ -1162,6 +1158,9 @@ public:
       throw ObjectClassNotDefined(objectClassHandle.toString());
     if (Published != objectClass->getEffectivePublicationType())
       throw ObjectClassNotPublished(objectClass->getName());
+    // Do not allow empty object instance names
+    if (objectInstanceName.empty())
+      throw ObjectInstanceNameNotReserved(objectInstanceName);
 
     // The already available objectInstanceHandle should be stored here.
     ObjectInstanceHandle objectInstanceHandle;

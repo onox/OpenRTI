@@ -1866,6 +1866,8 @@ RTI::RTIambassador::registerObjectInstance(RTI::ObjectClassHandle objectClassHan
     throw RTI::ObjectClassNotDefined(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::ObjectClassNotPublished& e) {
     throw RTI::ObjectClassNotPublished(OpenRTI::utf8ToLocale(e.what()).c_str());
+  } catch (const OpenRTI::ObjectInstanceNameNotReserved& e) {
+    throw RTI::ObjectAlreadyRegistered(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::ObjectInstanceNameInUse& e) {
     throw RTI::ObjectAlreadyRegistered(OpenRTI::utf8ToLocale(e.what()).c_str());
   } catch (const OpenRTI::FederateNotExecutionMember& e) {
