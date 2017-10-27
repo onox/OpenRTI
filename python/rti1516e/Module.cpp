@@ -5352,7 +5352,7 @@ PyRTIambassador_deleteRegion(PyRTIambassadorObject *self, PyObject *args)
 static PyObject *
 PyRTIambassador_registerObjectInstanceWithRegions(PyRTIambassadorObject *self, PyObject *args)
 {
-  PyObject *arg1 = 0, *arg2 = 0, *arg3;
+  PyObject *arg1 = 0, *arg2 = 0, *arg3 = 0;
   if (!PyArg_UnpackTuple(args, "registerObjectInstanceWithRegions", 2, 3, &arg1, &arg2, &arg3))
     return 0;
 
