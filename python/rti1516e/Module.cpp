@@ -3894,7 +3894,10 @@ PyRTIambassador_registerObjectInstance(PyRTIambassadorObject *self, PyObject *ar
   try {
 
     rti1516e::ObjectInstanceHandle objectInstanceHandle;
-    objectInstanceHandle = self->ob_value->registerObjectInstance(objectClassHandle, objectInstanceName);
+    if (!arg2)
+      objectInstanceHandle = self->ob_value->registerObjectInstance(objectClassHandle);
+    else
+      objectInstanceHandle = self->ob_value->registerObjectInstance(objectClassHandle, objectInstanceName);
 
     return PyObject_NewObjectInstanceHandle(objectInstanceHandle);
   }
@@ -5377,7 +5380,10 @@ PyRTIambassador_registerObjectInstanceWithRegions(PyRTIambassadorObject *self, P
   try {
 
     rti1516e::ObjectInstanceHandle objectInstanceHandle;
-    objectInstanceHandle = self->ob_value->registerObjectInstanceWithRegions(objectClassHandle, attributeHandleSetRegionHandleSetPairVector, objectInstanceName);
+    if (!arg3)
+      objectInstanceHandle = self->ob_value->registerObjectInstanceWithRegions(objectClassHandle, attributeHandleSetRegionHandleSetPairVector);
+    else
+      objectInstanceHandle = self->ob_value->registerObjectInstanceWithRegions(objectClassHandle, attributeHandleSetRegionHandleSetPairVector, objectInstanceName);
 
     return PyObject_NewObjectInstanceHandle(objectInstanceHandle);
   }
