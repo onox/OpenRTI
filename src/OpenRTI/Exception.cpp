@@ -67,24 +67,20 @@ RTIinternalError::RTIinternalError(const std::string& reason) :
 {
 }
 
-RTIinternalError::RTIinternalError(const char* file, unsigned line, const char* reason) :
-  Exception("RTIinternalError", buildAssertMessage(file, line, reason))
-{
-}
-
 RTIinternalError::~RTIinternalError() throw()
 {
 }
 
-std::string
-RTIinternalError::buildAssertMessage(const char* file, unsigned line, const char* reason)
+void
+RTIinternalError::assertMessage(const char* file, unsigned line, const char* reason)
 {
   std::stringstream stream;
   stream << "Assertion in " << file << " at line " << line;
   if (reason) {
     stream << ": " << reason;
   }
-  return stream.str();
+
+  throw RTIinternalError(stream.str());
 }
 
 } // namespace OpenRTI

@@ -46,17 +46,15 @@ class OPENRTI_API RTIinternalError : public Exception {
 public:
   RTIinternalError(const char* reason = 0);
   RTIinternalError(const std::string& reason);
-  RTIinternalError(const char* file, unsigned line, const char* reason = 0);
   virtual ~RTIinternalError() throw();
 
-private:
-  static std::string buildAssertMessage(const char* file, unsigned line, const char* reason = 0);
+  static void assertMessage(const char* file, unsigned line, const char* reason = 0);
 };
 
 #if defined(NDEBUG) || defined(_NDEBUG)
 #define OpenRTIAssert(expr) do { } while(0)
 #else
-#define OpenRTIAssert(expr) if (!(expr)) throw OpenRTI::RTIinternalError(__FILE__, __LINE__, #expr)
+#define OpenRTIAssert(expr) do { if (!(expr)) OpenRTI::RTIinternalError::assertMessage(__FILE__, __LINE__, #expr); } while(0)
 #endif
 
 #define RTI_EXCEPTION(name) \
