@@ -10,6 +10,10 @@
 #define RTI_SpecificConfig_h
 
 #if defined(_WIN32)
+// Since the standard intrinsically relies on std::auto_ptr
+#if !defined(_HAS_AUTO_PTR_ETC)
+#define _HAS_AUTO_PTR_ETC 1
+#endif
 #if defined(_MSC_VER) && defined(RTI_DISABLE_WARNINGS)
 // disable warning about truncating template instantiation symbol names
 #pragma warning(disable: 4786)

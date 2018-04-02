@@ -4,6 +4,10 @@
 #define RTI_hh
 
 #if defined(_WIN32)
+// Since the standard intrinsically relies on std::auto_ptr
+# if !defined(_HAS_AUTO_PTR_ETC)
+#  define _HAS_AUTO_PTR_ETC 1
+# endif
 # pragma warning(disable: 4290)
 # pragma warning(disable: 4275)
 # pragma warning(disable: 4251)
