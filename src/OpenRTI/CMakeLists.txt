@@ -108,7 +108,7 @@ else(WIN32)
   )
 endif(WIN32)
 
-# We use expat as xml parser, if not on the system, use our own probaby outdated version
+# We use expat as xml parser, if not on the system, use our own probably outdated version
 include(FindEXPAT)
 if(EXPAT_FOUND)
   include_directories(${EXPAT_INCLUDE_DIRS})
