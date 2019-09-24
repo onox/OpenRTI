@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2015 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2019 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -75,15 +75,27 @@ public:
   {
     ScopeLock scopeLock(_mutex);
     while (_messageList.empty()) {
-      // We must not rely on the timeout return before checking the predicate.
-      bool signaledOrSpurious = _condition.wait_until(scopeLock, timeout);
-      if (!_messageList.empty())
-        break;
-      if (_isClosed)
-        return 0;
-      // Timeout was hit
-      if (!signaledOrSpurious)
-        return 0;
+      // A Timeout of Clock::max() means an infinite timeout.
+      // Save useless clock handling when an infinite timeout is requested.
+      // That also works around a poor timeout conversion implementation in
+      // gcc's std::condition::wait_until implementation.
+      if (timeout == Clock::max()) {
+        _condition.wait(scopeLock);
+        if (!_messageList.empty())
+          break;
+        if (_isClosed)
+          return 0;
+      } else {
+        // We must not rely on the timeout return before checking the predicate.
+        bool signaledOrSpurious = _condition.wait_until(scopeLock, timeout);
+        if (!_messageList.empty())
+          break;
+        if (_isClosed)
+          return 0;
+        // Timeout was hit
+        if (!signaledOrSpurious)
+          return 0;
+      }
     }
     return _messageList.pop_front();
   }
