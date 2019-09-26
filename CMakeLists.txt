@@ -196,7 +196,8 @@ function(OPENRTI_SET_MSVC_STUB_DLL_NAME _target _name)
   endforeach()
 endfunction()
 
-add_subdirectory(python)
 add_subdirectory(src)
 add_subdirectory(tests)
-
+if(OPENRTI_ENABLE_PYTHON_BINDINGS)
+  add_subdirectory(python)
+endif()

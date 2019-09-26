@@ -1,46 +1,43 @@
 # Try to find out if we have python
-if(OPENRTI_ENABLE_PYTHON_BINDINGS)
-  find_package(PythonInterp)
-  if(CMAKE_VERSION VERSION_GREATER 2.8.7)
+# Ok, had issues with too old python versions, may be 2.6 is too crude ...
+if(NOT CMAKE_VERSION VERSION_LESS 3.12)
+  find_package(Python 2.6 COMPONENTS Development)
+else()
+# PYTHONLIBS_VERSION_STRING is available starting with 2.8.8
+  if(NOT CMAKE_VERSION VERSION_LESS 2.8.8)
     find_package(PythonLibs)
   else()
     find_package(PythonLibsCompat)
   endif()
-else()
-  set(PYTHONLIBS_FOUND FALSE)
-endif()
-
-# Ok, had issues with too old python versions, may be 2.6 is too crude ...
-include(CheckCXXSourceCompiles)
-if(PYTHONLIBS_FOUND)
-  # All the -I arguments
-  set(CMAKE_REQUIRED_INCLUDES ${PYTHON_INCLUDE_PATH})
-  check_cxx_source_compiles("
-#include <Python.h>
-#if PY_MAJOR_VERSION < 2
-# error
-#elif PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION < 6
-# error
-#endif
-int main(void)
-{
-  return 0;
-}
-" PYTHON_VERSION_OK)
+  # Ok, had issues with too old python versions, may be 2.6 is too crude ...
+  if(PYTHONLIBS_FOUND AND
+      PYTHONLIBS_VERSION_STRING VERSION_LESS 2.6)
+    set(PYTHONLIBS_FOUND FALSE)
+  endif()
+  if(PYTHONLIBS_FOUND)
+    string(REGEX REPLACE "^([0-9]+).([0-9]+).*$" "\\1" Python_VERSION_MAJOR "${PYTHONLIBS_VERSION_STRING}")
+    string(REGEX REPLACE "^([0-9]+).([0-9]+).*$" "\\2" Python_VERSION_MINOR "${PYTHONLIBS_VERSION_STRING}")
+    add_library(Python::Python UNKNOWN IMPORTED)
+    set_property(TARGET Python::Python PROPERTY IMPORTED_LOCATION ${PYTHON_LIBRARIES})
+    if(PYTHON_LIBRARIES_DEBUG)
+      set_property(TARGET Python::Python PROPERTY IMPORTED_LOCATION_DEBUG ${PYTHON_LIBRARIES_DEBUG})
+    endif()
+    set_property(TARGET Python::Python PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${PYTHON_INCLUDE_DIRS})
+    set(Python_Development_FOUND TRUE)
+  else()
+    set(Python_Development_FOUND FALSE)
+  endif()
 endif()
 
 # If so, do what we need to do
-if(PYTHONLIBS_FOUND AND PYTHON_VERSION_OK)
+if(Python_Development_FOUND)
   if(WIN32)
-    string(REGEX REPLACE "^([0-9]+).([0-9]+).*$" "\\1\\2" PYTHONLIBS_VERSION_STRING "${PYTHONLIBS_VERSION_STRING}")
-    set(INSTALL_PYTHON_DIRECTORY "Python${PYTHONLIBS_VERSION_STRING}/site-packages")
+    set(INSTALL_PYTHON_DIRECTORY "Python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}/site-packages")
   else()
-    string(REGEX REPLACE "^([0-9]+.[0-9]+).*$" "\\1" PYTHONLIBS_VERSION_STRING "${PYTHONLIBS_VERSION_STRING}")
-    set(INSTALL_PYTHON_DIRECTORY "${CMAKE_INSTALL_LIBDIR}/python${PYTHONLIBS_VERSION_STRING}/site-packages")
+    set(INSTALL_PYTHON_DIRECTORY "${CMAKE_INSTALL_LIBDIR}/python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}/site-packages")
   endif()
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${INSTALL_PYTHON_DIRECTORY}")
 
-  include_directories(${PYTHON_INCLUDE_PATH})
   if(OPENRTI_ENABLE_RTI1516)
     add_subdirectory(rti1516)
   endif()

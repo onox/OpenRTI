@@ -7,7 +7,7 @@ set_property(TARGET rti1516e_py PROPERTY OUTPUT_NAME "rti1516e")
 if(WIN32)
   set_property(TARGET rti1516e_py PROPERTY SUFFIX ".pyd")
 endif()
-target_link_libraries(rti1516e_py rti1516e fedtime1516e ${PYTHON_LIBRARIES})
+target_link_libraries(rti1516e_py rti1516e fedtime1516e Python::Python)
 
 if(OPENRTI_BUILD_SHARED)
   if(OPENRTI_INSTALL_WITH_RPATH)
