@@ -167,7 +167,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}"
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}")
 
-macro(OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES _target)
+macro(openrti_target_link_private_libraries _target)
   if(CMAKE_VERSION VERSION_LESS 2.8.12)
     target_link_libraries(${_target} ${ARGN})
     # Each library where we have used this up to now uses explicit linking
@@ -179,7 +179,7 @@ macro(OPENRTI_TARGET_LINK_PRIVATE_LIBRARIES _target)
   endif()
 endmacro()
 
-macro(OPENRTI_TARGET_POSITION_INDEPENDENT _target)
+macro(openrti_target_position_independent _target)
   if(CMAKE_VERSION VERSION_GREATER 2.8.8)
     set_property(TARGET ${_target} PROPERTY POSITION_INDEPENDENT_CODE TRUE)
   else()
@@ -187,7 +187,7 @@ macro(OPENRTI_TARGET_POSITION_INDEPENDENT _target)
   endif()
 endmacro()
 
-function(OPENRTI_SET_MSVC_STUB_DLL_NAME _target _name)
+function(openrti_set_msvc_stub_dll_name _target _name)
   # Ideally we could use
   #  set_property(TARGET fedtime1516Stub APPEND PROPERTY STATIC_LIBRARY_FLAGS_DEBUG "/DEF /NAME:$<TARGET_FILE:fedtime1516>")
   # to get the final target file name as it is produced, but STATIC_LIBRARY_FLAGS does not evaluate generator expressions
