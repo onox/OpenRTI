@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2016 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2019 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
@@ -6501,19 +6501,38 @@ PyObject_NewRTIambassador(PyTypeObject *type, PyObject *args, PyObject *kwds)
     return 0;
   }
 
-  PyRTIambassadorObject *self = PyObject_New(PyRTIambassadorObject, type);
+  PyRTIambassadorObject *self = PyObject_GC_New(PyRTIambassadorObject, type);
   if (!self)
     return 0;
   new (self) PyRTIambassadorObject;
   self->ob_value = ambassador;
+
+  PyObject_GC_Track(self);
+
   return (PyObject*)self;
 }
 
 static void
 PyRTIambassadorObject_dealloc(PyRTIambassadorObject *o)
 {
+  PyObject_GC_UnTrack(o);
+
   o->PyRTIambassadorObject::~PyRTIambassadorObject();
   Py_TYPE(o)->tp_free(o);
+}
+
+static int
+PyRTIambassadorObject_traverse(PyRTIambassadorObject *o, visitproc visit, void *arg)
+{
+  Py_VISIT(o->_federateAmbassador.ob_federateAmbassador);
+  return 0;
+}
+
+static int
+PyRTIambassadorObject_clear(PyRTIambassadorObject *o)
+{
+  Py_CLEAR(o->_federateAmbassador.ob_federateAmbassador);
+  return 0;
 }
 
 static PyTypeObject PyRTIambassadorType = {
@@ -6536,10 +6555,10 @@ static PyTypeObject PyRTIambassadorType = {
   0,                                /* tp_getattro */
   0,                                /* tp_setattro */
   0,                                /* tp_as_buffer */
-  Py_TPFLAGS_DEFAULT,               /* tp_flags */
+  Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC, /* tp_flags */
   "RTIambassador",                  /* tp_doc */
-  0,                                /* tp_traverse */
-  0,                                /* tp_clear */
+  (traverseproc)PyRTIambassadorObject_traverse, /* tp_traverse */
+  (inquiry)PyRTIambassadorObject_clear, /* tp_clear */
   0,                                /* tp_richcompare */
   0,                                /* tp_weaklistoffset */
   0,                                /* tp_iter */
