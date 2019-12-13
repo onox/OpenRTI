@@ -1,7 +1,28 @@
 # Try to find out if we have python
-# Ok, had issues with too old python versions, may be 2.6 is too crude ...
 if(NOT CMAKE_VERSION VERSION_LESS 3.12)
-  find_package(Python 2.6 COMPONENTS Development)
+  # Make sure we reevaluate find_package(Python ...) if the binding version changes
+  if(NOT "${OPENRTI_FORCE_PYTHON2_BINDINGS}" STREQUAL "${OPENRTI_FORCE_PYTHON2_BINDINGS_CACHED}")
+    get_cmake_property(_variableNames VARIABLES)
+    foreach(_variableName ${_variableNames})
+      if(_variableName MATCHES "^_?Python_.*$")
+        unset(${_variableName} CACHE)
+      endif()
+    endforeach()
+  endif()
+  set(OPENRTI_FORCE_PYTHON2_BINDINGS_CACHED ${OPENRTI_FORCE_PYTHON2_BINDINGS} CACHE INTERNAL BOOL)
+
+  # Ok, had issues with too old python versions, may be 2.6 is too crude ...
+  if(OPENRTI_FORCE_PYTHON2_BINDINGS)
+    find_package(Python 2.6 COMPONENTS Development)
+  else()
+    find_package(Python COMPONENTS Development)
+    # Note that a version setting forces a find package to be tied to
+    # that major version. Thus check for too old python afterwards.
+    if(Python_Development_FOUND AND Python_VERSION VERSION_LESS 2.6)
+      set(Python_Development_FOUND FALSE)
+      message("Disabling python support with too old version.")
+    endif()
+   endif()
 else()
 # PYTHONLIBS_VERSION_STRING is available starting with 2.8.8
   if(NOT CMAKE_VERSION VERSION_LESS 2.8.8)
