@@ -1,6 +1,7 @@
 OpenRTI-0.10.0 (development)
 ----------------------------
 
+ * With the python binding, allow subclassing of RTIambassador. 
  * Make use of current cmakes python detection.
  * Fix logical time interval implementation for rti1516{,e}.
  * Fix logical time implementation for RTI13.
