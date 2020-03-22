@@ -313,6 +313,14 @@ equal(const rti1516e::VariableLengthData& left, const rti1516e::VariableLengthDa
   return 0 == std::memcmp(left.data(), right.data(), left.size());
 }
 
+bool
+equal(const std::vector<rti1516e::Octet>& left, const rti1516e::VariableLengthData& right)
+{
+  if (left.size() != right.size())
+    return false;
+  return 0 == std::memcmp(left.data(), right.data(), left.size());
+}
+
 template<typename T>
 bool
 typedEqual(const rti1516e::DataElement& left, const rti1516e::DataElement& right)
@@ -403,7 +411,7 @@ bool testDataElementEncoding(const DataType& dataType)
       return false;
     }
 
-    std::auto_ptr<rti1516e::DataElement> dataElement2 = dataElement->clone();
+    std::auto_ptr<rti1516e::DataElement> dataElement2(dataType.createDataElement(rand));
     try {
       dataElement2->decode(variableLengthData);
     } catch (...) {
@@ -418,13 +426,57 @@ bool testDataElementEncoding(const DataType& dataType)
 
     rti1516e::VariableLengthData variableLengthData2;
     try {
-      variableLengthData2 = dataElement->encode();
+      variableLengthData2 = dataElement2->encode();
     } catch (...) {
       std::cerr << "Unexpected exception while encoding!" << std::endl;
       return false;
     }
 
     if (!equal(variableLengthData, variableLengthData2)) {
+      std::cerr << "Encoded data is not equal!" << std::endl;
+      return false;
+    }
+
+    std::vector<rti1516e::Octet> octetData;
+    try {
+      dataElement->encodeInto(octetData);
+    } catch (...) {
+      std::cerr << "Unexpected exception while encoding!" << std::endl;
+      return false;
+    }
+
+    std::auto_ptr<rti1516e::DataElement> dataElement3(dataType.createDataElement(rand));
+    try {
+      dataElement3->decodeFrom(octetData, 0);
+    } catch (...) {
+      std::cerr << "Unexpected exception while decoding!" << std::endl;
+      return false;
+    }
+
+    if (!equal(*dataElement, *dataElement3)) {
+      std::cerr << "Data elements are not equal!" << std::endl;
+      return false;
+    }
+    if (!equal(*dataElement2, *dataElement3)) {
+      std::cerr << "Data elements are not equal!" << std::endl;
+      return false;
+    }
+
+
+    std::vector<rti1516e::Octet> octetData3;
+    try {
+      dataElement3->encodeInto(octetData3);
+    } catch (...) {
+      std::cerr << "Unexpected exception while encoding!" << std::endl;
+      return false;
+    }
+
+    if (octetData != octetData3) {
+      std::cerr << "Encoded data is not equal!" << std::endl;
+      return false;
+    }
+
+    if (!equal(octetData, variableLengthData)) {
       std::cerr << "Encoded data is not equal!" << std::endl;
       return false;
     }
