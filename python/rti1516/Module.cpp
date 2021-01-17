@@ -105,12 +105,24 @@ PyObject_GetString(std::wstring& string, PyObject* o)
   } else
 #endif
   if (PyUnicode_Check(o)) {
+#if PY_VERSION_HEX < 0x03020000
     Py_ssize_t size = PyUnicode_GetSize(o);
     string.resize(size);
     if (size) {
       const Py_UNICODE* ptr = PyUnicode_AsUnicode(o);
       std::copy(ptr, ptr + size, string.begin());
     }
+#else
+    Py_ssize_t size;
+    wchar_t* ptr = PyUnicode_AsWideCharString(o, &size);
+    if (!ptr)
+      return false;
+
+    string.resize(size);
+    std::copy(ptr, ptr + size, string.begin());
+
+    PyMem_Free(ptr);
+#endif
     return true;
 
   } else {
