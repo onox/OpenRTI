@@ -101,6 +101,8 @@ EncodableDataType::EncodableDataType(EncodableDataType const& rhs) :    \
                                                                         \
 EncodableDataType::~EncodableDataType()                                 \
 {                                                                       \
+  delete _impl;                                                         \
+  _impl = 0;                                                            \
 }                                                                       \
                                                                         \
 EncodableDataType&                                                      \
