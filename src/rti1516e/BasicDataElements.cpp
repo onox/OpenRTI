@@ -257,39 +257,50 @@ decode(OpenRTI::VariableLengthData const & inData)
 {
   if (inData.size() != getEncodedLength())
     throw EncoderException(L"Insufficient buffer size for decoding!");
-  _value = bool(inData.getChar(0));
+  _value = bool(inData.getInt32BE(0));
 }
 
 void
 encode(OpenRTI::VariableLengthData& inData) const
 {
   inData.resize(getEncodedLength());
-  inData.setChar(_value, 0);
+  inData.setInt32BE(_value, 0);
 }
 
 size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
 {
-  if (buffer.size() < index + 1)
+  index = align(index, 4);
+  if (buffer.size() < index + 4)
     throw EncoderException(L"Insufficient buffer size for decoding!");
-  _value = bool(buffer[index]);
-  return index + 1;
+  uint32_t u;
+  u = uint32_t(uint8_t(buffer[index])) << 24;
+  u |= uint32_t(uint8_t(buffer[index + 1])) << 16;
+  u |= uint32_t(uint8_t(buffer[index + 2])) << 8;
+  u |= uint32_t(uint8_t(buffer[index + 3]));
+  _value = bool(u);
+  return index + 4;
 }
 
 void encodeInto(std::vector<Octet>& buffer) const
 {
-  buffer.push_back(_value);
+  align(buffer, 4);
+  uint32_t u = uint32_t(_value);
+  buffer.push_back(uint8_t(u >> 24));
+  buffer.push_back(uint8_t(u >> 16));
+  buffer.push_back(uint8_t(u >> 8));
+  buffer.push_back(uint8_t(u));
 }
 
 size_t
 getEncodedLength() const
 {
-  return 1;
+  return 4;
 }
 
 unsigned int
 getOctetBoundary() const
 {
-  return 1;
+  return 4;
 }
 
 Integer64 hash() const
