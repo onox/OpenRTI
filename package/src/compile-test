@@ -23,6 +23,8 @@ case `uname` in
                 stdflags[0]="-DCMAKE_CXX_STANDARD=98"
                 stdflags[1]="-DCMAKE_CXX_STANDARD=11"
                 # stdflags[2]="-DCMAKE_CXX_STANDARD=14"
+                stdflags[2]="-DCMAKE_CXX_STANDARD=17"
+                stdflags[3]="-DCMAKE_CXX_STANDARD=20"
                 ;;
             *)
                 stdflags[0]=""
