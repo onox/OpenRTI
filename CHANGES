@@ -8,6 +8,7 @@ OpenRTI-0.10.0 (development)
  * Try to prevent overflow with c++11 and infinite timeouts.
  * RTI13: Prefer rti13 fed files over xml files in fed file parsing.
  * Silence gcc warnings - rti can't adhere to that.
+ * Finally make OpenRTI work again with c++17 and newer.
  * For a more detailed list of changes see the git history.
 
 OpenRTI-0.9.0 (2017-05-01)
