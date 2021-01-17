@@ -118,7 +118,7 @@ EncodableDataType::clone() const                                        \
                                                                         \
 VariableLengthData                                                      \
 EncodableDataType::encode() const                                       \
-  throw (EncoderException)                                              \
+  RTI_THROW ((EncoderException))                                        \
 {                                                                       \
   VariableLengthData variableLengthData;                                \
   encode(variableLengthData);                                           \
@@ -127,35 +127,35 @@ EncodableDataType::encode() const                                       \
                                                                         \
 void                                                                    \
 EncodableDataType::encode(VariableLengthData& inData) const             \
-  throw (EncoderException)                                              \
+  RTI_THROW ((EncoderException))                                        \
 {                                                                       \
-  _impl->encode(VariableLengthDataFriend::writePointer(inData));    \
+  _impl->encode(VariableLengthDataFriend::writePointer(inData));        \
 }                                                                       \
                                                                         \
 void                                                                    \
 EncodableDataType::encodeInto(std::vector<Octet>& buffer) const         \
-  throw (EncoderException)                                              \
+  RTI_THROW ((EncoderException))                                        \
 {                                                                       \
   return _impl->encodeInto(buffer);                                     \
 }                                                                       \
                                                                         \
 void                                                                    \
 EncodableDataType::decode(VariableLengthData const & inData)            \
-  throw (EncoderException)                                              \
+  RTI_THROW ((EncoderException))                                        \
 {                                                                       \
   _impl->decode(VariableLengthDataFriend::readPointer(inData));         \
 }                                                                       \
                                                                         \
 size_t                                                                  \
 EncodableDataType::decodeFrom(std::vector<Octet> const & buffer, size_t index) \
-  throw (EncoderException)                                              \
+  RTI_THROW ((EncoderException))                                        \
 {                                                                       \
   return _impl->decodeFrom(buffer, index);                              \
 }                                                                       \
                                                                         \
 size_t                                                                  \
 EncodableDataType::getEncodedLength() const                             \
-  throw (EncoderException)                                              \
+  RTI_THROW ((EncoderException))                                        \
 {                                                                       \
   return _impl->getEncodedLength();                                     \
 }                                                                       \
@@ -174,7 +174,7 @@ EncodableDataType::hash() const                                         \
                                                                         \
 void                                                                    \
 EncodableDataType::setDataPointer(SimpleDataType* inData)               \
-  throw (EncoderException)                                              \
+  RTI_THROW ((EncoderException))                                        \
 {                                                                       \
 }                                                                       \
                                                                         \

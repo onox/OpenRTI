@@ -32,6 +32,14 @@
 # define FEDTIME_EXPORT
 #endif
 
+#if __cplusplus < 201703L
+#define RTI_NOEXCEPT throw()
+#define RTI_THROW(e) throw e
+#else
+#define RTI_NOEXCEPT noexcept
+#define RTI_THROW(e)
+#endif
+
 #include <iosfwd>
 
 class RTIambPrivateRefs;

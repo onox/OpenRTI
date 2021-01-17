@@ -52,17 +52,17 @@ operator<<(std::wostream& stream, Exception const& e)
   return stream << e.what();
 }
 
-#define IMPLEMENT_RTI_EXCEPTION(A)             \
-  A::A(std::wstring const & message) throw() : \
-    _msg(message)                              \
-  {                                            \
-  }                                            \
-  std::wstring                                 \
-  A::what() const throw()                      \
-  {                                            \
-    std::wstringstream stream;                 \
-    stream << "rti1516e::" #A ": " << _msg;     \
-    return stream.str();                       \
+#define IMPLEMENT_RTI_EXCEPTION(A)                  \
+  A::A(std::wstring const & message) RTI_NOEXCEPT : \
+    _msg(message)                                   \
+  {                                                 \
+  }                                                 \
+  std::wstring                                      \
+  A::what() const RTI_NOEXCEPT                      \
+  {                                                 \
+    std::wstringstream stream;                      \
+    stream << "rti1516e::" #A ": " << _msg;         \
+    return stream.str();                            \
   }
 
 IMPLEMENT_RTI_EXCEPTION(AlreadyConnected)

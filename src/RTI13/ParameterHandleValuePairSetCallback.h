@@ -32,27 +32,27 @@ public:
 
   virtual RTI::ULong size() const;
   virtual RTI::Handle getHandle(RTI::ULong index) const
-    throw (RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds));
   virtual RTI::ULong getValueLength(RTI::ULong index) const
-    throw (RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds));
   virtual void getValue(RTI::ULong index, char* data, RTI::ULong& length) const
-    throw (RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds));
   virtual char* getValuePointer(RTI::ULong index, RTI::ULong& length) const
-    throw (RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds));
   virtual RTI::TransportType getTransportType() const
-    throw (RTI::InvalidHandleValuePairSetContext);
+    RTI_THROW ((RTI::InvalidHandleValuePairSetContext));
   virtual RTI::OrderType getOrderType() const
-    throw (RTI::InvalidHandleValuePairSetContext);
+    RTI_THROW ((RTI::InvalidHandleValuePairSetContext));
   virtual RTI::Region* getRegion() const
-    throw (RTI::InvalidHandleValuePairSetContext);
+    RTI_THROW ((RTI::InvalidHandleValuePairSetContext));
   virtual void add(RTI::Handle handle, const char* data, RTI::ULong length)
-    throw (RTI::ValueLengthExceeded,
-           RTI::ValueCountExceeded);
+    RTI_THROW ((RTI::ValueLengthExceeded,
+           RTI::ValueCountExceeded));
   virtual void remove(RTI::Handle handle)
-    throw (RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds));
   virtual void moveFrom(const RTI::ParameterHandleValuePairSet& , RTI::ULong& )
-    throw (RTI::ValueCountExceeded,
-           RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ValueCountExceeded,
+           RTI::ArrayIndexOutOfBounds));
   virtual void empty();
   virtual RTI::ULong start() const;
   virtual RTI::ULong valid(RTI::ULong i) const;

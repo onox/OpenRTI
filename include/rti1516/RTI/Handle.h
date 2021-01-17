@@ -38,7 +38,7 @@ public:                                                         \
    HandleKind();                                                \
                                                                 \
    ~HandleKind()                                                \
-      throw();                                                  \
+      RTI_NOEXCEPT;                                             \
                                                                 \
    HandleKind(HandleKind const & rhs);                          \
                                                                 \
@@ -61,7 +61,7 @@ public:                                                         \
    unsigned long encodedLength() const;                         \
    unsigned long encode(                                        \
       void* buffer, unsigned long bufferSize) const             \
-      throw (CouldNotEncode);                                   \
+      RTI_THROW ((CouldNotEncode));                             \
                                                                 \
    std::wstring toString() const;                               \
                                                                 \
@@ -108,4 +108,3 @@ DEFINE_HANDLE_CLASS(RegionHandle)
 }
 
 #endif // RTI_Handle_h
-

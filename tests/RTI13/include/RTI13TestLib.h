@@ -120,7 +120,7 @@ public:
     _synchronized(0)
   { }
   virtual ~RTI13TestAmbassador()
-    throw ()
+    RTI_NOEXCEPT
   { }
 
   virtual bool execJoined(RTI::RTIambassador& ambassador) = 0;
@@ -386,255 +386,255 @@ public:
   }
 
   virtual void synchronizationPointRegistrationSucceeded(const char* label)
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void synchronizationPointRegistrationFailed(const char* label)
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void announceSynchronizationPoint(const char* label, const char* tag)
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
     _federateSet.erase(label);
   }
 
   virtual void federationSynchronized(const char* label)
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
     ++_synchronized;
   }
 
   virtual void initiateFederateSave(const char* label)
-      throw (RTI::UnableToPerformSave,
-             RTI::FederateInternalError)
+      RTI_THROW ((RTI::UnableToPerformSave,
+             RTI::FederateInternalError))
   {
   }
 
   virtual void federationSaved()
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void federationNotSaved()
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void requestFederationRestoreSucceeded(const char* label)
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void requestFederationRestoreFailed(const char* label, const char *)
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void federationRestoreBegun()
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void initiateFederateRestore(const char* label, RTI::FederateHandle handle)
-    throw (RTI::SpecifiedSaveLabelDoesNotExist,
+    RTI_THROW ((RTI::SpecifiedSaveLabelDoesNotExist,
            RTI::CouldNotRestore,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void federationRestored()
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void federationNotRestored()
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void startRegistrationForObjectClass(RTI::ObjectClassHandle)
-    throw (RTI::ObjectClassNotPublished,
-           RTI::FederateInternalError)
+    RTI_THROW ((RTI::ObjectClassNotPublished,
+           RTI::FederateInternalError))
   {
   }
 
   virtual void stopRegistrationForObjectClass(RTI::ObjectClassHandle)
-    throw (RTI::ObjectClassNotPublished,
-           RTI::FederateInternalError)
+    RTI_THROW ((RTI::ObjectClassNotPublished,
+           RTI::FederateInternalError))
   {
   }
 
   virtual void turnInteractionsOn(RTI::InteractionClassHandle)
-    throw (RTI::InteractionClassNotPublished,
-           RTI::FederateInternalError)
+    RTI_THROW ((RTI::InteractionClassNotPublished,
+           RTI::FederateInternalError))
   {
   }
 
   virtual void turnInteractionsOff(RTI::InteractionClassHandle)
-    throw (RTI::InteractionClassNotPublished,
-           RTI::FederateInternalError)
+    RTI_THROW ((RTI::InteractionClassNotPublished,
+           RTI::FederateInternalError))
   {
   }
 
   virtual void discoverObjectInstance(RTI::ObjectHandle, RTI::ObjectClassHandle, const char*)
-    throw (RTI::CouldNotDiscover,
+    RTI_THROW ((RTI::CouldNotDiscover,
            RTI::ObjectClassNotKnown,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void reflectAttributeValues(RTI::ObjectHandle, const RTI::AttributeHandleValuePairSet &,
                                       const RTI::FedTime &, const char *, RTI::EventRetractionHandle)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotKnown,
            RTI::FederateOwnsAttributes,
            RTI::InvalidFederationTime,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
       // _verifyReflectAttributeValues(objectHandle, attributeHandleValueMap);
   }
 
   virtual void reflectAttributeValues(RTI::ObjectHandle, const RTI::AttributeHandleValuePairSet &, const char *)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotKnown,
            RTI::FederateOwnsAttributes,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
       // _verifyReflectAttributeValues(objectHandle, attributeHandleValueMap);
   }
 
   virtual void receiveInteraction(RTI::InteractionClassHandle, const RTI::ParameterHandleValuePairSet &,
                                   const RTI::FedTime &, const char *, RTI::EventRetractionHandle)
-    throw (RTI::InteractionClassNotKnown,
+    RTI_THROW ((RTI::InteractionClassNotKnown,
            RTI::InteractionParameterNotKnown,
            RTI::InvalidFederationTime,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void receiveInteraction(RTI::InteractionClassHandle, const RTI::ParameterHandleValuePairSet &,
                                   const char *)
-    throw (RTI::InteractionClassNotKnown,
+    RTI_THROW ((RTI::InteractionClassNotKnown,
            RTI::InteractionParameterNotKnown,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void removeObjectInstance(RTI::ObjectHandle, const RTI::FedTime &, const char *,
                                     RTI::EventRetractionHandle)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::InvalidFederationTime,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void removeObjectInstance(RTI::ObjectHandle, const char *)
-    throw (RTI::ObjectNotKnown,
-           RTI::FederateInternalError)
+    RTI_THROW ((RTI::ObjectNotKnown,
+           RTI::FederateInternalError))
   {
   }
 
   virtual void attributesInScope(RTI::ObjectHandle, const RTI::AttributeHandleSet &)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotKnown,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void attributesOutOfScope(RTI::ObjectHandle, const RTI::AttributeHandleSet &)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotKnown,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void provideAttributeValueUpdate(RTI::ObjectHandle theObject,
                                            RTI::AttributeHandleSet const & theAttributes)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotKnown,
            RTI::AttributeNotOwned,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void turnUpdatesOnForObjectInstance(RTI::ObjectHandle theObject,
                                               RTI::AttributeHandleSet const & theAttributes)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotOwned,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void turnUpdatesOffForObjectInstance(RTI::ObjectHandle theObject,
                                                RTI::AttributeHandleSet const & theAttributes)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotOwned,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void requestAttributeOwnershipAssumption(RTI::ObjectHandle, const RTI::AttributeHandleSet &,
                                                    const char *)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAlreadyOwned,
-           RTI::AttributeNotPublished, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAlreadyOwned,
+           RTI::AttributeNotPublished, RTI::FederateInternalError)) { }
 
   virtual void attributeOwnershipDivestitureNotification(RTI::ObjectHandle, const RTI::AttributeHandleSet &)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeNotOwned,
-           RTI::AttributeDivestitureWasNotRequested, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeNotOwned,
+           RTI::AttributeDivestitureWasNotRequested, RTI::FederateInternalError)) { }
 
   virtual void attributeOwnershipAcquisitionNotification(RTI::ObjectHandle, const RTI::AttributeHandleSet &)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAcquisitionWasNotRequested,
-           RTI::AttributeAlreadyOwned, RTI::AttributeNotPublished, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAcquisitionWasNotRequested,
+           RTI::AttributeAlreadyOwned, RTI::AttributeNotPublished, RTI::FederateInternalError)) { }
 
   virtual void attributeOwnershipUnavailable(RTI::ObjectHandle, const RTI::AttributeHandleSet &)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAlreadyOwned,
-           RTI::AttributeAcquisitionWasNotRequested, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAlreadyOwned,
+           RTI::AttributeAcquisitionWasNotRequested, RTI::FederateInternalError)) { }
 
   virtual void requestAttributeOwnershipRelease(RTI::ObjectHandle, const RTI::AttributeHandleSet &,
                                                 const char *)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeNotOwned, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeNotOwned, RTI::FederateInternalError)) { }
 
   virtual void confirmAttributeOwnershipAcquisitionCancellation(RTI::ObjectHandle,
                                                                 const RTI::AttributeHandleSet &)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAlreadyOwned,
-           RTI::AttributeAcquisitionWasNotCanceled, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAlreadyOwned,
+           RTI::AttributeAcquisitionWasNotCanceled, RTI::FederateInternalError)) { }
 
   virtual void informAttributeOwnership(RTI::ObjectHandle, RTI::AttributeHandle, RTI::FederateHandle)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::FederateInternalError)) { }
 
   virtual void attributeIsNotOwned(RTI::ObjectHandle, RTI::AttributeHandle)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::FederateInternalError)) { }
 
   virtual void attributeOwnedByRTI(RTI::ObjectHandle, RTI::AttributeHandle)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::FederateInternalError)) { }
 
   virtual void timeRegulationEnabled(RTI::FedTime const & theFederateTime)
-    throw (RTI::InvalidFederationTime,
+    RTI_THROW ((RTI::InvalidFederationTime,
            RTI::EnableTimeRegulationWasNotPending,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void timeConstrainedEnabled(RTI::FedTime const & theFederateTime)
-    throw (RTI::InvalidFederationTime,
+    RTI_THROW ((RTI::InvalidFederationTime,
            RTI::EnableTimeConstrainedWasNotPending,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void timeAdvanceGrant(RTI::FedTime const & theTime)
-    throw (RTI::InvalidFederationTime,
+    RTI_THROW ((RTI::InvalidFederationTime,
            RTI::TimeAdvanceWasNotInProgress,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void requestRetraction(RTI::EventRetractionHandle theHandle)
-    throw (RTI::EventNotKnown,
-           RTI::FederateInternalError)
+    RTI_THROW ((RTI::EventNotKnown,
+           RTI::FederateInternalError))
   {
   }
 
@@ -653,7 +653,7 @@ public:
     _timeAdvancePending(false)
   { }
   virtual ~RTI13SimpleAmbassador()
-    throw ()
+    RTI_NOEXCEPT
   { }
 
   // bool getFail() const
@@ -1284,103 +1284,103 @@ public:
 
 protected:
   virtual void synchronizationPointRegistrationSucceeded(const char *label)
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void synchronizationPointRegistrationFailed(const char *label)
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void announceSynchronizationPoint(const char *label, const char *tag)
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void federationSynchronized(const char *label)
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void initiateFederateSave(const char* label)
-      throw (RTI::UnableToPerformSave,
-             RTI::FederateInternalError)
+      RTI_THROW ((RTI::UnableToPerformSave,
+             RTI::FederateInternalError))
   {
   }
 
   virtual void federationSaved()
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void federationNotSaved()
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void requestFederationRestoreSucceeded(const char* label)
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void requestFederationRestoreFailed(const char* label, const char* tag)
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void federationRestoreBegun()
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void initiateFederateRestore(const char* label, RTI::FederateHandle handle)
-    throw (RTI::SpecifiedSaveLabelDoesNotExist,
+    RTI_THROW ((RTI::SpecifiedSaveLabelDoesNotExist,
            RTI::CouldNotRestore,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void federationRestored()
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void federationNotRestored()
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 
   virtual void startRegistrationForObjectClass(RTI::ObjectClassHandle)
-    throw (RTI::ObjectClassNotPublished,
-           RTI::FederateInternalError)
+    RTI_THROW ((RTI::ObjectClassNotPublished,
+           RTI::FederateInternalError))
   {
   }
 
   virtual void stopRegistrationForObjectClass(RTI::ObjectClassHandle)
-    throw (RTI::ObjectClassNotPublished,
-           RTI::FederateInternalError)
+    RTI_THROW ((RTI::ObjectClassNotPublished,
+           RTI::FederateInternalError))
   {
   }
 
   virtual void turnInteractionsOn(RTI::InteractionClassHandle)
-    throw (RTI::InteractionClassNotPublished,
-           RTI::FederateInternalError)
+    RTI_THROW ((RTI::InteractionClassNotPublished,
+           RTI::FederateInternalError))
   {
   }
 
   virtual void turnInteractionsOff(RTI::InteractionClassHandle)
-    throw (RTI::InteractionClassNotPublished,
-           RTI::FederateInternalError)
+    RTI_THROW ((RTI::InteractionClassNotPublished,
+           RTI::FederateInternalError))
   {
   }
 
   virtual void discoverObjectInstance(RTI::ObjectHandle objectHandle,
                                       RTI::ObjectClassHandle objectClassHandle,
                                       const char* objectInstanceName)
-    throw (RTI::CouldNotDiscover,
+    RTI_THROW ((RTI::CouldNotDiscover,
            RTI::ObjectClassNotKnown,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
       // ObjectClassAttributeHandleSetMap::iterator i = _subscribedObjectClassAttributeHandleSetMap.find(objectClassHandle);
       // if (i == _subscribedObjectClassAttributeHandleSetMap.end()) {
@@ -1398,158 +1398,158 @@ protected:
 
   virtual void reflectAttributeValues(RTI::ObjectHandle, const RTI::AttributeHandleValuePairSet &,
                                       const RTI::FedTime &, const char *, RTI::EventRetractionHandle)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotKnown,
            RTI::FederateOwnsAttributes,
            RTI::InvalidFederationTime,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
       // _verifyReflectAttributeValues(objectHandle, attributeHandleValueMap);
   }
 
   virtual void reflectAttributeValues(RTI::ObjectHandle, const RTI::AttributeHandleValuePairSet &, const char *)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotKnown,
            RTI::FederateOwnsAttributes,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
       // _verifyReflectAttributeValues(objectHandle, attributeHandleValueMap);
   }
 
   virtual void receiveInteraction(RTI::InteractionClassHandle, const RTI::ParameterHandleValuePairSet &,
                                   const RTI::FedTime &, const char *, RTI::EventRetractionHandle)
-    throw (RTI::InteractionClassNotKnown,
+    RTI_THROW ((RTI::InteractionClassNotKnown,
            RTI::InteractionParameterNotKnown,
            RTI::InvalidFederationTime,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void receiveInteraction(RTI::InteractionClassHandle, const RTI::ParameterHandleValuePairSet &,
                                   const char *)
-    throw (RTI::InteractionClassNotKnown,
+    RTI_THROW ((RTI::InteractionClassNotKnown,
            RTI::InteractionParameterNotKnown,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void removeObjectInstance(RTI::ObjectHandle, const RTI::FedTime &, const char *,
                                     RTI::EventRetractionHandle)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::InvalidFederationTime,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void removeObjectInstance(RTI::ObjectHandle, const char *)
-    throw (RTI::ObjectNotKnown,
-           RTI::FederateInternalError)
+    RTI_THROW ((RTI::ObjectNotKnown,
+           RTI::FederateInternalError))
   {
   }
 
   virtual void attributesInScope(RTI::ObjectHandle, const RTI::AttributeHandleSet &)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotKnown,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void attributesOutOfScope(RTI::ObjectHandle, const RTI::AttributeHandleSet &)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotKnown,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void provideAttributeValueUpdate(RTI::ObjectHandle theObject,
                                            RTI::AttributeHandleSet const & theAttributes)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotKnown,
            RTI::AttributeNotOwned,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void turnUpdatesOnForObjectInstance(RTI::ObjectHandle objectHandle,
                                               RTI::AttributeHandleSet const & attributes)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotOwned,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void turnUpdatesOffForObjectInstance(RTI::ObjectHandle objectHandle,
                                                RTI::AttributeHandleSet const & attributes)
-    throw (RTI::ObjectNotKnown,
+    RTI_THROW ((RTI::ObjectNotKnown,
            RTI::AttributeNotOwned,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
   }
 
   virtual void requestAttributeOwnershipAssumption(RTI::ObjectHandle, const RTI::AttributeHandleSet &,
                                                    const char *)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAlreadyOwned,
-           RTI::AttributeNotPublished, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAlreadyOwned,
+           RTI::AttributeNotPublished, RTI::FederateInternalError)) { }
 
   virtual void attributeOwnershipDivestitureNotification(RTI::ObjectHandle, const RTI::AttributeHandleSet &)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeNotOwned,
-           RTI::AttributeDivestitureWasNotRequested, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeNotOwned,
+           RTI::AttributeDivestitureWasNotRequested, RTI::FederateInternalError)) { }
 
   virtual void attributeOwnershipAcquisitionNotification(RTI::ObjectHandle, const RTI::AttributeHandleSet &)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAcquisitionWasNotRequested,
-           RTI::AttributeAlreadyOwned, RTI::AttributeNotPublished, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAcquisitionWasNotRequested,
+           RTI::AttributeAlreadyOwned, RTI::AttributeNotPublished, RTI::FederateInternalError)) { }
 
   virtual void attributeOwnershipUnavailable(RTI::ObjectHandle, const RTI::AttributeHandleSet &)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAlreadyOwned,
-           RTI::AttributeAcquisitionWasNotRequested, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAlreadyOwned,
+           RTI::AttributeAcquisitionWasNotRequested, RTI::FederateInternalError)) { }
 
   virtual void requestAttributeOwnershipRelease(RTI::ObjectHandle, const RTI::AttributeHandleSet &,
                                                 const char *)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeNotOwned, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeNotOwned, RTI::FederateInternalError)) { }
 
   virtual void confirmAttributeOwnershipAcquisitionCancellation(RTI::ObjectHandle,
                                                                 const RTI::AttributeHandleSet &)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAlreadyOwned,
-           RTI::AttributeAcquisitionWasNotCanceled, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::AttributeAlreadyOwned,
+           RTI::AttributeAcquisitionWasNotCanceled, RTI::FederateInternalError)) { }
 
   virtual void informAttributeOwnership(RTI::ObjectHandle, RTI::AttributeHandle, RTI::FederateHandle)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::FederateInternalError)) { }
 
   virtual void attributeIsNotOwned(RTI::ObjectHandle, RTI::AttributeHandle)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::FederateInternalError)) { }
 
   virtual void attributeOwnedByRTI(RTI::ObjectHandle, RTI::AttributeHandle)
-    throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::FederateInternalError) { }
+    RTI_THROW ((RTI::ObjectNotKnown, RTI::AttributeNotKnown, RTI::FederateInternalError)) { }
 
   virtual void timeRegulationEnabled(RTI::FedTime const & theFederateTime)
-    throw (RTI::InvalidFederationTime,
+    RTI_THROW ((RTI::InvalidFederationTime,
            RTI::EnableTimeRegulationWasNotPending,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
     _timeRegulationEnabled = true;
     *_grantedFedTime = theFederateTime;
   }
 
   virtual void timeConstrainedEnabled(RTI::FedTime const & theFederateTime)
-    throw (RTI::InvalidFederationTime,
+    RTI_THROW ((RTI::InvalidFederationTime,
            RTI::EnableTimeConstrainedWasNotPending,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
     _timeConstrainedEnabled = true;
     *_grantedFedTime = theFederateTime;
   }
 
   virtual void timeAdvanceGrant(RTI::FedTime const & theFederateTime)
-    throw (RTI::InvalidFederationTime,
+    RTI_THROW ((RTI::InvalidFederationTime,
            RTI::TimeAdvanceWasNotInProgress,
-           RTI::FederateInternalError)
+           RTI::FederateInternalError))
   {
     _timeAdvancePending = false;
     *_grantedFedTime = theFederateTime;
   }
 
   virtual void requestRetraction(RTI::EventRetractionHandle theHandle)
-    throw (RTI::FederateInternalError)
+    RTI_THROW ((RTI::FederateInternalError))
   {
   }
 

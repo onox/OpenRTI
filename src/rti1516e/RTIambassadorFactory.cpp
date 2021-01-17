@@ -30,13 +30,13 @@ RTIambassadorFactory::RTIambassadorFactory()
 }
 
 RTIambassadorFactory::~RTIambassadorFactory()
-  throw ()
+  RTI_NOEXCEPT
 {
 }
 
 std::auto_ptr<RTIambassador>
 RTIambassadorFactory::createRTIambassador()
-  throw (RTIinternalError)
+  RTI_THROW ((RTIinternalError))
 {
   return std::auto_ptr<RTIambassador>(new OpenRTI::RTIambassadorImplementation);
 }

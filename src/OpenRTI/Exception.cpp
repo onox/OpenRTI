@@ -40,18 +40,18 @@ Exception::Exception(const char* type, const std::string& reason) :
   Log(Assert, Info) << "Fired exception: type = " << type << ", reason = " << _reason << std::endl;
 }
 
-Exception::~Exception() throw()
+Exception::~Exception() OpenRTI_NOEXCEPT
 {
 }
 
 const char*
-Exception::what() const throw()
+Exception::what() const OpenRTI_NOEXCEPT
 {
   return _reason.c_str();
 }
 
 const std::string&
-Exception::getReason() const throw()
+Exception::getReason() const OpenRTI_NOEXCEPT
 {
   return _reason;
 }
@@ -67,7 +67,7 @@ RTIinternalError::RTIinternalError(const std::string& reason) :
 {
 }
 
-RTIinternalError::~RTIinternalError() throw()
+RTIinternalError::~RTIinternalError() OpenRTI_NOEXCEPT
 {
 }
 

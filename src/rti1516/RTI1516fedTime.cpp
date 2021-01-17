@@ -45,7 +45,7 @@ RTI1516fedTime::RTI1516fedTime(const RTI1516fedTime& fedTime) :
 {
 }
 
-RTI1516fedTime::~RTI1516fedTime() throw ()
+RTI1516fedTime::~RTI1516fedTime() RTI_NOEXCEPT
 {
 }
 
@@ -75,7 +75,7 @@ RTI1516fedTimeInterval::RTI1516fedTimeInterval(const RTI1516fedTimeInterval& log
 {
 }
 
-RTI1516fedTimeInterval::~RTI1516fedTimeInterval() throw ()
+RTI1516fedTimeInterval::~RTI1516fedTimeInterval() RTI_NOEXCEPT
 {
 }
 
@@ -89,21 +89,20 @@ RTI1516fedTimeFactory::RTI1516fedTimeFactory()
 {
 }
 
-RTI1516fedTimeFactory::~RTI1516fedTimeFactory() throw ()
+RTI1516fedTimeFactory::~RTI1516fedTimeFactory() RTI_NOEXCEPT
 {
 }
 
 std::auto_ptr<rti1516::LogicalTime>
 RTI1516fedTimeFactory::makeLogicalTime()
-  throw (rti1516::InternalError)
+  RTI_THROW ((rti1516::InternalError))
 {
   return std::auto_ptr<rti1516::LogicalTime>(new RTI1516fedTime);
 }
 
 std::auto_ptr<rti1516::LogicalTimeInterval>
 RTI1516fedTimeFactory::makeLogicalTimeInterval()
-  throw (rti1516::InternalError)
+  RTI_THROW ((rti1516::InternalError))
 {
   return std::auto_ptr<rti1516::LogicalTimeInterval>(new RTI1516fedTimeInterval);
 }
-

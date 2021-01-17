@@ -148,34 +148,34 @@ class RTI_EXPORT AttributeHandleValuePairSet
   virtual ULong size() const = 0;
 
   virtual Handle getHandle(ULong) const
-    throw (ArrayIndexOutOfBounds) = 0 ;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0 ;
 
   virtual ULong getValueLength(ULong) const
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual void getValue(ULong, char*, ULong&) const
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual char* getValuePointer(ULong, ULong&) const
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual TransportType getTransportType(ULong) const
-    throw (InvalidHandleValuePairSetContext) = 0;
+    RTI_THROW ((InvalidHandleValuePairSetContext)) = 0;
 
   virtual OrderType getOrderType(ULong) const
-    throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext)) = 0;
 
   virtual Region* getRegion(ULong) const
-    throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext)) = 0;
 
   virtual void add(Handle, const char*, ULong)
-    throw (ValueLengthExceeded, ValueCountExceeded) = 0;
+    RTI_THROW ((ValueLengthExceeded, ValueCountExceeded)) = 0;
 
   virtual void remove(Handle h)
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual void moveFrom(const AttributeHandleValuePairSet &, ULong &)
-    throw (ValueCountExceeded, ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ValueCountExceeded, ArrayIndexOutOfBounds)) = 0;
 
   virtual void empty() = 0;
 
@@ -188,7 +188,7 @@ class RTI_EXPORT AttributeSetFactory
 {
  public:
   static AttributeHandleValuePairSet* create(ULong)
-    throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded);
+    RTI_THROW ((MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded));
 };
 
 class RTI_EXPORT AttributeHandleSet
@@ -199,13 +199,13 @@ class RTI_EXPORT AttributeHandleSet
   virtual ULong size() const = 0;
 
   virtual AttributeHandle getHandle(ULong) const
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual void add(AttributeHandle)
-    throw (ArrayIndexOutOfBounds, AttributeNotDefined) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds, AttributeNotDefined)) = 0;
 
   virtual void remove(AttributeHandle)
-    throw (AttributeNotDefined) = 0;
+    RTI_THROW ((AttributeNotDefined)) = 0;
 
   virtual void empty() = 0;
 
@@ -217,7 +217,7 @@ class RTI_EXPORT AttributeHandleSetFactory
 {
  public:
   static AttributeHandleSet* create(ULong)
-    throw(MemoryExhausted, ValueCountExceeded);
+    RTI_THROW((MemoryExhausted, ValueCountExceeded));
 };
 
 class RTI_EXPORT FederateHandleSet
@@ -228,13 +228,13 @@ class RTI_EXPORT FederateHandleSet
   virtual ULong size() const = 0;
 
   virtual FederateHandle getHandle(ULong) const
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual void add(FederateHandle)
-    throw (ValueCountExceeded) = 0;
+    RTI_THROW ((ValueCountExceeded)) = 0;
 
   virtual void remove(FederateHandle)
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual void empty() = 0;
 
@@ -245,7 +245,7 @@ class RTI_EXPORT FederateHandleSetFactory
 {
  public:
   static FederateHandleSet* create(ULong)
-    throw (MemoryExhausted, ValueCountExceeded);
+    RTI_THROW ((MemoryExhausted, ValueCountExceeded));
 };
 
 class RTI_EXPORT ParameterHandleValuePairSet
@@ -256,34 +256,34 @@ class RTI_EXPORT ParameterHandleValuePairSet
   virtual ULong size() const = 0;
 
   virtual Handle getHandle(ULong) const
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual ULong getValueLength(ULong) const
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual void getValue(ULong, char* , ULong &) const
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual char* getValuePointer(ULong, ULong &) const
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual TransportType getTransportType() const
-    throw (InvalidHandleValuePairSetContext) = 0;
+    RTI_THROW ((InvalidHandleValuePairSetContext)) = 0;
 
   virtual OrderType getOrderType() const
-    throw (InvalidHandleValuePairSetContext) = 0;
+    RTI_THROW ((InvalidHandleValuePairSetContext)) = 0;
 
   virtual Region* getRegion() const
-    throw (InvalidHandleValuePairSetContext) = 0;
+    RTI_THROW ((InvalidHandleValuePairSetContext)) = 0;
 
   virtual void add(Handle, const char* , ULong)
-    throw (ValueLengthExceeded, ValueCountExceeded) = 0;
+    RTI_THROW ((ValueLengthExceeded, ValueCountExceeded)) = 0;
 
   virtual void remove(Handle)
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual void moveFrom(const ParameterHandleValuePairSet &, ULong &)
-    throw (ValueCountExceeded, ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ValueCountExceeded, ArrayIndexOutOfBounds)) = 0;
 
   virtual void empty() = 0;
 
@@ -296,7 +296,7 @@ class RTI_EXPORT ParameterSetFactory
 {
  public:
   static ParameterHandleValuePairSet* create(ULong)
-    throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded);
+    RTI_THROW ((MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded));
 };
 
 class RTI_EXPORT Region
@@ -305,28 +305,28 @@ class RTI_EXPORT Region
   virtual ~Region() { }
 
   virtual ULong getRangeLowerBound(ExtentIndex, DimensionHandle) const
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual ULong getRangeUpperBound(ExtentIndex, DimensionHandle) const
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual void setRangeLowerBound(ExtentIndex, DimensionHandle, ULong)
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual void setRangeUpperBound(ExtentIndex, DimensionHandle, ULong)
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual SpaceHandle getSpaceHandle() const
-    throw () = 0;
+    RTI_NOEXCEPT = 0;
 
   virtual ULong getNumberOfExtents() const
-    throw () = 0;
+    RTI_NOEXCEPT = 0;
 
   virtual ULong getRangeLowerBoundNotificationLimit(ExtentIndex, DimensionHandle) const
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 
   virtual ULong getRangeUpperBoundNotificationLimit(ExtentIndex, DimensionHandle) const
-    throw (ArrayIndexOutOfBounds) = 0;
+    RTI_THROW ((ArrayIndexOutOfBounds)) = 0;
 };
 
 class FEDTIME_EXPORT FedTime
@@ -341,28 +341,28 @@ class FEDTIME_EXPORT FedTime
   virtual Boolean isPositiveInfinity() = 0;
 
   virtual FedTime &operator+=(const FedTime &)
-    throw (InvalidFederationTime) = 0;
+    RTI_THROW ((InvalidFederationTime)) = 0;
 
   virtual FedTime &operator-=(const FedTime &)
-    throw (InvalidFederationTime) = 0;
+    RTI_THROW ((InvalidFederationTime)) = 0;
 
   virtual Boolean operator<=(const FedTime &) const
-    throw (InvalidFederationTime) = 0;
+    RTI_THROW ((InvalidFederationTime)) = 0;
 
   virtual Boolean operator<(const FedTime &) const
-    throw (InvalidFederationTime) = 0;
+    RTI_THROW ((InvalidFederationTime)) = 0;
 
   virtual Boolean operator>=(const FedTime &) const
-    throw (InvalidFederationTime) = 0;
+    RTI_THROW ((InvalidFederationTime)) = 0;
 
   virtual Boolean operator>(const FedTime &) const
-    throw (InvalidFederationTime) = 0;
+    RTI_THROW ((InvalidFederationTime)) = 0;
 
   virtual Boolean operator==(const FedTime &) const
-    throw (InvalidFederationTime) = 0;
+    RTI_THROW ((InvalidFederationTime)) = 0;
 
   virtual FedTime &operator=(const FedTime &)
-    throw (InvalidFederationTime) = 0;
+    RTI_THROW ((InvalidFederationTime)) = 0;
 
   virtual int encodedLength() const = 0;
   virtual void encode(char* ) const = 0;
@@ -374,10 +374,10 @@ class FEDTIME_EXPORT FedTimeFactory
 {
  public:
   static RTI::FedTime* makeZero()
-    throw (RTI::MemoryExhausted);
+    RTI_THROW ((RTI::MemoryExhausted));
 
   static RTI::FedTime* decode(const char* buf)
-    throw (RTI::MemoryExhausted);
+    RTI_THROW ((RTI::MemoryExhausted));
 };
 
 struct EventRetractionHandle_s {

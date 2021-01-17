@@ -73,33 +73,33 @@ public:                                                                       \
                                                                               \
    /* Encode this element into a new VariableLengthData                    */ \
    virtual VariableLengthData encode () const                                 \
-      throw (EncoderException);                                               \
+      RTI_THROW ((EncoderException));                                         \
                                                                               \
    /* Encode this element into an existing VariableLengthData              */ \
    virtual void encode (                                                      \
       VariableLengthData& inData) const                                       \
-      throw (EncoderException);                                               \
+      RTI_THROW ((EncoderException));                                         \
                                                                               \
    /* Encode this element and append it to a buffer                        */ \
    virtual void encodeInto (                                                  \
       std::vector<Octet>& buffer) const                                       \
-      throw (EncoderException);                                               \
+      RTI_THROW ((EncoderException));                                         \
                                                                               \
    /* Decode this element from the RTI's VariableLengthData.               */ \
    virtual void decode (                                                      \
       VariableLengthData const & inData)                                      \
-      throw (EncoderException);                                               \
+      RTI_THROW ((EncoderException));                                         \
                                                                               \
    /* Decode this element starting at the index in the provided buffer     */ \
    /* Return the index immediately after the decoded data.                 */ \
    virtual size_t decodeFrom (                                                \
       std::vector<Octet> const & buffer,                                      \
       size_t index)                                                           \
-      throw (EncoderException);                                               \
+      RTI_THROW ((EncoderException));                                         \
                                                                               \
    /* Return the size in bytes of this element's encoding.                 */ \
    virtual size_t getEncodedLength () const                                   \
-      throw (EncoderException);                                               \
+      RTI_THROW ((EncoderException));                                         \
                                                                               \
    /* Return the octet boundary of this element.                           */ \
    virtual unsigned int getOctetBoundary () const;                            \
@@ -116,7 +116,7 @@ public:                                                                       \
    /* Null pointer results in an exception.                                */ \
    virtual void setDataPointer (                                              \
       SimpleDataType* inData)                                                 \
-      throw (EncoderException);                                               \
+      RTI_THROW ((EncoderException));                                         \
                                                                               \
    /* Set the value to be encoded.                                         */ \
    /* If this element uses external memory, the memory will be modified.   */ \

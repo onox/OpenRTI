@@ -19,7 +19,7 @@ namespace rti1516
                 unsigned long upperBound);
 
     ~RangeBounds()
-      throw ();
+      RTI_NOEXCEPT;
 
     RangeBounds(RangeBounds const & rhs);
 

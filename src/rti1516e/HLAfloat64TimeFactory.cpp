@@ -31,26 +31,26 @@ HLAfloat64TimeFactory::HLAfloat64TimeFactory()
 }
 
 HLAfloat64TimeFactory::~HLAfloat64TimeFactory()
-  throw ()
+  RTI_NOEXCEPT
 {
 }
 
 std::auto_ptr<HLAfloat64Time>
 HLAfloat64TimeFactory::makeLogicalTime(double value)
-  throw (InternalError)
+  RTI_THROW ((InternalError))
 {
   return std::auto_ptr<HLAfloat64Time>(new HLAfloat64Time(value));
 }
 
 std::auto_ptr<LogicalTime>
 HLAfloat64TimeFactory::makeInitial()
-  throw (InternalError)
+  RTI_THROW ((InternalError))
 {
   return std::auto_ptr<LogicalTime>(new HLAfloat64Time);
 }
 
 std::auto_ptr<LogicalTime> HLAfloat64TimeFactory::makeFinal()
-  throw (InternalError)
+  RTI_THROW ((InternalError))
 {
   std::auto_ptr<HLAfloat64Time> integerTime(new HLAfloat64Time);
   integerTime->setFinal();
@@ -59,21 +59,21 @@ std::auto_ptr<LogicalTime> HLAfloat64TimeFactory::makeFinal()
 
 std::auto_ptr<HLAfloat64Interval>
 HLAfloat64TimeFactory::makeLogicalTimeInterval(double value)
-  throw (InternalError)
+  RTI_THROW ((InternalError))
 {
   return std::auto_ptr<HLAfloat64Interval>(new HLAfloat64Interval(value));
 }
 
 std::auto_ptr<LogicalTimeInterval>
 HLAfloat64TimeFactory::makeZero()
-  throw (InternalError)
+  RTI_THROW ((InternalError))
 {
   return std::auto_ptr<LogicalTimeInterval>(new HLAfloat64Interval);
 }
 
 std::auto_ptr<LogicalTimeInterval>
 HLAfloat64TimeFactory::makeEpsilon()
-  throw (InternalError)
+  RTI_THROW ((InternalError))
 {
   std::auto_ptr<HLAfloat64Interval> integerInterval(new HLAfloat64Interval);
   integerInterval->setEpsilon();
@@ -82,7 +82,7 @@ HLAfloat64TimeFactory::makeEpsilon()
 
 std::auto_ptr<LogicalTime>
 HLAfloat64TimeFactory::decodeLogicalTime(VariableLengthData const & encodedLogicalTime)
-  throw (InternalError, CouldNotDecode)
+  RTI_THROW ((InternalError, CouldNotDecode))
 {
   std::auto_ptr<HLAfloat64Time> integerTime(new HLAfloat64Time);
   integerTime->decode(encodedLogicalTime);
@@ -91,7 +91,7 @@ HLAfloat64TimeFactory::decodeLogicalTime(VariableLengthData const & encodedLogic
 
 std::auto_ptr<LogicalTime>
 HLAfloat64TimeFactory::decodeLogicalTime(void* buffer, size_t bufferSize)
-  throw (InternalError, CouldNotDecode)
+  RTI_THROW ((InternalError, CouldNotDecode))
 {
   std::auto_ptr<HLAfloat64Time> integerTime(new HLAfloat64Time);
   integerTime->decode(buffer, bufferSize);
@@ -100,7 +100,7 @@ HLAfloat64TimeFactory::decodeLogicalTime(void* buffer, size_t bufferSize)
 
 std::auto_ptr<LogicalTimeInterval>
 HLAfloat64TimeFactory::decodeLogicalTimeInterval(VariableLengthData const & encodedValue)
-  throw (InternalError, CouldNotDecode)
+  RTI_THROW ((InternalError, CouldNotDecode))
 {
   std::auto_ptr<HLAfloat64Interval> integerInterval(new HLAfloat64Interval);
   integerInterval->decode(encodedValue);
@@ -109,7 +109,7 @@ HLAfloat64TimeFactory::decodeLogicalTimeInterval(VariableLengthData const & enco
 
 std::auto_ptr<LogicalTimeInterval>
 HLAfloat64TimeFactory::decodeLogicalTimeInterval(void* buffer, size_t bufferSize)
-  throw (InternalError, CouldNotDecode)
+  RTI_THROW ((InternalError, CouldNotDecode))
 {
   std::auto_ptr<HLAfloat64Interval> integerInterval(new HLAfloat64Interval);
   integerInterval->decode(buffer, bufferSize);

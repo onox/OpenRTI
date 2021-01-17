@@ -29,7 +29,7 @@ namespace rti1516
   public:
     virtual
     ~LogicalTimeInterval()
-      throw () = 0;
+      RTI_NOEXCEPT = 0;
 
     virtual
     void
@@ -50,49 +50,49 @@ namespace rti1516
     virtual
     LogicalTimeInterval &
     operator=(LogicalTimeInterval const & value)
-      throw (InvalidLogicalTimeInterval) = 0;
+      RTI_THROW ((InvalidLogicalTimeInterval)) = 0;
 
     // Set self to the difference between two LogicalTimes
     virtual
     void
     setToDifference(LogicalTime const & minuend,
       LogicalTime const& subtrahend)
-      throw (InvalidLogicalTime) = 0;
+      RTI_THROW ((InvalidLogicalTime)) = 0;
 
     virtual
     LogicalTimeInterval &
     operator+=(LogicalTimeInterval const & addend)
-      throw (InvalidLogicalTimeInterval) = 0;
+      RTI_THROW ((InvalidLogicalTimeInterval)) = 0;
 
     virtual
     LogicalTimeInterval &
     operator-=(LogicalTimeInterval const & subtrahend)
-      throw (InvalidLogicalTimeInterval) = 0;
+      RTI_THROW ((InvalidLogicalTimeInterval)) = 0;
     
     virtual
     bool
     operator>(LogicalTimeInterval const & value) const
-      throw (InvalidLogicalTimeInterval) = 0;
+      RTI_THROW ((InvalidLogicalTimeInterval)) = 0;
 
     virtual
     bool
     operator<(LogicalTimeInterval const & value) const
-      throw (InvalidLogicalTimeInterval) = 0;
+      RTI_THROW ((InvalidLogicalTimeInterval)) = 0;
 
     virtual
     bool
     operator==(LogicalTimeInterval const & value) const
-      throw (InvalidLogicalTimeInterval) = 0;
+      RTI_THROW ((InvalidLogicalTimeInterval)) = 0;
 
     virtual
     bool
     operator>=(LogicalTimeInterval const & value) const
-      throw (InvalidLogicalTimeInterval) = 0;
+      RTI_THROW ((InvalidLogicalTimeInterval)) = 0;
 
     virtual
     bool
     operator<=(LogicalTimeInterval const & value) const
-      throw (InvalidLogicalTimeInterval) = 0;
+      RTI_THROW ((InvalidLogicalTimeInterval)) = 0;
     
     // Generates an encoded value that can be used to send
     // LogicalTimeIntervals to other federates in updates or interactions
@@ -101,17 +101,17 @@ namespace rti1516
     // Alternate encode for directly filling a buffer
     virtual unsigned long encodedLength() const = 0;
     virtual unsigned long encode(void* buffer, unsigned long bufferSize) const 
-       throw (CouldNotEncode) = 0;
+       RTI_THROW ((CouldNotEncode)) = 0;
 
     // Decode encodedValue into self
     virtual void decode(VariableLengthData const & encodedValue)
-      throw (InternalError,
-             CouldNotDecode) = 0;
+      RTI_THROW ((InternalError,
+             CouldNotDecode)) = 0;
 
     // Alternate decode that reads directly from a buffer
     virtual void decode(void* buffer, unsigned long bufferSize)
-      throw (InternalError,
-             CouldNotDecode) = 0;
+      RTI_THROW ((InternalError,
+             CouldNotDecode)) = 0;
 
     virtual std::wstring toString() const = 0;
 

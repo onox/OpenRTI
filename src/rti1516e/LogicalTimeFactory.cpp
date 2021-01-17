@@ -22,7 +22,7 @@
 namespace rti1516e {
 
 LogicalTimeFactory::~LogicalTimeFactory()
-  throw ()
+  RTI_NOEXCEPT
 {
 }
 

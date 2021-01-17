@@ -31,7 +31,7 @@ public:
   HLAfloat64Time(double value);
   HLAfloat64Time(const rti1516::LogicalTime& logicalTime);
   HLAfloat64Time(const HLAfloat64Time& logicalTime);
-  virtual ~HLAfloat64Time() throw ();
+  virtual ~HLAfloat64Time() RTI_NOEXCEPT;
 
   virtual void setInitial();
   virtual bool isInitial() const;
@@ -40,33 +40,33 @@ public:
   virtual bool isFinal() const;
 
   virtual HLAfloat64Time& operator=(const rti1516::LogicalTime& logicalTime)
-    throw (rti1516::InvalidLogicalTime);
+    RTI_THROW ((rti1516::InvalidLogicalTime));
 
   virtual HLAfloat64Time& operator+=(const rti1516::LogicalTimeInterval& logicalTimeInterval)
-    throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval);
+    RTI_THROW ((rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval));
   virtual HLAfloat64Time& operator-=(const rti1516::LogicalTimeInterval& logicalTimeInterval)
-    throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval);
+    RTI_THROW ((rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval));
 
   virtual bool operator>(rti1516::LogicalTime const & value) const
-    throw (rti1516::InvalidLogicalTime);
+    RTI_THROW ((rti1516::InvalidLogicalTime));
   virtual bool operator<(rti1516::LogicalTime const & value) const
-    throw (rti1516::InvalidLogicalTime);
+    RTI_THROW ((rti1516::InvalidLogicalTime));
   virtual bool operator==(rti1516::LogicalTime const & value) const
-    throw (rti1516::InvalidLogicalTime);
+    RTI_THROW ((rti1516::InvalidLogicalTime));
   virtual bool operator>=(rti1516::LogicalTime const & value) const
-    throw (rti1516::InvalidLogicalTime);
+    RTI_THROW ((rti1516::InvalidLogicalTime));
   virtual bool operator<=(rti1516::LogicalTime const & value) const
-    throw (rti1516::InvalidLogicalTime);
+    RTI_THROW ((rti1516::InvalidLogicalTime));
 
   virtual rti1516::VariableLengthData encode() const;
   virtual unsigned long encodedLength() const;
   virtual unsigned long encode(void* buffer, unsigned long bufferSize) const
-    throw (rti1516::CouldNotEncode);
+    RTI_THROW ((rti1516::CouldNotEncode));
 
   virtual void decode(const rti1516::VariableLengthData& variableLengthData)
-    throw (rti1516::InternalError, rti1516::CouldNotDecode);
+    RTI_THROW ((rti1516::InternalError, rti1516::CouldNotDecode));
   virtual void decode(void* buffer, unsigned long bufferSize)
-    throw (rti1516::InternalError, rti1516::CouldNotDecode);
+    RTI_THROW ((rti1516::InternalError, rti1516::CouldNotDecode));
 
   virtual std::wstring toString() const;
   virtual std::wstring implementationName() const;

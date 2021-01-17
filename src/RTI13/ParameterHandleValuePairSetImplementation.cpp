@@ -36,7 +36,7 @@ ParameterHandleValuePairSetImplementation::size() const
 
 RTI::Handle
 ParameterHandleValuePairSetImplementation::getHandle(RTI::ULong index) const
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   if (_parameterValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
@@ -45,7 +45,7 @@ ParameterHandleValuePairSetImplementation::getHandle(RTI::ULong index) const
 
 RTI::ULong
 ParameterHandleValuePairSetImplementation::getValueLength(RTI::ULong index) const
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   if (_parameterValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
@@ -57,7 +57,7 @@ ParameterHandleValuePairSetImplementation::getValueLength(RTI::ULong index) cons
 
 void
 ParameterHandleValuePairSetImplementation::getValue(RTI::ULong index, char* data, RTI::ULong& length) const
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   if (_parameterValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
@@ -70,7 +70,7 @@ ParameterHandleValuePairSetImplementation::getValue(RTI::ULong index, char* data
 
 char*
 ParameterHandleValuePairSetImplementation::getValuePointer(RTI::ULong index, RTI::ULong& length) const
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   if (_parameterValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
@@ -84,29 +84,29 @@ ParameterHandleValuePairSetImplementation::getValuePointer(RTI::ULong index, RTI
 
 RTI::TransportType
 ParameterHandleValuePairSetImplementation::getTransportType() const
-  throw (RTI::InvalidHandleValuePairSetContext)
+  RTI_THROW ((RTI::InvalidHandleValuePairSetContext))
 {
   throw RTI::InvalidHandleValuePairSetContext("Don't ask for the transportation type here!");
 }
 
 RTI::OrderType
 ParameterHandleValuePairSetImplementation::getOrderType() const
-  throw (RTI::InvalidHandleValuePairSetContext)
+  RTI_THROW ((RTI::InvalidHandleValuePairSetContext))
 {
   throw RTI::InvalidHandleValuePairSetContext("Don't ask for the order type here!");
 }
 
 RTI::Region*
 ParameterHandleValuePairSetImplementation::getRegion() const
-  throw (RTI::InvalidHandleValuePairSetContext)
+  RTI_THROW ((RTI::InvalidHandleValuePairSetContext))
 {
   throw RTI::InvalidHandleValuePairSetContext("Don't ask for the region here!");
 }
 
 void
 ParameterHandleValuePairSetImplementation::add(RTI::Handle handle, const char* data, RTI::ULong length)
-  throw (RTI::ValueLengthExceeded,
-         RTI::ValueCountExceeded)
+  RTI_THROW ((RTI::ValueLengthExceeded,
+         RTI::ValueCountExceeded))
 {
   OpenRTI::ParameterHandle parameterHandle = handle;
   _parameterValues.push_back(OpenRTI::ParameterValue());
@@ -116,7 +116,7 @@ ParameterHandleValuePairSetImplementation::add(RTI::Handle handle, const char* d
 
 void
 ParameterHandleValuePairSetImplementation::remove(RTI::Handle handle)
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   bool found = false;
   OpenRTI::ParameterHandle parameterHandle = handle;
@@ -134,8 +134,8 @@ ParameterHandleValuePairSetImplementation::remove(RTI::Handle handle)
 
 void
 ParameterHandleValuePairSetImplementation::moveFrom(const RTI::ParameterHandleValuePairSet& parameterHandleValuePairSet, RTI::ULong& index)
-  throw (RTI::ValueCountExceeded,
-         RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ValueCountExceeded,
+         RTI::ArrayIndexOutOfBounds))
 {
   throw RTI::RTIinternalError("Unimplemented function: To be honest I did not find any reference about the desired semantics. Provide me, any I implement ...");
 }
@@ -168,7 +168,7 @@ ParameterHandleValuePairSetImplementation::next(RTI::ULong i) const
 
 RTI::ParameterHandleValuePairSet*
 RTI::ParameterSetFactory::create(ULong size)
-  throw (RTI::MemoryExhausted, RTI::ValueCountExceeded, RTI::HandleValuePairMaximumExceeded)
+  RTI_THROW ((RTI::MemoryExhausted, RTI::ValueCountExceeded, RTI::HandleValuePairMaximumExceeded))
 {
   return new ParameterHandleValuePairSetImplementation(size);
 }

@@ -69,6 +69,12 @@
 # endif
 #endif
 
+#if __cplusplus < 201103L
+#define OpenRTI_NOEXCEPT throw()
+#else
+#define OpenRTI_NOEXCEPT noexcept
+#endif
+
 #cmakedefine OpenRTI_HAVE_CSTDINT
 #cmakedefine OpenRTI_HAVE_STDINT_H
 #cmakedefine OpenRTI_HAVE_INTTYPES_H

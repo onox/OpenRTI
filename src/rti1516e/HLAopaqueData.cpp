@@ -115,7 +115,7 @@ HLAopaqueData::HLAopaqueData(const Octet* inData, size_t dataSize) :
 }
 
 HLAopaqueData::HLAopaqueData(Octet** inData, size_t bufferSize, size_t dataSize)
-  throw (EncoderException) :
+  RTI_THROW ((EncoderException)) :
   _impl(new HLAopaqueDataImplementation(inData, bufferSize, dataSize))
 {
 }
@@ -139,7 +139,7 @@ HLAopaqueData::clone () const
 
 VariableLengthData
 HLAopaqueData::encode () const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   VariableLengthData variableLengthData;
   encode(variableLengthData);
@@ -148,7 +148,7 @@ HLAopaqueData::encode () const
 
 void
 HLAopaqueData::encode(VariableLengthData& inData) const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   std::vector<Octet> buffer;
   buffer.reserve(getEncodedLength());
@@ -158,13 +158,13 @@ HLAopaqueData::encode(VariableLengthData& inData) const
 
 void
 HLAopaqueData::encodeInto(std::vector<Octet>& buffer) const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   _impl->encodeInto(buffer);
 }
 
 void HLAopaqueData::decode(VariableLengthData const & inData)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   std::vector<Octet> buffer(inData.size());
   std::memcpy(&buffer.front(), inData.data(), inData.size());
@@ -173,14 +173,14 @@ void HLAopaqueData::decode(VariableLengthData const & inData)
 
 size_t
 HLAopaqueData::decodeFrom(std::vector<Octet> const & buffer, size_t index)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   return _impl->decodeFrom(buffer, index);
 }
 
 size_t
 HLAopaqueData::getEncodedLength() const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   return _impl->_buffer.size();
 }
@@ -205,7 +205,7 @@ HLAopaqueData::dataLength() const
 
 void
 HLAopaqueData::setDataPointer(Octet** inData, size_t bufferSize, size_t dataSize)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   _impl->setDataPointer(inData, bufferSize, dataSize);
 }

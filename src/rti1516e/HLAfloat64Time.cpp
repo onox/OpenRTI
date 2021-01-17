@@ -118,7 +118,7 @@ HLAfloat64Time::HLAfloat64Time(const HLAfloat64Time& float64Time) :
   HLAfloat64TimeImpl::assign(_impl, float64Time._impl);
 }
 
-HLAfloat64Time::~HLAfloat64Time() throw ()
+HLAfloat64Time::~HLAfloat64Time() RTI_NOEXCEPT
 {
   HLAfloat64TimeImpl::putAndDelete(_impl);
 }
@@ -149,7 +149,7 @@ HLAfloat64Time::isFinal() const
 
 LogicalTime&
 HLAfloat64Time::operator=(const LogicalTime& logicalTime)
-  throw (InvalidLogicalTime)
+  RTI_THROW ((InvalidLogicalTime))
 {
   HLAfloat64TimeImpl::assign(_impl, toHLAfloat64Time(logicalTime)._impl);
   return *this;
@@ -157,7 +157,7 @@ HLAfloat64Time::operator=(const LogicalTime& logicalTime)
 
 LogicalTime&
 HLAfloat64Time::operator+=(const LogicalTimeInterval& logicalTimeInterval)
-  throw (IllegalTimeArithmetic, InvalidLogicalTimeInterval)
+  RTI_THROW ((IllegalTimeArithmetic, InvalidLogicalTimeInterval))
 {
   double interval = toHLAfloat64Interval(logicalTimeInterval).getInterval();
   if (isNaN(interval))
@@ -187,7 +187,7 @@ HLAfloat64Time::operator+=(const LogicalTimeInterval& logicalTimeInterval)
 
 LogicalTime&
 HLAfloat64Time::operator-=(const LogicalTimeInterval& logicalTimeInterval)
-  throw (IllegalTimeArithmetic, InvalidLogicalTimeInterval)
+  RTI_THROW ((IllegalTimeArithmetic, InvalidLogicalTimeInterval))
 {
   double interval = toHLAfloat64Interval(logicalTimeInterval).getInterval();
   if (isNaN(interval))
@@ -217,7 +217,7 @@ HLAfloat64Time::operator-=(const LogicalTimeInterval& logicalTimeInterval)
 
 bool
 HLAfloat64Time::operator>(const LogicalTime& logicalTime) const
-  throw (InvalidLogicalTime)
+  RTI_THROW ((InvalidLogicalTime))
 {
   double left = HLAfloat64TimeImpl::getValue(_impl);
   if (isNaN(left))
@@ -230,7 +230,7 @@ HLAfloat64Time::operator>(const LogicalTime& logicalTime) const
 
 bool
 HLAfloat64Time::operator<(const LogicalTime& logicalTime) const
-    throw (InvalidLogicalTime)
+    RTI_THROW ((InvalidLogicalTime))
 {
   double left = HLAfloat64TimeImpl::getValue(_impl);
   if (isNaN(left))
@@ -243,7 +243,7 @@ HLAfloat64Time::operator<(const LogicalTime& logicalTime) const
 
 bool
 HLAfloat64Time::operator==(const LogicalTime& logicalTime) const
-    throw (InvalidLogicalTime)
+    RTI_THROW ((InvalidLogicalTime))
 {
   double left = HLAfloat64TimeImpl::getValue(_impl);
   if (isNaN(left))
@@ -256,7 +256,7 @@ HLAfloat64Time::operator==(const LogicalTime& logicalTime) const
 
 bool
 HLAfloat64Time::operator>=(const LogicalTime& logicalTime) const
-    throw (InvalidLogicalTime)
+    RTI_THROW ((InvalidLogicalTime))
 {
   double left = HLAfloat64TimeImpl::getValue(_impl);
   if (isNaN(left))
@@ -269,7 +269,7 @@ HLAfloat64Time::operator>=(const LogicalTime& logicalTime) const
 
 bool
 HLAfloat64Time::operator<=(const LogicalTime& logicalTime) const
-    throw (InvalidLogicalTime)
+    RTI_THROW ((InvalidLogicalTime))
 {
   double left = HLAfloat64TimeImpl::getValue(_impl);
   if (isNaN(left))
@@ -296,7 +296,7 @@ HLAfloat64Time::encodedLength() const
 
 size_t
 HLAfloat64Time::encode(void* buffer, size_t bufferSize) const
-    throw (CouldNotEncode)
+    RTI_THROW ((CouldNotEncode))
 {
   if (bufferSize < 8)
     throw CouldNotEncode(L"Buffer size too short!");
@@ -319,7 +319,7 @@ HLAfloat64Time::encode(void* buffer, size_t bufferSize) const
 
 void
 HLAfloat64Time::decode(const VariableLengthData& variableLengthData)
-    throw (InternalError, CouldNotDecode)
+    RTI_THROW ((InternalError, CouldNotDecode))
 {
   OpenRTI::VariableLengthData data = VariableLengthDataFriend::readPointer(variableLengthData);
   if (data.size() < 8)
@@ -329,7 +329,7 @@ HLAfloat64Time::decode(const VariableLengthData& variableLengthData)
 
 void
 HLAfloat64Time::decode(void* buffer, size_t bufferSize)
-    throw (InternalError, CouldNotDecode)
+    RTI_THROW ((InternalError, CouldNotDecode))
 {
   if (bufferSize < 8)
     throw CouldNotDecode(L"Buffer size too short!");
@@ -377,7 +377,7 @@ HLAfloat64Time::setTime(double value)
 
 HLAfloat64Time&
 HLAfloat64Time::operator=(const HLAfloat64Time& float64Time)
-  throw (InvalidLogicalTime)
+  RTI_THROW ((InvalidLogicalTime))
 {
   HLAfloat64TimeImpl::assign(_impl, float64Time._impl);
   return *this;

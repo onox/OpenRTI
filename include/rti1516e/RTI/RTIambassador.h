@@ -36,7 +36,7 @@ namespace rti1516e
    {
    protected:
       RTIambassador ()
-          throw ();
+          RTI_NOEXCEPT;
 
    public:
       virtual ~RTIambassador ();
@@ -46,54 +46,54 @@ namespace rti1516e
          FederateAmbassador & federateAmbassador,
          CallbackModel theCallbackModel,
          std::wstring const & localSettingsDesignator=L"")
-         throw (
+         RTI_THROW ((
             ConnectionFailed,
             InvalidLocalSettingsDesignator,
             UnsupportedCallbackModel,
             AlreadyConnected,
             CallNotAllowedFromWithinCallback,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.3
       virtual void disconnect ()
-         throw (
+         RTI_THROW ((
             FederateIsExecutionMember,
             CallNotAllowedFromWithinCallback,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.5
       virtual void createFederationExecution (
          std::wstring const & federationExecutionName,
          std::wstring const & fomModule,
          std::wstring const & logicalTimeImplementationName = L"")
-         throw (
+         RTI_THROW ((
             CouldNotCreateLogicalTimeFactory,
             InconsistentFDD,
             ErrorReadingFDD,
             CouldNotOpenFDD,
             FederationExecutionAlreadyExists,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual void createFederationExecution (
          std::wstring const & federationExecutionName,
          std::vector<std::wstring> const & fomModules,
          std::wstring const & logicalTimeImplementationName = L"")
-         throw (
+         RTI_THROW ((
             CouldNotCreateLogicalTimeFactory,
             InconsistentFDD,
             ErrorReadingFDD,
             CouldNotOpenFDD,
             FederationExecutionAlreadyExists,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual void createFederationExecutionWithMIM (
          std::wstring const & federationExecutionName,
          std::vector<std::wstring> const & fomModules,
          std::wstring const & mimModule,
          std::wstring const & logicalTimeImplementationName = L"")
-         throw (
+         RTI_THROW ((
             CouldNotCreateLogicalTimeFactory,
             InconsistentFDD,
             ErrorReadingFDD,
@@ -103,29 +103,29 @@ namespace rti1516e
             CouldNotOpenMIM,
             FederationExecutionAlreadyExists,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.6
       virtual void destroyFederationExecution (
          std::wstring const & federationExecutionName)
-         throw (
+         RTI_THROW ((
             FederatesCurrentlyJoined,
             FederationExecutionDoesNotExist,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.7
       virtual void listFederationExecutions ()
-         throw (
+         RTI_THROW ((
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.9
       virtual FederateHandle joinFederationExecution (
          std::wstring const & federateType,
          std::wstring const & federationExecutionName,
          std::vector<std::wstring> const & additionalFomModules=std::vector<std::wstring>())
-         throw (
+         RTI_THROW ((
             CouldNotCreateLogicalTimeFactory,
             FederationExecutionDoesNotExist,
             InconsistentFDD,
@@ -136,14 +136,14 @@ namespace rti1516e
             FederateAlreadyExecutionMember,
             NotConnected,
             CallNotAllowedFromWithinCallback,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual FederateHandle joinFederationExecution (
          std::wstring const & federateName,
          std::wstring const & federateType,
          std::wstring const & federationExecutionName,
          std::vector<std::wstring> const & additionalFomModules=std::vector<std::wstring>())
-         throw (
+         RTI_THROW ((
             CouldNotCreateLogicalTimeFactory,
             FederateNameAlreadyInUse,
             FederationExecutionDoesNotExist,
@@ -155,69 +155,69 @@ namespace rti1516e
             FederateAlreadyExecutionMember,
             NotConnected,
             CallNotAllowedFromWithinCallback,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.10
       virtual void resignFederationExecution (
          ResignAction resignAction)
-         throw (
+         RTI_THROW ((
             InvalidResignAction,
             OwnershipAcquisitionPending,
             FederateOwnsAttributes,
             FederateNotExecutionMember,
             NotConnected,
             CallNotAllowedFromWithinCallback,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.11
       virtual void registerFederationSynchronizationPoint (
          std::wstring const & label,
          VariableLengthData const & theUserSuppliedTag)
-         throw (
+         RTI_THROW ((
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual void registerFederationSynchronizationPoint (
          std::wstring const & label,
          VariableLengthData const & theUserSuppliedTag,
          FederateHandleSet const & synchronizationSet)
-         throw (
+         RTI_THROW ((
             InvalidFederateHandle,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.14
       virtual void synchronizationPointAchieved (
          std::wstring const & label,
          bool successfully = true)
-         throw (
+         RTI_THROW ((
             SynchronizationPointLabelNotAnnounced,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.16
       virtual void requestFederationSave (
          std::wstring const & label)
-         throw (
+         RTI_THROW ((
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual void requestFederationSave (
          std::wstring const & label,
          LogicalTime const & theTime)
-         throw (
+         RTI_THROW ((
             LogicalTimeAlreadyPassed,
             InvalidLogicalTime,
             FederateUnableToUseTime,
@@ -225,92 +225,92 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.18
       virtual void federateSaveBegun ()
-         throw (
+         RTI_THROW ((
             SaveNotInitiated,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.19
       virtual void federateSaveComplete ()
-         throw (
+         RTI_THROW ((
             FederateHasNotBegunSave,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual void federateSaveNotComplete ()
-         throw (
+         RTI_THROW ((
             FederateHasNotBegunSave,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.21
       virtual void abortFederationSave ()
-         throw (
+         RTI_THROW ((
             SaveNotInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.22
       virtual void queryFederationSaveStatus ()
-         throw (
+         RTI_THROW ((
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.24
       virtual void requestFederationRestore (
          std::wstring const & label)
-         throw (
+         RTI_THROW ((
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.28
       virtual void federateRestoreComplete ()
-         throw (
+         RTI_THROW ((
             RestoreNotRequested,
             SaveInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual void federateRestoreNotComplete ()
-         throw (
+         RTI_THROW ((
             RestoreNotRequested,
             SaveInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.30
       virtual void abortFederationRestore ()
-         throw (
+         RTI_THROW ((
             RestoreNotInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 4.31
       virtual void queryFederationRestoreStatus ()
-         throw (
+         RTI_THROW ((
             SaveInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       /////////////////////////////////////
       // Declaration Management Services //
@@ -320,31 +320,31 @@ namespace rti1516e
       virtual void publishObjectClassAttributes (
          ObjectClassHandle theClass,
          AttributeHandleSet const & attributeList)
-         throw (
+         RTI_THROW ((
             AttributeNotDefined,
             ObjectClassNotDefined,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 5.3
       virtual void unpublishObjectClass (
          ObjectClassHandle theClass)
-         throw (
+         RTI_THROW ((
             OwnershipAcquisitionPending,
             ObjectClassNotDefined,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual void unpublishObjectClassAttributes (
          ObjectClassHandle theClass,
          AttributeHandleSet const & attributeList)
-         throw (
+         RTI_THROW ((
             OwnershipAcquisitionPending,
             AttributeNotDefined,
             ObjectClassNotDefined,
@@ -352,29 +352,29 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 5.4
       virtual void publishInteractionClass (
          InteractionClassHandle theInteraction)
-         throw (
+         RTI_THROW ((
             InteractionClassNotDefined,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 5.5
       virtual void unpublishInteractionClass (
          InteractionClassHandle theInteraction)
-         throw (
+         RTI_THROW ((
             InteractionClassNotDefined,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 5.6
       virtual void subscribeObjectClassAttributes (
@@ -382,7 +382,7 @@ namespace rti1516e
          AttributeHandleSet const & attributeList,
          bool active = true,
          std::wstring const & updateRateDesignator = L"")
-         throw (
+         RTI_THROW ((
             AttributeNotDefined,
             ObjectClassNotDefined,
             InvalidUpdateRateDesignator,
@@ -390,54 +390,54 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 5.7
       virtual void unsubscribeObjectClass (
          ObjectClassHandle theClass)
-         throw (
+         RTI_THROW ((
             ObjectClassNotDefined,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual void unsubscribeObjectClassAttributes (
          ObjectClassHandle theClass,
          AttributeHandleSet const & attributeList)
-         throw (
+         RTI_THROW ((
             AttributeNotDefined,
             ObjectClassNotDefined,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 5.8
       virtual void subscribeInteractionClass (
          InteractionClassHandle theClass,
          bool active = true)
-         throw (
+         RTI_THROW ((
             FederateServiceInvocationsAreBeingReportedViaMOM,
             InteractionClassNotDefined,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 5.9
       virtual void unsubscribeInteractionClass (
          InteractionClassHandle theClass)
-         throw (
+         RTI_THROW ((
             InteractionClassNotDefined,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       ////////////////////////////////
       // Object Management Services //
@@ -446,64 +446,64 @@ namespace rti1516e
       // 6.2
       virtual void reserveObjectInstanceName (
          std::wstring const & theObjectInstanceName)
-         throw (
+         RTI_THROW ((
             IllegalName,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 6.4
       virtual void releaseObjectInstanceName (
          std::wstring const & theObjectInstanceName)
-         throw (
+         RTI_THROW ((
             ObjectInstanceNameNotReserved,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 6.5
       virtual void reserveMultipleObjectInstanceName (
          std::set<std::wstring> const & theObjectInstanceNames)
-         throw (
+         RTI_THROW ((
             IllegalName,
             NameSetWasEmpty,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 6.7
       virtual void releaseMultipleObjectInstanceName (
          std::set<std::wstring> const & theObjectInstanceNames)
-         throw (
+         RTI_THROW ((
             ObjectInstanceNameNotReserved,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 6.8
       virtual ObjectInstanceHandle registerObjectInstance (
          ObjectClassHandle theClass)
-         throw (
+         RTI_THROW ((
             ObjectClassNotPublished,
             ObjectClassNotDefined,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual ObjectInstanceHandle registerObjectInstance (
          ObjectClassHandle theClass,
          std::wstring const & theObjectInstanceName)
-         throw (
+         RTI_THROW ((
             ObjectInstanceNameInUse,
             ObjectInstanceNameNotReserved,
             ObjectClassNotPublished,
@@ -512,14 +512,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 6.10
       virtual void updateAttributeValues (
          ObjectInstanceHandle theObject,
          AttributeHandleValueMap const & theAttributeValues,
          VariableLengthData const & theUserSuppliedTag)
-         throw (
+         RTI_THROW ((
             AttributeNotOwned,
             AttributeNotDefined,
             ObjectInstanceNotKnown,
@@ -527,14 +527,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual MessageRetractionHandle updateAttributeValues (
          ObjectInstanceHandle theObject,
          AttributeHandleValueMap const & theAttributeValues,
          VariableLengthData const & theUserSuppliedTag,
          LogicalTime const & theTime)
-         throw (
+         RTI_THROW ((
             InvalidLogicalTime,
             AttributeNotOwned,
             AttributeNotDefined,
@@ -543,14 +543,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 6.12
       virtual void sendInteraction (
          InteractionClassHandle theInteraction,
          ParameterHandleValueMap const & theParameterValues,
          VariableLengthData const & theUserSuppliedTag)
-         throw (
+         RTI_THROW ((
             InteractionClassNotPublished,
             InteractionParameterNotDefined,
             InteractionClassNotDefined,
@@ -558,14 +558,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual MessageRetractionHandle sendInteraction (
          InteractionClassHandle theInteraction,
          ParameterHandleValueMap const & theParameterValues,
          VariableLengthData const & theUserSuppliedTag,
          LogicalTime const & theTime)
-         throw (
+         RTI_THROW ((
             InvalidLogicalTime,
             InteractionClassNotPublished,
             InteractionParameterNotDefined,
@@ -574,26 +574,26 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 6.14
       virtual void deleteObjectInstance (
          ObjectInstanceHandle theObject,
          VariableLengthData const & theUserSuppliedTag)
-         throw (
+         RTI_THROW ((
             DeletePrivilegeNotHeld,
             ObjectInstanceNotKnown,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual MessageRetractionHandle deleteObjectInstance (
          ObjectInstanceHandle theObject,
          VariableLengthData const & theUserSuppliedTag,
          LogicalTime  const & theTime)
-         throw (
+         RTI_THROW ((
             InvalidLogicalTime,
             DeletePrivilegeNotHeld,
             ObjectInstanceNotKnown,
@@ -601,12 +601,12 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 6.16
       virtual void localDeleteObjectInstance (
          ObjectInstanceHandle theObject)
-         throw (
+         RTI_THROW ((
             OwnershipAcquisitionPending,
             FederateOwnsAttributes,
             ObjectInstanceNotKnown,
@@ -614,41 +614,41 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 6.19
       virtual void requestAttributeValueUpdate (
          ObjectInstanceHandle theObject,
          AttributeHandleSet const & theAttributes,
          VariableLengthData const & theUserSuppliedTag)
-         throw (
+         RTI_THROW ((
             AttributeNotDefined,
             ObjectInstanceNotKnown,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual void requestAttributeValueUpdate (
          ObjectClassHandle theClass,
          AttributeHandleSet const & theAttributes,
          VariableLengthData const & theUserSuppliedTag)
-         throw (
+         RTI_THROW ((
             AttributeNotDefined,
             ObjectClassNotDefined,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 6.23
       virtual void requestAttributeTransportationTypeChange (
          ObjectInstanceHandle theObject,
          AttributeHandleSet const & theAttributes,
          TransportationType theType)
-         throw (
+         RTI_THROW ((
             AttributeAlreadyBeingChanged,
             AttributeNotOwned,
             AttributeNotDefined,
@@ -658,26 +658,26 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 6.25
       virtual void queryAttributeTransportationType (
          ObjectInstanceHandle theObject,
          AttributeHandle theAttribute)
-         throw (
+         RTI_THROW ((
             AttributeNotDefined,
             ObjectInstanceNotKnown,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 6.27
       virtual void requestInteractionTransportationTypeChange (
          InteractionClassHandle theClass,
          TransportationType theType)
-         throw (
+         RTI_THROW ((
             InteractionClassAlreadyBeingChanged,
             InteractionClassNotPublished,
             InteractionClassNotDefined,
@@ -686,19 +686,19 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 6.29
       virtual void queryInteractionTransportationType (
          FederateHandle theFederate,
          InteractionClassHandle theInteraction)
-         throw (
+         RTI_THROW ((
             InteractionClassNotDefined,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
 
       ///////////////////////////////////
@@ -709,7 +709,7 @@ namespace rti1516e
       virtual void unconditionalAttributeOwnershipDivestiture (
          ObjectInstanceHandle theObject,
          AttributeHandleSet const & theAttributes)
-         throw (
+         RTI_THROW ((
             AttributeNotOwned,
             AttributeNotDefined,
             ObjectInstanceNotKnown,
@@ -717,14 +717,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 7.3
       virtual void negotiatedAttributeOwnershipDivestiture (
          ObjectInstanceHandle theObject,
          AttributeHandleSet const & theAttributes,
          VariableLengthData const & theUserSuppliedTag)
-         throw (
+         RTI_THROW ((
             AttributeAlreadyBeingDivested,
             AttributeNotOwned,
             AttributeNotDefined,
@@ -733,14 +733,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 7.6
       virtual void confirmDivestiture (
          ObjectInstanceHandle theObject,
          AttributeHandleSet const & confirmedAttributes,
          VariableLengthData const & theUserSuppliedTag)
-         throw (
+         RTI_THROW ((
             NoAcquisitionPending,
             AttributeDivestitureWasNotRequested,
             AttributeNotOwned,
@@ -750,14 +750,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 7.8
       virtual void attributeOwnershipAcquisition (
          ObjectInstanceHandle theObject,
          AttributeHandleSet const & desiredAttributes,
          VariableLengthData const & theUserSuppliedTag)
-         throw (
+         RTI_THROW ((
             AttributeNotPublished,
             ObjectClassNotPublished,
             FederateOwnsAttributes,
@@ -767,13 +767,13 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 7.9
       virtual void attributeOwnershipAcquisitionIfAvailable (
          ObjectInstanceHandle theObject,
          AttributeHandleSet const & desiredAttributes)
-         throw (
+         RTI_THROW ((
             AttributeAlreadyBeingAcquired,
             AttributeNotPublished,
             ObjectClassNotPublished,
@@ -784,13 +784,13 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 7.12
       virtual void attributeOwnershipReleaseDenied (
          ObjectInstanceHandle theObject,
          AttributeHandleSet const & theAttributes)
-         throw (
+         RTI_THROW ((
             AttributeNotOwned,
             AttributeNotDefined,
             ObjectInstanceNotKnown,
@@ -798,14 +798,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 7.13
       virtual void attributeOwnershipDivestitureIfWanted (
          ObjectInstanceHandle theObject,
          AttributeHandleSet const & theAttributes,
          AttributeHandleSet & theDivestedAttributes) // filled by RTI
-         throw (
+         RTI_THROW ((
             AttributeNotOwned,
             AttributeNotDefined,
             ObjectInstanceNotKnown,
@@ -813,13 +813,13 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 7.14
       virtual void cancelNegotiatedAttributeOwnershipDivestiture (
          ObjectInstanceHandle theObject,
          AttributeHandleSet const & theAttributes)
-         throw (
+         RTI_THROW ((
             AttributeDivestitureWasNotRequested,
             AttributeNotOwned,
             AttributeNotDefined,
@@ -828,13 +828,13 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 7.15
       virtual void cancelAttributeOwnershipAcquisition (
          ObjectInstanceHandle theObject,
          AttributeHandleSet const & theAttributes)
-         throw (
+         RTI_THROW ((
             AttributeAcquisitionWasNotRequested,
             AttributeAlreadyOwned,
             AttributeNotDefined,
@@ -843,33 +843,33 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 7.17
       virtual void queryAttributeOwnership (
          ObjectInstanceHandle theObject,
          AttributeHandle theAttribute)
-         throw (
+         RTI_THROW ((
             AttributeNotDefined,
             ObjectInstanceNotKnown,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 7.19
       virtual bool isAttributeOwnedByFederate (
          ObjectInstanceHandle theObject,
          AttributeHandle theAttribute)
-         throw (
+         RTI_THROW ((
             AttributeNotDefined,
             ObjectInstanceNotKnown,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       //////////////////////////////
       // Time Management Services //
@@ -878,7 +878,7 @@ namespace rti1516e
       // 8.2
       virtual void enableTimeRegulation (
          LogicalTimeInterval const & theLookahead)
-         throw (
+         RTI_THROW ((
             InvalidLookahead,
             InTimeAdvancingState,
             RequestForTimeRegulationPending,
@@ -887,21 +887,21 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.4
       virtual void disableTimeRegulation ()
-         throw (
+         RTI_THROW ((
             TimeRegulationIsNotEnabled,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.5
       virtual void enableTimeConstrained ()
-         throw (
+         RTI_THROW ((
             InTimeAdvancingState,
             RequestForTimeConstrainedPending,
             TimeConstrainedAlreadyEnabled,
@@ -909,22 +909,22 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.7
       virtual void disableTimeConstrained ()
-         throw (
+         RTI_THROW ((
             TimeConstrainedIsNotEnabled,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.8
       virtual void timeAdvanceRequest (
          LogicalTime const & theTime)
-         throw (
+         RTI_THROW ((
             LogicalTimeAlreadyPassed,
             InvalidLogicalTime,
             InTimeAdvancingState,
@@ -934,12 +934,12 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.9
       virtual void timeAdvanceRequestAvailable (
          LogicalTime const & theTime)
-         throw (
+         RTI_THROW ((
             LogicalTimeAlreadyPassed,
             InvalidLogicalTime,
             InTimeAdvancingState,
@@ -949,12 +949,12 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.10
       virtual void nextMessageRequest (
          LogicalTime const & theTime)
-         throw (
+         RTI_THROW ((
             LogicalTimeAlreadyPassed,
             InvalidLogicalTime,
             InTimeAdvancingState,
@@ -964,12 +964,12 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.11
       virtual void nextMessageRequestAvailable (
          LogicalTime const & theTime)
-         throw (
+         RTI_THROW ((
             LogicalTimeAlreadyPassed,
             InvalidLogicalTime,
             InTimeAdvancingState,
@@ -979,12 +979,12 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.12
       virtual void flushQueueRequest (
          LogicalTime const & theTime)
-         throw (
+         RTI_THROW ((
             LogicalTimeAlreadyPassed,
             InvalidLogicalTime,
             InTimeAdvancingState,
@@ -994,59 +994,59 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.14
       virtual void enableAsynchronousDelivery ()
-         throw (
+         RTI_THROW ((
             AsynchronousDeliveryAlreadyEnabled,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.15
       virtual void disableAsynchronousDelivery ()
-         throw (
+         RTI_THROW ((
             AsynchronousDeliveryAlreadyDisabled,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.16
       virtual bool queryGALT (LogicalTime & theTime)
-         throw (
+         RTI_THROW ((
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.17
       virtual void queryLogicalTime (LogicalTime & theTime)
-         throw (
+         RTI_THROW ((
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.18
       virtual bool queryLITS (LogicalTime & theTime)
-         throw (
+         RTI_THROW ((
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.19
       virtual void modifyLookahead (
          LogicalTimeInterval const & theLookahead)
-         throw (
+         RTI_THROW ((
             InvalidLookahead,
             InTimeAdvancingState,
             TimeRegulationIsNotEnabled,
@@ -1054,22 +1054,22 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.20
       virtual void queryLookahead (LogicalTimeInterval & interval)
-         throw (
+         RTI_THROW ((
             TimeRegulationIsNotEnabled,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.21
       virtual void retract (
          MessageRetractionHandle theHandle)
-         throw (
+         RTI_THROW ((
             MessageCanNoLongerBeRetracted,
             InvalidMessageRetractionHandle,
             TimeRegulationIsNotEnabled,
@@ -1077,14 +1077,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.23
       virtual void changeAttributeOrderType (
          ObjectInstanceHandle theObject,
          AttributeHandleSet const & theAttributes,
          OrderType theType)
-         throw (
+         RTI_THROW ((
             AttributeNotOwned,
             AttributeNotDefined,
             ObjectInstanceNotKnown,
@@ -1092,20 +1092,20 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 8.24
       virtual void changeInteractionOrderType (
          InteractionClassHandle theClass,
          OrderType theType)
-         throw (
+         RTI_THROW ((
             InteractionClassNotPublished,
             InteractionClassNotDefined,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       //////////////////////////////////
       // Data Distribution Management //
@@ -1114,30 +1114,30 @@ namespace rti1516e
       // 9.2
       virtual RegionHandle createRegion (
          DimensionHandleSet const & theDimensions)
-         throw (
+         RTI_THROW ((
             InvalidDimensionHandle,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 9.3
       virtual void commitRegionModifications (
          RegionHandleSet const & theRegionHandleSet)
-         throw (
+         RTI_THROW ((
             RegionNotCreatedByThisFederate,
             InvalidRegion,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 9.4
       virtual void deleteRegion (
          RegionHandle const & theRegion)
-         throw (
+         RTI_THROW ((
             RegionInUseForUpdateOrSubscription,
             RegionNotCreatedByThisFederate,
             InvalidRegion,
@@ -1145,14 +1145,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 9.5
       virtual ObjectInstanceHandle registerObjectInstanceWithRegions (
          ObjectClassHandle theClass,
          AttributeHandleSetRegionHandleSetPairVector const &
          theAttributeHandleSetRegionHandleSetPairVector)
-         throw (
+         RTI_THROW ((
             InvalidRegionContext,
             RegionNotCreatedByThisFederate,
             InvalidRegion,
@@ -1164,14 +1164,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual ObjectInstanceHandle registerObjectInstanceWithRegions (
          ObjectClassHandle theClass,
          AttributeHandleSetRegionHandleSetPairVector const &
          theAttributeHandleSetRegionHandleSetPairVector,
          std::wstring const & theObjectInstanceName)
-         throw (
+         RTI_THROW ((
             ObjectInstanceNameInUse,
             ObjectInstanceNameNotReserved,
             InvalidRegionContext,
@@ -1185,14 +1185,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 9.6
       virtual void associateRegionsForUpdates (
          ObjectInstanceHandle theObject,
          AttributeHandleSetRegionHandleSetPairVector const &
          theAttributeHandleSetRegionHandleSetPairVector)
-         throw (
+         RTI_THROW ((
             InvalidRegionContext,
             RegionNotCreatedByThisFederate,
             InvalidRegion,
@@ -1202,14 +1202,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 9.7
       virtual void unassociateRegionsForUpdates (
          ObjectInstanceHandle theObject,
          AttributeHandleSetRegionHandleSetPairVector const &
          theAttributeHandleSetRegionHandleSetPairVector)
-         throw (
+         RTI_THROW ((
             RegionNotCreatedByThisFederate,
             InvalidRegion,
             AttributeNotDefined,
@@ -1218,7 +1218,7 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 9.8
       virtual void subscribeObjectClassAttributesWithRegions (
@@ -1227,7 +1227,7 @@ namespace rti1516e
          theAttributeHandleSetRegionHandleSetPairVector,
          bool active = true,
          std::wstring const & updateRateDesignator = L"")
-         throw (
+         RTI_THROW ((
             InvalidRegionContext,
             RegionNotCreatedByThisFederate,
             InvalidRegion,
@@ -1238,7 +1238,7 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
 
       // 9.9
@@ -1246,7 +1246,7 @@ namespace rti1516e
          ObjectClassHandle theClass,
          AttributeHandleSetRegionHandleSetPairVector const &
          theAttributeHandleSetRegionHandleSetPairVector)
-         throw (
+         RTI_THROW ((
             RegionNotCreatedByThisFederate,
             InvalidRegion,
             AttributeNotDefined,
@@ -1255,14 +1255,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 9.10
       virtual void subscribeInteractionClassWithRegions (
          InteractionClassHandle theClass,
          RegionHandleSet const & theRegionHandleSet,
          bool active = true)
-         throw (
+         RTI_THROW ((
             FederateServiceInvocationsAreBeingReportedViaMOM,
             InvalidRegionContext,
             RegionNotCreatedByThisFederate,
@@ -1272,13 +1272,13 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 9.11
       virtual void unsubscribeInteractionClassWithRegions (
          InteractionClassHandle theClass,
          RegionHandleSet const & theRegionHandleSet)
-         throw (
+         RTI_THROW ((
             RegionNotCreatedByThisFederate,
             InvalidRegion,
             InteractionClassNotDefined,
@@ -1286,7 +1286,7 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 9.12
       virtual void sendInteractionWithRegions (
@@ -1294,7 +1294,7 @@ namespace rti1516e
          ParameterHandleValueMap const & theParameterValues,
          RegionHandleSet const & theRegionHandleSet,
          VariableLengthData const & theUserSuppliedTag)
-         throw (
+         RTI_THROW ((
             InvalidRegionContext,
             RegionNotCreatedByThisFederate,
             InvalidRegion,
@@ -1305,7 +1305,7 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual MessageRetractionHandle sendInteractionWithRegions (
          InteractionClassHandle theInteraction,
@@ -1313,7 +1313,7 @@ namespace rti1516e
          RegionHandleSet const & theRegionHandleSet,
          VariableLengthData const & theUserSuppliedTag,
          LogicalTime const & theTime)
-         throw (
+         RTI_THROW ((
             InvalidLogicalTime,
             InvalidRegionContext,
             RegionNotCreatedByThisFederate,
@@ -1325,14 +1325,14 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 9.13
       virtual void requestAttributeValueUpdateWithRegions (
          ObjectClassHandle theClass,
          AttributeHandleSetRegionHandleSetPairVector const & theSet,
          VariableLengthData const & theUserSuppliedTag)
-         throw (
+         RTI_THROW ((
             InvalidRegionContext,
             RegionNotCreatedByThisFederate,
             InvalidRegion,
@@ -1342,7 +1342,7 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       //////////////////////////
       // RTI Support Services //
@@ -1350,282 +1350,282 @@ namespace rti1516e
 
       // 10.2
       virtual ResignAction getAutomaticResignDirective ()
-         throw (
+         RTI_THROW ((
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.3
       virtual void setAutomaticResignDirective (
          ResignAction resignAction)
-         throw (
+         RTI_THROW ((
             InvalidResignAction,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.4
       virtual FederateHandle getFederateHandle (
          std::wstring const & theName)
-         throw (
+         RTI_THROW ((
             NameNotFound,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.5
       virtual std::wstring getFederateName (
          FederateHandle theHandle)
-         throw (
+         RTI_THROW ((
             InvalidFederateHandle,
             FederateHandleNotKnown,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.6
       virtual ObjectClassHandle getObjectClassHandle (
          std::wstring const & theName)
-         throw (
+         RTI_THROW ((
             NameNotFound,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.7
       virtual std::wstring getObjectClassName (
          ObjectClassHandle theHandle)
-         throw (
+         RTI_THROW ((
             InvalidObjectClassHandle,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.8
       virtual ObjectClassHandle getKnownObjectClassHandle (
          ObjectInstanceHandle theObject)
-         throw (
+         RTI_THROW ((
             ObjectInstanceNotKnown,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.9
       virtual ObjectInstanceHandle getObjectInstanceHandle (
          std::wstring const & theName)
-         throw (
+         RTI_THROW ((
             ObjectInstanceNotKnown,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.10
       virtual std::wstring getObjectInstanceName (
          ObjectInstanceHandle theHandle)
-         throw (
+         RTI_THROW ((
             ObjectInstanceNotKnown,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.11
       virtual AttributeHandle getAttributeHandle (
          ObjectClassHandle whichClass,
          std::wstring const & theAttributeName)
-         throw (
+         RTI_THROW ((
             NameNotFound,
             InvalidObjectClassHandle,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.12
       virtual std::wstring getAttributeName (
          ObjectClassHandle whichClass,
          AttributeHandle theHandle)
-         throw (
+         RTI_THROW ((
             AttributeNotDefined,
             InvalidAttributeHandle,
             InvalidObjectClassHandle,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.13
       virtual double getUpdateRateValue (
          std::wstring const & updateRateDesignator)
-         throw (
+         RTI_THROW ((
             InvalidUpdateRateDesignator,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.14
       virtual double getUpdateRateValueForAttribute (
          ObjectInstanceHandle theObject,
          AttributeHandle theAttribute)
-         throw (
+         RTI_THROW ((
             ObjectInstanceNotKnown,
             AttributeNotDefined,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.15
       virtual InteractionClassHandle getInteractionClassHandle (
          std::wstring const & theName)
-         throw (
+         RTI_THROW ((
             NameNotFound,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.16
       virtual std::wstring getInteractionClassName (
          InteractionClassHandle theHandle)
-         throw (
+         RTI_THROW ((
             InvalidInteractionClassHandle,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.17
       virtual ParameterHandle getParameterHandle (
          InteractionClassHandle whichClass,
          std::wstring const & theName)
-         throw (
+         RTI_THROW ((
             NameNotFound,
             InvalidInteractionClassHandle,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.18
       virtual std::wstring getParameterName (
          InteractionClassHandle whichClass,
          ParameterHandle theHandle)
-         throw (
+         RTI_THROW ((
             InteractionParameterNotDefined,
             InvalidParameterHandle,
             InvalidInteractionClassHandle,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.19
       virtual OrderType getOrderType (
          std::wstring const & orderName)
-         throw (
+         RTI_THROW ((
             InvalidOrderName,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.20
       virtual std::wstring getOrderName (
          OrderType orderType)
-         throw (
+         RTI_THROW ((
             InvalidOrderType,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.21
       virtual TransportationType getTransportationType (
          std::wstring const & transportationName)
-         throw (
+         RTI_THROW ((
             InvalidTransportationName,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.22
       virtual std::wstring getTransportationName (
          TransportationType transportationType)
-         throw (
+         RTI_THROW ((
             InvalidTransportationType,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.23
       virtual DimensionHandleSet getAvailableDimensionsForClassAttribute (
          ObjectClassHandle theClass,
          AttributeHandle theHandle)
-         throw (
+         RTI_THROW ((
             AttributeNotDefined,
             InvalidAttributeHandle,
             InvalidObjectClassHandle,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.24
       virtual DimensionHandleSet getAvailableDimensionsForInteractionClass (
          InteractionClassHandle theClass)
-         throw (
+         RTI_THROW ((
             InvalidInteractionClassHandle,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.25
       virtual DimensionHandle getDimensionHandle (
          std::wstring const & theName)
-         throw (
+         RTI_THROW ((
             NameNotFound,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.26
       virtual std::wstring getDimensionName (
          DimensionHandle theHandle)
-         throw (
+         RTI_THROW ((
             InvalidDimensionHandle,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.27
       virtual unsigned long getDimensionUpperBound (
          DimensionHandle theHandle)
-         throw (
+         RTI_THROW ((
             InvalidDimensionHandle,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.28
       virtual DimensionHandleSet getDimensionHandleSet (
          RegionHandle theRegionHandle)
-         throw (
+         RTI_THROW ((
             InvalidRegion,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.29
       virtual RangeBounds getRangeBounds (
          RegionHandle theRegionHandle,
          DimensionHandle theDimensionHandle)
-         throw (
+         RTI_THROW ((
             RegionDoesNotContainSpecifiedDimension,
             InvalidRegion,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.30
       virtual void setRangeBounds (
          RegionHandle theRegionHandle,
          DimensionHandle theDimensionHandle,
          RangeBounds const & theRangeBounds)
-         throw (
+         RTI_THROW ((
             InvalidRangeBound,
             RegionDoesNotContainSpecifiedDimension,
             RegionNotCreatedByThisFederate,
@@ -1634,216 +1634,216 @@ namespace rti1516e
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.31
       virtual unsigned long normalizeFederateHandle (
          FederateHandle theFederateHandle)
-         throw (
+         RTI_THROW ((
             InvalidFederateHandle,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.32
       virtual unsigned long normalizeServiceGroup (
          ServiceGroup theServiceGroup)
-         throw (
+         RTI_THROW ((
             InvalidServiceGroup,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.33
       virtual void enableObjectClassRelevanceAdvisorySwitch ()
-         throw (
+         RTI_THROW ((
             ObjectClassRelevanceAdvisorySwitchIsOn,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.34
       virtual void disableObjectClassRelevanceAdvisorySwitch ()
-         throw (
+         RTI_THROW ((
             ObjectClassRelevanceAdvisorySwitchIsOff,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.35
       virtual void enableAttributeRelevanceAdvisorySwitch ()
-         throw (
+         RTI_THROW ((
             AttributeRelevanceAdvisorySwitchIsOn,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.36
       virtual void disableAttributeRelevanceAdvisorySwitch ()
-         throw (
+         RTI_THROW ((
             AttributeRelevanceAdvisorySwitchIsOff,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.37
       virtual void enableAttributeScopeAdvisorySwitch ()
-         throw (
+         RTI_THROW ((
             AttributeScopeAdvisorySwitchIsOn,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.38
       virtual void disableAttributeScopeAdvisorySwitch ()
-         throw (
+         RTI_THROW ((
             AttributeScopeAdvisorySwitchIsOff,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.39
       virtual void enableInteractionRelevanceAdvisorySwitch ()
-         throw (
+         RTI_THROW ((
             InteractionRelevanceAdvisorySwitchIsOn,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.40
       virtual void disableInteractionRelevanceAdvisorySwitch ()
-         throw (
+         RTI_THROW ((
             InteractionRelevanceAdvisorySwitchIsOff,
             SaveInProgress,
             RestoreInProgress,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.41
       virtual bool evokeCallback (
          double approximateMinimumTimeInSeconds)
-         throw (
+         RTI_THROW ((
             CallNotAllowedFromWithinCallback,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.42
       virtual bool evokeMultipleCallbacks (
          double approximateMinimumTimeInSeconds,
          double approximateMaximumTimeInSeconds)
-         throw (
+         RTI_THROW ((
             CallNotAllowedFromWithinCallback,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.43
       virtual void enableCallbacks ()
-         throw (
+         RTI_THROW ((
             SaveInProgress,
             RestoreInProgress,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // 10.44
       virtual void disableCallbacks ()
-         throw (
+         RTI_THROW ((
             SaveInProgress,
             RestoreInProgress,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // API-specific services
 
       // Return instance of time factory being used by the federation
       virtual std::auto_ptr<LogicalTimeFactory> getTimeFactory () const
-         throw (
+         RTI_THROW ((
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       // Decode handles
       virtual FederateHandle decodeFederateHandle (
          VariableLengthData const & encodedValue) const
-         throw (
+         RTI_THROW ((
             CouldNotDecode,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual ObjectClassHandle decodeObjectClassHandle (
          VariableLengthData const & encodedValue) const
-         throw (
+         RTI_THROW ((
             CouldNotDecode,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual InteractionClassHandle decodeInteractionClassHandle (
          VariableLengthData const & encodedValue) const
-         throw (
+         RTI_THROW ((
             CouldNotDecode,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual ObjectInstanceHandle decodeObjectInstanceHandle (
          VariableLengthData const & encodedValue) const
-         throw (
+         RTI_THROW ((
             CouldNotDecode,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual AttributeHandle decodeAttributeHandle (
          VariableLengthData const & encodedValue) const
-         throw (
+         RTI_THROW ((
             CouldNotDecode,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual ParameterHandle decodeParameterHandle (
          VariableLengthData const & encodedValue) const
-         throw (
+         RTI_THROW ((
             CouldNotDecode,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual DimensionHandle decodeDimensionHandle (
          VariableLengthData const & encodedValue) const
-         throw (
+         RTI_THROW ((
             CouldNotDecode,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual MessageRetractionHandle decodeMessageRetractionHandle (
          VariableLengthData const & encodedValue) const
-         throw (
+         RTI_THROW ((
             CouldNotDecode,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
 
       virtual RegionHandle decodeRegionHandle (
          VariableLengthData const & encodedValue) const
-         throw (
+         RTI_THROW ((
             CouldNotDecode,
             FederateNotExecutionMember,
             NotConnected,
-            RTIinternalError) = 0;
+            RTIinternalError)) = 0;
    };
 }
 

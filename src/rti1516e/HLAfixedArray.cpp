@@ -164,7 +164,7 @@ HLAfixedArray::clone () const
 
 VariableLengthData
 HLAfixedArray::encode () const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   VariableLengthData variableLengthData;
   encode(variableLengthData);
@@ -173,7 +173,7 @@ HLAfixedArray::encode () const
 
 void
 HLAfixedArray::encode(VariableLengthData& inData) const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   std::vector<Octet> buffer;
   buffer.reserve(getEncodedLength());
@@ -184,13 +184,13 @@ HLAfixedArray::encode(VariableLengthData& inData) const
 
 void
 HLAfixedArray::encodeInto(std::vector<Octet>& buffer) const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   _impl->encodeInto(buffer);
 }
 
 void HLAfixedArray::decode(VariableLengthData const & inData)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   std::vector<Octet> buffer(inData.size());
   if (!buffer.empty())
@@ -200,14 +200,14 @@ void HLAfixedArray::decode(VariableLengthData const & inData)
 
 size_t
 HLAfixedArray::decodeFrom(std::vector<Octet> const & buffer, size_t index)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   return _impl->decodeFrom(buffer, index);
 }
 
 size_t
 HLAfixedArray::getEncodedLength() const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   return _impl->getEncodedLength();
 }
@@ -246,28 +246,28 @@ HLAfixedArray::size () const
 
 void
 HLAfixedArray::set(size_t index, const DataElement& dataElement)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   _impl->set(index, dataElement);
 }
 
 void
 HLAfixedArray::setElementPointer(size_t index, DataElement* dataElement)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   _impl->setElementPointer(index, dataElement);
 }
 
 const DataElement&
 HLAfixedArray::get(size_t index) const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   return _impl->get(index);
 }
 
 DataElement const&
 HLAfixedArray::operator [](size_t index) const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   return _impl->get(index);
 }

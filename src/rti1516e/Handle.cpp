@@ -36,7 +36,7 @@ namespace rti1516e
   }                                                                     \
                                                                         \
   HandleKind::~HandleKind()                                             \
-    throw()                                                             \
+    RTI_NOEXCEPT                                                        \
   {                                                                     \
     HandleKind##Implementation::putAndDelete(_impl);                    \
   }                                                                     \
@@ -109,7 +109,7 @@ namespace rti1516e
                                                                         \
   size_t                                                                \
   HandleKind::encode(void* buffer, size_t bufferSize) const             \
-    throw (CouldNotEncode)                                              \
+    RTI_THROW ((CouldNotEncode))                                        \
   {                                                                     \
     OpenRTI::HandleKind handle;                                         \
     handle = HandleKind##Implementation::getHandle(_impl);              \

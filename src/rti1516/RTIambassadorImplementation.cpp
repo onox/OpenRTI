@@ -427,11 +427,11 @@ public:
   }
 
   virtual void reportFederationExecutions(const FederationExecutionInformationVector& theFederationExecutionInformationList)
-    throw ()
+    RTI_NOEXCEPT
   { }
 
   virtual void synchronizationPointRegistrationResponse(const std::string& label, RegisterFederationSynchronizationPointResponseType reason)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -456,7 +456,7 @@ public:
   }
 
   virtual void announceSynchronizationPoint(const std::string& label, const OpenRTI::VariableLengthData& tag)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -473,7 +473,7 @@ public:
 
   virtual void federationSynchronized(const std::string& label, const OpenRTI::FederateHandleBoolPairVector&)
 
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -490,8 +490,8 @@ public:
   // // 4.12
   // virtual void
   // initiateFederateSave(std::string const& label)
-  //   throw (OpenRTI::UnableToPerformSave,
-  //          OpenRTI::FederateInternalError)
+  //   RTI_THROW ((OpenRTI::UnableToPerformSave,
+  //          OpenRTI::FederateInternalError))
   // {
   //   if (!_federateAmbassador)
   //     throw OpenRTI::FederateInternalError();
@@ -507,9 +507,9 @@ public:
   // virtual void
   // initiateFederateSave(const std::string& label,
   //                      const LogicalTime& logicalTime)
-  //   throw (OpenRTI::UnableToPerformSave,
+  //   RTI_THROW ((OpenRTI::UnableToPerformSave,
   //          OpenRTI::InvalidLogicalTime,
-  //          OpenRTI::FederateInternalError)
+  //          OpenRTI::FederateInternalError))
   // {
   //   if (!_federateAmbassador)
   //     throw OpenRTI::FederateInternalError();
@@ -527,7 +527,7 @@ public:
   // // 4.15
   // virtual void
   // federationSaved()
-  //   throw (OpenRTI::FederateInternalError)
+  //   RTI_THROW ((OpenRTI::FederateInternalError))
   // {
   //   if (!_federateAmbassador)
   //     throw OpenRTI::FederateInternalError();
@@ -540,7 +540,7 @@ public:
 
   // virtual void
   // federationNotSaved(OpenRTI::SaveFailureReason reason)
-  //   throw (OpenRTI::FederateInternalError)
+  //   RTI_THROW ((OpenRTI::FederateInternalError))
   // {
   //   if (!_federateAmbassador)
   //     throw OpenRTI::FederateInternalError();
@@ -577,7 +577,7 @@ public:
   // // 4.17
   // virtual void
   // federationSaveStatusResponse(OpenRTI::FederateHandleSaveStatusPairVector const& federateStatusVector)
-  //   throw (OpenRTI::FederateInternalError)
+  //   RTI_THROW ((OpenRTI::FederateInternalError))
   // {
   //   if (!_federateAmbassador)
   //     throw OpenRTI::FederateInternalError();
@@ -600,7 +600,7 @@ public:
   // // 4.19
   // virtual void
   // requestFederationRestoreSucceeded(std::string const& label)
-  //   throw (OpenRTI::FederateInternalError)
+  //   RTI_THROW ((OpenRTI::FederateInternalError))
   // {
   //   if (!_federateAmbassador)
   //     throw OpenRTI::FederateInternalError();
@@ -613,7 +613,7 @@ public:
 
   // virtual void
   // requestFederationRestoreFailed(std::string const& label)
-  //   throw (OpenRTI::FederateInternalError)
+  //   RTI_THROW ((OpenRTI::FederateInternalError))
   // {
   //   if (!_federateAmbassador)
   //     throw OpenRTI::FederateInternalError();
@@ -628,7 +628,7 @@ public:
   // // 4.20
   // virtual void
   // federationRestoreBegun()
-  //   throw (OpenRTI::FederateInternalError)
+  //   RTI_THROW ((OpenRTI::FederateInternalError))
   // {
   //   if (!_federateAmbassador)
   //     throw OpenRTI::FederateInternalError();
@@ -643,9 +643,9 @@ public:
   // virtual void
   // initiateFederateRestore(std::string const & label,
   //                         FederateHandle handle)
-  //   throw (OpenRTI::SpecifiedSaveLabelDoesNotExist,
+  //   RTI_THROW ((OpenRTI::SpecifiedSaveLabelDoesNotExist,
   //          OpenRTI::CouldNotInitiateRestore,
-  //          OpenRTI::FederateInternalError)
+  //          OpenRTI::FederateInternalError))
   // {
   //   if (!_federateAmbassador)
   //     throw OpenRTI::FederateInternalError();
@@ -664,7 +664,7 @@ public:
   // // 4.23
   // virtual
   // void federationRestored()
-  //   throw (OpenRTI::FederateInternalError)
+  //   RTI_THROW ((OpenRTI::FederateInternalError))
   // {
   //   if (!_federateAmbassador)
   //     throw OpenRTI::FederateInternalError();
@@ -677,7 +677,7 @@ public:
 
   // virtual void
   // federationNotRestored(RestoreFailureReason reason)
-  //   throw (OpenRTI::FederateInternalError)
+  //   RTI_THROW ((OpenRTI::FederateInternalError))
   // {
   //   if (!_federateAmbassador)
   //     throw OpenRTI::FederateInternalError();
@@ -710,7 +710,7 @@ public:
   // // 4.25
   // virtual void
   // federationRestoreStatusResponse(FederateHandleRestoreStatusPairVector const& theFederateStatusVector)
-  //   throw (OpenRTI::FederateInternalError)
+  //   RTI_THROW ((OpenRTI::FederateInternalError))
   // {
   //   if (!_federateAmbassador)
   //     throw OpenRTI::FederateInternalError();
@@ -740,7 +740,7 @@ public:
   /////////////////////////////////////
 
   virtual void registrationForObjectClass(OpenRTI::ObjectClassHandle objectClassHandle, bool start)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -757,7 +757,7 @@ public:
   }
 
   virtual void turnInteractionsOn(InteractionClassHandle interactionClassHandle, bool on)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -778,7 +778,7 @@ public:
   ////////////////////////////////
 
   virtual void objectInstanceNameReservationSucceeded(const std::string& objectInstanceName)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -792,7 +792,7 @@ public:
     }
   }
   virtual void objectInstanceNameReservationFailed(const std::string& objectInstanceName)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -807,12 +807,12 @@ public:
   }
 
   virtual void multipleObjectInstanceNameReservationSucceeded(const std::vector<std::string>&)
-    throw ()
+    RTI_NOEXCEPT
   {
     Log(FederateAmbassador, Warning) << "Ignoring unexpected multiple name reservation response!" << std::endl;
   }
   virtual void multipleObjectInstanceNameReservationFailed(const std::vector<std::string>&)
-    throw ()
+    RTI_NOEXCEPT
   {
     Log(FederateAmbassador, Warning) << "Ignoring unexpected multiple name reservation response!" << std::endl;
   }
@@ -823,7 +823,7 @@ public:
   discoverObjectInstance(ObjectInstanceHandle objectInstanceHandle,
                          ObjectClassHandle objectClassHandle,
                          std::string const& objectInstanceName)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -842,7 +842,7 @@ public:
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
                                       OrderType sentOrder, TransportationType transportationType, FederateHandle)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -866,7 +866,7 @@ public:
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
                                       OrderType sentOrder, TransportationType transportationType,
                                       const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -893,7 +893,7 @@ public:
                                       OrderType sentOrder, TransportationType transportationType,
                                       const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle,
                                       MessageRetractionHandle messageRetractionHandle)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -918,7 +918,7 @@ public:
   }
 
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder, FederateHandle)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -935,7 +935,7 @@ public:
   }
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
                                     const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -955,7 +955,7 @@ public:
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
                                     const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle,
                                     MessageRetractionHandle messageRetractionHandle)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -977,7 +977,7 @@ public:
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
                                   OrderType sentOrder, TransportationType transportationType, FederateHandle)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1001,7 +1001,7 @@ public:
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
                                   OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
                                   OrderType receivedOrder, FederateHandle)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1026,7 +1026,7 @@ public:
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
                                   OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
                                   OrderType receivedOrder, FederateHandle, MessageRetractionHandle messageRetractionHandle)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1054,7 +1054,7 @@ public:
   virtual
   void
   attributesInScope(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1073,7 +1073,7 @@ public:
   virtual
   void
   attributesOutOfScope(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1093,7 +1093,7 @@ public:
   void
   provideAttributeValueUpdate(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector,
                               const VariableLengthData& tag)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1113,7 +1113,7 @@ public:
   virtual
   void
   turnUpdatesOnForObjectInstance(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector, const std::string&)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1132,7 +1132,7 @@ public:
   virtual
   void
   turnUpdatesOffForObjectInstance(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1156,7 +1156,7 @@ public:
   void
   requestAttributeOwnershipAssumption(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector,
                                       const VariableLengthData& tag)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1176,7 +1176,7 @@ public:
   virtual
   void
   requestDivestitureConfirmation(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1196,7 +1196,7 @@ public:
   void
   attributeOwnershipAcquisitionNotification(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector,
                                             const VariableLengthData& tag)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1216,7 +1216,7 @@ public:
   virtual
   void
   attributeOwnershipUnavailable(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1236,7 +1236,7 @@ public:
   void
   requestAttributeOwnershipRelease(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector,
                                    const VariableLengthData& tag)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1256,7 +1256,7 @@ public:
   virtual
   void
   confirmAttributeOwnershipAcquisitionCancellation(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1277,7 +1277,7 @@ public:
   informAttributeOwnership(ObjectInstanceHandle objectInstanceHandle,
                            AttributeHandle attributeHandle,
                            FederateHandle federateHandle)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1296,7 +1296,7 @@ public:
   virtual
   void
   attributeIsNotOwned(ObjectInstanceHandle objectInstanceHandle, AttributeHandle attributeHandle)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1314,7 +1314,7 @@ public:
   virtual
   void
   attributeIsOwnedByRTI(ObjectInstanceHandle objectInstanceHandle, AttributeHandle attributeHandle)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1336,7 +1336,7 @@ public:
   // 8.3
   virtual void
   timeRegulationEnabled(const rti1516::LogicalTime& logicalTime)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1352,7 +1352,7 @@ public:
   // 8.6
   virtual void
   timeConstrainedEnabled(const rti1516::LogicalTime& logicalTime)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1368,7 +1368,7 @@ public:
   // 8.13
   virtual void
   timeAdvanceGrant(const rti1516::LogicalTime& logicalTime)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1385,7 +1385,7 @@ public:
   virtual
   void
   requestRetraction(MessageRetractionHandle messageRetractionHandle)
-    throw ()
+    RTI_NOEXCEPT
   {
     if (!_federateAmbassador) {
       Log(FederateAmbassador, Warning) << "Calling callback with zero ambassador!" << std::endl;
@@ -1485,7 +1485,7 @@ public:
   bool _forceOpaqueLogicalTime;
 };
 
-RTIambassadorImplementation::RTIambassadorImplementation(const std::vector<std::wstring>& args) throw () :
+RTIambassadorImplementation::RTIambassadorImplementation(const std::vector<std::wstring>& args) RTI_NOEXCEPT :
   _ambassadorInterface(new RTI1516AmbassadorInterface(args))
 {
 }
@@ -1500,11 +1500,11 @@ void
 RTIambassadorImplementation::createFederationExecution(std::wstring const & federationExecutionName,
                                                        std::wstring const & fullPathNameToTheFDDfile,
                                                        std::wstring const & logicalTimeImplementationName)
-  throw (rti1516::FederationExecutionAlreadyExists,
+  RTI_THROW ((rti1516::FederationExecutionAlreadyExists,
          rti1516::CouldNotOpenFDD,
          rti1516::ErrorReadingFDD,
          rti1516::CouldNotCreateLogicalTimeFactory,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   OpenRTI::FOMStringModuleList fomModuleList;
   loadModule(fomModuleList, fullPathNameToTheFDDfile);
@@ -1526,9 +1526,9 @@ RTIambassadorImplementation::createFederationExecution(std::wstring const & fede
 
 void
 RTIambassadorImplementation::destroyFederationExecution(std::wstring const & federationExecutionName)
-  throw (rti1516::FederatesCurrentlyJoined,
+  RTI_THROW ((rti1516::FederatesCurrentlyJoined,
          rti1516::FederationExecutionDoesNotExist,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::URL url = federationExecutionToUrl(OpenRTI::ucsToUtf8(federationExecutionName));
@@ -1549,12 +1549,12 @@ rti1516::FederateHandle
 RTIambassadorImplementation::joinFederationExecution(std::wstring const & federateType,
                                                      std::wstring const & federationExecutionName,
                                                      rti1516::FederateAmbassador & federateAmbassador)
-  throw (rti1516::FederateAlreadyExecutionMember,
+  RTI_THROW ((rti1516::FederateAlreadyExecutionMember,
          rti1516::FederationExecutionDoesNotExist,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
          rti1516::CouldNotCreateLogicalTimeFactory,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::URL url = federationExecutionToUrl(OpenRTI::ucsToUtf8(federationExecutionName));
@@ -1584,10 +1584,10 @@ RTIambassadorImplementation::joinFederationExecution(std::wstring const & federa
 
 void
 RTIambassadorImplementation::resignFederationExecution(rti1516::ResignAction rti1516ResignAction)
-  throw (rti1516::OwnershipAcquisitionPending,
+  RTI_THROW ((rti1516::OwnershipAcquisitionPending,
          rti1516::FederateOwnsAttributes,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::ResignAction resignAction;
@@ -1634,10 +1634,10 @@ RTIambassadorImplementation::resignFederationExecution(rti1516::ResignAction rti
 void
 RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring const & label,
                                                                     rti1516::VariableLengthData const & rti1516Tag)
-  throw (rti1516::FederateNotExecutionMember,
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516VariableLengthData tag(rti1516Tag);
@@ -1663,10 +1663,10 @@ void
 RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring const & label,
                                                                     rti1516::VariableLengthData const & rti1516Tag,
                                                                     rti1516::FederateHandleSet const & rti1516FederateHandleSet)
-  throw (rti1516::FederateNotExecutionMember,
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516VariableLengthData tag(rti1516Tag);
@@ -1689,11 +1689,11 @@ RTIambassadorImplementation::registerFederationSynchronizationPoint(std::wstring
 
 void
 RTIambassadorImplementation::synchronizationPointAchieved(std::wstring const & label)
-  throw (rti1516::SynchronizationPointLabelNotAnnounced,
+  RTI_THROW ((rti1516::SynchronizationPointLabelNotAnnounced,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->synchronizationPointAchieved(ucsToUtf8(label), true/*successfully*/);
@@ -1716,10 +1716,10 @@ RTIambassadorImplementation::synchronizationPointAchieved(std::wstring const & l
 
 void
 RTIambassadorImplementation::requestFederationSave(std::wstring const & label)
-  throw (rti1516::FederateNotExecutionMember,
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->requestFederationSave(ucsToUtf8(label));
@@ -1741,13 +1741,13 @@ RTIambassadorImplementation::requestFederationSave(std::wstring const & label)
 void
 RTIambassadorImplementation::requestFederationSave(const std::wstring& label,
                                                    const rti1516::LogicalTime& rti1516LogicalTime)
-  throw (rti1516::LogicalTimeAlreadyPassed,
+  RTI_THROW ((rti1516::LogicalTimeAlreadyPassed,
          rti1516::InvalidLogicalTime,
          rti1516::FederateUnableToUseTime,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->requestFederationSave(ucsToUtf8(label), rti1516LogicalTime);
@@ -1774,10 +1774,10 @@ RTIambassadorImplementation::requestFederationSave(const std::wstring& label,
 
 void
 RTIambassadorImplementation::federateSaveBegun()
-  throw (rti1516::SaveNotInitiated,
+  RTI_THROW ((rti1516::SaveNotInitiated,
          rti1516::FederateNotExecutionMember,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->federateSaveBegun();
@@ -1798,10 +1798,10 @@ RTIambassadorImplementation::federateSaveBegun()
 
 void
 RTIambassadorImplementation::federateSaveComplete()
-  throw (rti1516::FederateHasNotBegunSave,
+  RTI_THROW ((rti1516::FederateHasNotBegunSave,
          rti1516::FederateNotExecutionMember,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->federateSaveComplete();
@@ -1822,10 +1822,10 @@ RTIambassadorImplementation::federateSaveComplete()
 
 void
 RTIambassadorImplementation::federateSaveNotComplete()
-  throw (rti1516::FederateHasNotBegunSave,
+  RTI_THROW ((rti1516::FederateHasNotBegunSave,
          rti1516::FederateNotExecutionMember,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->federateSaveNotComplete();
@@ -1846,9 +1846,9 @@ RTIambassadorImplementation::federateSaveNotComplete()
 
 void
 RTIambassadorImplementation::queryFederationSaveStatus ()
-  throw (rti1516::FederateNotExecutionMember,
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->queryFederationSaveStatus();
@@ -1867,10 +1867,10 @@ RTIambassadorImplementation::queryFederationSaveStatus ()
 
 void
 RTIambassadorImplementation::requestFederationRestore(std::wstring const & label)
-  throw (rti1516::FederateNotExecutionMember,
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->requestFederationRestore(ucsToUtf8(label));
@@ -1891,10 +1891,10 @@ RTIambassadorImplementation::requestFederationRestore(std::wstring const & label
 
 void
 RTIambassadorImplementation::federateRestoreComplete()
-  throw (rti1516::RestoreNotRequested,
+  RTI_THROW ((rti1516::RestoreNotRequested,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->federateRestoreComplete();
@@ -1915,10 +1915,10 @@ RTIambassadorImplementation::federateRestoreComplete()
 
 void
 RTIambassadorImplementation::federateRestoreNotComplete()
-  throw (rti1516::RestoreNotRequested,
+  RTI_THROW ((rti1516::RestoreNotRequested,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->federateRestoreNotComplete();
@@ -1939,9 +1939,9 @@ RTIambassadorImplementation::federateRestoreNotComplete()
 
 void
 RTIambassadorImplementation::queryFederationRestoreStatus()
-  throw (rti1516::FederateNotExecutionMember,
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->queryFederationRestoreStatus();
@@ -1961,12 +1961,12 @@ RTIambassadorImplementation::queryFederationRestoreStatus()
 void
 RTIambassadorImplementation::publishObjectClassAttributes(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                           rti1516::AttributeHandleSet const & rti1516AttributeHandleSet)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::AttributeNotDefined,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -1993,12 +1993,12 @@ RTIambassadorImplementation::publishObjectClassAttributes(rti1516::ObjectClassHa
 
 void
 RTIambassadorImplementation::unpublishObjectClass(rti1516::ObjectClassHandle rti1516ObjectClassHandle)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::OwnershipAcquisitionPending,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -2025,13 +2025,13 @@ RTIambassadorImplementation::unpublishObjectClass(rti1516::ObjectClassHandle rti
 void
 RTIambassadorImplementation::unpublishObjectClassAttributes(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                             rti1516::AttributeHandleSet const & rti1516AttributeHandleSet)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::AttributeNotDefined,
          rti1516::OwnershipAcquisitionPending,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -2060,11 +2060,11 @@ RTIambassadorImplementation::unpublishObjectClassAttributes(rti1516::ObjectClass
 
 void
 RTIambassadorImplementation::publishInteractionClass(rti1516::InteractionClassHandle rti1516InteractionClassHandle)
-  throw (rti1516::InteractionClassNotDefined,
+  RTI_THROW ((rti1516::InteractionClassNotDefined,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -2088,11 +2088,11 @@ RTIambassadorImplementation::publishInteractionClass(rti1516::InteractionClassHa
 
 void
 RTIambassadorImplementation::unpublishInteractionClass(rti1516::InteractionClassHandle rti1516InteractionClassHandle)
-  throw (rti1516::InteractionClassNotDefined,
+  RTI_THROW ((rti1516::InteractionClassNotDefined,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -2118,12 +2118,12 @@ void
 RTIambassadorImplementation::subscribeObjectClassAttributes(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                             rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
                                                             bool active)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::AttributeNotDefined,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -2150,11 +2150,11 @@ RTIambassadorImplementation::subscribeObjectClassAttributes(rti1516::ObjectClass
 
 void
 RTIambassadorImplementation::unsubscribeObjectClass(rti1516::ObjectClassHandle rti1516ObjectClassHandle)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -2179,12 +2179,12 @@ RTIambassadorImplementation::unsubscribeObjectClass(rti1516::ObjectClassHandle r
 void
 RTIambassadorImplementation::unsubscribeObjectClassAttributes(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                               rti1516::AttributeHandleSet const & rti1516AttributeHandleSet)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::AttributeNotDefined,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -2212,12 +2212,12 @@ RTIambassadorImplementation::unsubscribeObjectClassAttributes(rti1516::ObjectCla
 void
 RTIambassadorImplementation::subscribeInteractionClass(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                                        bool active)
-  throw (rti1516::InteractionClassNotDefined,
+  RTI_THROW ((rti1516::InteractionClassNotDefined,
          rti1516::FederateServiceInvocationsAreBeingReportedViaMOM,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -2243,11 +2243,11 @@ RTIambassadorImplementation::subscribeInteractionClass(rti1516::InteractionClass
 
 void
 RTIambassadorImplementation::unsubscribeInteractionClass(rti1516::InteractionClassHandle rti1516InteractionClassHandle)
-  throw (rti1516::InteractionClassNotDefined,
+  RTI_THROW ((rti1516::InteractionClassNotDefined,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -2271,11 +2271,11 @@ RTIambassadorImplementation::unsubscribeInteractionClass(rti1516::InteractionCla
 
 void
 RTIambassadorImplementation::reserveObjectInstanceName(std::wstring const & objectInstanceName)
-  throw (rti1516::IllegalName,
+  RTI_THROW ((rti1516::IllegalName,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->reserveObjectInstanceName(ucsToUtf8(objectInstanceName));
@@ -2298,12 +2298,12 @@ RTIambassadorImplementation::reserveObjectInstanceName(std::wstring const & obje
 
 rti1516::ObjectInstanceHandle
 RTIambassadorImplementation::registerObjectInstance(rti1516::ObjectClassHandle rti1516ObjectClassHandle)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::ObjectClassNotPublished,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -2330,14 +2330,14 @@ RTIambassadorImplementation::registerObjectInstance(rti1516::ObjectClassHandle r
 rti1516::ObjectInstanceHandle
 RTIambassadorImplementation::registerObjectInstance(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                     std::wstring const & objectInstanceName)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::ObjectClassNotPublished,
          rti1516::ObjectInstanceNameNotReserved,
          rti1516::ObjectInstanceNameInUse,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -2369,13 +2369,13 @@ void
 RTIambassadorImplementation::updateAttributeValues(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                    const rti1516::AttributeHandleValueMap& rti1516AttributeHandleValueMap,
                                                    const rti1516::VariableLengthData& rti1516Tag)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::AttributeNotOwned,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -2408,14 +2408,14 @@ RTIambassadorImplementation::updateAttributeValues(rti1516::ObjectInstanceHandle
                                                    const rti1516::AttributeHandleValueMap& rti1516AttributeHandleValueMap,
                                                    const rti1516::VariableLengthData& rti1516Tag,
                                                    const rti1516::LogicalTime& rti1516LogicalTime)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::AttributeNotOwned,
          rti1516::InvalidLogicalTime,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -2449,13 +2449,13 @@ void
 RTIambassadorImplementation::sendInteraction(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                              const rti1516::ParameterHandleValueMap& rti1516ParameterHandleValueMap,
                                              const rti1516::VariableLengthData& rti1516Tag)
-  throw (rti1516::InteractionClassNotPublished,
+  RTI_THROW ((rti1516::InteractionClassNotPublished,
          rti1516::InteractionClassNotDefined,
          rti1516::InteractionParameterNotDefined,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -2488,14 +2488,14 @@ RTIambassadorImplementation::sendInteraction(rti1516::InteractionClassHandle rti
                                              const rti1516::ParameterHandleValueMap& rti1516ParameterHandleValueMap,
                                              const rti1516::VariableLengthData& rti1516Tag,
                                              const rti1516::LogicalTime& rti1516LogicalTime)
-  throw (rti1516::InteractionClassNotPublished,
+  RTI_THROW ((rti1516::InteractionClassNotPublished,
          rti1516::InteractionClassNotDefined,
          rti1516::InteractionParameterNotDefined,
          rti1516::InvalidLogicalTime,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -2528,12 +2528,12 @@ RTIambassadorImplementation::sendInteraction(rti1516::InteractionClassHandle rti
 void
 RTIambassadorImplementation::deleteObjectInstance(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                   const rti1516::VariableLengthData& rti1516Tag)
-  throw (rti1516::DeletePrivilegeNotHeld,
+  RTI_THROW ((rti1516::DeletePrivilegeNotHeld,
          rti1516::ObjectInstanceNotKnown,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -2562,13 +2562,13 @@ rti1516::MessageRetractionHandle
 RTIambassadorImplementation::deleteObjectInstance(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                   const rti1516::VariableLengthData& rti1516Tag,
                                                   const rti1516::LogicalTime& rti1516LogicalTime)
-  throw (rti1516::DeletePrivilegeNotHeld,
+  RTI_THROW ((rti1516::DeletePrivilegeNotHeld,
          rti1516::ObjectInstanceNotKnown,
          rti1516::InvalidLogicalTime,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -2597,13 +2597,13 @@ RTIambassadorImplementation::deleteObjectInstance(rti1516::ObjectInstanceHandle 
 
 void
 RTIambassadorImplementation::localDeleteObjectInstance(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::FederateOwnsAttributes,
          rti1516::OwnershipAcquisitionPending,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -2633,13 +2633,13 @@ void
 RTIambassadorImplementation::changeAttributeTransportationType(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
                                                                rti1516::TransportationType rti1516TransportationType)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::AttributeNotOwned,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -2670,12 +2670,12 @@ RTIambassadorImplementation::changeAttributeTransportationType(rti1516::ObjectIn
 void
 RTIambassadorImplementation::changeInteractionTransportationType(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                                                  rti1516::TransportationType rti1516TransportationType)
-  throw (rti1516::InteractionClassNotDefined,
+  RTI_THROW ((rti1516::InteractionClassNotDefined,
          rti1516::InteractionClassNotPublished,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -2704,12 +2704,12 @@ void
 RTIambassadorImplementation::requestAttributeValueUpdate(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                          rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
                                                          rti1516::VariableLengthData const & rti1516Tag)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -2739,12 +2739,12 @@ void
 RTIambassadorImplementation::requestAttributeValueUpdate(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                          rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
                                                          rti1516::VariableLengthData const & rti1516Tag)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::AttributeNotDefined,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -2773,13 +2773,13 @@ RTIambassadorImplementation::requestAttributeValueUpdate(rti1516::ObjectClassHan
 void
 RTIambassadorImplementation::unconditionalAttributeOwnershipDivestiture(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                         rti1516::AttributeHandleSet const & rti1516AttributeHandleSet)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::AttributeNotOwned,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -2810,14 +2810,14 @@ void
 RTIambassadorImplementation::negotiatedAttributeOwnershipDivestiture(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                      rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
                                                                      rti1516::VariableLengthData const & rti1516Tag)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::AttributeNotOwned,
          rti1516::AttributeAlreadyBeingDivested,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -2851,7 +2851,7 @@ void
 RTIambassadorImplementation::confirmDivestiture(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                 rti1516::AttributeHandleSet const& rti1516AttributeHandleSet,
                                                 rti1516::VariableLengthData const& rti1516Tag)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::AttributeNotOwned,
          rti1516::AttributeDivestitureWasNotRequested,
@@ -2859,7 +2859,7 @@ RTIambassadorImplementation::confirmDivestiture(rti1516::ObjectInstanceHandle rt
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -2895,7 +2895,7 @@ void
 RTIambassadorImplementation::attributeOwnershipAcquisition(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                            rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
                                                            rti1516::VariableLengthData const & rti1516Tag)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::ObjectClassNotPublished,
          rti1516::AttributeNotDefined,
          rti1516::AttributeNotPublished,
@@ -2903,7 +2903,7 @@ RTIambassadorImplementation::attributeOwnershipAcquisition(rti1516::ObjectInstan
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -2936,7 +2936,7 @@ RTIambassadorImplementation::attributeOwnershipAcquisition(rti1516::ObjectInstan
 void
 RTIambassadorImplementation::attributeOwnershipAcquisitionIfAvailable(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                       rti1516::AttributeHandleSet const & rti1516AttributeHandleSet)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::ObjectClassNotPublished,
          rti1516::AttributeNotDefined,
          rti1516::AttributeNotPublished,
@@ -2945,7 +2945,7 @@ RTIambassadorImplementation::attributeOwnershipAcquisitionIfAvailable(rti1516::O
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -2982,13 +2982,13 @@ void
 RTIambassadorImplementation::attributeOwnershipDivestitureIfWanted(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                    rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
                                                                    rti1516::AttributeHandleSet & rti1516DivestedAttributeSet)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::AttributeNotOwned,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -3022,14 +3022,14 @@ RTIambassadorImplementation::attributeOwnershipDivestitureIfWanted(rti1516::Obje
 void
 RTIambassadorImplementation::cancelNegotiatedAttributeOwnershipDivestiture(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                            rti1516::AttributeHandleSet const & rti1516AttributeHandleSet)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::AttributeNotOwned,
          rti1516::AttributeDivestitureWasNotRequested,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -3061,14 +3061,14 @@ RTIambassadorImplementation::cancelNegotiatedAttributeOwnershipDivestiture(rti15
 void
 RTIambassadorImplementation::cancelAttributeOwnershipAcquisition(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                                  rti1516::AttributeHandleSet const & rti1516AttributeHandleSet)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::AttributeAlreadyOwned,
          rti1516::AttributeAcquisitionWasNotRequested,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -3100,12 +3100,12 @@ RTIambassadorImplementation::cancelAttributeOwnershipAcquisition(rti1516::Object
 void
 RTIambassadorImplementation::queryAttributeOwnership(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                      rti1516::AttributeHandle rti1516AttributeHandle)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -3133,12 +3133,12 @@ RTIambassadorImplementation::queryAttributeOwnership(rti1516::ObjectInstanceHand
 bool
 RTIambassadorImplementation::isAttributeOwnedByFederate(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                         rti1516::AttributeHandle rti1516AttributeHandle)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -3165,14 +3165,14 @@ RTIambassadorImplementation::isAttributeOwnedByFederate(rti1516::ObjectInstanceH
 
 void
 RTIambassadorImplementation::enableTimeRegulation(const rti1516::LogicalTimeInterval& rti1516Lookahead)
-  throw (rti1516::TimeRegulationAlreadyEnabled,
+  RTI_THROW ((rti1516::TimeRegulationAlreadyEnabled,
          rti1516::InvalidLookahead,
          rti1516::InTimeAdvancingState,
          rti1516::RequestForTimeRegulationPending,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->enableTimeRegulation(rti1516Lookahead);
@@ -3201,11 +3201,11 @@ RTIambassadorImplementation::enableTimeRegulation(const rti1516::LogicalTimeInte
 
 void
 RTIambassadorImplementation::disableTimeRegulation()
-  throw (rti1516::TimeRegulationIsNotEnabled,
+  RTI_THROW ((rti1516::TimeRegulationIsNotEnabled,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->disableTimeRegulation();
@@ -3228,13 +3228,13 @@ RTIambassadorImplementation::disableTimeRegulation()
 
 void
 RTIambassadorImplementation::enableTimeConstrained()
-  throw (rti1516::TimeConstrainedAlreadyEnabled,
+  RTI_THROW ((rti1516::TimeConstrainedAlreadyEnabled,
          rti1516::InTimeAdvancingState,
          rti1516::RequestForTimeConstrainedPending,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->enableTimeConstrained();
@@ -3261,11 +3261,11 @@ RTIambassadorImplementation::enableTimeConstrained()
 
 void
 RTIambassadorImplementation::disableTimeConstrained()
-  throw (rti1516::TimeConstrainedIsNotEnabled,
+  RTI_THROW ((rti1516::TimeConstrainedIsNotEnabled,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->disableTimeConstrained();
@@ -3288,7 +3288,7 @@ RTIambassadorImplementation::disableTimeConstrained()
 
 void
 RTIambassadorImplementation::timeAdvanceRequest(const rti1516::LogicalTime& logicalTime)
-  throw (rti1516::InvalidLogicalTime,
+  RTI_THROW ((rti1516::InvalidLogicalTime,
          rti1516::LogicalTimeAlreadyPassed,
          rti1516::InTimeAdvancingState,
          rti1516::RequestForTimeRegulationPending,
@@ -3296,7 +3296,7 @@ RTIambassadorImplementation::timeAdvanceRequest(const rti1516::LogicalTime& logi
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->timeAdvanceRequest(logicalTime);
@@ -3327,7 +3327,7 @@ RTIambassadorImplementation::timeAdvanceRequest(const rti1516::LogicalTime& logi
 
 void
 RTIambassadorImplementation::timeAdvanceRequestAvailable(const rti1516::LogicalTime& logicalTime)
-  throw (rti1516::InvalidLogicalTime,
+  RTI_THROW ((rti1516::InvalidLogicalTime,
          rti1516::LogicalTimeAlreadyPassed,
          rti1516::InTimeAdvancingState,
          rti1516::RequestForTimeRegulationPending,
@@ -3335,7 +3335,7 @@ RTIambassadorImplementation::timeAdvanceRequestAvailable(const rti1516::LogicalT
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->timeAdvanceRequestAvailable(logicalTime);
@@ -3366,7 +3366,7 @@ RTIambassadorImplementation::timeAdvanceRequestAvailable(const rti1516::LogicalT
 
 void
 RTIambassadorImplementation::nextMessageRequest(const rti1516::LogicalTime& logicalTime)
-  throw (rti1516::InvalidLogicalTime,
+  RTI_THROW ((rti1516::InvalidLogicalTime,
          rti1516::LogicalTimeAlreadyPassed,
          rti1516::InTimeAdvancingState,
          rti1516::RequestForTimeRegulationPending,
@@ -3374,7 +3374,7 @@ RTIambassadorImplementation::nextMessageRequest(const rti1516::LogicalTime& logi
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->nextMessageRequest(logicalTime);
@@ -3405,7 +3405,7 @@ RTIambassadorImplementation::nextMessageRequest(const rti1516::LogicalTime& logi
 
 void
 RTIambassadorImplementation::nextMessageRequestAvailable(const rti1516::LogicalTime& logicalTime)
-  throw (rti1516::InvalidLogicalTime,
+  RTI_THROW ((rti1516::InvalidLogicalTime,
          rti1516::LogicalTimeAlreadyPassed,
          rti1516::InTimeAdvancingState,
          rti1516::RequestForTimeRegulationPending,
@@ -3413,7 +3413,7 @@ RTIambassadorImplementation::nextMessageRequestAvailable(const rti1516::LogicalT
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->nextMessageRequestAvailable(logicalTime);
@@ -3444,7 +3444,7 @@ RTIambassadorImplementation::nextMessageRequestAvailable(const rti1516::LogicalT
 
 void
 RTIambassadorImplementation::flushQueueRequest(const rti1516::LogicalTime& logicalTime)
-  throw (rti1516::InvalidLogicalTime,
+  RTI_THROW ((rti1516::InvalidLogicalTime,
          rti1516::LogicalTimeAlreadyPassed,
          rti1516::InTimeAdvancingState,
          rti1516::RequestForTimeRegulationPending,
@@ -3452,7 +3452,7 @@ RTIambassadorImplementation::flushQueueRequest(const rti1516::LogicalTime& logic
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->flushQueueRequest(logicalTime);
@@ -3483,11 +3483,11 @@ RTIambassadorImplementation::flushQueueRequest(const rti1516::LogicalTime& logic
 
 void
 RTIambassadorImplementation::enableAsynchronousDelivery()
-  throw (rti1516::AsynchronousDeliveryAlreadyEnabled,
+  RTI_THROW ((rti1516::AsynchronousDeliveryAlreadyEnabled,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->enableAsynchronousDelivery();
@@ -3510,11 +3510,11 @@ RTIambassadorImplementation::enableAsynchronousDelivery()
 
 void
 RTIambassadorImplementation::disableAsynchronousDelivery()
-  throw (rti1516::AsynchronousDeliveryAlreadyDisabled,
+  RTI_THROW ((rti1516::AsynchronousDeliveryAlreadyDisabled,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->disableAsynchronousDelivery();
@@ -3537,10 +3537,10 @@ RTIambassadorImplementation::disableAsynchronousDelivery()
 
 bool
 RTIambassadorImplementation::queryGALT(rti1516::LogicalTime& logicalTime)
-  throw (rti1516::FederateNotExecutionMember,
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     return _ambassadorInterface->queryGALT(logicalTime);
@@ -3561,10 +3561,10 @@ RTIambassadorImplementation::queryGALT(rti1516::LogicalTime& logicalTime)
 
 void
 RTIambassadorImplementation::queryLogicalTime(rti1516::LogicalTime& logicalTime)
-  throw (rti1516::FederateNotExecutionMember,
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->queryLogicalTime(logicalTime);
@@ -3585,10 +3585,10 @@ RTIambassadorImplementation::queryLogicalTime(rti1516::LogicalTime& logicalTime)
 
 bool
 RTIambassadorImplementation::queryLITS(rti1516::LogicalTime& logicalTime)
-  throw (rti1516::FederateNotExecutionMember,
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     return _ambassadorInterface->queryLITS(logicalTime);
@@ -3609,13 +3609,13 @@ RTIambassadorImplementation::queryLITS(rti1516::LogicalTime& logicalTime)
 
 void
 RTIambassadorImplementation::modifyLookahead(const rti1516::LogicalTimeInterval& lookahead)
-  throw (rti1516::TimeRegulationIsNotEnabled,
+  RTI_THROW ((rti1516::TimeRegulationIsNotEnabled,
          rti1516::InvalidLookahead,
          rti1516::InTimeAdvancingState,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->modifyLookahead(lookahead, true/*checkForTimeRegulation*/);
@@ -3642,11 +3642,11 @@ RTIambassadorImplementation::modifyLookahead(const rti1516::LogicalTimeInterval&
 
 void
 RTIambassadorImplementation::queryLookahead(rti1516::LogicalTimeInterval& lookahead)
-  throw (rti1516::TimeRegulationIsNotEnabled,
+  RTI_THROW ((rti1516::TimeRegulationIsNotEnabled,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->queryLookahead(lookahead, true/*checkForTimeRegulation*/);
@@ -3669,13 +3669,13 @@ RTIambassadorImplementation::queryLookahead(rti1516::LogicalTimeInterval& lookah
 
 void
 RTIambassadorImplementation::retract(rti1516::MessageRetractionHandle rti1516MessageRetractionHandle)
-  throw (rti1516::InvalidRetractionHandle,
+  RTI_THROW ((rti1516::InvalidRetractionHandle,
          rti1516::TimeRegulationIsNotEnabled,
          rti1516::MessageCanNoLongerBeRetracted,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516MessageRetractionHandle messageRetractionHandle(rti1516MessageRetractionHandle);
@@ -3705,13 +3705,13 @@ void
 RTIambassadorImplementation::changeAttributeOrderType(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                       rti1516::AttributeHandleSet const & rti1516AttributeHandleSet,
                                                       rti1516::OrderType rti1516OrderType)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::AttributeNotOwned,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -3742,12 +3742,12 @@ RTIambassadorImplementation::changeAttributeOrderType(rti1516::ObjectInstanceHan
 void
 RTIambassadorImplementation::changeInteractionOrderType(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                                         rti1516::OrderType rti1516OrderType)
-  throw (rti1516::InteractionClassNotDefined,
+  RTI_THROW ((rti1516::InteractionClassNotDefined,
          rti1516::InteractionClassNotPublished,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -3774,11 +3774,11 @@ RTIambassadorImplementation::changeInteractionOrderType(rti1516::InteractionClas
 
 rti1516::RegionHandle
 RTIambassadorImplementation::createRegion(rti1516::DimensionHandleSet const & rti1516DimensionHandleSet)
-  throw (rti1516::InvalidDimensionHandle,
+  RTI_THROW ((rti1516::InvalidDimensionHandle,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516DimensionHandleSet dimensionHandleSet(rti1516DimensionHandleSet);
@@ -3802,12 +3802,12 @@ RTIambassadorImplementation::createRegion(rti1516::DimensionHandleSet const & rt
 
 void
 RTIambassadorImplementation::commitRegionModifications(rti1516::RegionHandleSet const & rti1516RegionHandleSet)
-  throw (rti1516::InvalidRegion,
+  RTI_THROW ((rti1516::InvalidRegion,
          rti1516::RegionNotCreatedByThisFederate,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516RegionHandleVector regionHandleVector(rti1516RegionHandleSet);
@@ -3833,13 +3833,13 @@ RTIambassadorImplementation::commitRegionModifications(rti1516::RegionHandleSet 
 
 void
 RTIambassadorImplementation::deleteRegion(rti1516::RegionHandle rti1516RegionHandle)
-  throw (rti1516::InvalidRegion,
+  RTI_THROW ((rti1516::InvalidRegion,
          rti1516::RegionNotCreatedByThisFederate,
          rti1516::RegionInUseForUpdateOrSubscription,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516RegionHandle regionHandle(rti1516RegionHandle);
@@ -3869,7 +3869,7 @@ rti1516::ObjectInstanceHandle
 RTIambassadorImplementation::registerObjectInstanceWithRegions(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                                rti1516::AttributeHandleSetRegionHandleSetPairVector const &
                                                                rti1516AttributeHandleSetRegionHandleSetPairVector)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::ObjectClassNotPublished,
          rti1516::AttributeNotDefined,
          rti1516::AttributeNotPublished,
@@ -3879,7 +3879,7 @@ RTIambassadorImplementation::registerObjectInstanceWithRegions(rti1516::ObjectCl
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -3919,7 +3919,7 @@ RTIambassadorImplementation::registerObjectInstanceWithRegions(rti1516::ObjectCl
                                                                rti1516::AttributeHandleSetRegionHandleSetPairVector const &
                                                                rti1516AttributeHandleSetRegionHandleSetPairVector,
                                                                std::wstring const & objectInstanceName)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::ObjectClassNotPublished,
          rti1516::AttributeNotDefined,
          rti1516::AttributeNotPublished,
@@ -3931,7 +3931,7 @@ RTIambassadorImplementation::registerObjectInstanceWithRegions(rti1516::ObjectCl
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -3976,7 +3976,7 @@ void
 RTIambassadorImplementation::associateRegionsForUpdates(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                         rti1516::AttributeHandleSetRegionHandleSetPairVector const &
                                                         rti1516AttributeHandleSetRegionHandleSetPairVector)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::InvalidRegion,
          rti1516::RegionNotCreatedByThisFederate,
@@ -3984,7 +3984,7 @@ RTIambassadorImplementation::associateRegionsForUpdates(rti1516::ObjectInstanceH
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -4019,14 +4019,14 @@ void
 RTIambassadorImplementation::unassociateRegionsForUpdates(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle,
                                                           rti1516::AttributeHandleSetRegionHandleSetPairVector const &
                                                           rti1516AttributeHandleSetRegionHandleSetPairVector)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::AttributeNotDefined,
          rti1516::InvalidRegion,
          rti1516::RegionNotCreatedByThisFederate,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -4060,7 +4060,7 @@ RTIambassadorImplementation::subscribeObjectClassAttributesWithRegions(rti1516::
                                                                        rti1516::AttributeHandleSetRegionHandleSetPairVector const &
                                                                        rti1516AttributeHandleSetRegionHandleSetPairVector,
                                                                        bool active)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::AttributeNotDefined,
          rti1516::InvalidRegion,
          rti1516::RegionNotCreatedByThisFederate,
@@ -4068,7 +4068,7 @@ RTIambassadorImplementation::subscribeObjectClassAttributesWithRegions(rti1516::
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -4103,14 +4103,14 @@ void
 RTIambassadorImplementation::unsubscribeObjectClassAttributesWithRegions(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                                          rti1516::AttributeHandleSetRegionHandleSetPairVector const &
                                                                          rti1516AttributeHandleSetRegionHandleSetPairVector)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::AttributeNotDefined,
          rti1516::InvalidRegion,
          rti1516::RegionNotCreatedByThisFederate,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -4144,7 +4144,7 @@ void
 RTIambassadorImplementation::subscribeInteractionClassWithRegions(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                                                   rti1516::RegionHandleSet const & rti1516RegionHandleSet,
                                                                   bool active)
-  throw (rti1516::InteractionClassNotDefined,
+  RTI_THROW ((rti1516::InteractionClassNotDefined,
          rti1516::InvalidRegion,
          rti1516::RegionNotCreatedByThisFederate,
          rti1516::InvalidRegionContext,
@@ -4152,7 +4152,7 @@ RTIambassadorImplementation::subscribeInteractionClassWithRegions(rti1516::Inter
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -4186,13 +4186,13 @@ RTIambassadorImplementation::subscribeInteractionClassWithRegions(rti1516::Inter
 void
 RTIambassadorImplementation::unsubscribeInteractionClassWithRegions(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                                                     rti1516::RegionHandleSet const & rti1516RegionHandleSet)
-  throw (rti1516::InteractionClassNotDefined,
+  RTI_THROW ((rti1516::InteractionClassNotDefined,
          rti1516::InvalidRegion,
          rti1516::RegionNotCreatedByThisFederate,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -4224,7 +4224,7 @@ RTIambassadorImplementation::sendInteractionWithRegions(rti1516::InteractionClas
                                                         rti1516::ParameterHandleValueMap const & rti1516ParameterHandleValueMap,
                                                         rti1516::RegionHandleSet const & rti1516RegionHandleSet,
                                                         rti1516::VariableLengthData const & rti1516Tag)
-  throw (rti1516::InteractionClassNotDefined,
+  RTI_THROW ((rti1516::InteractionClassNotDefined,
          rti1516::InteractionClassNotPublished,
          rti1516::InteractionParameterNotDefined,
          rti1516::InvalidRegion,
@@ -4233,7 +4233,7 @@ RTIambassadorImplementation::sendInteractionWithRegions(rti1516::InteractionClas
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -4274,7 +4274,7 @@ RTIambassadorImplementation::sendInteractionWithRegions(rti1516::InteractionClas
                                                         rti1516::RegionHandleSet const & rti1516RegionHandleSet,
                                                         rti1516::VariableLengthData const & rti1516Tag,
                                                         rti1516::LogicalTime const & rti1516LogicalTime)
-throw (rti1516::InteractionClassNotDefined,
+RTI_THROW ((rti1516::InteractionClassNotDefined,
        rti1516::InteractionClassNotPublished,
        rti1516::InteractionParameterNotDefined,
        rti1516::InvalidRegion,
@@ -4284,7 +4284,7 @@ throw (rti1516::InteractionClassNotDefined,
        rti1516::FederateNotExecutionMember,
        rti1516::SaveInProgress,
        rti1516::RestoreInProgress,
-       rti1516::RTIinternalError)
+       rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -4326,7 +4326,7 @@ RTIambassadorImplementation::requestAttributeValueUpdateWithRegions(rti1516::Obj
                                                                     rti1516::AttributeHandleSetRegionHandleSetPairVector const &
                                                                     rti1516AttributeHandleSetRegionHandleSetPairVector,
                                                                     rti1516::VariableLengthData const & rti1516Tag)
-  throw (rti1516::ObjectClassNotDefined,
+  RTI_THROW ((rti1516::ObjectClassNotDefined,
          rti1516::AttributeNotDefined,
          rti1516::InvalidRegion,
          rti1516::RegionNotCreatedByThisFederate,
@@ -4334,7 +4334,7 @@ RTIambassadorImplementation::requestAttributeValueUpdateWithRegions(rti1516::Obj
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -4368,9 +4368,9 @@ RTIambassadorImplementation::requestAttributeValueUpdateWithRegions(rti1516::Obj
 
 rti1516::ObjectClassHandle
 RTIambassadorImplementation::getObjectClassHandle(std::wstring const & name)
-  throw (rti1516::NameNotFound,
+  RTI_THROW ((rti1516::NameNotFound,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     return OpenRTI::_O1516ObjectClassHandle(_ambassadorInterface->getObjectClassHandle(ucsToUtf8(name)));
@@ -4389,9 +4389,9 @@ RTIambassadorImplementation::getObjectClassHandle(std::wstring const & name)
 
 std::wstring
 RTIambassadorImplementation::getObjectClassName(rti1516::ObjectClassHandle rti1516ObjectClassHandle)
-  throw (rti1516::InvalidObjectClassHandle,
+  RTI_THROW ((rti1516::InvalidObjectClassHandle,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -4412,10 +4412,10 @@ RTIambassadorImplementation::getObjectClassName(rti1516::ObjectClassHandle rti15
 rti1516::AttributeHandle
 RTIambassadorImplementation::getAttributeHandle(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                 std::wstring const & attributeName)
-  throw (rti1516::InvalidObjectClassHandle,
+  RTI_THROW ((rti1516::InvalidObjectClassHandle,
          rti1516::NameNotFound,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -4438,11 +4438,11 @@ RTIambassadorImplementation::getAttributeHandle(rti1516::ObjectClassHandle rti15
 std::wstring
 RTIambassadorImplementation::getAttributeName(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                               rti1516::AttributeHandle rti1516AttributeHandle)
-  throw (rti1516::InvalidObjectClassHandle,
+  RTI_THROW ((rti1516::InvalidObjectClassHandle,
          rti1516::InvalidAttributeHandle,
          rti1516::AttributeNotDefined,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -4467,9 +4467,9 @@ RTIambassadorImplementation::getAttributeName(rti1516::ObjectClassHandle rti1516
 
 rti1516::InteractionClassHandle
 RTIambassadorImplementation::getInteractionClassHandle(std::wstring const & name)
-  throw (rti1516::NameNotFound,
+  RTI_THROW ((rti1516::NameNotFound,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     return OpenRTI::_O1516InteractionClassHandle(_ambassadorInterface->getInteractionClassHandle(ucsToUtf8(name)));
@@ -4488,9 +4488,9 @@ RTIambassadorImplementation::getInteractionClassHandle(std::wstring const & name
 
 std::wstring
 RTIambassadorImplementation::getInteractionClassName(rti1516::InteractionClassHandle rti1516InteractionClassHandle)
-  throw (rti1516::InvalidInteractionClassHandle,
+  RTI_THROW ((rti1516::InvalidInteractionClassHandle,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -4511,10 +4511,10 @@ RTIambassadorImplementation::getInteractionClassName(rti1516::InteractionClassHa
 rti1516::ParameterHandle
 RTIambassadorImplementation::getParameterHandle(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                                 std::wstring const & parameterName)
-  throw (rti1516::InvalidInteractionClassHandle,
+  RTI_THROW ((rti1516::InvalidInteractionClassHandle,
          rti1516::NameNotFound,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -4537,11 +4537,11 @@ RTIambassadorImplementation::getParameterHandle(rti1516::InteractionClassHandle 
 std::wstring
 RTIambassadorImplementation::getParameterName(rti1516::InteractionClassHandle rti1516InteractionClassHandle,
                                               rti1516::ParameterHandle rti1516ParameterHandle)
-  throw (rti1516::InvalidInteractionClassHandle,
+  RTI_THROW ((rti1516::InvalidInteractionClassHandle,
          rti1516::InvalidParameterHandle,
          rti1516::InteractionParameterNotDefined,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -4566,9 +4566,9 @@ RTIambassadorImplementation::getParameterName(rti1516::InteractionClassHandle rt
 
 rti1516::ObjectInstanceHandle
 RTIambassadorImplementation::getObjectInstanceHandle(std::wstring const & name)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     return OpenRTI::_O1516ObjectInstanceHandle(_ambassadorInterface->getObjectInstanceHandle(ucsToUtf8(name)));
@@ -4587,9 +4587,9 @@ RTIambassadorImplementation::getObjectInstanceHandle(std::wstring const & name)
 
 std::wstring
 RTIambassadorImplementation::getObjectInstanceName(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -4609,9 +4609,9 @@ RTIambassadorImplementation::getObjectInstanceName(rti1516::ObjectInstanceHandle
 
 rti1516::DimensionHandle
 RTIambassadorImplementation::getDimensionHandle(std::wstring const & name)
-  throw (rti1516::NameNotFound,
+  RTI_THROW ((rti1516::NameNotFound,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     return OpenRTI::_O1516DimensionHandle(_ambassadorInterface->getDimensionHandle(ucsToUtf8(name)));
@@ -4630,9 +4630,9 @@ RTIambassadorImplementation::getDimensionHandle(std::wstring const & name)
 
 std::wstring
 RTIambassadorImplementation::getDimensionName(rti1516::DimensionHandle rti1516DimensionHandle)
-  throw (rti1516::InvalidDimensionHandle,
+  RTI_THROW ((rti1516::InvalidDimensionHandle,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516DimensionHandle dimensionHandle(rti1516DimensionHandle);
@@ -4652,9 +4652,9 @@ RTIambassadorImplementation::getDimensionName(rti1516::DimensionHandle rti1516Di
 
 unsigned long
 RTIambassadorImplementation::getDimensionUpperBound(rti1516::DimensionHandle rti1516DimensionHandle)
-  throw (rti1516::InvalidDimensionHandle,
+  RTI_THROW ((rti1516::InvalidDimensionHandle,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516DimensionHandle dimensionHandle(rti1516DimensionHandle);
@@ -4675,11 +4675,11 @@ RTIambassadorImplementation::getDimensionUpperBound(rti1516::DimensionHandle rti
 rti1516::DimensionHandleSet
 RTIambassadorImplementation::getAvailableDimensionsForClassAttribute(rti1516::ObjectClassHandle rti1516ObjectClassHandle,
                                                                      rti1516::AttributeHandle rti1516AttributeHandle)
-  throw (rti1516::InvalidObjectClassHandle,
+  RTI_THROW ((rti1516::InvalidObjectClassHandle,
          rti1516::InvalidAttributeHandle,
          rti1516::AttributeNotDefined,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectClassHandle objectClassHandle(rti1516ObjectClassHandle);
@@ -4704,9 +4704,9 @@ RTIambassadorImplementation::getAvailableDimensionsForClassAttribute(rti1516::Ob
 
 rti1516::ObjectClassHandle
 RTIambassadorImplementation::getKnownObjectClassHandle(rti1516::ObjectInstanceHandle rti1516ObjectInstanceHandle)
-  throw (rti1516::ObjectInstanceNotKnown,
+  RTI_THROW ((rti1516::ObjectInstanceNotKnown,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516ObjectInstanceHandle objectInstanceHandle(rti1516ObjectInstanceHandle);
@@ -4726,9 +4726,9 @@ RTIambassadorImplementation::getKnownObjectClassHandle(rti1516::ObjectInstanceHa
 
 rti1516::DimensionHandleSet
 RTIambassadorImplementation::getAvailableDimensionsForInteractionClass(rti1516::InteractionClassHandle rti1516InteractionClassHandle)
-  throw (rti1516::InvalidInteractionClassHandle,
+  RTI_THROW ((rti1516::InvalidInteractionClassHandle,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516InteractionClassHandle interactionClassHandle(rti1516InteractionClassHandle);
@@ -4748,9 +4748,9 @@ RTIambassadorImplementation::getAvailableDimensionsForInteractionClass(rti1516::
 
 rti1516::TransportationType
 RTIambassadorImplementation::getTransportationType(std::wstring const & transportationName)
-  throw (rti1516::InvalidTransportationName,
+  RTI_THROW ((rti1516::InvalidTransportationName,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     return translate(_ambassadorInterface->getTransportationType(ucsToUtf8(transportationName)));
@@ -4769,9 +4769,9 @@ RTIambassadorImplementation::getTransportationType(std::wstring const & transpor
 
 std::wstring
 RTIambassadorImplementation::getTransportationName(rti1516::TransportationType transportationType)
-  throw (rti1516::InvalidTransportationType,
+  RTI_THROW ((rti1516::InvalidTransportationType,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     return utf8ToUcs(_ambassadorInterface->getTransportationName(translate(transportationType)));
@@ -4790,9 +4790,9 @@ RTIambassadorImplementation::getTransportationName(rti1516::TransportationType t
 
 rti1516::OrderType
 RTIambassadorImplementation::getOrderType(std::wstring const & orderName)
-  throw (rti1516::InvalidOrderName,
+  RTI_THROW ((rti1516::InvalidOrderName,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     return translate(_ambassadorInterface->getOrderType(ucsToUtf8(orderName)));
@@ -4811,9 +4811,9 @@ RTIambassadorImplementation::getOrderType(std::wstring const & orderName)
 
 std::wstring
 RTIambassadorImplementation::getOrderName(rti1516::OrderType orderType)
-  throw (rti1516::InvalidOrderType,
+  RTI_THROW ((rti1516::InvalidOrderType,
          rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     return utf8ToUcs(_ambassadorInterface->getOrderName(translate(orderType)));
@@ -4832,11 +4832,11 @@ RTIambassadorImplementation::getOrderName(rti1516::OrderType orderType)
 
 void
 RTIambassadorImplementation::enableObjectClassRelevanceAdvisorySwitch()
-  throw (rti1516::ObjectClassRelevanceAdvisorySwitchIsOn,
+  RTI_THROW ((rti1516::ObjectClassRelevanceAdvisorySwitchIsOn,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->enableObjectClassRelevanceAdvisorySwitch();
@@ -4859,11 +4859,11 @@ RTIambassadorImplementation::enableObjectClassRelevanceAdvisorySwitch()
 
 void
 RTIambassadorImplementation::disableObjectClassRelevanceAdvisorySwitch()
-  throw (rti1516::ObjectClassRelevanceAdvisorySwitchIsOff,
+  RTI_THROW ((rti1516::ObjectClassRelevanceAdvisorySwitchIsOff,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->disableObjectClassRelevanceAdvisorySwitch();
@@ -4886,11 +4886,11 @@ RTIambassadorImplementation::disableObjectClassRelevanceAdvisorySwitch()
 
 void
 RTIambassadorImplementation::enableAttributeRelevanceAdvisorySwitch ()
-  throw (rti1516::AttributeRelevanceAdvisorySwitchIsOn,
+  RTI_THROW ((rti1516::AttributeRelevanceAdvisorySwitchIsOn,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->enableAttributeRelevanceAdvisorySwitch();
@@ -4913,11 +4913,11 @@ RTIambassadorImplementation::enableAttributeRelevanceAdvisorySwitch ()
 
 void
 RTIambassadorImplementation::disableAttributeRelevanceAdvisorySwitch ()
-  throw (rti1516::AttributeRelevanceAdvisorySwitchIsOff,
+  RTI_THROW ((rti1516::AttributeRelevanceAdvisorySwitchIsOff,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->disableAttributeRelevanceAdvisorySwitch();
@@ -4940,11 +4940,11 @@ RTIambassadorImplementation::disableAttributeRelevanceAdvisorySwitch ()
 
 void
 RTIambassadorImplementation::enableAttributeScopeAdvisorySwitch ()
-  throw (rti1516::AttributeScopeAdvisorySwitchIsOn,
+  RTI_THROW ((rti1516::AttributeScopeAdvisorySwitchIsOn,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->enableAttributeScopeAdvisorySwitch();
@@ -4967,11 +4967,11 @@ RTIambassadorImplementation::enableAttributeScopeAdvisorySwitch ()
 
 void
 RTIambassadorImplementation::disableAttributeScopeAdvisorySwitch ()
-  throw (rti1516::AttributeScopeAdvisorySwitchIsOff,
+  RTI_THROW ((rti1516::AttributeScopeAdvisorySwitchIsOff,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->disableAttributeScopeAdvisorySwitch();
@@ -4994,11 +4994,11 @@ RTIambassadorImplementation::disableAttributeScopeAdvisorySwitch ()
 
 void
 RTIambassadorImplementation::enableInteractionRelevanceAdvisorySwitch ()
-  throw (rti1516::InteractionRelevanceAdvisorySwitchIsOn,
+  RTI_THROW ((rti1516::InteractionRelevanceAdvisorySwitchIsOn,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->enableInteractionRelevanceAdvisorySwitch();
@@ -5021,11 +5021,11 @@ RTIambassadorImplementation::enableInteractionRelevanceAdvisorySwitch ()
 
 void
 RTIambassadorImplementation::disableInteractionRelevanceAdvisorySwitch ()
-  throw (rti1516::InteractionRelevanceAdvisorySwitchIsOff,
+  RTI_THROW ((rti1516::InteractionRelevanceAdvisorySwitchIsOff,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     _ambassadorInterface->disableInteractionRelevanceAdvisorySwitch();
@@ -5048,11 +5048,11 @@ RTIambassadorImplementation::disableInteractionRelevanceAdvisorySwitch ()
 
 rti1516::DimensionHandleSet
 RTIambassadorImplementation::getDimensionHandleSet(rti1516::RegionHandle rti1516RegionHandle)
-  throw (rti1516::InvalidRegion,
+  RTI_THROW ((rti1516::InvalidRegion,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516RegionHandle regionHandle(rti1516RegionHandle);
@@ -5077,12 +5077,12 @@ RTIambassadorImplementation::getDimensionHandleSet(rti1516::RegionHandle rti1516
 rti1516::RangeBounds
 RTIambassadorImplementation::getRangeBounds(rti1516::RegionHandle rti1516RegionHandle,
                                             rti1516::DimensionHandle rti1516DimensionHandle)
-  throw (rti1516::InvalidRegion,
+  RTI_THROW ((rti1516::InvalidRegion,
          rti1516::RegionDoesNotContainSpecifiedDimension,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516RegionHandle regionHandle(rti1516RegionHandle);
@@ -5111,14 +5111,14 @@ void
 RTIambassadorImplementation::setRangeBounds(rti1516::RegionHandle rti1516RegionHandle,
                                             rti1516::DimensionHandle rti1516DimensionHandle,
                                             rti1516::RangeBounds const & rti1516RangeBounds)
-  throw (rti1516::InvalidRegion,
+  RTI_THROW ((rti1516::InvalidRegion,
          rti1516::RegionNotCreatedByThisFederate,
          rti1516::RegionDoesNotContainSpecifiedDimension,
          rti1516::InvalidRangeBound,
          rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516RegionHandle regionHandle(rti1516RegionHandle);
@@ -5150,9 +5150,9 @@ RTIambassadorImplementation::setRangeBounds(rti1516::RegionHandle rti1516RegionH
 
 unsigned long
 RTIambassadorImplementation::normalizeFederateHandle(rti1516::FederateHandle rti1516FederateHandle)
-  throw (rti1516::FederateNotExecutionMember,
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
          rti1516::InvalidFederateHandle,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::_I1516FederateHandle federateHandle(rti1516FederateHandle);
@@ -5172,9 +5172,9 @@ RTIambassadorImplementation::normalizeFederateHandle(rti1516::FederateHandle rti
 
 unsigned long
 RTIambassadorImplementation::normalizeServiceGroup(rti1516::ServiceGroupIndicator rti1516ServiceGroup)
-  throw (rti1516::FederateNotExecutionMember,
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
          rti1516::InvalidServiceGroup,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     OpenRTI::ServiceGroupIndicator serviceGroup;
@@ -5220,8 +5220,8 @@ RTIambassadorImplementation::normalizeServiceGroup(rti1516::ServiceGroupIndicato
 
 bool
 RTIambassadorImplementation::evokeCallback(double approximateMinimumTimeInSeconds)
-  throw (rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
+         rti1516::RTIinternalError))
 {
   try {
     if (!_ambassadorInterface->getFederate())
@@ -5239,8 +5239,8 @@ RTIambassadorImplementation::evokeCallback(double approximateMinimumTimeInSecond
 bool
 RTIambassadorImplementation::evokeMultipleCallbacks(double approximateMinimumTimeInSeconds,
                                                     double approximateMaximumTimeInSeconds)
-  throw (rti1516::FederateNotExecutionMember,
-         rti1516::RTIinternalError)
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
+         rti1516::RTIinternalError))
 {
   try {
     if (!_ambassadorInterface->getFederate())
@@ -5257,10 +5257,10 @@ RTIambassadorImplementation::evokeMultipleCallbacks(double approximateMinimumTim
 
 void
 RTIambassadorImplementation::enableCallbacks ()
-  throw (rti1516::FederateNotExecutionMember,
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     if (!_ambassadorInterface->getFederate())
@@ -5281,10 +5281,10 @@ RTIambassadorImplementation::enableCallbacks ()
 
 void
 RTIambassadorImplementation::disableCallbacks ()
-  throw (rti1516::FederateNotExecutionMember,
+  RTI_THROW ((rti1516::FederateNotExecutionMember,
          rti1516::SaveInProgress,
          rti1516::RestoreInProgress,
-         rti1516::RTIinternalError)
+         rti1516::RTIinternalError))
 {
   try {
     if (!_ambassadorInterface->getFederate())

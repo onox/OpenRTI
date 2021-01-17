@@ -29,11 +29,11 @@ class RTI_EXPORT_FEDTIME HLAfloat64TimeFactory : public rti1516::LogicalTimeFact
 public:
   HLAfloat64TimeFactory();
   virtual ~HLAfloat64TimeFactory()
-    throw ();
+    RTI_NOEXCEPT;
   virtual std::auto_ptr<rti1516::LogicalTime> makeLogicalTime()
-    throw (rti1516::InternalError);
+    RTI_THROW ((rti1516::InternalError));
   virtual std::auto_ptr<rti1516::LogicalTimeInterval> makeLogicalTimeInterval()
-    throw (rti1516::InternalError);
+    RTI_THROW ((rti1516::InternalError));
 };
 
 #endif

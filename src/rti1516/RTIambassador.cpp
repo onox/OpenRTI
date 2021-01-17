@@ -27,7 +27,7 @@ namespace rti1516
 {
 
 RTIambassador::RTIambassador()
-  throw ()
+  RTI_NOEXCEPT
 {
 }
 

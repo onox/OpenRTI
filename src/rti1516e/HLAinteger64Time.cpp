@@ -69,7 +69,7 @@ HLAinteger64Time::HLAinteger64Time(const HLAinteger64Time& integer64Time) :
   HLAinteger64TimeImpl::assign(_impl, integer64Time._impl);
 }
 
-HLAinteger64Time::~HLAinteger64Time() throw ()
+HLAinteger64Time::~HLAinteger64Time() RTI_NOEXCEPT
 {
   HLAinteger64TimeImpl::putAndDelete(_impl);
 }
@@ -100,7 +100,7 @@ HLAinteger64Time::isFinal() const
 
 LogicalTime&
 HLAinteger64Time::operator=(const LogicalTime& logicalTime)
-  throw (InvalidLogicalTime)
+  RTI_THROW ((InvalidLogicalTime))
 {
   HLAinteger64TimeImpl::assign(_impl, toHLAinteger64Time(logicalTime)._impl);
   return *this;
@@ -108,7 +108,7 @@ HLAinteger64Time::operator=(const LogicalTime& logicalTime)
 
 LogicalTime&
 HLAinteger64Time::operator+=(const LogicalTimeInterval& logicalTimeInterval)
-  throw (IllegalTimeArithmetic, InvalidLogicalTimeInterval)
+  RTI_THROW ((IllegalTimeArithmetic, InvalidLogicalTimeInterval))
 {
   int64_t interval = toHLAinteger64Interval(logicalTimeInterval).getInterval();
   int64_t value = HLAinteger64TimeImpl::getValue(_impl);
@@ -132,7 +132,7 @@ HLAinteger64Time::operator+=(const LogicalTimeInterval& logicalTimeInterval)
 
 LogicalTime&
 HLAinteger64Time::operator-=(const LogicalTimeInterval& logicalTimeInterval)
-  throw (IllegalTimeArithmetic, InvalidLogicalTimeInterval)
+  RTI_THROW ((IllegalTimeArithmetic, InvalidLogicalTimeInterval))
 {
   int64_t interval = toHLAinteger64Interval(logicalTimeInterval).getInterval();
   int64_t value = HLAinteger64TimeImpl::getValue(_impl);
@@ -156,35 +156,35 @@ HLAinteger64Time::operator-=(const LogicalTimeInterval& logicalTimeInterval)
 
 bool
 HLAinteger64Time::operator>(const LogicalTime& logicalTime) const
-  throw (InvalidLogicalTime)
+  RTI_THROW ((InvalidLogicalTime))
 {
   return HLAinteger64TimeImpl::getValue(_impl) > toHLAinteger64Time(logicalTime).getTime();
 }
 
 bool
 HLAinteger64Time::operator<(const LogicalTime& logicalTime) const
-    throw (InvalidLogicalTime)
+    RTI_THROW ((InvalidLogicalTime))
 {
   return HLAinteger64TimeImpl::getValue(_impl) < toHLAinteger64Time(logicalTime).getTime();
 }
 
 bool
 HLAinteger64Time::operator==(const LogicalTime& logicalTime) const
-    throw (InvalidLogicalTime)
+    RTI_THROW ((InvalidLogicalTime))
 {
   return HLAinteger64TimeImpl::getValue(_impl) == toHLAinteger64Time(logicalTime).getTime();
 }
 
 bool
 HLAinteger64Time::operator>=(const LogicalTime& logicalTime) const
-    throw (InvalidLogicalTime)
+    RTI_THROW ((InvalidLogicalTime))
 {
   return HLAinteger64TimeImpl::getValue(_impl) >= toHLAinteger64Time(logicalTime).getTime();
 }
 
 bool
 HLAinteger64Time::operator<=(const LogicalTime& logicalTime) const
-    throw (InvalidLogicalTime)
+    RTI_THROW ((InvalidLogicalTime))
 {
   return HLAinteger64TimeImpl::getValue(_impl) <= toHLAinteger64Time(logicalTime).getTime();
 }
@@ -205,7 +205,7 @@ HLAinteger64Time::encodedLength() const
 
 size_t
 HLAinteger64Time::encode(void* buffer, size_t bufferSize) const
-    throw (CouldNotEncode)
+    RTI_THROW ((CouldNotEncode))
 {
   if (bufferSize < 8)
     throw CouldNotEncode(L"Buffer size too short!");
@@ -225,7 +225,7 @@ HLAinteger64Time::encode(void* buffer, size_t bufferSize) const
 
 void
 HLAinteger64Time::decode(const VariableLengthData& variableLengthData)
-    throw (InternalError, CouldNotDecode)
+    RTI_THROW ((InternalError, CouldNotDecode))
 {
   OpenRTI::VariableLengthData data = VariableLengthDataFriend::readPointer(variableLengthData);
   if (data.size() < 8)
@@ -235,7 +235,7 @@ HLAinteger64Time::decode(const VariableLengthData& variableLengthData)
 
 void
 HLAinteger64Time::decode(void* buffer, size_t bufferSize)
-    throw (InternalError, CouldNotDecode)
+    RTI_THROW ((InternalError, CouldNotDecode))
 {
   if (bufferSize < 8)
     throw CouldNotDecode(L"Buffer size too short!");
@@ -280,7 +280,7 @@ HLAinteger64Time::setTime(Integer64 value)
 
 HLAinteger64Time&
 HLAinteger64Time::operator=(const HLAinteger64Time& integer64Time)
-  throw (InvalidLogicalTime)
+  RTI_THROW ((InvalidLogicalTime))
 {
   HLAinteger64TimeImpl::assign(_impl, integer64Time._impl);
   return *this;

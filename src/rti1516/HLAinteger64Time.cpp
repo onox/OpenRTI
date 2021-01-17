@@ -71,7 +71,7 @@ HLAinteger64Time::HLAinteger64Time(const HLAinteger64Time& integer64Time) :
   HLAinteger64TimeImpl::assign(_impl, integer64Time._impl);
 }
 
-HLAinteger64Time::~HLAinteger64Time() throw ()
+HLAinteger64Time::~HLAinteger64Time() RTI_NOEXCEPT
 {
   HLAinteger64TimeImpl::putAndDelete(_impl);
 }
@@ -102,7 +102,7 @@ HLAinteger64Time::isFinal() const
 
 HLAinteger64Time&
 HLAinteger64Time::operator=(const rti1516::LogicalTime& logicalTime)
-  throw (rti1516::InvalidLogicalTime)
+  RTI_THROW ((rti1516::InvalidLogicalTime))
 {
   HLAinteger64TimeImpl::assign(_impl, toHLAinteger64Time(logicalTime)._impl);
   return *this;
@@ -110,7 +110,7 @@ HLAinteger64Time::operator=(const rti1516::LogicalTime& logicalTime)
 
 HLAinteger64Time&
 HLAinteger64Time::operator+=(const rti1516::LogicalTimeInterval& logicalTimeInterval)
-  throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
+  RTI_THROW ((rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval))
 {
   int64_t interval = toHLAinteger64Interval(logicalTimeInterval).getInterval();
   int64_t value = HLAinteger64TimeImpl::getValue(_impl);
@@ -134,7 +134,7 @@ HLAinteger64Time::operator+=(const rti1516::LogicalTimeInterval& logicalTimeInte
 
 HLAinteger64Time&
 HLAinteger64Time::operator-=(const rti1516::LogicalTimeInterval& logicalTimeInterval)
-  throw (rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval)
+  RTI_THROW ((rti1516::IllegalTimeArithmetic, rti1516::InvalidLogicalTimeInterval))
 {
   int64_t interval = toHLAinteger64Interval(logicalTimeInterval).getInterval();
   int64_t value = HLAinteger64TimeImpl::getValue(_impl);
@@ -158,35 +158,35 @@ HLAinteger64Time::operator-=(const rti1516::LogicalTimeInterval& logicalTimeInte
 
 bool
 HLAinteger64Time::operator>(const rti1516::LogicalTime& logicalTime) const
-  throw (rti1516::InvalidLogicalTime)
+  RTI_THROW ((rti1516::InvalidLogicalTime))
 {
   return HLAinteger64TimeImpl::getValue(_impl) > toHLAinteger64Time(logicalTime).getTime();
 }
 
 bool
 HLAinteger64Time::operator<(const rti1516::LogicalTime& logicalTime) const
-    throw (rti1516::InvalidLogicalTime)
+    RTI_THROW ((rti1516::InvalidLogicalTime))
 {
   return HLAinteger64TimeImpl::getValue(_impl) < toHLAinteger64Time(logicalTime).getTime();
 }
 
 bool
 HLAinteger64Time::operator==(const rti1516::LogicalTime& logicalTime) const
-    throw (rti1516::InvalidLogicalTime)
+    RTI_THROW ((rti1516::InvalidLogicalTime))
 {
   return HLAinteger64TimeImpl::getValue(_impl) == toHLAinteger64Time(logicalTime).getTime();
 }
 
 bool
 HLAinteger64Time::operator>=(const rti1516::LogicalTime& logicalTime) const
-    throw (rti1516::InvalidLogicalTime)
+    RTI_THROW ((rti1516::InvalidLogicalTime))
 {
   return HLAinteger64TimeImpl::getValue(_impl) >= toHLAinteger64Time(logicalTime).getTime();
 }
 
 bool
 HLAinteger64Time::operator<=(const rti1516::LogicalTime& logicalTime) const
-    throw (rti1516::InvalidLogicalTime)
+    RTI_THROW ((rti1516::InvalidLogicalTime))
 {
   return HLAinteger64TimeImpl::getValue(_impl) <= toHLAinteger64Time(logicalTime).getTime();
 }
@@ -207,7 +207,7 @@ HLAinteger64Time::encodedLength() const
 
 unsigned long
 HLAinteger64Time::encode(void* buffer, unsigned long bufferSize) const
-    throw (rti1516::CouldNotEncode)
+    RTI_THROW ((rti1516::CouldNotEncode))
 {
   if (bufferSize < 8)
     throw rti1516::CouldNotEncode(L"Buffer size too short!");
@@ -227,7 +227,7 @@ HLAinteger64Time::encode(void* buffer, unsigned long bufferSize) const
 
 void
 HLAinteger64Time::decode(const rti1516::VariableLengthData& variableLengthData)
-    throw (rti1516::InternalError, rti1516::CouldNotDecode)
+    RTI_THROW ((rti1516::InternalError, rti1516::CouldNotDecode))
 {
   OpenRTI::VariableLengthData data = rti1516::VariableLengthDataFriend::readPointer(variableLengthData);
   if (data.size() < 8)
@@ -237,7 +237,7 @@ HLAinteger64Time::decode(const rti1516::VariableLengthData& variableLengthData)
 
 void
 HLAinteger64Time::decode(void* buffer, unsigned long bufferSize)
-    throw (rti1516::InternalError, rti1516::CouldNotDecode)
+    RTI_THROW ((rti1516::InternalError, rti1516::CouldNotDecode))
 {
   if (bufferSize < 8)
     throw rti1516::CouldNotDecode(L"Buffer size too short!");

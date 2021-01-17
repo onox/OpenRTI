@@ -32,11 +32,11 @@ public:
 
   virtual RTI::ULong size() const;
   virtual RTI::AttributeHandle getHandle(RTI::ULong index) const
-    throw (RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds));
   virtual void add(RTI::AttributeHandle handle)
-    throw (RTI::ArrayIndexOutOfBounds, RTI::AttributeNotDefined);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds, RTI::AttributeNotDefined));
   virtual void remove(RTI::AttributeHandle handle)
-    throw (RTI::AttributeNotDefined);
+    RTI_THROW ((RTI::AttributeNotDefined));
   virtual void empty();
   virtual RTI::Boolean isEmpty() const;
   virtual RTI::Boolean isMember(RTI::AttributeHandle handle) const;

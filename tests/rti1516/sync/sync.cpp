@@ -37,7 +37,7 @@ public:
     RTI1516TestAmbassador(constructorArgs)
   { }
   virtual ~TestAmbassador()
-    throw ()
+    RTI_NOEXCEPT
   { }
 
   virtual bool execJoined(rti1516::RTIambassador& ambassador)

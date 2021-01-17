@@ -24,10 +24,10 @@ namespace rti1516e
    {
    public:
       EncoderException (std::wstring const & message)
-         throw();
+         RTI_NOEXCEPT;
 
       std::wstring what () const
-         throw();
+         RTI_NOEXCEPT;
 
    private:
       std::wstring _msg;

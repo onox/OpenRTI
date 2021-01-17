@@ -33,11 +33,11 @@ public:
 
   virtual RTI::ULong size() const;
   virtual RTI::FederateHandle getHandle(RTI::ULong index) const
-    throw (RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds));
   virtual void add(RTI::FederateHandle handle)
-    throw (RTI::ValueCountExceeded);
+    RTI_THROW ((RTI::ValueCountExceeded));
   virtual void remove(RTI::FederateHandle handle)
-    throw (RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds));
   virtual void empty();
   virtual RTI::Boolean isMember(RTI::FederateHandle handle) const;
 

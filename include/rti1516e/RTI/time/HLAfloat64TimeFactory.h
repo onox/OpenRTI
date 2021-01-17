@@ -32,59 +32,59 @@ namespace rti1516e
       HLAfloat64TimeFactory ();
 
       virtual ~HLAfloat64TimeFactory ()
-         throw ();
+         RTI_NOEXCEPT;
 
       // Return a LogicalTime with the given value
       virtual std::auto_ptr< HLAfloat64Time > makeLogicalTime (
          double value)
-         throw (rti1516e::InternalError);
+         RTI_THROW ((rti1516e::InternalError));
 
       // Return a LogicalTime with a value of "initial"
       virtual std::auto_ptr< LogicalTime > makeInitial()
-         throw (InternalError);
+         RTI_THROW ((InternalError));
 
       // Return a LogicalTime with a value of "final"
       virtual std::auto_ptr< LogicalTime > makeFinal()
-         throw (InternalError);
+         RTI_THROW ((InternalError));
 
       // Return a LogicalTimeInterval with the given value
       virtual std::auto_ptr< HLAfloat64Interval > makeLogicalTimeInterval (
          double value)
-         throw (rti1516e::InternalError);
+         RTI_THROW ((rti1516e::InternalError));
 
       // Return a LogicalTimeInterval with a value of "zero"
       virtual std::auto_ptr< LogicalTimeInterval > makeZero()
-         throw (InternalError);
+         RTI_THROW ((InternalError));
 
       // Return a LogicalTimeInterval with a value of "epsilon"
       virtual std::auto_ptr< LogicalTimeInterval > makeEpsilon()
-         throw (InternalError);
+         RTI_THROW ((InternalError));
 
       // LogicalTime decode from an encoded LogicalTime
       virtual std::auto_ptr< LogicalTime > decodeLogicalTime (
          VariableLengthData const & encodedLogicalTime)
-         throw (InternalError,
-         CouldNotDecode);
+         RTI_THROW ((InternalError,
+         CouldNotDecode));
 
       // Alternate LogicalTime decode that reads directly from a buffer
       virtual std::auto_ptr< LogicalTime > decodeLogicalTime (
          void* buffer,
          size_t bufferSize)
-         throw (InternalError,
-         CouldNotDecode);
+         RTI_THROW ((InternalError,
+         CouldNotDecode));
 
       // LogicalTimeInterval decode from an encoded LogicalTimeInterval
       virtual std::auto_ptr< LogicalTimeInterval > decodeLogicalTimeInterval (
          VariableLengthData const & encodedValue)
-         throw (InternalError,
-         CouldNotDecode);
+         RTI_THROW ((InternalError,
+         CouldNotDecode));
 
       // Alternate LogicalTimeInterval decode that reads directly from a buffer
       virtual std::auto_ptr< LogicalTimeInterval > decodeLogicalTimeInterval (
          void* buffer,
          size_t bufferSize)
-         throw (InternalError,
-         CouldNotDecode);
+         RTI_THROW ((InternalError,
+         CouldNotDecode));
 
       virtual std::wstring getName () const;
    };

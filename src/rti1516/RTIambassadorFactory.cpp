@@ -34,14 +34,14 @@ RTIambassadorFactory::RTIambassadorFactory()
 }
     
 RTIambassadorFactory::~RTIambassadorFactory()
-  throw ()
+  RTI_NOEXCEPT
 {
 }
     
 std::auto_ptr<RTIambassador>
 RTIambassadorFactory::createRTIambassador(std::vector<std::wstring>& args)
-  throw (BadInitializationParameter,
-         RTIinternalError)
+  RTI_THROW ((BadInitializationParameter,
+         RTIinternalError))
 {
   return std::auto_ptr<RTIambassador>(new OpenRTI::RTIambassadorImplementation(args));
 }

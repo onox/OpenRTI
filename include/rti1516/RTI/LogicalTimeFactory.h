@@ -36,19 +36,19 @@ namespace rti1516
   public:
     virtual
     ~LogicalTimeFactory()
-      throw () = 0;
+      RTI_NOEXCEPT = 0;
     
     // Returns a LogicalTime with a value of "initial"
     virtual
     std::auto_ptr< LogicalTime >
     makeLogicalTime()
-      throw (InternalError) = 0;
+      RTI_THROW ((InternalError)) = 0;
     
     // Returns a LogicalTimeInterval with a value of "zero"
     virtual 
     std::auto_ptr< LogicalTimeInterval >
     makeLogicalTimeInterval() 
-      throw (InternalError) = 0;
+      RTI_THROW ((InternalError)) = 0;
   };
 }
 

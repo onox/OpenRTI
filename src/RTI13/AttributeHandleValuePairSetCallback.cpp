@@ -37,7 +37,7 @@ AttributeHandleValuePairSetCallback::size() const
 
 RTI::Handle
 AttributeHandleValuePairSetCallback::getHandle(RTI::ULong index) const
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   if (_attributeValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
@@ -46,7 +46,7 @@ AttributeHandleValuePairSetCallback::getHandle(RTI::ULong index) const
 
 RTI::ULong
 AttributeHandleValuePairSetCallback::getValueLength(RTI::ULong index) const
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   if (_attributeValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
@@ -58,7 +58,7 @@ AttributeHandleValuePairSetCallback::getValueLength(RTI::ULong index) const
 
 void
 AttributeHandleValuePairSetCallback::getValue(RTI::ULong index, char* data, RTI::ULong& length) const
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   if (_attributeValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
@@ -71,7 +71,7 @@ AttributeHandleValuePairSetCallback::getValue(RTI::ULong index, char* data, RTI:
 
 char*
 AttributeHandleValuePairSetCallback::getValuePointer(RTI::ULong index, RTI::ULong& length) const
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   if (_attributeValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
@@ -85,23 +85,23 @@ AttributeHandleValuePairSetCallback::getValuePointer(RTI::ULong index, RTI::ULon
 
 RTI::TransportType
 AttributeHandleValuePairSetCallback::getTransportType(RTI::ULong index) const
-  throw (RTI::InvalidHandleValuePairSetContext)
+  RTI_THROW ((RTI::InvalidHandleValuePairSetContext))
 {
   return _transportType;
 }
 
 RTI::OrderType
 AttributeHandleValuePairSetCallback::getOrderType(RTI::ULong index) const
-  throw (RTI::ArrayIndexOutOfBounds,
-         RTI::InvalidHandleValuePairSetContext)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds,
+         RTI::InvalidHandleValuePairSetContext))
 {
   return _orderType;
 }
 
 RTI::Region*
 AttributeHandleValuePairSetCallback::getRegion(RTI::ULong index) const
-  throw (RTI::ArrayIndexOutOfBounds,
-         RTI::InvalidHandleValuePairSetContext)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds,
+         RTI::InvalidHandleValuePairSetContext))
 {
   // FIXME
   return 0;
@@ -109,23 +109,23 @@ AttributeHandleValuePairSetCallback::getRegion(RTI::ULong index) const
 
 void
 AttributeHandleValuePairSetCallback::add(RTI::Handle handle, const char* data, RTI::ULong length)
-  throw (RTI::ValueLengthExceeded,
-         RTI::ValueCountExceeded)
+  RTI_THROW ((RTI::ValueLengthExceeded,
+         RTI::ValueCountExceeded))
 {
   throw RTI::RTIinternalError("Unimplemented function: This class is only intendet for constant use.");
 }
 
 void
 AttributeHandleValuePairSetCallback::remove(RTI::Handle handle)
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   throw RTI::RTIinternalError("Unimplemented function: This class is only intendet for constant use.");
 }
 
 void
 AttributeHandleValuePairSetCallback::moveFrom(const RTI::AttributeHandleValuePairSet& attributeHandleValuePairSet, RTI::ULong& index)
-  throw (RTI::ValueCountExceeded,
-         RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ValueCountExceeded,
+         RTI::ArrayIndexOutOfBounds))
 {
   throw RTI::RTIinternalError("Unimplemented function: This class is only intendet for constant use.");
 }

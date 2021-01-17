@@ -24,15 +24,16 @@
 #include <string>
 
 #include "Export.h"
+#include "OpenRTIConfig.h"
 
 namespace OpenRTI {
 
 class OPENRTI_API Exception : public std::exception {
 public:
-  virtual ~Exception() throw();
+  virtual ~Exception() OpenRTI_NOEXCEPT;
 
-  const char* what() const throw();
-  const std::string& getReason() const throw();
+  const char* what() const OpenRTI_NOEXCEPT;
+  const std::string& getReason() const OpenRTI_NOEXCEPT;
 
 protected:
   Exception(const char* type, const char* reason);
@@ -46,7 +47,7 @@ class OPENRTI_API RTIinternalError : public Exception {
 public:
   RTIinternalError(const char* reason = 0);
   RTIinternalError(const std::string& reason);
-  virtual ~RTIinternalError() throw();
+  virtual ~RTIinternalError() OpenRTI_NOEXCEPT;
 
   static void assertMessage(const char* file, unsigned line, const char* reason = 0);
 };
@@ -62,7 +63,7 @@ class OPENRTI_API name : public Exception { \
 public: \
   name(const char* reason = 0) : Exception( #name, reason) { }  \
   name(const std::string& reason) : Exception( #name, reason) { } \
-  virtual ~name() throw() { } \
+  virtual ~name() OpenRTI_NOEXCEPT { } \
 };
 
 // OpenRTI exceptions

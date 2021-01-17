@@ -46,7 +46,7 @@ class RTI_EXPORT HandleKind                                       \
    HandleKind ();                                                 \
                                                                   \
    ~HandleKind ()                                                 \
-      throw();                                                    \
+      RTI_NOEXCEPT;                                               \
                                                                   \
    HandleKind (                                                   \
       HandleKind const & rhs);                                    \
@@ -87,7 +87,7 @@ class RTI_EXPORT HandleKind                                       \
    size_t encode (                                                \
       void* buffer,                                               \
       size_t bufferSize) const                                    \
-      throw (CouldNotEncode);                                     \
+      RTI_THROW ((CouldNotEncode));                               \
                                                                   \
    size_t encodedLength () const;                                 \
                                                                   \

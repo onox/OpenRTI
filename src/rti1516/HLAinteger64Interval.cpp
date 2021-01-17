@@ -71,7 +71,7 @@ HLAinteger64Interval::HLAinteger64Interval(const HLAinteger64Interval& integer64
   HLAinteger64IntervalImpl::assign(_impl, integer64Interval._impl);
 }
 
-HLAinteger64Interval::~HLAinteger64Interval() throw ()
+HLAinteger64Interval::~HLAinteger64Interval() RTI_NOEXCEPT
 {
   HLAinteger64IntervalImpl::putAndDelete(_impl);
 }
@@ -102,7 +102,7 @@ HLAinteger64Interval::isEpsilon() const
 
 HLAinteger64Interval&
 HLAinteger64Interval::operator=(const rti1516::LogicalTimeInterval& logicalTimeInterval)
-  throw (rti1516::InvalidLogicalTimeInterval)
+  RTI_THROW ((rti1516::InvalidLogicalTimeInterval))
 {
   HLAinteger64IntervalImpl::assign(_impl, toHLAinteger64Interval(logicalTimeInterval)._impl);
   return *this;
@@ -110,14 +110,14 @@ HLAinteger64Interval::operator=(const rti1516::LogicalTimeInterval& logicalTimeI
 
 void
 HLAinteger64Interval::setToDifference(const rti1516::LogicalTime& minuend, const rti1516::LogicalTime& subtrahend)
-  throw (rti1516::InvalidLogicalTime)
+  RTI_THROW ((rti1516::InvalidLogicalTime))
 {
   HLAinteger64IntervalImpl::setValue(_impl, toHLAinteger64Time(minuend).getTime() - toHLAinteger64Time(subtrahend).getTime());
 }
 
 HLAinteger64Interval&
 HLAinteger64Interval::operator+=(const rti1516::LogicalTimeInterval& logicalTimeInterval)
-  throw (rti1516::InvalidLogicalTimeInterval)
+  RTI_THROW ((rti1516::InvalidLogicalTimeInterval))
 {
   int64_t interval = HLAinteger64IntervalImpl::getValue(toHLAinteger64Interval(logicalTimeInterval)._impl);
   int64_t value = HLAinteger64IntervalImpl::getValue(_impl);
@@ -141,7 +141,7 @@ HLAinteger64Interval::operator+=(const rti1516::LogicalTimeInterval& logicalTime
 
 HLAinteger64Interval&
 HLAinteger64Interval::operator-=(const rti1516::LogicalTimeInterval& logicalTimeInterval)
-  throw (rti1516::InvalidLogicalTimeInterval)
+  RTI_THROW ((rti1516::InvalidLogicalTimeInterval))
 {
   int64_t interval = HLAinteger64IntervalImpl::getValue(toHLAinteger64Interval(logicalTimeInterval)._impl);
   int64_t value = HLAinteger64IntervalImpl::getValue(_impl);
@@ -165,35 +165,35 @@ HLAinteger64Interval::operator-=(const rti1516::LogicalTimeInterval& logicalTime
 
 bool
 HLAinteger64Interval::operator>(const rti1516::LogicalTimeInterval& logicalTimeInterval) const
-  throw (rti1516::InvalidLogicalTimeInterval)
+  RTI_THROW ((rti1516::InvalidLogicalTimeInterval))
 {
   return HLAinteger64IntervalImpl::getValue(_impl) > HLAinteger64IntervalImpl::getValue(toHLAinteger64Interval(logicalTimeInterval)._impl);
 }
 
 bool
 HLAinteger64Interval::operator<(const rti1516::LogicalTimeInterval& logicalTimeInterval) const
-  throw (rti1516::InvalidLogicalTimeInterval)
+  RTI_THROW ((rti1516::InvalidLogicalTimeInterval))
 {
   return HLAinteger64IntervalImpl::getValue(_impl) < HLAinteger64IntervalImpl::getValue(toHLAinteger64Interval(logicalTimeInterval)._impl);
 }
 
 bool
 HLAinteger64Interval::operator==(const rti1516::LogicalTimeInterval& logicalTimeInterval) const
-  throw (rti1516::InvalidLogicalTimeInterval)
+  RTI_THROW ((rti1516::InvalidLogicalTimeInterval))
 {
   return HLAinteger64IntervalImpl::getValue(_impl) == HLAinteger64IntervalImpl::getValue(toHLAinteger64Interval(logicalTimeInterval)._impl);
 }
 
 bool
 HLAinteger64Interval::operator>=(const rti1516::LogicalTimeInterval& logicalTimeInterval) const
-  throw (rti1516::InvalidLogicalTimeInterval)
+  RTI_THROW ((rti1516::InvalidLogicalTimeInterval))
 {
   return HLAinteger64IntervalImpl::getValue(_impl) >= HLAinteger64IntervalImpl::getValue(toHLAinteger64Interval(logicalTimeInterval)._impl);
 }
 
 bool
 HLAinteger64Interval::operator<=(const rti1516::LogicalTimeInterval& logicalTimeInterval) const
-  throw (rti1516::InvalidLogicalTimeInterval)
+  RTI_THROW ((rti1516::InvalidLogicalTimeInterval))
 {
   return HLAinteger64IntervalImpl::getValue(_impl) <= HLAinteger64IntervalImpl::getValue(toHLAinteger64Interval(logicalTimeInterval)._impl);
 }
@@ -214,7 +214,7 @@ HLAinteger64Interval::encodedLength() const
 
 unsigned long
 HLAinteger64Interval::encode(void* buffer, unsigned long bufferSize) const
-  throw (rti1516::CouldNotEncode)
+  RTI_THROW ((rti1516::CouldNotEncode))
 {
   if (bufferSize < 8)
     throw rti1516::CouldNotEncode(L"Buffer size too short!");
@@ -234,7 +234,7 @@ HLAinteger64Interval::encode(void* buffer, unsigned long bufferSize) const
 
 void
 HLAinteger64Interval::decode(const rti1516::VariableLengthData& variableLengthData)
-  throw (rti1516::InternalError, rti1516::CouldNotDecode)
+  RTI_THROW ((rti1516::InternalError, rti1516::CouldNotDecode))
 {
   OpenRTI::VariableLengthData data = rti1516::VariableLengthDataFriend::readPointer(variableLengthData);
   if (data.size() < 8)
@@ -244,7 +244,7 @@ HLAinteger64Interval::decode(const rti1516::VariableLengthData& variableLengthDa
 
 void
 HLAinteger64Interval::decode(void* buffer, unsigned long bufferSize)
-  throw (rti1516::InternalError, rti1516::CouldNotDecode)
+  RTI_THROW ((rti1516::InternalError, rti1516::CouldNotDecode))
 {
   if (bufferSize < 8)
     throw rti1516::CouldNotDecode(L"Buffer size too short!");

@@ -28,7 +28,7 @@ namespace rti1516e
          unsigned long upperBound);
 
       ~RangeBounds ()
-         throw ();
+         RTI_NOEXCEPT;
 
       RangeBounds (
          RangeBounds const & rhs);

@@ -37,7 +37,7 @@ namespace rti1516e
    public:
       // Destructor
       virtual ~LogicalTimeInterval ()
-         throw () = 0;
+         RTI_NOEXCEPT = 0;
 
       // Basic accessors/mutators
 
@@ -53,53 +53,53 @@ namespace rti1516e
 
       virtual LogicalTimeInterval & operator= (
          LogicalTimeInterval const & value)
-         throw (
-            InvalidLogicalTimeInterval) = 0;
+         RTI_THROW ((
+            InvalidLogicalTimeInterval)) = 0;
 
       virtual LogicalTimeInterval & operator+= (
          LogicalTimeInterval const & addend)
-         throw (
+         RTI_THROW ((
             IllegalTimeArithmetic,
-            InvalidLogicalTimeInterval) = 0;
+            InvalidLogicalTimeInterval)) = 0;
 
       virtual LogicalTimeInterval & operator-= (
          LogicalTimeInterval const & subtrahend)
-         throw (
+         RTI_THROW ((
             IllegalTimeArithmetic,
-            InvalidLogicalTimeInterval) = 0;
+            InvalidLogicalTimeInterval)) = 0;
 
       virtual bool operator> (
          LogicalTimeInterval const & value) const
-         throw (
-            InvalidLogicalTimeInterval) = 0;
+         RTI_THROW ((
+            InvalidLogicalTimeInterval)) = 0;
 
       virtual bool operator< (
          LogicalTimeInterval const & value) const
-         throw (
-            InvalidLogicalTimeInterval) = 0;
+         RTI_THROW ((
+            InvalidLogicalTimeInterval)) = 0;
 
       virtual bool operator== (
          LogicalTimeInterval const & value) const
-         throw (
-            InvalidLogicalTimeInterval) = 0;
+         RTI_THROW ((
+            InvalidLogicalTimeInterval)) = 0;
 
       virtual bool operator>= (
          LogicalTimeInterval const & value) const
-         throw (
-            InvalidLogicalTimeInterval) = 0;
+         RTI_THROW ((
+            InvalidLogicalTimeInterval)) = 0;
 
       virtual bool operator<= (
          LogicalTimeInterval const & value) const
-         throw (
-            InvalidLogicalTimeInterval) = 0;
+         RTI_THROW ((
+            InvalidLogicalTimeInterval)) = 0;
 
       // Set self to the difference between two LogicalTimes
       virtual void setToDifference (
          LogicalTime const & minuend,
          LogicalTime const& subtrahend)
-         throw (
+         RTI_THROW ((
             IllegalTimeArithmetic,
-            InvalidLogicalTime) = 0;
+            InvalidLogicalTime)) = 0;
 
       // Generates an encoded value that can be used to send
       // LogicalTimeIntervals to other federates in updates or interactions
@@ -109,8 +109,8 @@ namespace rti1516e
       virtual size_t encode (
          void* buffer,
          size_t bufferSize) const
-         throw (
-            CouldNotEncode) = 0;
+         RTI_THROW ((
+            CouldNotEncode)) = 0;
 
       // The length of the encoded data
       virtual size_t encodedLength () const = 0;
@@ -118,17 +118,17 @@ namespace rti1516e
       // Decode encodedValue into self
       virtual void decode (
          VariableLengthData const & encodedValue)
-         throw (
+         RTI_THROW ((
             InternalError,
-            CouldNotDecode) = 0;
+            CouldNotDecode)) = 0;
 
       // Alternate decode that reads directly from a buffer
       virtual void decode (
          void* buffer,
          size_t bufferSize)
-         throw (
+         RTI_THROW ((
             InternalError,
-            CouldNotDecode) = 0;
+            CouldNotDecode)) = 0;
 
       // Diagnostic string representation of time interval
       virtual std::wstring toString () const = 0;

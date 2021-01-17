@@ -139,7 +139,7 @@ public:
     _synchronized(0)
   { }
   virtual ~RTI1516ETestAmbassador()
-    throw ()
+    RTI_NOEXCEPT
   { }
 
   std::wstring getArgument() const
@@ -421,146 +421,146 @@ public:
   }
 
   virtual void connectionLost(const std::wstring& faultDescription)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void reportFederationExecutions(const rti1516e::FederationExecutionInformationVector& theFederationExecutionInformationList)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void synchronizationPointRegistrationSucceeded(const std::wstring& label)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void synchronizationPointRegistrationFailed(const std::wstring& label, rti1516e::SynchronizationPointFailureReason reason)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void announceSynchronizationPoint(const std::wstring& label, const rti1516e::VariableLengthData& tag)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
     _federateSet.erase(label);
   }
 
   virtual void federationSynchronized(const std::wstring& label, const rti1516e::FederateHandleSet& failedToSyncSet)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
     ++_synchronized;
   }
 
   virtual void initiateFederateSave(const std::wstring& label)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void initiateFederateSave(const std::wstring& label, const rti1516e::LogicalTime& logicalTime)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationSaved()
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationNotSaved(rti1516e::SaveFailureReason theSaveFailureReason)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationSaveStatusResponse(const rti1516e::FederateHandleSaveStatusPairVector& theFederateStatusVector)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void requestFederationRestoreSucceeded(const std::wstring& label)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void requestFederationRestoreFailed(const std::wstring& label)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationRestoreBegun()
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void initiateFederateRestore(const std::wstring& label, const std::wstring& federateName, rti1516e::FederateHandle handle)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationRestored()
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationNotRestored(rti1516e::RestoreFailureReason theRestoreFailureReason)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationRestoreStatusResponse(const rti1516e::FederateRestoreStatusVector& theFederateStatusVector)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void startRegistrationForObjectClass(rti1516e::ObjectClassHandle)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void stopRegistrationForObjectClass(rti1516e::ObjectClassHandle)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void turnInteractionsOn(rti1516e::InteractionClassHandle)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void turnInteractionsOff(rti1516e::InteractionClassHandle)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void objectInstanceNameReservationSucceeded(const std::wstring&)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void objectInstanceNameReservationFailed(const std::wstring&)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void multipleObjectInstanceNameReservationSucceeded(const std::set<std::wstring>& theObjectInstanceNames)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void multipleObjectInstanceNameReservationFailed(const std::set<std::wstring>& theObjectInstanceNames)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void discoverObjectInstance(rti1516e::ObjectInstanceHandle theObject, rti1516e::ObjectClassHandle theObjectClass,
                                       std::wstring const & theObjectInstanceName)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void discoverObjectInstance(rti1516e::ObjectInstanceHandle theObject, rti1516e::ObjectClassHandle theObjectClass,
                                       std::wstring const & theObjectInstanceName, rti1516e::FederateHandle producingFederate)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
     discoverObjectInstance(theObject, theObjectClass, theObjectInstanceName);
   }
@@ -568,7 +568,7 @@ public:
   virtual void reflectAttributeValues(rti1516e::ObjectInstanceHandle theObject, rti1516e::AttributeHandleValueMap const & theAttributeValues,
                                       rti1516e::VariableLengthData const & theUserSuppliedTag, rti1516e::OrderType sentOrder,
                                       rti1516e::TransportationType theType, rti1516e::SupplementalReflectInfo theReflectInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
@@ -576,7 +576,7 @@ public:
                                       rti1516e::VariableLengthData const & theUserSuppliedTag, rti1516e::OrderType sentOrder,
                                       rti1516e::TransportationType theType, rti1516e::LogicalTime const & theTime,
                                       rti1516e::OrderType receivedOrder, rti1516e::SupplementalReflectInfo theReflectInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
     reflectAttributeValues(theObject, theAttributeValues, theUserSuppliedTag, sentOrder, theType, theReflectInfo);
   }
@@ -585,7 +585,7 @@ public:
                                       rti1516e::VariableLengthData const & theUserSuppliedTag, rti1516e::OrderType sentOrder,
                                       rti1516e::TransportationType theType, rti1516e::LogicalTime const & theTime, rti1516e::OrderType receivedOrder,
                                       rti1516e::MessageRetractionHandle theHandle, rti1516e::SupplementalReflectInfo theReflectInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
     reflectAttributeValues(theObject, theAttributeValues, theUserSuppliedTag, sentOrder, theType, theTime, receivedOrder, theReflectInfo);
   }
@@ -593,14 +593,14 @@ public:
   virtual void receiveInteraction(rti1516e::InteractionClassHandle theInteraction, rti1516e::ParameterHandleValueMap const & theParameterValues,
                                   rti1516e::VariableLengthData const & theUserSuppliedTag, rti1516e::OrderType sentOrder, rti1516e::TransportationType theType,
                                   rti1516e::SupplementalReceiveInfo theReceiveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void receiveInteraction(rti1516e::InteractionClassHandle theInteraction, rti1516e::ParameterHandleValueMap const & theParameterValues,
                                   rti1516e::VariableLengthData const & theUserSuppliedTag, rti1516e::OrderType sentOrder, rti1516e::TransportationType theType,
                                   rti1516e::LogicalTime const & theTime, rti1516e::OrderType receivedOrder, rti1516e::SupplementalReceiveInfo theReceiveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
     receiveInteraction(theInteraction, theParameterValues, theUserSuppliedTag, sentOrder, theType, theReceiveInfo);
   }
@@ -609,20 +609,20 @@ public:
                                   rti1516e::VariableLengthData const & theUserSuppliedTag, rti1516e::OrderType sentOrder, rti1516e::TransportationType theType,
                                   rti1516e::LogicalTime const & theTime, rti1516e::OrderType receivedOrder, rti1516e::MessageRetractionHandle theHandle,
                                   rti1516e::SupplementalReceiveInfo theReceiveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
     receiveInteraction(theInteraction, theParameterValues, theUserSuppliedTag, sentOrder, theType, theTime, receivedOrder, theReceiveInfo);
   }
 
   virtual void removeObjectInstance(rti1516e::ObjectInstanceHandle theObject, rti1516e::VariableLengthData const & theUserSuppliedTag,
                                     rti1516e::OrderType sentOrder, rti1516e::SupplementalRemoveInfo theRemoveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void removeObjectInstance(rti1516e::ObjectInstanceHandle theObject, rti1516e::VariableLengthData const & theUserSuppliedTag, rti1516e::OrderType sentOrder,
                                     rti1516e::LogicalTime const & theTime, rti1516e::OrderType receivedOrder, rti1516e::SupplementalRemoveInfo theRemoveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
     removeObjectInstance(theObject, theUserSuppliedTag, sentOrder, theRemoveInfo);
   }
@@ -630,124 +630,124 @@ public:
   virtual void removeObjectInstance(rti1516e::ObjectInstanceHandle theObject, rti1516e::VariableLengthData const & theUserSuppliedTag, rti1516e::OrderType sentOrder,
                                     rti1516e::LogicalTime const & theTime, rti1516e::OrderType receivedOrder, rti1516e::MessageRetractionHandle theHandle,
                                     rti1516e::SupplementalRemoveInfo theRemoveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
     removeObjectInstance(theObject, theUserSuppliedTag, sentOrder, theTime, receivedOrder, theRemoveInfo);
   }
 
   virtual void attributesInScope(rti1516e::ObjectInstanceHandle theObject,
                                  rti1516e::AttributeHandleSet const & theAttributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void attributesOutOfScope(rti1516e::ObjectInstanceHandle theObject,
                                     rti1516e::AttributeHandleSet const & theAttributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void provideAttributeValueUpdate(rti1516e::ObjectInstanceHandle theObject,
                                            rti1516e::AttributeHandleSet const & theAttributes,
                                            rti1516e::VariableLengthData const & theUserSuppliedTag)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void turnUpdatesOnForObjectInstance(rti1516e::ObjectInstanceHandle theObject,
                                               rti1516e::AttributeHandleSet const & theAttributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void turnUpdatesOnForObjectInstance(rti1516e::ObjectInstanceHandle theObject,
                                               rti1516e::AttributeHandleSet const & theAttributes,
                                               std::wstring const & updateRateDesignator)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void turnUpdatesOffForObjectInstance(rti1516e::ObjectInstanceHandle theObject,
                                                rti1516e::AttributeHandleSet const & theAttributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void requestAttributeOwnershipAssumption(rti1516e::ObjectInstanceHandle theObject,
                                                    rti1516e::AttributeHandleSet const & offeredAttributes,
                                                    rti1516e::VariableLengthData const & theUserSuppliedTag)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void requestDivestitureConfirmation(rti1516e::ObjectInstanceHandle theObject,
                                               rti1516e::AttributeHandleSet const & releasedAttributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void attributeOwnershipAcquisitionNotification(rti1516e::ObjectInstanceHandle theObject,
                                                          rti1516e::AttributeHandleSet const & securedAttributes,
                                                          rti1516e::VariableLengthData const & theUserSuppliedTag)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void attributeOwnershipUnavailable(rti1516e::ObjectInstanceHandle theObject,
                                              rti1516e::AttributeHandleSet const & theAttributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void requestAttributeOwnershipRelease(rti1516e::ObjectInstanceHandle theObject,
                                                 rti1516e::AttributeHandleSet const & candidateAttributes,
                                                 rti1516e::VariableLengthData const & theUserSuppliedTag)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void confirmAttributeOwnershipAcquisitionCancellation(rti1516e::ObjectInstanceHandle theObject,
                                                                 rti1516e::AttributeHandleSet const & theAttributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void informAttributeOwnership(rti1516e::ObjectInstanceHandle theObject,
                                         rti1516e::AttributeHandle theAttribute,
                                         rti1516e::FederateHandle theOwner)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void attributeIsNotOwned(rti1516e::ObjectInstanceHandle theObject,
                                    rti1516e::AttributeHandle theAttribute)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void attributeIsOwnedByRTI(rti1516e::ObjectInstanceHandle theObject,
                                      rti1516e::AttributeHandle theAttribute)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void timeRegulationEnabled(rti1516e::LogicalTime const & theFederateTime)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void timeConstrainedEnabled(rti1516e::LogicalTime const & theFederateTime)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void timeAdvanceGrant(rti1516e::LogicalTime const & theTime)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void requestRetraction(rti1516e::MessageRetractionHandle theHandle)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
@@ -766,7 +766,7 @@ public:
     _timeAdvancePending(false)
   { }
   virtual ~RTI1516ESimpleAmbassador()
-    throw ()
+    RTI_NOEXCEPT
   { }
 
   void setUseDataUrlObjectModels(bool useDataUrlObjectModels)
@@ -1515,139 +1515,139 @@ public:
 
 protected:
   virtual void connectionLost(const std::wstring& faultDescription)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void reportFederationExecutions(const rti1516e::FederationExecutionInformationVector& theFederationExecutionInformationList)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void synchronizationPointRegistrationSucceeded(const std::wstring& label)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void synchronizationPointRegistrationFailed(const std::wstring& label, rti1516e::SynchronizationPointFailureReason reason)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void announceSynchronizationPoint(const std::wstring& label, const rti1516e::VariableLengthData& tag)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationSynchronized(const std::wstring& label, const rti1516e::FederateHandleSet& failedToSyncSet)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void initiateFederateSave(const std::wstring& label)
-      throw (rti1516e::FederateInternalError)
+      RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void initiateFederateSave(const std::wstring& label, const rti1516e::LogicalTime& logicalTime)
-      throw (rti1516e::FederateInternalError)
+      RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationSaved()
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationNotSaved(rti1516e::SaveFailureReason theSaveFailureReason)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationSaveStatusResponse(const rti1516e::FederateHandleSaveStatusPairVector& federateStatusVector)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void requestFederationRestoreSucceeded(const std::wstring& label)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void requestFederationRestoreFailed(const std::wstring& label)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationRestoreBegun()
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void initiateFederateRestore(const std::wstring& label, const std::wstring& federateName, rti1516e::FederateHandle handle)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationRestored()
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationNotRestored(rti1516e::RestoreFailureReason restoreFailureReason)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void federationRestoreStatusResponse(const rti1516e::FederateRestoreStatusVector& federateStatusVector)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void startRegistrationForObjectClass(rti1516e::ObjectClassHandle)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void stopRegistrationForObjectClass(rti1516e::ObjectClassHandle)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void turnInteractionsOn(rti1516e::InteractionClassHandle)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void turnInteractionsOff(rti1516e::InteractionClassHandle)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void objectInstanceNameReservationSucceeded(const std::wstring&)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void objectInstanceNameReservationFailed(const std::wstring&)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void multipleObjectInstanceNameReservationSucceeded(const std::set<std::wstring>& theObjectInstanceNames)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void multipleObjectInstanceNameReservationFailed(const std::set<std::wstring>& theObjectInstanceNames)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void discoverObjectInstance(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                       rti1516e::ObjectClassHandle objectClassHandle,
                                       const std::wstring& objectInstanceName)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
       // ObjectClassAttributeHandleSetMap::iterator i = _subscribedObjectClassAttributeHandleSetMap.find(objectClassHandle);
       // if (i == _subscribedObjectClassAttributeHandleSetMap.end()) {
@@ -1666,7 +1666,7 @@ protected:
   virtual void discoverObjectInstance(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                       rti1516e::ObjectClassHandle objectClassHandle, const std::wstring& objectInstanceName,
                                       rti1516e::FederateHandle producingFederate)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
     discoverObjectInstance(objectInstanceHandle, objectClassHandle, objectInstanceName);
   }
@@ -1675,7 +1675,7 @@ protected:
                                       const rti1516e::AttributeHandleValueMap& attributeHandleValueMap,
                                       const rti1516e::VariableLengthData& tag, rti1516e::OrderType, rti1516e::TransportationType,
                                       rti1516e::SupplementalReflectInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
       // _verifyReflectAttributeValues(objectInstanceHandle, attributeHandleValueMap);
   }
@@ -1684,7 +1684,7 @@ protected:
                                       const rti1516e::AttributeHandleValueMap& attributeHandleValueMap,
                                       const rti1516e::VariableLengthData&, rti1516e::OrderType, rti1516e::TransportationType,
                                       const rti1516e::RegionHandleSet&, rti1516e::SupplementalReflectInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
       // _verifyReflectAttributeValues(objectInstanceHandle, attributeHandleValueMap);
   }
@@ -1693,7 +1693,7 @@ protected:
                                       const rti1516e::AttributeHandleValueMap& attributeHandleValueMap,
                                       const rti1516e::VariableLengthData&, rti1516e::OrderType, rti1516e::TransportationType,
                                       const rti1516e::LogicalTime&, rti1516e::OrderType, rti1516e::SupplementalReflectInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
       // _verifyReflectAttributeValues(objectInstanceHandle, attributeHandleValueMap);
   }
@@ -1703,7 +1703,7 @@ protected:
                                       const rti1516e::VariableLengthData&, rti1516e::OrderType, rti1516e::TransportationType,
                                       const rti1516e::LogicalTime&, rti1516e::OrderType, const rti1516e::RegionHandleSet&,
                                       rti1516e::SupplementalReflectInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
       // _verifyReflectAttributeValues(objectInstanceHandle, attributeHandleValueMap);
   }
@@ -1713,7 +1713,7 @@ protected:
                                       const rti1516e::VariableLengthData&, rti1516e::OrderType, rti1516e::TransportationType,
                                       const rti1516e::LogicalTime&, rti1516e::OrderType, rti1516e::MessageRetractionHandle,
                                       rti1516e::SupplementalReflectInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
       // _verifyReflectAttributeValues(objectInstanceHandle, attributeHandleValueMap);
   }
@@ -1723,7 +1723,7 @@ protected:
                                       const rti1516e::VariableLengthData&, rti1516e::OrderType, rti1516e::TransportationType,
                                       const rti1516e::LogicalTime&, rti1516e::OrderType, rti1516e::MessageRetractionHandle,
                                       const rti1516e::RegionHandleSet&, rti1516e::SupplementalReflectInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
       // _verifyReflectAttributeValues(objectInstanceHandle, attributeHandleValueMap);
   }
@@ -1731,14 +1731,14 @@ protected:
   virtual void receiveInteraction(rti1516e::InteractionClassHandle, const rti1516e::ParameterHandleValueMap&,
                                   const rti1516e::VariableLengthData&, rti1516e::OrderType, rti1516e::TransportationType,
                                   rti1516e::SupplementalReceiveInfo theReceiveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void receiveInteraction(rti1516e::InteractionClassHandle, const rti1516e::ParameterHandleValueMap&,
                                   const rti1516e::VariableLengthData&, rti1516e::OrderType, rti1516e::TransportationType,
                                   const rti1516e::RegionHandleSet&, rti1516e::SupplementalReceiveInfo theReceiveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
@@ -1750,7 +1750,7 @@ protected:
                                   rti1516e::LogicalTime const & logicalTime,
                                   rti1516e::OrderType receivedOrder,
                                   rti1516e::SupplementalReceiveInfo theReceiveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
@@ -1763,7 +1763,7 @@ protected:
                                   rti1516e::OrderType receivedOrder,
                                   rti1516e::RegionHandleSet const & theSentRegionHandleSet,
                                   rti1516e::SupplementalReceiveInfo theReceiveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
@@ -1776,7 +1776,7 @@ protected:
                                   rti1516e::OrderType receivedOrder,
                                   rti1516e::MessageRetractionHandle theHandle,
                                   rti1516e::SupplementalReceiveInfo theReceiveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
@@ -1790,7 +1790,7 @@ protected:
                                   rti1516e::MessageRetractionHandle theHandle,
                                   rti1516e::RegionHandleSet const & theSentRegionHandleSet,
                                   rti1516e::SupplementalReceiveInfo theReceiveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
@@ -1798,7 +1798,7 @@ protected:
                                     rti1516e::VariableLengthData const & tag,
                                     rti1516e::OrderType sentOrder,
                                     rti1516e::SupplementalRemoveInfo theRemoveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
       // _verifyRemoveObjectInstance(objectInstanceHandle);
   }
@@ -1809,7 +1809,7 @@ protected:
                                     rti1516e::LogicalTime const & logicalTime,
                                     rti1516e::OrderType receivedOrder,
                                     rti1516e::SupplementalRemoveInfo theRemoveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
       // _verifyRemoveObjectInstance(objectInstanceHandle);
   }
@@ -1821,157 +1821,157 @@ protected:
                                     rti1516e::OrderType receivedOrder,
                                     rti1516e::MessageRetractionHandle theHandle,
                                     rti1516e::SupplementalRemoveInfo theRemoveInfo)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
       // _verifyRemoveObjectInstance(objectInstanceHandle);
   }
 
   virtual void attributesInScope(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                  rti1516e::AttributeHandleSet const & attributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void attributesOutOfScope(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                     rti1516e::AttributeHandleSet const & attributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void provideAttributeValueUpdate(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                            rti1516e::AttributeHandleSet const & attributes,
                                            rti1516e::VariableLengthData const & tag)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void turnUpdatesOnForObjectInstance(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                               rti1516e::AttributeHandleSet const & attributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void turnUpdatesOnForObjectInstance(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                               rti1516e::AttributeHandleSet const & attributes,
                                               const std::wstring& updateRateDesignator)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void turnUpdatesOffForObjectInstance(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                                rti1516e::AttributeHandleSet const & attributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void confirmAttributeTransportationTypeChange(rti1516e::ObjectInstanceHandle theObject,
                                                         rti1516e::AttributeHandleSet theAttributes,
                                                         rti1516e::TransportationType theTransportation)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void reportAttributeTransportationType(rti1516e::ObjectInstanceHandle theObject,
                                                  rti1516e::AttributeHandle theAttribute,
                                                  rti1516e::TransportationType theTransportation)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void confirmInteractionTransportationTypeChange(rti1516e::InteractionClassHandle theInteraction,
                                                           rti1516e::TransportationType theTransportation)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void reportInteractionTransportationType(rti1516e::FederateHandle federateHandle,
                                                    rti1516e::InteractionClassHandle theInteraction,
                                                    rti1516e::TransportationType theTransportation)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void requestAttributeOwnershipAssumption(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                                    rti1516e::AttributeHandleSet const & offeredAttributes,
                                                    rti1516e::VariableLengthData const & tag)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void requestDivestitureConfirmation(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                               rti1516e::AttributeHandleSet const & releasedAttributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void attributeOwnershipAcquisitionNotification(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                                          rti1516e::AttributeHandleSet const & securedAttributes,
                                                          rti1516e::VariableLengthData const & tag)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void attributeOwnershipUnavailable(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                              rti1516e::AttributeHandleSet const & attributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void requestAttributeOwnershipRelease(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                                 rti1516e::AttributeHandleSet const & candidateAttributes,
                                                 rti1516e::VariableLengthData const & tag)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void confirmAttributeOwnershipAcquisitionCancellation(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                                                 rti1516e::AttributeHandleSet const & attributes)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void informAttributeOwnership(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                         rti1516e::AttributeHandle attribute,
                                         rti1516e::FederateHandle owner)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void attributeIsNotOwned(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                    rti1516e::AttributeHandle attribute)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void attributeIsOwnedByRTI(rti1516e::ObjectInstanceHandle objectInstanceHandle,
                                      rti1516e::AttributeHandle attribute)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 
   virtual void timeRegulationEnabled(const rti1516e::LogicalTime& logicalTime)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
     _timeRegulationEnabled = true;
     *_grantedLogicalTime = logicalTime;
   }
 
   virtual void timeConstrainedEnabled(const rti1516e::LogicalTime& logicalTime)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
     _timeConstrainedEnabled = true;
     *_grantedLogicalTime = logicalTime;
   }
 
   virtual void timeAdvanceGrant(const rti1516e::LogicalTime& logicalTime)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
     _timeAdvancePending = false;
     *_grantedLogicalTime = logicalTime;
   }
 
   virtual void requestRetraction(rti1516e::MessageRetractionHandle theHandle)
-    throw (rti1516e::FederateInternalError)
+    RTI_THROW ((rti1516e::FederateInternalError))
   {
   }
 

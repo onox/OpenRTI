@@ -32,29 +32,29 @@ public:
 
   virtual RTI::ULong size() const;
   virtual RTI::Handle getHandle(RTI::ULong index) const
-    throw (RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds));
   virtual RTI::ULong getValueLength(RTI::ULong index) const
-    throw (RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds));
   virtual void getValue(RTI::ULong index, char* data, RTI::ULong& length) const
-    throw (RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds));
   virtual char* getValuePointer(RTI::ULong index, RTI::ULong& length) const
-    throw (RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds));
   virtual RTI::TransportType getTransportType(RTI::ULong index) const
-    throw (RTI::InvalidHandleValuePairSetContext);
+    RTI_THROW ((RTI::InvalidHandleValuePairSetContext));
   virtual RTI::OrderType getOrderType(RTI::ULong index) const
-    throw (RTI::ArrayIndexOutOfBounds,
-           RTI::InvalidHandleValuePairSetContext);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds,
+           RTI::InvalidHandleValuePairSetContext));
   virtual RTI::Region* getRegion(RTI::ULong index) const
-    throw (RTI::ArrayIndexOutOfBounds,
-           RTI::InvalidHandleValuePairSetContext);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds,
+           RTI::InvalidHandleValuePairSetContext));
   virtual void add(RTI::Handle handle, const char* data, RTI::ULong length)
-    throw (RTI::ValueLengthExceeded,
-           RTI::ValueCountExceeded);
+    RTI_THROW ((RTI::ValueLengthExceeded,
+           RTI::ValueCountExceeded));
   virtual void remove(RTI::Handle handle)
-    throw (RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ArrayIndexOutOfBounds));
   virtual void moveFrom(const RTI::AttributeHandleValuePairSet&, RTI::ULong&)
-    throw (RTI::ValueCountExceeded,
-           RTI::ArrayIndexOutOfBounds);
+    RTI_THROW ((RTI::ValueCountExceeded,
+           RTI::ArrayIndexOutOfBounds));
   /// Sigh, should have been called clear???
   virtual void empty();
   /// Do not understand that ...

@@ -36,7 +36,7 @@ FederateHandleSetImplementation::size() const
 
 RTI::FederateHandle
 FederateHandleSetImplementation::getHandle(RTI::ULong index) const
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   if (_federateHandleVector.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
@@ -45,7 +45,7 @@ FederateHandleSetImplementation::getHandle(RTI::ULong index) const
 
 void
 FederateHandleSetImplementation::add(RTI::FederateHandle handle)
-  throw (RTI::ValueCountExceeded)
+  RTI_THROW ((RTI::ValueCountExceeded))
 {
   OpenRTI::FederateHandle federateHandle = handle;
   _federateHandleVector.push_back(federateHandle);
@@ -53,7 +53,7 @@ FederateHandleSetImplementation::add(RTI::FederateHandle handle)
 
 void
 FederateHandleSetImplementation::remove(RTI::FederateHandle handle)
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   bool found = false;
   OpenRTI::FederateHandle federateHandle = handle;
@@ -88,7 +88,7 @@ FederateHandleSetImplementation::isMember(RTI::FederateHandle handle) const
 
 RTI::FederateHandleSet*
 RTI::FederateHandleSetFactory::create(ULong size)
-  throw (MemoryExhausted, ValueCountExceeded)
+  RTI_THROW ((MemoryExhausted, ValueCountExceeded))
 {
   return new FederateHandleSetImplementation(size);
 }

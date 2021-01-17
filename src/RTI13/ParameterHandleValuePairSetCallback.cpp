@@ -39,7 +39,7 @@ ParameterHandleValuePairSetCallback::size() const
 
 RTI::Handle
 ParameterHandleValuePairSetCallback::getHandle(RTI::ULong index) const
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   if (_parameterValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
@@ -48,7 +48,7 @@ ParameterHandleValuePairSetCallback::getHandle(RTI::ULong index) const
 
 RTI::ULong
 ParameterHandleValuePairSetCallback::getValueLength(RTI::ULong index) const
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   if (_parameterValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
@@ -60,7 +60,7 @@ ParameterHandleValuePairSetCallback::getValueLength(RTI::ULong index) const
 
 void
 ParameterHandleValuePairSetCallback::getValue(RTI::ULong index, char* data, RTI::ULong& length) const
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   if (_parameterValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
@@ -73,7 +73,7 @@ ParameterHandleValuePairSetCallback::getValue(RTI::ULong index, char* data, RTI:
 
 char*
 ParameterHandleValuePairSetCallback::getValuePointer(RTI::ULong index, RTI::ULong& length) const
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   if (_parameterValues.size() <= index)
     throw RTI::ArrayIndexOutOfBounds("Array Index out of bounds in getHandle()");
@@ -87,44 +87,44 @@ ParameterHandleValuePairSetCallback::getValuePointer(RTI::ULong index, RTI::ULon
 
 RTI::TransportType
 ParameterHandleValuePairSetCallback::getTransportType() const
-  throw (RTI::InvalidHandleValuePairSetContext)
+  RTI_THROW ((RTI::InvalidHandleValuePairSetContext))
 {
   return _transportType;
 }
 
 RTI::OrderType
 ParameterHandleValuePairSetCallback::getOrderType() const
-  throw (RTI::InvalidHandleValuePairSetContext)
+  RTI_THROW ((RTI::InvalidHandleValuePairSetContext))
 {
   return _orderType;
 }
 
 RTI::Region*
 ParameterHandleValuePairSetCallback::getRegion() const
-  throw (RTI::InvalidHandleValuePairSetContext)
+  RTI_THROW ((RTI::InvalidHandleValuePairSetContext))
 {
   return _region;
 }
 
 void
 ParameterHandleValuePairSetCallback::add(RTI::Handle handle, const char* data, RTI::ULong length)
-  throw (RTI::ValueLengthExceeded,
-         RTI::ValueCountExceeded)
+  RTI_THROW ((RTI::ValueLengthExceeded,
+         RTI::ValueCountExceeded))
 {
   throw RTI::RTIinternalError("Unimplemented function: This class is only intendet for constant use.");
 }
 
 void
 ParameterHandleValuePairSetCallback::remove(RTI::Handle handle)
-  throw (RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ArrayIndexOutOfBounds))
 {
   throw RTI::RTIinternalError("Unimplemented function: This class is only intendet for constant use.");
 }
 
 void
 ParameterHandleValuePairSetCallback::moveFrom(const RTI::ParameterHandleValuePairSet& parameterHandleValuePairSet, RTI::ULong& index)
-  throw (RTI::ValueCountExceeded,
-         RTI::ArrayIndexOutOfBounds)
+  RTI_THROW ((RTI::ValueCountExceeded,
+         RTI::ArrayIndexOutOfBounds))
 {
   throw RTI::RTIinternalError("Unimplemented function: This class is only intendet for constant use.");
 }

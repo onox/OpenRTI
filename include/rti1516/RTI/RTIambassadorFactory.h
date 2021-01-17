@@ -26,13 +26,13 @@ namespace rti1516
     
     virtual
     ~RTIambassadorFactory()
-      throw ();
+      RTI_NOEXCEPT;
     
     // 10.35
     std::auto_ptr< RTIambassador >
     createRTIambassador(std::vector< std::wstring > & args)
-      throw (BadInitializationParameter,
-             RTIinternalError);
+      RTI_THROW ((BadInitializationParameter,
+             RTIinternalError));
   };
 }
 

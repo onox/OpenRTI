@@ -22,6 +22,8 @@
 
 #include <algorithm>
 #include <sstream>
+#include "Export.h"
+#include "OpenRTIConfig.h"
 #include "AbstractConnect.h"
 #include "InternalAmbassador.h"
 #include "Clock.h"
@@ -3861,123 +3863,123 @@ public:
   virtual void connectionLost(const std::string& faultDescription) = 0;
 
   virtual void reportFederationExecutions(const FederationExecutionInformationVector& federationExecutionInformationVector)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void synchronizationPointRegistrationResponse(const std::string& label, RegisterFederationSynchronizationPointResponseType reason)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void announceSynchronizationPoint(const std::string& label, const VariableLengthData& tag)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void federationSynchronized(const std::string& label, const FederateHandleBoolPairVector& federateHandleBoolPairVector)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void registrationForObjectClass(ObjectClassHandle objectClassHandle, bool start)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void turnInteractionsOn(InteractionClassHandle interactionClassHandle, bool on)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void objectInstanceNameReservationSucceeded(const std::string& objectInstanceName)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void objectInstanceNameReservationFailed(const std::string& objectInstanceName)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void multipleObjectInstanceNameReservationSucceeded(const std::vector<std::string>& objectInstanceNames)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void multipleObjectInstanceNameReservationFailed(const std::vector<std::string>& objectInstanceNames)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void discoverObjectInstance(ObjectInstanceHandle objectInstanceHandle, ObjectClassHandle objectClassHandle,
                                       const std::string& objectInstanceName)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
                                       OrderType sentOrder, TransportationType transportationType, FederateHandle federateHandle)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
                                       OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
                                       OrderType receivedOrder, FederateHandle federateHandle)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void reflectAttributeValues(const Federate::ObjectClass& objectClass, ObjectInstanceHandle objectInstanceHandle,
                                       const AttributeValueVector& attributeValueVector, const VariableLengthData& tag,
                                       OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
                                       OrderType receivedOrder, FederateHandle federateHandle, MessageRetractionHandle messageRetractionHandle)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
                                     FederateHandle federateHandle)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
                                     const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle federateHandle)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void removeObjectInstance(ObjectInstanceHandle objectInstanceHandle, const VariableLengthData& tag, OrderType sentOrder,
                                     const NativeLogicalTime& logicalTime, OrderType receivedOrder, FederateHandle federateHandle,
                                     MessageRetractionHandle messageRetractionHandle)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
                                   OrderType sentOrder, TransportationType transportationType, FederateHandle federateHandle)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
                                   OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
                                   OrderType receivedOrder, FederateHandle federateHandle)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void receiveInteraction(const Federate::InteractionClass& interactionClass, InteractionClassHandle interactionClassHandle,
                                   const ParameterValueVector& parameterValueVector, const VariableLengthData& tag,
                                   OrderType sentOrder, TransportationType transportationType, const NativeLogicalTime& logicalTime,
                                   OrderType receivedOrder, FederateHandle federateHandle, MessageRetractionHandle messageRetractionHandle)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void attributesInScope(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void attributesOutOfScope(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void provideAttributeValueUpdate(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector,
                                            const VariableLengthData& tag)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void turnUpdatesOnForObjectInstance(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector, const std::string& updateRate)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void turnUpdatesOffForObjectInstance(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void requestAttributeOwnershipAssumption(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector,
                                                    const VariableLengthData& tag)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void requestDivestitureConfirmation(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void attributeOwnershipAcquisitionNotification(ObjectInstanceHandle objectInstanceHandle,
                                                          const AttributeHandleVector& attributeHandleVector,
                                                          const VariableLengthData& tag)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void attributeOwnershipUnavailable(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void requestAttributeOwnershipRelease(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector,
                                                 const VariableLengthData& tag)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void confirmAttributeOwnershipAcquisitionCancellation(ObjectInstanceHandle objectInstanceHandle, const AttributeHandleVector& attributeHandleVector)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void informAttributeOwnership(ObjectInstanceHandle objectInstanceHandle, AttributeHandle attributeHandle, FederateHandle theOwner)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void attributeIsNotOwned(ObjectInstanceHandle objectInstanceHandle, AttributeHandle attributeHandle)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void attributeIsOwnedByRTI(ObjectInstanceHandle objectInstanceHandle, AttributeHandle attributeHandle)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void timeRegulationEnabled(const NativeLogicalTime& logicalTime)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void timeConstrainedEnabled(const NativeLogicalTime& logicalTime)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
   virtual void timeAdvanceGrant(const NativeLogicalTime& logicalTime)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual void requestRetraction(MessageRetractionHandle messageRetractionHandle)
-    throw () = 0;
+    OpenRTI_NOEXCEPT = 0;
 
   virtual TimeManagement<Traits>* createTimeManagement(Federate& federate) = 0;
 

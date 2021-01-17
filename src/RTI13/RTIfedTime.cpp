@@ -149,7 +149,7 @@ RTIfedTime::isPositiveInfinity()
 
 RTI::FedTime&
 RTIfedTime::operator+=(const RTI::FedTime& fedTime)
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   double interval = toRTIfedTime(fedTime)._fedTime;
   if (isNaN(interval))
@@ -183,7 +183,7 @@ RTIfedTime::operator+=(const RTI::FedTime& fedTime)
 
 RTI::FedTime&
 RTIfedTime::operator-=(const RTI::FedTime& fedTime)
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   double interval = toRTIfedTime(fedTime)._fedTime;
   if (isNaN(interval))
@@ -217,42 +217,42 @@ RTIfedTime::operator-=(const RTI::FedTime& fedTime)
 
 RTI::Boolean
 RTIfedTime::operator<=(const RTI::FedTime& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return operator<=(toRTIfedTime(fedTime)._fedTime);
 }
 
 RTI::Boolean
 RTIfedTime::operator<(const RTI::FedTime& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return operator<(toRTIfedTime(fedTime)._fedTime);
 }
 
 RTI::Boolean
 RTIfedTime::operator>=(const RTI::FedTime& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return operator>=(toRTIfedTime(fedTime)._fedTime);
 }
 
 RTI::Boolean
 RTIfedTime::operator>(const RTI::FedTime& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return operator>(toRTIfedTime(fedTime)._fedTime);
 }
 
 RTI::Boolean
 RTIfedTime::operator==(const RTI::FedTime& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return operator==(toRTIfedTime(fedTime)._fedTime);
 }
 
 RTI::FedTime&
 RTIfedTime::operator=(const RTI::FedTime& fedTime)
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   _fedTime = toRTIfedTime(fedTime)._fedTime;
   return *this;
@@ -316,7 +316,7 @@ RTIfedTime::getTime() const
 
 RTI::Boolean
 RTIfedTime::operator==(const double& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   if (isNaN(_fedTime))
     throw RTI::InvalidFederationTime("Can not compare with NaN!");
@@ -327,14 +327,14 @@ RTIfedTime::operator==(const double& fedTime) const
 
 RTI::Boolean
 RTIfedTime::operator!=(const RTI::FedTime& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return operator!=(toRTIfedTime(fedTime)._fedTime);
 }
 
 RTI::Boolean
 RTIfedTime::operator!=(const double& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   if (isNaN(_fedTime))
     throw RTI::InvalidFederationTime("Can not compare with NaN!");
@@ -345,7 +345,7 @@ RTIfedTime::operator!=(const double& fedTime) const
 
 RTI::Boolean
 RTIfedTime::operator<=(const double& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   if (isNaN(_fedTime))
     throw RTI::InvalidFederationTime("Can not compare with NaN!");
@@ -356,7 +356,7 @@ RTIfedTime::operator<=(const double& fedTime) const
 
 RTI::Boolean
 RTIfedTime::operator<(const double& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   if (isNaN(_fedTime))
     throw RTI::InvalidFederationTime("Can not compare with NaN!");
@@ -367,7 +367,7 @@ RTIfedTime::operator<(const double& fedTime) const
 
 RTI::Boolean
 RTIfedTime::operator>=(const double& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   if (isNaN(_fedTime))
     throw RTI::InvalidFederationTime("Can not compare with NaN!");
@@ -378,7 +378,7 @@ RTIfedTime::operator>=(const double& fedTime) const
 
 RTI::Boolean
 RTIfedTime::operator>(const double& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   if (isNaN(_fedTime))
     throw RTI::InvalidFederationTime("Can not compare with NaN!");
@@ -389,7 +389,7 @@ RTIfedTime::operator>(const double& fedTime) const
 
 RTI::FedTime&
 RTIfedTime::operator=(const RTIfedTime& fedTime)
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   _fedTime = toRTIfedTime(fedTime)._fedTime;
   return *this;
@@ -397,7 +397,7 @@ RTIfedTime::operator=(const RTIfedTime& fedTime)
 
 RTI::FedTime&
 RTIfedTime::operator=(const double& fedTime)
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   _fedTime = fedTime;
   return *this;
@@ -405,7 +405,7 @@ RTIfedTime::operator=(const double& fedTime)
 
 RTI::FedTime&
 RTIfedTime::operator*=(const RTI::FedTime& fedTime)
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   _fedTime = _fedTime * toRTIfedTime(fedTime)._fedTime;
   return *this;
@@ -413,7 +413,7 @@ RTIfedTime::operator*=(const RTI::FedTime& fedTime)
 
 RTI::FedTime&
 RTIfedTime::operator/=(const RTI::FedTime& fedTime)
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   _fedTime = _fedTime / toRTIfedTime(fedTime)._fedTime;
   return *this;
@@ -421,7 +421,7 @@ RTIfedTime::operator/=(const RTI::FedTime& fedTime)
 
 RTI::FedTime&
 RTIfedTime::operator+=(const double& fedTime)
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   _fedTime = _fedTime + fedTime;
   return *this;
@@ -429,7 +429,7 @@ RTIfedTime::operator+=(const double& fedTime)
 
 RTI::FedTime&
 RTIfedTime::operator-=(const double& fedTime)
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   _fedTime = _fedTime - fedTime;
   return *this;
@@ -437,7 +437,7 @@ RTIfedTime::operator-=(const double& fedTime)
 
 RTI::FedTime&
 RTIfedTime::operator*=(const double& fedTime)
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   _fedTime = _fedTime * fedTime;
   return *this;
@@ -445,7 +445,7 @@ RTIfedTime::operator*=(const double& fedTime)
 
 RTI::FedTime&
 RTIfedTime::operator/=(const double& fedTime)
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   _fedTime = _fedTime / fedTime;
   return *this;
@@ -453,56 +453,56 @@ RTIfedTime::operator/=(const double& fedTime)
 
 RTIfedTime
 RTIfedTime::operator+(const RTI::FedTime& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return RTIfedTime(*this) += fedTime;
 }
 
 RTIfedTime
 RTIfedTime::operator+(const double& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return RTIfedTime(_fedTime + fedTime);
 }
 
 RTIfedTime
 RTIfedTime::operator-(const RTI::FedTime& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return RTIfedTime(*this) -= fedTime;
 }
 
 RTIfedTime
 RTIfedTime::operator-(const double& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return RTIfedTime(_fedTime - fedTime);
 }
 
 RTIfedTime
 RTIfedTime::operator*(const RTI::FedTime& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return RTIfedTime(*this) *= fedTime;
 }
 
 RTIfedTime
 RTIfedTime::operator*(const double& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return RTIfedTime(_fedTime * fedTime);
 }
 
 RTIfedTime
 RTIfedTime::operator/(const RTI::FedTime& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return RTIfedTime(*this) /= fedTime;
 }
 
 RTIfedTime
 RTIfedTime::operator/(const double& fedTime) const
-  throw (RTI::InvalidFederationTime)
+  RTI_THROW ((RTI::InvalidFederationTime))
 {
   return RTIfedTime(_fedTime / fedTime);
 }
@@ -539,14 +539,14 @@ operator<<(std::ostream& stream, const RTI::FedTime& fedTime)
 
 RTI::FedTime*
 RTI::FedTimeFactory::makeZero()
-  throw (RTI::MemoryExhausted)
+  RTI_THROW ((RTI::MemoryExhausted))
 {
   return new RTIfedTime(0);
 }
 
 RTI::FedTime*
 RTI::FedTimeFactory::decode(const char* buffer)
-    throw (RTI::MemoryExhausted)
+    RTI_THROW ((RTI::MemoryExhausted))
 {
   union {
     double d;

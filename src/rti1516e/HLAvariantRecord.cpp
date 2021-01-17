@@ -155,7 +155,7 @@ HLAvariantRecord::clone () const
 
 VariableLengthData
 HLAvariantRecord::encode () const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   VariableLengthData variableLengthData;
   encode(variableLengthData);
@@ -164,7 +164,7 @@ HLAvariantRecord::encode () const
 
 void
 HLAvariantRecord::encode(VariableLengthData& inData) const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   std::vector<Octet> buffer;
   buffer.reserve(getEncodedLength());
@@ -174,13 +174,13 @@ HLAvariantRecord::encode(VariableLengthData& inData) const
 
 void
 HLAvariantRecord::encodeInto(std::vector<Octet>& buffer) const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   _impl->encodeInto(buffer);
 }
 
 void HLAvariantRecord::decode(VariableLengthData const & inData)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   std::vector<Octet> buffer(inData.size());
   std::memcpy(&buffer.front(), inData.data(), inData.size());
@@ -189,14 +189,14 @@ void HLAvariantRecord::decode(VariableLengthData const & inData)
 
 size_t
 HLAvariantRecord::decodeFrom(std::vector<Octet> const & buffer, size_t index)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   return _impl->decodeFrom(buffer, index);
 }
 
 size_t
 HLAvariantRecord::getEncodedLength() const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   return _impl->getEncodedLength();
 }
@@ -218,7 +218,7 @@ HLAvariantRecord::isSameTypeAs(DataElement const& inData) const
 
 bool
 HLAvariantRecord::isSameTypeAs(DataElement const& discriminant, DataElement const& inData) const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   return _impl->isSameTypeAs(discriminant, inData);
 }
@@ -231,35 +231,35 @@ HLAvariantRecord::hasMatchingDiscriminantTypeAs(DataElement const& dataElement) 
 
 void
 HLAvariantRecord::addVariant(const DataElement& discriminant, const DataElement& valuePrototype)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   _impl->addVariant(discriminant, valuePrototype);
 }
 
 void
 HLAvariantRecord::addVariantPointer(const DataElement& discriminant, DataElement* valuePtr)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   _impl->addVariantPointer(discriminant, valuePtr);
 }
 
 void
 HLAvariantRecord::setDiscriminant(const DataElement& discriminant)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   _impl->setDiscriminant(discriminant);
 }
 
 void
 HLAvariantRecord::setVariant(const DataElement& discriminant, DataElement const& value)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   _impl->setVariant(discriminant, value);
 }
 
 void
 HLAvariantRecord::setVariantPointer(const DataElement& discriminant, DataElement* valuePtr)
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   _impl->setVariantPointer(discriminant, valuePtr);
 }
@@ -272,7 +272,7 @@ HLAvariantRecord::getDiscriminant() const
 
 const DataElement&
 HLAvariantRecord::getVariant() const
-  throw (EncoderException)
+  RTI_THROW ((EncoderException))
 {
   return _impl->getVariant();
 }

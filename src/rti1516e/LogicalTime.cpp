@@ -26,7 +26,7 @@ namespace rti1516e
 {
 
 LogicalTime::~LogicalTime()
-  throw ()
+  RTI_NOEXCEPT
 {
 }
 

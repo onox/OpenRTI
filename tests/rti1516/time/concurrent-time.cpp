@@ -73,7 +73,7 @@ public:
     setLogicalTimeFactoryName(_logicalTime.implementationName());
   }
   virtual ~TestAmbassador()
-    throw ()
+    RTI_NOEXCEPT
   { }
 
   virtual bool execJoined(rti1516::RTIambassador& ambassador)
@@ -492,9 +492,9 @@ public:
 
   virtual void
   timeConstrainedEnabled(const rti1516::LogicalTime& logicalTime)
-    throw (rti1516::InvalidLogicalTime,
+    RTI_THROW ((rti1516::InvalidLogicalTime,
            rti1516::NoRequestToEnableTimeConstrainedWasPending,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
     if (logicalTime < _logicalTime) {
       std::wcout << L"Time constrained enabled time grants for a time in the past!" << std::endl;
@@ -657,9 +657,9 @@ public:
 
   virtual void
   timeRegulationEnabled(const rti1516::LogicalTime& logicalTime)
-    throw (rti1516::InvalidLogicalTime,
+    RTI_THROW ((rti1516::InvalidLogicalTime,
            rti1516::NoRequestToEnableTimeRegulationWasPending,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
     if (logicalTime < _logicalTime) {
       std::wcout << L"Time regulation enabled time grants for a time in the past!" << std::endl;
@@ -845,9 +845,9 @@ public:
 
   virtual void
   timeAdvanceGrant(const rti1516::LogicalTime& logicalTime)
-    throw (rti1516::InvalidLogicalTime,
+    RTI_THROW ((rti1516::InvalidLogicalTime,
            rti1516::JoinedFederateIsNotInTimeAdvancingState,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
     if (!_timeAdvancePending) {
       std::wcout << L"Time advance grant without time advance pending!" << std::endl;
@@ -931,18 +931,18 @@ public:
   }
 
   virtual void discoverObjectInstance(rti1516::ObjectInstanceHandle, rti1516::ObjectClassHandle, const std::wstring&)
-    throw (rti1516::CouldNotDiscover,
+    RTI_THROW ((rti1516::CouldNotDiscover,
            rti1516::ObjectClassNotKnown,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
   }
 
   virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle, const rti1516::AttributeHandleValueMap&,
                                       const rti1516::VariableLengthData& tag, rti1516::OrderType sentOrder, rti1516::TransportationType)
-    throw (rti1516::ObjectInstanceNotKnown,
+    RTI_THROW ((rti1516::ObjectInstanceNotKnown,
            rti1516::AttributeNotRecognized,
            rti1516::AttributeNotSubscribed,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
     if (_timeConstrainedEnabled && strncmp("withoutTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;
@@ -957,10 +957,10 @@ public:
   virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
                                       const rti1516::VariableLengthData& tag, rti1516::OrderType orderType, rti1516::TransportationType transportationType,
                                       const rti1516::RegionHandleSet&)
-    throw (rti1516::ObjectInstanceNotKnown,
+    RTI_THROW ((rti1516::ObjectInstanceNotKnown,
            rti1516::AttributeNotRecognized,
            rti1516::AttributeNotSubscribed,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
     reflectAttributeValues(objectInstanceHandle, attributeHandleValueMap, tag, orderType, transportationType);
   }
@@ -968,10 +968,10 @@ public:
   virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
                                       const rti1516::VariableLengthData& tag, rti1516::OrderType sentOrder, rti1516::TransportationType transportationType,
                                       const rti1516::LogicalTime& logicalTime, rti1516::OrderType receivedOrder)
-    throw (rti1516::ObjectInstanceNotKnown,
+    RTI_THROW ((rti1516::ObjectInstanceNotKnown,
            rti1516::AttributeNotRecognized,
            rti1516::AttributeNotSubscribed,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
     if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;
@@ -994,10 +994,10 @@ public:
   virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
                                       const rti1516::VariableLengthData& tag, rti1516::OrderType orderType, rti1516::TransportationType transportationType,
                                       const rti1516::LogicalTime& logicalTime, rti1516::OrderType receivedOrder, const rti1516::RegionHandleSet&)
-    throw (rti1516::ObjectInstanceNotKnown,
+    RTI_THROW ((rti1516::ObjectInstanceNotKnown,
            rti1516::AttributeNotRecognized,
            rti1516::AttributeNotSubscribed,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
     reflectAttributeValues(objectInstanceHandle, attributeHandleValueMap, tag, orderType, transportationType, logicalTime, receivedOrder);
   }
@@ -1005,11 +1005,11 @@ public:
   virtual void reflectAttributeValues(rti1516::ObjectInstanceHandle objectInstanceHandle, const rti1516::AttributeHandleValueMap& attributeHandleValueMap,
                                       const rti1516::VariableLengthData& tag, rti1516::OrderType sentOrder, rti1516::TransportationType transportationType,
                                       const rti1516::LogicalTime& logicalTime, rti1516::OrderType receivedOrder, rti1516::MessageRetractionHandle)
-    throw (rti1516::ObjectInstanceNotKnown,
+    RTI_THROW ((rti1516::ObjectInstanceNotKnown,
            rti1516::AttributeNotRecognized,
            rti1516::AttributeNotSubscribed,
            rti1516::InvalidLogicalTime,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
     if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;
@@ -1033,11 +1033,11 @@ public:
                                       const rti1516::VariableLengthData& tag, rti1516::OrderType orderType, rti1516::TransportationType transportationType,
                                       const rti1516::LogicalTime& logicalTime, rti1516::OrderType receivedOrder, rti1516::MessageRetractionHandle,
                                       const rti1516::RegionHandleSet& regionHandleSet)
-    throw (rti1516::ObjectInstanceNotKnown,
+    RTI_THROW ((rti1516::ObjectInstanceNotKnown,
            rti1516::AttributeNotRecognized,
            rti1516::AttributeNotSubscribed,
            rti1516::InvalidLogicalTime,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
     reflectAttributeValues(objectInstanceHandle, attributeHandleValueMap, tag, orderType, transportationType, logicalTime, receivedOrder, regionHandleSet);
   }
@@ -1045,10 +1045,10 @@ public:
   virtual void
   receiveInteraction(rti1516::InteractionClassHandle, const rti1516::ParameterHandleValueMap&,
                      const rti1516::VariableLengthData& tag, rti1516::OrderType sentOrder, rti1516::TransportationType)
-    throw (rti1516::InteractionClassNotRecognized,
+    RTI_THROW ((rti1516::InteractionClassNotRecognized,
            rti1516::InteractionParameterNotRecognized,
            rti1516::InteractionClassNotSubscribed,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
     if (_timeConstrainedEnabled && strncmp("withoutTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;
@@ -1068,10 +1068,10 @@ public:
                      rti1516::TransportationType theType,
                      rti1516::LogicalTime const & theTime,
                      rti1516::OrderType receivedOrder)
-    throw (rti1516::InteractionClassNotRecognized,
+    RTI_THROW ((rti1516::InteractionClassNotRecognized,
            rti1516::InteractionParameterNotRecognized,
            rti1516::InteractionClassNotSubscribed,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
     if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;
@@ -1100,11 +1100,11 @@ public:
                      rti1516::LogicalTime const & theTime,
                      rti1516::OrderType receivedOrder,
                      rti1516::MessageRetractionHandle theHandle)
-    throw (rti1516::InteractionClassNotRecognized,
+    RTI_THROW ((rti1516::InteractionClassNotRecognized,
            rti1516::InteractionParameterNotRecognized,
            rti1516::InteractionClassNotSubscribed,
            rti1516::InvalidLogicalTime,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
     if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;
@@ -1127,8 +1127,8 @@ public:
   virtual void removeObjectInstance(rti1516::ObjectInstanceHandle theObject,
                                     rti1516::VariableLengthData const & tag,
                                     rti1516::OrderType sentOrder)
-    throw (rti1516::ObjectInstanceNotKnown,
-           rti1516::FederateInternalError)
+    RTI_THROW ((rti1516::ObjectInstanceNotKnown,
+           rti1516::FederateInternalError))
   {
     if (_timeConstrainedEnabled && strncmp("withoutTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;
@@ -1145,8 +1145,8 @@ public:
                                     rti1516::OrderType sentOrder,
                                     rti1516::LogicalTime const & logicalTime,
                                     rti1516::OrderType receivedOrder)
-    throw (rti1516::ObjectInstanceNotKnown,
-           rti1516::FederateInternalError)
+    RTI_THROW ((rti1516::ObjectInstanceNotKnown,
+           rti1516::FederateInternalError))
   {
     if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;
@@ -1172,9 +1172,9 @@ public:
                                     rti1516::LogicalTime const & logicalTime,
                                     rti1516::OrderType receivedOrder,
                                     rti1516::MessageRetractionHandle theHandle)
-    throw (rti1516::ObjectInstanceNotKnown,
+    RTI_THROW ((rti1516::ObjectInstanceNotKnown,
            rti1516::InvalidLogicalTime,
-           rti1516::FederateInternalError)
+           rti1516::FederateInternalError))
   {
     if (strncmp("withTimestamp", (const char*)tag.data(), tag.size()) != 0) {
         _fail = true;

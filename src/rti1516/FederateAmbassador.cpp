@@ -27,12 +27,12 @@ namespace rti1516
 {  
 
 FederateAmbassador::FederateAmbassador()
-  throw (FederateInternalError)
+  RTI_THROW ((FederateInternalError))
 {
 }
 
 FederateAmbassador::~FederateAmbassador()
-  throw ()
+  RTI_NOEXCEPT
 {
 }
 

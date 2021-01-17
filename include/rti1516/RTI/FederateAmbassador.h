@@ -25,63 +25,63 @@ namespace rti1516
   {
   protected:
     FederateAmbassador()
-       throw (FederateInternalError);
+       RTI_THROW ((FederateInternalError));
 
   public:
     virtual
     ~FederateAmbassador()
-    throw ();
+    RTI_NOEXCEPT;
 
     // 4.7
     virtual
     void
     synchronizationPointRegistrationSucceeded(std::wstring const & label)
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
 
     virtual
     void
     synchronizationPointRegistrationFailed(std::wstring const & label,
                                            SynchronizationFailureReason reason)
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
 
     // 4.8
     virtual
     void
     announceSynchronizationPoint(std::wstring  const & label,
                                  VariableLengthData const & theUserSuppliedTag)
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
 
     // 4.10
     virtual
     void
     federationSynchronized(std::wstring const & label)
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
 
     // 4.12
     virtual
     void
     initiateFederateSave(std::wstring const & label)
-      throw (UnableToPerformSave,
-             FederateInternalError) = 0;
+      RTI_THROW ((UnableToPerformSave,
+             FederateInternalError)) = 0;
 
     virtual
     void
     initiateFederateSave(std::wstring const & label,
                          LogicalTime const & theTime)
-      throw (UnableToPerformSave,
+      RTI_THROW ((UnableToPerformSave,
              InvalidLogicalTime,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 4.15
     virtual
     void
     federationSaved()
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
 
     virtual
     void
     federationNotSaved(SaveFailureReason theSaveFailureReason)
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
 
 
     // 4.17
@@ -90,44 +90,44 @@ namespace rti1516
     federationSaveStatusResponse(
       FederateHandleSaveStatusPairVector const &
       theFederateStatusVector)
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
 
     // 4.19
     virtual
     void
     requestFederationRestoreSucceeded(std::wstring const & label)
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
 
     virtual
     void
     requestFederationRestoreFailed(std::wstring const & label)
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
 
     // 4.20
     virtual
     void
     federationRestoreBegun()
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
 
     // 4.21
     virtual
     void
     initiateFederateRestore(std::wstring const & label,
       FederateHandle handle)
-      throw (SpecifiedSaveLabelDoesNotExist,
+      RTI_THROW ((SpecifiedSaveLabelDoesNotExist,
              CouldNotInitiateRestore,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 4.23
     virtual
     void
     federationRestored()
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
 
     virtual
     void
     federationNotRestored(RestoreFailureReason theRestoreFailureReason)
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
 
     // 4.25
     virtual
@@ -135,7 +135,7 @@ namespace rti1516
     federationRestoreStatusResponse(
       FederateHandleRestoreStatusPairVector const &
       theFederateStatusVector)
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
 
     /////////////////////////////////////
     // Declaration Management Services //
@@ -145,29 +145,29 @@ namespace rti1516
     virtual
     void
     startRegistrationForObjectClass(ObjectClassHandle theClass)
-      throw (ObjectClassNotPublished,
-             FederateInternalError) = 0;
+      RTI_THROW ((ObjectClassNotPublished,
+             FederateInternalError)) = 0;
 
     // 5.11
     virtual
     void
     stopRegistrationForObjectClass(ObjectClassHandle theClass)
-      throw (ObjectClassNotPublished,
-             FederateInternalError) = 0;
+      RTI_THROW ((ObjectClassNotPublished,
+             FederateInternalError)) = 0;
 
     // 5.12
     virtual
     void
     turnInteractionsOn(InteractionClassHandle theHandle)
-      throw (InteractionClassNotPublished,
-             FederateInternalError) = 0;
+      RTI_THROW ((InteractionClassNotPublished,
+             FederateInternalError)) = 0;
 
     // 5.13
     virtual
     void
     turnInteractionsOff(InteractionClassHandle theHandle)
-      throw (InteractionClassNotPublished,
-             FederateInternalError) = 0;
+      RTI_THROW ((InteractionClassNotPublished,
+             FederateInternalError)) = 0;
 
     ////////////////////////////////
     // Object Management Services //
@@ -178,15 +178,15 @@ namespace rti1516
     void
     objectInstanceNameReservationSucceeded(std::wstring const &
                                            theObjectInstanceName)
-      throw (UnknownName,
-             FederateInternalError) = 0;
+      RTI_THROW ((UnknownName,
+             FederateInternalError)) = 0;
 
     virtual
     void
     objectInstanceNameReservationFailed(std::wstring const &
                                         theObjectInstanceName)
-      throw (UnknownName,
-             FederateInternalError) = 0;
+      RTI_THROW ((UnknownName,
+             FederateInternalError)) = 0;
 
   
     // 6.5
@@ -195,9 +195,9 @@ namespace rti1516
     discoverObjectInstance(ObjectInstanceHandle theObject,
                            ObjectClassHandle theObjectClass,
                            std::wstring const & theObjectInstanceName)
-      throw (CouldNotDiscover,
+      RTI_THROW ((CouldNotDiscover,
              ObjectClassNotKnown,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 6.7
     virtual
@@ -208,10 +208,10 @@ namespace rti1516
      VariableLengthData const & theUserSuppliedTag,
      OrderType sentOrder,
      TransportationType theType)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     virtual
     void
@@ -222,10 +222,10 @@ namespace rti1516
      OrderType sentOrder,
      TransportationType theType,
      RegionHandleSet const & theSentRegionHandleSet)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     virtual
     void
@@ -237,10 +237,10 @@ namespace rti1516
      TransportationType theType,
      LogicalTime const & theTime,
      OrderType receivedOrder)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
   
     virtual
     void
@@ -253,10 +253,10 @@ namespace rti1516
      LogicalTime const & theTime,
      OrderType receivedOrder,
      RegionHandleSet const & theSentRegionHandleSet)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
   
     virtual
     void
@@ -269,11 +269,11 @@ namespace rti1516
      LogicalTime const & theTime,
      OrderType receivedOrder,
      MessageRetractionHandle theHandle)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
              InvalidLogicalTime,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     virtual
     void
@@ -287,11 +287,11 @@ namespace rti1516
      OrderType receivedOrder,
      MessageRetractionHandle theHandle,
      RegionHandleSet const & theSentRegionHandleSet)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
              InvalidLogicalTime,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 6.9
     virtual
@@ -302,10 +302,10 @@ namespace rti1516
      VariableLengthData const & theUserSuppliedTag,
      OrderType sentOrder,
      TransportationType theType)
-      throw (InteractionClassNotRecognized,
+      RTI_THROW ((InteractionClassNotRecognized,
              InteractionParameterNotRecognized,
              InteractionClassNotSubscribed,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     virtual
     void
@@ -316,10 +316,10 @@ namespace rti1516
      OrderType sentOrder,
      TransportationType theType,
      RegionHandleSet const & theSentRegionHandleSet)
-      throw (InteractionClassNotRecognized,
+      RTI_THROW ((InteractionClassNotRecognized,
              InteractionParameterNotRecognized,
              InteractionClassNotSubscribed,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     virtual
     void
@@ -331,10 +331,10 @@ namespace rti1516
      TransportationType theType,
      LogicalTime const & theTime,
      OrderType receivedOrder)
-      throw (InteractionClassNotRecognized,
+      RTI_THROW ((InteractionClassNotRecognized,
              InteractionParameterNotRecognized,
              InteractionClassNotSubscribed,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     virtual
     void
@@ -347,10 +347,10 @@ namespace rti1516
      LogicalTime const & theTime,
      OrderType receivedOrder,
      RegionHandleSet const & theSentRegionHandleSet)
-      throw (InteractionClassNotRecognized,
+      RTI_THROW ((InteractionClassNotRecognized,
              InteractionParameterNotRecognized,
              InteractionClassNotSubscribed,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     virtual
     void
@@ -363,11 +363,11 @@ namespace rti1516
      LogicalTime const & theTime,
      OrderType receivedOrder,
      MessageRetractionHandle theHandle)
-      throw (InteractionClassNotRecognized,
+      RTI_THROW ((InteractionClassNotRecognized,
              InteractionParameterNotRecognized,
              InteractionClassNotSubscribed,
              InvalidLogicalTime,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     virtual
     void
@@ -381,11 +381,11 @@ namespace rti1516
      OrderType receivedOrder,
      MessageRetractionHandle theHandle,
      RegionHandleSet const & theSentRegionHandleSet)
-      throw (InteractionClassNotRecognized,
+      RTI_THROW ((InteractionClassNotRecognized,
              InteractionParameterNotRecognized,
              InteractionClassNotSubscribed,
              InvalidLogicalTime,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 6.11
     virtual
@@ -393,8 +393,8 @@ namespace rti1516
     removeObjectInstance(ObjectInstanceHandle theObject,
                          VariableLengthData const & theUserSuppliedTag,
                          OrderType sentOrder)
-      throw (ObjectInstanceNotKnown,
-             FederateInternalError) = 0;
+      RTI_THROW ((ObjectInstanceNotKnown,
+             FederateInternalError)) = 0;
 
     virtual
     void
@@ -403,8 +403,8 @@ namespace rti1516
                          OrderType sentOrder,
                          LogicalTime const & theTime,
                          OrderType receivedOrder)
-      throw (ObjectInstanceNotKnown,
-             FederateInternalError) = 0;
+      RTI_THROW ((ObjectInstanceNotKnown,
+             FederateInternalError)) = 0;
 
     virtual
     void
@@ -414,9 +414,9 @@ namespace rti1516
                          LogicalTime const & theTime,
                          OrderType receivedOrder,
                          MessageRetractionHandle theHandle)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              InvalidLogicalTime,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 6.15
     virtual
@@ -424,10 +424,10 @@ namespace rti1516
     attributesInScope
     (ObjectInstanceHandle theObject,
      AttributeHandleSet const & theAttributes)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 6.16
     virtual
@@ -435,10 +435,10 @@ namespace rti1516
     attributesOutOfScope
     (ObjectInstanceHandle theObject,
      AttributeHandleSet const & theAttributes)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotSubscribed,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 6.18
     virtual
@@ -447,10 +447,10 @@ namespace rti1516
     (ObjectInstanceHandle theObject,
      AttributeHandleSet const & theAttributes,
      VariableLengthData const & theUserSuppliedTag)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotOwned,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 6.19
     virtual
@@ -458,10 +458,10 @@ namespace rti1516
     turnUpdatesOnForObjectInstance
     (ObjectInstanceHandle theObject,
       AttributeHandleSet const & theAttributes)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotOwned,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 6.20
     virtual
@@ -469,10 +469,10 @@ namespace rti1516
     turnUpdatesOffForObjectInstance
     (ObjectInstanceHandle theObject,
       AttributeHandleSet const & theAttributes)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotOwned,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     ///////////////////////////////////
     // Ownership Management Services //
@@ -485,11 +485,11 @@ namespace rti1516
     (ObjectInstanceHandle theObject,
      AttributeHandleSet const & offeredAttributes,
      VariableLengthData const & theUserSuppliedTag)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeAlreadyOwned,
              AttributeNotPublished,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 7.5
     virtual
@@ -497,11 +497,11 @@ namespace rti1516
     requestDivestitureConfirmation
     (ObjectInstanceHandle theObject,
      AttributeHandleSet const & releasedAttributes)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotOwned,
              AttributeDivestitureWasNotRequested,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 7.7
     virtual
@@ -510,12 +510,12 @@ namespace rti1516
     (ObjectInstanceHandle theObject,
      AttributeHandleSet const & securedAttributes,
      VariableLengthData const & theUserSuppliedTag)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeAcquisitionWasNotRequested,
              AttributeAlreadyOwned,
              AttributeNotPublished,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 7.10
     virtual
@@ -523,11 +523,11 @@ namespace rti1516
     attributeOwnershipUnavailable
     (ObjectInstanceHandle theObject,
      AttributeHandleSet const & theAttributes)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeAlreadyOwned,
              AttributeAcquisitionWasNotRequested,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 7.11
     virtual
@@ -536,10 +536,10 @@ namespace rti1516
     (ObjectInstanceHandle theObject,
      AttributeHandleSet const & candidateAttributes,
      VariableLengthData const & theUserSuppliedTag)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeNotOwned,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 7.15
     virtual
@@ -547,11 +547,11 @@ namespace rti1516
     confirmAttributeOwnershipAcquisitionCancellation
     (ObjectInstanceHandle theObject,
      AttributeHandleSet const & theAttributes)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
              AttributeAlreadyOwned,
              AttributeAcquisitionWasNotCanceled,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 7.17
     virtual
@@ -559,25 +559,25 @@ namespace rti1516
     informAttributeOwnership(ObjectInstanceHandle theObject,
                              AttributeHandle theAttribute,
                              FederateHandle theOwner)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     virtual
     void
     attributeIsNotOwned(ObjectInstanceHandle theObject,
                         AttributeHandle theAttribute)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     virtual
     void
     attributeIsOwnedByRTI(ObjectInstanceHandle theObject,
                           AttributeHandle theAttribute)
-      throw (ObjectInstanceNotKnown,
+      RTI_THROW ((ObjectInstanceNotKnown,
              AttributeNotRecognized,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     //////////////////////////////
     // Time Management Services //
@@ -587,31 +587,31 @@ namespace rti1516
     virtual
     void
     timeRegulationEnabled(LogicalTime const & theFederateTime)
-      throw (InvalidLogicalTime,
+      RTI_THROW ((InvalidLogicalTime,
              NoRequestToEnableTimeRegulationWasPending,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 8.6
     virtual
     void
     timeConstrainedEnabled(LogicalTime const & theFederateTime)
-      throw (InvalidLogicalTime,
+      RTI_THROW ((InvalidLogicalTime,
              NoRequestToEnableTimeConstrainedWasPending,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 8.13
     virtual
     void
     timeAdvanceGrant(LogicalTime const & theTime)
-      throw (InvalidLogicalTime,
+      RTI_THROW ((InvalidLogicalTime,
              JoinedFederateIsNotInTimeAdvancingState,
-             FederateInternalError) = 0;
+             FederateInternalError)) = 0;
 
     // 8.22
     virtual
     void
     requestRetraction(MessageRetractionHandle theHandle)
-      throw (FederateInternalError) = 0;
+      RTI_THROW ((FederateInternalError)) = 0;
   };
 }
 
