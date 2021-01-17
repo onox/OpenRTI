@@ -24,7 +24,7 @@
 
 namespace rti1516e {
 
-std::auto_ptr<LogicalTimeFactory>
+RTI_UNIQUE_PTR<LogicalTimeFactory>
 LogicalTimeFactoryFactory::makeLogicalTimeFactory(const std::wstring& implementationName)
 {
   return HLAlogicalTimeFactoryFactory::makeLogicalTimeFactory(implementationName);

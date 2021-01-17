@@ -92,7 +92,7 @@ public:
     SharedPtr<LogicalTimeImplementation> _implementation;
   };
 
-  RTI1516LogicalTimeFactory(std::auto_ptr<rti1516::LogicalTimeFactory> logicalTimeFactory);
+  RTI1516LogicalTimeFactory(RTI_UNIQUE_PTR<rti1516::LogicalTimeFactory> logicalTimeFactory);
   RTI1516LogicalTimeFactory(const RTI1516LogicalTimeFactory&);
   ~RTI1516LogicalTimeFactory();
 

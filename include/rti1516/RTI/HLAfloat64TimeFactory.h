@@ -30,9 +30,9 @@ public:
   HLAfloat64TimeFactory();
   virtual ~HLAfloat64TimeFactory()
     RTI_NOEXCEPT;
-  virtual std::auto_ptr<rti1516::LogicalTime> makeLogicalTime()
+  virtual RTI_UNIQUE_PTR<rti1516::LogicalTime> makeLogicalTime()
     RTI_THROW ((rti1516::InternalError));
-  virtual std::auto_ptr<rti1516::LogicalTimeInterval> makeLogicalTimeInterval()
+  virtual RTI_UNIQUE_PTR<rti1516::LogicalTimeInterval> makeLogicalTimeInterval()
     RTI_THROW ((rti1516::InternalError));
 };
 

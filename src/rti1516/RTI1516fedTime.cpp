@@ -93,16 +93,16 @@ RTI1516fedTimeFactory::~RTI1516fedTimeFactory() RTI_NOEXCEPT
 {
 }
 
-std::auto_ptr<rti1516::LogicalTime>
+RTI_UNIQUE_PTR<rti1516::LogicalTime>
 RTI1516fedTimeFactory::makeLogicalTime()
   RTI_THROW ((rti1516::InternalError))
 {
-  return std::auto_ptr<rti1516::LogicalTime>(new RTI1516fedTime);
+  return RTI_UNIQUE_PTR<rti1516::LogicalTime>(new RTI1516fedTime);
 }
 
-std::auto_ptr<rti1516::LogicalTimeInterval>
+RTI_UNIQUE_PTR<rti1516::LogicalTimeInterval>
 RTI1516fedTimeFactory::makeLogicalTimeInterval()
   RTI_THROW ((rti1516::InternalError))
 {
-  return std::auto_ptr<rti1516::LogicalTimeInterval>(new RTI1516fedTimeInterval);
+  return RTI_UNIQUE_PTR<rti1516::LogicalTimeInterval>(new RTI1516fedTimeInterval);
 }

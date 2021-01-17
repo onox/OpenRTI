@@ -192,10 +192,10 @@ HLAfixedRecord::~HLAfixedRecord()
   _impl = 0;
 }
 
-std::auto_ptr<DataElement>
+RTI_UNIQUE_PTR<DataElement>
 HLAfixedRecord::clone() const
 {
-  return std::auto_ptr<DataElement>(new HLAfixedRecord(*this));
+  return RTI_UNIQUE_PTR<DataElement>(new HLAfixedRecord(*this));
 }
 
 VariableLengthData

@@ -110,10 +110,10 @@ EncodableDataType::operator=(EncodableDataType const& rhs)              \
   return *this;                                                         \
 }                                                                       \
                                                                         \
-std::auto_ptr<DataElement>                                              \
+RTI_UNIQUE_PTR<DataElement>                                             \
 EncodableDataType::clone() const                                        \
 {                                                                       \
-  return std::auto_ptr<DataElement>(new EncodableDataType(*this));      \
+  return RTI_UNIQUE_PTR<DataElement>(new EncodableDataType(*this));     \
 }                                                                       \
                                                                         \
 VariableLengthData                                                      \

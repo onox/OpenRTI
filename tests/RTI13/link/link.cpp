@@ -27,7 +27,7 @@
 int
 main(int argc, char* argv[])
 {
-  std::auto_ptr<RTI::RTIambassador> ambassador;
+  RTI_UNIQUE_PTR<RTI::RTIambassador> ambassador;
   ambassador.reset(new RTI::RTIambassador);
   return EXIT_SUCCESS;
 }

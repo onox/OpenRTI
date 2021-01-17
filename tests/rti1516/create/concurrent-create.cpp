@@ -41,7 +41,7 @@ public:
 
   virtual bool exec()
   {
-    std::auto_ptr<rti1516::RTIambassador> ambassador;
+    RTI_UNIQUE_PTR<rti1516::RTIambassador> ambassador;
     rti1516::RTIambassadorFactory factory;
     std::vector<std::wstring> args = getArgumentList();
     ambassador = factory.createRTIambassador(args);

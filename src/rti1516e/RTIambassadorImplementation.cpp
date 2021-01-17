@@ -566,19 +566,19 @@ public:
     RTI1516EAmbassadorInterface& _ambassadorInterface;
   };
 
-  std::auto_ptr<rti1516e::LogicalTimeFactory> getTimeFactory()
+  RTI_UNIQUE_PTR<rti1516e::LogicalTimeFactory> getTimeFactory()
   {
     // FIXME ask the time management about that
     OpenRTI::Federate* federate = getFederate();
     if (!federate)
-	std::auto_ptr<rti1516e::LogicalTimeFactory>();
+	RTI_UNIQUE_PTR<rti1516e::LogicalTimeFactory>();
     return rti1516e::LogicalTimeFactoryFactory::makeLogicalTimeFactory(utf8ToUcs(federate->getLogicalTimeFactoryName()));
   }
 
   virtual TimeManagement<RTI1516ETraits>* createTimeManagement(Federate& federate)
   {
     std::string logicalTimeFactoryName = federate.getLogicalTimeFactoryName();
-    std::auto_ptr<rti1516e::LogicalTimeFactory> logicalTimeFactory;
+    RTI_UNIQUE_PTR<rti1516e::LogicalTimeFactory> logicalTimeFactory;
     logicalTimeFactory = rti1516e::LogicalTimeFactoryFactory::makeLogicalTimeFactory(utf8ToUcs(logicalTimeFactoryName));
     if (!logicalTimeFactory.get())
       return 0;
@@ -591,8 +591,8 @@ public:
     // FIXME: make that again configurable
     bool forceOpaqueTime = false;
     if (!forceOpaqueTime) {
-      std::auto_ptr<rti1516e::LogicalTime> logicalTime = logicalTimeFactory->makeInitial();
-      std::auto_ptr<rti1516e::LogicalTimeInterval> logicalTimeInterval = logicalTimeFactory->makeZero();
+      RTI_UNIQUE_PTR<rti1516e::LogicalTime> logicalTime = logicalTimeFactory->makeInitial();
+      RTI_UNIQUE_PTR<rti1516e::LogicalTimeInterval> logicalTimeInterval = logicalTimeFactory->makeZero();
       try {
         rti1516e::HLAinteger64Time time;
         rti1516e::HLAinteger64Interval interval;
@@ -627,7 +627,7 @@ public:
     }
 
     // Ok, we will just need to use the opaque logical time factory
-    return new TemplateTimeManagement<RTI1516ETraits, RTI1516ELogicalTimeFactory>(RTI1516ELogicalTimeFactory(logicalTimeFactory));
+    return new TemplateTimeManagement<RTI1516ETraits, RTI1516ELogicalTimeFactory>(RTI1516ELogicalTimeFactory(OpenRTI_MOVE(logicalTimeFactory)));
   }
 
   virtual void connectionLost(const std::string& faultDescription)
@@ -6243,7 +6243,7 @@ RTIambassadorImplementation::disableCallbacks()
   }
 }
 
-std::auto_ptr<rti1516e::LogicalTimeFactory>
+RTI_UNIQUE_PTR<rti1516e::LogicalTimeFactory>
 RTIambassadorImplementation::getTimeFactory() const
   RTI_THROW ((rti1516e::FederateNotExecutionMember,
          rti1516e::NotConnected,

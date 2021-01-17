@@ -327,7 +327,7 @@ PyObject_NewLogicalTime(const rti1516::LogicalTime& logicalTime)
 }
 
 static bool
-PyObject_GetLogicalTime(std::auto_ptr<rti1516::LogicalTime>& logicalTime, const std::wstring& implementationName)
+PyObject_GetLogicalTime(RTI_UNIQUE_PTR<rti1516::LogicalTime>& logicalTime, const std::wstring& implementationName)
 {
   if (implementationName == L"HLAfloat64Time") {
     logicalTime.reset(new HLAfloat64Time(0));
@@ -342,7 +342,7 @@ PyObject_GetLogicalTime(std::auto_ptr<rti1516::LogicalTime>& logicalTime, const 
 }
 
 static bool
-PyObject_GetLogicalTime(std::auto_ptr<rti1516::LogicalTime>& logicalTime, PyObject* o, const std::wstring& implementationName)
+PyObject_GetLogicalTime(RTI_UNIQUE_PTR<rti1516::LogicalTime>& logicalTime, PyObject* o, const std::wstring& implementationName)
 {
   if (implementationName == L"HLAfloat64Time") {
     double value;
@@ -376,7 +376,7 @@ PyObject_NewLogicalTimeInterval(const rti1516::LogicalTimeInterval& logicalTimeI
 }
 
 static bool
-PyObject_GetLogicalTimeInterval(std::auto_ptr<rti1516::LogicalTimeInterval>& logicalTimeInterval, PyObject* o, const std::wstring& implementationName)
+PyObject_GetLogicalTimeInterval(RTI_UNIQUE_PTR<rti1516::LogicalTimeInterval>& logicalTimeInterval, PyObject* o, const std::wstring& implementationName)
 {
   if (implementationName == L"HLAfloat64Time") {
     double value;
@@ -397,7 +397,7 @@ PyObject_GetLogicalTimeInterval(std::auto_ptr<rti1516::LogicalTimeInterval>& log
 }
 
 static bool
-PyObject_GetLogicalTimeInterval(std::auto_ptr<rti1516::LogicalTimeInterval>& logicalTimeInterval, const std::wstring& implementationName)
+PyObject_GetLogicalTimeInterval(RTI_UNIQUE_PTR<rti1516::LogicalTimeInterval>& logicalTimeInterval, const std::wstring& implementationName)
 {
   if (implementationName == L"HLAfloat64Time") {
     logicalTimeInterval.reset(new HLAfloat64Interval(0));
@@ -2731,7 +2731,7 @@ struct PyRTI1516FederateAmbassador : public rti1516::FederateAmbassador {
 
 struct PyRTIambassadorObject {
   PyObject_HEAD
-  std::auto_ptr<rti1516::RTIambassador> ob_value;
+  RTI_UNIQUE_PTR<rti1516::RTIambassador> ob_value;
   PyRTI1516FederateAmbassador _federateAmbassador;
   std::wstring _logicaltimeFactoryName;
 };
@@ -2739,11 +2739,11 @@ struct PyRTIambassadorObject {
 static std::wstring
 validateLogicalTimeFactory(const std::wstring& implementationName)
 {
-  std::auto_ptr<rti1516::LogicalTimeFactory> logicalTimeFactory(rti1516::LogicalTimeFactoryFactory::makeLogicalTimeFactory(implementationName));
+  RTI_UNIQUE_PTR<rti1516::LogicalTimeFactory> logicalTimeFactory(rti1516::LogicalTimeFactoryFactory::makeLogicalTimeFactory(implementationName));
   if (!logicalTimeFactory.get())
     return std::wstring();
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime(logicalTimeFactory->makeLogicalTime());
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime(logicalTimeFactory->makeLogicalTime());
   if (!logicalTime.get())
     return std::wstring();
 
@@ -3030,7 +3030,7 @@ PyRTIambassador_requestFederationSave(PyRTIambassadorObject *self, PyObject *arg
     return 0;
   }
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime;
   if (arg2 && !PyObject_GetLogicalTime(logicalTime, arg2, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Second argument needs to be a LogicalTime!");
     return 0;
@@ -3624,7 +3624,7 @@ PyRTIambassador_updateAttributeValues(PyRTIambassadorObject *self, PyObject *arg
     return 0;
   }
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime;
   if (arg4 && !PyObject_GetLogicalTime(logicalTime, arg4, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Fourth argument needs to be a LogicalTime!");
     return 0;
@@ -3679,7 +3679,7 @@ PyRTIambassador_sendInteraction(PyRTIambassadorObject *self, PyObject *args)
     return 0;
   }
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime;
   if (arg4 && !PyObject_GetLogicalTime(logicalTime, arg4, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Fourth argument needs to be a LogicalTime!");
     return 0;
@@ -3728,7 +3728,7 @@ PyRTIambassador_deleteObjectInstance(PyRTIambassadorObject *self, PyObject *args
     return 0;
   }
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime;
   if (arg3 && !PyObject_GetLogicalTime(logicalTime, arg3, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Third argument needs to be a LogicalTime!");
     return 0;
@@ -4296,7 +4296,7 @@ PyRTIambassador_enableTimeRegulation(PyRTIambassadorObject *self, PyObject *args
   if (!PyArg_UnpackTuple(args, "enableTimeRegulation", 1, 1, &arg1))
     return 0;
 
-  std::auto_ptr<rti1516::LogicalTimeInterval> logicalTimeInterval;
+  RTI_UNIQUE_PTR<rti1516::LogicalTimeInterval> logicalTimeInterval;
   if (!PyObject_GetLogicalTimeInterval(logicalTimeInterval, arg1, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Argument needs to be a LogicalTimeInterval!");
     return 0;
@@ -4388,7 +4388,7 @@ PyRTIambassador_timeAdvanceRequest(PyRTIambassadorObject *self, PyObject *args)
   if (!PyArg_UnpackTuple(args, "timeAdvanceRequest", 1, 1, &arg1))
     return 0;
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime;
   if (!PyObject_GetLogicalTime(logicalTime, arg1, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Argument needs to be a LogicalTime!");
     return 0;
@@ -4419,7 +4419,7 @@ PyRTIambassador_timeAdvanceRequestAvailable(PyRTIambassadorObject *self, PyObjec
   if (!PyArg_UnpackTuple(args, "timeAdvanceRequestAvailable", 1, 1, &arg1))
     return 0;
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime;
   if (!PyObject_GetLogicalTime(logicalTime, arg1, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Argument needs to be a LogicalTime!");
     return 0;
@@ -4450,7 +4450,7 @@ PyRTIambassador_nextMessageRequest(PyRTIambassadorObject *self, PyObject *args)
   if (!PyArg_UnpackTuple(args, "nextMessageRequest", 1, 1, &arg1))
     return 0;
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime;
   if (!PyObject_GetLogicalTime(logicalTime, arg1, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Argument needs to be a LogicalTime!");
     return 0;
@@ -4481,7 +4481,7 @@ PyRTIambassador_nextMessageRequestAvailable(PyRTIambassadorObject *self, PyObjec
   if (!PyArg_UnpackTuple(args, "nextMessageRequestAvailable", 1, 1, &arg1))
     return 0;
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime;
   if (!PyObject_GetLogicalTime(logicalTime, arg1, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Argument needs to be a LogicalTime!");
     return 0;
@@ -4512,7 +4512,7 @@ PyRTIambassador_flushQueueRequest(PyRTIambassadorObject *self, PyObject *args)
   if (!PyArg_UnpackTuple(args, "flushQueueRequest", 1, 1, &arg1))
     return 0;
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime;
   if (!PyObject_GetLogicalTime(logicalTime, arg1, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Argument needs to be a LogicalTime!");
     return 0;
@@ -4582,7 +4582,7 @@ PyRTIambassador_queryGALT(PyRTIambassadorObject *self, PyObject *args)
   if (!PyArg_UnpackTuple(args, "queryGALT", 0, 0))
     return 0;
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime;
   if (!PyObject_GetLogicalTime(logicalTime, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Cannot get LogicalTime for given factory!");
     return 0;
@@ -4608,7 +4608,7 @@ PyRTIambassador_queryLogicalTime(PyRTIambassadorObject *self, PyObject *args)
   if (!PyArg_UnpackTuple(args, "queryLogicalTime", 0, 0))
     return 0;
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime;
   if (!PyObject_GetLogicalTime(logicalTime, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Cannot get LogicalTime for given factory!");
     return 0;
@@ -4632,7 +4632,7 @@ PyRTIambassador_queryLITS(PyRTIambassadorObject *self, PyObject *args)
   if (!PyArg_UnpackTuple(args, "queryLITS", 0, 0))
     return 0;
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime;
   if (!PyObject_GetLogicalTime(logicalTime, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Cannot get LogicalTime for given factory!");
     return 0;
@@ -4659,7 +4659,7 @@ PyRTIambassador_modifyLookahead(PyRTIambassadorObject *self, PyObject *args)
   if (!PyArg_UnpackTuple(args, "modifyLookahead", 1, 1, &arg1))
     return 0;
 
-  std::auto_ptr<rti1516::LogicalTimeInterval> logicalTimeInterval;
+  RTI_UNIQUE_PTR<rti1516::LogicalTimeInterval> logicalTimeInterval;
   if (!PyObject_GetLogicalTimeInterval(logicalTimeInterval, arg1, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Argument needs to be a LogicalTimeInterval!");
     return 0;
@@ -4687,7 +4687,7 @@ PyRTIambassador_queryLookahead(PyRTIambassadorObject *self, PyObject *args)
   if (!PyArg_UnpackTuple(args, "queryLookahead", 0, 0))
     return 0;
 
-  std::auto_ptr<rti1516::LogicalTimeInterval> logicalTimeInterval;
+  RTI_UNIQUE_PTR<rti1516::LogicalTimeInterval> logicalTimeInterval;
   if (!PyObject_GetLogicalTimeInterval(logicalTimeInterval, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Cannot get LogicalTimeInterval for given factory!");
     return 0;
@@ -5214,7 +5214,7 @@ PyRTIambassador_sendInteractionWithRegions(PyRTIambassadorObject *self, PyObject
     return 0;
   }
 
-  std::auto_ptr<rti1516::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime;
   if (arg5 && !PyObject_GetLogicalTime(logicalTime, arg5, self->_logicaltimeFactoryName)) {
     PyErr_SetString(PyExc_TypeError, "Fifth argument needs to be a LogicalTime!");
     return 0;
@@ -6506,7 +6506,7 @@ PyObject_NewRTIambassador(PyTypeObject *type, PyObject *args, PyObject *kwds)
     stringArgs.push_back(string);
   }
 
-  std::auto_ptr<rti1516::RTIambassador> ambassador;
+  RTI_UNIQUE_PTR<rti1516::RTIambassador> ambassador;
   ambassador = rti1516::RTIambassadorFactory().createRTIambassador(stringArgs);
   if (!ambassador.get()) {
     PyErr_SetObject(PyRTI1516RTIinternalError.get(), PyUnicode_FromString("Cannot create RTIambassador!"));
@@ -6517,7 +6517,7 @@ PyObject_NewRTIambassador(PyTypeObject *type, PyObject *args, PyObject *kwds)
   if (!self)
     return 0;
   new (self) PyRTIambassadorObject;
-  self->ob_value = ambassador;
+  self->ob_value.reset(ambassador.release());
 
   PyObject_GC_Track(self);
 

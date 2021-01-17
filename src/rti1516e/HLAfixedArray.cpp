@@ -156,10 +156,10 @@ HLAfixedArray::~HLAfixedArray()
   _impl = 0;
 }
 
-std::auto_ptr<DataElement>
+RTI_UNIQUE_PTR<DataElement>
 HLAfixedArray::clone () const
 {
-  return std::auto_ptr<rti1516e::DataElement>(new HLAfixedArray(*this));
+  return RTI_UNIQUE_PTR<rti1516e::DataElement>(new HLAfixedArray(*this));
 }
 
 VariableLengthData

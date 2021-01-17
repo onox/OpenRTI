@@ -27,7 +27,7 @@
 int
 main(int argc, char* argv[])
 {
-  std::auto_ptr<rti1516::RTIambassador> ambassador;
+  RTI_UNIQUE_PTR<rti1516::RTIambassador> ambassador;
   rti1516::RTIambassadorFactory factory;
   std::vector<std::wstring> args;
   ambassador = factory.createRTIambassador(args);

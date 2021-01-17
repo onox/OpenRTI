@@ -179,19 +179,19 @@ DataType::createDataElement(OpenRTI::Rand& rand) const
 
   case HLAfixedArray:
     {
-      std::auto_ptr<rti1516e::DataElement> dataElement(dataTypes[0]->createDataElement(rand));
+      RTI_UNIQUE_PTR<rti1516e::DataElement> dataElement(dataTypes[0]->createDataElement(rand));
       return new rti1516e::HLAfixedArray(*dataElement, count);
     }
   case HLAvariableArray:
     {
-      std::auto_ptr<rti1516e::DataElement> dataElement(dataTypes[0]->createDataElement(rand));
+      RTI_UNIQUE_PTR<rti1516e::DataElement> dataElement(dataTypes[0]->createDataElement(rand));
       return new rti1516e::HLAvariableArray(*dataElement);
     }
   case HLAfixedRecord:
     {
       rti1516e::HLAfixedRecord* fixedRecord = new rti1516e::HLAfixedRecord;
       for (std::size_t i = 0; i < count; ++i) {
-        std::auto_ptr<rti1516e::DataElement> dataElement(dataTypes[i]->createDataElement(rand));
+        RTI_UNIQUE_PTR<rti1516e::DataElement> dataElement(dataTypes[i]->createDataElement(rand));
         fixedRecord->appendElement(*dataElement);
       }
       return fixedRecord;
@@ -388,7 +388,7 @@ bool testDataElementEncoding(const DataType& dataType)
 {
   OpenRTI::Rand rand;
   for (unsigned i = 0; i < 100; ++i) {
-    std::auto_ptr<rti1516e::DataElement> dataElement(dataType.createDataElement(rand));
+    RTI_UNIQUE_PTR<rti1516e::DataElement> dataElement(dataType.createDataElement(rand));
     if (!dataElement.get()) {
       std::cerr << "Failed to create a rti1516e::DataElement to test with!" << std::endl;
       return false;
@@ -411,7 +411,7 @@ bool testDataElementEncoding(const DataType& dataType)
       return false;
     }
 
-    std::auto_ptr<rti1516e::DataElement> dataElement2(dataType.createDataElement(rand));
+    RTI_UNIQUE_PTR<rti1516e::DataElement> dataElement2(dataType.createDataElement(rand));
     try {
       dataElement2->decode(variableLengthData);
     } catch (...) {
@@ -445,7 +445,7 @@ bool testDataElementEncoding(const DataType& dataType)
       return false;
     }
 
-    std::auto_ptr<rti1516e::DataElement> dataElement3(dataType.createDataElement(rand));
+    RTI_UNIQUE_PTR<rti1516e::DataElement> dataElement3(dataType.createDataElement(rand));
     try {
       dataElement3->decodeFrom(octetData, 0);
     } catch (...) {

@@ -33,7 +33,7 @@ namespace rti1516e
       virtual ~DataElement () = 0;
 
       // Return a new copy of the DataElement
-      virtual std::auto_ptr<DataElement> clone () const = 0;
+      virtual RTI_UNIQUE_PTR<DataElement> clone () const = 0;
 
       // Encode this element into a new VariableLengthData
       virtual VariableLengthData encode () const

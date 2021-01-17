@@ -38,12 +38,12 @@ RTIambassadorFactory::~RTIambassadorFactory()
 {
 }
     
-std::auto_ptr<RTIambassador>
+RTI_UNIQUE_PTR<RTIambassador>
 RTIambassadorFactory::createRTIambassador(std::vector<std::wstring>& args)
   RTI_THROW ((BadInitializationParameter,
          RTIinternalError))
 {
-  return std::auto_ptr<RTIambassador>(new OpenRTI::RTIambassadorImplementation(args));
+  return RTI_UNIQUE_PTR<RTIambassador>(new OpenRTI::RTIambassadorImplementation(args));
 }
 
 }

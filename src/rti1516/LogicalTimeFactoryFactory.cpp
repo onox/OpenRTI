@@ -31,21 +31,21 @@
 
 namespace rti1516 {
 
-std::auto_ptr<LogicalTimeFactory>
+RTI_UNIQUE_PTR<LogicalTimeFactory>
 LogicalTimeFactoryFactory::makeLogicalTimeFactory(const std::wstring& implementationName)
 {
   if (implementationName.empty())
-    return std::auto_ptr<LogicalTimeFactory>(new HLAfloat64TimeFactory);
+    return RTI_UNIQUE_PTR<LogicalTimeFactory>(new HLAfloat64TimeFactory);
   else if (implementationName == L"HLAfloat64Time")
-    return std::auto_ptr<LogicalTimeFactory>(new HLAfloat64TimeFactory);
+    return RTI_UNIQUE_PTR<LogicalTimeFactory>(new HLAfloat64TimeFactory);
   else if (implementationName == L"HLAinteger64Time")
-    return std::auto_ptr<LogicalTimeFactory>(new HLAinteger64TimeFactory);
+    return RTI_UNIQUE_PTR<LogicalTimeFactory>(new HLAinteger64TimeFactory);
   else if (implementationName == L"certiFedTime1516")
-    return std::auto_ptr<LogicalTimeFactory>(new RTI1516fedTimeFactory);
+    return RTI_UNIQUE_PTR<LogicalTimeFactory>(new RTI1516fedTimeFactory);
   else if (implementationName == L"CERTI")
-    return std::auto_ptr<LogicalTimeFactory>(new RTI1516fedTimeFactory);
+    return RTI_UNIQUE_PTR<LogicalTimeFactory>(new RTI1516fedTimeFactory);
   else
-    return std::auto_ptr<LogicalTimeFactory>(0);
+    return RTI_UNIQUE_PTR<LogicalTimeFactory>();
 }
 
 }

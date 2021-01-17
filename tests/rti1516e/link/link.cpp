@@ -26,7 +26,7 @@
 int
 main(int argc, char* argv[])
 {
-  std::auto_ptr<rti1516e::RTIambassador> ambassador;
+  RTI_UNIQUE_PTR<rti1516e::RTIambassador> ambassador;
   rti1516e::RTIambassadorFactory factory;
   ambassador = factory.createRTIambassador();
   return EXIT_SUCCESS;

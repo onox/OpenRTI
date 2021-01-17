@@ -1402,7 +1402,7 @@ public:
   virtual TimeManagement<RTI1516Traits>* createTimeManagement(Federate& federate)
   {
     std::string logicalTimeFactoryName = federate.getLogicalTimeFactoryName();
-    std::auto_ptr<rti1516::LogicalTimeFactory> logicalTimeFactory;
+    RTI_UNIQUE_PTR<rti1516::LogicalTimeFactory> logicalTimeFactory;
     logicalTimeFactory = rti1516::LogicalTimeFactoryFactory::makeLogicalTimeFactory(utf8ToUcs(logicalTimeFactoryName));
     if (!logicalTimeFactory.get())
       return 0;
@@ -1413,8 +1413,8 @@ public:
     // Also add a flag that forces the to use the opaque factory
 
     if (!_forceOpaqueLogicalTime) {
-      std::auto_ptr<rti1516::LogicalTime> logicalTime = logicalTimeFactory->makeLogicalTime();
-      std::auto_ptr<rti1516::LogicalTimeInterval> logicalTimeInterval = logicalTimeFactory->makeLogicalTimeInterval();
+      RTI_UNIQUE_PTR<rti1516::LogicalTime> logicalTime = logicalTimeFactory->makeLogicalTime();
+      RTI_UNIQUE_PTR<rti1516::LogicalTimeInterval> logicalTimeInterval = logicalTimeFactory->makeLogicalTimeInterval();
       try {
         HLAinteger64Time time;
         HLAinteger64Interval interval;
@@ -1449,7 +1449,7 @@ public:
     }
 
     // Ok, we will just need to use the opaque logical time factory
-    return new TemplateTimeManagement<RTI1516Traits, RTI1516LogicalTimeFactory>(RTI1516LogicalTimeFactory(logicalTimeFactory));
+    return new TemplateTimeManagement<RTI1516Traits, RTI1516LogicalTimeFactory>(RTI1516LogicalTimeFactory(OpenRTI_MOVE(logicalTimeFactory)));
   }
 
   void ensureConnected(const URL& url)

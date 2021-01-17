@@ -198,7 +198,7 @@ public:
 
   virtual bool execJoinOnce()
   {
-    std::auto_ptr<RTI::RTIambassador> ambassador;
+    RTI_UNIQUE_PTR<RTI::RTIambassador> ambassador;
     ambassador.reset(new RTI::RTIambassador);
 
     // create, must work once
@@ -289,7 +289,7 @@ public:
 
   virtual bool execJoinMultiple()
   {
-    std::auto_ptr<RTI::RTIambassador> ambassador;
+    RTI_UNIQUE_PTR<RTI::RTIambassador> ambassador;
     ambassador.reset(new RTI::RTIambassador);
 
     // Try that several times. Ensure correct cleanup
@@ -1609,13 +1609,13 @@ private:
 
   // bool _fail;
 
-  std::auto_ptr<RTI::RTIambassador> _ambassador;
+  RTI_UNIQUE_PTR<RTI::RTIambassador> _ambassador;
 
   bool _useDataUrlObjectModels;
 
   RTI::FederateHandle _federateHandle;
 
-  std::auto_ptr<RTI::FedTime> _grantedFedTime;
+  RTI_UNIQUE_PTR<RTI::FedTime> _grantedFedTime;
   bool _timeRegulationEnabled;
   bool _timeConstrainedEnabled;
   bool _timeAdvancePending;

@@ -65,14 +65,14 @@ main(int argc, char* argv[])
     }
   }
 
-  std::auto_ptr<rti1516e::LogicalTimeFactory> factory;
+  RTI_UNIQUE_PTR<rti1516e::LogicalTimeFactory> factory;
   factory = rti1516e::LogicalTimeFactoryFactory::makeLogicalTimeFactory(OpenRTI::localeToUcs(implementationName));
   if (!factory.get()) {
     std::cerr << "Can not create logical time factory: \"" << implementationName << "\"!" << std::endl;
     return EXIT_FAILURE;
   }
 
-  std::auto_ptr<rti1516e::LogicalTimeInterval> logicalTimeInterval = factory->makeZero();
+  RTI_UNIQUE_PTR<rti1516e::LogicalTimeInterval> logicalTimeInterval = factory->makeZero();
   if (!logicalTimeInterval.get()) {
     std::cerr << "Can not create logical time interval: \"" << implementationName << "\"!" << std::endl;
     return EXIT_FAILURE;
@@ -96,7 +96,7 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  std::auto_ptr<rti1516e::LogicalTime> logicalTime = factory->makeInitial();
+  RTI_UNIQUE_PTR<rti1516e::LogicalTime> logicalTime = factory->makeInitial();
   if (!logicalTime.get()) {
     std::cerr << "Can not create logical time: \"" << implementationName << "\"" << std::endl;
     return EXIT_FAILURE;
@@ -120,13 +120,13 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  std::auto_ptr<rti1516e::LogicalTime> initialTime = factory->makeInitial();
+  RTI_UNIQUE_PTR<rti1516e::LogicalTime> initialTime = factory->makeInitial();
   if (!initialTime.get()) {
     std::cerr << "Can not create logical time: \"" << implementationName << "\"!" << std::endl;
     return EXIT_FAILURE;
   }
 
-  std::auto_ptr<rti1516e::LogicalTime> finalTime = factory->makeFinal();
+  RTI_UNIQUE_PTR<rti1516e::LogicalTime> finalTime = factory->makeFinal();
   if (!finalTime.get()) {
     std::cerr << "Can not create logical time: \"" << implementationName << "\"!" << std::endl;
     return EXIT_FAILURE;
@@ -153,12 +153,12 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  std::auto_ptr<rti1516e::LogicalTime> logicalTime2 = factory->makeInitial();
+  RTI_UNIQUE_PTR<rti1516e::LogicalTime> logicalTime2 = factory->makeInitial();
   if (!logicalTime2.get()) {
     std::cerr << "Can not create logical time: \"" << implementationName << "\"!" << std::endl;
     return EXIT_FAILURE;
   }
-  std::auto_ptr<rti1516e::LogicalTimeInterval> logicalTimeInterval2 = factory->makeZero();
+  RTI_UNIQUE_PTR<rti1516e::LogicalTimeInterval> logicalTimeInterval2 = factory->makeZero();
   if (!logicalTimeInterval2.get()) {
     std::cerr << "Can not create logical time interval: \"" << implementationName << "\"!" << std::endl;
     return EXIT_FAILURE;

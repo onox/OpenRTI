@@ -224,7 +224,7 @@ public:
 
   virtual bool execJoinOnce()
   {
-    std::auto_ptr<rti1516::RTIambassador> ambassador;
+    RTI_UNIQUE_PTR<rti1516::RTIambassador> ambassador;
     rti1516::RTIambassadorFactory factory;
     std::vector<std::wstring> args = getArgumentList();
     ambassador = factory.createRTIambassador(args);
@@ -315,7 +315,7 @@ public:
 
   virtual bool execJoinMultiple()
   {
-    std::auto_ptr<rti1516::RTIambassador> ambassador;
+    RTI_UNIQUE_PTR<rti1516::RTIambassador> ambassador;
     rti1516::RTIambassadorFactory factory;
     std::vector<std::wstring> args = getArgumentList();
     ambassador = factory.createRTIambassador(args);
@@ -2169,16 +2169,16 @@ private:
 
   // bool _fail;
 
-  std::auto_ptr<rti1516::RTIambassador> _ambassador;
+  RTI_UNIQUE_PTR<rti1516::RTIambassador> _ambassador;
 
   bool _useDataUrlObjectModels;
 
   std::wstring _logicalTimeImplementationName;
-  std::auto_ptr<rti1516::LogicalTimeFactory> _logicalTimeFactory;
+  RTI_UNIQUE_PTR<rti1516::LogicalTimeFactory> _logicalTimeFactory;
 
   rti1516::FederateHandle _federateHandle;
 
-  std::auto_ptr<rti1516::LogicalTime> _grantedLogicalTime;
+  RTI_UNIQUE_PTR<rti1516::LogicalTime> _grantedLogicalTime;
   bool _timeRegulationEnabled;
   bool _timeConstrainedEnabled;
   bool _timeAdvancePending;

@@ -1766,7 +1766,7 @@ namespace rti1516e
       // API-specific services
 
       // Return instance of time factory being used by the federation
-      virtual std::auto_ptr<LogicalTimeFactory> getTimeFactory () const
+      virtual RTI_UNIQUE_PTR<LogicalTimeFactory> getTimeFactory () const
          RTI_THROW ((
             FederateNotExecutionMember,
             NotConnected,

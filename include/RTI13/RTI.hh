@@ -5,7 +5,7 @@
 
 #if defined(_WIN32)
 // Since the standard intrinsically relies on std::auto_ptr
-# if !defined(_HAS_AUTO_PTR_ETC)
+# if __cplusplus < 201703L && !defined(_HAS_AUTO_PTR_ETC)
 #  define _HAS_AUTO_PTR_ETC 1
 # endif
 # pragma warning(disable: 4290)
@@ -24,7 +24,7 @@
 #  define FEDTIME_EXPORT __declspec(dllimport)
 # endif
 #else
-# if defined(__GNUC__) && (4 <= __GNUC__)
+# if __cplusplus < 201703L && defined(__GNUC__) && (4 <= __GNUC__)
 #  pragma GCC diagnostic ignored "-Wdeprecated"
 #  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 # endif
@@ -35,12 +35,15 @@
 #if __cplusplus < 201703L
 #define RTI_NOEXCEPT throw()
 #define RTI_THROW(e) throw e
+#define RTI_UNIQUE_PTR std::auto_ptr
 #else
 #define RTI_NOEXCEPT noexcept
 #define RTI_THROW(e)
+#define RTI_UNIQUE_PTR std::unique_ptr
 #endif
 
 #include <iosfwd>
+#include <memory>
 
 class RTIambPrivateRefs;
 struct RTIambPrivateData;

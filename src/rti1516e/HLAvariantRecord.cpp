@@ -122,8 +122,8 @@ public:
     return *_variant;
   }
 
-  std::auto_ptr<DataElement> _discriminant;
-  std::auto_ptr<DataElement> _variant;
+  RTI_UNIQUE_PTR<DataElement> _discriminant;
+  RTI_UNIQUE_PTR<DataElement> _variant;
   unsigned _octetBoundary;
 };
 
@@ -147,10 +147,10 @@ HLAvariantRecord::~HLAvariantRecord()
   _impl = 0;
 }
 
-std::auto_ptr<DataElement>
+RTI_UNIQUE_PTR<DataElement>
 HLAvariantRecord::clone () const
 {
-  return std::auto_ptr<rti1516e::DataElement>(new HLAvariantRecord(*this));
+  return RTI_UNIQUE_PTR<rti1516e::DataElement>(new HLAvariantRecord(*this));
 }
 
 VariableLengthData

@@ -107,7 +107,7 @@ public:
     return (*_fedTime <= *implementation._fedTime) == RTI::RTI_TRUE;
   }
 
-  std::auto_ptr<RTI::FedTime> _fedTime;
+  RTI_UNIQUE_PTR<RTI::FedTime> _fedTime;
 };
 
 
@@ -361,7 +361,7 @@ RTI13LogicalTimeFactory::nextAfter(const RTI13LogicalTimeFactory::LogicalTime& l
 {
   FedTimeImplementation* implementation = new FedTimeImplementation;
   (*implementation->_fedTime) = *logicalTime._implementation->_fedTime;
-  std::auto_ptr<RTI::FedTime> epsilonTime(RTI::FedTimeFactory::makeZero());
+  RTI_UNIQUE_PTR<RTI::FedTime> epsilonTime(RTI::FedTimeFactory::makeZero());
   epsilonTime->setEpsilon();
   (*implementation->_fedTime) += *epsilonTime;
   return LogicalTime(implementation);
@@ -386,7 +386,7 @@ RTI13LogicalTimeFactory::getLogicalTimeInterval(const RTI::FedTime& fedTime)
 bool
 RTI13LogicalTimeFactory::isZeroTimeInterval(const RTI::FedTime& fedTime)
 {
-  std::auto_ptr<RTI::FedTime> logicalTime(RTI::FedTimeFactory::makeZero());
+  RTI_UNIQUE_PTR<RTI::FedTime> logicalTime(RTI::FedTimeFactory::makeZero());
   *logicalTime = fedTime;
   return logicalTime->isZero() == RTI::RTI_TRUE;
 }
@@ -429,7 +429,7 @@ RTI13LogicalTimeFactory::encodeLogicalTime(const RTI::FedTime& fedTime)
 std::string
 RTI13LogicalTimeFactory::toString(const RTI::FedTime& fedTime)
 {
-  std::auto_ptr<RTI::FedTime> logicalTime(RTI::FedTimeFactory::makeZero());
+  RTI_UNIQUE_PTR<RTI::FedTime> logicalTime(RTI::FedTimeFactory::makeZero());
   *logicalTime = fedTime;
   std::vector<char> data(logicalTime->getPrintableLength(), 0);
   logicalTime->getPrintableString(&data.front());

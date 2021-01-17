@@ -37,16 +37,16 @@ HLAfloat64TimeFactory::~HLAfloat64TimeFactory()
 {
 }
 
-std::auto_ptr<rti1516::LogicalTime>
+RTI_UNIQUE_PTR<rti1516::LogicalTime>
 HLAfloat64TimeFactory::makeLogicalTime()
   RTI_THROW ((rti1516::InternalError))
 {
-  return std::auto_ptr<rti1516::LogicalTime>(new HLAfloat64Time);
+  return RTI_UNIQUE_PTR<rti1516::LogicalTime>(new HLAfloat64Time);
 }
 
-std::auto_ptr<rti1516::LogicalTimeInterval>
+RTI_UNIQUE_PTR<rti1516::LogicalTimeInterval>
 HLAfloat64TimeFactory::makeLogicalTimeInterval()
   RTI_THROW ((rti1516::InternalError))
 {
-  return std::auto_ptr<rti1516::LogicalTimeInterval>(new HLAfloat64Interval);
+  return RTI_UNIQUE_PTR<rti1516::LogicalTimeInterval>(new HLAfloat64Interval);
 }

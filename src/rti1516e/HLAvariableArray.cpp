@@ -199,10 +199,10 @@ HLAvariableArray::~HLAvariableArray()
   _impl = 0;
 }
 
-std::auto_ptr<DataElement>
+RTI_UNIQUE_PTR<DataElement>
 HLAvariableArray::clone () const
 {
-  return std::auto_ptr<rti1516e::DataElement>(new HLAvariableArray(*this));
+  return RTI_UNIQUE_PTR<rti1516e::DataElement>(new HLAvariableArray(*this));
 }
 
 VariableLengthData

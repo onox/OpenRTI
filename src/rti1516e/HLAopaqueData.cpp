@@ -131,10 +131,10 @@ HLAopaqueData::~HLAopaqueData()
   _impl = 0;
 }
 
-std::auto_ptr<DataElement>
+RTI_UNIQUE_PTR<DataElement>
 HLAopaqueData::clone () const
 {
-  return std::auto_ptr<rti1516e::DataElement>(new HLAopaqueData(*this));
+  return RTI_UNIQUE_PTR<rti1516e::DataElement>(new HLAopaqueData(*this));
 }
 
 VariableLengthData

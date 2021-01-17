@@ -35,85 +35,85 @@ HLAinteger64TimeFactory::~HLAinteger64TimeFactory()
 {
 }
 
-std::auto_ptr<HLAinteger64Time>
+RTI_UNIQUE_PTR<HLAinteger64Time>
 HLAinteger64TimeFactory::makeLogicalTime(Integer64 value)
   RTI_THROW ((InternalError))
 {
-  return std::auto_ptr<HLAinteger64Time>(new HLAinteger64Time(value));
+  return RTI_UNIQUE_PTR<HLAinteger64Time>(new HLAinteger64Time(value));
 }
 
-std::auto_ptr<LogicalTime>
+RTI_UNIQUE_PTR<LogicalTime>
 HLAinteger64TimeFactory::makeInitial()
   RTI_THROW ((InternalError))
 {
-  return std::auto_ptr<LogicalTime>(new HLAinteger64Time);
+  return RTI_UNIQUE_PTR<LogicalTime>(new HLAinteger64Time);
 }
 
-std::auto_ptr<LogicalTime> HLAinteger64TimeFactory::makeFinal()
+RTI_UNIQUE_PTR<LogicalTime> HLAinteger64TimeFactory::makeFinal()
   RTI_THROW ((InternalError))
 {
-  std::auto_ptr<HLAinteger64Time> integerTime(new HLAinteger64Time);
+  RTI_UNIQUE_PTR<HLAinteger64Time> integerTime(new HLAinteger64Time);
   integerTime->setFinal();
-  return std::auto_ptr<LogicalTime>(integerTime.release());
+  return RTI_UNIQUE_PTR<LogicalTime>(integerTime.release());
 }
 
-std::auto_ptr<HLAinteger64Interval>
+RTI_UNIQUE_PTR<HLAinteger64Interval>
 HLAinteger64TimeFactory::makeLogicalTimeInterval(Integer64 value)
   RTI_THROW ((InternalError))
 {
-  return std::auto_ptr<HLAinteger64Interval>(new HLAinteger64Interval(value));
+  return RTI_UNIQUE_PTR<HLAinteger64Interval>(new HLAinteger64Interval(value));
 }
 
-std::auto_ptr<LogicalTimeInterval>
+RTI_UNIQUE_PTR<LogicalTimeInterval>
 HLAinteger64TimeFactory::makeZero()
   RTI_THROW ((InternalError))
 {
-  return std::auto_ptr<LogicalTimeInterval>(new HLAinteger64Interval);
+  return RTI_UNIQUE_PTR<LogicalTimeInterval>(new HLAinteger64Interval);
 }
 
-std::auto_ptr<LogicalTimeInterval>
+RTI_UNIQUE_PTR<LogicalTimeInterval>
 HLAinteger64TimeFactory::makeEpsilon()
   RTI_THROW ((InternalError))
 {
-  std::auto_ptr<HLAinteger64Interval> integerInterval(new HLAinteger64Interval);
+  RTI_UNIQUE_PTR<HLAinteger64Interval> integerInterval(new HLAinteger64Interval);
   integerInterval->setEpsilon();
-  return std::auto_ptr<LogicalTimeInterval>(integerInterval.release());
+  return RTI_UNIQUE_PTR<LogicalTimeInterval>(integerInterval.release());
 }
 
-std::auto_ptr<LogicalTime>
+RTI_UNIQUE_PTR<LogicalTime>
 HLAinteger64TimeFactory::decodeLogicalTime(VariableLengthData const & encodedLogicalTime)
   RTI_THROW ((InternalError, CouldNotDecode))
 {
-  std::auto_ptr<HLAinteger64Time> integerTime(new HLAinteger64Time);
+  RTI_UNIQUE_PTR<HLAinteger64Time> integerTime(new HLAinteger64Time);
   integerTime->decode(encodedLogicalTime);
-  return std::auto_ptr<LogicalTime>(integerTime.release());
+  return RTI_UNIQUE_PTR<LogicalTime>(integerTime.release());
 }
 
-std::auto_ptr<LogicalTime>
+RTI_UNIQUE_PTR<LogicalTime>
 HLAinteger64TimeFactory::decodeLogicalTime(void* buffer, size_t bufferSize)
   RTI_THROW ((InternalError, CouldNotDecode))
 {
-  std::auto_ptr<HLAinteger64Time> integerTime(new HLAinteger64Time);
+  RTI_UNIQUE_PTR<HLAinteger64Time> integerTime(new HLAinteger64Time);
   integerTime->decode(buffer, bufferSize);
-  return std::auto_ptr<LogicalTime>(integerTime.release());
+  return RTI_UNIQUE_PTR<LogicalTime>(integerTime.release());
 }
 
-std::auto_ptr<LogicalTimeInterval>
+RTI_UNIQUE_PTR<LogicalTimeInterval>
 HLAinteger64TimeFactory::decodeLogicalTimeInterval(VariableLengthData const & encodedValue)
   RTI_THROW ((InternalError, CouldNotDecode))
 {
-  std::auto_ptr<HLAinteger64Interval> integerInterval(new HLAinteger64Interval);
+  RTI_UNIQUE_PTR<HLAinteger64Interval> integerInterval(new HLAinteger64Interval);
   integerInterval->decode(encodedValue);
-  return std::auto_ptr<LogicalTimeInterval>(integerInterval.release());
+  return RTI_UNIQUE_PTR<LogicalTimeInterval>(integerInterval.release());
 }
 
-std::auto_ptr<LogicalTimeInterval>
+RTI_UNIQUE_PTR<LogicalTimeInterval>
 HLAinteger64TimeFactory::decodeLogicalTimeInterval(void* buffer, size_t bufferSize)
   RTI_THROW ((InternalError, CouldNotDecode))
 {
-  std::auto_ptr<HLAinteger64Interval> integerInterval(new HLAinteger64Interval);
+  RTI_UNIQUE_PTR<HLAinteger64Interval> integerInterval(new HLAinteger64Interval);
   integerInterval->decode(buffer, bufferSize);
-  return std::auto_ptr<LogicalTimeInterval>(integerInterval.release());
+  return RTI_UNIQUE_PTR<LogicalTimeInterval>(integerInterval.release());
 }
 
 std::wstring

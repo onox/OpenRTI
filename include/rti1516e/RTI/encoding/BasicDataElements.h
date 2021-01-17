@@ -69,7 +69,7 @@ public:                                                                       \
                                                                               \
    /* Return a new copy of the DataElement                                 */ \
    /* Copy uses internal memory.                                           */ \
-   virtual std::auto_ptr<DataElement> clone () const;                         \
+   virtual RTI_UNIQUE_PTR<DataElement> clone () const;                        \
                                                                               \
    /* Encode this element into a new VariableLengthData                    */ \
    virtual VariableLengthData encode () const                                 \
@@ -171,4 +171,3 @@ namespace rti1516e
 }
 
 #endif // RTI_BasicDataElements_h_
-

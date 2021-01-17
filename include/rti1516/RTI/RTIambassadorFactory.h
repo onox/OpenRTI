@@ -29,7 +29,7 @@ namespace rti1516
       RTI_NOEXCEPT;
     
     // 10.35
-    std::auto_ptr< RTIambassador >
+    RTI_UNIQUE_PTR< RTIambassador >
     createRTIambassador(std::vector< std::wstring > & args)
       RTI_THROW ((BadInitializationParameter,
              RTIinternalError));

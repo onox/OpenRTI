@@ -1616,7 +1616,7 @@ public:
            rti1516e::RTIinternalError));
 
   // Return instance of time factory being used by the federation
-  virtual std::auto_ptr<rti1516e::LogicalTimeFactory> getTimeFactory() const
+  virtual RTI_UNIQUE_PTR<rti1516e::LogicalTimeFactory> getTimeFactory() const
     RTI_THROW ((rti1516e::FederateNotExecutionMember,
            rti1516e::NotConnected,
            rti1516e::RTIinternalError));

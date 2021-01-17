@@ -36,7 +36,7 @@ namespace rti1516e
          RTI_NOEXCEPT;
 
       // 10.35
-      std::auto_ptr< RTIambassador > createRTIambassador ()
+      RTI_UNIQUE_PTR< RTIambassador > createRTIambassador ()
          RTI_THROW ((
             RTIinternalError));
    };

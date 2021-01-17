@@ -72,13 +72,13 @@ main(int argc, char* argv[])
     }
   }
 
-  std::auto_ptr<RTI::FedTimeFactory> factory(new RTI::FedTimeFactory);
+  RTI_UNIQUE_PTR<RTI::FedTimeFactory> factory(new RTI::FedTimeFactory);
   if (!factory.get()) {
     std::cerr << "Can not create logical time factory: \"" << implementationName << "\"!" << std::endl;
     return EXIT_FAILURE;
   }
 
-  std::auto_ptr<RTI::FedTime> logicalTimeInterval(factory->makeZero());
+  RTI_UNIQUE_PTR<RTI::FedTime> logicalTimeInterval(factory->makeZero());
   if (!logicalTimeInterval.get()) {
     std::cerr << "Can not create logical time interval: \"" << implementationName << "\"!" << std::endl;
     return EXIT_FAILURE;
@@ -102,7 +102,7 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  std::auto_ptr<RTI::FedTime> logicalTime(factory->makeZero());
+  RTI_UNIQUE_PTR<RTI::FedTime> logicalTime(factory->makeZero());
   if (!logicalTime.get()) {
     std::cerr << "Can not create logical time: \"" << implementationName << "\"" << std::endl;
     return EXIT_FAILURE;
@@ -126,13 +126,13 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  std::auto_ptr<RTI::FedTime> initialTime(factory->makeZero());
+  RTI_UNIQUE_PTR<RTI::FedTime> initialTime(factory->makeZero());
   if (!initialTime.get()) {
     std::cerr << "Can not create logical time: \"" << implementationName << "\"!" << std::endl;
     return EXIT_FAILURE;
   }
 
-  std::auto_ptr<RTI::FedTime> finalTime(factory->makeZero());
+  RTI_UNIQUE_PTR<RTI::FedTime> finalTime(factory->makeZero());
   finalTime->setPositiveInfinity();
   if (!finalTime.get()) {
     std::cerr << "Can not create logical time: \"" << implementationName << "\"!" << std::endl;
@@ -160,12 +160,12 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  std::auto_ptr<RTI::FedTime> logicalTime2(factory->makeZero());
+  RTI_UNIQUE_PTR<RTI::FedTime> logicalTime2(factory->makeZero());
   if (!logicalTime2.get()) {
     std::cerr << "Can not create logical time: \"" << implementationName << "\"!" << std::endl;
     return EXIT_FAILURE;
   }
-  std::auto_ptr<RTI::FedTime> logicalTimeInterval2(factory->makeZero());
+  RTI_UNIQUE_PTR<RTI::FedTime> logicalTimeInterval2(factory->makeZero());
   if (!logicalTimeInterval2.get()) {
     std::cerr << "Can not create logical time interval: \"" << implementationName << "\"!" << std::endl;
     return EXIT_FAILURE;

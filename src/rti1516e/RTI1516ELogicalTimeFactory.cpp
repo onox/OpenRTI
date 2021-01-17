@@ -29,7 +29,7 @@ namespace OpenRTI {
 
 class OPENRTI_LOCAL RTI1516ELogicalTimeFactory::LogicalTimeFactoryImplementation : public Referenced {
 public:
-  LogicalTimeFactoryImplementation(std::auto_ptr<rti1516e::LogicalTimeFactory> logicalTimeFactory);
+  LogicalTimeFactoryImplementation(RTI_UNIQUE_PTR<rti1516e::LogicalTimeFactory> logicalTimeFactory);
   ~LogicalTimeFactoryImplementation();
 
   std::string getName() const;
@@ -38,16 +38,16 @@ public:
   LogicalTimeImplementation* decodeLogicalTime(const VariableLengthData& variableLengthData) const;
   LogicalTimeIntervalImplementation* zeroLogicalTimeInterval() const;
 
-  std::auto_ptr<rti1516e::LogicalTimeFactory> _logicalTimeFactory;
-  std::auto_ptr<rti1516e::LogicalTimeInterval> _zeroTimeInterval;
-  std::auto_ptr<rti1516e::LogicalTimeInterval> _epsilonTimeInterval;
+  RTI_UNIQUE_PTR<rti1516e::LogicalTimeFactory> _logicalTimeFactory;
+  RTI_UNIQUE_PTR<rti1516e::LogicalTimeInterval> _zeroTimeInterval;
+  RTI_UNIQUE_PTR<rti1516e::LogicalTimeInterval> _epsilonTimeInterval;
 };
 
 class OPENRTI_LOCAL RTI1516ELogicalTimeFactory::LogicalTimeIntervalImplementation : public Referenced {
 public:
-  LogicalTimeIntervalImplementation(std::auto_ptr<rti1516e::LogicalTimeInterval> logicalTimeInterval,
+  LogicalTimeIntervalImplementation(RTI_UNIQUE_PTR<rti1516e::LogicalTimeInterval> logicalTimeInterval,
                                     const LogicalTimeFactoryImplementation* logicalTimeFactory) :
-    _logicalTimeInterval(logicalTimeInterval),
+    _logicalTimeInterval(OpenRTI_MOVE(logicalTimeInterval)),
     _logicalTimeFactory(logicalTimeFactory)
   {
   }
@@ -100,15 +100,15 @@ public:
     return *_logicalTimeInterval <= *implementation._logicalTimeInterval;
   }
 
-  std::auto_ptr<rti1516e::LogicalTimeInterval> _logicalTimeInterval;
+  RTI_UNIQUE_PTR<rti1516e::LogicalTimeInterval> _logicalTimeInterval;
   SharedPtr<const LogicalTimeFactoryImplementation> _logicalTimeFactory;
 };
 
 class OPENRTI_LOCAL RTI1516ELogicalTimeFactory::LogicalTimeImplementation : public Referenced {
 public:
-  LogicalTimeImplementation(std::auto_ptr<rti1516e::LogicalTime> logicalTime,
+  LogicalTimeImplementation(RTI_UNIQUE_PTR<rti1516e::LogicalTime> logicalTime,
                             const LogicalTimeFactoryImplementation* logicalTimeFactory) :
-    _logicalTime(logicalTime),
+    _logicalTime(OpenRTI_MOVE(logicalTime)),
     _logicalTimeFactory(logicalTimeFactory)
   {
   }
@@ -194,7 +194,7 @@ public:
     return *_logicalTime <= *implementation._logicalTime;
   }
 
-  std::auto_ptr<rti1516e::LogicalTime> _logicalTime;
+  RTI_UNIQUE_PTR<rti1516e::LogicalTime> _logicalTime;
   SharedPtr<const LogicalTimeFactoryImplementation> _logicalTimeFactory;
 };
 
@@ -205,8 +205,8 @@ public:
 
 
 
-RTI1516ELogicalTimeFactory::LogicalTimeFactoryImplementation::LogicalTimeFactoryImplementation(std::auto_ptr<rti1516e::LogicalTimeFactory> factory) :
-  _logicalTimeFactory(factory)
+RTI1516ELogicalTimeFactory::LogicalTimeFactoryImplementation::LogicalTimeFactoryImplementation(RTI_UNIQUE_PTR<rti1516e::LogicalTimeFactory> factory) :
+  _logicalTimeFactory(OpenRTI_MOVE(factory))
 {
   _zeroTimeInterval = _logicalTimeFactory->makeZero();
   _epsilonTimeInterval = _logicalTimeFactory->makeEpsilon();
@@ -227,8 +227,8 @@ RTI1516ELogicalTimeFactory::LogicalTimeFactoryImplementation::initialLogicalTime
 {
   if (!_logicalTimeFactory.get())
     return 0;
-  std::auto_ptr<rti1516e::LogicalTime> logicalTime = _logicalTimeFactory->makeInitial();
-  return new LogicalTimeImplementation(logicalTime, this);
+  RTI_UNIQUE_PTR<rti1516e::LogicalTime> logicalTime = _logicalTimeFactory->makeInitial();
+  return new LogicalTimeImplementation(OpenRTI_MOVE(logicalTime), this);
 }
 
 RTI1516ELogicalTimeFactory::LogicalTimeImplementation*
@@ -236,8 +236,8 @@ RTI1516ELogicalTimeFactory::LogicalTimeFactoryImplementation::finalLogicalTime()
 {
   if (!_logicalTimeFactory.get())
     return 0;
-  std::auto_ptr<rti1516e::LogicalTime> logicalTime = _logicalTimeFactory->makeFinal();
-  return new LogicalTimeImplementation(logicalTime, this);
+  RTI_UNIQUE_PTR<rti1516e::LogicalTime> logicalTime = _logicalTimeFactory->makeFinal();
+  return new LogicalTimeImplementation(OpenRTI_MOVE(logicalTime), this);
 }
 
 RTI1516ELogicalTimeFactory::LogicalTimeImplementation*
@@ -245,11 +245,11 @@ RTI1516ELogicalTimeFactory::LogicalTimeFactoryImplementation::decodeLogicalTime(
 {
   if (!_logicalTimeFactory.get())
     return 0;
-  std::auto_ptr<rti1516e::LogicalTime> logicalTime;
+  RTI_UNIQUE_PTR<rti1516e::LogicalTime> logicalTime;
   logicalTime = _logicalTimeFactory->decodeLogicalTime(rti1516e::VariableLengthDataFriend::create(variableLengthData));
   if (!logicalTime.get())
     return 0;
-  return new LogicalTimeImplementation(logicalTime, this);
+  return new LogicalTimeImplementation(OpenRTI_MOVE(logicalTime), this);
 }
 
 RTI1516ELogicalTimeFactory::LogicalTimeIntervalImplementation*
@@ -257,10 +257,10 @@ RTI1516ELogicalTimeFactory::LogicalTimeFactoryImplementation::zeroLogicalTimeInt
 {
   if (!_logicalTimeFactory.get())
     return 0;
-  std::auto_ptr<rti1516e::LogicalTimeInterval> logicalTimeInterval = _logicalTimeFactory->makeZero();
+  RTI_UNIQUE_PTR<rti1516e::LogicalTimeInterval> logicalTimeInterval = _logicalTimeFactory->makeZero();
   if (!logicalTimeInterval.get())
     return 0;
-  return new LogicalTimeIntervalImplementation(logicalTimeInterval, this);
+  return new LogicalTimeIntervalImplementation(OpenRTI_MOVE(logicalTimeInterval), this);
 }
 
 
@@ -466,8 +466,8 @@ RTI1516ELogicalTimeFactory::LogicalTime::operator<=(const RTI1516ELogicalTimeFac
 
 
 
-RTI1516ELogicalTimeFactory::RTI1516ELogicalTimeFactory(std::auto_ptr<rti1516e::LogicalTimeFactory> logicalTimeFactory) :
-  _implementation(new LogicalTimeFactoryImplementation(logicalTimeFactory))
+RTI1516ELogicalTimeFactory::RTI1516ELogicalTimeFactory(RTI_UNIQUE_PTR<rti1516e::LogicalTimeFactory> logicalTimeFactory) :
+  _implementation(new LogicalTimeFactoryImplementation(OpenRTI_MOVE(logicalTimeFactory)))
 {
 }
 
@@ -536,11 +536,11 @@ RTI1516ELogicalTimeFactory::getLogicalTime(const rti1516e::LogicalTime& rti1516L
     return LogicalTime();
   if (!_implementation->_logicalTimeFactory.get())
     return LogicalTime();
-  std::auto_ptr<rti1516e::LogicalTime> logicalTime = _implementation->_logicalTimeFactory->makeInitial();
+  RTI_UNIQUE_PTR<rti1516e::LogicalTime> logicalTime = _implementation->_logicalTimeFactory->makeInitial();
   if (!logicalTime.get())
     return LogicalTime();
   (*logicalTime) = rti1516LogicalTime;
-  return LogicalTime(new LogicalTimeImplementation(logicalTime, _implementation.get()));
+  return LogicalTime(new LogicalTimeImplementation(OpenRTI_MOVE(logicalTime), _implementation.get()));
 }
 
 RTI1516ELogicalTimeFactory::LogicalTimeInterval
@@ -550,11 +550,11 @@ RTI1516ELogicalTimeFactory::getLogicalTimeInterval(const rti1516e::LogicalTimeIn
     return LogicalTimeInterval();
   if (!_implementation->_logicalTimeFactory.get())
     return LogicalTimeInterval();
-  std::auto_ptr<rti1516e::LogicalTimeInterval> logicalTimeInterval = _implementation->_logicalTimeFactory->makeZero();
+  RTI_UNIQUE_PTR<rti1516e::LogicalTimeInterval> logicalTimeInterval = _implementation->_logicalTimeFactory->makeZero();
   if (!logicalTimeInterval.get())
     return 0;
   (*logicalTimeInterval) = rti1516LogicalTimeInterval;
-  return LogicalTimeInterval(new LogicalTimeIntervalImplementation(logicalTimeInterval, _implementation.get()));
+  return LogicalTimeInterval(new LogicalTimeIntervalImplementation(OpenRTI_MOVE(logicalTimeInterval), _implementation.get()));
 }
 
 bool

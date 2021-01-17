@@ -227,7 +227,7 @@ public:
 
   virtual bool execJoinOnce()
   {
-    std::auto_ptr<rti1516e::RTIambassador> ambassador;
+    RTI_UNIQUE_PTR<rti1516e::RTIambassador> ambassador;
     rti1516e::RTIambassadorFactory factory;
     ambassador = factory.createRTIambassador();
     ambassador->connect(*this, rti1516e::HLA_EVOKED, getConnectUrl());
@@ -321,7 +321,7 @@ public:
 
   virtual bool execJoinMultiple()
   {
-    std::auto_ptr<rti1516e::RTIambassador> ambassador;
+    RTI_UNIQUE_PTR<rti1516e::RTIambassador> ambassador;
     rti1516e::RTIambassadorFactory factory;
     ambassador = factory.createRTIambassador();
     ambassador->connect(*this, rti1516e::HLA_EVOKED, getConnectUrl());
@@ -2037,16 +2037,16 @@ private:
 
   // bool _fail;
 
-  std::auto_ptr<rti1516e::RTIambassador> _ambassador;
+  RTI_UNIQUE_PTR<rti1516e::RTIambassador> _ambassador;
 
   bool _useDataUrlObjectModels;
 
   std::wstring _logicalTimeImplementationName;
-  std::auto_ptr<rti1516e::LogicalTimeFactory> _logicalTimeFactory;
+  RTI_UNIQUE_PTR<rti1516e::LogicalTimeFactory> _logicalTimeFactory;
 
   rti1516e::FederateHandle _federateHandle;
 
-  std::auto_ptr<rti1516e::LogicalTime> _grantedLogicalTime;
+  RTI_UNIQUE_PTR<rti1516e::LogicalTime> _grantedLogicalTime;
   bool _timeRegulationEnabled;
   bool _timeConstrainedEnabled;
   bool _timeAdvancePending;
