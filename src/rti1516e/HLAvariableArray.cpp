@@ -66,10 +66,10 @@ public:
     size_t length = _dataElementVector.size();
     if (0xffffffffu < length)
       throw EncoderException(L"HLAvariableArray::encodeInto(): array size is too big to encode!");
-    buffer.push_back(Octet(0xff & (length >> 24)));
-    buffer.push_back(Octet(0xff & (length >> 16)));
-    buffer.push_back(Octet(0xff & (length >> 8)));
-    buffer.push_back(Octet(0xff & (length)));
+    buffer.push_back(uint8_t(length >> 24));
+    buffer.push_back(uint8_t(length >> 16));
+    buffer.push_back(uint8_t(length >> 8));
+    buffer.push_back(uint8_t(length));
     align(buffer, octetBoundary);
 
     for (DataElementVector::const_iterator i = _dataElementVector.begin(); i != _dataElementVector.end(); ++i) {
@@ -85,10 +85,10 @@ public:
     index = align(index, octetBoundary);
     if (buffer.size() < index + 4)
       throw EncoderException(L"Insufficient buffer size for decoding!");
-    size_t length = size_t(buffer[index]) << 24;
-    length |= size_t(buffer[index + 1]) << 16;
-    length |= size_t(buffer[index + 2]) << 8;
-    length |= size_t(buffer[index + 3]);
+    size_t length = size_t(uint8_t(buffer[index])) << 24;
+    length |= size_t(uint8_t(buffer[index + 1])) << 16;
+    length |= size_t(uint8_t(buffer[index + 2])) << 8;
+    length |= size_t(uint8_t(buffer[index + 3]));
     index = align(index + 4, octetBoundary);
 
     while (length < _dataElementVector.size()) {
