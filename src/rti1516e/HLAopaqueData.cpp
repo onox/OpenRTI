@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "Export.h"
+#include "Encoding.h"
 
 namespace rti1516e
 {
@@ -61,16 +62,37 @@ public:
 
   void encodeInto(std::vector<Octet>& buffer) const
   {
+    align(buffer, 4);
+    size_t length = _buffer.size();
+    if (0xffffffffu < length)
+      throw EncoderException(L"HLAopaqueData::encodeInto(): array size is too big to encode!");
+    buffer.push_back(uint8_t(length >> 24));
+    buffer.push_back(uint8_t(length >> 16));
+    buffer.push_back(uint8_t(length >> 8));
+    buffer.push_back(uint8_t(length));
+
     buffer.insert(buffer.end(), _buffer.begin(), _buffer.end());
   }
 
   size_t decodeFrom(std::vector<Octet> const & buffer, size_t index)
   {
-    std::vector<Octet>::const_iterator i = buffer.begin();
-    std::advance(i, index);
-    _buffer.clear();
-    _buffer.insert(_buffer.end(), i, buffer.end());
-    return buffer.size();
+    index = align(index, 4);
+    if (buffer.size() < index + 4)
+      throw EncoderException(L"HLAopaqueData::decodeFrom(): Insufficient buffer size for decoding!");
+    size_t length = size_t(uint8_t(buffer[index])) << 24;
+    length |= size_t(uint8_t(buffer[index + 1])) << 16;
+    length |= size_t(uint8_t(buffer[index + 2])) << 8;
+    length |= size_t(uint8_t(buffer[index + 3]));
+    index = index + 4;
+
+    std::vector<Octet>::const_iterator b = buffer.begin();
+    std::advance(b, index);
+    std::vector<Octet>::const_iterator e = b;
+    std::advance(e, length);
+    _buffer.resize(0);
+    _buffer.insert(_buffer.end(), b, e);
+
+    return index + length;
   }
 
   void setDataPointer(Octet** inData, size_t bufferSize, size_t dataSize)
@@ -167,7 +189,8 @@ void HLAopaqueData::decode(VariableLengthData const & inData)
   RTI_THROW ((EncoderException))
 {
   std::vector<Octet> buffer(inData.size());
-  std::memcpy(&buffer.front(), inData.data(), inData.size());
+  if (inData.size())
+    std::memcpy(&buffer.front(), inData.data(), inData.size());
   decodeFrom(buffer, 0);
 }
 
@@ -182,13 +205,13 @@ size_t
 HLAopaqueData::getEncodedLength() const
   RTI_THROW ((EncoderException))
 {
-  return _impl->_buffer.size();
+  return 4 + _impl->_buffer.size();
 }
 
 unsigned int
 HLAopaqueData::getOctetBoundary() const
 {
-  return 1;
+  return 4;
 }
 
 size_t
