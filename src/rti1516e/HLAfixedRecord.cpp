@@ -93,7 +93,7 @@ public:
     _octetBoundary = 1;
     for (DataElementVector::const_iterator i = _dataElementVector.begin(); i != _dataElementVector.end(); ++i) {
       unsigned int octetBoundary = (*i)->getOctetBoundary();
-      if (_octetBoundary < octetBoundary)
+      if (octetBoundary < _octetBoundary)
         continue;
       _octetBoundary = octetBoundary;
     }
@@ -144,6 +144,7 @@ public:
       throw EncoderException(L"HLAfixedRecord::setElement(): Incompatible dataElements!");
     delete _dataElementVector[index];
     _dataElementVector[index] = dataElement.clone().release();
+    _octetBoundary = 0;
   }
 
   void setElementPointer(size_t index, DataElement* dataElement)
@@ -156,6 +157,7 @@ public:
       throw EncoderException(L"HLAfixedRecord::setElementPointer(): Incompatible dataElements!");
     delete _dataElementVector[index];
     _dataElementVector[index] = dataElement;
+    _octetBoundary = 0;
   }
 
   const DataElement& get(size_t index) const
