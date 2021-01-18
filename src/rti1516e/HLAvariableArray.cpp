@@ -112,11 +112,18 @@ public:
 
   size_t getEncodedLength() const
   {
-    unsigned int octetBoundary = getOctetBoundary();
-    if (4 < octetBoundary)
-      return 4 + _dataElementVector.size()*_protoType->getEncodedLength();
-    else
-      return (1 + _dataElementVector.size())*_protoType->getEncodedLength();
+    size_t encodedLength = 4;
+    if (_protoType)
+      encodedLength = align(encodedLength, _protoType->getOctetBoundary());
+    for (DataElementVector::const_iterator i = _dataElementVector.begin(); i != _dataElementVector.end(); ++i) {
+      const DataElement* dataElement = *i;
+      if (!dataElement)
+        dataElement = _protoType;
+      if (!dataElement)
+        continue;
+      encodedLength = align(encodedLength, dataElement->getOctetBoundary()) + dataElement->getEncodedLength();
+    }
+    return encodedLength;
   }
 
   unsigned int getOctetBoundary() const

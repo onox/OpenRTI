@@ -58,11 +58,14 @@ public:
 
   size_t getEncodedLength() const
   {
-    if (_dataElementVector.empty())
-      return 0;
-    if (!_dataElementVector.front())
-      return 0;
-    return _dataElementVector.size()*_dataElementVector.front()->getEncodedLength();
+    size_t encodedLength = 0;
+    for (DataElementVector::const_iterator i = _dataElementVector.begin(); i != _dataElementVector.end(); ++i) {
+      const DataElement* dataElement = *i;
+      if (!dataElement)
+        continue;
+      encodedLength = align(encodedLength, dataElement->getOctetBoundary()) + dataElement->getEncodedLength();
+    }
+    return encodedLength;
   }
 
   void encodeInto(std::vector<Octet>& buffer) const
