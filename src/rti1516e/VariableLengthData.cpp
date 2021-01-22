@@ -27,6 +27,12 @@
 namespace rti1516e
 {
 
+static void
+variableLengthDataDeleteFunction(void* data)
+{
+  ::operator delete(data);
+}
+
 // Note that the VariableLengthDataFriend implementation relies on
 // this method setting impl to zero.
 VariableLengthData::VariableLengthData() :
@@ -117,7 +123,6 @@ VariableLengthData::setDataPointer(void* inData, size_t inSize)
 void
 VariableLengthData::takeDataPointer(void* inData, size_t inSize, VariableLengthDataDeleteFunction func)
 {
-  // FIXME: make use of the delete function!!!
   // Note that we do not copy the old content here since we
   // will write a new content in any case
   if (1 < VariableLengthDataImplementation::count(_impl)) {
@@ -128,7 +133,10 @@ VariableLengthData::takeDataPointer(void* inData, size_t inSize, VariableLengthD
     _impl = new VariableLengthDataImplementation;
     VariableLengthDataImplementation::get(_impl);
   }
-  _impl->_variableLengthData.takeDataPointer(inData, inSize);
+  // Not sure if this is correct. Anyhow, this kind of preserves current behavior
+  if (!func)
+    func = variableLengthDataDeleteFunction;
+  _impl->_variableLengthData.takeDataPointer(inData, inSize, func);
 }
 
 }

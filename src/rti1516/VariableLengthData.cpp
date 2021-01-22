@@ -27,6 +27,12 @@
 namespace rti1516
 {
 
+static void
+variableLengthDataDeleteFunction(void* data)
+{
+  ::operator delete(data);
+}
+
 // Note that the VariableLengthDataFriend implementation relies on
 // this method setting impl to zero.
 VariableLengthData::VariableLengthData() :
@@ -130,7 +136,7 @@ VariableLengthData::takeDataPointer(void* inData, unsigned long inSize)
     _impl = new VariableLengthDataImplementation;
     VariableLengthDataImplementation::get(_impl);
   }
-  _impl->_variableLengthData.takeDataPointer(inData, inSize);
+  _impl->_variableLengthData.takeDataPointer(inData, inSize, variableLengthDataDeleteFunction);
 }
 
 }

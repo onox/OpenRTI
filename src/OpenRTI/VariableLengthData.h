@@ -33,6 +33,8 @@
 
 namespace OpenRTI {
 
+typedef void (*_VariableLengthDataDeleteFunction)(void*);
+
 class VariableLengthData;
 typedef std::list<VariableLengthData> VariableLengthDataList;
 
@@ -284,13 +286,13 @@ public:
   // This object assumes the responsibility of deleting inData
   // when it is no longer needed.
   void
-  takeDataPointer(void* data, size_t size)
+  takeDataPointer(void* data, size_t size, _VariableLengthDataDeleteFunction variableLengthDataDeleteFunction)
   {
     // Take over ownership of that memory area.
     // Past that, we need to delete that.
     _size = size;
     _offset = 0;
-    _data = createExternalData(data);
+    _data = createExternalData(data, variableLengthDataDeleteFunction);
   }
 
   bool operator==(const VariableLengthData& variableLengthData) const
@@ -938,17 +940,23 @@ private:
   class OPENRTI_API Data : public Referenced {
   public:
     Data(size_t size) :
+      _variableLengthDataDeleteFunction(),
       _capacity(size),
       _data(_dummy)
     { }
-    Data(void* data) :
+    Data(void* data, _VariableLengthDataDeleteFunction variableLengthDataDeleteFunction) :
+      _variableLengthDataDeleteFunction(variableLengthDataDeleteFunction),
       _capacity(0),
       _data(data)
     { }
     ~Data()
     {
-      if (_data != _dummy)
-        ::operator delete(_data);
+      if (_data != _dummy) {
+        if (_variableLengthDataDeleteFunction)
+          _variableLengthDataDeleteFunction(_data);
+        else
+          ::operator delete(_data);
+      }
     }
     void* data(size_t offset = 0)
     {
@@ -957,7 +965,10 @@ private:
     void clear()
     {
       if (_data != _dummy) {
-        ::operator delete(_data);
+        if (_variableLengthDataDeleteFunction)
+          _variableLengthDataDeleteFunction(_data);
+        else
+          ::operator delete(_data);
         _data = 0;
       }
     }
@@ -965,6 +976,7 @@ private:
     { return _capacity; }
 
   private:
+    _VariableLengthDataDeleteFunction _variableLengthDataDeleteFunction;
     const size_t _capacity;
     void* _data;
     // Due to the struct layout, this should be aligned to 16 bytes on 64 bits
@@ -977,9 +989,9 @@ private:
     void* data = ::operator new(capacity + sizeof(Data));
     return new (data) Data(capacity);
   }
-  static Data* createExternalData(void *data)
+  static Data* createExternalData(void *data, _VariableLengthDataDeleteFunction variableLengthDataDeleteFunction)
   {
-    return new Data(data);
+    return new Data(data, variableLengthDataDeleteFunction);
   }
 
   SharedPtr<Data> _data;
