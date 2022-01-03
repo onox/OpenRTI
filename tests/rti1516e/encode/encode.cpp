@@ -152,13 +152,13 @@ DataType::createDataElement(OpenRTI::Rand& rand) const
   case HLAinteger64LE:
     return new rti1516e::HLAinteger64LE(rti1516e::Integer64(rand.get()) | rti1516e::Integer64(rand.get()) << 32);
   case HLAfloat32BE:
-    return new rti1516e::HLAfloat32BE(rand.get());
+    return new rti1516e::HLAfloat32BE(float(rand.get()));
   case HLAfloat32LE:
-    return new rti1516e::HLAfloat32LE(rand.get());
+    return new rti1516e::HLAfloat32LE(float(rand.get()));
   case HLAfloat64BE:
-    return new rti1516e::HLAfloat64BE(rand.get());
+    return new rti1516e::HLAfloat64BE(double(rand.get()));
   case HLAfloat64LE:
-    return new rti1516e::HLAfloat64LE(rand.get());
+    return new rti1516e::HLAfloat64LE(double(rand.get()));
 
   case HLAASCIIstring:
     {
@@ -396,7 +396,7 @@ bool testDataElementEncoding(const DataType& dataType)
 
     try {
       dataElement->decode(rti1516e::VariableLengthData());
-    } catch (const rti1516e::EncoderException& e) {
+    } catch (const rti1516e::EncoderException&) {
       // Ok, shall happen here
     } catch (...) {
       std::cerr << "Unexpected exception while decoding empty data!" << std::endl;
