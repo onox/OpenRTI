@@ -20,6 +20,12 @@
 #ifndef OpenRTI_Exception_h
 #define OpenRTI_Exception_h
 
+#if defined(_MSC_VER)
+// disable warnings about a "dllexport" class using a regular class
+#pragma warning(disable: 4251)
+#pragma warning(disable: 4275)
+#endif
+
 #include <exception>
 #include <string>
 

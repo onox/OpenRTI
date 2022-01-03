@@ -17,6 +17,8 @@
  *
  */
 
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+
 #include "SocketEventDispatcher.h"
 
 #include <vector>
