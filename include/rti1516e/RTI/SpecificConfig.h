@@ -29,6 +29,7 @@
 #pragma warning(disable: 4290)
 // disable warnings about a "dllexport" class using a regular class
 #pragma warning(disable: 4251)
+#pragma warning(disable: 4275)
 #endif
 //
 // On Windows, BUILDING_RTI should be defined only when compiling
