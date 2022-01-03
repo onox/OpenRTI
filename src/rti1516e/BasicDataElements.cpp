@@ -1233,7 +1233,7 @@ encode(OpenRTI::VariableLengthData& inData) const
   if (std::numeric_limits<Integer32>::max() < length)
     length = std::numeric_limits<Integer32>::max();
   inData.resize(length + 4);
-  inData.setInt32BE(length, 0);
+  inData.setInt32BE(int32_t(length), 0);
 
   for (size_t i = 0; i < length; ++i)
     inData.setChar(_value[i], 4 + i);
@@ -1326,7 +1326,7 @@ encode(OpenRTI::VariableLengthData& inData) const
   if (std::numeric_limits<Integer32>::max() < length)
     length = std::numeric_limits<Integer32>::max();
   inData.resize(2*length + 4);
-  inData.setInt32BE(length, 0);
+  inData.setInt32BE(int32_t(length), 0);
 
   for (size_t i = 0; i < length; ++i)
     inData.setUInt16BE(_value[i], 4 + 2*i);
