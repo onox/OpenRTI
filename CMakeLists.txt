@@ -59,6 +59,9 @@ if(LINUX)
 endif()
 
 if(MSVC)
+  # Enable multi processor builds
+  add_compile_options(/MP)
+  # Treat warnings
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4290")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4290")
   if(CMAKE_CL_64)
