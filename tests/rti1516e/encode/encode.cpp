@@ -318,7 +318,11 @@ equal(const std::vector<rti1516e::Octet>& left, const rti1516e::VariableLengthDa
 {
   if (left.size() != right.size())
     return false;
+#if __cplusplus < 201103L
+  return 0 == std::memcmp(&left[0], right.data(), left.size());
+#else
   return 0 == std::memcmp(left.data(), right.data(), left.size());
+#endif
 }
 
 template<typename T>
