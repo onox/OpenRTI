@@ -29,6 +29,7 @@
 
 #include "Encoding.h"
 #include "Export.h"
+#include "Types.h"
 
 namespace rti1516e
 {
