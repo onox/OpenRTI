@@ -39,7 +39,7 @@
 #include "LogStream.h"
 #include "TemplateTimeManagement.h"
 
-#include "HandleImplementation.h"
+#include "HandleFriend.h"
 #include "RTI1516ELogicalTimeFactory.h"
 #include "RTI1516Einteger64TimeFactory.h"
 #include "RTI1516Efloat64TimeFactory.h"

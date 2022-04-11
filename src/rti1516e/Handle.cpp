@@ -19,7 +19,7 @@
 
 #include <RTI/Handle.h>
 
-#include "HandleImplementation.h"
+#include "HandleFriend.h"
 #include "VariableLengthDataImplementation.h"
 
 #include <string>
@@ -28,7 +28,74 @@
 namespace rti1516e
 {
 
+// An observation to the handles guaranteed size led to reuse the
+// numeric value of the _impl pointer just as the handle number.
+// Less allocations, and still standard conforming.
+
 #define IMPLEMENT_HANDLE_CLASS(HandleKind)                              \
+  class OPENRTI_LOCAL HandleKind##Implementation :                      \
+    public OpenRTI::Referenced {                                        \
+  public:                                                               \
+    HandleKind##Implementation()                                        \
+    {}                                                                  \
+    HandleKind##Implementation(const OpenRTI::HandleKind& handle) :     \
+      _handle(handle)                                                   \
+    {}                                                                  \
+                                                                        \
+    static bool                                                         \
+    useImplementationClass()                                            \
+    {                                                                   \
+      return sizeof(HandleKind##Implementation*) < sizeof(OpenRTI::HandleKind); \
+    }                                                                   \
+                                                                        \
+    static HandleKind##Implementation*                                  \
+    create(const OpenRTI::HandleKind& handle)                           \
+    {                                                                   \
+      if (useImplementationClass()) {                                   \
+        return new HandleKind##Implementation(handle);                  \
+      } else {                                                          \
+        union {                                                         \
+          HandleKind##Implementation* ptr;                              \
+          OpenRTI::HandleKind::value_type value;                        \
+        } u = { 0 };                                                    \
+        u.value = handle;                                               \
+        return u.ptr;                                                   \
+      }                                                                 \
+    }                                                                   \
+                                                                        \
+    static void                                                         \
+    putAndDelete(HandleKind##Implementation* impl)                      \
+    {                                                                   \
+      if (!useImplementationClass())                                    \
+        return;                                                         \
+      if (OpenRTI::Referenced::put(impl))                               \
+        return;                                                         \
+      delete impl;                                                      \
+    }                                                                   \
+    static void                                                         \
+    get(HandleKind##Implementation* impl)                               \
+    {                                                                   \
+      if (!useImplementationClass())                                    \
+        return;                                                         \
+      OpenRTI::Referenced::get(impl);                                   \
+    }                                                                   \
+                                                                        \
+    static OpenRTI::HandleKind                                          \
+    getHandle(HandleKind##Implementation* ptr)                          \
+    {                                                                   \
+      if (useImplementationClass()) {                                   \
+        return ptr->_handle;                                            \
+      } else {                                                          \
+        union {                                                         \
+          HandleKind##Implementation* ptr;                              \
+          OpenRTI::HandleKind::value_type value;                        \
+        } u = { ptr };                                                  \
+        return u.value;                                                 \
+      }                                                                 \
+    }                                                                   \
+    OpenRTI::HandleKind _handle;                                        \
+  };                                                                    \
+                                                                        \
   HandleKind::HandleKind() :                                            \
     _impl(HandleKind##Implementation::create(OpenRTI::HandleKind()))    \
   {                                                                     \
@@ -177,6 +244,24 @@ namespace rti1516e
     handle.decode(encodedValue.data());                                 \
     _impl = HandleKind##Implementation::create(handle);                 \
     HandleKind##Implementation::get(_impl);                             \
+  }                                                                     \
+                                                                        \
+  HandleKind                                                            \
+  HandleKind##Friend::decode(rti1516e::VariableLengthData const & encodedValue) \
+  {                                                                     \
+    return HandleKind(encodedValue);                                    \
+  }                                                                     \
+                                                                        \
+  void                                                                  \
+  HandleKind##Friend::copy(OpenRTI::HandleKind& dst, HandleKind const& src) \
+  {                                                                     \
+    dst = HandleKind##Implementation::getHandle(src._impl);             \
+  }                                                                     \
+                                                                        \
+  void                                                                  \
+  HandleKind##Friend::copy(HandleKind& dst, OpenRTI::HandleKind const& src) \
+  {                                                                     \
+    dst = HandleKind(HandleKind##Implementation::create(src));          \
   }                                                                     \
                                                                         \
   std::wostream&                                                        \
