@@ -1,6 +1,7 @@
 OpenRTI-0.11.0 (development)
 ----------------------------
 
+ * Increase minimum supported cmake version to 2.8.13.
  * For a more detailed list of changes see the git history.
 
 OpenRTI-0.10.0 (2022-04-11)
