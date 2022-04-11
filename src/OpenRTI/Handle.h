@@ -128,7 +128,7 @@ private:
 };
 
 #define DECLARE_HANDLE_TYPE(HandleName, Type)                     \
-class OPENRTI_LOCAL HandleName : public Handle<Type> {            \
+class OPENRTI_API HandleName : public Handle<Type> {              \
 public:                                                           \
   HandleName() {}                                                 \
   HandleName(const Handle<Type>& handle) :                        \
@@ -182,7 +182,7 @@ DECLARE_HANDLE_TYPE(DimensionHandle, uint32_t)
 DECLARE_HANDLE_TYPE(SpaceHandle, uint32_t)
 DECLARE_HANDLE_TYPE(UpdateRateHandle, uint32_t)
 
-class OPENRTI_LOCAL MessageRetractionHandle : public Handle<uint64_t> {
+class OPENRTI_API MessageRetractionHandle : public Handle<uint64_t> {
 public:
   MessageRetractionHandle() {}
   MessageRetractionHandle(const MessageRetractionHandle& handle) :
@@ -218,7 +218,7 @@ public:
 // The regions are private to the creator, so prefix the regions with the federate handle,
 // This way we can avoid tracking the region handles globally.
 DECLARE_HANDLE_TYPE(LocalRegionHandle, uint32_t)
-class OPENRTI_LOCAL RegionHandle : public Handle<uint64_t> {
+class OPENRTI_API RegionHandle : public Handle<uint64_t> {
 public:
   RegionHandle() {}
   RegionHandle(const RegionHandle& handle) :
