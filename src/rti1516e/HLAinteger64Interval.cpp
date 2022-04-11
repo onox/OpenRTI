@@ -234,7 +234,7 @@ void
 HLAinteger64Interval::decode(const VariableLengthData& variableLengthData)
   RTI_THROW ((InternalError, CouldNotDecode))
 {
-  OpenRTI::VariableLengthData data = VariableLengthDataFriend::readPointer(variableLengthData);
+  const OpenRTI::VariableLengthData& data = VariableLengthDataFriend::readPointer(variableLengthData);
   if (data.size() < 8)
     throw CouldNotDecode(L"Buffer size too short!");
   HLAinteger64IntervalImpl::setValue(_impl, data.getInt64BE(0));
