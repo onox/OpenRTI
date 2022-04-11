@@ -1,4 +1,9 @@
-OpenRTI-0.10.0 (development)
+OpenRTI-0.11.0 (development)
+----------------------------
+
+ * For a more detailed list of changes see the git history.
+
+OpenRTI-0.10.0 (2022-04-11)
 ----------------------------
 
  * With the python binding, allow subclassing of RTIambassador. 
