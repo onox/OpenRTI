@@ -26,7 +26,7 @@
 #include <cmath>
 #include <limits>
 #include <sstream>
-#include "VariableLengthDataImplementation.h"
+#include "VariableLengthDataFriend.h"
 #include "ValueImplementation.h"
 #include "RTI/HLAfloat64Interval.h"
 

@@ -43,7 +43,7 @@
 #include "RTI1516LogicalTimeFactory.h"
 #include "RTI1516integer64TimeFactory.h"
 #include "RTI1516float64TimeFactory.h"
-#include "VariableLengthDataImplementation.h"
+#include "VariableLengthDataFriend.h"
 
 namespace OpenRTI {
 

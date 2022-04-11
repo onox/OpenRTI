@@ -26,7 +26,7 @@
 #include <iomanip>
 #include <limits>
 #include <sstream>
-#include "VariableLengthDataImplementation.h"
+#include "VariableLengthDataFriend.h"
 #include "ValueImplementation.h"
 #include "RTI/HLAinteger64Time.h"
 

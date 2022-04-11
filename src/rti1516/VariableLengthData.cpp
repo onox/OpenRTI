@@ -22,7 +22,7 @@
 #include <limits>
 #include <iosfwd>
 #include <RTI/Exception.h>
-#include "VariableLengthDataImplementation.h"
+#include "VariableLengthDataFriend.h"
 
 namespace rti1516
 {
@@ -32,6 +32,30 @@ variableLengthDataDeleteFunction(void* data)
 {
   ::operator delete(data);
 }
+
+class OPENRTI_LOCAL VariableLengthDataImplementation : public OpenRTI::Referenced {
+public:
+  VariableLengthDataImplementation()
+  { }
+  VariableLengthDataImplementation(const OpenRTI::VariableLengthData& variableLengthData) :
+    _variableLengthData(variableLengthData)
+  { }
+  VariableLengthDataImplementation(const void* data, unsigned long size) :
+    _variableLengthData(data, size)
+  { }
+  VariableLengthDataImplementation(const VariableLengthDataImplementation& v) :
+    _variableLengthData(v._variableLengthData)
+  {
+  }
+  static void putAndDelete(VariableLengthDataImplementation* data)
+  {
+    if (OpenRTI::Referenced::put(data))
+      return;
+    delete data;
+  }
+
+  OpenRTI::VariableLengthData _variableLengthData;
+};
 
 // Note that the VariableLengthDataFriend implementation relies on
 // this method setting impl to zero.
@@ -137,6 +161,26 @@ VariableLengthData::takeDataPointer(void* inData, unsigned long inSize)
     VariableLengthDataImplementation::get(_impl);
   }
   _impl->_variableLengthData.takeDataPointer(inData, inSize, variableLengthDataDeleteFunction);
+}
+
+VariableLengthData
+VariableLengthDataFriend::create(const OpenRTI::VariableLengthData& variableLengthData)
+{
+  VariableLengthData rti1516VariableLengthData;
+  rti1516VariableLengthData._impl->_variableLengthData = variableLengthData;
+  return rti1516VariableLengthData;
+}
+
+const OpenRTI::VariableLengthData&
+VariableLengthDataFriend::readPointer(const rti1516::VariableLengthData& variableLengthData)
+{
+  return variableLengthData._impl->_variableLengthData;
+}
+
+OpenRTI::VariableLengthData&
+VariableLengthDataFriend::writePointer(rti1516::VariableLengthData& variableLengthData)
+{
+  return variableLengthData._impl->_variableLengthData;
 }
 
 }

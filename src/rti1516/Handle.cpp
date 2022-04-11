@@ -25,7 +25,7 @@
 
 #include "HandleFriend.h"
 #include "Referenced.h"
-#include "VariableLengthDataImplementation.h"
+#include "VariableLengthDataFriend.h"
 
 #include <string>
 #include <sstream>
