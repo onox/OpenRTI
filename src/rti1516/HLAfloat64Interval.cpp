@@ -344,7 +344,7 @@ void
 HLAfloat64Interval::decode(const rti1516::VariableLengthData& variableLengthData)
   RTI_THROW ((rti1516::InternalError, rti1516::CouldNotDecode))
 {
-  OpenRTI::VariableLengthData data = rti1516::VariableLengthDataFriend::readPointer(variableLengthData);
+  const OpenRTI::VariableLengthData& data = rti1516::VariableLengthDataFriend::readPointer(variableLengthData);
   if (data.size() < 8)
     throw rti1516::CouldNotDecode(L"Buffer size too short!");
   HLAfloat64IntervalImpl::setValue(_impl, data.getFloat64BE(0));

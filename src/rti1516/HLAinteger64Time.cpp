@@ -229,7 +229,7 @@ void
 HLAinteger64Time::decode(const rti1516::VariableLengthData& variableLengthData)
     RTI_THROW ((rti1516::InternalError, rti1516::CouldNotDecode))
 {
-  OpenRTI::VariableLengthData data = rti1516::VariableLengthDataFriend::readPointer(variableLengthData);
+  const OpenRTI::VariableLengthData& data = rti1516::VariableLengthDataFriend::readPointer(variableLengthData);
   if (data.size() < 8)
     throw rti1516::CouldNotDecode(L"Buffer size too short!");
   HLAinteger64TimeImpl::setValue(_impl, data.getInt64BE(0));
