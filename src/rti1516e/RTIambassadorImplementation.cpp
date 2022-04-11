@@ -43,7 +43,7 @@
 #include "RTI1516ELogicalTimeFactory.h"
 #include "RTI1516Einteger64TimeFactory.h"
 #include "RTI1516Efloat64TimeFactory.h"
-#include "VariableLengthDataImplementation.h"
+#include "VariableLengthDataFriend.h"
 
 // Embed the HLAstandardMIM hard into the library as a last resort
 #include "HLAstandardMIM.inc"

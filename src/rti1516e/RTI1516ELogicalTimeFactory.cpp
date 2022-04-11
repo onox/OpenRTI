@@ -25,6 +25,8 @@
 
 #include <memory>
 
+#include "VariableLengthDataFriend.h"
+
 namespace OpenRTI {
 
 class OPENRTI_LOCAL RTI1516ELogicalTimeFactory::LogicalTimeFactoryImplementation : public Referenced {

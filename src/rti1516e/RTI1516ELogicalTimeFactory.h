@@ -27,7 +27,6 @@
 #include <memory>
 
 #include "StringUtils.h"
-#include "VariableLengthDataImplementation.h"
 
 namespace OpenRTI {
 

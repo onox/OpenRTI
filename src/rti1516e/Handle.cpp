@@ -20,7 +20,7 @@
 #include <RTI/Handle.h>
 
 #include "HandleFriend.h"
-#include "VariableLengthDataImplementation.h"
+#include "VariableLengthDataFriend.h"
 
 #include <string>
 #include <sstream>

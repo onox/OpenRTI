@@ -29,7 +29,7 @@
 #include "Encoding.h"
 #include "Export.h"
 #include "Types.h"
-#include "VariableLengthDataImplementation.h"
+#include "VariableLengthDataFriend.h"
 
 namespace rti1516e
 {
