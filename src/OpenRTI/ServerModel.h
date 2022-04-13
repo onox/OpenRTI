@@ -1084,6 +1084,8 @@ public:
   void insert(ParameterDefinition& parameterDefinition);
   ParameterDefinition* getParameterDefinition(const std::string& name);
   ParameterDefinition* getParameterDefinition(const ParameterHandle& parameterHandle);
+  const ParameterDefinition::HandleMap& getParameterHandleParameterMap() const
+  { return _parameterHandleParameterMap; }
   ParameterDefinition::HandleMap& getParameterHandleParameterMap()
   { return _parameterHandleParameterMap; }
 
@@ -1329,6 +1331,8 @@ public:
   void insert(AttributeDefinition& attributeDefinition);
   AttributeDefinition* getAttributeDefinition(const std::string& name);
   AttributeDefinition* getAttributeDefinition(const AttributeHandle& attributeHandle);
+  const AttributeDefinition::HandleMap& getAttributeHandleAttributeDefinitionMap() const
+  { return _attributeHandleAttributeDefinitionMap; }
   AttributeDefinition::HandleMap& getAttributeHandleAttributeDefinitionMap()
   { return _attributeHandleAttributeDefinitionMap; }
 
@@ -1500,7 +1504,7 @@ public:
   void setArtificialObjectRoot(bool artificialObjectRoot);
 
   /// Read back the FOMModule context to send this with a message
-  void getModule(FOMModule& module);
+  void getModule(FOMModule& module) const;
 
   // insert into this module
   DimensionModule* insert(Dimension& dimension);

@@ -982,7 +982,7 @@ void Module::setArtificialObjectRoot(bool artificialObjectRoot)
 }
 
 void
-Module::getModule(FOMModule& module)
+Module::getModule(FOMModule& module) const
 {
   module.setModuleHandle(getModuleHandle());
   /// FIXME
@@ -992,9 +992,9 @@ Module::getModule(FOMModule& module)
   module.setContent(getContent());
 
   module.getDimensionList().reserve(_dimensionModuleList.size());
-  for (DimensionModule::FirstList::iterator i = _dimensionModuleList.begin();
+  for (DimensionModule::FirstList::const_iterator i = _dimensionModuleList.begin();
        i != _dimensionModuleList.end(); ++i) {
-    Dimension& dimension = i->getDimension();
+    const Dimension& dimension = i->getDimension();
     module.getDimensionList().push_back(FOMDimension());
     FOMDimension& fomDimension = module.getDimensionList().back();
     fomDimension.setName(dimension.getName());
@@ -1003,9 +1003,9 @@ Module::getModule(FOMModule& module)
   }
 
   module.getUpdateRateList().reserve(_updateRateModuleList.size());
-  for (UpdateRateModule::FirstList::iterator i = _updateRateModuleList.begin();
+  for (UpdateRateModule::FirstList::const_iterator i = _updateRateModuleList.begin();
        i != _updateRateModuleList.end(); ++i) {
-    UpdateRate& updateRate = i->getUpdateRate();
+    const UpdateRate& updateRate = i->getUpdateRate();
     module.getUpdateRateList().push_back(FOMUpdateRate());
     FOMUpdateRate& fomUpdateRate = module.getUpdateRateList().back();
     fomUpdateRate.setName(updateRate.getName());
@@ -1015,10 +1015,10 @@ Module::getModule(FOMModule& module)
 
   {
     module.getInteractionClassList().reserve(_interactionClassModuleList.size());
-    ParameterDefinitionModule::FirstList::iterator j = _parameterDefinitionModuleList.begin();
-    for (InteractionClassModule::FirstList::iterator i = _interactionClassModuleList.begin();
+    ParameterDefinitionModule::FirstList::const_iterator j = _parameterDefinitionModuleList.begin();
+    for (InteractionClassModule::FirstList::const_iterator i = _interactionClassModuleList.begin();
          i != _interactionClassModuleList.end(); ++i) {
-      InteractionClass& interactionClass = i->getInteractionClass();
+      const InteractionClass& interactionClass = i->getInteractionClass();
       module.getInteractionClassList().push_back(FOMInteractionClass());
       FOMInteractionClass& fomInteractionClass = module.getInteractionClassList().back();
       fomInteractionClass.setName(interactionClass.getName().back());
@@ -1036,7 +1036,7 @@ Module::getModule(FOMModule& module)
       // If so, add them too
       ++j;
       fomInteractionClass.getParameterList().reserve(interactionClass.getNumParameterDefinitions());
-      for (ParameterDefinition::HandleMap::iterator k = interactionClass.getParameterHandleParameterMap().begin();
+      for (ParameterDefinition::HandleMap::const_iterator k = interactionClass.getParameterHandleParameterMap().begin();
            k != interactionClass.getParameterHandleParameterMap().end(); ++k) {
         fomInteractionClass.getParameterList().push_back(FOMParameter());
         FOMParameter& fomParameter = fomInteractionClass.getParameterList().back();
@@ -1048,10 +1048,10 @@ Module::getModule(FOMModule& module)
 
   {
     module.getObjectClassList().reserve(_objectClassModuleList.size());
-    AttributeDefinitionModule::FirstList::iterator j = _attributeDefinitionModuleList.begin();
-    for (ObjectClassModule::FirstList::iterator i = _objectClassModuleList.begin();
+    AttributeDefinitionModule::FirstList::const_iterator j = _attributeDefinitionModuleList.begin();
+    for (ObjectClassModule::FirstList::const_iterator i = _objectClassModuleList.begin();
          i != _objectClassModuleList.end(); ++i) {
-      ObjectClass& objectClass = i->getObjectClass();
+      const ObjectClass& objectClass = i->getObjectClass();
       module.getObjectClassList().push_back(FOMObjectClass());
       FOMObjectClass& fomObjectClass = module.getObjectClassList().back();
       fomObjectClass.setName(objectClass.getName().back());
@@ -1066,7 +1066,7 @@ Module::getModule(FOMModule& module)
       // If so, add them too
       ++j;
       fomObjectClass.getAttributeList().reserve(objectClass.getNumAttributeDefinitions());
-      for (AttributeDefinition::HandleMap::iterator k = objectClass.getAttributeHandleAttributeDefinitionMap().begin();
+      for (AttributeDefinition::HandleMap::const_iterator k = objectClass.getAttributeHandleAttributeDefinitionMap().begin();
            k != objectClass.getAttributeHandleAttributeDefinitionMap().end(); ++k) {
         fomObjectClass.getAttributeList().push_back(FOMAttribute());
         FOMAttribute& fomAttribute = fomObjectClass.getAttributeList().back();
@@ -2192,7 +2192,7 @@ void
 Federation::getModuleList(FOMModuleList& moduleList) const
 {
   moduleList.reserve(_moduleHandleModuleMap.size());
-  for (Module::HandleMap::iterator i = _moduleHandleModuleMap.begin();
+  for (Module::HandleMap::const_iterator i = _moduleHandleModuleMap.begin();
        i != _moduleHandleModuleMap.end(); ++i) {
     moduleList.push_back(FOMModule());
     i->getModule(moduleList.back());
@@ -2203,7 +2203,7 @@ void
 Federation::getModuleList(FOMModuleList& moduleList, const ModuleHandleVector& moduleHandleVector) const
 {
   for (ModuleHandleVector::const_iterator i = moduleHandleVector.begin(); i != moduleHandleVector.end(); ++i) {
-    Module::HandleMap::iterator j = _moduleHandleModuleMap.find(*i);
+    Module::HandleMap::const_iterator j = _moduleHandleModuleMap.find(*i);
     OpenRTIAssert(j != _moduleHandleModuleMap.end());
     moduleList.push_back(FOMModule());
     j->getModule(moduleList.back());
