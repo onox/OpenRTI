@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenRTI - Copyright (C) 2009-2022 Mathias Froehlich
+/* -*-c++-*- OpenRTI - Copyright (C) 2009-2023 Mathias Froehlich
  *
  * This file is part of OpenRTI.
  *
