@@ -166,7 +166,7 @@ SocketAddress::resolve(const std::string& address, const std::string& service, b
     hints.ai_flags = AI_PASSIVE;
 
   std::string localeAddress = utf8ToLocale(address);
-  // getaddrinfo returnd the wildcard address when NULL is given as the node argument
+  // getaddrinfo returns the wildcard address when NULL is given as the node argument
   const char *localeAddressChar = NULL;
   if (!localeAddress.empty())
     localeAddressChar = localeAddress.c_str();
