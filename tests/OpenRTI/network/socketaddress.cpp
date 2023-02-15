@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
       return EXIT_FAILURE;
   }
 
-  addressList = OpenRTI::SocketAddress::resolve(std::string(), true);
+  addressList = OpenRTI::SocketAddress::resolve(std::string(), "12345", true);
   for (OpenRTI::SocketAddressList::const_iterator i = addressList.begin(); i != addressList.end(); ++i) {
     if (!i->valid())
       return EXIT_FAILURE;
