@@ -109,15 +109,13 @@ private:
 };
 
 template<typename T, typename Tag>
-class OPENRTI_LOCAL _IntrusiveListIterator :
-  public std::iterator<std::bidirectional_iterator_tag, T, std::ptrdiff_t> {
-  typedef std::iterator<std::bidirectional_iterator_tag, T, std::ptrdiff_t> _Base;
+class OPENRTI_LOCAL _IntrusiveListIterator {
 public:
-  typedef typename _Base::value_type value_type;
-  typedef typename _Base::difference_type difference_type;
-  typedef typename _Base::pointer pointer;
-  typedef typename _Base::reference reference;
-  typedef typename _Base::iterator_category iterator_category;
+  typedef T value_type;
+  typedef std::ptrdiff_t difference_type;
+  typedef value_type* pointer;
+  typedef value_type& reference;
+  typedef std::bidirectional_iterator_tag iterator_category;
 
   _IntrusiveListIterator() :
     _intrusiveListHook(NULL)
